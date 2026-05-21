@@ -19,7 +19,7 @@ runs:
             issue_number: context.issue.number,
             owner: context.repo.owner,
             repo: context.repo.repo,
-            body: `🚀 **Snapshot Published!**\n\n\`\`\`bash\nnpm install @tech-leads-club/agent-skills@${version}\n\`\`\``
+            body: `🚀 **Snapshot Published!**\n\n\`\`\`bash\nnpm install @controllato/agent-skills@${version}\n\`\`\``
           });
 
     - name: Remove Action Label

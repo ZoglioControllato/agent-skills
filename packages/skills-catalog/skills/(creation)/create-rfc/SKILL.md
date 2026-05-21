@@ -3,7 +3,7 @@ name: create-rfc
 description: Cria documentos estruturados Request for Comments (RFC) para propor e decidir mudanças significativas. Use quando o usuário disser "write an RFC", "create a proposal", "I need to propose a change", "draft an RFC", "document a decision", ou precisar alinhar stakeholders antes de uma decisão técnica ou de processo importante. NÃO use para TDDs ou docs de implementação (use technical-design-doc-creator), arquivos README ou documentação geral.
 license: CC-BY-4.0
 metadata:
-  author: Controllato Club - github.com/tech-leads-club
+  author: Controllato Club - github.com/agent-skills
   version: '1.0.0'
 ---
 

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 
-const NPM_API_URL = 'https://api.npmjs.org/downloads/point/last-month/@tech-leads-club/agent-skills'
+const NPM_API_URL = 'https://api.npmjs.org/downloads/point/last-month/@controllato/agent-skills'
 
 function formatNumber(num: number): string {
   return num.toLocaleString('en-US')

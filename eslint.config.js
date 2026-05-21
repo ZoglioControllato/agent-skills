@@ -41,7 +41,7 @@ export default defineConfig([
         'error',
         {
           ignoredDependencies: [
-            '@tech-leads-club/core',
+            '@controllato/core',
             'react-dom', // Peer dependency of Next.js
             '@tailwindcss/postcss', // Used in postcss.config.cjs
             'tailwindcss', // Used in global.css via @import

@@ -1,5 +1,5 @@
 /**
- * Exposes the complete public API for `@tech-leads-club/core`.
+ * Exposes the complete public API for `@controllato/core`.
  */
 export * from './lib/adapters'
 export * from './lib/constants'

@@ -23,8 +23,8 @@
     "resolveJsonModule": true,
     "baseUrl": ".",
     "paths": {
-      "@tech-leads-club/agent-skills": ["packages/cli/src/index.ts"],
-      "@tech-leads-club/core": ["libs/core/src/index.ts"]
+      "@controllato/agent-skills": ["packages/cli/src/index.ts"],
+      "@controllato/core": ["libs/core/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "dist"]

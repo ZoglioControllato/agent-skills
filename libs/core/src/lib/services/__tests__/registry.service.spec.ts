@@ -134,7 +134,7 @@ const createPorts = (): TestPorts => {
 const registryFixture: SkillsRegistry = {
   version: 'main',
   generatedAt: '2026-03-13T12:00:00.000Z',
-  baseUrl: 'https://cdn.jsdelivr.net/npm/@tech-leads-club/skills-catalog@main/skills',
+  baseUrl: 'https://cdn.jsdelivr.net/npm/@controllato/skills-catalog@main/skills',
   categories: {
     quality: { name: 'Quality' },
   },

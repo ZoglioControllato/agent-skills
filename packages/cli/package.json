@@ -1,12 +1,12 @@
 {
-  "name": "@tech-leads-club/agent-skills",
-  "version": "1.4.7",
+  "name": "@controllato/agent-skills",
+  "version": "1.0.0",
   "description": "Secure, verifiable CLI to install and manage skills for professional AI coding agents",
-  "author": "Tech Leads Club",
+  "author": "Controllato Club",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tech-leads-club/agent-skills.git"
+    "url": "git+https://github.com/agent-skills/agent-skills.git"
   },
   "type": "module",
   "bin": {
@@ -47,7 +47,7 @@
   },
   "devDependencies": {
     "@jest/globals": "30.3.0",
-    "@tech-leads-club/core": "0.0.1",
+    "@controllato/core": "0.0.1",
     "@testing-library/react": "^16.3.2",
     "@types/figlet": "^1.7.0",
     "@types/node": "^24",

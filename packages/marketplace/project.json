@@ -6,7 +6,7 @@
   "tags": [],
   "targets": {
     "generate-data": {
-      "dependsOn": ["@tech-leads-club/skills-catalog:generate-registry"],
+      "dependsOn": ["@controllato/skills-catalog:generate-registry"],
       "executor": "nx:run-commands",
       "options": {
         "command": "tsx scripts/generate-data.ts",

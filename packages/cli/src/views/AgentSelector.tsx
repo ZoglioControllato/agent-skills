@@ -2,8 +2,8 @@ import { Box, Text, useInput, useStdout } from 'ink'
 import Spinner from 'ink-spinner'
 import { useState } from 'react'
 
-import type { AgentType } from '@tech-leads-club/core'
-import { getAgentConfig } from '@tech-leads-club/core'
+import type { AgentType } from '@controllato/core'
+import { getAgentConfig } from '@controllato/core'
 
 import { FooterBar } from '../components/FooterBar'
 import { Header } from '../components/Header'

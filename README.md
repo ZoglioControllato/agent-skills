@@ -3,11 +3,11 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/npm/v/@tech-leads-club/agent-skills?style=flat-square&color=blue" alt="versão npm" />
-  <img src="https://img.shields.io/npm/dt/@tech-leads-club/agent-skills?style=flat-square&color=blue" alt="downloads totais" />
-  <img src="https://img.shields.io/npm/dm/@tech-leads-club/agent-skills?style=flat-square&color=blue" alt="downloads mensais" />
-  <img src="https://img.shields.io/github/license/tech-leads-club/agent-skills?style=flat-square" alt="licença" />
-  <img src="https://img.shields.io/github/actions/workflow/status/tech-leads-club/agent-skills/release.yml?style=flat-square" alt="status do build" />
+  <img src="https://img.shields.io/npm/v/@controllato/agent-skills?style=flat-square&color=blue" alt="versão npm" />
+  <img src="https://img.shields.io/npm/dt/@controllato/agent-skills?style=flat-square&color=blue" alt="downloads totais" />
+  <img src="https://img.shields.io/npm/dm/@controllato/agent-skills?style=flat-square&color=blue" alt="downloads mensais" />
+  <img src="https://img.shields.io/github/license/agent-skills/agent-skills?style=flat-square" alt="licença" />
+  <img src="https://img.shields.io/github/actions/workflow/status/agent-skills/agent-skills/release.yml?style=flat-square" alt="status do build" />
 </p>
 
 <p align="center">
@@ -18,9 +18,9 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/github/stars/tech-leads-club/agent-skills?style=flat-square&color=yellow" alt="estrelas no GitHub" />
-  <img src="https://img.shields.io/github/contributors/tech-leads-club/agent-skills?style=flat-square&color=orange" alt="contribuidores" />
-  <img src="https://img.shields.io/github/last-commit/tech-leads-club/agent-skills?style=flat-square" alt="último commit" />
+  <img src="https://img.shields.io/github/stars/agent-skills/agent-skills?style=flat-square&color=yellow" alt="estrelas no GitHub" />
+  <img src="https://img.shields.io/github/contributors/agent-skills/agent-skills?style=flat-square&color=orange" alt="contribuidores" />
+  <img src="https://img.shields.io/github/last-commit/agent-skills/agent-skills?style=flat-square" alt="último commit" />
   <img src="https://img.shields.io/badge/AI-Powered%20Skills-purple?style=flat-square&logo=openai" alt="skills com IA" />
 </p>
 
@@ -37,7 +37,7 @@
 </p>
 
 <p align="center">
-  <a href="https://tech-leads-club.github.io/agent-skills/" target="_blank">https://tech-leads-club.github.io/agent-skills/</a>
+  <a href="https://agent-skills.github.io/agent-skills/" target="_blank">https://agent-skills.github.io/agent-skills/</a>
 </p>
 
 ## 📖 Índice
@@ -93,7 +93,7 @@ Instale skills em qualquer um destes agentes de codificação com IA:
 </div>
 
 <p align="center">
-  <sub>Falta o seu agente favorito? <a href="https://github.com/tech-leads-club/agent-skills/issues/new"><strong>Abra uma issue</strong></a> e adicionamos suporte!</sub>
+  <sub>Falta o seu agente favorito? <a href="https://github.com/agent-skills/agent-skills/issues/new"><strong>Abra uma issue</strong></a> e adicionamos suporte!</sub>
 </p>
 
 ## 🌟 Skills em destaque
@@ -117,7 +117,7 @@ Uma amostra do que há no catálogo em crescimento:
 ### Instalar skills no seu projeto
 
 ```bash
-npx @tech-leads-club/agent-skills
+npx @controllato/agent-skills
 ```
 
 Abre um assistente interativo:
@@ -132,11 +132,11 @@ Cada etapa oferece **← Voltar** para revisar.
 
 ### Opções da CLI
 
-> **Nota:** Você pode usar `npx @tech-leads-club/agent-skills` ou instalar globalmente e chamar `agent-skills`.
+> **Nota:** Você pode usar `npx @controllato/agent-skills` ou instalar globalmente e chamar `agent-skills`.
 
 ```bash
 # Modo interativo (padrão)
-npx @tech-leads-club/agent-skills
+npx @controllato/agent-skills
 # ou: agent-skills (se instalado globalmente)
 
 # Listar skills disponíveis
@@ -203,8 +203,8 @@ agent-skills --help
 ### Instalação global (opcional)
 
 ```bash
-npm install -g @tech-leads-club/agent-skills
-agent-skills  # Use 'agent-skills' em vez de npx @tech-leads-club/agent-skills
+npm install -g @controllato/agent-skills
+agent-skills  # Use 'agent-skills' em vez de npx @controllato/agent-skills
 ```
 
 ## ⚡ Como funciona
@@ -227,7 +227,7 @@ rm -rf ~/.cache/agent-skills
 
 ## 🔌 Servidor MCP
 
-`@tech-leads-club/agent-skills-mcp` é um servidor MCP que expõe o catálogo aos agentes com **divulgação progressiva** — buscar primeiro e só depois obter o necessário.
+`@controllato/agent-skills-mcp` é um servidor MCP que expõe o catálogo aos agentes com **divulgação progressiva** — buscar primeiro e só depois obter o necessário.
 
 | Ferramenta          | Finalidade                                       |
 | :------------------ | :----------------------------------------------- |
@@ -245,7 +245,7 @@ Chame `list_skills` somente quando o usuário pedir explicitamente para listar/n
   "mcpServers": {
     "agent-skills": {
       "command": "npx",
-      "args": ["-y", "@tech-leads-club/agent-skills-mcp"]
+      "args": ["-y", "@controllato/agent-skills-mcp"]
     }
   }
 }
@@ -261,7 +261,7 @@ Contribuições são bem-vindas! Veja [CONTRIBUTING.md](CONTRIBUTING.md) para am
 
 Este repositório reúne skills curadas para a comunidade. Respeitamos a propriedade intelectual e os desejos dos autores.
 
-Se você é autor de algum conteúdo aqui e quer **remoção** ou **atualização**, [abra uma issue](https://github.com/tech-leads-club/agent-skills/issues/new) ou fale com os mantenedores.
+Se você é autor de algum conteúdo aqui e quer **remoção** ou **atualização**, [abra uma issue](https://github.com/agent-skills/agent-skills/issues/new) ou fale com os mantenedores.
 
 ## 📄 Licença e atribuição
 
@@ -274,8 +274,8 @@ _Se usar nosso catálogo, você **deve** atribuir o Controllato Club, independen
 ## ⭐ Histórico de estrelas
 
 <p align="center">
-  <a href="https://star-history.com/#tech-leads-club/agent-skills&Date">
-    <img src="https://api.star-history.com/svg?repos=tech-leads-club/agent-skills&type=Date" alt="Gráfico de histórico de estrelas" />
+  <a href="https://star-history.com/#agent-skills/agent-skills&Date">
+    <img src="https://api.star-history.com/svg?repos=agent-skills/agent-skills&type=Date" alt="Gráfico de histórico de estrelas" />
   </a>
 </p>
 

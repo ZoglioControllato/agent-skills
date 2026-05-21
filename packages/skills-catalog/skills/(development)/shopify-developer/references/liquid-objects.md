@@ -207,6 +207,7 @@ Objeto do produto (nas páginas do produto):```liquid
 <label>{{ option.name }}</label>
 <select>
 {% for value in option.values %}
+
 <option>{{ value }}</option>
 {% endfor %}
 </select>

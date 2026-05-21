@@ -1,4 +1,4 @@
-import { ensureSkillDownloaded, getSkillCachePath, getSkillMetadata, type SkillMetadata } from '@tech-leads-club/core'
+import { ensureSkillDownloaded, getSkillCachePath, getSkillMetadata, type SkillMetadata } from '@controllato/core'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { useEffect, useState } from 'react'

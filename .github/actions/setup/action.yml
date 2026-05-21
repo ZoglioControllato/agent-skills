@@ -28,7 +28,7 @@ runs:
       with:
         node-version-file: '.nvmrc'
         registry-url: 'https://registry.npmjs.org'
-        scope: '@tech-leads-club'
+        scope: '@controllato'
         cache: 'npm'
 
     - name: Upgrade npm

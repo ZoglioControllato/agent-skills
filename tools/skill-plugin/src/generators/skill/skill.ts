@@ -1,7 +1,7 @@
 import { formatFiles, generateFiles, names, Tree } from '@nx/devkit'
 import * as path from 'path'
 
-import { formatCategoryName, SKILLS_CATALOG_DIR } from '@tech-leads-club/core'
+import { formatCategoryName, SKILLS_CATALOG_DIR } from '@controllato/core'
 
 import { SkillGeneratorSchema } from './schema'
 
@@ -60,7 +60,7 @@ export async function skillGenerator(tree: Tree, options: SkillGeneratorSchema) 
 ✅ Skill created!
 
 📁 ${skillRoot}/SKILL.md
-🔧 Test: npx @tech-leads-club/agent-skills --skill ${normalizedNames.fileName}
+🔧 Test: npx @controllato/agent-skills --skill ${normalizedNames.fileName}
 💡 Edit SKILL.md and customize the instructions
 📦 Registry will auto-update on build, or run: npm run generate:registry
 `)

@@ -1,4 +1,4 @@
-import { clearCache, clearRegistryCache, getCacheDir } from '@tech-leads-club/core'
+import { clearCache, clearRegistryCache, getCacheDir } from '@controllato/core'
 import chalk from 'chalk'
 
 import { ports } from '../ports'

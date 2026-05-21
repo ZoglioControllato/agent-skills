@@ -5,7 +5,7 @@ import type {
   CategoryMetadata,
   DeprecatedEntry,
   SkillInfo,
-} from '@tech-leads-club/core'
+} from '@controllato/core'
 
 export interface InstallOptions {
   global: boolean

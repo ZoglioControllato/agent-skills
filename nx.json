@@ -36,15 +36,15 @@
     "projectsRelationship": "independent",
     "groups": {
       "cli": {
-        "projects": ["@tech-leads-club/agent-skills"],
+        "projects": ["@controllato/agent-skills"],
         "releaseTagPattern": "v{version}"
       },
       "skills-catalog": {
-        "projects": ["@tech-leads-club/skills-catalog"],
+        "projects": ["@controllato/skills-catalog"],
         "releaseTagPattern": "skills-catalog-v{version}"
       },
       "mcp": {
-        "projects": ["@tech-leads-club/agent-skills-mcp"],
+        "projects": ["@controllato/agent-skills-mcp"],
         "releaseTagPattern": "mcp-v{version}"
       }
     },

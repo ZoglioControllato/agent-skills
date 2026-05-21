@@ -20,7 +20,7 @@ const config: Config = {
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../coverage/packages/cli',
-  moduleNameMapper: { '^@tech-leads-club/core$': '<rootDir>/../../libs/core/src/index.ts' },
+  moduleNameMapper: { '^@controllato/core$': '<rootDir>/../../libs/core/src/index.ts' },
 }
 
 export default config

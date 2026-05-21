@@ -1,4 +1,4 @@
-import { isGloballyInstalled } from '@tech-leads-club/core'
+import { isGloballyInstalled } from '@controllato/core'
 import { atom } from 'jotai'
 import { unwrap } from 'jotai/utils'
 

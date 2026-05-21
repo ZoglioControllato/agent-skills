@@ -143,6 +143,7 @@ estar dentro do provedor.```tsx
 function ForwardMessageDialog() {
 return (
 <ForwardMessageProvider>
+
 <Dialog>
 {/_ The composer UI _/}
 <Composer.Frame>

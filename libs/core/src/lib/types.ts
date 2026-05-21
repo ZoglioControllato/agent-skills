@@ -311,7 +311,7 @@ export interface SkillLockFile {
  *   category: 'quality',
  *   path: '(quality)/accessibility',
  *   files: ['SKILL.md'],
- *   author: 'tech-leads-club',
+ *   author: 'agent-skills',
  *   version: '1.0.0',
  *   contentHash: 'abc123',
  * }

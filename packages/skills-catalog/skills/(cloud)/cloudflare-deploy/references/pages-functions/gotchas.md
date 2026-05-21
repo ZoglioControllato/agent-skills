@@ -21,10 +21,10 @@
 **Causa:** Nenhuma definição de tipo para `Env`
 **Solução:** Execute `npx wrangler types` ou defina manualmente:```typescript
 interface Env {
-MY_BINDING: KVNamespace
+MY*BINDING: KVNamespace
 }
 export const onRequest: PagesFunction<Env> = async (ctx) => {
-/_ ... _/
+/* ... \_/
 }
 
 ````

@@ -42,7 +42,7 @@ function buildCreditLines(contributors: GitHubContributor[], stars: number): Cre
   const lines: CreditLine[] = []
 
   lines.push({ type: 'blank' })
-  lines.push({ type: 'text', text: 'A Tech Leads Club Production', color: '#94a3b8' })
+  lines.push({ type: 'text', text: 'A Controllato Club Production', color: '#94a3b8' })
   lines.push({ type: 'blank' })
   lines.push({ type: 'blank' })
 
@@ -92,7 +92,7 @@ function buildCreditLines(contributors: GitHubContributor[], stars: number): Cre
   lines.push({ type: 'blank' })
   lines.push({ type: 'text', text: 'Built with \u2665  by the community', color: '#ef4444' })
   lines.push({ type: 'blank' })
-  lines.push({ type: 'gradient', text: 'github.com/tech-leads-club/agent-skills', gradientColors: CRYSTAL_COLORS })
+  lines.push({ type: 'gradient', text: 'github.com/agent-skills/agent-skills', gradientColors: CRYSTAL_COLORS })
   lines.push({ type: 'blank' })
   lines.push({ type: 'blank' })
   lines.push({ type: 'blank' })
@@ -279,11 +279,6 @@ export function CreditsView({ onExit }: CreditsViewProps) {
 
   return (
     <Box flexDirection="column" alignItems="center">
-      <Box marginBottom={-1}>
-        <Gradient colors={['#1e3a8a', '#3b82f6']}>
-          <BigText text="TLC" font="tiny" />
-        </Gradient>
-      </Box>
       <Box>
         <Gradient colors={[...CRYSTAL_COLORS]}>
           <BigText text="AGENT SKILLS" font="block" />

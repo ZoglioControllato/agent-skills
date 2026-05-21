@@ -1,6 +1,6 @@
+import { SKILLS_CATALOG_DIR } from '@controllato/core'
 import { Tree } from '@nx/devkit'
 import { createTreeWithEmptyWorkspace } from '@nx/devkit/testing'
-import { SKILLS_CATALOG_DIR } from '@tech-leads-club/core'
 
 import { SkillGeneratorSchema } from './schema'
 import { skillGenerator } from './skill'

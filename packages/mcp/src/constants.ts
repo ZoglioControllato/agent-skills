@@ -2,7 +2,7 @@
 export const CACHE_TTL_MS = 15 * 60 * 1000
 
 /** Same CDN as CLI: jsDelivr serving the npm package. @latest so MCP always sees the same cache as CLI after publish. */
-const CDN_NPM_BASE = 'https://cdn.jsdelivr.net/npm/@tech-leads-club/skills-catalog@latest'
+const CDN_NPM_BASE = 'https://cdn.jsdelivr.net/npm/@controllato/skills-catalog@latest'
 
 /** Base URL for skill files (registry and skills from same npm package on jsDelivr). */
 export const CDN_BASE = `${CDN_NPM_BASE}/skills/`

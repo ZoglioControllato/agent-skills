@@ -1,5 +1,5 @@
-import type { SkillInfo } from '@tech-leads-club/core'
-import { groupSkillsByCategory } from '@tech-leads-club/core'
+import type { SkillInfo } from '@controllato/core'
+import { groupSkillsByCategory } from '@controllato/core'
 import { Box, Text, useInput, useStdout } from 'ink'
 import { useAtomValue } from 'jotai'
 import { useMemo, useState } from 'react'

@@ -12,7 +12,7 @@ const SITE_DESCRIPTION =
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: 'Agent Skills | Tech Leads Club',
+    default: 'Agent Skills | Controllato Club',
     template: '%s | Agent Skills',
   },
   description: SITE_DESCRIPTION,
@@ -26,16 +26,16 @@ export const metadata: Metadata = {
     'cline',
     'AI assistant plugins',
     'coding automation',
-    'tech leads club',
+    'controllato club',
     'developer tools',
   ],
-  authors: [{ name: 'Tech Leads Club', url: 'https://github.com/tech-leads-club' }],
-  creator: 'Tech Leads Club',
+  authors: [{ name: 'Controllato Club', url: 'https://github.com/agent-skills' }],
+  creator: 'Controllato Club',
   openGraph: {
     type: 'website',
     locale: 'en_US',
     siteName: SITE_NAME,
-    title: 'Agent Skills | Tech Leads Club',
+    title: 'Agent Skills | Controllato Club',
     description: SITE_DESCRIPTION,
     images: [
       {
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Agent Skills | Tech Leads Club',
+    title: 'Agent Skills | Controllato Club',
     description: SITE_DESCRIPTION,
     images: ['/og-image.png'],
   },
@@ -83,12 +83,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <Link href="/" className="flex items-center gap-2 sm:gap-3 hover:opacity-80 transition-opacity min-w-0">
                   <img
                     src="/tlc-logo-dark.svg"
-                    alt="Tech Leads Club"
+                    alt="Controllato Club"
                     className="h-6 sm:h-8 w-auto shrink-0 dark:hidden"
                   />
                   <img
                     src="/white_logo.png"
-                    alt="Tech Leads Club"
+                    alt="Controllato Club"
                     className="h-6 sm:h-8 w-auto shrink-0 hidden dark:block"
                   />
                   <div className="flex flex-col min-w-0">
@@ -96,7 +96,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                       Agent Skills
                     </span>
                     <span className="text-xs text-gray-500 dark:text-gray-400 leading-tight hidden sm:block">
-                      by Tech Leads Club
+                      by Controllato Club
                     </span>
                   </div>
                 </Link>
@@ -120,7 +120,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     Skills
                   </Link>
                   <a
-                    href="https://github.com/tech-leads-club/agent-skills"
+                    href="https://github.com/agent-skills/agent-skills"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-medium transition-colors"
@@ -145,12 +145,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <p className="text-center text-gray-600 dark:text-gray-400">
                 Built with ❤️ by{' '}
                 <a
-                  href="https://github.com/tech-leads-club"
+                  href="https://github.com/agent-skills"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
                 >
-                  Tech Leads Club
+                  Controllato Club
                 </a>
               </p>
             </div>

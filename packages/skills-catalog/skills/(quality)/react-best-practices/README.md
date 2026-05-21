@@ -10,22 +10,25 @@ Repositório estruturado para criar e manter boas práticas em React voltadas pa
   - `area-description.md` — Arquivos de regra
 - `src/` — Scripts de build e utilitários
 - `metadata.json` — Metadados do documento (versão, organização, resumo)
-- __`AGENTS.md`__ — Saída compilada (gerada)
-- __`test-cases.json`__ — Casos de teste para avaliação por LLM (gerado)
+- **`AGENTS.md`** — Saída compilada (gerada)
+- **`test-cases.json`** — Casos de teste para avaliação por LLM (gerado)
 
 ## Primeiros passos
 
 1. Instalar dependências:
+
    ```bash
    pnpm install
    ```
 
 2. Gerar `AGENTS.md` a partir das regras:
+
    ```bash
    pnpm build
    ```
 
 3. Validar os arquivos de regra:
+
    ```bash
    pnpm validate
    ```

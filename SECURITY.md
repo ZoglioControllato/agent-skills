@@ -148,7 +148,7 @@ A varredura precisa passar antes de qualquer release. O pipeline (`release.yml`)
 
 ## 🔌 Segurança do servidor MCP
 
-`@tech-leads-club/agent-skills-mcp` (`packages/mcp`) tem superfície de ameaça menor por desenho:
+`@controllato/agent-skills-mcp` (`packages/mcp`) tem superfície de ameaça menor por desenho:
 
 - **Somente leitura** — sem escrita no registry; só CDN
 - **Sem autenticação** — roda localmente via stdio; sem endpoint exposto na rede
@@ -160,7 +160,7 @@ A varredura precisa passar antes de qualquer release. O pipeline (`release.yml`)
 
 Este repositório reúne skills curadas em benefício da comunidade. Respeitamos a propriedade intelectual e a vontade de todos os criadores.
 
-**Se você é autor** de algo aqui e deseja remoção ou atualização, [abra uma issue](https://github.com/tech-leads-club/agent-skills/issues/new) ou contate os mantenedores. Responderemos com agilidade.
+**Se você é autor** de algo aqui e deseja remoção ou atualização, [abra uma issue](https://github.com/agent-skills/agent-skills/issues/new) ou contate os mantenedores. Responderemos com agilidade.
 
 Para licenciamento, veja **[Licença e atribuição](README.md#-licença-e-atribuição)** no README.
 
@@ -168,7 +168,7 @@ Para licenciamento, veja **[Licença e atribuição](README.md#-licença-e-atrib
 
 **Por favor não abra issue pública para vulnerabilidades.**
 
-Use um [GitHub Security Advisory](https://github.com/tech-leads-club/agent-skills/security/advisories/new) (privado, só para mantenedores).
+Use um [GitHub Security Advisory](https://github.com/agent-skills/agent-skills/security/advisories/new) (privado, só para mantenedores).
 
 Inclua:
 

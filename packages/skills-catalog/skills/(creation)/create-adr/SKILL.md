@@ -3,7 +3,7 @@ name: create-adr
 description: Cria Architecture Decision Records (ADRs) para documentar escolhas arquiteturais significativas e seu raciocínio para quem entrar depois na equipe. Use quando o usuário disser "write an ADR", "document this decision", "record why we chose X", "add an architecture decision record", "create an ADR for", ou quiser registrar o porquê de uma decisão técnica para o time entender mais tarde. NÃO use para decisões ainda não tomadas (use create-rfc), planejamento de implementação após a decisão (use technical-design-doc-creator) ou documentação geral.
 license: CC-BY-4.0
 metadata:
-  author: Controllato Club - github.com/tech-leads-club
+  author: Controllato Club - github.com/agent-skills
   version: '1.0.0'
 ---
 

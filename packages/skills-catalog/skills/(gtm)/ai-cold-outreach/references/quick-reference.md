@@ -16,8 +16,8 @@ Se alguma resposta for “Não”, corrija antes de enviar.
 
 ### Fórmula de capacidade de envio```
 
-Domains needed = (daily_volume / 150) _ 1.5
-Mailboxes = domains _ 2
+Domains needed = (daily*volume / 150) * 1.5
+Mailboxes = domains \_ 2
 Max cold sends per mailbox = 25-30/day
 Warmup period = 14-21 days before cold sends
 

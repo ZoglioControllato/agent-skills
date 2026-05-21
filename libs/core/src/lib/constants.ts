@@ -25,9 +25,9 @@ export const DEFAULT_CATEGORY: CategoryInfo = {
 }
 
 /** Package name for the CLI distribution. */
-export const PACKAGE_NAME = '@tech-leads-club/agent-skills'
+export const PACKAGE_NAME = '@controllato/agent-skills'
 /** Package name for the published skills catalog. */
-export const SKILLS_CATALOG_PACKAGE = '@tech-leads-club/skills-catalog'
+export const SKILLS_CATALOG_PACKAGE = '@controllato/skills-catalog'
 /** Project directory used to store agent-specific state. */
 export const AGENTS_DIR = '.agents'
 /** Canonical directory that stores local skill sources. */

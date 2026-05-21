@@ -1,5 +1,5 @@
 {
-  "name": "@tech-leads-club/agent-skills-mcp",
+  "name": "@controllato/agent-skills-mcp",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/mcp/src",
   "projectType": "application",
@@ -46,14 +46,14 @@
       "executor": "@nx/js:node",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "@tech-leads-club/agent-skills-mcp:build"
+        "buildTarget": "@controllato/agent-skills-mcp:build"
       },
       "configurations": {
         "development": {
-          "buildTarget": "@tech-leads-club/agent-skills-mcp:build:development"
+          "buildTarget": "@controllato/agent-skills-mcp:build:development"
         },
         "production": {
-          "buildTarget": "@tech-leads-club/agent-skills-mcp:build:production"
+          "buildTarget": "@controllato/agent-skills-mcp:build:production"
         }
       }
     },

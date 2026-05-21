@@ -8,7 +8,7 @@ interface SkillCardProps {
 }
 
 export function SkillCard({ skill, categoryName }: SkillCardProps) {
-  const installCommand = `npx @tech-leads-club/agent-skills install --skill ${skill.id}`
+  const installCommand = `npx @controllato/agent-skills install --skill ${skill.id}`
 
   return (
     <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-200 dark:border-gray-800 p-4">

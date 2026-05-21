@@ -1,5 +1,5 @@
-import type { InstallOptions, InstallResult, SkillInfo } from '@tech-leads-club/core'
-import { getSkillWithPath, installSkills } from '@tech-leads-club/core'
+import type { InstallOptions, InstallResult, SkillInfo } from '@controllato/core'
+import { getSkillWithPath, installSkills } from '@controllato/core'
 import { useState } from 'react'
 
 import { ports } from '../ports'

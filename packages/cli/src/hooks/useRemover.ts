@@ -1,5 +1,5 @@
-import type { AgentType } from '@tech-leads-club/core'
-import { removeSkill } from '@tech-leads-club/core'
+import type { AgentType } from '@controllato/core'
+import { removeSkill } from '@controllato/core'
 import { useState } from 'react'
 
 import { ports } from '../ports'

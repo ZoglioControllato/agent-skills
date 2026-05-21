@@ -2,7 +2,7 @@ import ky from 'ky'
 
 import type { GitHubContributor } from '../types'
 
-const REPO_API = 'https://api.github.com/repos/tech-leads-club/agent-skills'
+const REPO_API = 'https://api.github.com/repos/agent-skills/agent-skills'
 const CONTRIBUTORS_URL = `${REPO_API}/contributors`
 
 let contributorsCache: GitHubContributor[] | null = null

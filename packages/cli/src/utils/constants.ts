@@ -1,6 +1,6 @@
 // Package metadata
-export const PACKAGE_NAME = '@tech-leads-club/agent-skills'
-export const SKILLS_CATALOG_PACKAGE = '@tech-leads-club/skills-catalog'
+export const PACKAGE_NAME = '@controllato/agent-skills'
+export const SKILLS_CATALOG_PACKAGE = '@controllato/skills-catalog'
 
 // Directory and file paths
 export const CONFIG_DIR = '.agent-skills'

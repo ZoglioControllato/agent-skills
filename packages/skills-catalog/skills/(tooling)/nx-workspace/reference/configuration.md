@@ -6,7 +6,7 @@ Modelos e opções de configuração completos para espaços de trabalho Nx.
 
 Modelo nx.json completo com todas as opções comuns:```json
 {
-"$schema": "./node_modules/nx/schemas/nx-schema.json",
+"$schema": "./node*modules/nx/schemas/nx-schema.json",
 "npmScope": "myorg",
 "affected": {
 "defaultBase": "main"
@@ -49,7 +49,7 @@ Modelo nx.json completo com todas as opções comuns:```json
 "default": ["{projectRoot}/**/*", "sharedGlobals"],
 "production": [
 "default",
-"!{projectRoot}/\*_/?(_.)+(spec|test).[jt]s?(x)?(.snap)",
+"!{projectRoot}/\**/?(\_.)+(spec|test).[jt]s?(x)?(.snap)",
 "!{projectRoot}/tsconfig.spec.json",
 "!{projectRoot}/jest.config.[jt]s",
 "!{projectRoot}/.eslintrc.json"

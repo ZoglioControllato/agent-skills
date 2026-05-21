@@ -1,5 +1,5 @@
-import type { AgentType } from '@tech-leads-club/core'
-import { detectInstalledAgents, getAllAgentTypes } from '@tech-leads-club/core'
+import type { AgentType } from '@controllato/core'
+import { detectInstalledAgents, getAllAgentTypes } from '@controllato/core'
 import { useEffect, useMemo, useState } from 'react'
 
 import { ports } from '../ports'

@@ -1,13 +1,13 @@
 {
-  "name": "@tech-leads-club/skills-catalog",
+  "name": "@controllato/skills-catalog",
   "version": "0.14.3",
   "description": "Skills catalog registry for agent-skills CLI (CDN distribution)",
-  "author": "Tech Leads Club",
+  "author": "Controllato Club",
   "license": "MIT",
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tech-leads-club/agent-skills.git",
+    "url": "git+https://github.com/agent-skills/agent-skills.git",
     "directory": "packages/skills-catalog"
   },
   "publishConfig": {

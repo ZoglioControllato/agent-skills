@@ -11,7 +11,7 @@
 </p>
 
 <p alinhar="centro">
-  <em>Da comunidade do <a href="https://github.com/tech-leads-club">Tech Lead's Club</a></em>
+  <em>Da comunidade do <a href="https://github.com/agent-skills">Tech Lead's Club</a></em>
 </p>
 
 <p alinhar="centro">
@@ -45,7 +45,7 @@ required optional* optional* required
 ## 🚀 Início rápido
 
 ### Instalação```bash
-npx @tech-leads-club/agent-skills install -s tlc-spec-driven
+npx @controllato/agent-skills install -s tlc-spec-driven
 ````
 
 ### Primeiros Comandos
@@ -438,7 +438,7 @@ R: A habilidade impõe uma **Cadeia de verificação de conhecimento** rigorosa:
 
 ## 📄 Licença
 
-CC-BY-4.0 © [Clube de líderes técnicos](https://github.com/tech-leads-club)
+CC-BY-4.0 © [Clube de líderes técnicos](https://github.com/agent-skills)
 
 <p alinhar="centro">
   <sub>Construído com ❤️ pela comunidade do Tech Lead's Club</sub>

@@ -103,6 +103,7 @@ export default function ProductPage() {
 const { product } = useLoaderData<typeof loader>();
 
 return (
+
 <div>
 <h1>{product.title}</h1>
 <p>{product.description}</p>

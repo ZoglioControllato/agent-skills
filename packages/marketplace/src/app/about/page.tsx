@@ -34,7 +34,7 @@ export default function AboutPage() {
   const readmePath = join(process.cwd(), '../../README.md')
   let readmeContent = readFileSync(readmePath, 'utf-8')
 
-  const GITHUB_REPO_BASE = 'https://raw.githubusercontent.com/tech-leads-club/agent-skills/main'
+  const GITHUB_REPO_BASE = 'https://raw.githubusercontent.com/agent-skills/agent-skills/main'
   readmeContent = readmeContent.replace(/src="\.github\//g, `src="${GITHUB_REPO_BASE}/.github/`)
 
   return (

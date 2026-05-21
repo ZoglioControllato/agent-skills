@@ -1,4 +1,4 @@
-import type { DeprecatedEntry } from '@tech-leads-club/core'
+import type { DeprecatedEntry } from '@controllato/core'
 import { createHash } from 'node:crypto'
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'

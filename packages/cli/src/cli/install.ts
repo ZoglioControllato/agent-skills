@@ -1,11 +1,11 @@
-import type { AgentType, InstallOptions, SkillInfo } from '@tech-leads-club/core'
+import type { AgentType, InstallOptions, SkillInfo } from '@controllato/core'
 import {
   AGENT_TYPES,
   ensureSkillDownloaded,
   forceDownloadSkill,
   getRemoteSkills,
   installSkills,
-} from '@tech-leads-club/core'
+} from '@controllato/core'
 import chalk from 'chalk'
 
 import { ports } from '../ports'

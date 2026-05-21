@@ -6,8 +6,8 @@ Este arquivo fornece instruções específicas do projeto para o agente Nx Cloud
 
 Trata-se de um monorepo TypeScript gerenciado por Nx, contendo:
 
-- ** Pacote CLI ** (`@ tech-leads-club/agent-skills`) - CLI do Node.js para instalar habilidades de agente de IA
-- ** Biblioteca principal ** (`@tech-leads-club/core`) - Utilitários e tipos compartilhados
+- ** Pacote CLI ** (`@ agent-skills/agent-skills`) - CLI do Node.js para instalar habilidades de agente de IA
+- ** Biblioteca principal ** (`@controllato/core`) - Utilitários e tipos compartilhados
 - ** Plugin de habilidade ** - Gerador Nx para criar novas habilidades
 - ** Coleção de habilidades ** - Habilidades pré-construídas para agentes de IA (Claude, Cursor, Copiloto, etc.)
 
@@ -111,7 +111,7 @@ Para erros de caminho de importação:
 
 - Verifique `tsconfig.base.json` para mapeamentos de caminho corretos
 - Verifique as exportações de pacotes em arquivos `package.json`
-- Usar importações relativas ao espaço de trabalho por meio de pseudônimos de caminhos (por exemplo, `@ tech-leads-club/core`)
+- Usar importações relativas ao espaço de trabalho por meio de pseudônimos de caminhos (por exemplo, `@ agent-skills/core`)
 
 ## Critérios de aplicação automática
 
@@ -144,7 +144,7 @@ projeto ### Criação de habilidades
 
 Novas habilidades devem:
 
-1. Ser criado via `nx g @tech-leads-club/skill-plugin:skill<name>`
+1. Ser criado via `nx g @controllato/skill-plugin:skill<name>`
 2. Tenha nomes de diretório kebab-case
 3. Incluir frontmatter em SKILL.md com `name` e `description`
 4. Siga a estrutura do modelo (consulte `tools/skill-plugin/src/generators/skill/files/`)

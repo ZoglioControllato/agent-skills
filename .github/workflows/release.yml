@@ -214,7 +214,7 @@ jobs:
     if: |
       github.event_name == 'push' &&
       github.ref == 'refs/heads/main' &&
-      github.actor != 'tech-leads-club-release-bot[bot]' &&
+      github.actor != 'agent-skills-release-bot[bot]' &&
       !startsWith(github.event.head_commit.message, 'chore(release):')
     steps:
       - name: Approval Gate
@@ -227,7 +227,7 @@ jobs:
     if: |
       github.event_name == 'push' &&
       github.ref == 'refs/heads/main' &&
-      github.actor != 'tech-leads-club-release-bot[bot]' &&
+      github.actor != 'agent-skills-release-bot[bot]' &&
       !startsWith(github.event.head_commit.message, 'chore(release):')
     env:
       PARALLEL_JOBS: 8

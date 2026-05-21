@@ -1,5 +1,5 @@
-import type { DeprecatedEntry } from '@tech-leads-club/core'
-import { getDeprecatedMap } from '@tech-leads-club/core'
+import type { DeprecatedEntry } from '@controllato/core'
+import { getDeprecatedMap } from '@controllato/core'
 import { atom } from 'jotai'
 import { unwrap } from 'jotai/utils'
 

@@ -1,5 +1,5 @@
-import type { SkillInfo } from '@tech-leads-club/core'
-import { discoverSkillsAsync, groupSkillsByCategory } from '@tech-leads-club/core'
+import type { SkillInfo } from '@controllato/core'
+import { discoverSkillsAsync, groupSkillsByCategory } from '@controllato/core'
 import { useEffect, useState } from 'react'
 
 import { ports } from '../ports'

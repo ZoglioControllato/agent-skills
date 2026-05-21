@@ -1,12 +1,12 @@
 # 🔌 agent-skills-mcp
 
-Servidor MCP que expõe o mesmo catálogo [agent-skills](https://github.com/tech-leads-club/agent-skills) para qualquer cliente de IA compatível com MCP. Use quando quiser que o agente **consulte skills sob demanda** durante a sessão — buscar por intenção e só então baixar o necessário.
+Servidor MCP que expõe o mesmo catálogo [agent-skills](https://github.com/agent-skills/agent-skills) para qualquer cliente de IA compatível com MCP. Use quando quiser que o agente **consulte skills sob demanda** durante a sessão — buscar por intenção e só então baixar o necessário.
 
 ## CLI versus MCP
 
 Ambos usam o **mesmo catálogo** e o mesmo CDN. Escolha pelo fluxo de trabalho:
 
-|                  | **CLI** (`@tech-leads-club/agent-skills`)                                           | **MCP** (este pacote)                                                       |
+|                  | **CLI** (`@controllato/agent-skills`)                                               | **MCP** (este pacote)                                                       |
 | :--------------- | :---------------------------------------------------------------------------------- | :-------------------------------------------------------------------------- |
 | **Use quando**   | Você quer skills **instaladas** no agente (projeto ou globais), sempre disponíveis. | Você quer que o agente **consulte** skills durante o chat — sem instalação. |
 | **Persistência** | Skills ficam em `.agents/`, `~/.cursor/skills/`, etc.                               | Sem instalação local; o agente busca no CDN quando precisa.                 |
@@ -150,8 +150,8 @@ Acesse [cursor.com/marketplace](https://cursor.com/marketplace), busque **`agent
 Adicione o marketplace da organização, depois instale o plugin:
 
 ```bash
-/plugin marketplace add tech-leads-club/agent-skills
-/plugin install agent-skills-mcp@tech-leads-club
+/plugin marketplace add agent-skills/agent-skills
+/plugin install agent-skills-mcp@controllato
 ```
 
 Ou use o [diretório oficial de plugins Anthropic](https://claude.com/plugins) e busque **`agent-skills-mcp`**.
@@ -165,7 +165,7 @@ Adicione o servidor ao arquivo de config. O trecho segue o formato MCP usual:
   "mcpServers": {
     "agent-skills": {
       "command": "npx",
-      "args": ["-y", "@tech-leads-club/agent-skills-mcp"]
+      "args": ["-y", "@controllato/agent-skills-mcp"]
     }
   }
 }
@@ -174,7 +174,7 @@ Adicione o servidor ao arquivo de config. O trecho segue o formato MCP usual:
 #### Claude Code (CLI)
 
 ```bash
-claude mcp add agent-skills -- npx -y @tech-leads-club/agent-skills-mcp
+claude mcp add agent-skills -- npx -y @controllato/agent-skills-mcp
 ```
 
 #### VS Code (GitHub Copilot)
@@ -187,7 +187,7 @@ claude mcp add agent-skills -- npx -y @tech-leads-club/agent-skills-mcp
     "agent-skills": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@tech-leads-club/agent-skills-mcp"]
+      "args": ["-y", "@controllato/agent-skills-mcp"]
     }
   }
 }
@@ -195,7 +195,7 @@ claude mcp add agent-skills -- npx -y @tech-leads-club/agent-skills-mcp
 
 ## ⚡ Cache
 
-O registry é buscado no [CDN jsDelivr](https://cdn.jsdelivr.net/gh/tech-leads-club/agent-skills@latest/packages/skills-catalog/skills-registry.json) e em cache em memória:
+O registry é buscado no [CDN jsDelivr](https://cdn.jsdelivr.net/gh/agent-skills/agent-skills@latest/packages/skills-catalog/skills-registry.json) e em cache em memória:
 
 - **TTL:** 15 minutos — cache hit não faz rede
 - **Revalidação ETag:** ao expirar, envia `If-None-Match`; `304` renova o TTL sem baixar o payload
@@ -220,18 +220,18 @@ O registry é buscado no [CDN jsDelivr](https://cdn.jsdelivr.net/gh/tech-leads-c
 Na **raiz do repositório**:
 
 ```bash
-npm run build              # Build completo (ou: npx nx build @tech-leads-club/agent-skills-mcp)
-npx nx lint @tech-leads-club/agent-skills-mcp
-npx nx test @tech-leads-club/agent-skills-mcp
+npm run build              # Build completo (ou: npx nx build @controllato/agent-skills-mcp)
+npx nx lint @controllato/agent-skills-mcp
+npx nx test @controllato/agent-skills-mcp
 npm run start:dev:mcp      # Build MCP + Inspector
 ```
 
 Em **packages/mcp**:
 
 ```bash
-npx nx build @tech-leads-club/agent-skills-mcp
-npx nx lint @tech-leads-club/agent-skills-mcp
-npx nx test @tech-leads-club/agent-skills-mcp
+npx nx build @controllato/agent-skills-mcp
+npx nx lint @controllato/agent-skills-mcp
+npx nx test @controllato/agent-skills-mcp
 npm run start:dev          # Build + Inspector (usa ../../dist/packages/mcp)
 ```
 
@@ -241,4 +241,4 @@ npm run start:dev          # Build + Inspector (usa ../../dist/packages/mcp)
 
 ## 📄 Licença e repositório
 
-MIT — [Controllato Club](https://github.com/tech-leads-club). Mesmo repositório da [CLI](https://github.com/tech-leads-club/agent-skills) e do [catálogo de skills](https://tech-leads-club.github.io/agent-skills/).
+MIT — [Controllato Club](https://github.com/agent-skills). Mesmo repositório da [CLI](https://github.com/agent-skills/agent-skills) e do [catálogo de skills](https://agent-skills.github.io/agent-skills/).

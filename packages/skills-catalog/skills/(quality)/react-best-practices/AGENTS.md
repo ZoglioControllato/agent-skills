@@ -2,7 +2,7 @@
 
 **Versão 1.0.0**  
 Engenharia Vercel  
-Janeiro de 2026  
+Janeiro de 2026
 
 Curadoria e harmonização desta versão em português brasileiro pela comunidade **Controllato Club**, no ecossistema agent-skills.
 

@@ -13,8 +13,8 @@ const websiteSchema = {
     'A curated collection of skills for AI coding agents. Extend Cursor, Claude Code, GitHub Copilot, Windsurf, and more with reusable, packaged instructions.',
   publisher: {
     '@type': 'Organization',
-    name: 'Tech Leads Club',
-    url: 'https://github.com/tech-leads-club',
+    name: 'Controllato Club',
+    url: 'https://github.com/agent-skills',
   },
   potentialAction: {
     '@type': 'SearchAction',
@@ -49,7 +49,7 @@ export default function HomePage() {
               Browse Skills
             </Link>
             <a
-              href="https://github.com/tech-leads-club/agent-skills"
+              href="https://github.com/agent-skills/agent-skills"
               target="_blank"
               rel="noopener noreferrer"
               className="px-6 py-3 bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200 font-medium rounded-lg hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors"
@@ -72,7 +72,7 @@ export default function HomePage() {
           <p className="text-gray-600 dark:text-gray-400 mb-4">Install skills directly from the command line:</p>
           <div className="bg-gray-900 dark:bg-gray-950 rounded-lg p-4 mb-4">
             <code className="text-sm text-green-400 break-all font-mono">
-              npx @tech-leads-club/agent-skills install --skill [skill-name]
+              npx @controllato/agent-skills install --skill [skill-name]
             </code>
           </div>
           <p className="text-sm text-gray-500 dark:text-gray-500">

@@ -58,12 +58,6 @@ export const Header = ({ notification: overrideNotification }: { notification?: 
   return (
     <Box flexDirection="column" paddingBottom={1}>
       <Box flexDirection="column" alignItems="center" marginBottom={1}>
-        <Box marginBottom={-1}>
-          <Gradient colors={['#1e3a8a', '#3b82f6']}>
-            <BigText text="TLC" font="tiny" />
-          </Gradient>
-        </Box>
-
         <Box>
           <Gradient colors={crystalColors}>
             <BigText text="AGENT SKILLS" font="block" />

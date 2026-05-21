@@ -369,4 +369,4 @@ RFCs are historical records. Instead of editing the Outcome of a past RFC, write
 
 ## Support
 
-For issues or questions about this skill, refer to the main [agent-skills repository](https://github.com/tech-leads-club/agent-skills).
+For issues or questions about this skill, refer to the main [agent-skills repository](https://github.com/agent-skills/agent-skills).

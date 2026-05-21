@@ -6,7 +6,7 @@ import {
   getUpdatableSkills,
   needsUpdate,
   readSkillLock,
-} from '@tech-leads-club/core'
+} from '@controllato/core'
 import chalk from 'chalk'
 
 import { ports } from '../ports'

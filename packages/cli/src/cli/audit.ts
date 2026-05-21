@@ -1,4 +1,4 @@
-import { getAuditLogPath, readAuditLog } from '@tech-leads-club/core'
+import { getAuditLogPath, readAuditLog } from '@controllato/core'
 import { render } from 'ink'
 import React from 'react'
 

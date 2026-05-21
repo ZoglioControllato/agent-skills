@@ -67,7 +67,7 @@ SKILLS_CDN_REF=main npm run dev -- install  # Testar CLI contra registry local
 # Build e testes
 npm run build                  # Build de todos os pacotes (Nx)
 npm run test                   # Todos os testes (Node --experimental-vm-modules)
-npm run test --workspace=@tech-leads-club/agent-skills  # Só testes da CLI
+npm run test --workspace=@controllato/agent-skills  # Só testes da CLI
 
 # Qualidade
 npm run lint                   # ESLint
@@ -78,7 +78,7 @@ npm run format
 # Skills
 npm run generate:data          # Regenerar skills-registry.json + dados do marketplace
 npm run scan                   # Scan de segurança (snyk-agent-scan, incremental; SNYK_TOKEN)
-nx g @tech-leads-club/skill-plugin:skill {name} --category={cat}  # Nova skill
+nx g @controllato/skill-plugin:skill {name} --category={cat}  # Nova skill
 ```
 
 ## Arquitetura
@@ -87,10 +87,10 @@ nx g @tech-leads-club/skill-plugin:skill {name} --category={cat}  # Nova skill
 
 ### Pacotes
 
-- `**packages/cli`\*\* — `@tech-leads-club/agent-skills`. Instalador para o usuário. Modo duplo: TUI interativa (React + Ink) e CLI não interativa (Commander.js). Entrada: `src/index.ts`. Lógica em `src/services/` (registry, instalação, lockfile, configs de agentes).
+- `**packages/cli`\*\* — `@controllato/agent-skills`. Instalador para o usuário. Modo duplo: TUI interativa (React + Ink) e CLI não interativa (Commander.js). Entrada: `src/index.ts`. Lógica em `src/services/` (registry, instalação, lockfile, configs de agentes).
 - `**packages/skills-catalog**` — Definições em `skills/{(categoria)}/{nome-skill}/SKILL.md` com frontmatter YAML. `src/generate-registry.ts` gera `skills-registry.json` (commitado, npm, jsDelivr CDN).
 - `**packages/marketplace**` — Site estático Next.js 16 no GitHub Pages. Lê `src/data/skills.json` (gerado do registry).
-- `**libs/core**` — `@tech-leads-club/core`. Tipos compartilhados (`AgentType`, `SkillInfo`, `CategoryInfo`) e constantes.
+- `**libs/core**` — `@controllato/core`. Tipos compartilhados (`AgentType`, `SkillInfo`, `CategoryInfo`) e constantes.
 - `**tools/skill-plugin**` — Gerador Nx de skills.
 
 ### Fluxos principais
@@ -121,7 +121,7 @@ skills/(categoria)/{nome-skill}/
 └── references/       # Documentação sob demanda opcional
 ```
 
-Use sempre o gerador Nx (`nx g @tech-leads-club/skill-plugin:skill`). Mantenha `SKILL.md` com menos de 500 linhas; material de referência em `references/`.
+Use sempre o gerador Nx (`nx g @controllato/skill-plugin:skill`). Mantenha `SKILL.md` com menos de 500 linhas; material de referência em `references/`.
 
 ### Padrões de qualidade de skill
 

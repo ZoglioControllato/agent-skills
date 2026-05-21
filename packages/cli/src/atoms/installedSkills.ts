@@ -1,5 +1,5 @@
-import type { AgentType } from '@tech-leads-club/core'
-import { detectInstalledAgents, listInstalledSkills } from '@tech-leads-club/core'
+import type { AgentType } from '@controllato/core'
+import { detectInstalledAgents, listInstalledSkills } from '@controllato/core'
 import { atom } from 'jotai'
 import { unwrap } from 'jotai/utils'
 

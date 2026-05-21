@@ -23,7 +23,7 @@ export * from './node-shell.adapter'
  *
  * @example
  * ```ts
- * import { createNodeAdapters } from '@tech-leads-club/core'
+ * import { createNodeAdapters } from '@controllato/core'
  *
  * const ports = createNodeAdapters()
  * const cwd = ports.env.cwd()

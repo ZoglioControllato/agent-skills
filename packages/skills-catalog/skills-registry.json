@@ -71,27 +71,27 @@
       "files": ["SKILL.md", "references/WCAG.md"],
       "author": "web-quality-skills",
       "version": "1.0",
-      "contentHash": "8c48f0e6a41237a5faffd046926ccf37d989bb9e565647c106caa8b357711122"
+      "contentHash": "253a672801437d6875e587c42c418c31005781da641d793cb2c66103bf6287ac"
     },
     {
       "name": "ai-cold-outreach",
-      "description": "\"Use quando o usuário quiser montar um sistema de outreach com IA, escrever cold emails, melhorar entregabilidade ou escalar outreach personalizado. Também quando mencionar cold email, cold outreach, automação de outreach, Instantly, Smartlead, Clay, sequências de email, entregabilidade, personalização em escala, taxa de resposta ou stack de outreach. Cobre o sistema completo de cold outreach com IA, da detecção de sinal à conversão. NÃO use para implementação técnica, revisão de código ou arquitetura de software.\"",
+      "description": "'Use quando o usuário quiser montar um sistema de outreach com IA, escrever cold emails, melhorar entregabilidade ou escalar outreach personalizado. Também quando mencionar cold email, cold outreach, automação de outreach, Instantly, Smartlead, Clay, sequências de email, entregabilidade, personalização em escala, taxa de resposta ou stack de outreach. Cobre o sistema completo de cold outreach com IA, da detecção de sinal à conversão. NÃO use para implementação técnica, revisão de código ou arquitetura de software.'",
       "category": "gtm",
       "path": "(gtm)/ai-cold-outreach",
       "files": ["SKILL.md", "references/benchmarks-deliverability-tactics.md", "references/quick-reference.md"],
       "author": "Chad Boyda / agent-gtm-skills",
       "version": "1.0.0",
-      "contentHash": "05e7b0c21ccd36eb61c09723f6004bc0dd4e052126b4113dc75608ad01de72f4"
+      "contentHash": "7e8d513d52062e29fddf026161745a26e4ce4174fe716a267a61995e6fe6ff4d"
     },
     {
       "name": "ai-pricing",
-      "description": "\"Use quando o usuário quiser precificar um produto com IA, escolher a métrica de cobrança, desenhar faixas de preço ou otimizar margens. Também use quando mencionar AI pricing, cobrança por uso, consumo, precificação por resultado, BYOK, trazer a própria chave, por assento, tiers de preço, margens de IA, custo por token ou modelo de pricing. Cobre estratégia de preço, empacotamento e gestão de margem para produtos nativos de IA. NÃO use para implementação técnica, revisão de código ou arquitetura de software.\"",
+      "description": "'Use quando o usuário quiser precificar um produto com IA, escolher a métrica de cobrança, desenhar faixas de preço ou otimizar margens. Também use quando mencionar AI pricing, cobrança por uso, consumo, precificação por resultado, BYOK, trazer a própria chave, por assento, tiers de preço, margens de IA, custo por token ou modelo de pricing. Cobre estratégia de preço, empacotamento e gestão de margem para produtos nativos de IA. NÃO use para implementação técnica, revisão de código ou arquitetura de software.'",
       "category": "gtm",
       "path": "(gtm)/ai-pricing",
       "files": ["SKILL.md", "references/implementation-guide.md", "references/quick-reference.md"],
       "author": "Chad Boyda / agent-gtm-skills",
       "version": "1.0.0",
-      "contentHash": "0e01aa0bfb96116bb9048fd642e58f7d352439f21bbf35b99087003974861064"
+      "contentHash": "9fd4c2400fbaad578ae9e95c681735cdfd54f875d525591f05c27dcb889a491b"
     },
     {
       "name": "ai-sdr",
@@ -101,7 +101,7 @@
       "files": ["SKILL.md", "references/implementation-guide.md", "references/quick-reference.md"],
       "author": "Chad Boyda / agent-gtm-skills",
       "version": "1.0.0",
-      "contentHash": "094e2b8f3ff6dccabe1e39eb0ec9161b262e79d5892c1c5545bc9aba02f4f6b4"
+      "contentHash": "ab31b6dfd0ff16dc8816fb2700c343588883c15c2bf17c4e2a0ae7d8e332a00b"
     },
     {
       "name": "ai-seo",
@@ -111,7 +111,7 @@
       "files": ["SKILL.md"],
       "author": "Chad Boyda / agent-gtm-skills",
       "version": "1.0.0",
-      "contentHash": "3a4742834e223055fb440bad00e23872b35f509e2af367c120e9129f739b29fa"
+      "contentHash": "cfe2b32be7262a62fe1fdba84d1ae81e4d85817e059c4bf360ce0382b3b8db6e"
     },
     {
       "name": "ai-ugc-ads",
@@ -121,7 +121,7 @@
       "files": ["SKILL.md"],
       "author": "Chad Boyda / agent-gtm-skills",
       "version": "1.0.0",
-      "contentHash": "7f90db1756939fd3322b61383750e2c0f0d53af1d3c4a24f99570668a8dd4dff"
+      "contentHash": "d640cdf142882158d974fa8bce78798c94856f0635daad8629cfdf0d8f491ac7"
     },
     {
       "name": "aws-advisor",
@@ -141,7 +141,7 @@
       ],
       "author": "Felipe Rodrigues - github.com/felipfr",
       "version": "1.0.0",
-      "contentHash": "5c6c5223a649ecde9edb64dcbddba01c7566168192ef349e1e55693164e71c49"
+      "contentHash": "c14d0b5dc3a1870f2b280841c66723d9cc56447a403938c57bb5041c89724d5c"
     },
     {
       "name": "best-practices",
@@ -151,7 +151,7 @@
       "files": ["SKILL.md"],
       "author": "web-quality-skills",
       "version": "1.0",
-      "contentHash": "3824289d08403276d9b072abdb9aa3a986bab7cd3a4e40828e963138954efa28"
+      "contentHash": "d88cd3f5c615a6ae0a3b2f8f2e89a651bb1c56d507b87744b6af3104b22c3ace"
     },
     {
       "name": "chrome-devtools",
@@ -479,7 +479,7 @@
       ],
       "author": "github.com/openai/skills",
       "version": "1.0.0",
-      "contentHash": "f4dc23c32e7ada5079494c665fe29402876f0dd6c2077531b1d60d8ded979ec6"
+      "contentHash": "92b49a63ebf533fabef13f42e1822319f583b96364bbfac4adc716af699213f3"
     },
     {
       "name": "codenavi",
@@ -489,7 +489,7 @@
       "files": ["SKILL.md", "references/coding-principles.md", "references/notebook-spec.md"],
       "author": "Felipe Rodrigues - github.com/felipfr",
       "version": "1.0.0",
-      "contentHash": "84ac462b52115c1e16e9131ac396f6db6326805d84216f29e6df3f555e31628c"
+      "contentHash": "9828b16fa06b41c1514ceb6030bedfbb61f184da1895a8de55db60b0ef9441ff"
     },
     {
       "name": "coding-guidelines",
@@ -507,7 +507,7 @@
       "category": "architecture",
       "path": "(architecture)/component-common-domain-detection",
       "files": ["QUICK-REFERENCE.md", "README.md", "SKILL.md"],
-      "contentHash": "106a810fa9650c7385a51eb294c68a3ed568f9e2a98ba044c3b5860d53dac616"
+      "contentHash": "988af46b8e8a069521abcfddd9b8450509c43663bccc3831884c565d2ea084ef"
     },
     {
       "name": "component-flattening-analysis",
@@ -515,7 +515,7 @@
       "category": "architecture",
       "path": "(architecture)/component-flattening-analysis",
       "files": ["QUICK-REFERENCE.md", "README.md", "SKILL.md"],
-      "contentHash": "0e293eb125bafc6bf5812e1e41d9072aeccee4d709e2a353ec1151544dd68a80"
+      "contentHash": "54eb5132fc190563028c9f72a25e01e260b57a2f00d12d595a2fd06a7366badb"
     },
     {
       "name": "component-identification-sizing",
@@ -523,7 +523,7 @@
       "category": "architecture",
       "path": "(architecture)/component-identification-sizing",
       "files": ["QUICK-REFERENCE.md", "README.md", "SKILL.md"],
-      "contentHash": "0fd185d725affd30d25941a1ac8f58c69684fd089abca40a0699d22a6e5d5db2"
+      "contentHash": "93b4bcb1ae5f02de3723bf161034d9f94689135ae4307db851424dad5eb4b9ef"
     },
     {
       "name": "confluence-assistant",
@@ -543,7 +543,7 @@
       "files": ["SKILL.md", "references/podcast-community-cadence.md", "references/quick-reference.md"],
       "author": "Chad Boyda / agent-gtm-skills",
       "version": "1.0.0",
-      "contentHash": "861ba3076229246390894da35973baba8df27192a56b399584a6bc04d73a651d"
+      "contentHash": "13f283cd594147310eb987c2d5dc2800fa037c32d942a21c772d0a7d224bcc3d"
     },
     {
       "name": "core-web-vitals",
@@ -553,7 +553,7 @@
       "files": ["SKILL.md", "references/LCP.md"],
       "author": "web-quality-skills",
       "version": "1.0",
-      "contentHash": "11feacacb9fa1c18be3e645f209209c482cacb50063ff5a436cd0365c7beeb5a"
+      "contentHash": "49290d8371a384400f61ba7515c6da8b4dbc4f229a0479cfafd4cc1a59bf0737"
     },
     {
       "name": "coupling-analysis",
@@ -561,7 +561,7 @@
       "category": "architecture",
       "path": "(architecture)/coupling-analysis",
       "files": ["SKILL.md"],
-      "contentHash": "87e23b6a1ca2ee6209acc87c1434a9cef1e8f2458d4a9dc09a29c4ceea9521fe"
+      "contentHash": "e7a2fb2dca45e5c6de6a815cac62510accd385f4d88f82fad7d6a5a5f7d65eda"
     },
     {
       "name": "create-adr",
@@ -569,9 +569,9 @@
       "category": "creation",
       "path": "(creation)/create-adr",
       "files": ["README.md", "SKILL.md"],
-      "author": "Controllato Club - github.com/tech-leads-club",
+      "author": "Controllato Club - github.com/agent-skills",
       "version": "1.0.0",
-      "contentHash": "615dfd07b0e9d3337eaba35dfb70ddb9b2f7660c29f35b2b1b46b3d868b9511c"
+      "contentHash": "68f2d522f7beee5a4520d7906e75a43be0239e2156fea962c4daae30ec4e2b4a"
     },
     {
       "name": "create-rfc",
@@ -579,9 +579,9 @@
       "category": "creation",
       "path": "(creation)/create-rfc",
       "files": ["README.md", "SKILL.md", "references/section-templates.md"],
-      "author": "Controllato Club - github.com/tech-leads-club",
+      "author": "Controllato Club - github.com/agent-skills",
       "version": "1.0.0",
-      "contentHash": "77c6b82ae0076a7211f13bd4e4b9a59a89c50a60ef92d2bea2c68641ccfcbe5f"
+      "contentHash": "c8915d8df0609c272dcb7a839bfe5df09c2d468dce4b06823fe3e2cd82acc514"
     },
     {
       "name": "cursor-subagent-creator",
@@ -597,7 +597,7 @@
       "category": "architecture",
       "path": "(architecture)/decomposition-planning-roadmap",
       "files": ["QUICK-REFERENCE.md", "README.md", "SKILL.md"],
-      "contentHash": "471b3090950bfffe40e77a37d5a3a4fb09ac4c33b6beeb87cd79973f8df4238d"
+      "contentHash": "781c32727e40d8db08ae848a148c8360205eb00bd82187ef222bbd9fcd3a8dc2"
     },
     {
       "name": "docs-writer",
@@ -605,7 +605,7 @@
       "category": "development",
       "path": "(development)/docs-writer",
       "files": ["SKILL.md", "references/style-guide.md"],
-      "contentHash": "49e14fa9f1e33ab7cde6c86fee33f9b982993e64c7158afe5e9c20f85a707231"
+      "contentHash": "755af8ef391fe5e1f67a8dfc54031dde01867774a787cb6c4bd04fa395ccc131"
     },
     {
       "name": "domain-analysis",
@@ -613,7 +613,7 @@
       "category": "architecture",
       "path": "(architecture)/domain-analysis",
       "files": ["EXAMPLES.md", "QUICK-REFERENCE.md", "README.md", "SKILL.md"],
-      "contentHash": "05a1cd0e4a239be202cccca1200a64d7d7f2033aa2ad0efd2c3084d405f4b856"
+      "contentHash": "3b0b5390f25909aa6a5ad646a78ec9f8085c53c2952971d83e233d08af62d41c"
     },
     {
       "name": "domain-identification-grouping",
@@ -621,7 +621,7 @@
       "category": "architecture",
       "path": "(architecture)/domain-identification-grouping",
       "files": ["QUICK-REFERENCE.md", "README.md", "SKILL.md"],
-      "contentHash": "842f7205ca838b1d7b774ef33a8ff88f18d9bf9865ecefbc52d3dd72034c8aaa"
+      "contentHash": "e5395527deb430d2fcf450d13c90b9178977abe6c340c8bbd8efc9847e958cc4"
     },
     {
       "name": "excalidraw-studio",
@@ -648,7 +648,7 @@
       ],
       "author": "Felipe Rodrigues - github.com/felipfr",
       "version": "1.0.1",
-      "contentHash": "13fb7a75eac0fece65c184487f5c3db6ca21e644a16487d8ad7c52fcd24a333e"
+      "contentHash": "582440466cdabc0368cc4b7ca7dcaa7b24a2ac9c137617928247557ccdfa6891"
     },
     {
       "name": "expansion-retention",
@@ -658,7 +658,7 @@
       "files": ["SKILL.md"],
       "author": "Chad Boyda / agent-gtm-skills",
       "version": "1.0.0",
-      "contentHash": "d385731b7e519f07761125daf7ae6081cc0d480f738eb20038e0c3c62f517d47"
+      "contentHash": "a91b89a5e790ed8a5fa589df8a08b1286ddc6b61b8809aa9145fdd54f64d3bcf"
     },
     {
       "name": "figma",
@@ -668,7 +668,7 @@
       "files": ["LICENSE.txt", "SKILL.md", "references/figma-mcp-config.md", "references/figma-tools-and-prompts.md"],
       "author": "github.com/openai/skills",
       "version": "1.0.0",
-      "contentHash": "c01ebf0b22080c117bfab66bb5c35894c32793df9a6bebc6df6dfeed798ceaca"
+      "contentHash": "7159eecc677b2ea2166c67c8881a7c25004c754e7659f697f900dbafd4cf5713"
     },
     {
       "name": "figma-implement-design",
@@ -693,7 +693,7 @@
       ],
       "author": "Felipe Rodrigues - github.com/felipfr",
       "version": "1.0.0",
-      "contentHash": "ce0a214476c563726182b305350a517efe1c8dfd999735903fcdc53239095425"
+      "contentHash": "c57aaf6d4e2f0f7b21ab09764551695982671e48e4a73a3a33e617511386e831"
     },
     {
       "name": "frontend-design",
@@ -712,7 +712,7 @@
       ],
       "author": "Impeccable (Paul Bakaus), based on Anthropic frontend-design",
       "version": "1.0.0",
-      "contentHash": "e3accc33e15624516d13ad2e161efaf0d5ecfd138699779abdadedc9a566d572"
+      "contentHash": "8113e2dc6323f57bd3934acdc888406e7a0378011a7a80b0dea6e0078fe17334"
     },
     {
       "name": "gh-address-comments",
@@ -742,7 +742,7 @@
       "files": ["SKILL.md", "references/implementation-guide.md", "references/quick-reference.md"],
       "author": "Chad Boyda / agent-gtm-skills",
       "version": "1.0.0",
-      "contentHash": "0bcc5036bf1ee7c209d304a9fd60b4e81f66e2e4095563d320bbc0109dd7d8ca"
+      "contentHash": "76ca3b0a102e836163f34bee04936cc48f49c4b4f700feb06f357b9b9f8d2fed"
     },
     {
       "name": "gtm-metrics",
@@ -752,7 +752,7 @@
       "files": ["SKILL.md"],
       "author": "Chad Boyda / agent-gtm-skills",
       "version": "1.0.0",
-      "contentHash": "95aab65a4fae416628d1ed3121cab4ac7629dd23a870ce2d531c39c6e7af0d00"
+      "contentHash": "4ce9873fecafa9d720c6beda8576bf796eec4a828f1707e704b6485890d2c54f"
     },
     {
       "name": "jira-assistant",
@@ -760,7 +760,7 @@
       "category": "development",
       "path": "(development)/jira-assistant",
       "files": ["README.md", "SKILL.md"],
-      "contentHash": "aea521d0b9ad98014eea902a08f4b622a4ed6210252ae115c65a4faa0f3d7c74"
+      "contentHash": "881730b578cfe766d41ad70c006595d29279b88add8c28b95842b329eae99d39"
     },
     {
       "name": "lead-enrichment",
@@ -770,7 +770,7 @@
       "files": ["SKILL.md", "references/quick-reference.md"],
       "author": "Chad Boyda / agent-gtm-skills",
       "version": "1.0.0",
-      "contentHash": "c67d44d2416da2f70c20d3e03184c24a5970d7f9bb01bf76bde15f7686226814"
+      "contentHash": "cd261917d01f207bab7581c881e8870f3316f59671c17e5625a1728a8cbd4631"
     },
     {
       "name": "learning-opportunities",
@@ -780,7 +780,7 @@
       "files": ["SKILL.md", "references/PRINCIPLES.md"],
       "author": "Chris Hicks",
       "version": "1.1.0",
-      "contentHash": "9d184e5cf94ab858ca0baa6d678d305eda6c31aa4104a4f3e9ab87a20cfcf6c5"
+      "contentHash": "a9a514b5190a775a383ca42ecb7d73a8b46c6e690ba4f5202068fe44538ebe5a"
     },
     {
       "name": "legacy-migration-planner",
@@ -798,7 +798,7 @@
       ],
       "author": "Felipe Rodrigues - github.com/felipfr",
       "version": "1.0.0",
-      "contentHash": "93025ac3fcdbf49df4d2d4e06a51adea6d18797c9db9faf06c05681107c3d286"
+      "contentHash": "903bc2efb3e61b40e0786223809b1cf926fee347652219caf3bccb703a17c972"
     },
     {
       "name": "mermaid-studio",
@@ -822,7 +822,7 @@
       ],
       "author": "Felipe Rodrigues - github.com/felipfr",
       "version": "1.0.1",
-      "contentHash": "d00cbb5a9ff67491ad594d4dbe0e8bc1d7709cd050414b261e22d77a3b73ba40"
+      "contentHash": "973c9e5a1f393b418644594fae333e3a2819817533c0e4432b1abac7249e459b"
     },
     {
       "name": "modular-decomposition",
@@ -844,7 +844,7 @@
         "references/pattern-05-domain-grouping-quick-reference.md",
         "references/pattern-05-domain-grouping.md"
       ],
-      "contentHash": "6c72de7928323b2e63fbb3a58b919062ef4f72b5b4798c56af930f064448afd0"
+      "contentHash": "0baf2101b1b0bfa529ff956ea2b038a864dc4ab78c641469336498dd6f7ddc09"
     },
     {
       "name": "modular-design-principles",
@@ -852,17 +852,17 @@
       "category": "architecture",
       "path": "(architecture)/modular-design-principles",
       "files": ["SKILL.md", "references/principles.md"],
-      "contentHash": "8986eda4e0a3843f12fc2dd72b5dafa1aba363e9e03854d8f311c99b119438c0"
+      "contentHash": "5a8e5f54a9074d985c665c65ae66547c482423dcde03e961e642d131c7ed2c8b"
     },
     {
       "name": "multi-platform-launch",
-      "description": "\"Use quando o usuário quiser lançar um produto em várias plataformas, planejar um lançamento no Product Hunt, construir uma lista de espera ou executar uma estratégia de lançamento multicanal. Use também quando o usuário mencionar lançamento de produto, Product Hunt, estratégia de lançamento, lista de espera, lançamento beta, BetaList, Hacker News, dia do lançamento, AppSumo ou lançamento multicanal. Esta skill abrange a execução de lançamento multiplataforma do pré-lançamento à otimização pós-lançamento. NÃO use para implementação técnica, revisão de código ou arquitetura de software.\"",
+      "description": "'Use quando o usuário quiser lançar um produto em várias plataformas, planejar um lançamento no Product Hunt, construir uma lista de espera ou executar uma estratégia de lançamento multicanal. Use também quando o usuário mencionar lançamento de produto, Product Hunt, estratégia de lançamento, lista de espera, lançamento beta, BetaList, Hacker News, dia do lançamento, AppSumo ou lançamento multicanal. Esta skill abrange a execução de lançamento multiplataforma do pré-lançamento à otimização pós-lançamento. NÃO use para implementação técnica, revisão de código ou arquitetura de software.'",
       "category": "gtm",
       "path": "(gtm)/multi-platform-launch",
       "files": ["SKILL.md", "references/directories-timing-mistakes.md", "references/quick-reference.md"],
       "author": "Chad Boyda / agent-gtm-skills",
       "version": "1.0.0",
-      "contentHash": "3fd5d1eb1bede8548b9cff32fa6b8e0badb3e121fa0c3f3369a917e1997ee03e"
+      "contentHash": "c350612274a6dcc4cd4b1448c832d8cd601e75fef2fb20a10d249c2412d1e466"
     },
     {
       "name": "nestjs-modular-monolith",
@@ -881,7 +881,7 @@
       ],
       "author": "Felipe Rodrigues - github.com/felipfr",
       "version": "1.0.0",
-      "contentHash": "27e95e76cebf5ab7d91cf8fb7a365f15144b48da2c2727616fb70986f73c72e3"
+      "contentHash": "4abf6a3606d506862517716ddec3e375aef2456a5b5c59025586a7846cc614fc"
     },
     {
       "name": "netlify-deploy",
@@ -897,7 +897,7 @@
       ],
       "author": "github.com/openai/skills",
       "version": "1.0.0",
-      "contentHash": "d047f62acfe0d0715c7f4fdd4b36e9a02ef2d4be0818c4b5e1833afd15ed03e5"
+      "contentHash": "fa409371bdf82cfa465ef053ca5a7f4e785b50d9da8b1905c58efa64f976325c"
     },
     {
       "name": "nx-ci-monitor",
@@ -905,7 +905,7 @@
       "category": "tooling",
       "path": "(tooling)/nx-ci-monitor",
       "files": ["SKILL.md"],
-      "contentHash": "b99ed4f004a1b44d2901e5e3c10c9b56eee64b013fabed3001e8badac547d668"
+      "contentHash": "0d449d87a521be1264784173346958b7498ec1d1ccf9c5083f521b08f7964712"
     },
     {
       "name": "nx-generate",
@@ -925,7 +925,7 @@
     },
     {
       "name": "nx-workspace",
-      "description": "\"Configure, explore e otimize workspaces Nx. Use quando configurar Nx, explorar estrutura, limites entre projetos, projetos afetados, cache de build ou CI com affected. Também use quando mencionarem monorepo, nx show projects ou nx affected. Palavras-chave: nx, monorepo, workspace, projetos, targets, affected. NÃO use para executar só tarefas pontuais sem contexto de workspace (use nx-run-tasks). NÃO use para scaffolding com geradores (use nx-generate).\"",
+      "description": "'Configure, explore e otimize workspaces Nx. Use quando configurar Nx, explorar estrutura, limites entre projetos, projetos afetados, cache de build ou CI com affected. Também use quando mencionarem monorepo, nx show projects ou nx affected. Palavras-chave: nx, monorepo, workspace, projetos, targets, affected. NÃO use para executar só tarefas pontuais sem contexto de workspace (use nx-run-tasks). NÃO use para scaffolding com geradores (use nx-generate).'",
       "category": "tooling",
       "path": "(tooling)/nx-workspace",
       "files": [
@@ -935,17 +935,17 @@
         "reference/commands.md",
         "reference/configuration.md"
       ],
-      "contentHash": "59b26dc91e82b441171b41f2abdeee2946c1979d1ef4d1accacd87ded5d1affa"
+      "contentHash": "606f244e59d0972355e00f52e6bed7aefb379f5bdd81fd481c5b0440255ad96d"
     },
     {
       "name": "paid-creative-ai",
-      "description": "\"Use quando o usuário quiser criar criativo de anúncio gerado por IA, testar criativo de performance, gerenciar fadiga criativa ou otimizar mídia paga com ferramentas de IA. Use também quando o usuário mencionar criativo de anúncio, criativo de performance, teste de criativo, fadiga criativa, anúncios Meta, anúncios Google, anúncios TikTok, anúncios com IA, orçamento de anúncios, ROAS, Advantage+ ou Performance Max. Esta skill abrange criativo pago com IA da geração à otimização de performance. NÃO use para implementação técnica, revisão de código ou arquitetura de software.\"",
+      "description": "'Use quando o usuário quiser criar criativo de anúncio gerado por IA, testar criativo de performance, gerenciar fadiga criativa ou otimizar mídia paga com ferramentas de IA. Use também quando o usuário mencionar criativo de anúncio, criativo de performance, teste de criativo, fadiga criativa, anúncios Meta, anúncios Google, anúncios TikTok, anúncios com IA, orçamento de anúncios, ROAS, Advantage+ ou Performance Max. Esta skill abrange criativo pago com IA da geração à otimização de performance. NÃO use para implementação técnica, revisão de código ou arquitetura de software.'",
       "category": "gtm",
       "path": "(gtm)/paid-creative-ai",
       "files": ["SKILL.md", "references/quick-reference.md"],
       "author": "Chad Boyda / agent-gtm-skills",
       "version": "1.0.0",
-      "contentHash": "f04e2e7c680fd79643b6910ee8ce288a0df2c687cdd708e98da76466e3b1b742"
+      "contentHash": "a37d7175f3523a1df456a8a836c399243c06305dee3cac9491b352f8a7ce22ae"
     },
     {
       "name": "partner-affiliate",
@@ -955,7 +955,7 @@
       "files": ["SKILL.md", "references/implementation-guide.md", "references/quick-reference.md"],
       "author": "Chad Boyda / agent-gtm-skills",
       "version": "1.0.0",
-      "contentHash": "c16179e6736c065e053384f071469095176024c8e75e7bb578817729e1687ced"
+      "contentHash": "599605bc57901987030bd84525ab33d8568a2d8350c0a98826f37fb00d2f3a25"
     },
     {
       "name": "perf-astro",
@@ -971,7 +971,7 @@
       "category": "performance",
       "path": "(performance)/perf-lighthouse",
       "files": ["SKILL.md"],
-      "contentHash": "aeeb604ee72b45cf59b688c54ce4327786a42371fa7a662d7c03b577ca870934"
+      "contentHash": "885a25fad8ab546b133a5fc8eb06c69a4554e2f2df36f3e10f1f79d23d3642bf"
     },
     {
       "name": "perf-web-optimization",
@@ -984,7 +984,7 @@
         "references/core-web-vitals.md",
         "references/image-optimization.md"
       ],
-      "contentHash": "ea4a1b9d1b609a9efc6730fcf6728a06c23d2d89c65971213aa9f2d369ec91bd"
+      "contentHash": "792c21b79003960c46b15d783a4ceb7ab25468d750244ac833edba23ab247433"
     },
     {
       "name": "playwright-skill",
@@ -992,17 +992,17 @@
       "category": "web-automation",
       "path": "(web-automation)/playwright-skill",
       "files": ["API_REFERENCE.md", "SKILL.md", "lib/helpers.js", "package.json", "run.js"],
-      "contentHash": "79579f9457a6469f8d856e654674f6bc7ba146ebe11092b08725f3bd3f696555"
+      "contentHash": "066fe21dbdb454498efaf26120414512b2dc2294f04f768a18e98b4b9e11b491"
     },
     {
       "name": "positioning-icp",
-      "description": "\"Use quando o usuário quiser definir perfil de cliente ideal (ICP), posicionar um produto de IA, construir arquitetura de mensagens ou validar aderência produto-mercado. Use também quando o usuário mencionar ICP, ideal customer profile, posicionamento, PMF, product-market fit, mensagens, buyer persona, sinais de enriquecimento, posicionamento de mercado ou posicionamento competitivo. Esta skill abrange posicionamento de mercado, definição de ICP, arquitetura de mensagens e validação de PMF para produtos nativos de IA. NÃO use para implementação técnica, revisão de código ou arquitetura de software.\"",
+      "description": "'Use quando o usuário quiser definir perfil de cliente ideal (ICP), posicionar um produto de IA, construir arquitetura de mensagens ou validar aderência produto-mercado. Use também quando o usuário mencionar ICP, ideal customer profile, posicionamento, PMF, product-market fit, mensagens, buyer persona, sinais de enriquecimento, posicionamento de mercado ou posicionamento competitivo. Esta skill abrange posicionamento de mercado, definição de ICP, arquitetura de mensagens e validação de PMF para produtos nativos de IA. NÃO use para implementação técnica, revisão de código ou arquitetura de software.'",
       "category": "gtm",
       "path": "(gtm)/positioning-icp",
       "files": ["SKILL.md", "references/quick-reference.md"],
       "author": "Chad Boyda / agent-gtm-skills",
       "version": "1.0.0",
-      "contentHash": "f0000ee6a11ea13691770e0c01f4420c8387af2406f5e5e1081c353422068786"
+      "contentHash": "331c34af0a932fb590e692d257bfda2e5ff70e8be28f3febffb5e08867ebf187"
     },
     {
       "name": "react-best-practices",
@@ -1075,7 +1075,7 @@
       ],
       "author": "vercel",
       "version": "1.0.0",
-      "contentHash": "1029e9dc492581247a2e92d02f45ee4eeca4097d7284bc8261b5b679602dc7a5"
+      "contentHash": "b8bf1395423fb8cbf7ff0a8e5696e1f6fc3c0722bd6ce467deb16f15d92aebf6"
     },
     {
       "name": "react-composition-patterns",
@@ -1099,7 +1099,7 @@
       ],
       "author": "vercel",
       "version": "1.0.0",
-      "contentHash": "49a4d33566f803bcbcc050e357e161db75d825e8b351c1a4231b3591d34a11de"
+      "contentHash": "b33c5610a970a3a63a21f8835f81cfc1e94c8bbc0d49093115f4820ce07caf6d"
     },
     {
       "name": "react-native-expert",
@@ -1116,7 +1116,7 @@
       ],
       "author": "Felipe Rodrigues - github.com/felipfr",
       "version": "1.0.0",
-      "contentHash": "85e76c2071965ce5cfd4f307dd6ec93c2275c86add34be799d999daf6cfa76b9"
+      "contentHash": "5bf6bae8785c35c51a9d26eb91abd9efb18b986507e2e299060b03792136d68a"
     },
     {
       "name": "render-deploy",
@@ -1139,7 +1139,7 @@
       ],
       "author": "github.com/openai/skills",
       "version": "1.0.0",
-      "contentHash": "21f7c96d862de23af9888076b911f485349449d27b5e1cefe04987de8c2edc43"
+      "contentHash": "e19967f51eb3739d486792f55137a4d8d20cbf064db99863ac27f272bbc6ed78"
     },
     {
       "name": "sales-motion-design",
@@ -1149,7 +1149,7 @@
       "files": ["SKILL.md", "references/quick-reference.md"],
       "author": "Chad Boyda / agent-gtm-skills",
       "version": "1.0.0",
-      "contentHash": "138a510e830f5936c1f797b810d2a5f79a4da6a39fbdf6ad84bc86c999cb5a7c"
+      "contentHash": "c5f71c4c9a53d8aced61dc6f4b42d7ebd269a60a1b7eda41bf62101a85e780d7"
     },
     {
       "name": "security-best-practices",
@@ -1172,7 +1172,7 @@
       ],
       "author": "github.com/openai/skills",
       "version": "1.0.0",
-      "contentHash": "6641b35c0dd2fbb232d2698554e5b9d15ab71e66c372a6ccdc7b3724823fc67b"
+      "contentHash": "aa0e172ebeb068bc68eff85af22a5f2b0e34bbbc9402ba91021228d7f6cb4060"
     },
     {
       "name": "security-ownership-map",
@@ -1190,11 +1190,11 @@
       ],
       "author": "github.com/openai/skills",
       "version": "1.0.0",
-      "contentHash": "38c8c48536594f1eb71da94e12381f9b7b885294569c232bbbcc3832f66a9de3"
+      "contentHash": "dd60a8f3c07af9a5f1a4cfff078c302aa053cf3d3ad019e28714cf38fc23333d"
     },
     {
       "name": "security-threat-model",
-      "description": "\"Modelagem de ameaças ancorada no repositório: enumera fronteiras de confiança, ativos, capacidades do atacante, vetores de abuso e mitigações, e produz um modelo de ameaças em Markdown conciso. Use quando pedirem modelagem de ameaças de base ou caminho, enumerar ameaças ou vetores de abuso, ou threat modeling AppSec. NÃO use para resumos arquiteturais gerais, code review genérico, boas práticas de segurança (use security-best-practices) ou design não relacionado a segurança.\"",
+      "description": "'Modelagem de ameaças ancorada no repositório: enumera fronteiras de confiança, ativos, capacidades do atacante, vetores de abuso e mitigações, e produz um modelo de ameaças em Markdown conciso. Use quando pedirem modelagem de ameaças de base ou caminho, enumerar ameaças ou vetores de abuso, ou threat modeling AppSec. NÃO use para resumos arquiteturais gerais, code review genérico, boas práticas de segurança (use security-best-practices) ou design não relacionado a segurança.'",
       "category": "security",
       "path": "(security)/security-threat-model",
       "files": [
@@ -1205,7 +1205,7 @@
       ],
       "author": "github.com/openai/skills",
       "version": "1.0.0",
-      "contentHash": "febb95e3ad2aea3910d638092dfe448e2758dab62cc35e09e6b0f0678c3ac917"
+      "contentHash": "7142d1e5c42e1ee5e8f1b99112c90612c1618be0f77c1dbffc5052c05c1f7c07"
     },
     {
       "name": "sentry",
@@ -1225,7 +1225,7 @@
       "files": ["SKILL.md"],
       "author": "web-quality-skills",
       "version": "1.0",
-      "contentHash": "e95aa00f11751b92c272c7670010391a45bb29381b24e363cf5d51874774e4ac"
+      "contentHash": "5b9db96fc862e26c66d78857a0a192161460f10c584ad3db6382a1e953c1965d"
     },
     {
       "name": "shopify-developer",
@@ -1246,7 +1246,7 @@
         "references/performance.md",
         "references/theme-development.md"
       ],
-      "contentHash": "c65becf0db4c04c1bfe8ef6580f0a311d2f3b82043e0137a89530ddf37ff1b49"
+      "contentHash": "7a28ddcff233d2ef1cd8b99b38c2de5f8491c6fb2e0a596fdfb189237b2d034c"
     },
     {
       "name": "skill-architect",
@@ -1262,17 +1262,17 @@
       ],
       "author": "Felipe Rodrigues - github.com/felipfr",
       "version": "1.0.0",
-      "contentHash": "f9f0ae65df8c9ef754e70f00d80827a0a5d6cca4accfe1848bc608553d359490"
+      "contentHash": "a12ddf4749a4049eb1001ab677c343c1ca49ef819efc68ccfff188d666101ef7"
     },
     {
       "name": "social-selling",
-      "description": "\"Use quando o usuário quiser vender por redes sociais, otimizar o LinkedIn para vendas, montar sequências de DM ou transformar engajamento de conteúdo em pipeline. Use também quando o usuário mencionar social selling, venda pelo LinkedIn, DMs no LinkedIn, prospecção social, LinkedIn Sales Navigator, sequências de DM, outreach no LinkedIn, pipeline social ou otimização do LinkedIn. Esta skill cobre estratégia de social selling, da otimização do perfil à conversão DM–reunião. NÃO use para implementação técnica, revisão de código ou arquitetura de software.\"",
+      "description": "'Use quando o usuário quiser vender por redes sociais, otimizar o LinkedIn para vendas, montar sequências de DM ou transformar engajamento de conteúdo em pipeline. Use também quando o usuário mencionar social selling, venda pelo LinkedIn, DMs no LinkedIn, prospecção social, LinkedIn Sales Navigator, sequências de DM, outreach no LinkedIn, pipeline social ou otimização do LinkedIn. Esta skill cobre estratégia de social selling, da otimização do perfil à conversão DM–reunião. NÃO use para implementação técnica, revisão de código ou arquitetura de software.'",
       "category": "gtm",
       "path": "(gtm)/social-selling",
       "files": ["SKILL.md"],
       "author": "Chad Boyda / agent-gtm-skills",
       "version": "1.0.0",
-      "contentHash": "d32a191ba7e5ee7f60c3ea88c4e33f1170c1c4c2e8a4692b7086ac6d3aa0b063"
+      "contentHash": "379a174659fa4bf8c2e22e3a822717780c32ef1104d3d4623da22cfbd3041bc8"
     },
     {
       "name": "solo-founder-gtm",
@@ -1282,7 +1282,7 @@
       "files": ["SKILL.md"],
       "author": "Chad Boyda / agent-gtm-skills",
       "version": "1.0.0",
-      "contentHash": "14ce3e58911ab093c3127e595b5f9c0bfaa3f6e094ad0af3c0c1363cadc4ea75"
+      "contentHash": "610ea9c57914c47f63d285b2df5de3b4975a1be81043d73b869bb7b054ed5d86"
     },
     {
       "name": "subagent-creator",
@@ -1298,7 +1298,7 @@
       "category": "architecture",
       "path": "(architecture)/tactical-ddd",
       "files": ["SKILL.md", "detection.md", "refactoring.md", "reference.md"],
-      "contentHash": "ad92646e977cbac7ecd6950a979a6cc6b7d6ea893c94a6480bd2a6c370b5dfe6"
+      "contentHash": "f0569feefc55b48533b20bfaaa84f22d4b3fb7a7622b871b0fc0b8b2a866262c"
     },
     {
       "name": "technical-design-doc-creator",
@@ -1306,7 +1306,7 @@
       "category": "creation",
       "path": "(creation)/create-technical-design-doc",
       "files": ["README.md", "SKILL.md"],
-      "contentHash": "8cd63ddf635ad69d53f12b1d22829b90ee17f4b857617c12dd80d2daed201fa7"
+      "contentHash": "678bc1acd5107740debf121eb5f13f83e96db5adc8f74a971f46f246193c4e63"
     },
     {
       "name": "the-fool",
@@ -1325,7 +1325,7 @@
       ],
       "author": "https://github.com/Jeffallan",
       "version": "2.0.0",
-      "contentHash": "53f0d5684f40ca12dc172f9cfcb95601cd8937e281694514f86770747dc23cc5"
+      "contentHash": "0843702d59f753fef94a609e48ccb8a0793d0e194ba66d5f717ff3b850bedc53"
     },
     {
       "name": "tlc-spec-driven",
@@ -1354,7 +1354,7 @@
       ],
       "author": "Felipe Rodrigues - github.com/felipfr",
       "version": "2.0.0",
-      "contentHash": "529064b3c6b8664cc0492bbd35529a100b269caab22dadcdf752440aeef0bec6"
+      "contentHash": "a01c34636cfe5a161e03252eed9d1b0ab3bf9881d93e8dc65499d689043f81fd"
     },
     {
       "name": "vercel-deploy",
@@ -1374,7 +1374,7 @@
       "files": ["SKILL.md"],
       "author": "Chad Boyda / agent-gtm-skills",
       "version": "1.0.0",
-      "contentHash": "928635bb7a05585c2fa9839b1be8a1de65a46a93e3cbc274db1459e57c157ffc"
+      "contentHash": "58e922321d5e652e9e91e4d448d35df8d1d19ecd49ef3e87ed2a66f5db5646ec"
     },
     {
       "name": "web-design-guidelines",
@@ -1384,7 +1384,7 @@
       "files": ["SKILL.md", "references/guideline.md"],
       "author": "vercel",
       "version": "1.0.0",
-      "contentHash": "7d5dc8b015554727076ca264048ff6c4ccb0993978d1be561ebbe087194bc49b"
+      "contentHash": "ab6bd4f812afec41b5a350cd9628e3316974cc93f88a196babd8b61522a64d5b"
     },
     {
       "name": "web-quality-audit",
@@ -1394,7 +1394,7 @@
       "files": ["SKILL.md", "scripts/analyze.sh"],
       "author": "web-quality-skills",
       "version": "1.0",
-      "contentHash": "58eacd93468308b23975aa0a230b1739e4d7eb0fb840dba17a42155cab56e25f"
+      "contentHash": "1ad5d0fc75e23369fd006bf4c4502b03f70040de4595b72ffb20916fed89ee30"
     }
   ],
   "deprecated": [

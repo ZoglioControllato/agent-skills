@@ -1,4 +1,4 @@
-import { createNodeAdapters } from '@tech-leads-club/core'
+import { createNodeAdapters } from '@controllato/core'
 
 /**
  * Shared Node.js adapter instances for all CLI services.
@@ -10,7 +10,7 @@ import { createNodeAdapters } from '@tech-leads-club/core'
  * @example
  * ```typescript
  * import { ports } from './ports'
- * import { installSkills } from '@tech-leads-club/core'
+ * import { installSkills } from '@controllato/core'
  *
  * const result = await installSkills(ports, skillNames, agentType)
  * ```

@@ -1,5 +1,5 @@
 {
-  "name": "@tech-leads-club/agent-skills",
+  "name": "@controllato/agent-skills",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/cli/src",
   "projectType": "library",

@@ -12,7 +12,7 @@ Antes de tudo, obrigado por dedicar tempo para contribuir! 🎉
 ## 🚀 Setup
 
 ```bash
-git clone https://github.com/tech-leads-club/agent-skills.git
+git clone https://github.com/agent-skills/agent-skills.git
 cd agent-skills
 npm ci
 npm run build
@@ -40,10 +40,10 @@ npm run build
 
 ```bash
 # Com categoria (recomendado)
-nx g @tech-leads-club/skill-plugin:skill my-skill --category=development
+nx g @controllato/skill-plugin:skill my-skill --category=development
 
 # Opções completas
-nx g @tech-leads-club/skill-plugin:skill my-skill \
+nx g @controllato/skill-plugin:skill my-skill \
   --description="O que minha skill faz" \
   --category=development \
   --author="github.com/username" \
@@ -61,7 +61,7 @@ Depois do scaffold, refine o conteúdo do `SKILL.md` (especialmente o campo `des
 ```
 agent-skills/
 ├── packages/
-│   ├── cli/                      # CLI @tech-leads-club/agent-skills
+│   ├── cli/                      # CLI @controllato/agent-skills
 │   ├── marketplace/              # Site estático Next.js do registry
 │   └── skills-catalog/           # Coleção de skills
 │       └── skills/               # Todas as definições de skills
@@ -168,8 +168,8 @@ description: Ajuda com deploys.
 
 Ao traduzir arquivos `.md` do repositório:
 
-- Substitua **Tech Leads Club** por **Controllato Club** em prosa, títulos e atribuições
-- **Não altere** slugs npm (`@tech-leads-club/...`), URLs GitHub (`github.com/tech-leads-club/...`) nem conteúdo dentro de blocos de código quando o identificador for técnico
+- Use **Controllato Club** em prosa, títulos e atribuições (não use "Tech Leads Club")
+- **Não altere** slugs npm (`@controllato/...`), URLs GitHub (`github.com/agent-skills/...`) nem conteúdo dentro de blocos de código quando o identificador for técnico
 - Use `node tools/translate-markdown.mjs --file <caminho>` e o manifesto `tools/translation-manifest.json` para rastrear o progresso
 
 ## 🔒 Scan de segurança

@@ -32,7 +32,7 @@ const DESCRIPTION_MARKER_REPLACEMENTS = [
   [/Keywords\s*[-–:]/gi, 'Palavras-chave -'],
 ]
 
-const PROTECTED_SUBSTRINGS = ['@tech-leads-club/', 'github.com/tech-leads-club/', 'tech-leads-club.github.io']
+const PROTECTED_SUBSTRINGS = ['@controllato/', 'github.com/agent-skills/', 'agent-skills.github.io']
 
 const PHRASE_MAP = [
   [/\bProcess\b/g, 'Processo'],

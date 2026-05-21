@@ -1,13 +1,13 @@
 {
-  "name": "@tech-leads-club/marketplace",
+  "name": "@controllato/marketplace",
   "version": "0.0.1",
   "type": "module",
   "description": "Next.js marketplace application for browsing and discovering AI agent skills",
-  "author": "Tech Leads Club",
+  "author": "Controllato Club",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tech-leads-club/agent-skills.git"
+    "url": "git+https://github.com/agent-skills/agent-skills.git"
   },
   "engines": {
     "node": ">=24"
