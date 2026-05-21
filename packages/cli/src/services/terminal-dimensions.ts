@@ -16,3 +16,10 @@ export function canShowDetailPanel(): boolean {
   const { width, height } = getTerminalSize()
   return width >= 80 && height >= 24
 }
+
+/** How many list rows fit below fixed chrome (header, titles, footer). */
+export function getVisibleListLimit(itemCount: number, chromeLines: number, minVisible = 3): number {
+  const { height } = getTerminalSize()
+  const available = Math.max(minVisible, height - chromeLines)
+  return Math.min(itemCount, available)
+}

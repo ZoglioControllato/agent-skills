@@ -1,4 +1,4 @@
-import { Box, Text, useInput, useStdout } from 'ink'
+import { Box, Text, useInput } from 'ink'
 import Spinner from 'ink-spinner'
 import { useState } from 'react'
 
@@ -11,6 +11,7 @@ import { KeyboardShortcutsOverlay, type ShortcutEntry } from '../components/Keyb
 import { MultiSelectPrompt } from '../components/MultiSelectPrompt'
 import { useAgents } from '../hooks/useAgents'
 import { ports } from '../ports'
+import { getVisibleListLimit } from '../services/terminal-dimensions'
 import { colors, symbols } from '../theme'
 
 interface AgentSelectorProps {
@@ -18,13 +19,10 @@ interface AgentSelectorProps {
   onBack?: () => void
 }
 
-const CHROME_LINES = 28
+/** Header + titles + footer (list area is calculated separately). */
+const AGENT_SELECTOR_CHROME_LINES = 20
 
 export function AgentSelector({ onSelect, onBack }: AgentSelectorProps) {
-  const { stdout } = useStdout()
-  const termRows = stdout?.rows ?? 40
-  const listLimit = Math.max(3, termRows - CHROME_LINES)
-
   const { allAgents, installedAgents, selectedAgents, setSelectedAgents, loading } = useAgents()
 
   const agentShortcuts: ShortcutEntry[] = [
@@ -44,6 +42,8 @@ export function AgentSelector({ onSelect, onBack }: AgentSelectorProps) {
     const isDetected = installedAgents.includes(agent)
     return { label: config.displayName, value: agent, hint: isDetected ? `${symbols.check} detected` : undefined }
   })
+
+  const listLimit = getVisibleListLimit(items.length, AGENT_SELECTOR_CHROME_LINES)
 
   if (loading) {
     return (

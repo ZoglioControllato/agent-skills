@@ -84,6 +84,10 @@ export const SkillBrowser = ({ onInstall, onExit, overrideSkills, readOnly = fal
   const panelWidth = Math.max(30, Math.round(terminalCols * PANEL_WIDTH_RATIO))
   const contentAreaHeight = Math.max(10, terminalRows - 17)
   const isSearchExpanded = query.trim().length > 0
+  const skillDescriptionWidth = Math.max(
+    24,
+    detailSkill && canShowPanel && !drawerExpanded ? terminalCols - panelWidth - 8 : terminalCols - 8,
+  )
 
   const groupedMap = useMemo(() => groupSkillsByCategory(ports, filtered), [filtered])
 
@@ -357,6 +361,7 @@ export const SkillBrowser = ({ onInstall, onExit, overrideSkills, readOnly = fal
         key={item.skill.name}
         name={item.skill.name}
         description={item.skill.description}
+        descriptionWidth={skillDescriptionWidth}
         status={status}
         selected={isSelected}
         focused={isFocused}

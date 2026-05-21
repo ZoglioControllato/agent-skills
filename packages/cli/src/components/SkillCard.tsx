@@ -11,6 +11,8 @@ export interface SkillCardProps {
   selected?: boolean
   focused?: boolean
   readOnly?: boolean
+  /** Largura em colunas para quebra de linha da descrição (Ink `Text` width). */
+  descriptionWidth?: number
 }
 
 export function SkillCard({
@@ -20,6 +22,7 @@ export function SkillCard({
   selected = false,
   focused = false,
   readOnly = false,
+  descriptionWidth,
 }: SkillCardProps) {
   const isInstalled = status === 'installed'
 
@@ -65,7 +68,7 @@ export function SkillCard({
       </Box>
 
       <Box paddingLeft={readOnly ? 2 : 4}>
-        <Text color={descColor} wrap="truncate">
+        <Text color={descColor} wrap="wrap" width={descriptionWidth}>
           {description}
         </Text>
       </Box>

@@ -1,6 +1,11 @@
 import { afterEach, describe, expect, it } from '@jest/globals'
 
-import { canShowDetailPanel, getTerminalSize, shouldUseBottomPanel } from '../terminal-dimensions'
+import {
+  canShowDetailPanel,
+  getTerminalSize,
+  getVisibleListLimit,
+  shouldUseBottomPanel,
+} from '../terminal-dimensions'
 
 describe('terminal-dimensions service', () => {
   const originalColumns = process.stdout.columns
@@ -66,6 +71,23 @@ describe('terminal-dimensions service', () => {
       mockTerminalSize(80, 24)
       const result = shouldUseBottomPanel()
       expect(result).toBe(true)
+    })
+  })
+
+  describe('getVisibleListLimit', () => {
+    it('shows every item when the list fits in the terminal', () => {
+      mockTerminalSize(120, 40)
+      expect(getVisibleListLimit(6, 20)).toBe(6)
+    })
+
+    it('caps visible rows to available terminal height', () => {
+      mockTerminalSize(120, 32)
+      expect(getVisibleListLimit(19, 20)).toBe(12)
+    })
+
+    it('never goes below minVisible', () => {
+      mockTerminalSize(80, 10)
+      expect(getVisibleListLimit(19, 20, 3)).toBe(3)
     })
   })
 
