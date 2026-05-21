@@ -1,45 +1,44 @@
 ---
 name: ai-seo
-description: "When the user wants to build programmatic SEO with AI, create competitor alternative pages, optimize for AI Overviews, or scale content production. Also use when the user mentions 'SEO,' 'programmatic SEO,' 'AI content,' 'competitor alternative pages,' 'AI Overviews,' 'search optimization,' 'DataForSEO,' 'content at scale,' 'keyword strategy,' or 'organic traffic.' This skill covers AI-powered SEO strategy from keyword research through programmatic page generation. Do NOT use for technical implementation, code review, or software architecture."
+description: "Use quando quiser criar programmatic SEO com IA, páginas de alternativa a concorrente, otimizar para AI Overviews ou escalar produção de conteúdo. Use também quando o usuário mencionar 'SEO', 'programmatic SEO', 'conteúdo com IA', 'páginas de alternativa a concorrente', 'AI Overviews', 'search optimization', 'DataForSEO', 'content at scale', 'keyword strategy' ou 'organic traffic'. Esta skill cobre estratégia de SEO orientada por IA, da pesquisa de palavras-chave até a geração programática de páginas. NÃO use para implementação técnica de código, revisão de código ou arquitetura de software."
 metadata:
   original_author: Chad Boyda / agent-gtm-skills
   modified_by: Felipe Rodrigues - github.com/felipfr
   source: https://github.com/chadboyda/agent-gtm-skills
   version: '1.0.0'
+---
+
+# Skill AI SEO
+
+Você é um estrategista de SEO com IA, especializado em geração programática de conteúdo, palavras-chave tipo alternativa ao concorrente, otimização para AI Overviews e Generative Engine Optimization (GEO). Ajuda founders e equipes de growth a construir sistemas escaláveis de tráfego orgânico com ferramentas de IA, dados estruturados e arquiteturas de página baseadas em template.
+
+## Antes de começar
+
+1. Confirme o stack atual de SEO do usuário (CMS, analytics, ferramentas de palavra-chave, ferramentas de conteúdo)
+2. Identifique o objetivo principal: páginas programáticas em escala, jogada de alternativa ao concorrente, visibilidade em AI Overviews ou AI SEO ponta a ponta
+3. Pergunte a faixa de autoridade do domínio (DR/DA) — isso muda quais estratégias são viáveis
+4. Entenda a capacidade de produção de conteúdo (founder solo vs. equipe vs. agência)
+5. Verifique se há acesso ao Google Search Console e credenciais de API DataForSEO/Semrush
+6. Identifique os três a cinco principais concorrentes para páginas de alternativa
+7. Determine o CMS (Webflow, WordPress, Shopify, Next.js, custom) — isso dita o approach programático
 
 ---
 
-# AI SEO Skill
+## 1. Stack AI SEO — framework de escolha de ferramentas
 
-You are an AI-powered SEO strategist specializing in programmatic content generation, competitor alternative keyword strategies, AI Overviews optimization, and Generative Engine Optimization (GEO). You help founders and growth teams build scalable organic traffic systems using AI tools, structured data, and templated page architectures.
+### Comparação das ferramentas centrais
 
-## Before Starting
+| Ferramenta     | Função principal                       | Melhor para                                   | Preços (2025)             | AI Overviews     |
+| -------------- | -------------------------------------- | --------------------------------------------- | ------------------------- | ---------------- |
+| Surfer SEO     | Pontuação de otimização de conteúdo    | Matching de intenção baseado na SERP          | US$ 99–219/mês            | Limitado         |
+| Frase AI       | Análise de intenção + escrita com IA   | SEO + GEO combinados, 100+ idiomas            | US$ 45–115/mês            | Sim (nota GEO)   |
+| AirOps         | Operações de conteúdo com IA em escala | Automação de workflows, produção em lote      | Grátis–US$ 9 / 1k tarefas | Via workflows    |
+| SE Ranking     | Rastreamento de AI Overviews + AI Mode | Monitoramento de visibilidade na busca com IA | US$ 65–119/mês            | Sim (específico) |
+| Rankability    | Pontuação e otimização de conteúdo     | Auditorias de conteúdo em escala de agência   | US$ 49–149/mês            | Sim              |
+| DataForSEO     | API bruta de dados SEO                 | Integrações dev/agent/MCP                     | Pay-per-use               | Via SERP API     |
+| Clay + Webflow | Geração programática de páginas        | Landing pages ABM personalizadas              | US$ 149+/mês              | N/D              |
 
-1. Confirm the user's current SEO stack (CMS, analytics, keyword tools, content tools)
-2. Identify their primary goal: programmatic pages at scale, competitor alternative play, AI Overviews visibility, or full-stack AI SEO
-3. Ask about their domain authority range (DR/DA) - this changes which strategies are viable
-4. Understand their content production capacity (solo founder vs. team vs. agency)
-5. Check if they have Google Search Console access and DataForSEO/Semrush API credentials
-6. Identify their top 3-5 competitors for alternative page targeting
-7. Determine their CMS (Webflow, WordPress, Shopify, Next.js, custom) - this dictates the programmatic approach
-
----
-
-## 1. AI SEO Stack - Tool Selection Framework
-
-### Core Tool Comparison
-
-| Tool | Primary Function | Best For | Pricing (2025) | AI Overviews |
-|------|-----------------|----------|----------------|--------------|
-| Surfer SEO | Content optimization scoring | SERP-based intent matching | $99-219/mo | Limited |
-| Frase AI | Intent analysis + AI writing | Dual SEO + GEO scoring, 100+ languages | $45-115/mo | Yes (GEO score) |
-| AirOps | AI content ops at scale | Workflow automation, bulk production | Free-$9/1k tasks | Via workflows |
-| SE Ranking | AI Overviews + AI Mode tracking | AI search visibility monitoring | $65-119/mo | Yes (dedicated) |
-| Rankability | Content scoring + optimization | Agency-scale content audits | $49-149/mo | Yes |
-| DataForSEO | Raw SEO data API | Developer/agent integrations, MCP | Pay-per-use | Via SERP API |
-| Clay + Webflow | Programmatic page generation | Personalized ABM landing pages | $149+/mo | N/A |
-
-### Decision Matrix
+### Matriz de decisão
 
 ```
 NEED: Content optimization for existing pages
@@ -60,16 +59,17 @@ NEED: Raw data for custom workflows
   Always --> DataForSEO API (pay-per-use, MCP-compatible)
 ```
 
-### MCP Server Integration Stack
+### Stack de integração com servidores MCP
 
-| MCP Server | Data Source | Key Capabilities |
-|-----------|-----------|-----------------|
-| DataForSEO MCP | SERP data, keywords, backlinks | Real-time rankings, keyword research, competitor analysis |
-| Google Search Console MCP | GSC performance data | Query analytics, index status, crawl diagnostics |
-| Semrush MCP | Keyword + domain analytics | Domain comparison, keyword gaps, traffic estimates |
-| FireSEO MCP | GSC + on-page analysis | SEO audits, competitor analysis via natural language |
+| MCP Server                | Fonte de dados                           | Capacidades-chave                                               |
+| ------------------------- | ---------------------------------------- | --------------------------------------------------------------- |
+| DataForSEO MCP            | Dados de SERP, palavras-chave, backlinks | Rankings em tempo real, pesquisa de KW, análise de concorrentes |
+| Google Search Console MCP | Desempenho no GSC                        | Analytics de queries, status de índice, diagnóstico de crawl    |
+| Semrush MCP               | Analytics de KW + domínio                | Comparação de domínio, lacunas de KW, estimativas de tráfego    |
+| FireSEO MCP               | GSC + análise on-page                    | Auditorias SEO, análise de concorrentes em linguagem natural    |
 
-**DataForSEO MCP setup:**
+**Setup do MCP DataForSEO:**
+
 ```bash
 # Use env var or secret manager for credentials; never paste real keys into prompts or code.
 claude mcp add dataforseo --transport sse \
@@ -77,45 +77,47 @@ claude mcp add dataforseo --transport sse \
   https://mcp.dataforseo.com/sse
 ```
 
-**GSC MCP setup:**
+**Setup do MCP GSC:**
+
 ```bash
 git clone https://github.com/AminForou/mcp-gsc
 cd mcp-gsc && pip install -r requirements.txt
 claude mcp add gsc -- python /path/to/mcp-gsc/server.py
 ```
 
-**Agent workflow pattern:**
-1. DataForSEO MCP: find top 50 keywords for [competitor] with volume > 500
-2. GSC MCP: show current rankings for those keywords
-3. Identify gaps where competitor ranks top 10 but you do not
-4. Generate content briefs using Frase or Surfer
-5. Produce content via AirOps workflows
-6. Monitor AI Overview citations via SE Ranking
+**Padrão de workflow do agente:**
+
+1. MCP DataForSEO: encontrar as 50 principais KW para [concorrente] com volume > 500
+2. MCP GSC: mostrar rankings atuais para essas KW
+3. Identificar lacunas onde o concorrente ranqueia top 10 e você não
+4. Gerar briefs com Frase ou Surfer
+5. Produzir conteúdo via workflows AirOps
+6. Monitorar citações em AI Overview pelo SE Ranking
 
 ---
 
-## 2. The "[Competitor] Alternative" SEO Play
+## 2. A jogada SEO de "[Concorrente] alternative"
 
-### Why This Converts 3-5x Higher Than TOFU
+### Por que converte 3–5x mais que topo de função (TOFU)
 
-BOFU keywords target buyers actively comparing solutions. "[Competitor] alternative" searchers have already validated the category - they just need a reason to pick you.
+Palavras-chave BOFU miram compradores que estão comparando soluções de perto. Quem busca "[Concorrente] alternative" já validou a categoria — só precisa de um motivo para escolher você.
 
-- TOFU informational content: 0.5-2% conversion rate
-- BOFU "[Competitor] alternative" content: 3-8% conversion rate
-- "[Competitor] vs [Your Product]" comparison pages: 5-12% conversion rate
+- Conteúdo informativo TOFU: taxa de conversão 0,5–2%
+- Conteúdo BOFU "[Concorrente] alternative": 3–8%
+- Páginas "[Concorrente] vs [Seu Produto]": 5–12%
 
-### Target Keyword Patterns (Priority Order)
+### Padrões de palavras-chave alvo (ordem de prioridade)
 
-| Pattern | Example | Intent | Difficulty |
-|---------|---------|--------|-----------|
-| [Competitor] alternatives | "Mailchimp alternatives" | Very High | Medium |
-| [Competitor] vs [Your Product] | "Mailchimp vs ConvertKit" | Very High | Low-Medium |
-| Best [category] for [wedge] | "Best email tool for creators" | High | Medium |
-| [Competitor] pricing | "Mailchimp pricing 2026" | High | Low |
-| Switch from [Competitor] | "Switch from Mailchimp" | Very High | Low |
-| [Competitor] vs [Competitor] | "Mailchimp vs Constant Contact" | High | Medium |
+| Padrão                          | Exemplo                         | Intenção   | Dificuldade |
+| ------------------------------- | ------------------------------- | ---------- | ----------- |
+| [Concorrente] alternatives      | "Mailchimp alternatives"        | Muito alta | Média       |
+| [Concorrente] vs [Seu Produto]  | "Mailchimp vs ConvertKit"       | Muito alta | Baixa–média |
+| Melhor [categoria] para [wedge] | "Best email tool for creators"  | Alta       | Média       |
+| [Concorrente] pricing           | "Mailchimp pricing 2026"        | Alta       | Baixa       |
+| Migrar de [Concorrente]         | "Switch from Mailchimp"         | Muito alta | Baixa       |
+| [Concorrente] vs [Concorrente]  | "Mailchimp vs Constant Contact" | Alta       | Média       |
 
-### Page Template Structure
+### Estrutura template da página
 
 ```
 H1: Best [Competitor] Alternatives in [Year]
@@ -143,32 +145,33 @@ H2: FAQ (with schema markup)
   - "Can I migrate from [Competitor]?"
 ```
 
-### The Acquisition Playbook
+### O playbook de aquisição
 
-ClickUp systematically creates "replaces [competitor]" pages after every major acquisition in their space. When Salesforce acquired Slack, ClickUp launched replacement pages targeting users evaluating options during the 3-6 month peak search window.
+O ClickUp cria sistematicamente páginas "substitui [concorrente]" após grandes aquisições no seu mercado. Quando a Salesforce comprou o Slack, o ClickUp lançou páginas de substituição mirando usuários que avaliavam opções na janela de pico de busca de 3–6 meses.
 
-**Replicable framework:**
-1. Set Google Alerts for acquisitions in your category
-2. Within 48 hours: draft "[Acquired Tool] alternatives" page
-3. Within 2 weeks: publish full comparison + migration guide
-4. Target the 3-6 month window of peak search volume
+**Framework replicável:**
+
+1. Configure Google Alerts para aquisições na sua categoria
+2. Em até 48 horas: rascunhe a página "[ferramenta adquirida] alternatives"
+3. Em até 2 semanas: publique comparação completa + guia de migração
+4. Mirar a janela de 3–6 meses de pico de volume de busca
 
 ---
 
-## 3. Programmatic SEO - Scaling Pages with AI
+## 3. Programmatic SEO — escalando páginas com IA
 
-### Proven Page Patterns
+### Padrões de página comprovados
 
-| Pattern | Example | Data Source | Scale |
-|---------|---------|------------|-------|
-| [Tool] for [Industry] | "CRM for real estate" | Industry list + features | 50-500 |
-| [Tool] vs [Competitor] | "Airtable vs Notion" | Competitor matrix | 20-200 |
-| [Service] in [City] | "Plumber in Austin TX" | City database | 500-5,000 |
-| [Metric] for [Company] | "Revenue of Stripe" | Company database | 1,000-30,000 |
-| [Template] for [Use Case] | "Invoice for freelancers" | Template library | 100-1,000 |
-| [Integration] + [Integration] | "Slack + Salesforce" | Integration pairs | 500-10,000 |
+| Padrão                        | Exemplo                   | Fonte de dados                 | Escala       |
+| ----------------------------- | ------------------------- | ------------------------------ | ------------ |
+| [Ferramenta] para [setor]     | "CRM for real estate"     | Lista de indústrias + recursos | 50–500       |
+| [Ferramenta] vs [Concorrente] | "Airtable vs Notion"      | Matriz de concorrentes         | 20–200       |
+| [Serviço] em [Cidade]         | "Plumber in Austin TX"    | Base de cidades                | 500–5.000    |
+| [Métrica] para [Empresa]      | "Revenue of Stripe"       | Base de empresas               | 1.000–30.000 |
+| [Template] para [Caso de uso] | "Invoice for freelancers" | Biblioteca de templates        | 100–1.000    |
+| [Integração] + [Integração]   | "Slack + Salesforce"      | Pares de integração            | 500–10.000   |
 
-### Architecture
+### Arquitetura
 
 ```
 +------------------+     +-------------------+     +------------------+
@@ -187,18 +190,18 @@ ClickUp systematically creates "replaces [competitor]" pages after every major a
                     +----------------------------+
 ```
 
-### Quality Requirements (Non-Negotiable)
+### Requisitos de qualidade (sem negociação)
 
-Google's AI crawlers detect boilerplate. Pages that only swap 1-2 words will not rank. Every page needs:
+Os crawlers com IA do Google detectam boilerplate. Páginas que só trocam uma ou duas palavras não ranqueiam. Cada página precisa de:
 
-1. **500-1,000+ words of helpful content** - not filler
-2. **Conditional content logic** - if/then rules tailoring recommendations per data variant
-3. **Unique data points** - proprietary metrics, ratings, comparisons per page
-4. **Rich elements** - HTML tables, charts, embedded tools
-5. **Internal linking mesh** - 3-5 related programmatic page links each
-6. **Schema markup** - FAQ, Product, or Review schema per page type
+1. **500–1.000+ palavras úteis de conteúdo** — não enchimento
+2. **Lógica de conteúdo condicional** — regras if/then adequando recomendações a cada variante de dado
+3. **Dados únicos** — métricas proprietárias, ratings, comparações por página
+4. **Elementos ricos** — tabelas HTML, gráficos, ferramentas embutidas
+5. **Malha de links internos** — 3–5 links para páginas programáticas relacionadas cada
+6. **Schema markup** — FAQ, Produto ou Avaliação conforme o tipo de página
 
-### AirOps Workflow Example
+### Exemplo de workflow AirOps
 
 ```
 [Tool] vs [Competitor] Page Generator:
@@ -211,33 +214,34 @@ Google's AI crawlers detect boilerplate. Pages that only swap 1-2 words will not
   7. Monitor: GSC indexing check after 48 hours
 ```
 
-Key capabilities: custom multi-agent workflows, direct CMS publish (WordPress/Webflow/Shopify), brand knowledge base injection, batch processing 50-500 pages per run.
+Principais capacidades: workflows multiagente customizados, publicação direta no CMS (WordPress/Webflow/Shopify), injeção de knowledge base da marca, processamento em lote de 50–500 páginas por execução.
 
-### Clay + Webflow for ABM Pages
+### Clay + Webflow para páginas ABM
 
-For account-based marketing at scale:
-- Clay enriches company data (logo, industry, pain points, current tools)
-- Webflow CMS template maps Clay columns to dynamic fields
-- Auto-generated slugs: /for/[company-name]
-- Each page gets personalized hero, testimonials, case studies
-- Verkada uses this pattern for hundreds of ABM landing pages
+Para account-based marketing em escala:
 
-### Timeline
+- O Clay enriquece dados da empresa (logo, setor, dores, ferramentas atuais)
+- O template CMS Webflow mapeia colunas Clay para campos dinâmicos
+- Slugs auto-gerados: /for/[company-name]
+- Cada página recebe hero personalizado, depoimentos e cases
+- Verkada usa esse padrão para centenas de landing pages ABM
 
-| Milestone | Timeline |
-|-----------|----------|
-| Pages indexed | 2-4 weeks |
-| Initial traffic | 4-8 weeks |
-| Meaningful organic growth | 3-6 months |
-| ROI positive | 6-12 months |
+### Cronograma
+
+| Marco                          | Prazo       |
+| ------------------------------ | ----------- |
+| Páginas indexadas              | 2–4 semanas |
+| Tráfego inicial                | 4–8 semanas |
+| Crescimento orgânico relevante | 3–6 meses   |
+| ROI positivo                   | 6–12 meses  |
 
 ---
 
-## 4. AI Overviews and Generative Engine Optimization (GEO)
+## 4. AI Overviews e Generative Engine Optimization (GEO)
 
-### The Split
+### A bifurcação
 
-AI Overviews appear in 15-50% of queries. Position 1 CTR drops 34.5% when present.
+AI Overviews aparece em 15–50% das consultas. O CTR da posição 1 cai 34,5% quando aparece.
 
 ```
 Traditional SEO                     GEO (AI Search Optimization)
@@ -250,50 +254,50 @@ Traditional SEO                     GEO (AI Search Optimization)
 +--------------------------+        +--------------------------+
 ```
 
-### AI Overviews Optimization Checklist
+### Checklist de otimização para AI Overviews
 
-1. **Answer-first format** - Direct answer in first 1-2 sentences, then supporting detail
-2. **Self-contained sections** - Each H2/H3 independently understandable. Never "as mentioned above"
-3. **Question-pattern headings** - "What is [X]?", "How does [X] work?", "Best [X] for [Y]"
-4. **Scannable formatting** - Bullets, numbered lists, tables over dense paragraphs
-5. **Entity optimization** - Name specific tools, companies, people. Generic gets skipped
-6. **Statistical backing** - "Improved 3.2x" beats "improved significantly"
-7. **Freshness signals** - Dates, "Updated [Month] [Year]", reference recent events
+1. **Formato answer-first** — resposta direta nas primeiras 1–2 frases, depois detalhes de apoio
+2. **Seções autocontidas** — cada H2/H3 compreensível só. Nunca "como mencionado acima"
+3. **Títulos em padrão de pergunta** — "What is [X]?", "How does [X] work?", "Best [X] for [Y]"
+4. **Formatação escaneável** — bullets, listas numeradas, tabelas em vez de blocos densos
+5. **Otimização de entidades** — cite ferramentas, empresas, pessoas. Genérico é ignorado
+6. **Estatísticas** — "Improved 3.2x" vence "improved significantly"
+7. **Sinais de frescor** — datas, "Updated [Month] [Year]", eventos recentes
 
-### GEO Platform Coverage
+### Cobertura de plataformas GEO
 
-| Platform | Scale | Citation Behavior |
-|----------|-------|-------------------|
-| Google AI Overviews | 15%+ of all queries | Cites top-ranking pages with clear answers |
-| ChatGPT | 800M+ weekly users | References authoritative, structured content |
-| Perplexity | 100M+ monthly | Explicitly cites sources with links |
-| Gemini | 750M+ monthly | Pulls from Google index + Knowledge Graph |
+| Plataforma          | Escala                  | Comportamento de citação                         |
+| ------------------- | ----------------------- | ------------------------------------------------ |
+| Google AI Overviews | 15%+ das consultas      | Cita páginas bem ranqueadas com respostas claras |
+| ChatGPT             | 800M+ usuários semanais | Referencia conteúdo autoritativo e estruturado   |
+| Perplexity          | 100M+ mensais           | Cita fontes explicitamente com links             |
+| Gemini              | 750M+ mensais           | Puxa do índice Google + Knowledge Graph          |
 
-### GEO Content Audit
+### Auditoria de conteúdo GEO
 
-- [ ] Does every H2 answer a standalone question?
-- [ ] Can AI extract the answer from the first 2 sentences of each section?
-- [ ] Are specific entities named (tools, companies, metrics)?
-- [ ] Are statistics cited with sources?
-- [ ] Does the page have FAQ schema with direct answers?
-- [ ] Is content structured with lists and tables?
-- [ ] Are "Updated [Month] [Year]" timestamps present?
+- [ ] Cada H2 responde a uma pergunta isolada?
+- [ ] A IA consegue extrair a resposta das duas primeiras frases de cada seção?
+- [ ] Entidades específicas estão nomeadas (ferramentas, empresas, métricas)?
+- [ ] Estatísticas têm fonte citada?
+- [ ] A página tem FAQ schema com respostas diretas?
+- [ ] Conteúdo estruturado com listas e tabelas?
+- [ ] Há carimbos "Updated [Month] [Year]"?
 
-### SE Ranking for AI Visibility Tracking
+### SE Ranking para rastrear visibilidade em IA
 
-**AI Overviews Tracker:** estimates traffic from Overviews, tracks which keywords trigger them, shows citation status (cited/not cited/competitor cited).
+**AI Overviews Tracker:** estima tráfego dos Overviews, rastreia quais palavras-chave os disparam, mostra status de citação (citado / não citado / concorrente citado).
 
-**AI Mode Tracker:** captures live AI Mode conversations, maps position + citation order, accounts for personalization volatility.
+**AI Mode Tracker:** captura conversas ao vivo do AI Mode, mapeia posição + ordem de citação, considera volatilidade por personalização.
 
-**LLM Visibility Research:** tracks brand mentions across ChatGPT, Perplexity, Gemini. "No cited" feature shows where competitors appear but you do not - these gaps become content priorities.
+**LLM Visibility Research:** rastreia menções da marca em ChatGPT, Perplexity, Gemini. O recurso "no cited" mostra onde concorrentes aparecem e você não — essas lacunas viram prioridades de conteúdo.
 
-**Monitoring cadence:** weekly AI Overview citations for top 50 keywords, bi-weekly LLM share of voice, monthly full "no cited" gap audit.
+**Cadência de monitoramento:** citações em AI Overview semanalmente para as 50 principais KWs, share of voice em LLMs quinzenal, auditoria mensal completa de lacunas "not cited".
 
 ---
 
-## 5. Keyword Strategy Framework
+## 5. Framework de estratégia de palavras-chave
 
-### Three-Layer Architecture
+### Arquitetura em três camadas
 
 ```
 Layer 1: BOFU (Convert)           Layer 2: MOFU (Evaluate)        Layer 3: TOFU (Discover)
@@ -308,26 +312,26 @@ Layer 1: BOFU (Convert)           Layer 2: MOFU (Evaluate)        Layer 3: TOFU 
   Volume: 100-5K                    Volume: 1K-20K                  Volume: 5K-50K+
 ```
 
-### Keyword Research Workflow (MCP-powered)
+### Workflow de pesquisa de KW (via MCP)
 
-**Step 1:** DataForSEO MCP - keyword suggestions for category, volume > 100, KD < 50, grouped by intent
-**Step 2:** DataForSEO/Semrush MCP - competitor keyword gap (they rank top 10, you do not), commercial intent only
-**Step 3:** SE Ranking - which target keywords trigger AI Overviews, flag "ranked but not cited" gaps
-**Step 4:** Prioritize content calendar:
+**Passo 1:** MCP DataForSEO — sugestões de KW para a categoria, volume > 100, KD < 50, agrupadas por intenção
+**Passo 2:** MCP DataForSEO/Semrush — lacuna de KW dos concorrentes (eles top 10, você não), apenas intenção comercial
+**Passo 3:** SE Ranking — quais KW alvo disparam AI Overviews, marcar lacunas "ranqueei mas não fui citado"
+**Passo 4:** Priorizar calendário de conteúdo:
 
-| Priority | Criteria | Action |
-|----------|---------|--------|
-| P0 | BOFU, volume > 200, KD < 40 | Create this week |
-| P1 | BOFU, volume > 200, KD 40-60 | Create this month |
-| P2 | MOFU, volume > 500, KD < 50 | Create next month |
-| P3 | AI Overview gap (ranked, not cited) | Optimize existing page |
-| P4 | TOFU, volume > 2000, KD < 40 | Backlog |
+| Prioridade | Critério                                     | Ação                      |
+| ---------- | -------------------------------------------- | ------------------------- |
+| P0         | BOFU, volume > 200, KD < 40                  | Criar esta semana         |
+| P1         | BOFU, volume > 200, KD 40–60                 | Criar este mês            |
+| P2         | MOFU, volume > 500, KD < 50                  | Criar mês seguinte        |
+| P3         | Lacuna de AI Overview (ranqueei, não citado) | Otimizar página existente |
+| P4         | TOFU, volume > 2000, KD < 40                 | Backlog                   |
 
 ---
 
-## 6. Content Production Pipeline
+## 6. Pipeline de produção de conteúdo
 
-### AI Content Quality Spectrum
+### Espectro de qualidade do conteúdo com IA
 
 ```
 Level 1: Pure AI (DO NOT DO THIS) - Generic, thin, penalty risk HIGH
@@ -336,14 +340,14 @@ Level 3: AI draft + human editing + research (IDEAL) - Penalty risk MINIMAL
 Level 4: Human-written + AI optimization (PREMIUM) - Penalty risk NONE
 ```
 
-### Pipeline
+### Pipeline editorial
 
 ```
 Keyword Research --> Content Brief --> AI Draft --> Human Edit --> Publish + Track
 (DataForSEO MCP)   (Frase/Surfer)   (AirOps)    (Editor)       (CMS + GSC)
 ```
 
-### Content Brief Template
+### Template de briefing de conteúdo
 
 ```
 Target keyword: [primary]
@@ -362,13 +366,14 @@ Schema: [FAQ / Product / Review / HowTo]
 
 ---
 
-## 7. Technical SEO for Programmatic Pages
+## 7. SEO técnico para páginas programáticas
 
-**Indexing:** XML sitemap with all pages in GSC. IndexNow API for instant indexing. Monitor "Discovered - not indexed" in coverage report. Correct canonicals per page.
+**Indexação:** sitemap XML com todas as páginas no GSC. API IndexNow para indexação instantânea. Monitore "Descoberta – não indexada" no relatório de cobertura. Canonical correto por página.
 
-**Speed:** SSG preferred (Next.js, Astro, Webflow). Lazy-load below-fold. Core Web Vitals: LCP < 2.5s, CLS < 0.1, INP < 200ms. CDN for all assets.
+**Velocidade:** prefira SSG (Next.js, Astro, Webflow). Lazy-load abaixo da dobra. Core Web Vitals: LCP < 2.5 s, CLS < 0.1, INP < 200 ms. CDN para todos os assets.
 
-**Internal linking mesh:**
+**Malha de links internos:**
+
 ```
 "CRM for Real Estate" links to:
   - "CRM for Small Business" (related)
@@ -376,49 +381,49 @@ Schema: [FAQ / Product / Review / HowTo]
   - "Best CRM Software 2026" (parent category)
 ```
 
-**Schema per page type:** FAQ schema for alternative pages, Product schema with aggregateRating for comparison pages, HowTo schema for guide pages.
+**Schema por tipo de página:** FAQ schema para páginas de alternativa; Product schema com aggregateRating para comparações; HowTo schema para guias.
 
 ---
 
-## 8. Measurement and Iteration
+## 8. Medição e iteração
 
-| Metric | Tool | Cadence | Target |
-|--------|------|---------|--------|
-| Organic traffic | GSC / GA4 | Weekly | MoM growth |
-| Rankings (top 10) | DataForSEO / SE Ranking | Weekly | 20%+ of targets |
-| AI Overview citations | SE Ranking AI Tracker | Weekly | 30%+ of ranked keywords |
-| Indexed pages | GSC Coverage | Weekly | 95%+ published |
-| Content score | Surfer / Frase | Per publish | 80+ |
-| BOFU conversion rate | GA4 | Monthly | 3-8% alternative pages |
-| LLM mention rate | SE Ranking LLM Tracker | Bi-weekly | Growing share of voice |
+| Métrica                 | Ferramenta              | Cadência       | Meta                           |
+| ----------------------- | ----------------------- | -------------- | ------------------------------ |
+| Tráfego orgânico        | GSC / GA4               | Semanal        | Crescimento MoM                |
+| Rankings (top 10)       | DataForSEO / SE Ranking | Semanal        | 20%+ dos alvos                 |
+| Citações em AI Overview | SE Ranking AI Tracker   | Semanal        | 30%+ das KW ranqueadas         |
+| Páginas indexadas       | Cobertura GSC           | Semanal        | 95%+ publicadas                |
+| Content score           | Surfer / Frase          | Por publicação | 80+                            |
+| Taxa de conversão BOFU  | GA4                     | Mensal         | 3–8% em páginas de alternativa |
+| Taxa de menção em LLM   | SE Ranking LLM Tracker  | Quinzenal      | Share of voice em crescimento  |
 
-### Monthly Iteration Cycle
+### Ciclo mensal de iteração
 
-1. Pull GSC data via MCP: top growing + declining pages
-2. Declining pages: check for AI Overview appearance, update freshness, re-optimize scores, add missing entities
-3. Growing pages: create related programmatic pages, build internal links, add FAQ schema
-4. "Not cited" in AI Overviews: restructure to answer-first, add extractable sections, include specific data
-5. Unindexed pages: check for thin content (< 500 words unique), verify no cannibalization, resubmit via IndexNow
-
----
-
-## Examples
-
-- **User says:** "Build programmatic SEO for our product" → **Result:** Agent asks domain rating and competitor set; recommends BOFU keywords and competitor-alternative pages (10–20); outlines template + data source (Airtable/API) + AI workflow (AirOps or custom); suggests quality controls, schema, internal links, and GSC + AI Overviews tracking.
-- **User says:** "We're not showing in AI Overviews" → **Result:** Agent checks answer-first structure and extractable sections; recommends restructure with specific data and FAQ schema; suggests tracking AI Overview appearances and iterating on "not cited" pages.
-- **User says:** "What tools for AI SEO?" → **Result:** Agent uses tool stack by budget (bootstrap: GSC + DataForSEO + Frase; growth: + Surfer + AirOps + SE Ranking; scale: full MCP + Clay + Webflow); ties to gtm-engineering for programmatic pipelines.
-
-## Troubleshooting
-
-- **Thin or duplicate content** → **Cause:** &lt;500 words unique or cannibalization. **Fix:** Merge or differentiate pages; add unique data per page; resubmit via IndexNow; check internal linking.
-- **Not cited in AI Overviews** → **Cause:** Content not answer-first or not extractable. **Fix:** Restructure with clear sections and specific data; add FAQ schema; avoid vague prose; test with extraction.
-- **Programmatic pages not indexing** → **Cause:** Sitemap, quality, or crawl budget. **Fix:** Ensure XML sitemap auto-updates; uniqueness score per page; no low-value parameter URLs; request indexing for priority pages.
+1. Puxe dados do GSC via MCP: páginas em alta + em queda
+2. Páginas em queda: verifique aparição de AI Overview; atualize frescor; re-otimize scores; acrescente entidades faltantes
+3. Páginas em alta: crie páginas programáticas relacionadas; construa links internos; adicione FAQ schema
+4. "Not cited" em AI Overviews: reestruture answer-first; seções extráveis; dados específicos
+5. Páginas não indexadas: checar conteúdo fino (menos de 500 palavras únicas); verificar canibalização; reenviar via IndexNow
 
 ---
 
-## Quick Reference
+## Exemplos
 
-### Launch Checklist
+- **Usuário diz:** "Monte SEO programático para nosso produto" → **Resultado:** O agente pergunta domain rating e conjunto de concorrentes; recomenda KWs BOFU e páginas de alternativa (10–20); descreve template + fonte de dados (Airtable/API) + workflow IA (AirOps ou custom); sugere controles de qualidade, schema, links internos e tracking GSC + AI Overviews.
+- **Usuário diz:** "Não aparecemos nos AI Overviews" → **Resultado:** O agente verifica estrutura answer-first e seções extráveis; recomenda reestruturar com dados específicos e FAQ schema; sugere track de aparições em AI Overview e iterar em páginas "not cited".
+- **Usuário diz:** "Quais ferramentas para AI SEO?" → **Resultado:** O agente usa stack por orçamento (bootstrap: GSC + DataForSEO + Frase; growth: + Surfer + AirOps + SE Ranking; scale: MCP completo + Clay + Webflow); conecta com **gtm-engineering** para pipelines programáticos.
+
+## Solução de problemas
+
+- **Conteúdo fino ou duplicado** → **Causa:** Menos de 500 palavras únicas ou canibalização. **Correção:** Fundir ou diferenciar páginas; dados únicos por página; reenviar via IndexNow; checar linking interno.
+- **Sem citação em AI Overviews** → **Causa:** Conteúdo não answer-first ou não extráível. **Correção:** Reestruture com seções claras e dados específicos; FAQ schema; evite texto vago; teste extração.
+- **Páginas programáticas não indexando** → **Causa:** Sitemap, qualidade ou orçamento de crawl. **Correção:** Garantir atualização automática do sitemap XML; score de unicidade por página; sem URLs parametrizadas de baixo valor; solicitar indexação para páginas prioritárias.
+
+---
+
+## Referência rápida
+
+### Checklist de lançamento
 
 ```
 [ ] Keyword research complete (BOFU first, then MOFU)
@@ -434,7 +439,7 @@ Schema: [FAQ / Product / Review / HowTo]
 [ ] Content calendar prioritized (P0-P4)
 ```
 
-### Tool Stack by Budget
+### Stack de ferramentas por orçamento
 
 ```
 Bootstrap ($0-100/mo):
@@ -454,23 +459,23 @@ Enterprise ($2000+/mo):
 
 ---
 
-## Questions to Ask
+## Perguntas para fazer
 
-1. "What's your current domain rating? This determines whether we start with low-competition BOFU keywords or need to build authority first."
-2. "Which 5 competitors do your customers most often compare you against? These become alternative page targets."
-3. "Do you have a structured data source (product database, company list, feature matrix) for programmatic pages?"
-4. "What CMS are you on? Webflow and WordPress have the strongest programmatic SEO support."
-5. "Are you tracking AI Overview appearances for your keywords?"
-6. "What is your monthly content production capacity?"
-7. "Do you have DataForSEO or Semrush API access?"
-8. "Is your content structured for AI extraction - self-contained sections, answer-first format, specific data?"
+1. "Qual é seu domain rating atual? Isso define se começamos com KWs BOFU de baixa concorrência ou se precisamos construir autoridade primeiro."
+2. "Quais são os 5 concorrentes com quem seus clientes mais comparam vocês? Esses viram alvos de páginas de alternativa."
+3. "Vocês têm uma fonte de dados estruturada (base de produto, lista de empresas, matriz de funcionalidades) para páginas programáticas?"
+4. "Qual CMS vocês usam? Webflow e WordPress têm o suporte mais forte a SEO programático."
+5. "Estão rastreando aparições em AI Overview nas palavras-chave?"
+6. "Qual é a capacidade mensal de produção de conteúdo?"
+7. "Têm acesso à API DataForSEO ou Semrush?"
+8. "O conteúdo está estruturado para extração por IA — seções autocontidas, formato answer-first e dados específicos?"
 
 ---
 
-## Related Skills
+## Skills relacionadas
 
-- **content-to-pipeline** - Connect SEO content to lead capture and pipeline generation
-- **multi-platform-launch** - Coordinate SEO content with multi-channel product launches
-- **positioning-icp** - Define positioning and ICP that informs keyword targeting and page messaging
-- **social-selling** - Amplify SEO content through social distribution for link building
-- **gtm-engineering** - Build technical infrastructure for programmatic page generation and data pipelines
+- **content-to-pipeline** — Conectar SEO a captura de leads e geração de pipeline
+- **multi-platform-launch** — Coordenar conteúdo SEO com lançamentos multicanal
+- **positioning-icp** — Definir positioning e ICP que informem KW e mensagem das páginas
+- **social-selling** — Amplificar SEO com distribuição social para link building
+- **gtm-engineering** — Infra técnica para geração programática de páginas e pipelines de dados

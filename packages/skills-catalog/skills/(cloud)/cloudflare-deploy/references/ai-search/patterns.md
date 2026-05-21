@@ -1,20 +1,20 @@
-# AI Search Patterns
+# Padrões do AI Search
 
 ## search() vs aiSearch()
 
-| Use                  | Method       | Returns                            |
-| -------------------- | ------------ | ---------------------------------- |
-| Custom UI, analytics | `search()`   | Raw chunks only (~100-300ms)       |
-| Chatbots, Q&A        | `aiSearch()` | AI response + chunks (~500-2000ms) |
+| Uso                  | Método       | Retorno                                |
+| -------------------- | ------------ | -------------------------------------- |
+| UI custom, analytics | `search()`   | Só chunks brutos (~100–300 ms)         |
+| Chatbots, Q&A        | `aiSearch()` | Resposta da IA + chunks (~500–2000 ms) |
 
 ## rewrite_query
 
-| Setting | Use When                                  |
-| ------- | ----------------------------------------- |
-| `true`  | User input (typos, vague queries)         |
-| `false` | LLM-generated queries (already optimized) |
+| Config  | Use quando                                               |
+| ------- | -------------------------------------------------------- |
+| `true`  | Entrada do usuário (erros de digitação, consultas vagas) |
+| `false` | Consultas geradas por LLM (já otimizadas)                |
 
-## Multitenancy (Folder-Based)
+## Multitenancy (por pasta)
 
 ```typescript
 const answer = await env.AI.autorag('saas-docs').aiSearch({
@@ -22,7 +22,7 @@ const answer = await env.AI.autorag('saas-docs').aiSearch({
   model: '@cf/meta/llama-3.3-70b-instruct-fp8-fast',
   filters: {
     column: 'folder',
-    operator: 'gte', // "starts with" pattern
+    operator: 'gte', // padrão "começa com"
     value: `tenants/${tenantId}/`,
   },
 })
@@ -39,15 +39,15 @@ const stream = await env.AI.autorag('docs').aiSearch({
 return new Response(stream, { headers: { 'Content-Type': 'text/event-stream' } })
 ```
 
-## Score Threshold
+## Limiar de score
 
-| Threshold     | Use                               |
-| ------------- | --------------------------------- |
-| 0.3 (default) | Broad recall, exploratory         |
-| 0.5           | Balanced, production default      |
-| 0.7           | High precision, critical accuracy |
+| Threshold    | Uso                             |
+| ------------ | ------------------------------- |
+| 0,3 (padrão) | Recall amplo, exploratório      |
+| 0,5          | Equilibrado, padrão em produção |
+| 0,7          | Alta precisão, exige acerto     |
 
-## System Prompt Template
+## Template de system prompt
 
 ```typescript
 const systemPrompt = `You are a documentation assistant.
@@ -56,10 +56,10 @@ const systemPrompt = `You are a documentation assistant.
 - Include code examples from context`
 ```
 
-## Compound Filters
+## Filtros compostos
 
 ```typescript
-// OR: Multiple folders
+// OR: várias pastas
 filters: {
   operator: "or",
   filters: [
@@ -68,7 +68,7 @@ filters: {
   ]
 }
 
-// AND: Folder + date
+// AND: pasta + data
 filters: {
   operator: "and",
   filters: [
@@ -80,7 +80,7 @@ filters: {
 
 ## Reranking
 
-Enable for high-stakes use cases (adds ~300ms latency):
+Habilite em casos críticos (adiciona ~300 ms de latência):
 
 ```typescript
 reranking: { enabled: true, model: "@cf/baai/bge-reranker-base" }

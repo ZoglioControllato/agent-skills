@@ -1,30 +1,24 @@
 ---
-title: Create Explicit Component Variants
+title: Criar variantes de componentes explícitos
 impact: MEDIUM
-impactDescription: self-documenting code, no hidden conditionals
+impactDescription: código autodocumentado, sem condicionais ocultas
 tags: composition, variants, architecture
 ---
 
-## Create Explicit Component Variants
+## Criar variantes de componentes explícitos
 
-Instead of one component with many boolean props, create explicit variant
-components. Each variant composes the pieces it needs. The code documents
-itself.
+Em vez de um componente com muitos adereços booleanos, crie uma variante explícita
+componentes. Cada variante compõe as peças que necessita. Os documentos de código
+em si.
 
-**Incorrect (one component, many modes):**
+**Incorreto (um componente, vários modos):**
 
 ```tsx
 // What does this component actually render?
-<Composer
-  isThread
-  isEditing={false}
-  channelId='abc'
-  showAttachments
-  showFormatting={false}
-/>
+<Composer isThread isEditing={false} channelId="abc" showAttachments showFormatting={false} />
 ```
 
-**Correct (explicit variants):**
+**Correto (variantes explícitas):**
 
 ```tsx
 // Immediately clear what this renders
@@ -37,10 +31,10 @@ itself.
 <ForwardMessageComposer messageId="123" />
 ```
 
-Each implementation is unique, explicit and self-contained. Yet they can each
-use shared parts.
+Cada implementação é única, explícita e independente. No entanto, cada um deles pode
+use partes compartilhadas.
 
-**Implementation:**
+**Implementação:**
 
 ```tsx
 function ThreadComposer({ channelId }: { channelId: string }) {
@@ -91,10 +85,10 @@ function ForwardMessageComposer({ messageId }: { messageId: string }) {
 }
 ```
 
-Each variant is explicit about:
+Cada variante é explícita sobre:
 
-- What provider/state it uses
-- What UI elements it includes
-- What actions are available
+- Qual provedor/estado ele usa
+- Quais elementos da interface do usuário ele inclui
+- Quais ações estão disponíveis
 
-No boolean prop combinations to reason about. No impossible states.
+Nenhuma combinação de objetos booleanos para raciocinar. Não há estados impossíveis.

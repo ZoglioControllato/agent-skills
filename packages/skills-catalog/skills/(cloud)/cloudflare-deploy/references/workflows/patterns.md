@@ -149,42 +149,42 @@ await introspector.modify(async (m) => {
 })
 ```
 
-## Best Practices
+## Melhores práticas
 
-### ✅ DO
+### ✅ FAÇA
 
-1. **Granular steps**: One API call per step (unless proving idempotency)
-2. **Idempotency**: Check-then-execute; use idempotency keys
-3. **Deterministic names**: Use static or step-output-based names
-4. **Return state**: Persist via step returns, not variables
-5. **Always await**: `await step.do()`, avoid dangling promises
-6. **Deterministic conditionals**: Base on `event.payload` or step outputs
-7. **Store large data externally**: R2/KV for >1 MiB, return refs
-8. **Batch creation**: `createBatch()` for multiple instances
+1. **Etapas granulares**: uma chamada de API por etapa (a menos que comprove idempotência)
+2. **Idempotência**: verificar e executar; usar chaves de idempotência
+3. **Nomes determinísticos**: Use nomes estáticos ou baseados em saída passo a passo
+4. **Estado de retorno**: persistir por meio de retornos de etapa, não de variáveis
+5. **Sempre aguarde**: `await step.do()`, evite promessas pendentes
+6. **Condicionais determinísticas**: Baseiam-se em `event.payload` ou saídas de etapa
+7. **Armazenar dados grandes externamente**: R2/KV para >1 MiB, retornar referências
+8. **Criação em lote**: `createBatch()` para múltiplas instâncias
 
-### ❌ DON'T
+### ❌NÃO
 
-1. **One giant step**: Breaks durability & retry control
-2. **State outside steps**: Lost on hibernation
-3. **Mutate events**: Events immutable, return new state
-4. **Non-deterministic logic outside steps**: `Math.random()`, `Date.now()` must be in steps
-5. **Side effects outside steps**: May duplicate on restart
-6. **Non-deterministic step names**: Prevents caching
-7. **Ignore timeouts**: `waitForEvent` throws, use try-catch
-8. **Reuse instance IDs**: Must be unique within retention
+1. **Um passo gigante**: quebra a durabilidade e o controle de novas tentativas
+2. **Estado fora das etapas**: Perdido na hibernação
+3. **Eventos modificados**: eventos imutáveis, retornam novo estado
+4. **Lógica não determinística fora das etapas**: `Math.random()`, `Date.now()` deve estar nas etapas
+5. **Efeitos colaterais fora das etapas**: podem duplicar na reinicialização
+6. **Nomes de etapas não determinísticos**: Impede o armazenamento em cache
+7. **Ignorar tempos limite**: `waitForEvent` lança, use try-catch
+8. **Reutilizar IDs de instância**: devem ser exclusivos na retenção
 
-## Orchestration Patterns
+## Padrões de orquestração
 
-### Fan-Out (Parallel Processing)
+### Fan-Out (processamento paralelo)```typescript
 
-```typescript
 const files = await step.do('list', async () => this.env.BUCKET.list())
 await Promise.all(
-  files.objects.map((file, i) =>
-    step.do(`process ${i}`, async () => processFile(await (await this.env.BUCKET.get(file.key)).arrayBuffer())),
-  ),
+files.objects.map((file, i) =>
+step.do(`process ${i}`, async () => processFile(await (await this.env.BUCKET.get(file.key)).arrayBuffer())),
+),
 )
-```
+
+````
 
 ### Parent-Child Workflows
 
@@ -194,7 +194,7 @@ const child = await step.do(
   async () => await this.env.CHILD_WORKFLOW.create({ id: `child-${event.instanceId}`, params: { data: result.data } }),
 )
 await step.do('other work', async () => console.log(`Child started: ${child.id}`))
-```
+````
 
 ### Race Pattern
 

@@ -54,31 +54,31 @@ await this.ctx.storage.get('key', { allowConcurrency: true, noCache: true })
 await this.ctx.storage.put('key', value, { allowUnconfirmed: true, noCache: true })
 ```
 
-### Storage Options
+### Opções de armazenamento
 
-| Option             | Methods        | Effect                                                        | Use Case                                                         |
-| ------------------ | -------------- | ------------------------------------------------------------- | ---------------------------------------------------------------- |
-| `allowConcurrency` | get, list      | Skip input gate; allow concurrent requests during read        | Read-heavy metrics that don't need strict consistency            |
-| `noCache`          | get, put, list | Skip in-memory cache; always read from disk                   | Rarely-accessed data or testing storage directly                 |
-| `allowUnconfirmed` | put, delete    | Return before write confirms (still protected by output gate) | Non-critical writes where latency matters more than confirmation |
+| Opção              | Métodos                | Efeito                                                                          | Caso de uso                                                                |
+| ------------------ | ---------------------- | ------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `allowConcurrency` | obter, listar          | Pular portão de entrada; permitir solicitações simultâneas durante a leitura    | Métricas de leitura pesada que não precisam de consistência estrita        |
+| `noCache`          | obter, colocar, listar | Ignorar cache na memória; sempre leio do disco                                  | Dados raramente acessados ​​ou teste de armazenamento diretamente          |
+| `allowUnconfirmed` | colocar, excluir       | Retornar antes da confirmação da gravação (ainda protegido pela porta de saída) | Gravações não críticas onde a latência é mais importante que a confirmação |
 
-## Transactions
+## Transações```typescript
 
-```typescript
 // Sync (SQL/sync KV only)
 this.ctx.storage.transactionSync(() => {
-  this.sql.exec('UPDATE accounts SET balance = balance - ? WHERE id = ?', 100, 1)
-  this.sql.exec('UPDATE accounts SET balance = balance + ? WHERE id = ?', 100, 2)
-  return 'result'
+this.sql.exec('UPDATE accounts SET balance = balance - ? WHERE id = ?', 100, 1)
+this.sql.exec('UPDATE accounts SET balance = balance + ? WHERE id = ?', 100, 2)
+return 'result'
 })
 
 // Async
 await this.ctx.storage.transaction(async () => {
-  const value = await this.ctx.storage.get('counter')
-  await this.ctx.storage.put('counter', value + 1)
-  if (value > 100) this.ctx.storage.rollback() // Explicit rollback
+const value = await this.ctx.storage.get('counter')
+await this.ctx.storage.put('counter', value + 1)
+if (value > 100) this.ctx.storage.rollback() // Explicit rollback
 })
-```
+
+````
 
 ## Point-in-Time Recovery
 
@@ -87,7 +87,7 @@ await this.ctx.storage.getCurrentBookmark()
 await this.ctx.storage.getBookmarkForTime(Date.now() - 2 * 24 * 60 * 60 * 1000)
 await this.ctx.storage.onNextSessionRestoreBookmark(bookmark)
 this.ctx.abort() // Restart to apply; bookmarks lexically comparable (earlier < later)
-```
+````
 
 ## Alarms
 

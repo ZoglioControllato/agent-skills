@@ -1,14 +1,14 @@
-# AI Gateway Troubleshooting
+# Solução de problemas do AI Gateway
 
-## Common Errors
+## Erros comuns
 
-| Error | Cause                                 | Fix                                 |
-| ----- | ------------------------------------- | ----------------------------------- |
-| 401   | Missing `cf-aig-authorization` header | Add header with CF API token        |
-| 403   | Invalid provider key / BYOK expired   | Check provider key in dashboard     |
-| 429   | Rate limit exceeded                   | Increase limit or implement backoff |
+| Erro | Causa                                      | Correção                                 |
+| ---- | ------------------------------------------ | ---------------------------------------- |
+| 401  | Falta o header `cf-aig-authorization`      | Adicione o header com token de API da CF |
+| 403  | Chave de provedor inválida / BYOK expirada | Verifique a chave no dashboard           |
+| 429  | Rate limit excedido                        | Aumente o limite ou use backoff          |
 
-### 401 Fix
+### Correção de 401
 
 ```typescript
 const client = new OpenAI({
@@ -17,7 +17,7 @@ const client = new OpenAI({
 })
 ```
 
-### 429 Retry Pattern
+### Padrão de retry para 429
 
 ```typescript
 async function requestWithRetry(fn, maxRetries = 3) {
@@ -35,56 +35,56 @@ async function requestWithRetry(fn, maxRetries = 3) {
 }
 ```
 
-## Gotchas
+## Armadilhas
 
-| Issue                    | Reality                                                      |
-| ------------------------ | ------------------------------------------------------------ |
-| Metadata limits          | Max 5 entries, flat only (no nesting)                        |
-| Cache key collision      | Use unique keys per expected response                        |
-| BYOK + Unified Billing   | Mutually exclusive                                           |
-| Rate limit scope         | Per-gateway, not per-user (use dynamic routing for per-user) |
-| Log delay                | 30-60 seconds normal                                         |
-| Streaming + caching      | **Incompatible**                                             |
-| Model name (unified API) | Prefix required: `openai/gpt-4o`, not `gpt-4o`               |
+| Problema                       | Realidade                                                          |
+| ------------------------------ | ------------------------------------------------------------------ |
+| Limites de metadados           | Máx. 5 entradas, só plano (sem aninhamento)                        |
+| Colisão de cache key           | Use chaves únicas por resposta esperada                            |
+| BYOK + billing unificado       | Mutuamente exclusivos                                              |
+| Escopo de rate limit           | Por gateway, não por usuário (use roteamento dinâmico por usuário) |
+| Atraso de log                  | 30–60 s é normal                                                   |
+| Streaming + cache              | **Incompatíveis**                                                  |
+| Nome do modelo (API unificada) | Prefixo obrigatório: `openai/gpt-4o`, não `gpt-4o`                 |
 
-## Cache Not Working
+## Cache não funciona
 
-**Causes:**
+**Causas:**
 
-- Different request params (temperature, etc.)
-- Streaming enabled
-- Caching disabled in settings
+- Parâmetros diferentes (temperatura etc.)
+- Streaming habilitado
+- Cache desabilitado nas configurações
 
-**Check:** `response.headers.get('cf-aig-cache-status')` → HIT or MISS
+**Verifique:** `response.headers.get('cf-aig-cache-status')` → HIT ou MISS
 
-## Logs Not Appearing
+## Logs não aparecem
 
-1. Check logging enabled: Dashboard → Gateway → Settings
-2. Remove `cf-aig-collect-log: false` header
-3. Wait 30-60 seconds
-4. Check log limit (10M default)
+1. Confirme logging habilitado: Dashboard → Gateway → Settings
+2. Remova o header `cf-aig-collect-log: false`
+3. Aguarde 30–60 s
+4. Verifique limite de logs (10M padrão)
 
-## Debugging
+## Debug
 
 ```bash
-# Test connectivity
+# Testar conectividade
 curl -v https://gateway.ai.cloudflare.com/v1/{account}/{gateway}/openai/models \
   -H "Authorization: Bearer $OPENAI_KEY" \
   -H "cf-aig-authorization: Bearer $CF_TOKEN"
 ```
 
 ```typescript
-// Check response headers
+// Cabeçalhos da resposta
 console.log('Cache:', response.headers.get('cf-aig-cache-status'))
 console.log('Request ID:', response.headers.get('cf-ray'))
 ```
 
 ## Analytics
 
-Dashboard → AI Gateway → Select gateway
+Dashboard → AI Gateway → Selecione o gateway
 
-**Metrics:** Requests, tokens, latency (p50/p95/p99), cache hit rate, costs
+**Métricas:** Requests, tokens, latência (p50/p95/p99), taxa de hit de cache, custos
 
-**Log filters:** `status: error`, `provider: openai`, `cost > 0.01`, `duration > 1000`
+**Filtros de log:** `status: error`, `provider: openai`, `cost > 0.01`, `duration > 1000`
 
-**Export:** Logpush to S3/GCS/Datadog/Splunk
+**Exportação:** Logpush para S3/GCS/Datadog/Splunk

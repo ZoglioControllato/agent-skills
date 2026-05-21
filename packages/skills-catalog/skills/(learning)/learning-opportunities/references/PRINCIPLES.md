@@ -1,42 +1,45 @@
-# Learning Principles
+# Princípios de Aprendizagem
 
-Consult this file when adapting techniques or making judgment calls about learning approaches. These principles explain WHY the techniques in the main skill work.
+Consulte este arquivo ao adaptar técnicas ou fazer julgamentos sobre abordagens de aprendizagem. Esses princípios explicam POR QUE as técnicas da habilidade principal funcionam.
 
-## Generation Effect
+## Efeito de Geração
 
-Users encode information better when they produce it rather than passively consume it. Active retrieval strengthens memory traces in ways that passive review does not. This is why we ask for predictions and explanations before revealing answers.
+Os usuários codificam melhor as informações quando as produzem, em vez de consumi-las passivamente. A recuperação ativa fortalece os traços de memória de uma forma que a revisão passiva não consegue. É por isso que pedimos previsões e explicações antes de revelar as respostas.
 
-## Pre-testing
+## Pré-teste
 
-Attempting to answer before learning new information produces stronger memory — even when the attempt is wrong. A failed attempt makes the correct answer more memorable by contrast. Wrong predictions are valuable data, not failures.
+Tentar responder antes de aprender novas informações produz uma memória mais forte – mesmo quando a tentativa é errada. Uma tentativa fracassada torna a resposta correta mais memorável, por outro lado. Previsões erradas são dados valiosos, não falhas.
 
-## Spacing Effect
+## Efeito de espaçamento
 
-Distributing learning over time beats cramming. This is why we use retrieval check-ins at session starts and limit exercises to 2 per session rather than drilling continuously.
+Distribuir o aprendizado ao longo do tempo é melhor do que estudar. É por isso que usamos check-ins de recuperação no início da sessão e limitamos os exercícios a 2 por sessão, em vez de perfurar continuamente.
 
-## Desirable Difficulties
+## Dificuldades Desejáveis
 
-Conditions that make learning harder in the short term often produce better long-term retention. Exercises should require effort without being frustrating. Struggle during learning is a sign it's working, not failing.
+As condições que dificultam a aprendizagem a curto prazo produzem frequentemente uma melhor retenção a longo prazo. Os exercícios devem exigir esforço sem serem frustrantes. A dificuldade durante o aprendizado é um sinal de que está funcionando, e não falhando.
 
-## Fluency Illusion
+## Ilusão de Fluência
 
-When AI-generated code is clean and readable, users overestimate how well they understand it. The fluency of the output masks gaps in mental models. This is the primary risk this skill counteracts.
+Quando o código gerado pela IA é limpo e legível, os usuários superestimam o quão bem o entendem. A fluência dos resultados mascara lacunas nos modelos mentais. Este é o principal risco que esta habilidade neutraliza.
 
-## Dynamic Testing
+## Teste Dinâmico
 
-Errors during learning, when followed by clear corrective feedback, enhance retention compared to error-free learning. This is why we are direct about wrong answers rather than softening them.
+Erros durante a aprendizagem, quando seguidos de feedback corretivo claro, aumentam a retenção em comparação com a aprendizagem sem erros. É por isso que somos diretos em relação às respostas erradas, em vez de suavizá-las.
 
-## Transfer and Interleaving
+## Transferência e intercalação
 
-Knowledge transfers better when connected to underlying principles and varied contexts. Asking "where else would this apply?" builds flexible knowledge rather than context-bound recall.
+O conhecimento é melhor transferido quando conectado a princípios subjacentes e contextos variados. Perguntar "onde mais isso se aplicaria?" constrói conhecimento flexível em vez de recordação vinculada ao contexto.
 
-## Sources
+## Fontes
 
-- Bjork, R. A., Dunlosky, J., & Kornell, N. (2013). Self-regulated learning: Beliefs, techniques, and illusions.
-- Dunlosky, J., et al. (2013). Improving students' learning with effective learning techniques.
-- Giebl, S., et al. (2021). Answer first or Google first?
-- Hicks, C. M., Lee, C. S., & Foster-Marks, K. (2025). The New Developer: AI Skill Threat, Identity Change & Developer Thriving.
-- Roediger III, H. L., & Karpicke, J. D. (2006). The power of testing memory.
-- Soderstrom, N. C., & Bjork, R. A. (2015). Learning versus performance: An integrative review.
-- Tankelevitch, L., et al. (2024). The metacognitive demands and opportunities of generative AI.
-- Hicks, C. (2025). Cognitive helmets for the AI bicycle. Fight for the Human.
+- Bjork, RA, Dunlosky, J., & Kornell, N. (2013). Aprendizagem autorregulada: crenças, técnicas e ilusões.
+- Dunlosky, J., et al. (2013). Melhorar a aprendizagem dos alunos com técnicas de aprendizagem eficazes.
+- Giebl, S., et al. (2021). Responda primeiro ou Google primeiro?
+- Hicks, CM, Lee, CS e Foster-Marks, K. (2025). O novo desenvolvedor: ameaça de habilidade de IA, mudança de identidade e prosperidade do desenvolvedor.
+- Roediger III, HL, & Karpicke, JD (2006). O p
+
+poder de testar a memória.
+
+- Soderstrom, NC e Bjork, RA (2015). Aprendizagem versus desempenho: uma revisão integrativa.
+- Tankelevitch, L., et al. (2024). As demandas e oportunidades metacognitivas da IA ​​generativa.
+  -Hicks, C. (2025). Capacetes cognitivos para a bicicleta AI. Lute pelo Humano.

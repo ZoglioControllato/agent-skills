@@ -1,115 +1,115 @@
-# Component Identification and Sizing Skill
+# Identificação de componentes e habilidade de dimensionamento
 
-A skill for identifying architectural components in codebases and calculating size metrics to support decomposition planning and migration efforts.
+Uma habilidade para identificar componentes arquitetônicos em bases de código e calcular métricas de tamanho para apoiar o planejamento de decomposição e esforços de migração.
 
-## What This Skill Does
+## O que essa habilidade faz
 
-This skill analyzes codebases to:
+Esta habilidade analisa bases de código para:
 
-1. **Identify architectural components** (logical building blocks) from directory/namespace structures
-2. **Calculate size metrics** using statements (not lines of code) for accurate comparison
-3. **Detect oversized components** that exceed thresholds or standard deviations
-4. **Identify undersized components** that may need consolidation
-5. **Generate component inventory tables** with size statistics
-6. **Provide recommendations** for splitting large components or consolidating small ones
-7. **Assess decomposition feasibility** based on component size distribution
+1. **Identificar componentes arquitetônicos** (blocos de construção lógicos) de estruturas de diretório/namespace
+2. **Calcule métricas de tamanho** usando instruções (não linhas de código) para uma comparação precisa
+3. **Detecte componentes superdimensionados** que excedam limites ou desvios padrão
+4. **Identifique componentes subdimensionados** que podem precisar de consolidação
+5. **Gere tabelas de inventário de componentes** com estatísticas de tamanho
+6. **Forneça recomendações** para divisão
 
-## When to Use This Skill
+grandes componentes ou consolidando pequenos 7. **Avaliar a viabilidade de decomposição** com base na distribuição do tamanho dos componentes
 
-This skill is applied when you:
+## Quando usar esta habilidade
 
-- Ask to analyze codebase structure or organization
-- Request component identification or sizing analysis
-- Need help planning monolithic decomposition
-- Want to find oversized components that need splitting
-- Ask about architectural decomposition patterns
-- Request component inventory for migration planning
-- Discuss codebase metrics or statistics
+Esta habilidade é aplicada quando você:
 
-## Key Features
+- Peça para analisar a estrutura ou organização da base de código
+- Solicitar identificação de componentes ou análise de dimensionamento
+- Precisa de ajuda para planejar a decomposição monolítica
+- Deseja encontrar componentes superdimensionados que precisam ser divididos
+- Pergunte sobre padrões de decomposição arquitetônica
+- Solicitar inventário de componentes para planejamento de migração
+- Discutir métricas ou estatísticas de base de código
 
-### Language & Framework Agnostic
+## Principais recursos
 
-This skill works with **any codebase** in any language:
+### Agnóstico de linguagem e estrutura
 
-- **Node.js/Express**: Analyzes `services/`, `routes/`, `models/` directories
-- **Java**: Analyzes package structures (e.g., `com.company.domain.service`)
-- **Python**: Analyzes module paths (e.g., `app/billing/payment`)
-- **C#/.NET**: Analyzes namespace structures
-- **Any language**: Works with directory/namespace patterns
+Esta habilidade funciona com **qualquer base de código** em qualquer idioma:
 
-### Accurate Size Metrics
+- **Node.js/Express**: Analisa diretórios `services/`, `routes/`, `models/`
+- **Java**: analisa estruturas de pacotes (por exemplo, `com.company.domain.service`)
+- **Python**: analisa caminhos de módulos (por exemplo, `app/billing/payment`)
+- **C#/.NET**: analisa estruturas de namespace
+- **Qualquer idioma**: Funciona com padrões de diretório/namespace
 
-Uses **statements** (not lines of code) for accurate size comparison:
+### Métricas de tamanho precisas
 
-- Accounts for code complexity, not formatting
-- More reliable than line counts
-- Consistent across different coding styles
-- Standard deviation analysis for outlier detection
+Usa **instruções** (não linhas de código) para comparação precisa de tamanho:
 
-### Actionable Output
+- Considera a complexidade do código, não a formatação
+- Mais confiável que a contagem de linhas
+- Consistente em diferentes estilos de codificação
+- Análise de desvio padrão para detecção de valores discrepantes
 
-Provides concrete, actionable analysis:
+### Resultado acionável
 
-- Component inventory tables with size metrics
-- Size distribution visualizations
-- Oversized component identification with split recommendations
-- Undersized component identification with consolidation suggestions
-- Fitness function code for automated governance
+Fornece análises concretas e acionáveis:
 
-## Files Included
+- Tabelas de inventário de componentes com métricas de tamanho
+- Visualizações de distribuição de tamanho
+- Identificação de componentes superdimensionados com recomendações de divisão
+- Identificação de componentes subdimensionados com sugestões de consolidação
+- Código de função de fitness para governança automatizada
 
-### SKILL.md (Main Skill)
+## Arquivos incluídos
 
-The primary skill file containing:
+### SKILL.md (habilidade principal)
 
-- Component identification methodology
-- Size calculation process (statements, files, percentages)
-- Standard deviation analysis framework
-- Output format templates
-- Implementation notes for different languages
-- Fitness function examples
-- Complete analysis checklist
+O arquivo de habilidade principal contendo:
 
-### QUICK-REFERENCE.md (Quick Lookup)
+- Metodologia de identificação de componentes
+- Processo de cálculo de tamanho (declarações, arquivos, porcentagens)
+- Estrutura de análise de desvio padrão
+- Modelos de formato de saída
+- Notas de implementação para diferentes idiomas
+- Exemplos de funções de fitness
+- Lista de verificação de análise completa
 
-Fast reference for common scenarios:
+### QUICK-REFERENCE.md (pesquisa rápida)
 
-- Component definition rules
-- Size threshold guidelines
-- Quick analysis steps
-- Common directory patterns
-- Output template
+Referência rápida para cenários comuns:
 
-### README.md (This File)
+- Regras de definição de componentes
+- Diretrizes de limite de tamanho
+- Etapas de análise rápida
+- Padrões de diretório comuns
+- Modelo de saída
 
-Complete documentation including:
+### README.md (este arquivo)
 
-- What the skill does
-- When to use it
-- Usage examples
-- Core concepts
-- Installation and customization
+Documentação completa incluindo:
 
-## Usage Examples
+- O que a habilidade faz
+- Quando usar
+- Exemplos de uso
+- Conceitos centrais
+- Instalação e personalização
 
-### Example 1: Identify All Components
+## Exemplos de uso
 
-```
+### Exemplo 1: Identificar todos os componentes```
+
 User: "Identify and size all components in this codebase"
 
 The skill will:
+
 1. Map directory/namespace structures
 2. Identify leaf nodes (components)
 3. Count statements and files per component
 4. Calculate percentages and statistics
 5. Generate component inventory table
 6. Flag oversized/undersized components
-```
 
-**Output**:
+````
 
-```markdown
+**Saída**:```markdown
 ## Component Inventory
 
 | Component Name      | Namespace                    | Statements | Files | Percent | Status       |
@@ -121,24 +121,23 @@ The skill will:
 ## Recommendations
 
 - ReportingService (33%) should be split into smaller components
-```
+````
 
-### Example 2: Find Oversized Components
+### Exemplo 2: Encontre componentes superdimensionados```
 
-```
 User: "Find components that are too large and need splitting"
 
 The skill will:
+
 1. Calculate mean and standard deviation
 2. Identify components >2 std dev or >10% threshold
 3. Analyze functional areas within large components
 4. Suggest specific splits
 5. Estimate resulting component sizes
-```
 
-**Output**:
+````
 
-```markdown
+**Saída**:```markdown
 ## Oversized Components
 
 **ReportingService** (33% - 27,765 statements)
@@ -156,24 +155,23 @@ The skill will:
 2. TicketReportsService
 3. ExpertReportsService
 4. FinancialReportsService
-```
+````
 
-### Example 3: Component Size Analysis
+### Exemplo 3: Análise de tamanho de componente```
 
-```
 User: "Analyze component sizes and distribution"
 
 The skill will:
+
 1. Calculate all size metrics
 2. Generate size distribution
 3. Identify outliers
 4. Provide summary statistics
 5. Create recommendations
-```
 
-**Output**:
+````
 
-```markdown
+**Saída**:```markdown
 ## Size Analysis Summary
 
 **Total Components**: 18
@@ -186,166 +184,151 @@ The skill will:
 - Oversized (>2 std dev): 1 component
 - Well-sized (within 1-2 std dev): 15 components
 - Undersized (<1 std dev): 2 components
-```
+````
 
-## Core Concepts
+## Conceitos Básicos
 
-### Component Definition
+### Definição de componente
 
-A **component** is an architectural building block that:
+Um **componente** é um bloco de construção arquitetônico que:
 
-- Has a well-defined role and responsibility
-- Is identified by a **leaf node** in directory/namespace structure
-- Contains source code files grouped together
-- Performs specific business or infrastructure functionality
+- Tem função e responsabilidade bem definidas
+- É identificado por um **nó folha** na estrutura de diretório/namespace
+- Contém arquivos de código-fonte agrupados
+- Executa funcionalidades específicas de negócios ou infraestrutura
 
-**Key Rule**: Components are **leaf nodes only**. If a namespace is extended (e.g., `services/billing` → `services/billing/payment`), the parent becomes a **subdomain**, not a component.
+**Regra principal**: Os componentes são **apenas nós folha**. Se um namespace for estendido (por exemplo, `serviços/faturamento` → `serviços/faturamento/pagamento`), o pai se torna um **subdomínio**, não um componente.
 
-### Size Metrics
+### Métricas de tamanho
 
-| Metric         | Description                                                | Purpose                                        |
-| -------------- | ---------------------------------------------------------- | ---------------------------------------------- |
-| **Statements** | Count executable statements (terminated by `;` or newline) | Accurate size measure, accounts for complexity |
-| **Files**      | Count source files in component                            | Complexity indicator                           |
-| **Percent**    | `(component_statements / total_statements) * 100`          | Relative size in codebase                      |
-| **Std Dev**    | Standard deviation from mean component size                | Outlier detection                              |
+| Métrica         | Descrição                                                          | Finalidade                                              |
+| --------------- | ------------------------------------------------------------------ | ------------------------------------------------------- |
+| **Declarações** | Contar instruções executáveis ​​(terminadas por `;` ou nova linha) | Medida precisa de tamanho, leva em conta a complexidade |
+| **Arquivos**    | Contar arquivos de origem no componente                            |
 
-### Size Thresholds
+| Indicador de complexidade |
+| **Porcentagem** | `(component_statements / total_statements) * 100` | Tamanho relativo na base de código |
+| **Desenvolvimento padrão** | Desvio padrão do tamanho médio dos componentes | Detecção de valores discrepantes |
 
-Thresholds vary by application size:
+### Limites de tamanho
 
-| App Size                  | Oversized Threshold | Notes                                        |
-| ------------------------- | ------------------- | -------------------------------------------- |
-| Small (<10 components)    | >30% of codebase    | Fewer components, higher variance acceptable |
-| Medium (10-20 components) | >15% of codebase    | Balanced threshold                           |
-| Large (>20 components)    | >10% of codebase    | More components, lower variance expected     |
+Os limites variam de acordo com o tamanho do aplicativo:
 
-**Standard Deviation Rule**: Components >2 standard deviations from mean are considered oversized.
+| Tamanho do aplicativo     | Limite superdimensionado | Notas                                        |
+| ------------------------- | ------------------------ | -------------------------------------------- |
+| Pequeno (<10 componentes) | >30% da base de código   | Menos componentes, maior variância aceitável |
+| Médio (10-20 componentes) | >15% da base de código   | Limiar equilibrado                           |
+| Grande (>20 componentes)  | >10% da base de código   | Mo                                           |
 
-### Component Status
+re componentes, menor variância esperada |
 
-- ✅ **OK**: Within 1-2 std dev from mean, appropriately sized
-- ⚠️ **Too Large**: >2 std dev above mean or exceeds percentage threshold
-- 🔍 **Too Small**: <1 std dev below mean or <1% of codebase
+**Regra de desvio padrão**: Componentes >2 desvios padrão da média são considerados superdimensionados.
 
-## How to Use
+### Status do Componente
 
-### Quick Start
+- ✅ **OK**: Dentro de 1-2 desvio padrão da média, tamanho apropriado
+- ⚠️ **Muito grande**: >2 desvio padrão acima da média ou excede o limite percentual
+- 🔍 **Muito pequeno**: <1 std dev abaixo da média ou <1% da base de código
 
-Request analysis of your codebase:
+## Como usar
 
-```
+### Início rápido
+
+Solicite análise da sua base de código:```
 "Identify and size all components in this codebase"
 "Find oversized components that need splitting"
 "Create a component inventory for decomposition planning"
 "Analyze component size distribution"
-```
 
-### Step-by-Step Usage
+````
+### Uso passo a passo
 
-#### 1. Initial Analysis
+#### 1. Análise inicial
 
-Start with a complete component inventory:
-
-```
+Comece com um inventário completo de componentes:```
 User: "Identify all components and calculate their sizes"
-```
+````
 
-This will:
+Isto irá:
 
-- Map your directory structure
-- Identify all components (leaf nodes)
-- Calculate size metrics
-- Generate inventory table
+- Mapeie sua estrutura de diretórios
+- Identificar todos os componentes (nós folha)
+- Calcular métricas de tamanho
+- Gerar tabela de inventário
 
-#### 2. Identify Issues
+#### 2. Identificar problemas
 
-Find components that need attention:
-
-```
+Encontre componentes que precisam de atenção:```
 User: "Which components are too large and need splitting?"
-```
 
-This will:
+````
+Isto irá:
 
-- Calculate statistics (mean, std dev)
-- Flag oversized components
-- Analyze functional areas
-- Suggest specific splits
+- Calcular estatísticas (média, std dev)
+- Sinalizar componentes superdimensionados
+- Analisar áreas funcionais
+- Sugerir divisões específicas
 
-#### 3. Get Recommendations
+#### 3. Obtenha recomendações
 
-Request actionable recommendations:
-
-```
+Solicite recomendações acionáveis:```
 User: "What should I do about oversized components?"
-```
+````
 
-This will:
+Isto irá:
 
-- Prioritize recommendations
-- Suggest component splits
-- Estimate resulting sizes
-- Create architecture stories
+- Priorizar recomendações
+- Sugerir divisões de componentes
+- Estimar tamanhos resultantes
+- Crie histórias de arquitetura
 
-#### 4. Monitor Progress
+#### 4. Monitore o progresso
 
-Track changes over time:
-
-```
+Acompanhe as mudanças ao longo do tempo:```
 User: "Has component X grown too large since last analysis?"
-```
 
-This will:
+````
+Isto irá:
 
-- Compare current vs. previous sizes
-- Check against thresholds
-- Alert if thresholds exceeded
+- Compare os tamanhos atuais e anteriores
+- Verifique os limites
+- Alerta se os limites forem excedidos
 
-### Advanced Usage
+### Uso Avançado
 
-#### Custom Thresholds
+#### Limites personalizados
 
-If you have specific size requirements:
-
-```
+Se você tiver requisitos de tamanho específicos:```
 User: "Identify components larger than 15% of the codebase"
-```
+````
 
-#### Language-Specific Analysis
+#### Análise Específica do Idioma
 
-For framework-specific analysis:
-
-```
+Para análise específica da estrutura:```
 User: "Analyze components in the services/ directory"
-```
 
-#### Component Grouping
+````
+#### Agrupamento de Componentes
 
-Analyze specific domains:
-
-```
+Analise domínios específicos:```
 User: "Size all components in the billing domain"
-```
+````
 
-## Output Format
+## Formato de saída
 
-The skill generates structured output:
+A habilidade gera resultados estruturados:
 
-### Component Inventory Table
+### Tabela de inventário de componentes```markdown
 
-```markdown
 ## Component Inventory
 
 | Component Name   | Namespace/Path            | Statements | Files | Percent | Status       |
 | ---------------- | ------------------------- | ---------- | ----- | ------- | ------------ |
 | BillingService   | services/BillingService   | 4,312      | 23    | 5%      | ✅ OK        |
 | ReportingService | services/ReportingService | 27,765     | 162   | 33%     | ⚠️ Too Large |
-```
 
-### Size Analysis Summary
-
-```markdown
+````
+### Resumo da análise de tamanho```markdown
 ## Size Analysis Summary
 
 **Total Components**: 18
@@ -356,11 +339,10 @@ The skill generates structured output:
 **Oversized Components** (>2 std dev or >10%):
 
 - ReportingService (33% - 27,765 statements)
-```
+````
 
-### Recommendations
+### Recomendações```markdown
 
-```markdown
 ## Recommendations
 
 ### High Priority: Split Large Components
@@ -375,80 +357,71 @@ The skill generates structured output:
   3. ExpertReportsService
   4. FinancialReportsService
 - **Expected Result**: Each component ~7-9% of codebase
-```
 
-## Integration with Other Skills
+````
+## Integração com outras habilidades
 
-This skill is part of a decomposition pattern sequence:
+Esta habilidade faz parte de uma sequência de padrões de decomposição:
 
-1. **Component Identification & Sizing** (this skill) → Understand what you have
-2. **Component Dependency Analysis** → Assess coupling and feasibility
-3. **Common Domain Component Detection** → Find duplicate functionality
-4. **Component Flattening** → Remove orphaned classes
-5. **Domain Identification** → Group components into domains
-6. **Service Boundary Recommendation** → Plan service extraction
+1. **Identificação e dimensionamento de componentes** (esta habilidade) → Entenda o que você tem
+2. **Análise de Dependência de Componentes** → Avaliar o acoplamento e a viabilidade
+3. **Detecção de componente de domínio comum** → Encontre funcionalidade duplicada
+4. **Achatamento de componentes** → Remover classes órfãs
+5. **Identificação de Domínio** → Agrupar componentes em domínios
+6. **Recomendação de limite de serviço** → Planejar a extração de serviço
 
-Use this skill first to establish a baseline before applying other decomposition patterns.
+Use esta habilidade primeiro para estabelecer uma linha de base antes de aplicar outros padrões de decomposição.
 
-## Installation
+## Instalação
 
-This skill is installed at the project level:
-
-```
+Esta habilidade é instalada no nível do projeto:```
 skills/component-identification-sizing/
-```
+````
 
-This means it's:
+Isso significa que é:
 
-- **Shared with the repository**: Anyone cloning this repo gets the skill
-- **Version controlled**: Changes are tracked in git
-- **Project-specific**: Can be customized for this codebase
+- **Compartilhado com o repositório**: qualquer pessoa que clonar este repositório obtém a habilidade
+- **Controlado por versão**: as alterações são rastreadas no git
+- **Específico do projeto**: pode ser personalizado para esta base de código
 
-The skill will be automatically discovered and used when appropriate based on the description in the frontmatter.
+A habilidade será automaticamente descoberta e usada quando apropriado com base na descrição no frontmatter.
 
-## Customization
+## Personalização
 
-### For Project-Specific Patterns
+### Para padrões específicos do projeto
 
-If your project has specific component patterns, document them:
-
-```
+Se o seu projeto tiver padrões de componentes específicos, documente-os:```
 skills/component-identification-sizing/
-└── project-patterns.md  # Document project-specific component patterns
-```
+└── project-patterns.md # Document project-specific component patterns
 
-### For Framework-Specific Analysis
+````
+### Para análise específica da estrutura
 
-Add framework-specific detection patterns:
-
-```markdown
+Adicione padrões de detecção específicos da estrutura:```markdown
 ## Framework: NestJS
 
 **Component Pattern**: `@Injectable()` classes in `services/` directory
 **Module Pattern**: `@Module()` decorator groups components
 **Controller Pattern**: `@Controller()` in `controllers/` directory
-```
+````
 
-### Custom Thresholds
+### Limites personalizados
 
-Modify thresholds in SKILL.md for your project:
+Modifique os limites em SKILL.md para o seu projeto:```markdown
 
-```markdown
 ## Custom Thresholds
 
 For this project:
 
 - Oversized: >12% of codebase (instead of default 10%)
 - Undersized: <0.5% of codebase (instead of default 1%)
-```
 
-## Fitness Functions
+````
+## Funções de condicionamento físico
 
-After identifying components, create automated checks:
+Após identificar os componentes, crie verificações automatizadas:
 
-### Component Size Check
-
-```javascript
+### Verificação do tamanho do componente```javascript
 // Alert if component exceeds threshold
 function checkComponentSize(component, totalStatements, threshold = 0.1) {
   const percent = component.statements / totalStatements
@@ -460,130 +433,126 @@ function checkComponentSize(component, totalStatements, threshold = 0.1) {
     }
   }
 }
-```
+````
 
-### Standard Deviation Check
+### Verificação do desvio padrão```javascript
 
-```javascript
 // Alert if component is >2 std dev from mean
 function checkStandardDeviation(component, mean, stdDev) {
-  const deviation = Math.abs(component.statements - mean) / stdDev
-  if (deviation > 2) {
-    return {
-      component: component.name,
-      deviation: deviation.toFixed(2),
-      issue: 'More than 2 standard deviations from mean',
-    }
-  }
+const deviation = Math.abs(component.statements - mean) / stdDev
+if (deviation > 2) {
+return {
+component: component.name,
+deviation: deviation.toFixed(2),
+issue: 'More than 2 standard deviations from mean',
 }
-```
+}
+}
 
-## Best Practices
+````
+## Melhores práticas
 
-### Do's ✅
+### O que fazer ✅
 
-- Use statements, not lines of code
-- Identify components as leaf nodes only
-- Calculate both percentage and standard deviation
-- Consider application size when setting thresholds
-- Document namespace/path for each component
-- Create visual size distribution if possible
-- Monitor component growth over time
+- Use instruções, não linhas de código
+- Identificar componentes apenas como nós folha
+- Calcular porcentagem e desvio padrão
+- Considere o tamanho do aplicativo ao definir limites
+- Namespace/caminho do documento para cada componente
+- Crie uma distribuição visual de tamanho, se possível
+- Monitore o crescimento dos componentes ao longo do tempo
 
-### Don'ts ❌
+### O que não fazer ❌
 
-- Don't count test files in component size
-- Don't treat parent directories as components
-- Don't use fixed thresholds without considering app size
-- Don't ignore small components (may need consolidation)
-- Don't skip standard deviation calculation
-- Don't mix infrastructure and domain components in same analysis
+- Não conte arquivos de teste no tamanho do componente
+- Não trate os diretórios pais como componentes
+- Não use limites fixos sem considerar o tamanho do aplicativo
+- Não ignore componentes pequenos (podem precisar de consolidação)
+- Não pule o cálculo do desvio padrão
+- Não misture componentes de infraestrutura e domínio na mesma análise
 
-## Validation
+## Validação
 
-To verify the skill works correctly, try:
-
-```
+Para verificar se a habilidade funciona corretamente, tente:```
 User: "Identify and size all components in this codebase"
-```
+````
 
-The skill should:
+A habilidade deve:
 
-1. Read the SKILL.md file
-2. Map directory/namespace structures
-3. Identify leaf nodes (components)
-4. Calculate size metrics
-5. Generate component inventory table
-6. Flag oversized/undersized components
-7. Provide recommendations
+1. Leia o arquivo SKILL.md
+2. Mapear estruturas de diretório/namespace
+3. Identifique nós folha (componentes)
+4. Calcule métricas de tamanho
+5. Gerar tabela de inventário de componentes
+6. Sinalizar componentes superdimensionados/subdimensionados
+7. Forneça recomendações
 
-## Troubleshooting
+## Solução de problemas
 
-### Components Not Identified
+### Componentes não identificados
 
-**Issue**: Components are not found in your structure
+**Problema**: os componentes não foram encontrados na sua estrutura
 
-**Solution**:
+**Solução**:
 
-- Check if directories follow expected patterns
-- Verify source files exist in component directories
-- Ensure leaf nodes contain actual code files
+- Verifique se os diretórios seguem os padrões esperados
+- Verifique se os arquivos de origem existem nos diretórios dos componentes
+- Certifique-se de que os nós folha contenham arquivos de código reais
 
-### Incorrect Size Calculations
+### Cálculos de tamanho incorretos
 
-**Issue**: Size metrics seem wrong
+**Problema**: as métricas de tamanho parecem erradas
 
-**Solution**:
+**Solução**:
 
-- Verify statement counting logic matches your language
-- Check if test files are being excluded
-- Ensure all source files are being counted
+- Verifique se a lógica de contagem de instruções corresponde ao seu idioma
+- Verifique se os arquivos de teste estão sendo excluídos
+- Certifique-se de que todos os arquivos de origem estejam sendo contados
 
-### Thresholds Too Strict/Loose
+### Limites muito rígidos/frouxos
 
-**Issue**: Too many/few components flagged
+**Problema**: muitos/poucos componentes sinalizados
 
-**Solution**:
+**Solução**:
 
-- Adjust thresholds in SKILL.md for your app size
-- Use standard deviation instead of fixed percentages
-- Consider your specific decomposition goals
+- Ajuste os limites em SKILL.md para o tamanho do seu aplicativo
+- Use desvio padrão em vez de porcentagens fixas
+- Considere seus objetivos específicos de decomposição
 
-## References
+## Referências
 
-This skill is based on:
+Esta habilidade é baseada em:
 
-- **Software Architecture: The Hard Parts** by Neal Ford, Mark Richards, Pramod Sadalage, Zhamak Dehghani
-- **Component-Based Decomposition Patterns** (Chapter 5)
-- **Fundamentals of Software Architecture** by Mark Richards & Neal Ford
+- **Arquitetura de software: as partes difíceis** por Neal Ford, Mark Richards, Pramod Sadalage, Zhamak Dehghani
+- **Padrões de decomposição baseados em componentes** (Capítulo 5)
+- **Fundamentos de Arquitetura de Software** por Mark Richards e Neal Ford
 
-## Contributing
+## Contribuindo
 
-To improve this skill:
+Para melhorar esta habilidade:
 
-1. Add language-specific statement counting patterns
-2. Expand framework-specific component detection
-3. Add more size distribution visualization options
-4. Document new anti-patterns or red flags
-5. Share real-world case studies
+1. Adicione padrões de contagem de instruções específicos do idioma
+2. Expanda a detecção de componentes específicos da estrutura
+3. Adicione mais opções de visualização de distribuição de tamanho
+4. Documente novos antipadrões ou sinais de alerta
+5. Compartilhe estudos de caso do mundo real
 
-## Version
+## Versão
 
-**Version**: 1.0.0  
-**Created**: 2026-02-05  
-**Based on**: Component-Based Decomposition Patterns from "Software Architecture: The Hard Parts"
+**Versão**: 1.0.0  
+**Criado**: 05/02/2026  
+**Baseado em**: Padrões de decomposição baseados em componentes de "Arquitetura de software: as partes difíceis"
 
 ---
 
-## Quick Start
+## Início rápido
 
-To use this skill immediately:
-
-```
+Para usar esta habilidade imediatamente:```
 User: "Identify and size all components in my codebase"
 User: "Find oversized components that need splitting"
 User: "Create a component inventory for decomposition planning"
 User: "Analyze component size distribution"
-```
 
-This skill will automatically be applied to provide comprehensive analysis with actionable recommendations.
+```
+Essa habilidade será aplicada automaticamente para fornecer análises abrangentes com recomendações práticas.
+```

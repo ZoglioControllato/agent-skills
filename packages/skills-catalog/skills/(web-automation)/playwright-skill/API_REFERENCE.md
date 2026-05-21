@@ -1,50 +1,52 @@
-# Playwright Skill - Complete API Reference
+# Habilidade de dramaturgo - referência completa da API
 
-This document contains the comprehensive Playwright API reference and advanced patterns. For quick-start execution patterns, see [SKILL.md](SKILL.md).
+Este documento contém a referência abrangente da API Playwright e padrões avançados. Para padrões de execução de início rápido, consulte [SKILL.md](SKILL.md).
 
-## Table of Contents
+## Índice
 
-- [Installation & Setup](#installation--setup)
-- [Core Patterns](#core-patterns)
-- [Selectors & Locators](#selectors--locators)
-- [Common Actions](#common-actions)
-- [Waiting Strategies](#waiting-strategies)
-- [Assertions](#assertions)
-- [Page Object Model](#page-object-model-pom)
-- [Network & API Testing](#network--api-testing)
-- [Authentication & Session Management](#authentication--session-management)
-- [Visual Testing](#visual-testing)
-- [Mobile Testing](#mobile-testing)
-- [Debugging](#debugging)
-- [Performance Testing](#performance-testing)
-- [Parallel Execution](#parallel-execution)
-- [Data-Driven Testing](#data-driven-testing)
-- [Accessibility Testing](#accessibility-testing)
-- [CI/CD Integration](#cicd-integration)
-- [Best Practices](#best-practices)
-- [Common Patterns & Solutions](#common-patterns--solutions)
-- [Troubleshooting](#troubleshooting)
+- [Instalação e configuração](#instalação--configuração)
+- [Padrões principais](#padrões principais)
+- [Seletores e localizadores](#seletores--localizadores)
+- [Ações comuns](#ações comuns)
+- [Estratégias de espera](#estratégias de espera)
+- [Asserções](#afirmações)
+- [Modelo de objeto de página](#page-object-model-pom)
+- [Teste de rede e API](#network--api-testing)
+- [Autenticação e gerenciamento de sessão](#autenticação--gerenciamento de sessão)
+- [Teste Visual](#teste visual)
+- [Malhada
 
-## Installation & Setup
+Teste de arquivo](#mobile-testing)
 
-### Prerequisites
+- [Depuração](#depuração)
+- [Teste de desempenho](#teste de desempenho)
+- [Execução Paralela](#execução paralela)
+- [Teste baseado em dados](#teste baseado em dados)
+- [Teste de acessibilidade](#testes de acessibilidade)
+- [Integração CI/CD](#cicd-integration)
+- [Melhores Práticas](#melhores práticas)
+- [Padrões e soluções comuns](#padrões-comuns--soluções)
+- [Solução de problemas](#solução de problemas)
 
-Before using this skill, ensure Playwright is available:
+## Instalação e configuração
 
-```bash
+### Pré-requisitos
+
+Antes de usar esta habilidade, certifique-se de que o Dramaturgo esteja disponível:```bash
+
 # Check if Playwright is installed
+
 npm list playwright 2>/dev/null || echo "Playwright not installed"
 
 # Install (if needed)
+
 cd ~/.claude/skills/playwright-skill
 npm run setup
-```
 
-### Basic Configuration
+````
+### Configuração Básica
 
-Create `playwright.config.ts`:
-
-```typescript
+Crie `playwright.config.ts`:```typescript
 import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
@@ -72,43 +74,40 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
   },
 });
-```
+````
 
-## Core Patterns
+## Padrões principais
 
-### Basic Browser Automation
+### Automação básica do navegador```javascript
 
-```javascript
 const { chromium } = require('playwright');
 
 (async () => {
-  // Launch browser
-  const browser = await chromium.launch({
-    headless: false,  // Set to true for headless mode
-    slowMo: 50       // Slow down operations by 50ms
-  });
+// Launch browser
+const browser = await chromium.launch({
+headless: false, // Set to true for headless mode
+slowMo: 50 // Slow down operations by 50ms
+});
 
-  const context = await browser.newContext({
-    viewport: { width: 1280, height: 720 },
-    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-  });
+const context = await browser.newContext({
+viewport: { width: 1280, height: 720 },
+userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+});
 
-  const page = await context.newPage();
+const page = await context.newPage();
 
-  // Navigate
-  await page.goto('https://example.com', {
-    waitUntil: 'networkidle'  // Wait for network to be idle
-  });
+// Navigate
+await page.goto('https://example.com', {
+waitUntil: 'networkidle' // Wait for network to be idle
+});
 
-  // Your automation here
+// Your automation here
 
-  await browser.close();
+await browser.close();
 })();
-```
 
-### Test Structure
-
-```typescript
+````
+### Estrutura de teste```typescript
 import { test, expect } from '@playwright/test';
 
 test.describe('Feature Name', () => {
@@ -128,13 +127,12 @@ test.describe('Feature Name', () => {
     await expect(page.locator('.message')).toHaveText('Success!');
   });
 });
-```
+````
 
-## Selectors & Locators
+## Seletores e Localizadores
 
-### Best Practices for Selectors
+### Melhores práticas para seletores```javascript
 
-```javascript
 // PREFERRED: Data attributes (most stable)
 await page.locator('[data-testid="submit-button"]').click();
 await page.locator('[data-cy="user-input"]').fill('text');
@@ -153,16 +151,14 @@ await page.locator('button[type="submit"]').click();
 await page.locator('input[name="email"]').fill('test@test.com');
 
 // AVOID: Classes and IDs (can change frequently)
-await page.locator('.btn-primary').click();  // Avoid
-await page.locator('#submit').click();       // Avoid
+await page.locator('.btn-primary').click(); // Avoid
+await page.locator('#submit').click(); // Avoid
 
 // LAST RESORT: Complex CSS/XPath
-await page.locator('div.container > form > button').click();  // Fragile
-```
+await page.locator('div.container > form > button').click(); // Fragile
 
-### Advanced Locator Patterns
-
-```javascript
+````
+### Padrões de localização avançados```javascript
 // Filter and chain locators
 const row = page.locator('tr').filter({ hasText: 'John Doe' });
 await row.locator('button').click();
@@ -177,13 +173,12 @@ await page.locator('button').and(page.locator('[disabled]')).count();
 const cell = page.locator('td').filter({ hasText: 'Active' });
 const row = cell.locator('..');
 await row.locator('button.edit').click();
-```
+````
 
-## Common Actions
+## Ações Comuns
 
-### Form Interactions
+### Interações de formulário```javascript
 
-```javascript
 // Text input
 await page.getByLabel('Email').fill('user@example.com');
 await page.getByPlaceholder('Enter your name').fill('John Doe');
@@ -210,14 +205,12 @@ await page.selectOption('select#colors', ['red', 'blue', 'green']);
 // File upload
 await page.setInputFiles('input[type="file"]', 'path/to/file.pdf');
 await page.setInputFiles('input[type="file"]', [
-  'file1.pdf',
-  'file2.pdf'
+'file1.pdf',
+'file2.pdf'
 ]);
-```
 
-### Mouse Actions
-
-```javascript
+````
+### Ações do mouse```javascript
 // Click variations
 await page.click('button');                          // Left click
 await page.click('button', { button: 'right' });    // Right click
@@ -235,11 +228,10 @@ await page.locator('#source').hover();
 await page.mouse.down();
 await page.locator('#target').hover();
 await page.mouse.up();
-```
+````
 
-### Keyboard Actions
+### Ações do teclado```javascript
 
-```javascript
 // Type with delay
 await page.keyboard.type('Hello World', { delay: 100 });
 
@@ -253,13 +245,11 @@ await page.keyboard.press('Enter');
 await page.keyboard.press('Tab');
 await page.keyboard.press('Escape');
 await page.keyboard.press('ArrowDown');
-```
 
-## Waiting Strategies
+````
+## Estratégias de espera
 
-### Smart Waiting
-
-```javascript
+### Espera Inteligente```javascript
 // Wait for element states
 await page.locator('button').waitFor({ state: 'visible' });
 await page.locator('.spinner').waitFor({ state: 'hidden' });
@@ -296,19 +286,18 @@ await page.locator('.slow-element').waitFor({
   state: 'visible',
   timeout: 10000  // 10 seconds
 });
-```
+````
 
-## Assertions
+## Asserções
 
-### Common Assertions
+### Asserções Comuns```javascript
 
-```javascript
 import { expect } from '@playwright/test';
 
 // Page assertions
 await expect(page).toHaveTitle('My App');
 await expect(page).toHaveURL('https://example.com/dashboard');
-await expect(page).toHaveURL(/.*dashboard/);
+await expect(page).toHaveURL(/.\*dashboard/);
 
 // Element visibility
 await expect(page.locator('.message')).toBeVisible();
@@ -327,7 +316,7 @@ await expect(page.locator('input')).toBeEmpty();
 
 // Attributes
 await expect(page.locator('button')).toHaveAttribute('type', 'submit');
-await expect(page.locator('img')).toHaveAttribute('src', /.*\.png/);
+await expect(page.locator('img')).toHaveAttribute('src', /.\*\.png/);
 
 // CSS properties
 await expect(page.locator('.error')).toHaveCSS('color', 'rgb(255, 0, 0)');
@@ -337,13 +326,11 @@ await expect(page.locator('.item')).toHaveCount(5);
 
 // Checkbox/Radio state
 await expect(page.locator('input[type="checkbox"]')).toBeChecked();
-```
 
-## Page Object Model (POM)
+````
+## Modelo de objeto de página (POM)
 
-### Basic Page Object
-
-```javascript
+### Objeto de página básico```javascript
 // pages/LoginPage.js
 class LoginPage {
   constructor(page) {
@@ -376,84 +363,80 @@ test('login with valid credentials', async ({ page }) => {
   await loginPage.login('user@example.com', 'password123');
   await expect(page).toHaveURL('/dashboard');
 });
-```
+````
 
-## Network & API Testing
+## Teste de rede e API
 
-### Intercepting Requests
+### Interceptando Solicitações```javascript
 
-```javascript
 // Mock API responses
-await page.route('**/api/users', route => {
-  route.fulfill({
-    status: 200,
-    contentType: 'application/json',
-    body: JSON.stringify([
-      { id: 1, name: 'John' },
-      { id: 2, name: 'Jane' }
-    ])
-  });
+await page.route('\*\*/api/users', route => {
+route.fulfill({
+status: 200,
+contentType: 'application/json',
+body: JSON.stringify([
+{ id: 1, name: 'John' },
+{ id: 2, name: 'Jane' }
+])
+});
 });
 
 // Modify requests
 await page.route('**/api/**', route => {
-  const headers = {
-    ...route.request().headers(),
-    'X-Custom-Header': 'value'
-  };
-  route.continue({ headers });
+const headers = {
+...route.request().headers(),
+'X-Custom-Header': 'value'
+};
+route.continue({ headers });
 });
 
 // Block resources
-await page.route('**/*.{png,jpg,jpeg,gif}', route => route.abort());
-```
+await page.route('\*_/_.{png,jpg,jpeg,gif}', route => route.abort());
 
-### Custom Headers via Environment Variables
+````
+### Cabeçalhos personalizados por meio de variáveis de ambiente
 
-The skill supports automatic header injection via environment variables:
-
-```bash
+A habilidade oferece suporte à injeção automática de cabeçalho por meio de variáveis de ambiente:```bash
 # Single header (simple)
 PW_HEADER_NAME=X-Automated-By PW_HEADER_VALUE=playwright-skill
 
 # Multiple headers (JSON)
 PW_EXTRA_HEADERS='{"X-Automated-By":"playwright-skill","X-Request-ID":"123"}'
-```
+````
 
-These headers are automatically applied to all requests when using:
-- `helpers.createContext(browser)` - headers merged automatically
-- `getContextOptionsWithHeaders(options)` - utility injected by run.js wrapper
+Esses cabeçalhos são aplicados automaticamente a todas as solicitações ao usar:
 
-**Precedence (highest to lowest):**
-1. Headers passed directly in `options.extraHTTPHeaders`
-2. Environment variable headers
-3. Playwright defaults
+- `helpers.createContext(browser)` - cabeçalhos mesclados automaticamente
+- `getContextOptionsWithHeaders(options)` - utilitário injetado pelo wrapper run.js
 
-**Use case:** Identify automated traffic so your backend can return LLM-optimized responses (e.g., plain text errors instead of styled HTML).
+**Precedência (da maior para a menor):**
 
-## Visual Testing
+1. Cabeçalhos passados ​​diretamente em `options.extraHTTPHeaders`
+2. Cabeçalhos de variáveis de ambiente
+3. Padrões do dramaturgo
 
-### Screenshots
+**Caso de uso:** identifique o tráfego automatizado para que seu back-end possa retornar respostas otimizadas para LLM (por exemplo, erros de texto simples em vez de HTML estilizado).
 
-```javascript
+## Teste visual
+
+### Capturas de tela```javascript
+
 // Full page screenshot
 await page.screenshot({
-  path: 'screenshot.png',
-  fullPage: true
+path: 'screenshot.png',
+fullPage: true
 });
 
 // Element screenshot
 await page.locator('.chart').screenshot({
-  path: 'chart.png'
+path: 'chart.png'
 });
 
 // Visual comparison
 await expect(page).toHaveScreenshot('homepage.png');
-```
 
-## Mobile Testing
-
-```javascript
+````
+## Teste móvel```javascript
 // Device emulation
 const { devices } = require('playwright');
 const iPhone = devices['iPhone 12'];
@@ -464,47 +447,44 @@ const context = await browser.newContext({
   permissions: ['geolocation'],
   geolocation: { latitude: 37.7749, longitude: -122.4194 }
 });
-```
+````
 
-## Debugging
+## Depuração
 
-### Debug Mode
+### Modo de depuração```bash
 
-```bash
 # Run with inspector
+
 npx playwright test --debug
 
 # Headed mode
+
 npx playwright test --headed
 
 # Slow motion
+
 npx playwright test --headed --slowmo=1000
-```
 
-### In-Code Debugging
-
-```javascript
+````
+### Depuração no código```javascript
 // Pause execution
 await page.pause();
 
 // Console logs
 page.on('console', msg => console.log('Browser log:', msg.text()));
 page.on('pageerror', error => console.log('Page error:', error));
-```
+````
 
-## Performance Testing
+## Teste de desempenho```javascript
 
-```javascript
 // Measure page load time
 const startTime = Date.now();
 await page.goto('https://example.com');
 const loadTime = Date.now() - startTime;
 console.log(`Page loaded in ${loadTime}ms`);
-```
 
-## Parallel Execution
-
-```javascript
+````
+## Execução Paralela```javascript
 // Run tests in parallel
 test.describe.parallel('Parallel suite', () => {
   test('test 1', async ({ page }) => {
@@ -515,31 +495,28 @@ test.describe.parallel('Parallel suite', () => {
     // Runs in parallel with test 1
   });
 });
-```
+````
 
-## Data-Driven Testing
+## Teste baseado em dados```javascript
 
-```javascript
 // Parameterized tests
 const testData = [
-  { username: 'user1', password: 'pass1', expected: 'Welcome user1' },
-  { username: 'user2', password: 'pass2', expected: 'Welcome user2' },
+{ username: 'user1', password: 'pass1', expected: 'Welcome user1' },
+{ username: 'user2', password: 'pass2', expected: 'Welcome user2' },
 ];
 
 testData.forEach(({ username, password, expected }) => {
-  test(`login with ${username}`, async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('#username', username);
-    await page.fill('#password', password);
-    await page.click('button[type="submit"]');
-    await expect(page.locator('.message')).toHaveText(expected);
-  });
+test(`login with ${username}`, async ({ page }) => {
+await page.goto('/login');
+await page.fill('#username', username);
+await page.fill('#password', password);
+await page.click('button[type="submit"]');
+await expect(page.locator('.message')).toHaveText(expected);
 });
-```
+});
 
-## Accessibility Testing
-
-```javascript
+````
+## Teste de acessibilidade```javascript
 import { injectAxe, checkA11y } from 'axe-playwright';
 
 test('accessibility check', async ({ page }) => {
@@ -547,89 +524,75 @@ test('accessibility check', async ({ page }) => {
   await injectAxe(page);
   await checkA11y(page);
 });
-```
+````
 
-## CI/CD Integration
+## Integração CI/CD
 
-### GitHub Actions
+### Ações do GitHub```yaml
 
-```yaml
 name: Playwright Tests
 on:
-  push:
-    branches: [main, master]
+push:
+branches: [main, master]
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-      - name: Install dependencies
-        run: npm ci
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
-      - name: Run tests
-        run: npx playwright test
-```
+test:
+runs-on: ubuntu-latest
+steps: - uses: actions/checkout@v3 - uses: actions/setup-node@v3 - name: Install dependencies
+run: npm ci - name: Install Playwright Browsers
+run: npx playwright install --with-deps - name: Run tests
+run: npx playwright test
 
-## Best Practices
+````
+## Melhores práticas
 
-1. **Test Organization** - Use descriptive test names, group related tests
-2. **Selector Strategy** - Prefer data-testid attributes, use role-based selectors
-3. **Waiting** - Use Playwright's auto-waiting, avoid hard-coded delays
-4. **Error Handling** - Add proper error messages, take screenshots on failure
-5. **Performance** - Run tests in parallel, reuse authentication state
+1. **Organização do teste** - Use nomes descritivos de testes, testes relacionados a grupos
+2. **Estratégia de seletor** - Prefira atributos data-testid, use seletores baseados em função
+3. **Esperando** - Use a espera automática do Playwright, evite atrasos codificados
+4. **Tratamento de erros** - Adicione mensagens de erro adequadas, faça capturas de tela em caso de falha
+5. **Desempenho** - Execute testes em paralelo, reutilize o estado de autenticação
 
-## Common Patterns & Solutions
+## Padrões e soluções comuns
 
-### Handling Popups
-
-```javascript
+### Tratamento de pop-ups```javascript
 const [popup] = await Promise.all([
   page.waitForEvent('popup'),
   page.click('button.open-popup')
 ]);
 await popup.waitForLoadState();
-```
+````
 
-### File Downloads
+### Downloads de arquivos```javascript
 
-```javascript
 const [download] = await Promise.all([
-  page.waitForEvent('download'),
-  page.click('button.download')
+page.waitForEvent('download'),
+page.click('button.download')
 ]);
 await download.saveAs(`./downloads/${download.suggestedFilename()}`);
-```
 
-### iFrames
-
-```javascript
+````
+###iFrames```javascript
 const frame = page.frameLocator('#my-iframe');
 await frame.locator('button').click();
-```
+````
 
-### Infinite Scroll
+### Rolagem Infinita```javascript
 
-```javascript
 async function scrollToBottom(page) {
-  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
-  await page.waitForTimeout(500);
+await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+await page.waitForTimeout(500);
 }
-```
 
-## Troubleshooting
+````
+## Solução de problemas
 
-### Common Issues
+### Problemas comuns
 
-1. **Element not found** - Check if element is in iframe, verify visibility
-2. **Timeout errors** - Increase timeout, check network conditions
-3. **Flaky tests** - Use proper waiting strategies, mock external dependencies
-4. **Authentication issues** - Verify auth state is properly saved
+1. **Elemento não encontrado** - Verifique se o elemento está no iframe, verifique a visibilidade
+2. **Erros de tempo limite** - Aumente o tempo limite, verifique as condições da rede
+3. **Testes instáveis** - Use estratégias de espera adequadas, simule dependências externas
+4. **Problemas de autenticação** - Verifique se o estado de autenticação está salvo corretamente
 
-## Quick Reference Commands
-
-```bash
+## Comandos de referência rápida```bash
 # Run tests
 npx playwright test
 
@@ -644,10 +607,10 @@ npx playwright codegen https://example.com
 
 # Show report
 npx playwright show-report
-```
+````
 
-## Additional Resources
+## Recursos Adicionais
 
-- [Playwright Documentation](https://playwright.dev/docs/intro)
-- [API Reference](https://playwright.dev/docs/api/class-playwright)
-- [Best Practices](https://playwright.dev/docs/best-practices)
+- [Documentação do dramaturgo](https://playwright.dev/docs/intro)
+- [Referência da API](https://playwright.dev/docs/api/class-playwright)
+- [Práticas recomendadas](https://playwright.dev/docs/best-practices)

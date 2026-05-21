@@ -1,6 +1,6 @@
-# R2 Configuration
+# Configuração R2
 
-## Workers Binding
+## Binding no Workers
 
 **wrangler.jsonc:**
 
@@ -15,7 +15,7 @@
 }
 ```
 
-## TypeScript Types
+## Tipos TypeScript
 
 ```typescript
 interface Env {
@@ -30,7 +30,7 @@ export default {
 }
 ```
 
-## S3 SDK Setup
+## Setup SDK S3
 
 ```typescript
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
@@ -54,7 +54,7 @@ await s3.send(
 )
 ```
 
-## Location Hints
+## Dicas de localização
 
 ```bash
 wrangler r2 bucket create my-bucket --location=enam
@@ -63,9 +63,9 @@ wrangler r2 bucket create my-bucket --location=enam
 # Jurisdictions (override hint): --jurisdiction=eu (or fedramp)
 ```
 
-## CORS Configuration
+## Configuração CORS
 
-CORS must be configured via S3 SDK or dashboard (not available in Workers API):
+CORS via SDK S3 ou dashboard (não na API Workers):
 
 ```typescript
 import { S3Client, PutBucketCorsCommand } from '@aws-sdk/client-s3'
@@ -97,7 +97,7 @@ await s3.send(
 )
 ```
 
-## Object Lifecycles
+## Lifecycles de objeto
 
 ```typescript
 import { PutBucketLifecycleConfigurationCommand } from '@aws-sdk/client-s3'
@@ -125,20 +125,20 @@ await s3.send(
 )
 ```
 
-## API Token Scopes
+## Escopos de API token
 
-When creating R2 tokens, set minimal permissions:
+Ao criar tokens R2, permissões mínimas:
 
-| Permission          | Use Case                            |
-| ------------------- | ----------------------------------- |
-| Object Read         | Public serving, downloads           |
-| Object Write        | Uploads only                        |
-| Object Read & Write | Full object operations              |
-| Admin Read & Write  | Bucket management, CORS, lifecycles |
+| Permissão           | Caso de uso                    |
+| ------------------- | ------------------------------ |
+| Object Read         | Servir público, downloads      |
+| Object Write        | Só uploads                     |
+| Object Read & Write | Operações completas em objetos |
+| Admin Read & Write  | Bucket, CORS, lifecycles       |
 
-**Best practice:** Separate tokens for Workers (read/write) vs admin tasks (CORS, lifecycles).
+**Boa prática:** tokens separados para Workers (read/write) vs tarefas admin (CORS, lifecycles).
 
-## Event Notifications
+## Notificações de evento
 
 ```jsonc
 // wrangler.jsonc
@@ -162,15 +162,15 @@ When creating R2 tokens, set minimal permissions:
 }
 ```
 
-## Bucket Management
+## Gerenciamento de bucket
 
 ```bash
 wrangler r2 bucket create my-bucket --location=enam --storage-class=Standard
 wrangler r2 bucket list
 wrangler r2 bucket info my-bucket
-wrangler r2 bucket delete my-bucket  # Must be empty
+wrangler r2 bucket delete my-bucket  # Precisa estar vazio
 wrangler r2 bucket update-storage-class my-bucket --storage-class=InfrequentAccess
 
-# Public bucket via dashboard
+# Bucket público via dashboard
 wrangler r2 bucket domain add my-bucket --domain=files.example.com
 ```

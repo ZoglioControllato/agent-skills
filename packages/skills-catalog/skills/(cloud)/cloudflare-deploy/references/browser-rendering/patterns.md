@@ -1,6 +1,6 @@
-# Browser Rendering Patterns
+# Padrões de renderização do navegador
 
-## Basic Worker
+## Trabalhador Básico
 
 ```typescript
 import puppeteer from '@cloudflare/puppeteer'
@@ -19,9 +19,9 @@ export default {
 }
 ```
 
-## Session Reuse
+##Reutilização de sessão
 
-Keep sessions alive for performance:
+Mantenha as sessões ativas para desempenho:
 
 ```typescript
 let sessionId = await env.SESSION_KV.get('browser-session')
@@ -34,17 +34,17 @@ if (sessionId) {
 // Don't close browser to keep session alive
 ```
 
-## Common Operations
+##Operações Comuns
 
-| Task         | Code                                                                  |
-| ------------ | --------------------------------------------------------------------- |
-| Screenshot   | `await page.screenshot({ type: "png", fullPage: true })`              |
-| PDF          | `await page.pdf({ format: "A4", printBackground: true })`             |
-| Extract data | `await page.evaluate(() => document.querySelector('h1').textContent)` |
-| Fill form    | `await page.type('#input', 'value'); await page.click('button')`      |
-| Wait nav     | `await Promise.all([page.waitForNavigation(), page.click('a')])`      |
+| Tarefa               | Código                                                                   |
+| -------------------- | ------------------------------------------------------------------------ |
+| Captura de tela      | `await page.screenshot({ tipo: "png", fullPage: true })`                 |
+| PDF                  | `await page.pdf({ formato: "A4", printBackground: true })`               |
+| Extrair dados        | `aguardar page.evaluate(() => document.querySelector('h1').textContent)` |
+| Preencher formulário | `aguardar page.type('#input', 'valor'); aguarde página.click('botão')`   |
+| Aguarde navegação    | `await Promise.all([page.waitForNavigation(), page.click('a')])`         |
 
-## Parallel Scraping
+## Raspagem Paralela
 
 ```typescript
 const pages = await Promise.all(urls.map(() => browser.newPage()))
@@ -52,7 +52,7 @@ await Promise.all(pages.map((p, i) => p.goto(urls[i])))
 const titles = await Promise.all(pages.map((p) => p.title()))
 ```
 
-## Playwright Selectors
+##Seletores de dramaturgos
 
 ```typescript
 import { launch } from '@cloudflare/playwright'
@@ -62,9 +62,9 @@ await page.getByLabel('Email').fill('user@example.com')
 await page.getByTestId('submit-button').click()
 ```
 
-## Incognito Contexts
+##Contextos anônimos
 
-Isolated sessions without multiple browsers:
+Sessões isoladas sem vários navegadores:
 
 ```typescript
 const ctx1 = await browser.createIncognitoBrowserContext()
@@ -72,14 +72,14 @@ const ctx2 = await browser.createIncognitoBrowserContext()
 // Each has isolated cookies/storage
 ```
 
-## Quota Check
+##Verificação de cota
 
 ```typescript
 const limits = await puppeteer.limits(env.MYBROWSER)
 if (limits.remaining < 60000) return new Response('Quota low', { status: 429 })
 ```
 
-## Error Handling
+##Tratamento de erros
 
 ```typescript
 try {

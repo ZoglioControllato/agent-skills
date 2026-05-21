@@ -1,41 +1,39 @@
-# RFC Section Templates
+# Modelos de seção RFC
 
-Complete Markdown templates for each RFC section. Read this file when generating an RFC document.
+Modelos completos de Markdown para cada seção RFC. Leia este arquivo ao gerar um documento RFC.
 
 ---
 
-## 1. Header & Metadata (MANDATORY)
+## 1. Cabeçalho e metadados (OBRIGATÓRIO)```markdown
 
-```markdown
 # RFC: [Clear, Action-Oriented Title]
 
-| Field        | Value                              |
-|--------------|------------------------------------|
-| **Impact**   | HIGH / MEDIUM / LOW                |
-| **Status**   | NOT STARTED / IN PROGRESS / COMPLETE |
-| **Driver**   | @Name — responsible for the proposal |
-| **Approver** | @Name1, @Name2 — must approve before action |
-| **Contributors** | @Name3, @Name4 — provide input   |
-| **Informed** | @Team, @Stakeholder — kept in the loop |
-| **Due Date** | YYYY-MM-DD (or "TBD")              |
-| **Resources** | [Link to Jira], [Link to design], [Related RFC] |
-| **Created**  | YYYY-MM-DD                         |
-| **Last Updated** | YYYY-MM-DD                     |
-```
+| Field            | Value                                           |
+| ---------------- | ----------------------------------------------- |
+| **Impact**       | HIGH / MEDIUM / LOW                             |
+| **Status**       | NOT STARTED / IN PROGRESS / COMPLETE            |
+| **Driver**       | @Name — responsible for the proposal            |
+| **Approver**     | @Name1, @Name2 — must approve before action     |
+| **Contributors** | @Name3, @Name4 — provide input                  |
+| **Informed**     | @Team, @Stakeholder — kept in the loop          |
+| **Due Date**     | YYYY-MM-DD (or "TBD")                           |
+| **Resources**    | [Link to Jira], [Link to design], [Related RFC] |
+| **Created**      | YYYY-MM-DD                                      |
+| **Last Updated** | YYYY-MM-DD                                      |
 
-**RACI Guidance**:
-- **Driver**: Owns the proposal, drives the process, implements the outcome
-- **Approver**: Decision-maker(s) — must explicitly approve or reject
-- **Contributors**: Provide expertise, review options, raise concerns
-- **Informed**: Notified of the decision but don't need to act
+````
 
-**If missing**: Ask "Who is driving this proposal? Who needs to approve the final decision? Who should be consulted?"
+**Orientação RACI**:
+- **Motorador**: possui a proposta, conduz o processo, implementa o resultado
+- **Aprovador**: Tomador(es) de decisão — devem aprovar ou rejeitar explicitamente
+- **Contribuidores**: forneça experiência, analise opções, levante preocupações
+- **Informado**: Notificado da decisão, mas não precisa agir
+
+**Se estiver faltando**: Pergunte "Quem está conduzindo esta proposta? Quem precisa aprovar a decisão final? Quem deve ser consultado?"
 
 ---
 
-## 2. Background (MANDATORY)
-
-```markdown
+## 2. Antecedentes (OBRIGATÓRIO)```markdown
 ## Background
 
 [2-4 paragraphs describing the current state and why a decision is needed]
@@ -56,40 +54,39 @@ What makes this decision urgent or timely?
 **What Happens If We Don't Decide**:
 - [Consequence 1 — e.g., continued cost, growing risk]
 - [Consequence 2 — e.g., missed opportunity]
-```
+````
 
-**If unclear**: Ask "What is the current situation? Why is this decision needed now? What happens if we do nothing?"
+**Se não estiver claro**: Pergunte "Qual é a situação atual? Por que esta decisão é necessária agora? O que acontece se não fizermos nada?"
 
 ---
 
-## 3. Assumptions (MANDATORY)
+## 3. Suposições (OBRIGATÓRIAS)```markdown
 
-```markdown
 ## Assumptions
 
 [Explicit statements taken as true for this proposal to hold. If any assumption proves false, this RFC should be revisited.]
 
-| # | Assumption | Owner | Confidence | Invalidation Trigger |
-|---|------------|-------|------------|----------------------|
-| 1 | [e.g., "Current traffic will not exceed 10k req/s in the next 12 months"] | @Name | High | If traffic projections change |
-| 2 | [e.g., "The team has capacity to implement this in Q2"] | @Name | Medium | If Q2 roadmap changes |
-| 3 | [e.g., "Vendor X's pricing remains stable"] | @Name | Low | If pricing changes >20% |
+| #   | Assumption                                                                | Owner | Confidence | Invalidation Trigger          |
+| --- | ------------------------------------------------------------------------- | ----- | ---------- | ----------------------------- |
+| 1   | [e.g., "Current traffic will not exceed 10k req/s in the next 12 months"] | @Name | High       | If traffic projections change |
+| 2   | [e.g., "The team has capacity to implement this in Q2"]                   | @Name | Medium     | If Q2 roadmap changes         |
+| 3   | [e.g., "Vendor X's pricing remains stable"]                               | @Name | Low        | If pricing changes >20%       |
 
 **Confidence levels**:
+
 - **High** — backed by data or contractual guarantees
 - **Medium** — reasonable expectation, but not verified
 - **Low** — uncertain; decision may need revisiting if this assumption shifts
 
 **If any assumption is invalidated**: The Driver is responsible for reassessing the RFC outcome and communicating changes to Approvers and Informed parties.
-```
 
-**If missing**: Ask "What are you taking for granted for this proposal to work? What would need to be true for the recommended option to succeed?"
+````
+
+**Se estiver faltando**: Pergunte "O que você considera garantido para que esta proposta funcione? O que precisaria ser verdade para que a opção recomendada fosse bem-sucedida?"
 
 ---
 
-## 4. Decision Criteria (MANDATORY)
-
-```markdown
+## 4. Critérios de Decisão (OBRIGATÓRIO)```markdown
 ## Decision Criteria
 
 [State how the decision will be made — before listing options. This prevents criteria from being chosen retroactively to justify a preferred option.]
@@ -112,41 +109,41 @@ The option chosen must best satisfy the following criteria, listed in order of p
 - **Low**: Nice to have; tiebreaker only.
 
 **Decision rule**: The recommended option is the one that satisfies all Must-haves and scores highest across High and Medium criteria. Explicitly call out trade-offs when no option wins on all criteria.
-```
+````
 
-**If missing**: Ask "What matters most when choosing between options? Are there any hard requirements that would disqualify an option? How will you weigh speed vs cost vs risk?"
+**Se estiver faltando**: pergunte "O que é mais importante ao escolher entre as opções? Há algum requisito rígido que desqualificaria uma opção? Como você avaliará velocidade x custo x risco?"
 
 ---
 
-## 5. Relevant Data (RECOMMENDED)
+## 5. Dados Relevantes (RECOMENDADO)```markdown
 
-```markdown
 ## Relevant Data
 
 [Evidence, metrics, or research that informs the decision]
 
 **Quantitative Data**:
+
 - Current cost/time: [e.g., "$X/month", "Y hours/week"]
 - Usage/adoption: [e.g., "Z% of users affected"]
 - Frequency: [e.g., "N incidents per quarter"]
 
 **Qualitative Data**:
+
 - User/team feedback: [summary of pain points or requests]
 - Prior attempts: [what was tried before, why it didn't work]
 
 **External References**:
+
 - Industry benchmarks or standards
 - Vendor documentation or case studies
 - Research papers or technical articles
-```
 
+````
 ---
 
-## 6. Options Considered (MANDATORY — minimum 2)
+## 6. Opções consideradas (OBRIGATÓRIO — mínimo 2)
 
-For each option, use this template. Evaluate against the **Decision Criteria** defined above.
-
-```markdown
+Para cada opção, use este modelo. Avalie de acordo com os **Critérios de Decisão** definidos acima.```markdown
 ## Options Considered
 
 ### Option 1: [Option Name] ⭐ (Recommended)
@@ -213,30 +210,27 @@ Maintain the status quo and accept the current situation.
 - [Consequence of inaction 2]
 
 **Estimated Cost**: SMALL (upfront) / potentially LARGE (long-term)
-```
+````
 
-**Option Comparison Matrix** (for 3+ options):
+**Matriz de comparação de opções** (para mais de 3 opções):```markdown
 
-```markdown
 ## Options Comparison
 
-| Criterion              | Option 1 | Option 2 | Option 3 |
-|------------------------|----------|----------|----------|
-| Implementation effort  | Medium   | Low      | None     |
-| Cost                   | $X/mo    | $Y/mo    | $Z/mo    |
-| Time to value          | 4 weeks  | 1 week   | N/A      |
-| Risk                   | Low      | Medium   | High     |
-| Reversibility          | Easy     | Hard     | N/A      |
-| Team impact            | Minimal  | Moderate | None     |
+| Criterion             | Option 1 | Option 2 | Option 3 |
+| --------------------- | -------- | -------- | -------- |
+| Implementation effort | Medium   | Low      | None     |
+| Cost                  | $X/mo    | $Y/mo    | $Z/mo    |
+| Time to value         | 4 weeks  | 1 week   | N/A      |
+| Risk                  | Low      | Medium   | High     |
+| Reversibility         | Easy     | Hard     | N/A      |
+| Team impact           | Minimal  | Moderate | None     |
 
 **Recommended**: Option 1 because [brief rationale]
-```
 
+````
 ---
 
-## 7. Action Items (MANDATORY)
-
-```markdown
+## 7. Itens de ação (OBRIGATÓRIO)```markdown
 ## Action Items
 
 [What happens after the decision is made — tasks required to implement the chosen option]
@@ -249,13 +243,12 @@ Maintain the status quo and accept the current situation.
 | [Task 4 — e.g., "Create follow-up TDD for implementation"] | @Name | YYYY-MM-DD | NOT STARTED |
 
 **Note**: If this RFC is approved, a Technical Design Document (TDD) may be needed to plan the implementation in detail.
-```
+````
 
 ---
 
-## 8. Outcome (MANDATORY — filled after decision)
+## 8. Resultado (OBRIGATÓRIO - preenchido após decisão)```markdown
 
-```markdown
 ## Outcome
 
 **Decision**: [Option X was chosen / RFC was rejected / deferred]
@@ -268,17 +261,23 @@ Maintain the status quo and accept the current situation.
 [Why this option was chosen over the alternatives. Be specific — future readers need to understand the reasoning, especially if circumstances change.]
 
 **Key Factors**:
+
 - [Factor 1 that drove the decision]
 - [Factor 2]
 - [Factor 3]
 
 **Conditions / Caveats** (if any):
+
 - [e.g., "Approved for Q1 only, will be revisited in Q2"]
 - [e.g., "Requires security review before implementation"]
 
 **Follow-up**:
+
 - [ ] Create TDD for implementation (if applicable)
 - [ ] Update affected documentation
 - [ ] Notify informed stakeholders of decision
 - [ ] Schedule retrospective in [X months] to evaluate outcome
+
+```
+
 ```

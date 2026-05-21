@@ -1,111 +1,114 @@
-# Tasks
+# Tarefas
 
-**Goal**: Break into GRANULAR, ATOMIC tasks. Clear dependencies. Right tools. Parallel execution plan.
+**Objetivo**: Dividir em tarefas GRANULARES e ATÔMICAS. Dependências claras. Ferramentas certas. Plano de execução paralela.
 
-**Skip this phase when:** There are ≤3 obvious steps. In that case, tasks are implicit — go straight to Execute and list them inline in your implementation plan.
+**Pule esta fase quando:**Existem ≤3 etapas óbvias. Nesse caso, as tarefas estão implícitas – vá direto para Executar e liste-as em seu plano de implementação.
 
-## Why Granular Tasks?
+## Por que tarefas granulares?
 
-| Vague Task (BAD) | Granular Tasks (GOOD)             |
-| ---------------- | --------------------------------- |
-| "Create form"    | T1: Create email input component  |
-|                  | T2: Add email validation function |
-|                  | T3: Create submit button          |
-|                  | T4: Add form state management     |
-|                  | T5: Connect form to API           |
-| "Implement auth" | T1: Create login form             |
-|                  | T2: Create register form          |
-|                  | T3: Add token storage utility     |
-|                  | T4: Create auth API service       |
-|                  | T5: Add route protection          |
+| Tarefa Vaga (RUIM)         | Tarefas granulares (BOM)                            |
+| -------------------------- | --------------------------------------------------- |
+| "Criar formulário"         | T1: Criar componente de entrada de e-mail           |
+|                            | T2: Adicionar função de validação de e-mail         |
+|                            | T3: Criar botão de envio                            |
+|                            | T4: Adicionar gerenciamento de estado de formulário |
+|                            | T5: Conectar formulário à API                       |
+| "Implementar autenticação" | T1: Criar formulário de login                       |
 
-**Benefits of granular:**
+|
+| | T2: Criar formulário de cadastro |
+| | T3: Adicionar utilitário de armazenamento de token |
+| | T4: Criar serviço API de autenticação |
+| | T5: Adicionar proteção de rota |
 
-- **Agents don't err** - Single focus, no ambiguity
-- **Easy to test** - Each task = one verifiable outcome
-- **Parallelizable** - Independent tasks run simultaneously
-- **Errors isolated** - One failure doesn't block everything
+**Benefícios do granulado:**
 
-**Rule**: One task = ONE of these:
+- **Agentes não erram** - Foco único, sem ambiguidade
+- **Fácil de testar** - Cada tarefa = um resultado verificável
+- **Paralelizável** - Tarefas independentes são executadas simultaneamente
+- **Erros isolados** - Uma falha não bloqueia tudo
 
-- One component
-- One function
-- One API endpoint
-- One file change
+**Regra**: Uma tarefa = UMA destas:
+
+- Um componente
+- Uma função
+- Um terminal de API
+- Uma alteração de arquivo
 
 ---
 
-## Process
+## Processo
 
-### 1. Review Design
+### 1. Revisão do projeto
 
-Read `.specs/[feature]/design.md` before creating tasks.
+Leia `.specs/[feature]/design.md` antes de criar tarefas.
 
-### 1.5. Load Test Coverage Matrix
+### 1.5. Matriz de Cobertura de Teste de Carga
 
-Read `.specs/codebase/TESTING.md` (if it exists) before creating tasks. The Test Coverage Matrix
-and Parallelism Assessment drive two critical decisions:
+Leia `.specs/codebase/TESTING.md` (se existir) antes de criar tarefas. A Matriz de Cobertura de Teste
+e a Avaliação de Paralelismo conduzem a duas decisões críticas:
 
-**Co-located tests:** Every task that creates or modifies a code layer with a required test type
-MUST include writing/updating those tests in the same task. Tests are NOT separate tasks.
+**Testes colocalizados:** toda tarefa que cria ou modifica uma camada de código com um tipo de teste obrigatório
+DEVE incluir a escrita/atualização desses testes na mesma tarefa. Os testes NÃO são tarefas separadas.
 
-| Task creates...                           | Done When must include...                   |
-| ----------------------------------------- | ------------------------------------------- |
-| Code layer with "unit" requirement        | Unit test written + quick gate passes       |
-| Code layer with "e2e" requirement         | E2E test written + full gate passes         |
-| Code layer with "integration" requirement | Integration test written + full gate passes |
-| Code layer with "none" requirement        | Gate check at appropriate level             |
+| A tarefa cria...                               | Concluído Quando deve incluir...              |
+| ---------------------------------------------- | --------------------------------------------- |
+| Camada de código com requisito de "unidade"    | Teste de unidade escrito + passagens rápidas  |
+| Camada de código com requisito "e2e"           | Teste E2E escrito + aprovação completa        |
+| Camada de código com requisito de “integração” | Teste de integração escrito + portão completo |
 
-**Parallelism flags:** Cross-reference the Parallelism Assessment when marking tasks `[P]`:
+passes |
+| Camada de código com requisito "nenhum" | Verificação da porta ao nível adequado |
 
-- If a task's required test type is marked "Parallel-Safe: No" → strip `[P]` flag
-- If a task's required test type is marked "Parallel-Safe: Yes" → `[P]` is allowed
-- If a task has no tests → `[P]` depends only on code dependencies
+**Sinalizadores de paralelismo:** Faça referência cruzada da Avaliação de Paralelismo ao marcar tarefas `[P]`:
 
-If TESTING.md does not exist (greenfield project), ask the user what test types and commands
-the project will use before creating tasks.
+- Se o tipo de teste obrigatório de uma tarefa estiver marcado como "Parallel-Safe: No" → retirar o sinalizador `[P]`
+- Se o tipo de teste obrigatório de uma tarefa estiver marcado como "Parallel-Safe: Yes" → `[P]` é permitido
+- Se uma tarefa não possui testes → `[P]` depende apenas de dependências de código
 
-### 2. Break Into Atomic Tasks
+Se TESTING.md não existir (projeto greenfield), pergunte ao usuário quais tipos de teste e comandos
+o projeto usará antes de criar tarefas.
 
-**Task = ONE deliverable**. Examples:
+### 2. Divida as tarefas atômicas
 
-- ✅ "Create UserService interface" (one file, one concept)
-- ❌ "Implement user management" (too vague, multiple files)
+**Tarefa = UMA entrega**. Exemplos:
 
-### 3. Define Dependencies
+- ✅ "Criar interface UserService" (um arquivo, um conceito)
+- ❌ "Implementar gerenciamento de usuários" (muito vago, vários arquivos)
 
-What MUST be done before this task can start?
+### 3. Definir dependências
 
-### 4. Create Execution Plan
+O que DEVE ser feito antes que esta tarefa possa começar?
 
-Group tasks into phases. Identify what can run in parallel.
+### 4. Crie um plano de execução
 
-### 5. Validate Before Presenting (MANDATORY)
+Agrupe as tarefas em fases. Identifique o que pode funcionar em paralelo.
 
-Before showing tasks to the user, run ALL three pre-approval checks. These are NOT optional — they are gates. If any check fails, restructure the tasks and re-run until all pass.
+### 5. Validar antes de apresentar (OBRIGATÓRIO)
 
-**Check 1: Task Granularity** — verify each task is atomic (see Granularity Check section).
+Antes de mostrar as tarefas ao usuário, execute TODAS as três verificações de pré-aprovação. Estes NÃO são opcionais – são portões. Se alguma verificação falhar, reestruture as tarefas e execute-as novamente até que todas sejam aprovadas.
 
-**Check 2: Diagram-Definition Cross-Check** — verify the execution diagram matches every task's `Depends on` field (see Diagram-Definition Cross-Check section). Build the cross-check table and include it in the output.
+**Verificação 1: granularidade da tarefa** — verifique se cada tarefa é atômica (consulte a seção Verificação de granularidade).
 
-**Check 3: Test Co-location Validation** — verify every task's `Tests` field matches the TESTING.md coverage matrix (see Test Co-location Validation section). Build the validation table and include it in the output.
+**Verificação 2: Verificação cruzada de definição de diagrama** — verifique se o diagrama de execução corresponde ao campo `Depende de` de cada tarefa (consulte a seção Verificação cruzada de definição de diagrama). Construa a tabela de verificação cruzada e inclua-a na saída.
 
-**Output both tables with the tasks** so the user can see the validation results. Any ❌ means you MUST restructure before presenting — do not show failing tasks to the user and ask them to approve.
+**Verificação 3: Validação de Colocação de Teste** — verifique se o campo `Testes` de cada tarefa corresponde à matriz de cobertura TESTING.md (consulte a seção Validação de Colocação de Teste). Construa a tabela de validação e inclua-a na saída.
 
-### 6. ASK About MCPs and Skills
+**Produza ambas as tabelas com as tarefas** para que o usuário possa ver os resultados da validação. Qualquer ❌ significa que você DEVE reestruturar antes da apresentação - não mostre as tarefas com falha ao usuário e peça-lhe que aprove.
 
-**CRITICAL**: Before execution, ask the user:
+### 6. PERGUNTE sobre MCPs e habilidades
 
-> "For each task, which tools should I use?"
+**CRÍTICO**: Antes da execução, pergunte ao usuário:
+
+> "Para cada tarefa, quais ferramentas devo usar?"
 >
-> **Available MCPs**: [list from project or user]
-> **Available Skills**: [list from project or user]
+> **MCPs disponíveis**: [lista do projeto ou usuário]
+> **Habilidades disponíveis**: [lista do projeto ou usuário]
 
 ---
 
-## Template: `.specs/[feature]/tasks.md`
+## Modelo: `.specs/[recurso]/tasks.md````markdown
 
-```markdown
 # [Feature] Tasks
 
 **Design**: `.specs/[feature]/design.md`
@@ -118,139 +121,133 @@ Before showing tasks to the user, run ALL three pre-approval checks. These are N
 ### Phase 1: Foundation (Sequential)
 
 Tasks that must be done first, in order.
-```
 
-T1 → T2 → T3
-
-```
+````
+T1 → T2 → T3```
 
 ### Phase 2: Core Implementation (Parallel OK)
 After foundation, these can run in parallel.
 
-```
+````
 
-     ┌→ T4 ─┐
+┌→ T4 ─┐
 
 T3 ──┼→ T5 ─┼──→ T8
 └→ T6 ─┘
-T7 ──────→
-
-```
+T7 ──────→```
 
 ### Phase 3: Integration (Sequential)
+
 Bringing it all together.
 
-```
-
+````
 T8 → T9
 
 ---
 
-## Task Breakdown
+## Divisão de tarefas
 
-### T1: [Create X Interface]
+### T1: [Criar interface X]
 
-**What**: [One sentence: exact deliverable]
-**Where**: `src/path/to/file.ts`
-**Depends on**: None
-**Reuses**: `src/existing/BaseInterface.ts`
-**Requirement**: [FEAT]-01
+**O que**: [Uma frase: entrega exata]
+**Onde**: `src/path/to/file.ts`
+**Depende de**: Nenhum
+**Reutiliza**: `src/existente/BaseInterface.ts`
+**Requisito**: [FEAT]-01
 
-**Tools**:
+**Ferramentas**:
 
-- MCP: `filesystem` (or NONE)
-- Skill: NONE
+- MCP: `sistema de arquivos` (ou NENHUM)
+- Habilidade: NENHUMA
 
-**Done when**:
+**Concluído quando**:
 
-- [ ] Interface defined with all methods from design
-- [ ] Types exported correctly
-- [ ] No TypeScript errors
+- [] Interface definida com todos os métodos desde o design
+- [] Tipos exportados corretamente
+- [] Sem erros de TypeScript
 
-**Tests**: [unit/e2e/integration/none — from coverage matrix]
-**Gate**: [quick/full/build — from gate check commands]
-
----
-
-### T2: [Implement Y Service] [P]
-
-**What**: [Exact deliverable]
-**Where**: `src/services/YService.ts`
-**Depends on**: T1
-**Reuses**: `src/services/BaseService.ts` patterns
-
-**Tools**:
-
-- MCP: `filesystem`, `context7`
-- Skill: NONE
-
-**Done when**:
-
-- [ ] Implements interface from T1
-- [ ] Handles error cases from design
-- [ ] Gate check passes: `[quick gate command from TESTING.md]`
-- [ ] Test count: [N] tests pass (no silent deletions)
-
-**Tests**: unit
-**Gate**: quick
+**Testes**: [unidade/e2e/integração/nenhum — da matriz de cobertura]
+**Gate**: [rápido/completo/compilação — a partir de comandos de verificação de portão]
 
 ---
 
-### T3: [Create Z Component] [P]
+### T2: [Implementar Serviço Y] [P]
 
-**What**: [Exact deliverable]
-**Where**: `src/components/ZComponent.tsx`
-**Depends on**: T1
-**Reuses**: `src/components/BaseComponent.tsx`
+**O que**: [entrega exata]
+**Onde**: `src/services/YService.ts`
+**Depende de**: T1
+**Reutiliza**: padrões `src/services/BaseService.ts`
 
-**Tools**:
+**Ferramentas**:
 
-- MCP: `filesystem`
-- Skill: NONE
+- MCP: `sistema de arquivos`, `context7`
+- Habilidade: NENHUMA
 
-**Done when**:
+**Concluído quando**:
 
-- [ ] Component renders correctly
-- [ ] Handles props from interface
-- [ ] Follows existing component patterns
-- [ ] Gate check passes: `[quick gate command from TESTING.md]`
-- [ ] Test count: [N] tests pass (no silent deletions)
+- [ ] Implementa interface do T1
+- [] Lida com casos de erro desde o design
+- [] A verificação do portão é aprovada: `[comando de portão rápido de TESTING.md]`
+- [] Contagem de testes: [N] testes aprovados (sem exclusões silenciosas)
 
-**Tests**: unit
-**Gate**: quick
-
----
-
-### T4: [Add A Feature to Y]
-
-**What**: [Exact deliverable]
-**Where**: `src/services/YService.ts` (modify)
-**Depends on**: T2, T3
-**Reuses**: Existing service patterns
-
-**Tools**:
-
-- MCP: `filesystem`, `github`
-- Skill: `api-design`
-
-**Done when**:
-
-- [ ] Feature works per acceptance criteria
-- [ ] Gate check passes: `[full gate command from TESTING.md]`
-- [ ] Test count: [N] tests pass (no silent deletions)
-
-**Tests**: integration
-**Gate**: full
-
-**Commit**: `feat([scope]): [description]`
+**Testes**: unidade
+**Portão**: rápido
 
 ---
 
-## Parallel Execution Map
+### T3: [Criar componente Z] [P]
 
-Visual representation of what can run simultaneously:
+**O que**: [entrega exata]
+**Onde**: `src/components/ZComponent.tsx`
+**Depende de**: T1
+**Reutiliza**: `src/components/BaseComponent.tsx`
 
-```
+**Ferramentas**:
+
+- MCP: `sistema de arquivos`
+- Habilidade: NENHUMA
+
+**Concluído quando**:
+
+- [] O componente é renderizado corretamente
+- [] Lida com adereços da interface
+- [] Segue padrões de componentes existentes
+- [] A verificação do portão é aprovada: `[comando de portão rápido de TESTING.md]`
+- [] Contagem de testes: [N] testes aprovados (sem exclusões silenciosas)
+
+**Testes**: unidade
+**Portão**: rápido
+
+---
+
+### T4: [Adicionar um recurso a Y]
+
+**O que**: [entrega exata]
+**Onde**: `src/services/YService.ts` (modificar)
+**Depende de**: T2, T3
+**Reutilizações**: padrões de serviço existentes
+
+**Ferramentas**:
+
+- MCP: `sistema de arquivos`, `github`
+- Habilidade: `api-design`
+
+**Concluído quando**:
+
+- [] O recurso funciona de acordo com os critérios de aceitação
+- [] A verificação do portão é aprovada: `[comando completo do portão de TESTING.md]`
+- [] Contagem de testes: [N] testes aprovados (sem exclusões silenciosas)
+
+**Testes**: integração
+**Portão**: cheio
+
+**Commit**: `feat([escopo]): [descrição]`
+
+---
+
+## Mapa de execução paralela
+
+Representação visual do que pode ser executado simultaneamente:```
 
 Phase 1 (Sequential):
   T1 ──→ T2 ──→ T3
@@ -265,132 +262,135 @@ Phase 3 (Sequential):
   T4, T5, T6 complete, then:
     T7 ──→ T8
 
-```
+````
 
-**Parallelism constraint:** A task marked `[P]` must have ALL of these:
+**Restrição de paralelismo:** Uma tarefa marcada como `[P]` deve ter TODOS estes:
 
-- No unfinished dependencies
-- Required test type is parallel-safe (per TESTING.md Parallelism Assessment)
-- No shared mutable state with other `[P]` tasks in the same phase
+- Sem dependências inacabadas
+- O tipo de teste necessário é seguro para paralelo (de acordo com a avaliação de paralelismo TESTING.md)
+- Nenhum estado mutável compartilhado com outras tarefas `[P]` na mesma fase
 
-If a task's tests are NOT parallel-safe, it MUST run sequentially even if its
-implementation code has no dependencies. The test execution is the bottleneck.
+Se os testes de uma tarefa NÃO forem seguros em paralelo, ela DEVE ser executada sequencialmente, mesmo que seja
+o código de implementação não tem dependências. A execução do teste é o gargalo.
 
-**How parallel execution works:**
+**Como funciona a execução paralela:**
 
-Tasks marked `[P]` are executed via sub-agents — one sub-agent per task, launched concurrently.
-Each sub-agent receives only its task definition and relevant project context (see Sub-Agent
-Delegation in SKILL.md). The orchestrating agent waits for all sub-agents in a phase to complete
-before advancing to the next phase.
+As tarefas marcadas como `[P]` são executadas por meio de subagentes - um subagente por tarefa, iniciado simultaneamente.
+Cada subagente recebe apenas sua definição de tarefa e contexto de projeto relevante (ver Subagente
+Delegação em SKILL.md). O agente orquestrador espera que todos os subagentes em uma fase sejam concluídos
+antes de avançar para a próxima fase.
 
-Sequential tasks (no `[P]`) are also delegated to sub-agents, but one at a time. This keeps
-implementation artifacts (file reads, test output, gate check logs) out of the main context.
+Tarefas sequenciais (sem `[P]`) também são delegadas aos subagentes, mas um de cada vez. Isso mantém
+artefatos de implementação (leituras de arquivos, saída de teste, logs de verificação de porta) fora do contexto principal.
 
-**The orchestrating agent's role during Execute:**
-1. Pick the next task(s) to execute
-2. Provide each sub-agent with its task definition + context
-3. Monitor sub-agent completion
-4. Update tasks.md with results
-5. Decide whether to proceed, fix, or escalate
+**A função do agente orquestrador durante a execução:**
 
----
-
-## Task Granularity Check
-
-Before approving tasks, verify they are granular enough:
-
-| Task                            | Scope         | Status       |
-| ------------------------------- | ------------- | ------------ |
-| T1: Create email input          | 1 component   | ✅ Granular  |
-| T2: Add validation function     | 1 function    | ✅ Granular  |
-| T3: Create form with all fields | 5+ components | ❌ Split it! |
-| T4: Connect to API              | 1 function    | ✅ Granular  |
-
-**Granularity check**:
-
-- ✅ 1 component / 1 function / 1 endpoint = Good
-- ⚠️ 2-3 related things in same file = OK if cohesive
-- ❌ Multiple components or files = MUST split
+1. Escolha a(s) próxima(s) tarefa(s) a ser executada(s)
+2. Forneça a cada subagente sua definição de tarefa + contexto
+3. Monitore a conclusão do subagente
+4. Atualize tarefas.md com resultados
+5. Decida se deseja prosseguir, corrigir ou escalar
 
 ---
 
-## Diagram-Definition Cross-Check
+## Verificação de granularidade da tarefa
 
-Before approving tasks, verify the execution diagram is consistent with the task definitions. These are independent artifacts that can drift — the diagram is drawn for visual clarity while task bodies are written for precision. Both must agree.
+Antes de aprovar tarefas, verifique se elas são suficientemente granulares:
 
-For each task, check:
+| Tarefa                                   | Escopo                | Estado       |
+| ---------------------------------------- | --------------------- | ------------ |
+| T1: Criar entrada de e-mail              | 1 componente          | ✅ Granulado |
+| T2: Adicionar função de validação        | 1 função              | ✅ Granulado |
+| T3: Criar formulário com todos os campos | Mais de 5 componentes | ❌ Divida!   |
+| T4: Conecte-se à API                     | 1 função              | ✅ Granulado |
 
-| Task | Depends On (task body) | Diagram Shows | Status |
-| ---- | ---------------------- | ------------- | ------ |
-| T[N] | [deps from body] | [deps from diagram arrows] | ✅ Match or ❌ Mismatch |
+**Verificação de granularidade**:
 
-**Rules:**
-
-- Every `Depends on` in a task body must have a corresponding arrow in the diagram.
-- Every arrow in the diagram must correspond to a `Depends on` in the target task's body.
-- Tasks shown as parallel (`[P]`) in the diagram must not depend on each other.
-- If a task depends on another task in the same parallel phase, they are NOT parallel — fix the diagram or remove the `[P]` flag.
-
----
-
-## Test Co-location Validation
-
-Before approving tasks, verify EVERY task's `Tests` field is consistent with the TESTING.md Test Coverage Matrix. This is a hard gate — tasks that fail this check MUST be fixed.
-
-For each task, check: does the task create or modify a code layer that has a required test type in the coverage matrix? If yes, the task's `Tests` field MUST match.
-
-| Task | Code Layer Created/Modified | Matrix Requires | Task Says | Status |
-| ---- | --------------------------- | --------------- | --------- | ------ |
-| T[N]: [name] | [layer from coverage matrix] | [test type] | [task's Tests field] | ✅ OK or ❌ VIOLATION |
-
-**Rules:**
-
-- "Tested in another task" is NOT a valid justification for `Tests: none`. That is test deferral — the exact anti-pattern this validation prevents.
-- `Tests: none` is only valid when the coverage matrix says "none" for that code layer.
-- If a task creates MULTIPLE code layers (e.g., service + controller), use the HIGHEST test type required by any of them.
-- Any ❌ VIOLATION → restructure the task to include its required tests before proceeding.
-
-**Resolving compilation dependencies:**
-
-When a task creates code that can't be tested until a later task completes (e.g., a controller that needs module wiring before its e2e tests can run), do NOT defer the tests to a separate task. Instead, restructure:
-
-1. **Merge forward:** Move the untestable task's tests into the earliest task where they become runnable (e.g., the wiring task includes wiring + e2e tests for the controller it enables).
-2. **Merge backward:** Absorb the blocking dependency into the current task so it becomes self-testable (e.g., controller task includes its own module registration).
-
-Pick whichever option keeps tasks atomic and cohesive. The goal: no task produces unverified code. If code can't be tested in the task that creates it, the task boundaries are wrong.
+- ✅ 1 componente / 1 função / 1 endpoint = Bom
+- ⚠️ 2-3 coisas relacionadas no mesmo arquivo = OK se coeso
+- ❌ Vários componentes ou arquivos = DEVE dividir
 
 ---
 
-## Tips
+## Verificação cruzada de definição de diagrama
 
-- **[P] = Parallel OK** — Mark tasks that can run simultaneously
-- **Reuses = Token saver** — Always reference existing code
-- **Tools per task** — MCPs and Skills prevent wrong approaches
-- **Dependencies are gates** — Clear what blocks what
-- **Done when = Testable** — If you can't verify it, rewrite it
-- **Requirement ID = Traceable** — Every task traces back to a spec requirement
-- **One commit per task** — Plan the commit message format in advance
+Antes de aprovar tarefas, verifique se o diagrama de execução está consistente com as definições da tarefa. Esses são artefatos independentes que podem variar — o diagrama é desenhado para maior clareza visual, enquanto os corpos das tarefas são escritos para maior precisão. Ambos devem concordar.
+
+Para cada tarefa, verifique:
+
+| Tarefa | Depende de (corpo da tarefa) | Programas de diagramas       | Estado                                     |
+| ------ | ---------------------------- | ---------------------------- | ------------------------------------------ |
+| T[N]   | [departamentos do corpo]     | [deps das setas do diagrama] | ✅ Correspondência ou ❌ Incompatibilidade |
+
+**Regras:**
+
+- Cada `Depends on` em um corpo de tarefa deve ter uma seta correspondente no diagrama.
+- Cada seta no diagrama deve corresponder a um `Depends on` no corpo da tarefa alvo.
+- As tarefas mostradas como paralelas (`[P]`) no diagrama não devem depender umas das outras.
+- Se uma tarefa depende de outra tarefa na mesma fase paralela, elas NÃO são paralelas — corrija o diagrama ou remova o sinalizador `[P]`.
 
 ---
 
-## Task Verification Standards
+## Teste de validação de colocalização
 
-Every task MUST include:
+Antes de aprovar tarefas, verifique se o campo `Testes` de CADA tarefa é consistente com a Matriz de Cobertura de Teste TESTING.md. Este é um portão difícil – as tarefas que falham nesta verificação DEVEM ser corrigidas.
 
-**Done when checklist:**
+Para cada tarefa, verifique: a tarefa cria ou modifica uma camada de código que possui um tipo de teste obrigatório na matriz de cobertura? Se sim, o campo `Testes` da tarefa DEVE corresponder.
 
-- Specific, testable outcomes
-- Pass/fail criteria
-- The specific test command from the Gate Check Commands table
-- Expected pass count (prevents silent test deletion)
+| Tarefa       | Camada de código criada/modificada | Matriz requer   | A tarefa diz             | Estado               |
+| ------------ | ---------------------------------- | --------------- | ------------------------ | -------------------- |
+| T[N]: [nome] | [camada da matriz de cobertura]    | [tipo de teste] | [campo Testes da tarefa] | ✅ OK ou ❌ VIOLAÇÃO |
 
-**Verify section:**
+**Regras:**
 
-- Commands to prove functionality
-- Expected outputs
-- Success indicators
+- “Testado em outra tarefa” NÃO é uma justificativa válida para `Testes: nenhum`. Isso é o adiamento do teste – o antipadrão exato que essa validação evita.
+- `Testes: none` só é válido quando a matriz de cobertura diz "none" para aquela camada de código.
+- Se uma tarefa criar MÚLTIPLAS camadas de código (por exemplo, serviço + controlador), use o tipo de teste MAIS ALTO exigido por qualquer uma delas.
+- Qualquer ❌ VIOLAÇÃO → reestruture a tarefa para incluir os testes necessários antes de prosseguir.
 
-**Structure:**
+**Resolvendo dependências de compilação:**
+
+Quando uma tarefa cria código que não pode ser testado até que uma tarefa posterior seja concluída (por exemplo, um controlador que precisa de fiação de módulo antes que seus testes e2e possam ser executados), NÃO adie os testes para uma tarefa separada. Em vez disso, reestruture:
+
+1. **Mesclar para frente:** Mova os testes da tarefa não testável para a tarefa mais antiga onde eles se tornam executáveis ​​(por exemplo, a tarefa de fiação inclui testes de fiação + e2e para o controlador que ela habilita).
+2. **Mesclar para trás:** Absorva a dependência de bloqueio na tarefa atual para que ela se torne autotestável (por exemplo, a tarefa do controlador inclui seu próprio registro de módulo).
+
+Escolha qualquer opção que mantenha as tarefas atômicas e coesas. O objetivo: nenhuma tarefa produz código não verificado. Se o código não puder ser testado na tarefa que o cria, os limites da tarefa estão errados.
+
+---
+
+## Pontas
+
+- **[P] = Paralelo OK** — Marcar tarefas que podem ser executadas simultaneamente
+- **Reutilizações = Economia de token** — Sempre faça referência ao código existente
+- **Ferramentas por tarefa** — MCPs e habilidades evitam abordagens erradas
+- **Dependências são portas** — Limpe o que bloqueia o quê
+- **Concluído quando = Testável** — Se você não puder verificar, reescreva
+- **ID do requisito = rastreável** — Cada tarefa remonta a um requisito de especificação
+- **Um commit por tarefa** — Planeje o formato da mensagem de commit em um
+
+avançar
+
+---
+
+## Padrões de verificação de tarefas
+
+Cada tarefa DEVE incluir:
+
+**Concluído quando lista de verificação:**
+
+- Resultados específicos e testáveis
+- Critérios de aprovação/reprovação
+- O comando de teste específico da tabela Gate Check Commands
+- Contagem de aprovação esperada (evita a exclusão silenciosa do teste)
+
+**Verificar seção:**
+
+- Comandos para comprovar funcionalidade
+- Resultados esperados
+- Indicadores de sucesso
+
+**Estrutura:**
 
 ```markdown
 ### T1: [Task name]
@@ -412,8 +412,8 @@ Every task MUST include:
 [Expected output/behavior]
 ```
 
-**Quality check:**
+**Verificação de qualidade:**
 
-- Can task be verified without human judgment?
-- Is success criteria binary (pass/fail)?
-- Can verification be automated?
+- A tarefa pode ser verificada sem julgamento humano?
+- Os critérios de sucesso são binários (aprovado/reprovado)?
+- A verificação pode ser automatizada?

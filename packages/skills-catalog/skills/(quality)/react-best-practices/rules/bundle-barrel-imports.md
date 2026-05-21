@@ -1,19 +1,19 @@
 ---
-title: Avoid Barrel File Imports
+title: Evite-os através de arquivos de barril
 impact: CRITICAL
-impactDescription: 200-800ms import cost, slow builds
+impactDescription: custo de importação 200–800ms, builds lentos
 tags: bundle, imports, tree-shaking, barrel-files, performance
 ---
 
-## Avoid Barrel File Imports
+## Evite visitas via arquivos de barril
 
-Import directly from source files instead of barrel files to avoid loading thousands of unused modules. **Barrel files** are entry points that re-export multiple modules (e.g., `index.js` that does `export * from './module'`).
+Importe diretamente dos arquivos-fonte em vez de barril para evitar o carregamento de milhares de módulos não usados. **Arquivos barril** são pontos de entrada que reexportam vários módulos (por exemplo, `index.js` com `export * from './module'`).
 
-Popular icon and component libraries can have **up to 10,000 re-exports** in their entry file. For many React packages, **it takes 200-800ms just to import them**, affecting both development speed and production cold starts.
+Bibliotecas populares de ícones e componentes podem ter **até 10.000 reexportações** no arquivo de entrada. Em muitos pacotes React, **só importam leva 200–800ms**, afetando a velocidade de desenvolvimento e partidas a frio em produção.
 
-**Why tree-shaking doesn't help:** When a library is marked as external (not bundled), the bundler can't optimize it. If you bundle it to enable tree-shaking, builds become substantially slower analyzing the entire module graph.
+**Por que tree-shaking não ajuda:** quando uma biblioteca é marcada como externa (não embalada), o bundler não consegue melhorar. Se você empacotador para habilitar tree-shaking, os builds ficam bem mais lentos ao analisar o gráfico inteiro de módulos.
 
-**Incorrect (imports entire library):**
+**Incorreto (importado para biblioteca inteira):**
 
 ```tsx
 import { Check, X, Menu } from 'lucide-react'
@@ -24,7 +24,7 @@ import { Button, TextField } from '@mui/material'
 // Loads 2,225 modules, takes ~4.2s extra in dev
 ```
 
-**Correct (imports only what you need):**
+**Correto (importa só o necessário):**
 
 ```tsx
 import Check from 'lucide-react/dist/esm/icons/check'
@@ -37,14 +37,14 @@ import TextField from '@mui/material/TextField'
 // Loads only what you use
 ```
 
-**Alternative (Next.js 13.5+):**
+**Alternativa (Next.js 13.5+):**
 
 ```js
 // next.config.js - use optimizePackageImports
 module.exports = {
   experimental: {
-    optimizePackageImports: ['lucide-react', '@mui/material']
-  }
+    optimizePackageImports: ['lucide-react', '@mui/material'],
+  },
 }
 
 // Then you can keep the ergonomic barrel imports:
@@ -52,8 +52,8 @@ import { Check, X, Menu } from 'lucide-react'
 // Automatically transformed to direct imports at build time
 ```
 
-Direct imports provide 15-70% faster dev boot, 28% faster builds, 40% faster cold starts, and significantly faster HMR.
+Importações diretas trazem boot de dev 15–70% mais rápido, builds ~28% mais rápidos, coldstarts ~40% mais rápidos e HMR bem mais ágil.
 
-Libraries commonly affected: `lucide-react`, `@mui/material`, `@mui/icons-material`, `@tabler/icons-react`, `react-icons`, `@headlessui/react`, `@radix-ui/react-*`, `lodash`, `ramda`, `date-fns`, `rxjs`, `react-use`.
+Bibliotecas frequentemente afetadas: `lucide-react`, `@mui/material`, `@mui/icons-material`, `@tabler/icons-react`, `react-icons`, `@headlessui/react`, `@radix-ui/react-*`, `lodash`, `ramda`, `date-fns`, `rxjs`, `react-use`.
 
-Reference: [How we optimized package imports in Next.js](https://vercel.com/blog/how-we-optimized-package-imports-in-next-js)
+Referência: [Como otimizamos importações de pacotes em Next.js](https://vercel.com/blog/how-we-optimized-package-imports-in-next-js)

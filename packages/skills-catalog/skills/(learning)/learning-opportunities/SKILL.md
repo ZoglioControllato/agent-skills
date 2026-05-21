@@ -1,6 +1,6 @@
 ---
 name: learning-opportunities
-description: Facilitates deliberate skill development during AI-assisted coding. Offers interactive learning exercises after architectural work (new files, schema changes, refactors). Use when completing features, making design decisions, or when user asks to understand code better. Triggers on "learning exercise", "help me understand", "teach me", "why does this work", or after creating new files/modules. Do NOT use for urgent debugging, quick fixes, or when user says "just ship it".
+description: Facilita o desenvolvimento deliberado de habilidades durante codificação assistida por IA. Oferece exercícios interativos após trabalho arquitetural (novos arquivos, mudanças de schema, refatorações). Use quando concluir features, tomar decisões de design ou quando o usuário pedir para entender melhor o código. Aciona em "exercício de aprendizado", "me ajuda a entender", "me ensina", "por que isso funciona", ou após criar novos arquivos/módulos. NÃO use para debugging urgente, correções rápidas ou quando o usuário disser "só publica" ou equivalente.
 license: CC-BY-4.0
 metadata:
   original_author: Chris Hicks
@@ -9,132 +9,132 @@ metadata:
   version: 1.1.0
 ---
 
-# Learning Opportunities
+# Oportunidades de aprendizado
 
-Facilitate deliberate skill development during AI-assisted coding sessions. Offer short, optional exercises that counteract passive consumption of AI-generated code.
+Facilite o desenvolvimento deliberado de habilidades em sessões de codificação assistida por IA. Ofereça exercícios curtos e opcionais que contrabalanceiam o consumo passivo de código gerado por IA.
 
-When adapting techniques or making judgment calls about learning approaches, consult `references/PRINCIPLES.md` for the underlying learning science.
+Ao adaptar técnicas ou julgamentos sobre abordagens de aprendizado, consulte `references/PRINCIPLES.md` para a base em ciência da aprendizagem.
 
-## When to offer exercises
+## Quando oferecer exercícios
 
-Offer an optional 10-15 minute exercise after:
+Ofereça um exercício opcional de 10–15 minutos após:
 
-- Creating new files or modules
-- Database schema changes
-- Architectural decisions or refactors
-- Implementing unfamiliar patterns
-- Any work where the user asked "why" questions during development
+- Criação de novos arquivos ou módulos
+- Mudanças no schema do banco
+- Decisões arquiteturais ou refatorações
+- Implementação de padrões pouco familiares
+- Qualquer trabalho em que o usuário tenha feito perguntas "por quê" durante o desenvolvimento
 
-Always ask before starting: "Would you like to do a quick learning exercise on [topic]? About 10-15 minutes."
+Sempre pergunte antes de começar: "Quer fazer um exercício rápido de aprendizado sobre [tema]? Leva uns 10–15 minutos."
 
-## When NOT to offer
+## Quando não oferecer
 
-- User declined an exercise this session
-- User already completed 2 exercises this session
-- User signals urgency ("fix this quick", "just ship it", "deploy now")
-- Pure debugging/hotfix context
+- O usuário recusou um exercício nesta sessão
+- O usuário já completou 2 exercícios nesta sessão
+- O usuário sinaliza urgência ("corrige logo", "só publica", "deploy agora")
+- Contexto puro de debugging/hotfix
 
-Keep offers to one short sentence. Do not repeat or insist.
+Mantenha os convites em uma frase curta. Não insista nem repita.
 
-## Core principle: Pause for input
+## Princípio central: pausar para entrada
 
-This is the most important rule. After posing a question:
+Esta é a regra mais importante. Depois de formular uma pergunta:
 
-1. **Stop generating immediately.** Do not continue after the question mark.
-2. Do not generate suggested answers, hints, examples, or encouragement like "Think about..." or "Consider..."
-3. Wait for the user's actual response before continuing.
+1. **Pare de gerar imediatamente.** Não continue após o ponto de interrogação.
+2. Não gere respostas sugeridas, dicas, exemplos ou encorajamento do tipo "Pense em..." ou "Considere..."
+3. Espere a resposta real do usuário antes de continuar.
 
-Allowed after the question:
+Permitido após a pergunta:
 
-- "(Take your best guess — wrong predictions are useful data.)"
-- "(Or we can skip this one.)"
+- "(Dê seu melhor palpite — palpites errados também são dados úteis.)"
+- "(Ou podemos pular este.)"
 
-After their response:
+Depois da resposta dele:
 
-- If correct: confirm and deepen ("Exactly. And what would change if [variation]?")
-- If wrong: **be direct** about what's incorrect, then explore the gap — this is high-value learning
+- Se estiver certo: confirme e aprofunde ("Exato. O que mudaria se [variação]?")
+- Se estiver errado: **seja direto** sobre o que está incorreto e explore a lacuna — isso é aprendizado de alto valor
 
-## Exercise types
+## Tipos de exercício
 
-### 1. Predict then observe
+### 1. Prever e observar
 
-Ask what they predict will happen in a specific scenario before revealing the answer.
-
-```
-Example:
-User just created auth middleware.
-
-Agent: "Would you like a quick learning exercise on middleware patterns?"
-User: "sure"
-Agent: "What do you think happens when a request hits your middleware with an expired token?
-
-(Take your best guess — wrong predictions are useful data.)"
-
-[STOP — wait for response]
-
-After response:
-Agent: "Actually [correct behavior]. The key difference is [explanation].
-What surprised you about that?"
-
-[STOP — wait for response]
-```
-
-### 2. Generate then compare
-
-Ask them to sketch an approach before showing the actual implementation.
+Pergunte o que ele prevê que acontecerá em um cenário antes de revelar a resposta.
 
 ```
-Example:
-Agent: "Before I show you — how would you structure the error handling for this API endpoint?"
+Exemplo:
+O usuário acabou de criar middleware de autenticação.
 
-[STOP — wait for response]
+Agente: "Quer um exercício rápido sobre padrões de middleware?"
+Usuário: "sim"
+Agente: "O que você acha que acontece quando uma requisição chega ao middleware com token expirado?
 
-After response:
-Agent: "Here's what we went with: [implementation].
-What's similar to your approach? What's different, and why do you think we chose this direction?"
+(Dê seu melhor palpite — palpites errados também são dados úteis.)"
 
-[STOP — wait for response]
+[PARAR — aguardar resposta]
+
+Depois da resposta:
+Agente: "Na verdade [comportamento correto]. A diferença principal é [explicação].
+O que te surpreendeu nisso?"
+
+[PARAR — aguardar resposta]
 ```
 
-### 3. Teach it back
+### 2. Gerar e comparar
 
-Ask them to explain a component as if to a new team member.
+Peça que esboce uma abordagem antes de mostrar a implementação real.
 
 ```
-Example:
-Agent: "Explain how the caching layer we just built works, as if I'm a new developer joining the project."
+Exemplo:
+Agente: "Antes de eu mostrar — como você estruturaria o tratamento de erros deste endpoint de API?"
 
-[STOP — wait for response]
+[PARAR — aguardar resposta]
 
-After response:
-Agent: "You nailed [specific part]. One thing to refine: [specific gap]."
+Depois da resposta:
+Agente: "Foi assim que fizemos: [implementação].
+O que é parecido com sua abordagem? O que é diferente e por que acha que escolhemos esse caminho?"
+
+[PARAR — aguardar resposta]
 ```
 
-## Hands-on code exploration
+### 3. Ensinar de volta
 
-Prefer directing users to files over showing code snippets. Having learners locate code themselves builds codebase familiarity.
+Peça que explique um componente como para um colega novo.
 
-**Adjust guidance based on demonstrated familiarity:**
+```
+Exemplo:
+Agente: "Explique como funciona a camada de cache que acabamos de construir, como se eu fosse dev novo no projeto."
 
-- Early: "Open `src/middleware/auth.ts`, around line 45. What does `validateToken` return?"
-- Later: "Find where we handle token refresh."
-- Eventually: "Where would you look to change how session expiry works?"
+[PARAR — aguardar resposta]
 
-After they locate code, prompt self-explanation:
+Depois da resposta:
+Agente: "Você acertou em cheio [parte específica]. Um ponto para refinar: [lacuna específica]."
+```
 
-"You found it. Before I say anything — what do you think this line does?"
+## Exploração prática no código
 
-## Techniques to weave in naturally
+Prefira direcionar o usuário a arquivos em vez de mostrar trechos. Localizar o código constrói familiaridade com a base.
 
-- **"Why" questions:** "Why did we use a Map here instead of an object?"
-- **Transfer prompts:** "This is the strategy pattern. Where else in this codebase might it apply?"
-- **Varied context:** "We used this for auth — how would you apply it to API rate limiting?"
-- **Error analysis:** "Here's a bug someone might introduce — what would go wrong and why?"
+**Ajuste a orientação conforme a familiaridade demonstrada:**
 
-## Anti-patterns to avoid
+- Início: "Abra `src/middleware/auth.ts`, por volta da linha 45. O que `validateToken` retorna?"
+- Depois: "Encontre onde tratamos o refresh do token."
+- Por fim: "Onde você olharia para mudar como funciona o fim da sessão?"
 
-- Dumping multiple questions at once
-- Softening wrong answers into ambiguity ("well, that's partially right...")
-- Offering exercises more than twice per session
-- Making exercises feel like tests rather than exploration
-- Continuing to generate after posing a question
+Depois que localizar o código, incentive a autoexplicação:
+
+"Você achou. Antes de eu dizer qualquer coisa — o que você acha que esta linha faz?"
+
+## Técnicas para encaixar naturalmente
+
+- **Perguntas "por quê":** "Por que usamos um Map aqui em vez de um objeto?"
+- **Transferência:** "Isto é o strategy pattern. Onde mais nesta base poderia se aplicar?"
+- **Contexto variado:** "Usamos isso para auth — como aplicaria a rate limiting de API?"
+- **Análise de erro:** "Aqui está um bug que alguém poderia introduzir — o que daria errado e por quê?"
+
+## Antipadrões a evitar
+
+- Várias perguntas de uma vez
+- Suavizar respostas erradas em ambiguidade ("bem, isso é meio certo...")
+- Oferecer exercícios mais de duas vezes por sessão
+- Fazer exercícios parecerem prova em vez de exploração
+- Continuar gerando depois de formular uma pergunta

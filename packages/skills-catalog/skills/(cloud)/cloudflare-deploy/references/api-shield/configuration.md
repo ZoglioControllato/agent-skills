@@ -104,13 +104,13 @@ openssl req -x509 -newkey rsa:4096 -keyout client-key.pem -out client-cert.pem -
 curl https://api.example.com/endpoint --cert client-cert.pem --key client-key.pem
 ```
 
-## Session Identifiers
+## Identificadores de Sessão
 
-Critical for BOLA Detection, Sequence Mitigation, and analytics. Configure header/cookie that uniquely IDs API users.
+Crítico para detecção de BOLA, mitigação de sequência e análise. Configure o cabeçalho/cookie que identifica exclusivamente os usuários da API.
 
-**Examples:** JWT sub claim, session token, API key, custom user ID header
+**Exemplos:** subdeclaração JWT, token de sessão, chave de API, cabeçalho de ID de usuário personalizado
 
-**Configure:**
+**Configurar:**
 
 ```
 Security > API Shield > Settings > Session Identifiers
@@ -203,8 +203,8 @@ resource "cloudflare_ruleset" "jwt_validation" {
 }
 ```
 
-## See Also
+## Veja também
 
-- [api.md](api.md) - API endpoints and Workers integration
-- [patterns.md](patterns.md) - Firewall rules and deployment patterns
-- [gotchas.md](gotchas.md) - Troubleshooting and limits
+- [api.md](api.md) - Endpoints de API e integração de Workers
+- [patterns.md](patterns.md) - Regras de firewall e padrões de implantação
+- [gotchas.md](gotchas.md) - Solução de problemas e limites

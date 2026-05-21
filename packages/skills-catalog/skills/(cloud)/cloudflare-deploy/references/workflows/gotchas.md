@@ -1,97 +1,97 @@
-# Gotchas & Debugging
+# Dicas e depuração
 
-## Common Errors
+## Erros Comuns
 
-### "Step Timeout"
+### "Tempo limite da etapa"
 
-**Cause:** Step execution exceeding 10 minute default timeout or configured timeout  
-**Solution:** Set custom timeout with `step.do('long operation', {timeout: '30 minutes'}, async () => {...})` or increase CPU limit in wrangler.jsonc (max 5min CPU time)
+**Causa:** A execução da etapa excede o tempo limite padrão de 10 minutos ou o tempo limite configurado
+**Solução:** Defina o tempo limite personalizado com `step.do('long operação', {timeout: '30 minutos'}, async () => {...})` ou aumente o limite de CPU em wrangler.jsonc (máximo de 5 minutos de tempo de CPU)
 
-### "waitForEvent Timeout"
+### "Tempo limite de waitForEvent"
 
-**Cause:** Event not received within timeout period (default 24h, max 365d)  
-**Solution:** Wrap in try-catch to handle timeout gracefully and proceed with default behavior
+**Causa:** Evento não recebido dentro do período de tempo limite (padrão 24h, máximo 365d)
+**Solução:** Envolva try-catch para lidar com o tempo limite normalmente e prosseguir com o comportamento padrão
 
-### "Non-Deterministic Step Names"
+### "Nomes de etapas não determinísticos"
 
-**Cause:** Using dynamic values like `Date.now()` in step names causes replay issues  
-**Solution:** Use deterministic values like `event.instanceId` for step names
+**Causa:** Usar valores dinâmicos como `Date.now()` em nomes de etapas causa problemas de reprodução
+**Solução:** use valores determinísticos como `event.instanceId` para nomes de etapas
 
-### "State Lost in Variables"
+### "Estado perdido em variáveis"
 
-**Cause:** Using module-level or local variables to store state which is lost on hibernation  
-**Solution:** Return values from `step.do()` which are automatically persisted: `const total = await step.do('step 1', async () => 10)`
+**Causa:** Uso de variáveis locais ou de nível de módulo para armazenar o estado que é perdido na hibernação
+**Solução:** Retorna valores de `step.do()` que são persistidos automaticamente: `const total = await step.do('step 1', async () => 10)`
 
-### "Non-Deterministic Conditionals"
+### "Condicionais Não Determinísticas"
 
-**Cause:** Using non-deterministic logic (like `Date.now()`) outside steps in conditionals  
-**Solution:** Move non-deterministic operations inside steps: `const isLate = await step.do('check', async () => Date.now() > deadline)`
+**Causa:** Uso de lógica não determinística (como `Date.now()`) fora das etapas em condicionais
+**Solução:** Mova operações não determinísticas dentro das etapas: `const isLate = await step.do('check', async () => Date.now() > expired)`
 
-### "Large Step Returns Exceeding Limit"
+### "Retornos de grandes etapas excedendo o limite"
 
-**Cause:** Returning data >1 MiB from step  
-**Solution:** Store large data in R2 and return only reference: `{ key: 'r2-object-key' }`
+**Causa:** Retornando dados >1 MiB da etapa
+**Solução:** Armazene dados grandes em R2 e retorne apenas referência: `{ key: 'r2-object-key' }`
 
-### "Step Exceeded CPU Limit But Ran for < 30s"
+### "A etapa excedeu o limite da CPU, mas foi executada por <30s"
 
-**Cause:** Confusion between CPU time (active compute) and wall-clock time (includes I/O waits)  
-**Solution:** Network requests, database queries, and sleeps don't count toward CPU. 30s limit = 30s of active processing
+**Causa:** Confusão entre o tempo de CPU (computação ativa) e o tempo do relógio (inclui esperas de E/S)
+**Solução:** Solicitações de rede, consultas de banco de dados e suspensões não contam para a CPU. Limite de 30s = 30s de processamento ativo
 
-### "Idempotency Violation"
+### "Violação de idempotência"
 
-**Cause:** Step operations not idempotent, causing duplicate charges or actions on retry  
-**Solution:** Check if operation already completed before executing (e.g., check if customer already charged)
+**Causa:** operações Step não são idempotentes, causando cobranças ou ações duplicadas na nova tentativa
+**Solução:** Verifique se a operação já foi concluída antes de executar (por exemplo, verifique se o cliente já foi cobrado)
 
-### "Instance ID Collision"
+### "Colisão de ID da instância"
 
-**Cause:** Reusing instance IDs causing conflicts  
-**Solution:** Use unique IDs with timestamp: `await env.MY_WORKFLOW.create({ id: \`${userId}-${Date.now()}\`, params: {} })`
+**Causa:** Reutilização de IDs de instância causando conflitos
+**Solução:** Use IDs exclusivos com carimbo de data e hora: `await env.MY_WORKFLOW.create({ id: \`${userId}-${Date.now()}\`, params: {} })`
 
-### "Instance Data Disappeared After Completion"
+### "Os dados da instância desapareceram após a conclusão"
 
-**Cause:** Completed/errored instances are automatically deleted after retention period (3 days free / 30 days paid)  
-**Solution:** Export critical data to KV/R2/D1 before workflow completes
+**Causa:** Instâncias concluídas/com erros são excluídas automaticamente após o período de retenção (3 dias grátis/30 dias pagos)
+**Solução:** exporte dados críticos para KV/R2/D1 antes da conclusão do fluxo de trabalho
 
-### "Missing await on step.do"
+### "Falta aguardar em step.do"
 
-**Cause:** Forgetting to await step.do() causing fire-and-forget behavior  
-**Solution:** Always await step operations: `await step.do('task', ...)`
+**Causa:** Esquecer de aguardar step.do() causando comportamento de disparar e esquecer
+**Solução:** Sempre aguarde operações de etapa: `await step.do('task', ...)`
 
-## Limits
+## Limites
 
-| Limit                        | Free     | Paid                      | Notes                                                |
-| ---------------------------- | -------- | ------------------------- | ---------------------------------------------------- |
-| CPU per step                 | 10ms     | 30s (default), 5min (max) | Set via `limits.cpu_ms` in wrangler.jsonc            |
-| Step state                   | 1 MiB    | 1 MiB                     | Per step return value                                |
-| Instance state               | 100 MB   | 1 GB                      | Total state per workflow instance                    |
-| Steps per workflow           | 1,024    | 1,024                     | `step.sleep()` doesn't count                         |
-| Executions per day           | 100k     | Unlimited                 | Daily execution limit                                |
-| Concurrent instances         | 25       | 10k                       | Maximum concurrent workflows; waiting state excluded |
-| Queued instances             | 100k     | 1M                        | Maximum queued workflow instances                    |
-| Subrequests per step         | 50       | 1,000                     | Maximum outbound requests per step                   |
-| State retention              | 3 days   | 30 days                   | How long completed instances kept                    |
-| Step timeout default         | 10 min   | 10 min                    | Per attempt                                          |
-| waitForEvent timeout default | 24h      | 24h                       | Maximum 365 days                                     |
-| waitForEvent timeout max     | 365 days | 365 days                  | Maximum wait time                                    |
+| Limite                              | Grátis     | Pago                      | Notas                                                             |
+| ----------------------------------- | ---------- | ------------------------- | ----------------------------------------------------------------- |
+| CPU por etapa                       | 10ms       | 30s (padrão), 5min (máx.) | Definido via `limits.cpu_ms` em wrangler.jsonc                    |
+| Estado da etapa                     | 1 MiB      | 1 MiB                     | Valor de retorno por etapa                                        |
+| Estado da instância                 | 100 MB     | 1 GB                      | Estado total por instância de fluxo de trabalho                   |
+| Etapas por fluxo de trabalho        | 1.024      | 1.024                     | `step.sleep()` não conta                                          |
+| Execuções por dia                   | 100 mil    | Ilimitado                 | Limite diário de execução                                         |
+| Instâncias simultâneas              | 25         | 10k                       | Fluxos de trabalho simultâneos máximos; estado de espera excluído |
+| Instâncias em fila                  | 100 mil    | 1 milhão                  | Máximo de instâncias de fluxo de trabalho em fila                 |
+| Subsolicitações por etapa           | 50         | 1.000                     | Máximo de pedidos de saída por etapa                              |
+| Retenção estatal                    | 3 dias     | 30 dias                   | Quanto tempo as instâncias concluídas são mantidas                |
+| Padrão de tempo limite da etapa     | 10 minutos | 10 minutos                | Por tentativa                                                     |
+| padrão de tempo limite waitForEvent | 24h        | 24h                       | Máximo 365 dias                                                   |
+| tempo limite máximo de waitForEvent | 365 dias   | 365 dias                  | Tempo máximo de espera                                            |
 
-**Note:** Instances in `waiting` state (from `step.sleep` or `step.waitForEvent`) don't count toward concurrent instance limit, allowing millions of sleeping workflows.
+**Observação:** Instâncias no estado `waiting` (de `step.sleep` ou `step.waitForEvent`) não contam para o limite de instâncias simultâneas, permitindo milhões de fluxos de trabalho inativos.
 
-## Pricing
+## Preços
 
-| Metric   | Free        | Paid                           | Notes                                              |
-| -------- | ----------- | ------------------------------ | -------------------------------------------------- |
-| Requests | 100k/day    | 10M/mo + $0.30/M               | Workflow invocations                               |
-| CPU time | 10ms/invoke | 30M CPU-ms/mo + $0.02/M CPU-ms | Actual CPU usage                                   |
-| Storage  | 1 GB        | 1 GB/mo + $0.20/GB-mo          | All instances (running/errored/sleeping/completed) |
+| Métrica       | Grátis         | Pago                                         | Notas                                                            |
+| ------------- | -------------- | -------------------------------------------- | ---------------------------------------------------------------- |
+| Solicitações  | 100k/dia       | 10 milhões/mês + $ 0,30/m                    | Invocações de fluxo de trabalho                                  |
+| Tempo de CPU  | 10ms/invocação | 30 milhões de CPU-ms/mês + US$ 0,02/M CPU-ms | Uso real da CPU                                                  |
+| Armazenamento | 1 GB           | 1 GB/mês + US$ 0,20/GB-mês                   | Todas as instâncias (em execução/com erros/suspensas/concluídas) |
 
-## References
+## Referências
 
-- [Official Docs](https://developers.cloudflare.com/workflows/)
-- [Get Started Guide](https://developers.cloudflare.com/workflows/get-started/guide/)
-- [Workers API](https://developers.cloudflare.com/workflows/build/workers-api/)
-- [REST API](https://developers.cloudflare.com/api/resources/workflows/)
-- [Examples](https://developers.cloudflare.com/workflows/examples/)
-- [Limits](https://developers.cloudflare.com/workflows/reference/limits/)
-- [Pricing](https://developers.cloudflare.com/workflows/reference/pricing/)
+- [Documentos oficiais](https://developers.cloudflare.com/workflows/)
+- [Guia de primeiros passos](https://developers.cloudflare.com/workflows/get-started/guide/)
+- [API Workers](https://developers.cloudflare.com/workflows/build/workers-api/)
+- [API REST](https://developers.cloudflare.com/api/resources/workflows/)
+- [Exemplos](https://developers.cloudflare.com/workflows/examples/)
+- [Limites](https://developers.cloudflare.com/workflows/reference/limits/)
+- [Preços](https://developers.cloudflare.com/workflows/reference/pricing/)
 
-See: [README.md](./README.md), [configuration.md](./configuration.md), [api.md](./api.md), [patterns.md](./patterns.md)
+Consulte: [README.md](./README.md), [configuration.md](./configuration.md), [api.md](./api.md), [patterns.md](./patterns.md)

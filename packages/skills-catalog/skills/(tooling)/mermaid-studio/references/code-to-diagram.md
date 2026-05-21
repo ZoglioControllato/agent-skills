@@ -1,66 +1,66 @@
-# Code-to-Diagram — Analysis Methodology
+# Code-to-Diagram — Metodologia de Análise
 
-Load this file when the user asks to visualize existing code, analyze a codebase, or generate diagrams from source files.
+Carregue este arquivo quando o usuário solicitar a visualização do código existente, a análise de uma base de código ou a geração de diagramas a partir de arquivos de origem.
 
-## Workflow
+## Fluxo de trabalho
 
-1. **Identify scope** — what part of the code to diagram
-2. **Choose analysis strategy** — which patterns to look for
-3. **Extract structure** — read relevant files
-4. **Select diagram type** — based on what was found
-5. **Generate diagram** — create .mmd file
-6. **Validate and render** — as usual
+1. **Identifique o escopo** — que parte do código diagramar
+2. **Escolha a estratégia de análise** — quais padrões procurar
+3. **Extraia a estrutura** — leia os arquivos relevantes
+4. **Selecione o tipo de diagrama** — com base no que foi encontrado
+5. **Gerar diagrama** — criar arquivo .mmd
+6. **Validar e renderizar** — como sempre
 
-## Analysis Strategies by Request Type
+## Estratégias de análise por tipo de solicitação
 
-### "Show me the architecture"
+### "Mostre-me a arquitetura"
 
-**What to look for:**
+**O que procurar:**
 
-- Project root structure (folders, entry points)
-- Package.json / pyproject.toml / Cargo.toml for dependencies
-- Docker files, docker-compose.yml for services
-- Infrastructure-as-code (CDK, Terraform, CloudFormation, Pulumi)
-- Environment variables for external service connections
+- Estrutura raiz do projeto (pastas, pontos de entrada)
+- Package.json/pyproject.toml/Cargo.toml para dependências
+- Arquivos Docker, docker-compose.yml para serviços
+- Infraestrutura como código (CDK, Terraform, CloudFormation, Pulumi)
+- Variáveis de ambiente para conexões de serviço externo
 
-**Recommended diagram:** C4 Container or Architecture (for cloud infra)
+**Diagrama recomendado:** Contêiner ou arquitetura C4 (para infraestrutura de nuvem)
 
-**File exploration order:**
+**Ordem de exploração de arquivos:**
 
-1. Root directory listing
-2. docker-compose.yml / Dockerfile
-3. Infrastructure files (cdk/, terraform/, cloudformation/)
-4. Main entry point (src/main.ts, app.py, cmd/main.go)
-5. Config files for external connections
+1. Listagem do diretório raiz
+   2.docker-compose.yml/Dockerfile
+2. Arquivos de infraestrutura (cdk/, terraform/, cloudformation/)
+3. Ponto de entrada principal (src/main.ts, app.py, cmd/main.go)
+4. Arquivos de configuração para conexões externas
 
-### "Diagram the database schema"
+### "Diagrama do esquema do banco de dados"
 
-**What to look for:**
+**O que procurar:**
 
-- ORM models/entities (TypeORM, Prisma, SQLAlchemy, Drizzle)
-- Migration files
-- Schema definition files (.prisma, models.py, entities/)
-- Foreign key references
-- Enum definitions
+- Modelos/entidades ORM (TypeORM, Prisma, SQLAlchemy, Drizzle)
+- Arquivos de migração
+- Arquivos de definição de esquema (.prisma, models.py, entidades/)
+- Referências de chave estrangeira
+- Definições de enumeração
 
-**Recommended diagram:** ERD
+**Diagrama recomendado:** ERD
 
-**File exploration order:**
+**Ordem de exploração de arquivos:**
 
-1. Schema files (schema.prisma, models/, entities/)
-2. Migration files (for relationship confirmation)
-3. Seed files (for understanding data relationships)
+1. Arquivos de esquema (schema.prisma, modelos/, entidades/)
+2. Arquivos de migração (para confirmação de relacionamento)
+3. Arquivos iniciais (para entender as relações de dados)
 
-**Extraction rules:**
+**Regras de extração:**
 
-- Each model/entity → ERD entity
-- Each field → attribute with type
-- `@relation` / ForeignKey → relationship
-- `@id` / primary_key → PK marker
-- `@unique` → UK marker
-- Foreign key fields → FK marker
+- Cada modelo/entidade → entidade ERD
+- Cada campo → atributo com tipo
+- `@relation` / ForeignKey → relacionamento
+- `@id`/primary_key → marcador PK
+- `@unique` → marcador do Reino Unido
+- Campos de chave estrangeira → marcador FK
 
-**Example — Prisma to ERD:**
+**Exemplo — Prisma para ERD:**
 
 ```prisma
 // Input: schema.prisma
@@ -103,120 +103,116 @@ erDiagram
     }
 ```
 
-### "Show me the API flow"
+### "Mostre-me o fluxo da API"
 
-**What to look for:**
+**O que procurar:**
 
-- Route definitions (controllers, routers, handlers)
-- Middleware chain
-- Service layer calls
-- External API calls
-- Database queries in the flow
+- Definições de rotas (controladores, roteadores, manipuladores)
+- Cadeia de middleware
+- Chamadas da camada de serviço
+- Chamadas de API externas
+- Consultas de banco de dados no fluxo
 
-**Recommended diagram:** Sequence diagram
+**Diagrama recomendado:** Diagrama de sequência
 
-**File exploration order:**
+**Ordem de exploração de arquivos:**
 
-1. Route/controller files
-2. Middleware definitions
-3. Service files called by controllers
-4. Repository/data-access files
+1. Arquivos de rota/controlador
+2. Definições de middleware
+3. Arquivos de serviço chamados pelos controladores
+4. Arquivos de repositório/acesso a dados
 
-**Extraction rules:**
+**Regras de extração:**
 
-- Each controller/handler → participant
-- Each service class → participant
-- Each external call → external participant
-- Method calls → synchronous messages (->>)
-- Returns → response messages (-->>)
-- If/else in code → alt blocks
-- Try/catch → opt or break blocks
-- Loops → loop blocks
+- Cada controlador/manipulador → participante
+- Cada classe de serviço → participante
+- Cada chamada externa → participante externo
+- Chamadas de método → mensagens síncronas (->>)
+- Retorna → mensagens de resposta (-->>)
+- If/else no código → blocos alt
+- Try/catch → optar ou quebrar blocos
+- Loops → blocos de loop
 
-### "Show me the module dependencies"
+### "Mostre-me as dependências do módulo"
 
-**What to look for:**
+**O que procurar:**
 
-- Import statements between modules
-- Module registration (NestJS modules, Angular modules)
-- Dependency injection configuration
-- Package/module boundaries
+- Importar instruções entre módulos
+- Cadastro de módulos (módulos NestJS, módulos Angular)
+- Configuração de injeção de dependência
+- Limites de pacote/módulo
 
-**Recommended diagram:** Class diagram or Flowchart
+**Diagrama recomendado:** Diagrama de classes ou fluxograma
 
-**Extraction rules:**
+**Regras de extração:**
 
-- Each module/package → class or node
-- Import/dependency → arrow
-- Circular dependencies → highlight (bidirectional or color)
+- Cada módulo/pacote → classe ou nó
+- Importação/dependência → seta
+- Dependências circulares → destaque (bidirecional ou colorido)
 
-### "Show me the state machine"
+### "Mostre-me a máquina de estados"
 
-**What to look for:**
+**O que procurar:**
 
-- Enum definitions for states/status
-- Switch/case or if/else chains on status
-- State machine libraries (XState, statechart)
-- Transition functions
-- Event handlers that change state
+- Definições de enum para estados/status
+- Switch/case ou if/else encadeia o status
+- Bibliotecas de máquinas de estado (XState, statechart)
+- Funções de transição
+- Manipuladores de eventos que mudam de estado
 
-**Recommended diagram:** State diagram
+**Diagrama recomendado:** Diagrama de estado
 
-**Extraction rules:**
+**Regras de extração:**
 
-- Each enum value → state
-- Each transition function → edge with event label
-- Initial state → [*] --> state
-- Terminal states → state --> [*]
-- Guard conditions → edge labels
+- Cada valor enum → estado
+- Cada função de transição → borda com rótulo de evento
+- Estado inicial → [*] --> estado
+- Estados terminais → estado -> [*]
+- Condições de proteção → rótulos de borda
 
-### "Show me the class structure"
+### "Mostre-me a estrutura da classe"
 
-**What to look for:**
+**O que procurar:**
 
-- Class definitions with methods and properties
-- Interfaces and abstract classes
-- Inheritance (extends)
-- Composition (has-a fields)
-- Implementation (implements)
+- Definições de classes com métodos e propriedades
+- Interfaces e classes abstratas
+- Herança (estende)
+- Composição (possui campos)
+- Implementação (implementos)
 
-**Recommended diagram:** Class diagram
+**Diagrama recomendado:** Diagrama de classes
 
-**Extraction rules:**
+**Regras de extração:**
 
-- `class X extends Y` → inheritance (`Y <|-- X`)
-- `class X implements Y` → realization (`Y ..|> X`)
-- Field of type `Y` in class `X` → association (`X --> Y`)
-- Array/collection of `Y` in `X` → aggregation (`X o-- Y`)
-- `Y` created and owned by `X` → composition (`X *-- Y`)
-- `public` → `+`, `private` → `-`, `protected` → `#`
+- `classe X estende Y` → herança (`Y <|-- X`)
+- `classe X implementa Y` → realização (`Y ..|> X`)
+- Campo do tipo `Y` na classe `X` → associação (`X --> Y`)
+- Array/coleção de `Y` em `X` → agregação (`X o-- Y`)
+- `Y` criado e de propriedade de `X` → composição (`X *-- Y`)
+- `público` → `+`, `privado` → `-`, `protegido` → `#`
 
-## Framework-Specific Patterns
+## Padrões específicos da estrutura
 
-### NestJS
-
-```
+###NestJS```
 src/
 ├── modules/
-│   ├── user/
-│   │   ├── user.module.ts       → Module boundary
-│   │   ├── user.controller.ts   → API endpoints (sequence participant)
-│   │   ├── user.service.ts      → Business logic (sequence participant)
-│   │   ├── user.repository.ts   → Data access (sequence participant)
-│   │   ├── user.entity.ts       → Database model (ERD entity)
-│   │   └── dto/                 → Request/Response shapes
-│   └── order/
-│       └── ...
+│ ├── user/
+│ │ ├── user.module.ts → Module boundary
+│ │ ├── user.controller.ts → API endpoints (sequence participant)
+│ │ ├── user.service.ts → Business logic (sequence participant)
+│ │ ├── user.repository.ts → Data access (sequence participant)
+│ │ ├── user.entity.ts → Database model (ERD entity)
+│ │ └── dto/ → Request/Response shapes
+│ └── order/
+│ └── ...
 ├── common/
-│   ├── guards/                  → Auth flow (sequence)
-│   ├── interceptors/            → Cross-cutting (flowchart)
-│   └── filters/                 → Error handling (flowchart)
-└── main.ts                      → Entry point
-```
+│ ├── guards/ → Auth flow (sequence)
+│ ├── interceptors/ → Cross-cutting (flowchart)
+│ └── filters/ → Error handling (flowchart)
+└── main.ts → Entry point
 
-### React / Next.js
-
-```
+````
+### Reagir/Next.js```
 src/
 ├── app/                         → Routes (flowchart for navigation)
 │   ├── layout.tsx               → Layout hierarchy
@@ -227,55 +223,61 @@ src/
 ├── lib/                         → Utilities
 ├── services/                    → API clients (sequence participants)
 └── store/                       → State management (state diagram)
-```
+````
 
-### Python / FastAPI
-
-```
+###Python/FastAPI```
 app/
-├── main.py                      → Entry point, middleware chain
-├── routers/                     → Route definitions (sequence)
-├── services/                    → Business logic (sequence)
-├── models/                      → SQLAlchemy models (ERD)
-├── schemas/                     → Pydantic schemas
-├── dependencies/                → DI (class diagram)
+├── main.py → Entry point, middleware chain
+├── routers/ → Route definitions (sequence)
+├── services/ → Business logic (sequence)
+├── models/ → SQLAlchemy models (ERD)
+├── schemas/ → Pydantic schemas
+├── dependencies/ → DI (class diagram)
 └── core/
-    ├── config.py                → External connections
-    └── security.py              → Auth flow (sequence/state)
+├── config.py → External connections
+└── security.py → Auth flow (sequence/state)
+
+```
+## Estratégia Multidiagrama
+
+Para bases de código complexas, recomendamos a geração de vários diagramas focados em vez de um diagrama esmagador:
+
+1. **Contexto do Sistema (C4 Nível 1)** — sempre, conforme visão geral
+2. **Diagrama de Contêiner (C4 Nível 2)** — para arquiteturas multisserviços
+3. **ERD** — se existirem modelos de banco de dados
+4. **Sequência de fluxo principal** — para o fluxo mais importante voltado para o usuário
+5. **Diagrama de Estado** — se existirem máquinas de estado significativas
+
+Apresente-os como um conjunto, com o diagrama de Contexto primeiro para orientação.
+
+## Formato de saída
+
+Ao gerar a partir do código, sempre:
+
+1. Adicione um comentário no cabeçalho com link para a fonte:
+
 ```
 
-## Multi-Diagram Strategy
+%% Gerado de: src/modules/order/
+Diagrama %%: Serviço de pedido - Estrutura de componentes
 
-For complex codebases, recommend generating multiple focused diagrams rather than one overwhelming diagram:
+```
 
-1. **System Context (C4 Level 1)** — always, as the overview
-2. **Container Diagram (C4 Level 2)** — for multi-service architectures
-3. **ERD** — if database models exist
-4. **Key Flow Sequence** — for the most important user-facing flow
-5. **State Diagram** — if significant state machines exist
+2. Use nomes que correspondam ao código (nomes de classes, nomes de métodos)
 
-Present these as a set, with the Context diagram first for orientation.
+3. Inclua uma breve nota sobre o que foi excluído:
 
-## Output Format
+```
 
-When generating from code, always:
+%% Nota: Classes de utilitários e DTOs omitidos para maior clareza
 
-1. Add a header comment linking to source:
+```
 
-   ```
-   %% Generated from: src/modules/order/
-   %% Diagram: Order Service — Component Structure
-   ```
+4. Sinalizar incerteza:
+```
 
-2. Use names that match the code (class names, method names)
+%% TODO: Verifique a relação entre PaymentService e RefundService
 
-3. Include a brief note about what was excluded:
+```
 
-   ```
-   %% Note: Utility classes and DTOs omitted for clarity
-   ```
-
-4. Flag uncertainty:
-   ```
-   %% TODO: Verify relationship between PaymentService and RefundService
-   ```
+```

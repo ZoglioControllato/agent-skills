@@ -1,56 +1,53 @@
-# Image Optimization
+# Otimização de imagem
 
-## Table of Contents
-- [Modern Formats](#modern-formats)
-- [Responsive Images](#responsive-images)
-- [Sharp Script](#sharp-script)
-- [Framework Components](#framework-components)
+## Índice
+
+- [Formatos modernos](#formatos modernos)
+- [Imagens responsivas](#imagens responsivas)
+- [Script nítido](#script nítido)
+- [Componentes da estrutura](#framework-components)
 
 ---
 
-## Modern Formats
+## Formatos Modernos
 
-| Format | Use Case | Savings |
-|--------|----------|---------|
-| AVIF | Best compression, modern browsers | 50-80% vs JPEG |
-| WebP | Good compression, wide support | 25-35% vs JPEG |
-| JPEG | Fallback for old browsers | baseline |
+| Formato | Caso de uso                              | Poupança           |
+| ------- | ---------------------------------------- | ------------------ |
+| AVIF    | Melhor compactação, navegadores modernos | 50-80% versus JPEG |
+| WebP    | Boa compressão, amplo suporte            | 25-35% versus JPEG |
+| JPEG    | Fallback para navegadores antigos        | linha de base      |
 
-### Picture Element with Fallbacks
+### Elemento de imagem com substitutos```html
 
-```html
 <picture>
   <source srcset="/image.avif" type="image/avif">
   <source srcset="/image.webp" type="image/webp">
   <img src="/image.jpg" alt="Description" width="800" height="600">
 </picture>
 ```
-
 ---
 
-## Responsive Images
+## Imagens responsivas
 
-### srcset with width descriptors
+### srcset com descritores de largura```html
 
-```html
 <img
-  src="/image-800.jpg"
-  srcset="
-    /image-400.jpg 400w,
-    /image-800.jpg 800w,
-    /image-1200.jpg 1200w
-  "
-  sizes="(max-width: 600px) 100vw, 50vw"
-  alt="Description"
-  width="800"
-  height="600"
-  loading="lazy"
+src="/image-800.jpg"
+srcset="
+/image-400.jpg 400w,
+/image-800.jpg 800w,
+/image-1200.jpg 1200w
+"
+sizes="(max-width: 600px) 100vw, 50vw"
+alt="Description"
+width="800"
+height="600"
+loading="lazy"
+
 >
-```
 
-### Full responsive picture
-
-```html
+````
+### Imagem totalmente responsiva```html
 <picture>
   <source
     srcset="/hero-400.avif 400w, /hero-800.avif 800w, /hero-1200.avif 1200w"
@@ -71,15 +68,13 @@
     height="600"
   >
 </picture>
-```
+````
 
 ---
 
-## Sharp Script
+## Script Afiado
 
-Batch convert images to modern formats and sizes:
-
-```javascript
+Converta imagens em lote para formatos e tamanhos modernos:```javascript
 // scripts/optimize-images.js
 const sharp = require('sharp');
 const fs = require('fs');
@@ -90,10 +85,10 @@ const INPUT_DIR = './images/original';
 const OUTPUT_DIR = './public/images';
 
 async function optimizeImage(inputPath) {
-  const filename = path.basename(inputPath, path.extname(inputPath));
+const filename = path.basename(inputPath, path.extname(inputPath));
 
-  for (const size of SIZES) {
-    const resized = sharp(inputPath).resize(size);
+for (const size of SIZES) {
+const resized = sharp(inputPath).resize(size);
 
     // AVIF
     await resized
@@ -109,24 +104,23 @@ async function optimizeImage(inputPath) {
     await resized
       .jpeg({ quality: 80, progressive: true })
       .toFile(`${OUTPUT_DIR}/${filename}-${size}.jpg`);
-  }
+
+}
 }
 
 // Process all images
 fs.readdirSync(INPUT_DIR)
-  .filter(f => /\.(jpg|jpeg|png)$/i.test(f))
-  .forEach(f => optimizeImage(path.join(INPUT_DIR, f)));
-```
+.filter(f => /\.(jpg|jpeg|png)$/i.test(f))
+.forEach(f => optimizeImage(path.join(INPUT_DIR, f)));
 
-Run: `node scripts/optimize-images.js`
+````
+Execute: `node scripts/optimize-images.js`
 
 ---
 
-## Framework Components
+## Componentes da estrutura
 
-### Next.js Image
-
-```javascript
+### Imagem Next.js```javascript
 import Image from 'next/image';
 
 // Automatic optimization
@@ -142,29 +136,30 @@ import Image from 'next/image';
 <div style={{ position: 'relative', height: 400 }}>
   <Image src="/bg.jpg" alt="Background" fill style={{ objectFit: 'cover' }} />
 </div>
-```
+````
 
-### Astro Image
+### Imagem Astronômica```astro
 
-```astro
 ---
+
 import { Image } from 'astro:assets';
 import hero from '../assets/hero.png';
+
 ---
 
 <Image src={hero} alt="Hero" width={1200} height={600} />
 ```
-
-### Vite imagetools
-
-```javascript
+### ferramentas de imagem Vite```javascript
 // vite.config.js
 import { imagetools } from 'vite-imagetools';
 
 export default {
-  plugins: [imagetools()]
+plugins: [imagetools()]
 };
 
 // Usage in code
 import heroSrcset from './hero.jpg?w=400;800;1200&format=webp&as=srcset';
+
+```
+
 ```

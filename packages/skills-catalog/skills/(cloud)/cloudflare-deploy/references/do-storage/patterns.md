@@ -1,6 +1,6 @@
-# DO Storage Patterns & Best Practices
+# FAÇA padrões de armazenamento e práticas recomendadas
 
-## Schema Migration
+## Migração de esquema
 
 ```typescript
 export class MyDurableObject extends DurableObject {
@@ -23,7 +23,7 @@ export class MyDurableObject extends DurableObject {
 }
 ```
 
-## In-Memory Caching
+##Cache na memória
 
 ```typescript
 export class UserCache extends DurableObject {
@@ -46,7 +46,7 @@ export class UserCache extends DurableObject {
 }
 ```
 
-## Rate Limiting
+##Limitação de taxa
 
 ```typescript
 export class RateLimiter extends DurableObject {
@@ -61,7 +61,7 @@ export class RateLimiter extends DurableObject {
 }
 ```
 
-## Batch Processing with Alarms
+##Processamento em lote com alarmes
 
 ```typescript
 export class BatchProcessor extends DurableObject {
@@ -81,7 +81,7 @@ export class BatchProcessor extends DurableObject {
 }
 ```
 
-## Initialization Pattern
+##Padrão de inicialização
 
 ```typescript
 export class Counter extends DurableObject {
@@ -100,7 +100,7 @@ export class Counter extends DurableObject {
 }
 ```
 
-## Safe Counter / Optimized Write
+##Contador Seguro / Gravação Otimizada
 
 ```typescript
 // Input gate blocks other requests
@@ -118,9 +118,9 @@ async increment(): Promise<Response> {
 }
 ```
 
-## Parent-Child Coordination
+##Coordenação Pai-Filho
 
-Hierarchical DO pattern where parent manages child DOs:
+Padrão DO hierárquico onde o pai gerencia os DOs filhos:
 
 ```typescript
 // Parent DO coordinates children
@@ -153,9 +153,9 @@ export class Document extends DurableObject {
 }
 ```
 
-## Write Coalescing Pattern
+##Escrever padrão de coalescência
 
-Multiple writes to same key coalesce atomically (last write wins):
+Múltiplas gravações na mesma chave se unem atomicamente (a última gravação vence):
 
 ```typescript
 async updateMetrics(userId: string, actions: Action[]) {
@@ -179,7 +179,7 @@ async batchUpdate(items: Item[]) {
 }
 ```
 
-## Cleanup
+##Limpar
 
 ```typescript
 async cleanup() {

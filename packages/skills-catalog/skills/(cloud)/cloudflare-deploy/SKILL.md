@@ -1,123 +1,123 @@
 ---
 name: cloudflare-deploy
-description: Deploy applications and infrastructure to Cloudflare using Workers, Pages, and related platform services. Use when the user asks to deploy, host, publish, or set up a project on Cloudflare. Do NOT use for deploying to Vercel, Netlify, or Render (use their respective skills).
+description: Implanta aplicações e infraestrutura na Cloudflare usando Workers, Pages e serviços relacionados da plataforma. Use quando o usuário pedir para implantar, hospedar, publicar ou configurar um projeto na Cloudflare. NÃO use para implantar na Vercel, Netlify ou Render (use as skills respectivas).
 metadata:
   author: github.com/openai/skills
   version: '1.0.0'
 ---
 
-# Cloudflare Deploy
+# Deploy na Cloudflare
 
-Consolidated skill for building on the Cloudflare platform. Use decision trees below to find the right product, then load detailed references.
+Skill consolidada para construir na plataforma Cloudflare. Use as árvores de decisão abaixo para achar o produto certo e carregue referências detalhadas.
 
-## Prerequisites
+## Pré-requisitos
 
-- When sandboxing blocks the deployment network calls, rerun with `sandbox_permissions=require_escalated`.
-- The deployment might take a few minutes. Use appropriate timeout values.
+- Se o sandbox bloquear chamadas de rede do deploy, rode novamente com `sandbox_permissions=require_escalated`.
+- O deploy pode levar alguns minutos. Use timeouts adequados.
 
-## Authentication (Required Before Deploy)
+## Autenticação (obrigatória antes do deploy)
 
-Verify auth before `wrangler deploy`, `wrangler pages deploy`, or `npm run deploy`:
+Confirme autenticação antes de `wrangler deploy`, `wrangler pages deploy` ou `npm run deploy`:
 
 ```bash
 npx wrangler whoami    # Shows account if authenticated
 ```
 
-Not authenticated? → `references/wrangler/auth.md`
+Sem autenticação? → `references/wrangler/auth.md`
 
-- Interactive/local: `wrangler login` (one-time OAuth)
-- CI/CD: Set `CLOUDFLARE_API_TOKEN` env var
+- Interativo/local: `wrangler login` (OAuth único)
+- CI/CD: defina a variável de ambiente `CLOUDFLARE_API_TOKEN`
 
-## Quick Decision Trees
+## Árvores de decisão rápidas
 
-### "I need to run code"
-
-```
-Need to run code?
-├─ Serverless functions at the edge → workers/
-├─ Full-stack web app with Git deploys → pages/
-├─ Stateful coordination/real-time → durable-objects/
-├─ Long-running multi-step jobs → workflows/
-├─ Run containers → containers/
-├─ Multi-tenant (customers deploy code) → workers-for-platforms/
-├─ Scheduled tasks (cron) → cron-triggers/
-├─ Lightweight edge logic (modify HTTP) → snippets/
-├─ Process Worker execution events (logs/observability) → tail-workers/
-└─ Optimize latency to backend infrastructure → smart-placement/
-```
-
-### "I need to store data"
+### "Preciso executar código"
 
 ```
-Need storage?
-├─ Key-value (config, sessions, cache) → kv/
-├─ Relational SQL → d1/ (SQLite) or hyperdrive/ (existing Postgres/MySQL)
-├─ Object/file storage (S3-compatible) → r2/
-├─ Message queue (async processing) → queues/
-├─ Vector embeddings (AI/semantic search) → vectorize/
-├─ Strongly-consistent per-entity state → durable-objects/ (DO storage)
-├─ Secrets management → secrets-store/
-├─ Streaming ETL to R2 → pipelines/
-└─ Persistent cache (long-term retention) → cache-reserve/
+Precisa executar código?
+├─ Funções serverless na edge → workers/
+├─ App web full-stack com deploy Git → pages/
+├─ Coordenação com estado / tempo real → durable-objects/
+├─ Jobs longos multi-etapa → workflows/
+├─ Executar containers → containers/
+├─ Multi-tenant (clientes implantam código) → workers-for-platforms/
+├─ Tarefas agendadas (cron) → cron-triggers/
+├─ Lógica leve na edge (modificar HTTP) → snippets/
+├─ Processar eventos de execução do Worker (logs/observabilidade) → tail-workers/
+└─ Otimizar latência para infra backend → smart-placement/
 ```
 
-### "I need AI/ML"
+### "Preciso armazenar dados"
 
 ```
-Need AI?
-├─ Run inference (LLMs, embeddings, images) → workers-ai/
-├─ Vector database for RAG/search → vectorize/
-├─ Build stateful AI agents → agents-sdk/
-├─ Gateway for any AI provider (caching, routing) → ai-gateway/
-└─ AI-powered search widget → ai-search/
+Precisa armazenamento?
+├─ Chave-valor (config, sessões, cache) → kv/
+├─ SQL relacional → d1/ (SQLite) ou hyperdrive/ (Postgres/MySQL existente)
+├─ Armazenamento de objetos/arquivos (compatível S3) → r2/
+├─ Fila de mensagens (processamento assíncrono) → queues/
+├─ Embeddings vetoriais (IA/busca semântica) → vectorize/
+├─ Estado forte por entidade → durable-objects/ (armazenamento DO)
+├─ Gestão de secrets → secrets-store/
+├─ ETL streaming para R2 → pipelines/
+└─ Cache persistente (retenção longa) → cache-reserve/
 ```
 
-### "I need networking/connectivity"
+### "Preciso de IA/ML"
 
 ```
-Need networking?
-├─ Expose local service to internet → tunnel/
-├─ TCP/UDP proxy (non-HTTP) → spectrum/
-├─ WebRTC TURN server → turn/
-├─ Private network connectivity → network-interconnect/
-├─ Optimize routing → argo-smart-routing/
-├─ Optimize latency to backend (not user) → smart-placement/
-└─ Real-time video/audio → realtimekit/ or realtime-sfu/
+Precisa de IA?
+├─ Inferência (LLMs, embeddings, imagens) → workers-ai/
+├─ Banco vetorial para RAG/busca → vectorize/
+├─ Agentes de IA com estado → agents-sdk/
+├─ Gateway para qualquer provedor de IA (cache, roteamento) → ai-gateway/
+└─ Widget de busca com IA → ai-search/
 ```
 
-### "I need security"
+### "Preciso de rede/conectividade"
 
 ```
-Need security?
+Precisa de rede?
+├─ Expor serviço local à internet → tunnel/
+├─ Proxy TCP/UDP (não HTTP) → spectrum/
+├─ Servidor WebRTC TURN → turn/
+├─ Conectividade de rede privada → network-interconnect/
+├─ Otimizar roteamento → argo-smart-routing/
+├─ Otimizar latência para backend (não usuário) → smart-placement/
+└─ Vídeo/áudio em tempo real → realtimekit/ ou realtime-sfu/
+```
+
+### "Preciso de segurança"
+
+```
+Precisa de segurança?
 ├─ Web Application Firewall → waf/
-├─ DDoS protection → ddos/
-├─ Bot detection/management → bot-management/
-├─ API protection → api-shield/
-├─ CAPTCHA alternative → turnstile/
-└─ Credential leak detection → waf/ (managed ruleset)
+├─ Proteção DDoS → ddos/
+├─ Detecção/gestão de bots → bot-management/
+├─ Proteção de API → api-shield/
+├─ Alternativa a CAPTCHA → turnstile/
+└─ Detecção de vazamento de credenciais → waf/ (managed ruleset)
 ```
 
-### "I need media/content"
+### "Preciso de mídia/conteúdo"
 
 ```
-Need media?
-├─ Image optimization/transformation → images/
-├─ Video streaming/encoding → stream/
-├─ Browser automation/screenshots → browser-rendering/
-└─ Third-party script management → zaraz/
+Precisa de mídia?
+├─ Otimização/transformação de imagens → images/
+├─ Streaming/encoding de vídeo → stream/
+├─ Automação de browser/screenshots → browser-rendering/
+└─ Gestão de scripts de terceiros → zaraz/
 ```
 
-### "I need infrastructure-as-code"
+### "Preciso de infrastructure-as-code"
 
 ```
-Need IaC? → pulumi/ (Pulumi), terraform/ (Terraform), or api/ (REST API)
+Precisa IaC? → pulumi/ (Pulumi), terraform/ (Terraform) ou api/ (REST API)
 ```
 
-## Product Index
+## Índice de produtos
 
-### Compute & Runtime
+### Compute e runtime
 
-| Product               | Reference                           |
+| Produto               | Referência                          |
 | --------------------- | ----------------------------------- |
 | Workers               | `references/workers/`               |
 | Pages                 | `references/pages/`                 |
@@ -131,9 +131,9 @@ Need IaC? → pulumi/ (Pulumi), terraform/ (Terraform), or api/ (REST API)
 | Snippets              | `references/snippets/`              |
 | Smart Placement       | `references/smart-placement/`       |
 
-### Storage & Data
+### Armazenamento e dados
 
-| Product         | Reference                     |
+| Produto         | Referência                    |
 | --------------- | ----------------------------- |
 | KV              | `references/kv/`              |
 | D1              | `references/d1/`              |
@@ -146,9 +146,9 @@ Need IaC? → pulumi/ (Pulumi), terraform/ (Terraform), or api/ (REST API)
 | R2 Data Catalog | `references/r2-data-catalog/` |
 | R2 SQL          | `references/r2-sql/`          |
 
-### AI & Machine Learning
+### IA e machine learning
 
-| Product    | Reference                |
+| Produto    | Referência               |
 | ---------- | ------------------------ |
 | Workers AI | `references/workers-ai/` |
 | Vectorize  | `references/vectorize/`  |
@@ -156,9 +156,9 @@ Need IaC? → pulumi/ (Pulumi), terraform/ (Terraform), or api/ (REST API)
 | AI Gateway | `references/ai-gateway/` |
 | AI Search  | `references/ai-search/`  |
 
-### Networking & Connectivity
+### Rede e conectividade
 
-| Product              | Reference                          |
+| Produto              | Referência                         |
 | -------------------- | ---------------------------------- |
 | Tunnel               | `references/tunnel/`               |
 | Spectrum             | `references/spectrum/`             |
@@ -167,9 +167,9 @@ Need IaC? → pulumi/ (Pulumi), terraform/ (Terraform), or api/ (REST API)
 | Argo Smart Routing   | `references/argo-smart-routing/`   |
 | Workers VPC          | `references/workers-vpc/`          |
 
-### Security
+### Segurança
 
-| Product         | Reference                    |
+| Produto         | Referência                   |
 | --------------- | ---------------------------- |
 | WAF             | `references/waf/`            |
 | DDoS Protection | `references/ddos/`           |
@@ -177,25 +177,25 @@ Need IaC? → pulumi/ (Pulumi), terraform/ (Terraform), or api/ (REST API)
 | API Shield      | `references/api-shield/`     |
 | Turnstile       | `references/turnstile/`      |
 
-### Media & Content
+### Mídia e conteúdo
 
-| Product           | Reference                       |
+| Produto           | Referência                      |
 | ----------------- | ------------------------------- |
 | Images            | `references/images/`            |
 | Stream            | `references/stream/`            |
 | Browser Rendering | `references/browser-rendering/` |
 | Zaraz             | `references/zaraz/`             |
 
-### Real-Time Communication
+### Comunicação em tempo real
 
-| Product      | Reference                  |
+| Produto      | Referência                 |
 | ------------ | -------------------------- |
 | RealtimeKit  | `references/realtimekit/`  |
 | Realtime SFU | `references/realtime-sfu/` |
 
-### Developer Tools
+### Ferramentas de desenvolvedor
 
-| Product            | Reference                        |
+| Produto            | Referência                       |
 | ------------------ | -------------------------------- |
 | Wrangler           | `references/wrangler/`           |
 | Miniflare          | `references/miniflare/`          |
@@ -209,15 +209,15 @@ Need IaC? → pulumi/ (Pulumi), terraform/ (Terraform), or api/ (REST API)
 
 ### Infrastructure as Code
 
-| Product   | Reference               |
+| Produto   | Referência              |
 | --------- | ----------------------- |
 | Pulumi    | `references/pulumi/`    |
 | Terraform | `references/terraform/` |
 | API       | `references/api/`       |
 
-### Other Services
+### Outros serviços
 
-| Product       | Reference                   |
+| Produto       | Referência                  |
 | ------------- | --------------------------- |
 | Email Routing | `references/email-routing/` |
 | Email Workers | `references/email-workers/` |
@@ -225,13 +225,13 @@ Need IaC? → pulumi/ (Pulumi), terraform/ (Terraform), or api/ (REST API)
 | Bindings      | `references/bindings/`      |
 | Cache Reserve | `references/cache-reserve/` |
 
-## Troubleshooting
+## Solução de problemas
 
-### Escalated Network Access
+### Rede com permissões elevadas
 
-If deployment fails due to network issues (timeouts, DNS errors, connection resets), rerun the deploy with escalated permissions (use `sandbox_permissions=require_escalated`). The deploy requires escalated network access when sandbox networking blocks outbound requests.
+Se o deploy falhar por problemas de rede (timeouts, DNS, resets), rode novamente com permissões elevadas (`sandbox_permissions=require_escalated`). O deploy precisa de rede elevada quando o sandbox bloqueia saída.
 
-Example guidance to the user:
+Orientação de exemplo ao usuário:
 
 ```
 The deploy needs escalated network access to deploy to Cloudflare. I can rerun the command with escalated permissions—want me to proceed?

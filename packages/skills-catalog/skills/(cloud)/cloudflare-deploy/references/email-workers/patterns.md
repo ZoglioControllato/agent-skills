@@ -1,6 +1,6 @@
-# Email Workers Patterns
+# Padrões de trabalhadores de e-mail
 
-## Parse Email
+## Analisar e-mail
 
 ```typescript
 import PostalMime from 'postal-mime'
@@ -15,7 +15,7 @@ export default {
 }
 ```
 
-## Filtering
+##Filtragem
 
 ```typescript
 // Allowlist from KV
@@ -32,7 +32,7 @@ if (message.rawSize > 5_000_000) {
 }
 ```
 
-## Auto-Reply with Threading
+##Resposta automática com threading
 
 ```typescript
 import { EmailMessage } from 'cloudflare:email'
@@ -48,7 +48,7 @@ msg.addMessage({ contentType: 'text/plain', data: 'Thank you. We will respond.' 
 await message.reply(new EmailMessage('support@example.com', message.from, msg.asRaw()))
 ```
 
-## Rate-Limited Auto-Reply
+##Resposta automática com taxa limitada
 
 ```typescript
 const rateKey = `rate:${message.from}`
@@ -58,7 +58,7 @@ if (!(await env.RATE_LIMIT.get(rateKey))) {
 }
 ```
 
-## Subject-Based Routing
+##Roteamento baseado em assunto
 
 ```typescript
 const subject = (message.headers.get('Subject') || '').toLowerCase()
@@ -67,7 +67,7 @@ else if (subject.includes('support')) await message.forward('support@example.com
 else await message.forward('general@example.com')
 ```
 
-## Multi-Tenant Routing
+##Roteamento multilocatário
 
 ```typescript
 // support+tenant123@example.com → tenant123
@@ -76,7 +76,7 @@ const config = await env.TENANT_CONFIG.get(tenantId, 'json')
 config?.forwardTo ? await message.forward(config.forwardTo) : message.setReject('Unknown')
 ```
 
-## Archive & Extract Attachments
+##Arquivar e extrair anexos
 
 ```typescript
 // Archive to KV
@@ -96,7 +96,7 @@ for (const att of email.attachments) {
 }
 ```
 
-## Webhook Integration
+##Integração com webhook
 
 ```typescript
 ctx.waitUntil(

@@ -1,8 +1,8 @@
-# Stream Configuration
+# Configuração Stream
 
-Setup, environment variables, and wrangler configuration.
+Setup, variáveis de ambiente e configuração do Wrangler.
 
-## Installation
+## Instalação
 
 ```bash
 # Official Cloudflare SDK (Node.js, Workers, Pages)
@@ -15,7 +15,7 @@ npm install @cloudflare/stream-react
 npm install tus-js-client
 ```
 
-## Environment Variables
+## Variáveis de ambiente
 
 ```bash
 # Required
@@ -33,7 +33,7 @@ WEBHOOK_SECRET=your-webhook-secret
 STREAM_CUSTOMER_CODE=your-customer-code
 ```
 
-## Wrangler Configuration
+## Configuração Wrangler
 
 ```jsonc
 {
@@ -50,11 +50,11 @@ STREAM_CUSTOMER_CODE=your-customer-code
 }
 ```
 
-## Signing Keys (High Volume)
+## Chaves de assinatura (alto volume)
 
-Create once for self-signing tokens (thousands of daily users).
+Crie uma vez para auto-assinar tokens (milhares de usuários por dia).
 
-**Create key**
+**Criar chave**
 
 ```bash
 curl -X POST \
@@ -64,7 +64,7 @@ curl -X POST \
 # Save `id` and `jwk` (base64) from response
 ```
 
-**Store in secrets**
+**Armazenar em secrets**
 
 ```bash
 wrangler secret put STREAM_KEY_ID
@@ -73,7 +73,7 @@ wrangler secret put STREAM_JWK
 
 ## Webhooks
 
-**Setup webhook URL**
+**Configurar URL do webhook**
 
 ```bash
 curl -X PUT \
@@ -85,13 +85,13 @@ curl -X PUT \
 # Save the returned `secret` for signature verification
 ```
 
-**Store secret**
+**Armazenar secret**
 
 ```bash
 wrangler secret put WEBHOOK_SECRET
 ```
 
-## Direct Upload / Live / Watermark Config
+## Config de upload direto / ao vivo / marca d’água
 
 ```typescript
 // Direct upload
@@ -119,7 +119,7 @@ const watermark = {
 }
 ```
 
-## Access Rules & Player Config
+## Regras de acesso e config do player
 
 ```typescript
 // Access rules: allow US/CA, block CN/RU, or IP allowlist
@@ -137,15 +137,17 @@ const playerParams = new URLSearchParams({
 })
 ```
 
-## In This Reference
+## Nesta referência
 
-- [README.md](./README.md) - Overview and quick start
-- [api.md](./api.md) - On-demand video APIs
-- [api-live.md](./api-live.md) - Live streaming APIs
-- [patterns.md](./patterns.md) - Full-stack flows, best practices
-- [gotchas.md](./gotchas.md) - Error codes, troubleshooting
+- [README.md](./README.md) — visão geral
+- [api.md](./api.md) — sob demanda
+- [api-live.md](./api-live.md) — ao vivo
+- [patterns.md](./patterns.md) — fluxos
+- [gotchas.md](./gotchas.md) — erros
 
-## See Also
+## Ver também
 
-- [wrangler](../wrangler/) - Wrangler CLI and configuration
-- [workers](../workers/) - Deploy Stream APIs in Workers
+- [wrangler](../wrangler/) — CLI Wrangler
+- [workers](../workers/) — Workers
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

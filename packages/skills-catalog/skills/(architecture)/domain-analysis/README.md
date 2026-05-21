@@ -1,115 +1,115 @@
-# Subdomain Identification Skill
+# Habilidade de identificação de subdomínio
 
-A Agent Skill for identifying subdomains and suggesting bounded contexts in any codebase following Domain-Driven Design (DDD) Strategic Design principles.
+Uma habilidade de agente para identificar subdomínios e sugerir contextos limitados em qualquer base de código seguindo os princípios de design estratégico de design orientado a domínio (DDD).
 
-## What This Skill Does
+## O que essa habilidade faz
 
-This skill analyzes codebases to:
+Esta habilidade analisa bases de código para:
 
-1. **Extract business concepts** from code (entities, services, use cases, controllers)
-2. **Group concepts by Ubiquitous Language** (business vocabulary)
-3. **Identify subdomains** and classify them as Core, Supporting, or Generic
-4. **Assess cohesion** within and across domains
-5. **Detect low cohesion issues** and coupling problems
-6. **Suggest bounded contexts** with clear linguistic boundaries
-7. **Provide actionable recommendations** for domain separation
+1. **Extraia conceitos de negócios** do código (entidades, serviços, casos de uso, controladores)
+2. **Agrupar conceitos por linguagem ubíqua** (vocabulário de negócios)
+3. **Identifique os subdomínios** e classifique-os como Principais, de Suporte ou Genéricos
+4. **Avalie a coesão** dentro e entre domínios
+5. **Detecte problemas de baixa coesão** e problemas de acoplamento
+6. **Sugerir contextos delimitados** com limites linguísticos claros
+7. **Forneça recomendações práticas** para fazer
 
-## When the Agent Uses This Skill
+separação principal
 
-The agent automatically applies this skill when you:
+## Quando o agente usa esta habilidade
 
-- Ask to analyze domain boundaries
-- Request subdomain identification
-- Need help with DDD strategic design
-- Want to assess domain cohesion
-- Ask about bounded contexts
-- Discuss domain-driven refactoring
-- Inquire about business capabilities in code
+O agente aplica essa habilidade automaticamente quando você:
 
-## Key Features
+- Peça para analisar os limites do domínio
+- Solicitar identificação de subdomínio
+- Precisa de ajuda com design estratégico de DDD
+- Deseja avaliar a coesão do domínio
+- Pergunte sobre contextos limitados
+- Discutir a refatoração orientada por domínio
+- Informe-se sobre recursos de negócios em código
 
-### Generic & Portable
+## Principais recursos
 
-This skill is designed to work with **any codebase** in any language:
+### Genérico e portátil
 
-- No framework-specific assumptions
-- Language-agnostic principles
-- Focuses on business concepts, not technical implementation
-- Can analyze monoliths, microservices, or hybrid architectures
+Esta habilidade foi projetada para funcionar com **qualquer base de código** em qualquer linguagem:
 
-### DDD Strategic Design Foundation
+- Sem suposições específicas da estrutura
+- Princípios independentes de linguagem
+- Concentra-se em conceitos de negócios, não em implementação técnica
+- Pode analisar monólitos, microsserviços ou arquiteturas híbridas
 
-Based on proven Domain-Driven Design principles:
+### Fundação de Design Estratégico DDD
 
-- **Problem Space**: Identifies subdomains (Core, Supporting, Generic)
-- **Solution Space**: Suggests bounded contexts with clear boundaries
-- **Ubiquitous Language**: Primary driver for boundary detection
-- **Cohesion Analysis**: Objective metrics for domain relationships
+Baseado em princípios comprovados de Design Orientado a Domínio:
 
-### Actionable Output
+- **Espaço do problema**: identifica subdomínios (principal, de suporte, genérico)
+- **Espaço de solução**: sugere contextos limitados com limites claros
+- **Linguagem onipresente**: driver principal para detecção de limites
+- **Análise de coesão**: métricas objetivas para relacionamentos de domínio
 
-Provides concrete, actionable analysis:
+### Resultado acionável
 
-- Domain maps with cohesion scores
-- Cross-domain cohesion matrices
-- Low cohesion issue reports with priorities
-- Bounded context suggestions with integration patterns
-- Clear recommendations for improvement
+Fornece análises concretas e acionáveis:
 
-## Files Included
+- Mapas de domínio com pontuações de coesão
+- Matrizes de coesão entre domínios
+- Relatórios sobre questões de baixa coesão com prioridades
+- Sugestões de contexto limitadas com padrões de integração
+- Recomendações claras para melhoria
 
-### SKILL.md (Main Skill)
+## Arquivos incluídos
 
-The primary skill file containing:
+### SKILL.md (habilidade principal)
 
-- Complete analysis process (6 phases)
-- Subdomain classification rules
-- Cohesion assessment framework
-- Low cohesion detection rules
-- Output format templates
-- Best practices and anti-patterns
+O arquivo de habilidade principal contendo:
 
-### EXAMPLES.md (Practical Examples)
+- Processo de análise completo (6 fases)
+- Regras de classificação de subdomínios
+- Quadro de avaliação da coesão
+- Regras de detecção de baixa coesão
+- Modelos de formato de saída
+- Melhores práticas e antipadrões
 
-Real-world examples across different domains:
+### EXAMPLES.md (Exemplos Práticos)
 
-- E-Commerce Platform
-- Healthcare System
-- SaaS Project Management Tool
-- Streaming Video Platform
-- Common patterns and solutions
-- Quick analysis template
+Exemplos do mundo real em diferentes domínios:
 
-### QUICK-REFERENCE.md (Quick Lookup)
+- Plataforma de comércio eletrônico
+- Sistema de Saúde
+- Ferramenta de gerenciamento de projetos SaaS
+- Plataforma de streaming de vídeo
+- Padrões e soluções comuns
+- Modelo de análise rápida
 
-Fast reference for common scenarios:
+### QUICK-REFERENCE.md (pesquisa rápida)
 
-- Decision trees for classification
-- Cohesion scoring shortcuts
-- Red flags and signals
-- Integration pattern guide
-- Common mistakes to avoid
-- Key questions for assessment
+Referência rápida para cenários comuns:
 
-## Usage Examples
+- Árvores de decisão para classificação
+- Atalhos de pontuação de coesão
+- Bandeiras vermelhas e sinais
+- Guia de padrões de integração
+- Erros comuns a evitar
+- Perguntas-chave para avaliação
 
-### Example 1: Analyze Entire Codebase
+## Exemplos de uso
 
-```
+### Exemplo 1: Analise toda a base de código```
+
 User: "Analyze the domains in this codebase and suggest bounded contexts"
 
 Agent: [Uses skill to:]
+
 1. Extract all business concepts
 2. Group by Ubiquitous Language
 3. Identify subdomains
 4. Calculate cohesion scores
 5. Detect issues
 6. Suggest bounded contexts
-```
 
-### Example 2: Check Specific Module
-
-```
+````
+### Exemplo 2: Verifique o módulo específico```
 User: "Is the billing module properly separated from other domains?"
 
 Agent: [Uses skill to:]
@@ -118,194 +118,184 @@ Agent: [Uses skill to:]
 3. Assess linguistic cohesion
 4. Flag coupling issues
 5. Recommend improvements
-```
+````
 
-### Example 3: Classify Subdomain
+### Exemplo 3: Classificar subdomínio```
 
-```
 User: "Should our recommendation engine be Core or Supporting?"
 
 Agent: [Uses skill to:]
+
 1. Ask: Is it competitive advantage?
 2. Assess business differentiation
 3. Check complexity & change frequency
 4. Classify using decision tree
 5. Explain classification
-```
 
-## Core Concepts
+````
+## Conceitos Básicos
 
-### Subdomain Types
+### Tipos de subdomínio
 
-**Core Domain**
+**Domínio principal**
 
-- Your competitive advantage
-- What makes your business unique
-- Requires best developers and domain experts
-- Example: Netflix's recommendation algorithm
+- Sua vantagem competitiva
+- O que torna seu negócio único
+- Requer os melhores desenvolvedores e especialistas em domínio
+- Exemplo: algoritmo de recomendação da Netflix
 
-**Supporting Subdomain**
+**Subdomínio de suporte**
 
-- Essential but not differentiating
-- Business-specific but not unique
-- Supports the Core Domain
-- Example: Custom inventory management rules
+- Essencial, mas não diferenciador
+- Específico do negócio, mas não exclusivo
+- Suporta o domínio principal
+- Exemplo: regras personalizadas de gerenciamento de inventário
 
-**Generic Subdomain**
+**Subdomínio genérico**
 
-- Common functionality
-- Could be outsourced or purchased
-- Well-understood solutions
-- Example: User authentication, email sending
+- Funcionalidade comum
+- Pode ser terceirizado ou adquirido
+- Soluções bem compreendidas
+- Exemplo: Autenticação de usuário, envio de e-mail
 
-### Cohesion Scoring
+### Pontuação de Coesão
 
-The skill uses a 10-point cohesion scale:
-
-```
+A habilidade usa uma escala de coesão de 10 pontos:```
 Score = Linguistic (0-3) + Usage (0-3) + Data (0-2) + Change (0-2)
 
 8-10: High Cohesion ✅ (Strong subdomain candidate)
 5-7:  Medium Cohesion ⚠️ (Review boundaries)
 0-4:  Low Cohesion ❌ (Wrong grouping, needs separation)
-```
+````
 
-### Bounded Context
+### Contexto limitado
 
-An explicit linguistic boundary where all domain terms have specific, unambiguous meanings:
+Uma fronteira linguística explícita onde todos os termos do domínio têm significados específicos e inequívocos:
 
-- Primary driver: **Business language**, not technical architecture
-- Goal: Align 1 Subdomain to 1 Bounded Context
-- Integration: Use interfaces, events, or APIs between contexts
-- Size: As big as needed to express complete Ubiquitous Language
+- Driver principal: **linguagem comercial**, não arquitetura técnica
+- Objetivo: Alinhar 1 subdomínio a 1 contexto limitado
+- Integração: Use interfaces, eventos ou APIs entre contextos
+- Tamanho: Tão grande quanto necessário para expressar a linguagem onipresente completa
 
-## Key Principles
+## Princípios Chave
 
-1. **Language Over Architecture**: Bounded contexts are linguistic boundaries, not technical ones
-2. **Business Over Technical**: Focus on business capabilities, not code structure
-3. **Cohesion is Measurable**: Use objective metrics, not gut feeling
-4. **Context is King**: Same term can mean different things in different contexts
-5. **Integration is Necessary**: Some cross-domain dependencies are normal and healthy
+1. **Linguagem sobre Arquitetura**: Contextos limitados são limites linguísticos, não técnicos
+2. **Negócios acima do técnico**: foco nos recursos de negócios, não na estrutura do código
+3. **Coesão é Mensurável**: Use métricas objetivas, não intuição
+4. **O contexto é rei**: o mesmo termo pode significar coisas diferentes em contextos diferentes
+5. **A integração é necessária**: algumas dependências entre domínios são normais e íntegras
 
-## Anti-Patterns Detected
+## Antipadrões detectados
 
-The skill identifies common mistakes:
+A habilidade identifica erros comuns:
 
-- **Big Ball of Mud**: Everything connected to everything
-- **All-Inclusive Model**: Trying to create single global model
-- **Mixed Linguistic Concepts**: Different vocabularies in same context
-- **Cross-Domain Tight Coupling**: Direct entity references between domains
-- **Generic in Core**: Infrastructure concerns in business logic
-- **Unclear Boundaries**: Cannot determine which domain owns concept
+- **Big Ball of Mud**: Tudo conectado a tudo
+- **Modelo Tudo Incluído**: Tentando criar um modelo global único
+- **Conceitos linguísticos mistos**: Vocabulários diferentes no mesmo contexto
+- **Acoplamento rígido entre domínios**: referências diretas de entidade entre domínios
+- **Genérico no núcleo**: preocupações de infraestrutura na lógica de negócios
+- **Limites pouco claros**: não é possível determinar qual domínio possui o conceito
 
-## Integration Patterns
+## Padrões de Integração
 
-The skill suggests appropriate integration patterns:
+A habilidade sugere padrões de integração apropriados:
 
-- **Domain Events**: For decoupled, eventual consistency
-- **API/Interface**: For synchronous integration with clear contract
-- **Anti-Corruption Layer**: For protecting from external systems
-- **Published Language**: For stable, documented integration
-- **Customer/Supplier**: For clear upstream/downstream relationships
+- **Eventos de domínio**: para consistência eventual e dissociada
+- **API/Interface**: para integração síncrona com contrato claro
+- **Camada Anticorrupção**: Para proteção contra sistemas externos
+- **Idioma publicado**: para integração estável e documentada
+- **Cliente/Fornecedor**: Para relacionamentos upstream/downstream claros
 
-## Installation
+## Instalação
 
-This skill is installed at the project level in your agent's skills directory:
-
-```
+Esta habilidade é instalada no nível do projeto no diretório de habilidades do seu agente:```
 .{agent}/skills/subdomain-identification/
-```
 
-Where `{agent}` is your agent's directory (e.g., `.cursor/`, `.claude/`, `.agent/`, `.github/`, `.opencode/`).
+````
+Onde `{agent}` é o diretório do seu agente (por exemplo, `.cursor/`, `.claude/`, `.agent/`, `.github/`, `.opencode/`).
 
-This means it's:
+Isso significa que é:
 
-- **Shared with the repository**: Anyone cloning this repo gets the skill
-- **Version controlled**: Changes are tracked in git
-- **Project-specific**: Can be customized for this codebase
+- **Compartilhado com o repositório**: qualquer pessoa que clonar este repositório obtém a habilidade
+- **Controlado por versão**: as alterações são rastreadas no git
+- **Específico do projeto**: pode ser personalizado para esta base de código
 
-The agent will automatically discover and use it when appropriate based on the description in the frontmatter.
+O agente irá descobri-lo e usá-lo automaticamente quando apropriado, com base na descrição no frontmatter.
 
-## Customization
+## Personalização
 
-### For Project-Specific Domains
+### Para domínios específicos do projeto
 
-If your project has specific domain patterns, create a project-level reference:
-
-```
+Se o seu projeto tiver padrões de domínio específicos, crie uma referência no nível do projeto:```
 .{agent}/skills/subdomain-identification/
 └── project-domains.md  # Document project-specific patterns
-```
+````
 
-Link to it from your analysis requests.
+Link para ele a partir de suas solicitações de análise.
 
-### For Framework-Specific Analysis
+### Para análise específica da estrutura
 
-Add framework-specific patterns to help the skill:
+Adicione padrões específicos da estrutura para ajudar na habilidade:```markdown
 
-```markdown
 ## Framework: NestJS
 
 **Entity Pattern**: `@Entity()` decorator
 **Service Pattern**: `@Injectable()` classes ending in `Service`
 **Controller Pattern**: `@Controller()` decorator
 **Use Case Pattern**: Classes ending in `UseCase`
-```
 
-## Validation
+````
+## Validação
 
-To verify the skill works correctly, try:
-
-```
+Para verificar se a habilidade funciona corretamente, tente:```
 User: "What subdomains can you identify in this codebase?"
-```
+````
 
-The agent should:
+O agente deverá:
 
-1. Read the SKILL.md file
-2. Follow the 6-phase analysis process
-3. Output domain maps and cohesion matrices
-4. Provide actionable recommendations
+1. Leia o arquivo SKILL.md
+2. Siga o processo de análise de 6 fases
+3. Mapas de domínio de saída e matrizes de coesão
+4. Forneça recomendações práticas
 
-## References
+## Referências
 
-This skill is based on:
+Esta habilidade é baseada em:
 
-- **Domain-Driven Design** by Eric Evans
-- **Implementing Domain-Driven Design** by Vaughn Vernon
-- Strategic Design principles from the DDD community
+- **Design baseado em domínio** por Eric Evans
+- **Implementando Design Orientado a Domínio** por Vaughn Vernon
+- Princípios de Design Estratégico da comunidade DDD
 
-## License
+## Licença
 
-This skill can be used, modified, and shared freely. It's designed to be portable across any codebase or organization.
+Esta habilidade pode ser usada, modificada e compartilhada livremente. Ele foi projetado para ser portátil em qualquer base de código ou organização.
 
-## Contributing
+## Contribuindo
 
-To improve this skill:
+Para melhorar esta habilidade:
 
-1. Add more examples to `EXAMPLES.md`
-2. Expand the quick reference with new patterns
-3. Add language/framework-specific detection patterns
-4. Document new anti-patterns or red flags
-5. Share real-world case studies
+1. Adicione mais exemplos a `EXAMPLES.md`
+2. Expanda a referência rápida com novos padrões
+3. Adicione padrões de detecção específicos de linguagem/estrutura
+4. Documente novos antipadrões ou sinais de alerta
+5. Compartilhe estudos de caso do mundo real
 
-## Version
+## Versão
 
-**Version**: 1.0.0  
-**Created**: 2026-02-05  
-**Based on**: DDD Strategic Design Theory
+**Versão**: 1.0.0  
+**Criado**: 05/02/2026  
+**Baseado em**: Teoria do Design Estratégico DDD
 
 ---
 
-## Quick Start
+## Início rápido
 
-To use this skill immediately:
-
-```
+Para usar esta habilidade imediatamente:```
 User: "Analyze domains in my codebase"
 User: "Identify subdomains and suggest bounded contexts"
 User: "Check cohesion between [DomainA] and [DomainB]"
 User: "Is [concept] Core, Supporting, or Generic?"
-```
 
-The agent will automatically apply this skill and provide comprehensive analysis.
+```
+O agente aplicará automaticamente essa habilidade e fornecerá uma análise abrangente.
+```

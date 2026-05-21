@@ -1,141 +1,137 @@
-# Subdomain Identification & Bounded Context Analysis
+# Identificação de subdomínio e análise de contexto limitado
 
-This skill analyzes codebases to identify subdomains (Core, Supporting, Generic) and suggest bounded contexts following Domain-Driven Design Strategic Design principles.
+Esta habilidade analisa bases de código para identificar subdomínios (principal, de suporte, genérico) e sugerir contextos limitados seguindo os princípios de design estratégico de design orientado a domínio.
 
-The **modular-decomposition** skill embeds a verbatim copy of this bundle under `references/domain-analysis/` for users who want one install for the full decomposition pipeline. This standalone **domain-analysis** skill remains the catalog install target when you only need DDD strategic analysis.
+A habilidade **decomposição modular** incorpora uma cópia literal deste pacote em `referências/análise de domínio/` para usuários que desejam uma instalação para o pipeline de decomposição completo. Essa habilidade autônoma de **análise de domínio** continua sendo o alvo de instalação do catálogo quando você só precisa de análise estratégica DDD.
 
-## When to Use
+## Quando usar
 
-Apply this skill when:
+Aplique esta habilidade quando:
 
-- Analyzing domain boundaries in any codebase
-- Identifying Core, Supporting, and Generic subdomains
-- Mapping bounded contexts from problem space to solution space
-- Assessing domain cohesion and detecting coupling issues
-- Planning domain-driven refactoring
-- Understanding business capabilities in code
+- Analisando limites de domínio em qualquer base de código
+- Identificação de subdomínios principais, de suporte e genéricos
+- Mapeamento de contextos limitados do espaço do problema para o espaço da solução
+- Avaliar a coesão do domínio e detectar problemas de acoplamento
+- Planejando refatoração orientada a domínio
+- Compreender as capacidades de negócios no código
 
-## Core Principles
+## Princípios Fundamentais
 
-### Subdomain Classification
+### Classificação de subdomínio
 
-**Core Domain**: Competitive advantage, highest business value, requires best developers
+**Domínio principal**: vantagem competitiva, maior valor comercial, requer os melhores desenvolvedores
 
-- Indicators: Complex business logic, frequent changes, domain experts needed
+- Indicadores: Lógica de negócios complexa, mudanças frequentes, especialistas no domínio necessários
 
-**Supporting Subdomain**: Essential but not differentiating, business-specific
+**Subdomínio de suporte**: essencial, mas não diferenciador, específico do negócio
 
-- Indicators: Supports Core Domain, moderate complexity, business-specific rules
+- Indicadores: Suporta Domínio Principal, complexidade moderada, regras específicas de negócios
 
-**Generic Subdomain**: Common functionality, could be outsourced
+**Subdomínio genérico**: funcionalidade comum, pode ser terceirizada
 
-- Indicators: Well-understood problem, low differentiation, standard functionality
+- Indicadores: Problema bem compreendido, baixa diferenciação, funcionalidade padrão
 
-### Bounded Context
+### Contexto limitado
 
-An explicit linguistic boundary where domain terms have specific, unambiguous meanings.
+Uma fronteira linguística explícita onde os termos do domínio têm significados específicos e inequívocos.
 
-- Primary nature: Linguistic boundary, not technical
-- Key rule: Inside boundary, all Ubiquitous Language terms are unambiguous
-- Goal: Align 1 subdomain to 1 bounded context (ideal)
+- Natureza primária: Limite linguístico, não técnico
+- Regra principal: Dentro dos limites, todos os termos da Linguagem Ubíqua são inequívocos
+- Objetivo: Alinhar 1 subdomínio a 1 contexto limitado (ideal)
 
-## Analysis Process
+## Processo de análise
 
-### Phase 1: Extract Concepts
+### Fase 1: Extrair conceitos
 
-Scan codebase for business concepts (not infrastructure):
+Digitalize a base de código em busca de conceitos de negócios (não de infraestrutura):
 
-1. **Entities** (domain models with identity)
-   - Patterns: `@Entity`, `class`, domain models
-   - Focus: Business concepts, not technical classes
+1. **Entidades** (modelos de domínio com identidade)
+   - Padrões: `@Entity`, `class`, modelos de domínio
+   - Foco: Conceitos de negócios, não aulas técnicas
 
-2. **Services** (business operations)
-   - Patterns: `*Service`, `*Manager`, `*Handler`
-   - Focus: Business logic, not technical utilities
+2. **Serviços** (operações comerciais)
+   - Padrões: `*Service`, `*Manager`, `*Handler`
+   - Foco: Lógica de negócios, não utilidades técnicas
 
-3. **Use Cases** (business workflows)
-   - Patterns: `*UseCase`, `*Command`, `*Handler`
-   - Focus: Business processes, not CRUD
+3. **Casos de uso** (fluxos de trabalho de negócios)
+   - Padrões: `*UseCase`, `*Command`, `*Handler`
+   - Foco: Processos de negócios, não CRUD
 
-4. **Controllers/Resolvers** (entry points)
-   - Patterns: `*Controller`, `*Resolver`, API endpoints
-   - Focus: Business capabilities, not technical routes
+4. **Controladores/Resolvedores** (pontos de entrada)
+   - Padrões: `*Controller`, `*Resolver`, endpoints de API
+   - Foco: capacidades de negócios, não rotas técnicas
 
-### Phase 2: Group by Ubiquitous Language
+### Fase 2: Agrupar por linguagem onipresente
 
-For each concept, determine:
+Para cada conceito, determine:
 
-**Primary Language Context**
+**Contexto do idioma principal**
 
-- What business vocabulary does this belong to?
-- Examples:
-  - `Subscription`, `Invoice`, `Payment` → Billing language
-  - `Movie`, `Video`, `Episode` → Content language
-  - `User`, `Authentication` → Identity language
+- A que vocabulário empresarial pertence isso?
+- Exemplos:
+  - `Assinatura`, `Fatura`, `Pagamento` → Idioma de cobrança
+  - `Filme`, `Vídeo`, `Episódio` → Idioma do conteúdo
+  - `Usuário`, `Autenticação` → Idioma de identidade
 
-**Linguistic Boundaries**
+**Limites Linguísticos**
 
-- Where do term meanings change?
-- Same term, different meaning = different bounded context
-- Example: "Customer" in Sales vs "Customer" in Support
+- Onde os significados dos termos mudam?
+- Mesmo termo, significado diferente = contexto delimitado diferente
+- Exemplo: “Cliente” em Vendas vs “Cliente” em Suporte
 
-**Concept Relationships**
+**Relacionamentos conceituais**
 
-- Which concepts naturally belong together?
-- Which share business vocabulary?
-- Which reference each other?
+- Que conceitos pertencem naturalmente um ao outro?
+- Quais compartilham vocabulário de negócios?
+- Quais se referenciam?
 
-### Phase 3: Identify Subdomains
+### Fase 3: Identificar subdomínios
 
-A subdomain has:
+Um subdomínio tem:
 
-- Distinct business capability
-- Independent business value
-- Unique vocabulary
-- Multiple related entities working together
-- Cohesive set of business operations
+- Capacidade de negócios distinta
+- Valor comercial independente
+- Vocabulário único
+- Múltiplas entidades relacionadas trabalhando juntas
+- Conjunto coeso de operações de negócios
 
-**Common Domain Patterns**:
+**Padrões de domínio comuns**:
 
-- Billing/Subscription: Payments, invoices, plans
-- Content/Catalog: Media, products, inventory
-- Identity/Access: Users, authentication, authorization
-- Analytics: Metrics, dashboards, insights
-- Notifications: Messages, alerts, communications
+- Faturamento/Assinatura: Pagamentos, faturas, planos
+- Conteúdo/Catálogo: Mídia, produtos, inventário
+- Identidade/Acesso: Usuários, autenticação, autorização
+- Analytics: métricas, painéis, insights
+- Notificações: mensagens, alertas, comunicações
 
-**Classify Each Subdomain**:
+**Classifique cada subdomínio**:
 
-Use this decision tree:
-
-```
+Use esta árvore de decisão:```
 Is it a competitive advantage?
-  YES → Core Domain
-  NO → Does it require business-specific knowledge?
-        YES → Supporting Subdomain
-        NO → Generic Subdomain
-```
+YES → Core Domain
+NO → Does it require business-specific knowledge?
+YES → Supporting Subdomain
+NO → Generic Subdomain
 
-### Phase 4: Assess Cohesion
+````
+### Fase 4: Avaliar a coesão
 
-**High Cohesion Indicators** ✅
+**Indicadores de alta coesão** ✅
 
-- Concepts share Ubiquitous Language
-- Concepts frequently used together
-- Direct business relationships
-- Changes to one affect others in group
-- Solve same business problem
+- Conceitos compartilham linguagem onipresente
+- Conceitos frequentemente usados em conjunto
+- Relações comerciais diretas
+- Mudanças em um afetam outros no grupo
+- Resolver o mesmo problema de negócios
 
-**Low Cohesion Indicators** ❌
+**Indicadores de baixa coesão** ❌
 
-- Different business vocabularies mixed
-- Concepts rarely used together
-- No direct business relationship
-- Changes don't affect others
-- Solve different business problems
+- Diferentes vocabulários de negócios misturados
+- Conceitos raramente usados juntos
+- Sem relacionamento comercial direto
+- As mudanças não afetam os outros
+- Resolver diferentes problemas de negócios
 
-**Cohesion Score Formula**:
-
-```
+**Fórmula de pontuação de coesão**:```
 Score = (
   Linguistic Cohesion (0-3) +    // Shared vocabulary
   Usage Cohesion (0-3) +         // Used together
@@ -146,67 +142,66 @@ Score = (
 8-10: High Cohesion ✅
 5-7:  Medium Cohesion ⚠️
 0-4:  Low Cohesion ❌
-```
+````
 
-### Phase 5: Detect Low Cohesion Issues
+### Fase 5: Detectar problemas de baixa coesão
 
-**Rule 1: Linguistic Mismatch**
+**Regra 1: Incompatibilidade linguística**
 
-- Problem: Different business vocabularies mixed
-- Example: `User` (identity) + `Subscription` (billing) in same service
-- Action: Suggest separation into different bounded contexts
+- Problema: Diferentes vocabulários de negócios misturados
+- Exemplo: `Usuário` (identidade) + `Assinatura` (faturamento) no mesmo serviço
+- Ação: Sugira a separação em diferentes contextos limitados
 
-**Rule 2: Cross-Domain Dependencies**
+**Regra 2: Dependências entre domínios**
 
-- Problem: Tight coupling between domains
-- Example: Service A directly instantiates entities from Domain B
-- Action: Suggest interface-based integration
+- Problema: acoplamento forte entre domínios
+- Exemplo: o Serviço A instancia diretamente entidades do Domínio B
+- Ação: sugerir integração baseada em interface
 
-**Rule 3: Mixed Responsibilities**
+**Regra 3: Responsabilidades Mistas**
 
-- Problem: Single class handles multiple business concerns
-- Example: Service handling both billing and content
-- Action: Suggest splitting by subdomain
+- Problema: uma única classe lida com vários problemas de negócios
+- Exemplo: serviço que trata de faturamento e conteúdo
+- Ação: Sugerir divisão por subdomínio
 
-**Rule 4: Generic in Core**
+**Regra 4: Genérico no Core**
 
-- Problem: Generic functionality in core business logic
-- Example: Email sending in billing service
-- Action: Extract to Generic Subdomain
+- Problema: Funcionalidade genérica na lógica de negócios principal
+- Exemplo: Envio de e-mail no serviço de cobrança
+- Ação: Extrair para subdomínio genérico
 
-**Rule 5: Unclear Boundaries**
+**Regra 5: Limites pouco claros**
 
-- Problem: Cannot determine which domain concept belongs to
-- Example: Entity with relationships to multiple domains
-- Action: Clarify boundaries, possibly split concept
+- Problema: não é possível determinar a qual conceito de domínio pertence
+- Exemplo: Entidade com relacionamentos com vários domínios
+- Ação: Esclarecer limites, possivelmente dividir conceito
 
-### Phase 6: Map Bounded Contexts
+### Fase 6: Mapear contextos limitados
 
-For each subdomain identified, suggest bounded context:
+Para cada subdomínio identificado, sugira contexto limitado:
 
-**Bounded Context Characteristics**:
+**Características do contexto limitado**:
 
-- Name reflects Ubiquitous Language
-- Contains complete domain model
-- Has explicit integration points
-- Clear linguistic boundary
+- O nome reflete a linguagem onipresente
+- Contém modelo de domínio completo
+- Possui pontos de integração explícitos
+- Limite linguístico claro
 
-**Integration Patterns**:
+**Padrões de integração**:
 
-- Shared Kernel: Shared model between contexts (use sparingly)
-- Customer/Supplier: Downstream depends on upstream
-- Conformist: Downstream conforms to upstream
-- Anti-corruption Layer: Translation layer between contexts
-- Open Host Service: Published interface for integration
-- Published Language: Well-documented integration protocol
+- Kernel Compartilhado: Modelo compartilhado entre contextos (use com moderação)
+- Cliente/Fornecedor: Downstream depende de upstream
+- Conformista: Downstream está em conformidade com upstream
+- Camada Anticorrupção: Camada de tradução entre contextos
+- Open Host Service: interface publicada para integração
+- Idioma publicado: protocolo de integração bem documentado
 
-## Output Format
+## Formato de saída
 
-### Domain Map
+### Mapa de Domínio
 
-For each domain/subdomain:
+Para cada domínio/subdomínio:```markdown
 
-```markdown
 ## Domain: {Name}
 
 **Type**: Core Domain | Supporting Subdomain | Generic Subdomain
@@ -237,22 +232,19 @@ For each domain/subdomain:
 - ← {OtherDomain} via {interface/API}
 
 **Cohesion Score**: {score}/10
-```
 
-### Cohesion Matrix
-
-```markdown
+````
+### Matriz de Coesão```markdown
 ## Cross-Domain Cohesion
 
 | Domain A | Domain B | Cohesion | Issue              | Recommendation          |
 | -------- | -------- | -------- | ------------------ | ----------------------- |
 | Billing  | Identity | 2/10     | ❌ Direct coupling | Use interface           |
 | Content  | Billing  | 6/10     | ⚠️ Usage tracking  | Event-based integration |
-```
+````
 
-### Low Cohesion Report
+### Relatório de Baixa Coesão```markdown
 
-```markdown
 ## Issues Detected
 
 ### Priority: High
@@ -268,11 +260,9 @@ For each domain/subdomain:
 ### Priority: Medium
 
 {similar format}
-```
 
-### Bounded Context Map
-
-```markdown
+````
+### Mapa de contexto limitado```markdown
 ## Suggested Bounded Contexts
 
 ### {ContextName}Context
@@ -296,74 +286,71 @@ For each domain/subdomain:
 - Separate persistence
 - Independent deployment
 - Explicit API boundaries
-```
+````
 
-## Best Practices
+## Melhores práticas
 
-### Do's ✅
+### O que fazer ✅
 
-- Focus on business language, not code structure
-- Let Ubiquitous Language guide boundaries
-- Measure cohesion objectively
-- Identify clear integration points
-- Classify every subdomain (Core/Supporting/Generic)
-- Look for linguistic boundaries first
+- Concentre-se na linguagem de negócios, não na estrutura do código
+- Deixe a linguagem onipresente guiar os limites
+- Medir a coesão objetivamente
+- Identifique pontos de integração claros
+- Classifique cada subdomínio (Principal/Suporte/Genérico)
+- Procure primeiro os limites linguísticos
 
-### Don'ts ❌
+### O que não fazer ❌
 
-- Don't group by technical layers
-- Don't force single global model
-- Don't ignore linguistic differences
-- Don't couple domains directly
-- Don't create contexts by architecture
-- Don't eliminate all dependencies (some are necessary)
+- Não agrupe por camadas técnicas
+- Não force um modelo global único
+- Não ignore as diferenças linguísticas
+- Não associe domínios diretamente
+- Não crie contextos por arquitetura
+- Não elimine todas as dependências (algumas são necessárias)
 
-## Analysis Checklist
+## Lista de verificação de análise
 
-**For Each Concept**:
+**Para cada conceito**:
 
-- [ ] What business language does it belong to?
-- [ ] What domain/subdomain is it part of?
-- [ ] Is it Core, Supporting, or Generic?
-- [ ] What other concepts does it relate to?
-- [ ] Are dependencies within same domain?
-- [ ] Any linguistic mismatches?
+- [ ] A que linguagem empresarial pertence?
+- [ ] De que domínio/subdomínio faz parte?
+- [] É essencial, de suporte ou genérico?
+- [ ] Com que outros conceitos se relaciona?
+- [] As dependências estão no mesmo domínio?
+- [ ] Alguma incompatibilidade linguística?
 
-**For Each Domain**:
+**Para cada domínio**:
 
-- [ ] What is the Ubiquitous Language?
-- [ ] What are the key concepts?
-- [ ] What are the subdomains?
-- [ ] Which is the Core Domain?
-- [ ] What are cross-domain dependencies?
-- [ ] Is internal cohesion high?
-- [ ] Are boundaries clear?
+- [ ] O que é a linguagem onipresente?
+- [ ] Quais são os conceitos-chave?
+- [ ] Quais são os subdomínios?
+- [ ] Qual é o Domínio Principal?
+- [] O que são dependências entre domínios?
+- [ ] A coesão interna é alta?
+- [ ] Os limites estão claros?
 
-**For Cohesion Analysis**:
+**Para Análise de Coesão**:
 
-- [ ] Calculate cohesion scores
-- [ ] Identify low cohesion areas
-- [ ] Map cross-domain dependencies
-- [ ] Flag linguistic mismatches
-- [ ] Note tight coupling
-- [ ] Suggest boundary clarifications
+- [] Calcular pontuações de coesão
+- [ ] Identificar áreas de baixa coesão
+- [] Mapear dependências entre domínios
+- [] Sinalizar incompatibilidades linguísticas
+- [] Observe o acoplamento apertado
+- [] Sugerir esclarecimentos sobre limites
 
-## Quick Reference
+## Referência rápida
 
-### Subdomain Decision Tree
+### Árvore de decisão de subdomínio```
 
-```
 Analyze business capability
 └─ Is it competitive advantage?
-   ├─ YES → Core Domain
-   └─ NO → Is it business-specific?
-      ├─ YES → Supporting Subdomain
-      └─ NO → Generic Subdomain
-```
+├─ YES → Core Domain
+└─ NO → Is it business-specific?
+├─ YES → Supporting Subdomain
+└─ NO → Generic Subdomain
 
-### Cohesion Quick Check
-
-```
+````
+### Verificação rápida de coesão```
 Same vocabulary? → High linguistic cohesion
 Used together? → High usage cohesion
 Direct relationships? → High data cohesion
@@ -372,11 +359,10 @@ Change together? → High change cohesion
 All high → Strong subdomain candidate
 Mix of high/low → Review boundaries
 All low → Likely wrong grouping
-```
+````
 
-### Bounded Context Signals
+### Sinais de contexto limitado```
 
-```
 Clear boundary signs:
 ✅ Distinct Ubiquitous Language
 ✅ Concepts have unambiguous meaning
@@ -388,45 +374,46 @@ Unclear boundary signs:
 ❌ Concepts used identically across system
 ❌ No clear linguistic differences
 ❌ Tight coupling everywhere
+
 ```
+## Antipadrões a serem evitados
 
-## Anti-Patterns to Avoid
+**Grande bola de lama**
 
-**Big Ball of Mud**
+- Tudo conectado a tudo
+- Sem limites claros
+- Vocabulários mistos
+- Prevenção: contextos limitados explícitos
 
-- Everything connected to everything
-- No clear boundaries
-- Mixed vocabularies
-- Prevention: Explicit bounded contexts
+**Modelo Tudo Incluído**
 
-**All-Inclusive Model**
+- Modelo único para todo o negócio
+- Definições globais impossíveis
+- Cria conflitos
+- Prevenção: abrace múltiplos contextos
 
-- Single model for entire business
-- Impossible global definitions
-- Creates conflicts
-- Prevention: Embrace multiple contexts
+**Conceitos linguísticos mistos**
 
-**Mixed Linguistic Concepts**
+- Vocabulários diferentes no mesmo contexto
+- Exemplo: Usuário/Permissão com Fórum/Postagem
+- Prevenção: Mantenha associações linguísticas
 
-- Different vocabularies in same context
-- Example: User/Permission with Forum/Post
-- Prevention: Keep linguistic associations
+## Notas
 
-## Notes
+- Esta é uma análise estratégica, não uma implementação tática
+- Concentre-se em QUE domínios existem, não em COMO implementar
+- Algumas dependências entre domínios são normais
+- Baixa coesão nem sempre significa “ruim”, significa “precisa de atenção”
+- Subdomínios genéricos naturalmente têm menor coesão
+- Sempre valide com especialistas do domínio quando possível
 
-- This is strategic analysis, not tactical implementation
-- Focus on WHAT domains exist, not HOW to implement
-- Some cross-domain dependencies are normal
-- Low cohesion doesn't always mean "bad," it means "needs attention"
-- Generic Subdomains naturally have lower cohesion
-- Always validate with domain experts when possible
+## Critérios de validação
 
-## Validation Criteria
+Uma boa identificação de domínio tem:
 
-Good domain identification has:
-
-- ✅ Clear boundaries with distinct Ubiquitous Language
-- ✅ High internal cohesion within domains
-- ✅ Explicit cross-domain dependencies
-- ✅ Business alignment with capabilities
-- ✅ Actionable recommendations for issues
+- ✅ Limites claros com linguagem onipresente distinta
+- ✅ Alta coesão interna dentro dos domínios
+- ✅ Dependências explícitas entre domínios
+- ✅ Alinhamento de negócios com capacidades
+- ✅ Recomendações práticas para problemas
+```

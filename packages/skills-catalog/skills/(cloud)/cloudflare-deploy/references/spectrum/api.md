@@ -1,4 +1,4 @@
-## REST API Endpoints
+## Terminais da API REST
 
 ```
 GET    /zones/{zone_id}/spectrum/apps                    # List apps
@@ -12,7 +12,7 @@ GET    /zones/{zone_id}/spectrum/analytics/events/bytime
 GET    /zones/{zone_id}/spectrum/analytics/events/summary
 ```
 
-## Request/Response Schemas
+##Esquemas de solicitação/resposta
 
 ### CreateSpectrumAppRequest
 
@@ -38,7 +38,7 @@ interface CreateSpectrumAppRequest {
 }
 ```
 
-### SpectrumApp Response
+### Resposta do SpectrumApp
 
 ```typescript
 interface SpectrumApp {
@@ -58,7 +58,7 @@ interface SpectrumApp {
 }
 ```
 
-## TypeScript SDK
+##SDK TypeScript
 
 ```typescript
 import Cloudflare from 'cloudflare'
@@ -95,7 +95,7 @@ const analytics = await client.spectrum.analytics.aggregate({
 })
 ```
 
-## Python SDK
+##Python SDK
 
 ```python
 from cloudflare import Cloudflare
@@ -132,7 +132,7 @@ analytics = client.spectrum.analytics.aggregate(
 )
 ```
 
-## Go SDK
+##Go SDK
 
 ```go
 import "github.com/cloudflare/cloudflare-go"
@@ -155,30 +155,30 @@ apps, _ := api.SpectrumApplications(ctx, "zone-id")
 _ = api.DeleteSpectrumApplication(ctx, "zone-id", app.ID)
 ```
 
-## Analytics API
+##API de análise
 
-**Metrics:**
+**Métricas:**
 
-- `bytesIngress` - Bytes received from clients
-- `bytesEgress` - Bytes sent to clients
-- `count` - Number of connections
-- `duration` - Connection duration (seconds)
+- `bytesIngress` - Bytes recebidos de clientes
+- `bytesEgress` - Bytes enviados aos clientes
+- `count` - Número de conexões
+- `duration` - Duração da conexão (segundos)
 
-**Dimensions:**
+**Dimensões:**
 
-- `event` - Connection event type
-- `appID` - Spectrum application ID
-- `coloName` - Datacenter name
-- `ipVersion` - IPv4 or IPv6
+- `event` - Tipo de evento de conexão
+- `appID` - ID do aplicativo Spectrum
+- `coloName` - Nome do datacenter
+- `ipVersion` - IPv4 ou IPv6
 
-**Example:**
+**Exemplo:**
 
 ```bash
 curl "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/spectrum/analytics/aggregate/current?metrics=bytesIngress,bytesEgress,count&dimensions=appID" \
   --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN"
 ```
 
-## See Also
+##Veja também
 
 - [configuration.md](configuration.md) - Terraform/Pulumi
-- [patterns.md](patterns.md) - Protocol examples
+- [patterns.md](patterns.md) - Exemplos de protocolo

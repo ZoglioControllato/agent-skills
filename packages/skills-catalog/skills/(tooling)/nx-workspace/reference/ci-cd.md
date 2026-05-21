@@ -1,29 +1,27 @@
-# CI/CD Integration
+# Integração CI/CD
 
-Complete CI/CD configurations for Nx workspaces.
+Configurações completas de CI/CD para espaços de trabalho Nx.
 
-## GitHub Actions
+## Ações do GitHub
 
-### Basic CI Workflow
+### Fluxo de trabalho básico de CI```yaml
 
-```yaml
 name: CI
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+push:
+branches: [main]
+pull_request:
+branches: [main]
 
 env:
-  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
 
 jobs:
-  main:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+main:
+runs-on: ubuntu-latest
+steps: - uses: actions/checkout@v4
+with:
+fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:
@@ -47,11 +45,9 @@ jobs:
 
       - name: Run affected e2e
         run: npx nx affected -t e2e --parallel=1
-```
 
-### Matrix Strategy
-
-```yaml
+````
+### Estratégia Matricial```yaml
 name: CI Matrix
 on: [push, pull_request]
 
@@ -75,23 +71,21 @@ jobs:
       - run: npm ci
       - uses: nrwl/nx-set-shas@v4
       - run: npx nx affected -t test --parallel=3
-```
+````
 
-### Deploy Workflow
+### Implantar fluxo de trabalho```yaml
 
-```yaml
 name: Deploy
 on:
-  push:
-    branches: [main]
+push:
+branches: [main]
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+deploy:
+runs-on: ubuntu-latest
+steps: - uses: actions/checkout@v4
+with:
+fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:
@@ -112,13 +106,11 @@ jobs:
             echo "Deploying $app..."
             # Add your deployment logic here
           done
-```
 
-## GitLab CI
+````
+## CI do GitLab
 
-### Basic Pipeline
-
-```yaml
+### Pipeline Básico```yaml
 image: node:20
 
 cache:
@@ -181,64 +173,64 @@ build:
   only:
     - merge_requests
     - main
-```
+````
 
 ## Azure Pipelines
 
-### Basic Pipeline
+### Pipeline Básico```yaml
 
-```yaml
 trigger:
-  - main
+
+- main
 
 pr:
-  - main
+
+- main
 
 pool:
-  vmImage: "ubuntu-latest"
+vmImage: "ubuntu-latest"
 
 variables:
-  CI: "true"
-  NX_CLOUD_ACCESS_TOKEN: $(NX_CLOUD_ACCESS_TOKEN)
+CI: "true"
+NX_CLOUD_ACCESS_TOKEN: $(NX_CLOUD_ACCESS_TOKEN)
 
 steps:
-  - task: NodeTool@0
-    inputs:
-      versionSpec: "20.x"
-    displayName: "Install Node.js"
 
-  - script: npm ci
-    displayName: "Install dependencies"
+- task: NodeTool@0
+  inputs:
+  versionSpec: "20.x"
+  displayName: "Install Node.js"
 
-  - script: |
-      npx nx affected -t lint --base=origin/main --parallel=3
-    displayName: "Lint affected"
+- script: npm ci
+  displayName: "Install dependencies"
 
-  - script: |
-      npx nx affected -t test --base=origin/main --parallel=3 --configuration=ci
-    displayName: "Test affected"
+- script: |
+  npx nx affected -t lint --base=origin/main --parallel=3
+  displayName: "Lint affected"
 
-  - script: |
-      npx nx affected -t build --base=origin/main --parallel=3
-    displayName: "Build affected"
+- script: |
+  npx nx affected -t test --base=origin/main --parallel=3 --configuration=ci
+  displayName: "Test affected"
 
-  - task: PublishTestResults@2
-    condition: succeededOrFailed()
-    inputs:
-      testResultsFormat: "JUnit"
-      testResultsFiles: "**/junit.xml"
+- script: |
+  npx nx affected -t build --base=origin/main --parallel=3
+  displayName: "Build affected"
 
-  - task: PublishCodeCoverageResults@1
-    inputs:
-      codeCoverageTool: "Cobertura"
-      summaryFileLocation: "coverage/cobertura-coverage.xml"
-```
+- task: PublishTestResults@2
+  condition: succeededOrFailed()
+  inputs:
+  testResultsFormat: "JUnit"
+  testResultsFiles: "\*\*/junit.xml"
 
-## CircleCI
+- task: PublishCodeCoverageResults@1
+  inputs:
+  codeCoverageTool: "Cobertura"
+  summaryFileLocation: "coverage/cobertura-coverage.xml"
 
-### Basic Configuration
+````
+## CírculoCI
 
-```yaml
+### Configuração Básica```yaml
 version: 2.1
 
 orbs:
@@ -267,26 +259,25 @@ workflows:
   ci:
     jobs:
       - main
-```
+````
 
-## Jenkins
+##Jenkins
 
-### Jenkinsfile
+### Arquivo Jenkins```groovy
 
-```groovy
 pipeline {
-  agent any
+agent any
 
-  environment {
-    NX_CLOUD_ACCESS_TOKEN = credentials('nx-cloud-token')
-  }
+environment {
+NX_CLOUD_ACCESS_TOKEN = credentials('nx-cloud-token')
+}
 
-  stages {
-    stage('Install') {
-      steps {
-        sh 'npm ci'
-      }
-    }
+stages {
+stage('Install') {
+steps {
+sh 'npm ci'
+}
+}
 
     stage('Lint') {
       steps {
@@ -305,83 +296,73 @@ pipeline {
         sh 'npx nx affected -t build --base=origin/main --parallel=3'
       }
     }
-  }
 
-  post {
-    always {
-      junit '**/junit.xml'
-      publishHTML(target: [
-        reportDir: 'coverage',
-        reportFiles: 'index.html',
-        reportName: 'Coverage Report'
-      ])
-    }
-  }
 }
-```
 
-## Best Practices for CI/CD
+post {
+always {
+junit '\*\*/junit.xml'
+publishHTML(target: [
+reportDir: 'coverage',
+reportFiles: 'index.html',
+reportName: 'Coverage Report'
+])
+}
+}
+}
 
-### Use Affected Commands
+````
+## Melhores práticas para CI/CD
 
-Always use affected commands to run only what changed:
+### Usar comandos afetados
 
-```bash
+Sempre use comandos afetados para executar apenas o que mudou:```bash
 # Good
 nx affected -t test --base=main
 
 # Avoid (in CI)
 nx run-many -t test --all
-```
+````
 
-### Enable Nx Cloud
+### Ativar nuvem Nx
 
-Add Nx Cloud for distributed task execution and remote caching:
-
-```yaml
+Adicione Nx Cloud para execução de tarefas distribuídas e cache remoto:```yaml
 env:
-  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
-```
+NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
 
-### Set Proper Base SHA
+````
+### Definir SHA de base adequado
 
-Ensure git history is available:
-
-```yaml
+Certifique-se de que o histórico do git esteja disponível:```yaml
 - uses: actions/checkout@v4
   with:
     fetch-depth: 0  # Important for affected commands
-```
+````
 
-### Parallel Execution
+### Execução Paralela
 
-Use parallel execution for better performance:
-
-```bash
+Use execução paralela para melhor desempenho:```bash
 nx affected -t test --parallel=3
-```
 
-### Cache Dependencies
+````
+### Dependências de cache
 
-Cache node_modules between runs:
-
-```yaml
+Armazene node_modules em cache entre execuções:```yaml
 - uses: actions/setup-node@v4
   with:
     cache: "npm"
+````
+
+### Construção e implantação separadas
+
+Mantenha a compilação e a implantação como tarefas separadas:```yaml
+jobs:
+build:
+steps: - run: nx affected -t build
+deploy:
+needs: [build]
+steps: - run: deploy.sh
+
 ```
 
-### Separate Build and Deploy
-
-Keep build and deploy as separate jobs:
-
-```yaml
-jobs:
-  build:
-    steps:
-      - run: nx affected -t build
-  deploy:
-    needs: [build]
-    steps:
-      - run: deploy.sh
 ```

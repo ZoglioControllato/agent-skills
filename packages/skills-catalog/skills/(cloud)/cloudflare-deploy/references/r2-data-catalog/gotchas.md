@@ -1,160 +1,161 @@
-# Gotchas & Troubleshooting
+# Dicas e solução de problemas
 
-Common problems → causes → solutions.
+Problemas comuns → causas → soluções.
 
-## Permission Errors
+## Erros de permissão
 
-### 401 Unauthorized
+### 401 Não autorizado
 
-**Error:** `"401 Unauthorized"`  
-**Cause:** Token missing R2 Data Catalog permissions.  
-**Solution:** Use "Admin Read & Write" token (includes catalog + storage permissions). Test with `catalog.list_namespaces()`.
+**Erro:** `"401 Não Autorizado"`
+**Causa:** Token sem permissões do Catálogo de Dados R2.
+**Solução:** Use o token "Admin Read & Write" (inclui catálogo + permissões de armazenamento). Teste com `catalog.list_namespaces()`.
 
-### 403 Forbidden
+### 403 Proibido
 
-**Error:** `"403 Forbidden"` on data files  
-**Cause:** Token lacks storage permissions.  
-**Solution:** Token needs both R2 Data Catalog + R2 Storage Bucket Item permissions.
+**Erro:** `"403 Forbidden"` em arquivos de dados
+**Causa:** O token não tem permissões de armazenamento.
+**Solução:** O token precisa das permissões R2 Data Catalog + R2 Storage Bucket Item.
 
-### Token Rotation Issues
+### Problemas de rotação de token
 
-**Error:** New token fails after rotation.  
-**Solution:** Create new token → test in staging → update prod → monitor 24h → revoke old.
+**Erro:** O novo token falha após a rotação.
+**Solução:** Criar novo token → testar na preparação → atualizar o produto → monitorar 24h → revogar o antigo.
 
-## Catalog URI Issues
+## Problemas de URI de catálogo
 
-### 404 Not Found
+### 404 não encontrado
 
-**Error:** `"404 Catalog not found"`  
-**Cause:** Catalog not enabled or wrong URI.  
-**Solution:** Run `wrangler r2 bucket catalog enable <bucket>`. URI must be HTTPS with `/iceberg/` and case-sensitive bucket name.
+**Erro:** `"Catálogo 404 não encontrado"`
+**Causa:** Catálogo não ativado ou URI errado.
+**Solução:** Execute `wrangler r2 bucket catalog enable <bucket>`. O URI deve ser HTTPS com `/iceberg/` e nome do bucket com distinção entre maiúsculas e minúsculas.
 
-### Wrong Warehouse
+### Armazém Errado
 
-**Error:** Cannot create/load tables.  
-**Cause:** Warehouse ≠ bucket name.  
-**Solution:** Set `warehouse="bucket-name"` to match bucket exactly.
+**Erro:** Não é possível criar/carregar tabelas.
+**Causa:** Armazém ≠ nome do bucket.
+**Solução:** Defina `warehouse="bucket-name"` para corresponder exatamente ao bucket.
 
-## Table and Schema Issues
+## Problemas de tabela e esquema
 
-### Table/Namespace Already Exists
+### Tabela/Namespace já existe
 
-**Error:** `"TableAlreadyExistsError"`  
-**Solution:** Use try/except to load existing or check first.
+**Erro:** `"TableAlreadyExistsError"`
+**Solução:** Use try/except para carregar o existente ou verifique primeiro.
 
-### Namespace Not Found
+### Namespace não encontrado
 
-**Error:** Cannot create table.  
-**Solution:** Create namespace first: `catalog.create_namespace("ns")`
+**Erro:** Não é possível criar a tabela.
+**Solução:** Crie o namespace primeiro: `catalog.create_namespace("ns")`
 
-### Schema Evolution Errors
+### Erros de evolução de esquema
 
-**Error:** `"422 Validation"` on schema update.  
-**Cause:** Incompatible change (required field, type shrink).  
-**Solution:** Only add nullable columns, compatible type widening (int→long, float→double).
+**Erro:** `"422 Validation"` na atualização do esquema.
+**Causa:** Alteração incompatível (campo obrigatório, digite encolher).
+**Solução:** Adicione apenas colunas anuláveis, ampliação de tipo compatível (int→long, float→double).
 
-## Data and Query Issues
+## Problemas de dados e consultas
 
-### Empty Scan Results
+### Resultados de verificação vazios
 
-**Error:** Scan returns no data.  
-**Cause:** Incorrect filter or partition column.  
-**Solution:** Test without filter first: `table.scan().to_pandas()`. Verify partition column names.
+**Erro:** A verificação não retorna dados.
+**Causa:** Filtro ou coluna de partição incorreta.
+**Solução:** Teste primeiro sem filtro: `table.scan().to_pandas()`. Verifique os nomes das colunas de partição.
 
-### Slow Queries
+### Consultas lentas
 
-**Error:** Performance degrades over time.  
-**Cause:** Too many small files.  
-**Solution:** Check file count, compact if >1000 or avg <10MB. See [api.md](api.md#compaction).
+**Erro:** O desempenho diminui com o tempo.
+**Causa:** Muitos arquivos pequenos.
+**Solução:** Verifique a contagem de arquivos, compacte se >1000 ou média <10MB. Consulte [api.md](api.md#compaction).
 
-### Type Mismatch
+### Incompatibilidade de tipo
 
-**Error:** `"Cannot cast"` on append.  
-**Cause:** PyArrow types don't match Iceberg schema.  
-**Solution:** Cast to int64 (Iceberg default), not int32. Check `table.schema()`.
+**Erro:** `"Não é possível transmitir"` no acréscimo.
+**Causa:** Os tipos PyArrow não correspondem ao esquema Iceberg.
+**Solução:** Converta para int64 (padrão do Iceberg), não para int32. Verifique `table.schema ()`.
 
-## Compaction Issues
+## Problemas de compactação
 
-### Compaction Issues
+### Problemas de compactação
 
-**Problem:** File count unchanged or compaction takes hours.  
-**Cause:** Target size too large, or table too big for PyIceberg.  
-**Solution:** Only compact if avg <50MB. For >1TB tables, use Spark. Run during low-traffic periods.
+**Problema:** A contagem de arquivos não foi alterada ou a compactação leva horas.
+**Causa:** Tamanho do alvo muito grande ou tabela muito grande para PyIceberg.
+**Solução:** Compacte somente se a média for <50 MB. Para tabelas >1 TB, use Spark. Execute durante períodos de baixo tráfego.
 
-## Maintenance Issues
+## Problemas de manutenção
 
-### Snapshot/Orphan Issues
+### Problemas de instantâneo/órfãos
 
-**Problem:** Expiration fails or orphan cleanup deletes active data.  
-**Cause:** Too aggressive retention or wrong order.  
-**Solution:** Always expire snapshots first with `retain_last=10`, then cleanup orphans with 3+ day threshold.
+**Problema:** A expiração falha ou a limpeza órfã exclui os dados ativos.
+**Causa:** Retenção muito agressiva ou ordem errada.
+**Solução:** Sempre expire os snapshots primeiro com `retain_last=10` e, em seguida, limpe os órfãos com limite de mais de 3 dias.
 
-## Concurrency Issues
+## Problemas de simultaneidade
 
-### Concurrent Write Conflicts
+### Conflitos de gravação simultâneos
 
-**Problem:** `CommitFailedException` with multiple writers.  
-**Cause:** Optimistic locking - simultaneous commits.  
-**Solution:** Add retry with exponential backoff (see [patterns.md](patterns.md#pattern-6-concurrent-writes-with-retry)).
+**Problema:** `CommitFailedException` com vários gravadores.
+**Causa:** Bloqueio otimista – confirmações simultâneas.
+**Solução:** Adicione nova tentativa com espera exponencial (consulte [patterns.md](patterns.md#pattern-6-concurrent-writes-with-retry)).
 
-### Stale Metadata
+### Metadados obsoletos
 
-**Problem:** Old schema/data after external update.  
-**Cause:** Cached metadata.  
-**Solution:** Reload table: `table = catalog.load_table(("ns", "table"))`
+**Problema:** Esquema/dados antigos após atualização externa.
+**Causa:** Metadados armazenados em cache.
+**Solução:** Recarregar tabela: `table = catalog.load_table(("ns", "table"))`
 
-## Performance Optimization
+## Otimização de desempenho
 
-### Performance Tips
+### Dicas de desempenho
 
-**Scans:** Use `row_filter` and `selected_fields` to reduce data scanned.  
-**Partitions:** 100-1000 optimal. Avoid high cardinality (millions) or low (<10).  
-**Files:** Keep 100-500MB avg. Compact if <10MB or >10k files.
+**Verificações:** Use `row_filter` e `selected_fields` para reduzir os dados verificados.
+**Partições:** 100-1000 ideal. Evite cardinalidade alta (milhões) ou baixa (<10).
+**Arquivos:** Mantenha uma média de 100-500 MB. Compacte se arquivos <10MB ou >10k.
 
-## Limits
+## Limites
 
-| Resource         | Recommended | Impact if Exceeded  |
-| ---------------- | ----------- | ------------------- |
-| Tables/namespace | <10k        | Slow list ops       |
-| Files/table      | <100k       | Slow query planning |
-| Partitions/table | 100-1k      | Metadata overhead   |
-| Snapshots/table  | Expire >7d  | Metadata bloat      |
+| Recurso             | Recomendado | Impacto se excedido            |
+| ------------------- | ----------- | ------------------------------ |
+| Tabelas/namespace   | <10 mil     | Operações de lista lenta       |
+| Arquivos/tabela     | <100 mil    | Planejamento de consulta lento |
+| Partições/mesa      | 100-1k      | Sobrecarga de metadados        |
+| Instantâneos/tabela | Expira >7d  | Inchaço de metadados           |
 
-## Common Error Messages Reference
+## Referência de mensagens de erro comuns
 
-| Error Message                 | Likely Cause                     | Fix                                         |
-| ----------------------------- | -------------------------------- | ------------------------------------------- |
-| `401 Unauthorized`            | Missing/invalid token            | Check token has catalog+storage permissions |
-| `403 Forbidden`               | Token lacks storage permissions  | Add R2 Storage Bucket Item permission       |
-| `404 Not Found`               | Catalog not enabled or wrong URI | Run `wrangler r2 bucket catalog enable`     |
-| `409 Conflict`                | Table/namespace already exists   | Use try/except or load existing             |
-| `422 Unprocessable Entity`    | Schema validation failed         | Check type compatibility, required fields   |
-| `CommitFailedException`       | Concurrent write conflict        | Add retry logic with backoff                |
-| `NamespaceAlreadyExistsError` | Namespace exists                 | Use try/except or load existing             |
-| `NoSuchTableError`            | Table doesn't exist              | Check namespace+table name, create first    |
-| `TypeError: Cannot cast`      | PyArrow type mismatch            | Cast data to match Iceberg schema           |
+| Mensagem de erro                       | Causa provável                               | Correção                                                        |
+| -------------------------------------- | -------------------------------------------- | --------------------------------------------------------------- |
+| `401 Não autorizado`                   | Token ausente/inválido                       | Verifique se o token tem permissões de catálogo + armazenamento |
+| `403 Proibido`                         | Token não possui permissões de armazenamento | Adicionar permissão de item de intervalo de armazenamento R2    |
+| `404 não encontrado`                   | Catálogo não habilitado ou URI errado        | Execute `habilitar catálogo de bucket do wrangler r2`           |
+| `409 Conflito`                         | Tabela/namespace já existe                   | Use try/except ou carregue existente                            |
+| `422 Entidade Não Processável`         | Falha na validação do esquema                | Verifique a compatibilidade de tipo, campos obrigatórios        |
+| `CommitFailedException`                | Conflito de gravação simultâneo              | Adicionar lógica de nova tentativa com espera                   |
+| `NamespaceAlreadyExistsError`          | O espaço para nome existe                    | Use try/except ou carregue existente                            |
+| `NoSuchTableError`                     | A tabela não existe                          | Verifique o namespace + nome da tabela, crie primeiro           |
+| `TypeError: Não é possível transmitir` | Incompatibilidade de tipo PyArrow            | Transmitir dados para corresponder ao esquema Iceberg           |
 
-## Debugging Checklist
+## Lista de verificação de depuração
 
-When things go wrong, check in order:
+Quando as coisas dão errado, verifique em ordem:
 
-1. ✅ **Catalog enabled:** `npx wrangler r2 bucket catalog status <bucket>`
-2. ✅ **Token permissions:** Both R2 Data Catalog + R2 Storage in dashboard
-3. ✅ **Connection test:** `catalog.list_namespaces()` succeeds
-4. ✅ **URI format:** HTTPS, includes `/iceberg/`, correct bucket name
-5. ✅ **Warehouse name:** Matches bucket name exactly
-6. ✅ **Namespace exists:** Create before `create_table()`
-7. ✅ **Enable debug logging:** `logging.basicConfig(level=logging.DEBUG)`
-8. ✅ **PyIceberg version:** `pip install --upgrade pyiceberg` (≥0.5.0)
-9. ✅ **File health:** Compact if >1000 files or avg <10MB
-10. ✅ **Snapshot count:** Expire if >100 snapshots
+1. ✅ **Catálogo habilitado:** `npx wrangler r2 bucket catalog status <bucket>`
+2. ✅ **Permissões de token:** Catálogo de dados R2 + Armazenamento R2 no painel
+3. ✅ **Teste de conexão:** `catalog.list_namespaces()` foi bem-sucedido
+4. ✅ **Formato URI:** HTTPS, inclui `/iceberg/`, nome correto do bucket
+5. ✅ **Nome do armazém:** Corresponde exatamente ao nome do bucket
+6. ✅ **Namespace existe:** Crie antes de `create_table()`
+7. ✅ **Ativar registro de depuração:** `logging.basicConfig(level=logging.DEBUG)`
+8. ✅ **Versão PyIceberg:** `pip install --upgrade pyiceberg` (≥0.5.0)
+9. ✅ **Saúde do arquivo:** Compactar se >1.000 arquivos ou média <10MB
+10. ✅ **Contagem de instantâneos:** Expira se >100 instantâneos
 
-## Enable Debug Logging
+## Habilitar registro de depuração```python
 
-```python
 import logging
 logging.basicConfig(level=logging.DEBUG)
+
 # Now operations show HTTP requests/responses
+
 ```
 
 ## Resources
@@ -168,3 +169,4 @@ logging.basicConfig(level=logging.DEBUG)
 
 - [patterns.md](patterns.md) - Working examples
 - [api.md](api.md) - API reference
+```

@@ -1,87 +1,91 @@
 ---
 name: tactical-ddd
-description: Detects anemic domain models, validates and refactors them into rich domain models, and enforces tactical DDD patterns (Entities, Value Objects, Aggregates, Domain Services, Domain Events). Use when the user asks to validate, review, or check domain models or DDD code; detect anemia; refactor domain objects; improve encapsulation; or mentions terms like "anemic model", "rich domain", "aggregate", "value object", "domain event", "ubiquitous language", "is this good DDD", "does this follow DDD", or "check my domain". Do NOT use for module or service boundary design, architectural decomposition, strategic DDD context mapping, or code outside the domain layer (DTOs, controllers, infrastructure adapters).
+description: Detecta modelos de domínio anêmicos, valida e refatora para modelos ricos e reforça padrões táticos de DDD (Entidades, Objetos de Valor, Agregados, Serviços de Domínio, Eventos de Domínio). Use quando o usuário pedir para validar, revisar ou verificar modelos de domínio ou código DDD; detectar anemia; refatorar objetos de domínio; melhorar encapsulamento; ou citar termos como "anemic model", "rich domain", "aggregate", "value object", "domain event", "ubiquitous language", "is this good DDD", "does this follow DDD" ou "check my domain". NÃO use para desenho de fronteiras de módulos ou serviços, decomposição arquitetural, strategic DDD context mapping ou código fora da camada de domínio (DTOs, controllers, adaptadores de infraestrutura).
 ---
 
-# Tactical DDD — Rich Domain Modeling
+# DDD tático — modelagem rica de domínio
 
-## Workflow
+## Fluxo de trabalho
 
-Determine the user's intent first:
+Determine primeiro a intenção do usuário:
 
-| Intent | Phases to run |
-|--------|--------------|
-| "validate / review / check / is this correct?" | Phase 1 + 2 only → report findings, ask before refactoring |
-| "fix / refactor / improve / clean up" | Phase 1 + 2 + 3 |
-| "how should I design / model this?" | Load [reference.md](reference.md) directly |
+| Intenção                                       | Fases a executar                                                         |
+| ---------------------------------------------- | ------------------------------------------------------------------------ |
+| "validar / revisar / conferir / está correto?" | Somente fases 1 + 2 → relatório dos achados; pergunte antes de refatorar |
+| "corrigir / refatorar / melhorar / limpar"     | Fases 1 + 2 + 3                                                          |
+| "como devo desenhar / modelar isto?"           | Carregue [reference.md](reference.md) diretamente                        |
 
-### Phase 1 — Detect
-Load [detection.md](detection.md) and scan the target code for anemia signals. Produce a severity score and list of affected classes.
+### Fase 1 — Detectar
 
-### Phase 2 — Assess
-For each affected class, determine the correct building block:
+Carregue [detection.md](detection.md) e varra o código alvo por sinais de anemia. Produza pontuação de severidade e lista de classes afetadas.
 
-| Has unique identity tracked over time? | Has invariants tying multiple objects? | → Building Block |
-|----------------------------------------|----------------------------------------|-----------------|
-| Yes | — | **Entity** |
-| No | — | **Value Object** |
-| Yes (root) + children with shared invariants | Yes | **Aggregate** |
-| Operation spans multiple Aggregates/doesn't belong to any | — | **Domain Service** |
+### Fase 2 — Avaliar
 
-Prefer Value Objects over Entities. Prefer small Aggregates over large ones.
+Para cada classe afetada, determine o building block correto:
 
-**If intent was validate/review**: stop here. Report findings using the output format below. Ask "Would you like me to apply these fixes?" before proceeding.
+| Tem identidade única ao longo do tempo?                     | Tem invariantes ligando vários objetos? | → Building Block   |
+| ----------------------------------------------------------- | --------------------------------------- | ------------------ |
+| Sim                                                         | —                                       | **Entity**         |
+| Não                                                         | —                                       | **Value Object**   |
+| Sim (raiz) + filhos com invariantes compartilhadas          | Sim                                     | **Aggregate**      |
+| Operação atravessa vários Agregados / não pertence a nenhum | —                                       | **Domain Service** |
 
-### Phase 3 — Refactor
-Load [refactoring.md](refactoring.md) for step-by-step moves. Apply in this order:
-1. Replace setter chains with a single expressive method
-2. Move service logic into the Aggregate that owns it
-3. Add business guards at the top of each method
-4. Publish a Domain Event after each successful state change
-5. Replace primitive types with Value Objects
+Prefira Objetos de Valor a Entidades. Prefira Agregados pequenos a grandes.
 
-For deep pattern questions (boundary design, event modeling, service vs. entity decision), load [reference.md](reference.md).
+**Se a intenção era validar/revisar**: pare aqui. Relate achados usando o formato de saída abaixo. Pergunte se deseja aplicar as correções antes de seguir.
 
----
+### Fase 3 — Refatorar
 
-## Quick Anemia Signals (scan first)
+Carregue [refactoring.md](refactoring.md) para os passos. Aplique nesta ordem:
 
-```
-public setX() / public setY()        → behaviour should be encapsulated
-service.doX(entity, ...)              → logic likely belongs in entity
-entity.setA(); entity.setB(); ...     → setter chain = missing intent method
-no domain methods beyond getters      → pure data bag
-```
+1. Substituir cadeias de setters por um único método expressivo
+2. Mover lógica de serviço para o Agregado que a possui
+3. Adicionar guardas de negócio no topo de cada método
+4. Publicar um Domain Event após cada mudança de estado bem-sucedida
+5. Substituir tipos primitivos por Objetos de Valor
+
+Para dúvidas profundas de padrão (desenho de fronteira, modelagem de eventos, decisão serviço vs. entidade), carregue [reference.md](reference.md).
 
 ---
 
-## Golden Rules
+## Sinais rápidos de anemia (varrer primeiro)
 
-1. **Behaviour with data** — Objects own both state and the operations that change it
-2. **Ubiquitous Language** — Method names come from the domain, not CRUD (`commitTo`, not `setStatus`)
-3. **Small Aggregates** — Root + Value Objects by default; add child Entities only for true invariants
-4. **One transaction = one Aggregate** — Cross-Aggregate rules use eventual consistency via Domain Events
-5. **Reference by ID** — Never hold object references to other Aggregates
-6. **Value Objects first** — Use Entities only when individual identity is essential
-7. **Domain Services sparingly** — Excessive services → anemic model
-8. **Protect invariants** — The Aggregate is the last line of defence; never trust the caller
+```
+public setX() / public setY()        → comportamento deve ser encapsulado
+service.doX(entity, ...)              → lógica provavelmente pertence à entidade
+entity.setA(); entity.setB(); ...     → cadeia de setters = método de intenção ausente
+sem métodos de domínio além de getters → saco de dados puro
+```
 
 ---
 
-## Output Format
+## Regras de ouro
 
-When reviewing code, report:
+1. **Comportamento com dados** — Objetos possuem estado e as operações que o alteram
+2. **Ubiquitous Language** — Nomes de métodos vêm do domínio, não de CRUD (`commitTo`, não `setStatus`)
+3. **Agregados pequenos** — Raiz + Objetos de Valor por padrão; filhos Entity só para invariantes reais
+4. **Uma transação = um Agregado** — Regras entre Agregados usam eventual consistency via Domain Events
+5. **Referenciar por ID** — Nunca manter referências a outros Agregados
+6. **Objetos de Valor primeiro** — Entity só quando identidade individual for essencial
+7. **Domain Services com parcimônia** — Serviços em excesso → modelo anêmico
+8. **Proteger invariantes** — O Agregado é a última linha de defesa; nunca confiar no chamador
+
+---
+
+## Formato de saída
+
+Ao revisar código, relate:
 
 ```
-## Anemia Diagnosis: <ClassName>
+## Diagnóstico de anemia: <ClassName>
 
-Severity: [None | Mild | Moderate | Severe]
+Severidade: [Nenhuma | Leve | Moderada | Grave]
 
-Issues:
-- <description of problem>
+Problemas:
+- <descrição do problema>
 
-Recommended refactoring:
-- <specific move from refactoring.md>
+Refatoração recomendada:
+- <ação específica de refactoring.md>
 ```
 
-When refactoring, show a before/after diff for each class touched.
+Ao refatorar, mostre um diff antes/depois para cada classe tocada.

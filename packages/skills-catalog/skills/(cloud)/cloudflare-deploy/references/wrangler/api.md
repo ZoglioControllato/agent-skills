@@ -1,10 +1,10 @@
-# Wrangler Programmatic API
+# API programática do Wrangler
 
-Node.js APIs for testing and development.
+APIs Node.js para testes e desenvolvimento.
 
-## startWorker (Testing)
+## startWorker (Testes)
 
-Starts Worker with real local bindings for integration tests. Stable API (replaces `unstable_startWorker`).
+Inicia o Worker com bindings locais reais para testes de integração. API estável (substitui `unstable_startWorker`).
 
 ```typescript
 import { startWorker } from 'wrangler'
@@ -32,17 +32,17 @@ describe('worker', () => {
 })
 ```
 
-### Options
+### Opções
 
-| Option        | Type                          | Description                                                                            |
-| ------------- | ----------------------------- | -------------------------------------------------------------------------------------- |
-| `config`      | `string`                      | Path to wrangler.jsonc                                                                 |
-| `environment` | `string`                      | Environment name from config                                                           |
-| `persist`     | `boolean \| { path: string }` | Enable persistent state                                                                |
-| `bundle`      | `boolean`                     | Enable bundling (default: true)                                                        |
-| `remote`      | `false \| true \| "minimal"`  | Remote mode: `false` (local), `true` (full remote), `"minimal"` (remote bindings only) |
+| Opção         | Tipo                          | Descrição                                                                                 |
+| ------------- | ----------------------------- | ----------------------------------------------------------------------------------------- |
+| `config`      | `string`                      | Caminho para wrangler.jsonc                                                               |
+| `environment` | `string`                      | Nome do ambiente no config                                                                |
+| `persist`     | `boolean \| { path: string }` | Ativa estado persistente                                                                  |
+| `bundle`      | `boolean`                     | Ativa bundling (padrão: true)                                                             |
+| `remote`      | `false \| true \| "minimal"`  | Modo remoto: `false` (local), `true` (remoto completo), `"minimal"` (só bindings remotos) |
 
-### Remote Mode
+### Modo remoto
 
 ```typescript
 // Local mode (default) - fast, simulated
@@ -63,7 +63,7 @@ const worker = await startWorker({
 
 ## getPlatformProxy
 
-Emulate bindings in Node.js without starting Worker.
+Emula bindings em Node.js sem iniciar o Worker.
 
 ```typescript
 import { getPlatformProxy } from 'wrangler'
@@ -85,15 +85,15 @@ await caches.default.put('https://example.com', new Response('cached'))
 await dispose()
 ```
 
-Use for unit tests (test functions, not full Worker) or scripts that need bindings.
+Use em testes unitários (funções, não o Worker inteiro) ou em scripts que precisam de bindings.
 
-## Type Generation
+## Geração de tipos
 
-Generate types from config: `wrangler types` → creates `worker-configuration.d.ts`
+Gere tipos a partir do config: `wrangler types` → cria `worker-configuration.d.ts`
 
-## Event System
+## Sistema de eventos
 
-Listen to Worker lifecycle events for advanced workflows.
+Escute eventos do ciclo de vida do Worker em fluxos avançados.
 
 ```typescript
 import { startWorker } from 'wrangler'
@@ -124,7 +124,7 @@ worker.on('reloadComplete', () => {
 await worker.dispose()
 ```
 
-### Dynamic Reconfiguration
+### Reconfiguração dinâmica
 
 ```typescript
 import { startWorker } from 'wrangler'
@@ -145,13 +145,13 @@ await worker.patchConfig({
 await worker.dispose()
 ```
 
-## unstable_dev (Deprecated)
+## unstable_dev (Obsoleto)
 
-Use `startWorker` instead.
+Use `startWorker` no lugar.
 
-## Multi-Worker Registry
+## Registro multi-Worker
 
-Test multiple Workers with service bindings.
+Teste vários Workers com service bindings.
 
 ```typescript
 import { startWorker } from 'wrangler'
@@ -169,20 +169,22 @@ await api.dispose()
 await auth.dispose()
 ```
 
-## Best Practices
+## Boas práticas
 
-- Use `startWorker` for integration tests (tests full Worker)
-- Use `getPlatformProxy` for unit tests (tests individual functions)
-- Use `remote: true` when debugging production-specific issues
-- Use `remote: "minimal"` for faster tests with real bindings
-- Enable `persist: true` for debugging (state survives runs)
-- Run `wrangler types` after config changes
-- Always `dispose()` to prevent resource leaks
-- Listen to bundle events for build monitoring
-- Use multi-worker registry for testing service bindings
+- Use `startWorker` em testes de integração (testa o Worker completo)
+- Use `getPlatformProxy` em testes unitários (testa funções isoladas)
+- Use `remote: true` ao depurar problemas específicos de produção
+- Use `remote: "minimal"` para testes mais rápidos com bindings reais
+- Ative `persist: true` para depuração (o estado persiste entre execuções)
+- Rode `wrangler types` após mudanças no config
+- Sempre chame `dispose()` para evitar vazamento de recursos
+- Escute eventos de bundle para monitorar builds
+- Use o registro multi-Worker para testar service bindings
 
-## See Also
+## Ver também
 
-- [README.md](./README.md) - CLI commands
-- [configuration.md](./configuration.md) - Config
-- [patterns.md](./patterns.md) - Testing patterns
+- [README.md](./README.md) — Comandos da CLI
+- [configuration.md](./configuration.md) — Configuração
+- [patterns.md](./patterns.md) — Padrões de teste
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

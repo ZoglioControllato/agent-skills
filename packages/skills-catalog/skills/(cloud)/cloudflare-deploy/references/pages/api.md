@@ -1,6 +1,6 @@
-# Functions API
+# API das Functions
 
-## File-Based Routing
+## Roteamento baseado em arquivo
 
 ```
 /functions/index.ts              → example.com/
@@ -10,9 +10,9 @@
 /functions/_middleware.ts        → Runs before all routes
 ```
 
-**Rules**: `[param]` = single segment, `[[param]]` = multi-segment catchall, more specific wins.
+**Regras**: `[param]` = um segmento, `[[param]]` = catchall multi-segmento, o mais específico vence.
 
-## Request Handlers
+## Handlers de requisição
 
 ```typescript
 import type { PagesFunction } from '@cloudflare/workers-types'
@@ -44,7 +44,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
 // Also: onRequestPut, onRequestPatch, onRequestDelete, onRequestHead, onRequestOptions
 ```
 
-## Context Object
+## Objeto de contexto
 
 ```typescript
 interface EventContext<Env, Params, Data> {
@@ -58,7 +58,7 @@ interface EventContext<Env, Params, Data> {
 }
 ```
 
-## Dynamic Routes
+## Rotas dinâmicas
 
 ```typescript
 // Single segment: functions/users/[id].ts
@@ -105,9 +105,9 @@ const auth: PagesFunction = async (context) => {
 export const onRequest = [errorHandler, auth]
 ```
 
-**Scope**: `functions/_middleware.ts` → all; `functions/api/_middleware.ts` → `/api/*` only
+**Escopo**: `functions/_middleware.ts` → todas; `functions/api/_middleware.ts` → só `/api/*`
 
-## Bindings Usage
+## Uso de bindings
 
 ```typescript
 export const onRequestGet: PagesFunction<Env> = async ({ env }) => {
@@ -124,9 +124,9 @@ export const onRequestGet: PagesFunction<Env> = async ({ env }) => {
 }
 ```
 
-## Advanced Mode
+## Modo avançado
 
-Full Workers API, bypasses file-based routing:
+API completa do Workers; ignora roteamento por arquivo:
 
 ```javascript
 // functions/_worker.js
@@ -145,13 +145,13 @@ export default {
 }
 ```
 
-**When to use**: WebSockets, complex routing, scheduled handlers, email handlers.
+**Quando usar**: WebSockets, roteamento complexo, handlers agendados, email.
 
 ## Smart Placement
 
-Automatically optimizes function execution location based on traffic patterns.
+Otimiza automaticamente onde a função executa com base no padrão de tráfego.
 
-**Configuration** (in wrangler.jsonc):
+**Configuração** (em wrangler.jsonc):
 
 ```jsonc
 {
@@ -161,15 +161,15 @@ Automatically optimizes function execution location based on traffic patterns.
 }
 ```
 
-**How it works**: Analyzes traffic patterns over time and places functions closer to users or data sources (e.g., D1 databases). Requires no code changes.
+**Como funciona**: analisa tráfego ao longo do tempo e posiciona funções mais perto de usuários ou dados (ex.: D1). Sem mudanças de código.
 
-**Trade-offs**: Initial requests may see slightly higher latency during learning period (hours-days). Performance improves as system optimizes.
+**Trade-offs**: requisições iniciais podem ter latência um pouco maior na fase de aprendizado (horas–dias). O desempenho melhora conforme o sistema otimiza.
 
-**When to use**: Global apps with centralized databases or geographically concentrated traffic sources.
+**Quando usar**: apps globais com banco centralizado ou fontes de tráfego geograficamente concentradas.
 
-## getRequestContext (Framework SSR)
+## getRequestContext (SSR de framework)
 
-Access bindings in framework code:
+Acesse bindings no código do framework:
 
 ```typescript
 // SvelteKit
@@ -189,17 +189,17 @@ const event = getRequestEvent()
 const data = await event.locals.runtime.env.DB.prepare('SELECT * FROM users').all()
 ```
 
-**✅ Supported adapters** (2026):
+**Adaptadores suportados** (2026):
 
 - **SvelteKit**: `@sveltejs/adapter-cloudflare`
-- **Astro**: Built-in Cloudflare adapter
-- **Nuxt**: Set `nitro.preset: 'cloudflare-pages'` in `nuxt.config.ts`
-- **Qwik**: Built-in Cloudflare adapter
+- **Astro**: adapter Cloudflare embutido
+- **Nuxt**: `nitro.preset: 'cloudflare-pages'` em `nuxt.config.ts`
+- **Qwik**: adapter Cloudflare embutido
 - **Solid Start**: `@solidjs/start-cloudflare-pages`
 
-**❌ Deprecated/Unsupported**:
+**Depreciado/não suportado**:
 
-- **Next.js**: Official adapter (`@cloudflare/next-on-pages`) deprecated. Use Vercel or self-host on Workers.
-- **Remix**: Official adapter (`@remix-run/cloudflare-pages`) deprecated. Migrate to supported frameworks.
+- **Next.js**: adapter oficial (`@cloudflare/next-on-pages`) depreciado. Use Vercel ou self-host em Workers.
+- **Remix**: adapter oficial (`@remix-run/cloudflare-pages`) depreciado. Migre para frameworks suportados.
 
-See [gotchas.md](./gotchas.md#framework-specific) for migration guidance.
+Veja [gotchas.md](./gotchas.md#framework-specific) para orientação de migração.

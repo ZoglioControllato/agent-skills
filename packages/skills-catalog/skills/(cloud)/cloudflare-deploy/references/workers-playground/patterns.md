@@ -1,6 +1,6 @@
-# Workers Playground Patterns
+# Padrões de playground de trabalhadores
 
-## JSON API
+## API JSON
 
 ```javascript
 export default {
@@ -15,7 +15,7 @@ export default {
 }
 ```
 
-## Router Pattern
+##Padrão de roteador
 
 ```javascript
 const routes = {
@@ -31,7 +31,7 @@ export default {
 }
 ```
 
-## Proxy Pattern
+##Padrão de proxy
 
 ```javascript
 export default {
@@ -47,7 +47,7 @@ export default {
 }
 ```
 
-## CORS Handling
+##Manuseio de CORS
 
 ```javascript
 export default {
@@ -69,7 +69,7 @@ export default {
 }
 ```
 
-## Caching
+##Cache
 
 ```javascript
 export default {
@@ -86,7 +86,7 @@ export default {
 }
 ```
 
-## Hono Framework
+##Estrutura Hono
 
 ```javascript
 import { Hono } from 'https://esm.sh/hono@3'
@@ -97,7 +97,7 @@ app.notFound((c) => c.json({ error: 'Not found' }, 404))
 export default app
 ```
 
-## Authentication
+##Autenticação
 
 ```javascript
 export default {
@@ -115,7 +115,7 @@ export default {
 }
 ```
 
-## Error Handling
+##Tratamento de erros
 
 ```javascript
 export default {
@@ -131,4 +131,4 @@ export default {
 }
 ```
 
-**Note:** In-memory state (Maps, variables) resets on Worker cold start. Use Durable Objects or KV for persistence.
+**Observação:** O estado da memória (mapas, variáveis) é redefinido na inicialização a frio do Worker. Use objetos duráveis ​​ou KV para persistência.

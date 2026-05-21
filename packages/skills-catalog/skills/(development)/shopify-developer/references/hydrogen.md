@@ -1,55 +1,57 @@
-# Hydrogen Reference
+# Referência de Hidrogênio
 
-Hydrogen is Shopify's framework for building custom headless storefronts, powered by React Router 7 (since Hydrogen 2025.5.0, replacing Remix).
+Hydrogen é a estrutura do Shopify para a construção de vitrines personalizadas sem cabeça, com tecnologia React Router 7 (desde Hydrogen 2025.5.0, substituindo Remix).
 
-## Overview
+## Visão geral
 
-| Item | Value |
-|------|-------|
-| Framework | React Router 7 (formerly Remix) |
-| React version | React 19 |
-| API | Storefront API (GraphQL) |
-| Hosting | Shopify Oxygen (default) or any Node.js host |
-| CLI | `npx shopify hydrogen` |
-| Docs | [hydrogen.shopify.dev](https://hydrogen.shopify.dev) |
+| Artigo        | Valor                                                |
+| ------------- | ---------------------------------------------------- |
+| Estrutura     | React Router 7 (anteriormente Remix)                 |
+| Versão reagir | Reagir 19                                            |
+| API           | API Storefront (GraphQL)                             |
+| Hospedagem    | Shopify Oxygen (padrão) ou qualquer host Node.js     |
+| CLI           | `npx shopify hidrogênio`                             |
+| Documentos    | [hidrogen.shopify.dev](https://hydrogen.shopify.dev) |
 
-## Getting Started
+## Primeiros passos
 
-### Create a Hydrogen project
+### Crie um projeto de Hidrogênio```bash
 
-```bash
 # Create new project
+
 npx shopify hydrogen init
 
 # Options:
+
 # - Template: skeleton, demo-store
+
 # - Language: TypeScript (recommended), JavaScript
+
 # - Styling: Tailwind CSS, vanilla CSS
 
 # Project structure:
+
 my-store/
 ├── app/
-│   ├── components/          # Shared components
-│   ├── lib/                 # Utilities and helpers
-│   ├── routes/              # File-based routing
-│   │   ├── _index.tsx       # Homepage
-│   │   ├── products.$handle.tsx  # Product page
+│ ├── components/ # Shared components
+│ ├── lib/ # Utilities and helpers
+│ ├── routes/ # File-based routing
+│ │ ├── \_index.tsx # Homepage
+│ │ ├── products.$handle.tsx  # Product page
 │   │   ├── collections.$handle.tsx
-│   │   └── cart.tsx
-│   ├── entry.client.tsx     # Client entry
-│   ├── entry.server.tsx     # Server entry
-│   └── root.tsx             # Root layout
-├── public/                  # Static assets
-├── .env                     # Environment variables
-├── hydrogen.config.ts       # Hydrogen config
-├── react-router.config.ts   # Route config
+│ │ └── cart.tsx
+│ ├── entry.client.tsx # Client entry
+│ ├── entry.server.tsx # Server entry
+│ └── root.tsx # Root layout
+├── public/ # Static assets
+├── .env # Environment variables
+├── hydrogen.config.ts # Hydrogen config
+├── react-router.config.ts # Route config
 ├── package.json
 └── vite.config.ts
-```
 
-### Environment variables
-
-```bash
+````
+### Variáveis ​​de ambiente```bash
 # .env
 SESSION_SECRET=your-secret
 PUBLIC_STOREFRONT_API_TOKEN=your-public-token
@@ -57,55 +59,56 @@ PUBLIC_STORE_DOMAIN=your-store.myshopify.com
 
 # Optional: for authenticated Storefront API
 PRIVATE_STOREFRONT_API_TOKEN=your-private-token
-```
+````
 
-## Routing
+## Roteamento
 
-Hydrogen uses React Router 7 file-based routing:
+Hydrogen usa roteamento baseado em arquivo React Router 7:
 
-| File | URL | Description |
-|------|-----|-------------|
-| `routes/_index.tsx` | `/` | Homepage |
-| `routes/products.$handle.tsx` | `/products/snowboard` | Product page |
-| `routes/collections.$handle.tsx` | `/collections/winter` | Collection page |
-| `routes/collections._index.tsx` | `/collections` | Collections list |
-| `routes/cart.tsx` | `/cart` | Cart page |
-| `routes/search.tsx` | `/search` | Search results |
-| `routes/pages.$handle.tsx` | `/pages/about` | CMS pages |
-| `routes/account.tsx` | `/account` | Customer account (layout) |
-| `routes/account.orders.$id.tsx` | `/account/orders/123` | Order detail |
+| Arquivo                      | URL                   | Descrição              |
+| ---------------------------- | --------------------- | ---------------------- |
+| `rotas/_index.tsx`           | `/`                   | Página inicial         |
+| `rotas/produtos.$handle.tsx` | `/produtos/snowboard` | Página do produto      |
+| `rotas/coleções.$handle.tsx` | `/coleções/inverno`   | Página da coleção      |
+| `rotas/coleções._index.tsx`  | `/coleções`           | Lista de coleções      |
+| `rotas/cart.tsx`             | `/carrinho`           | Página do carrinho     |
+| `rotas/search.tsx`           | `/pesquisar`          | Resultados da pesquisa |
+| `rotas/páginas.$handle.tsx`  |
 
-## Data Loading
+`/páginas/sobre` | Páginas CMS |
+| `rotas/conta.tsx` | `/conta` | Conta de cliente (layout) |
+| `rotas/account.orders.$id.tsx` | `/conta/pedidos/123` | Detalhe do pedido |
 
-### Loader pattern (server-side data fetching)
+## Carregamento de dados
 
-```tsx
+### Padrão do carregador (busca de dados do lado do servidor)```tsx
+
 import { useLoaderData, type LoaderFunctionArgs } from 'react-router';
 
 export async function loader({ params, context }: LoaderFunctionArgs) {
-  const { storefront } = context;
+const { storefront } = context;
 
-  const { product } = await storefront.query(PRODUCT_QUERY, {
-    variables: { handle: params.handle },
-  });
+const { product } = await storefront.query(PRODUCT_QUERY, {
+variables: { handle: params.handle },
+});
 
-  if (!product) {
-    throw new Response('Product not found', { status: 404 });
-  }
+if (!product) {
+throw new Response('Product not found', { status: 404 });
+}
 
-  return { product };
+return { product };
 }
 
 export default function ProductPage() {
-  const { product } = useLoaderData<typeof loader>();
+const { product } = useLoaderData<typeof loader>();
 
-  return (
-    <div>
-      <h1>{product.title}</h1>
-      <p>{product.description}</p>
-      <ProductPrice price={product.priceRange.minVariantPrice} />
-    </div>
-  );
+return (
+<div>
+<h1>{product.title}</h1>
+<p>{product.description}</p>
+<ProductPrice price={product.priceRange.minVariantPrice} />
+</div>
+);
 }
 
 const PRODUCT_QUERY = `#graphql
@@ -147,11 +150,9 @@ const PRODUCT_QUERY = `#graphql
     }
   }
 `;
-```
 
-### Action pattern (form submissions)
-
-```tsx
+````
+### Padrão de ação (envios de formulários)```tsx
 import { type ActionFunctionArgs } from 'react-router';
 
 export async function action({ request, context }: ActionFunctionArgs) {
@@ -167,37 +168,33 @@ export async function action({ request, context }: ActionFunctionArgs) {
 
   return { cart: result.cart };
 }
-```
+````
 
-## Storefront API Client
+## Cliente API Storefront
 
-Hydrogen provides a typed Storefront API client:
-
-```tsx
+Hydrogen fornece um cliente API Storefront digitado:```tsx
 // app/lib/storefront.ts - automatically configured
 
 // Usage in loaders:
 export async function loader({ context }: LoaderFunctionArgs) {
-  const { storefront } = context;
+const { storefront } = context;
 
-  // Simple query
-  const { products } = await storefront.query(PRODUCTS_QUERY, {
-    variables: { first: 10 },
-  });
+// Simple query
+const { products } = await storefront.query(PRODUCTS_QUERY, {
+variables: { first: 10 },
+});
 
-  // With cache control
-  const { collection } = await storefront.query(COLLECTION_QUERY, {
-    variables: { handle: 'winter' },
-    cache: storefront.CacheLong(),  // Cache for 1 hour
-  });
+// With cache control
+const { collection } = await storefront.query(COLLECTION_QUERY, {
+variables: { handle: 'winter' },
+cache: storefront.CacheLong(), // Cache for 1 hour
+});
 
-  return { products, collection };
+return { products, collection };
 }
-```
 
-### Cache strategies
-
-```tsx
+````
+### Estratégias de cache```tsx
 // Built-in cache strategies
 storefront.CacheNone()     // No caching (default for mutations)
 storefront.CacheShort()    // 1 second stale, 60 seconds max
@@ -207,24 +204,22 @@ storefront.CacheCustom({
   maxAge: 60,              // seconds
   staleWhileRevalidate: 300,
 })
-```
+````
 
-## Cart Operations
+## Operações do carrinho
 
-Hydrogen provides a cart API abstraction:
-
-```tsx
+Hydrogen fornece uma abstração de API de carrinho:```tsx
 // In loaders/actions, use context.cart
 export async function action({ request, context }: ActionFunctionArgs) {
-  const { cart } = context;
-  const formData = await request.formData();
+const { cart } = context;
+const formData = await request.formData();
 
-  switch (formData.get('action')) {
-    case 'add':
-      return cart.addLines([{
-        merchandiseId: formData.get('variantId') as string,
-        quantity: 1,
-      }]);
+switch (formData.get('action')) {
+case 'add':
+return cart.addLines([{
+merchandiseId: formData.get('variantId') as string,
+quantity: 1,
+}]);
 
     case 'update':
       return cart.updateLines([{
@@ -244,13 +239,12 @@ export async function action({ request, context }: ActionFunctionArgs) {
 
     default:
       throw new Error('Unknown cart action');
-  }
+
 }
-```
+}
 
-### Cart component
-
-```tsx
+````
+### Componente do carrinho```tsx
 import { useFetcher } from 'react-router';
 import { CartLineQuantity, CartLinePrice, Money } from '@shopify/hydrogen';
 
@@ -268,23 +262,21 @@ function AddToCartButton({ variantId }: { variantId: string }) {
     </fetcher.Form>
   );
 }
-```
+````
 
-## Hydrogen Components
+## Componentes de Hidrogênio
 
-Built-in components for common e-commerce patterns:
-
-```tsx
+Componentes integrados para padrões comuns de comércio eletrônico:```tsx
 import {
-  Image,
-  Money,
-  ShopPayButton,
-  Video,
-  ExternalVideo,
-  ModelViewer,
-  MediaFile,
-  CartLineQuantity,
-  CartLinePrice,
+Image,
+Money,
+ShopPayButton,
+Video,
+ExternalVideo,
+ModelViewer,
+MediaFile,
+CartLineQuantity,
+CartLinePrice,
 } from '@shopify/hydrogen';
 
 // Optimised image with CDN sizing
@@ -302,11 +294,9 @@ import {
   variantIds={[selectedVariant.id]}
   storeDomain={shop.primaryDomain.url}
 />
-```
 
-## SEO
-
-```tsx
+````
+##SEO```tsx
 // In root.tsx or individual routes
 import { getSeoMeta } from '@shopify/hydrogen';
 
@@ -318,23 +308,22 @@ export const meta = ({ data }) => {
     image: data.product.images.nodes[0]?.url,
   });
 };
-```
+````
 
-## Deployment
+## Implantação
 
-### Shopify Oxygen (recommended)
+### Shopify Oxigênio (recomendado)```bash
 
-```bash
 # Deploy to Oxygen
+
 npx shopify hydrogen deploy
 
 # Environment variables managed in Shopify admin:
+
 # Settings > Hydrogen > Environment variables
-```
 
-### Self-hosted (Cloudflare Workers, Vercel, etc.)
-
-```bash
+````
+### Auto-hospedado (Cloudflare Workers, Vercel, etc.)```bash
 # Build for production
 npm run build
 
@@ -343,11 +332,10 @@ npx wrangler deploy
 
 # Node.js server
 npm start
-```
+````
 
-### Vite configuration
+### Configuração do Vite```typescript
 
-```typescript
 // vite.config.ts
 import { defineConfig } from 'vite';
 import { hydrogen } from '@shopify/hydrogen/vite';
@@ -355,23 +343,26 @@ import { reactRouter } from '@react-router/dev/vite';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
-  plugins: [
-    tailwindcss(),
-    hydrogen(),
-    reactRouter(),
-  ],
+plugins: [
+tailwindcss(),
+hydrogen(),
+reactRouter(),
+],
 });
+
 ```
+## Melhores práticas
 
-## Best Practices
+1. **Use estratégias de cache** - `CacheLong()` para coleções, `CacheShort()` para carrinho
+2. **Minimize as consultas da API Storefront** - solicite apenas os campos necessários
+3. **Use `defer`** para dados não críticos para melhorar o tempo até o primeiro byte
+4. **Implemente SEO** com `getSeoMeta` em todas as rotas públicas
+5. **Use componentes de hidrogênio** (imagem, dinheiro) para otimizações integradas
+6. **Trate dos estados de carregamento** com `useFetcher` para operações de carrinho
+7. **Configurar análises** wi
 
-1. **Use cache strategies** - `CacheLong()` for collections, `CacheShort()` for cart
-2. **Minimise Storefront API queries** - request only needed fields
-3. **Use `defer`** for non-critical data to improve time-to-first-byte
-4. **Implement SEO** with `getSeoMeta` on all public routes
-5. **Use Hydrogen components** (Image, Money) for built-in optimisations
-6. **Handle loading states** with `useFetcher` for cart operations
-7. **Set up analytics** with Hydrogen's built-in analytics utilities
-8. **Test with Oxygen** before deploying to production
-9. **Use TypeScript** for type safety with Storefront API responses
-10. **Keep queries colocated** with route files for maintainability
+os utilitários analíticos integrados do Hydrogen
+8. **Teste com oxigênio** antes de implantar em produção
+9. **Use TypeScript** para segurança de tipo com respostas da API Storefront
+10. **Mantenha as consultas colocadas** com arquivos de rota para manutenção
+```

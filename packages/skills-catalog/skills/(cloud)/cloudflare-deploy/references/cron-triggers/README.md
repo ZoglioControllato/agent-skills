@@ -70,32 +70,32 @@ npx wrangler dev
 curl "http://localhost:8787/__scheduled?cron=*/5+*+*+*+*"
 ```
 
-## Limits
+## Limites
 
-- **Free:** 3 triggers/worker, 10ms CPU
-- **Paid:** Unlimited triggers, 50ms CPU
-- **Propagation:** 15min global deployment
-- **Timezone:** UTC only
+- **Grátis:** 3 gatilhos/trabalhador, CPU de 10ms
+- **Pago:** Gatilhos ilimitados, CPU de 50ms
+- **Propagação:** implantação global de 15 minutos
+- **Fuso horário:** somente UTC
 
-## Reading Order
+## Ordem de leitura
 
-**New to cron triggers?** Start here:
+**Novo em gatilhos cron?** Comece aqui:
 
-1. This README - Overview and quick start
-2. [configuration.md](./configuration.md) - Set up your first cron trigger
-3. [api.md](./api.md) - Understand the handler API
-4. [patterns.md](./patterns.md) - Common use cases and examples
+1. Este README – Visão geral e início rápido
+2. [configuration.md](./configuration.md) - Configure seu primeiro cron trigger
+3. [api.md](./api.md) – Entenda a API do manipulador
+4. [patterns.md](./patterns.md) - Casos de uso e exemplos comuns
 
-**Troubleshooting?** Jump to [gotchas.md](./gotchas.md)
+**Solução de problemas?** Vá para [gotchas.md](./gotchas.md)
 
-## In This Reference
+## Nesta referência
 
-- [configuration.md](./configuration.md) - wrangler config, env-specific schedules, Green Compute
-- [api.md](./api.md) - ScheduledController, noRetry(), waitUntil, testing patterns
-- [patterns.md](./patterns.md) - Use cases, monitoring, queue integration, Durable Objects
-- [gotchas.md](./gotchas.md) - Timezone issues, idempotency, security, testing
+- [configuration.md](./configuration.md) - configuração do wrangler, programações específicas do ambiente, Green Compute
+- [api.md](./api.md) - ScheduledController, noRetry(), waitUntil, padrões de teste
+- [patterns.md](./patterns.md) - Casos de uso, monitoramento, integração de filas, objetos duráveis
+- [gotchas.md](./gotchas.md) - Problemas de fuso horário, idempotência, segurança, testes
 
-## See Also
+## Veja também
 
-- [workflows](../workflows/) - Alternative for long-running scheduled tasks
-- [workers](../workers/) - Worker runtime documentation
+- [workflows](../workflows/) - Alternativa para tarefas agendadas de longa duração
+- [workers](../workers/) - Documentação de tempo de execução do trabalhador

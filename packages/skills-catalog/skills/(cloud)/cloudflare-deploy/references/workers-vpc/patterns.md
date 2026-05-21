@@ -1,14 +1,14 @@
-# Common Patterns
+# Padrões Comuns
 
-Real-world patterns and examples for TCP Sockets in Cloudflare Workers.
+Padrões e exemplos do mundo real para soquetes TCP em Cloudflare Workers.
 
 ```typescript
 import { connect } from 'cloudflare:sockets'
 ```
 
-## Basic Patterns
+##Padrões Básicos
 
-### Simple Request-Response
+### Solicitação-Resposta Simples
 
 ```typescript
 const socket = connect({ hostname: 'echo.example.com', port: 7 }, { secureTransport: 'on' })
@@ -26,7 +26,7 @@ try {
 }
 ```
 
-### Reading All Data
+### Lendo todos os dados
 
 ```typescript
 async function readAll(socket: Socket): Promise<Uint8Array> {
@@ -48,7 +48,7 @@ async function readAll(socket: Socket): Promise<Uint8Array> {
 }
 ```
 
-### Streaming Response
+### Resposta de streaming
 
 ```typescript
 // Stream socket data directly to HTTP response
@@ -59,7 +59,7 @@ await writer.close()
 return new Response(socket.readable)
 ```
 
-## Protocol Examples
+##Exemplos de protocolo
 
 ### Redis RESP
 
@@ -73,7 +73,7 @@ await writer.write(new TextEncoder().encode(`*2\r\n$3\r\nGET\r\n$3\r\nkey\r\n`))
 
 ### PostgreSQL
 
-**Use [Hyperdrive](../hyperdrive/) for production.** Raw Postgres protocol is complex (startup, auth, query messages).
+**Use [Hyperdrive](../hyperdrive/) para produção.** O protocolo Raw Postgres é complexo (inicialização, autenticação, mensagens de consulta).
 
 ### MQTT
 
@@ -84,9 +84,9 @@ const writer = socket.writable.getWriter()
 // PUBLISH: 0x30 <len> <topic_len> <topic> <message>
 ```
 
-## Error Handling Patterns
+##Padrões de tratamento de erros
 
-### Retry with Backoff
+### Tentar novamente com espera
 
 ```typescript
 async function connectWithRetry(addr: SocketAddress, opts: SocketOptions, maxRetries = 3): Promise<Socket> {
@@ -104,7 +104,7 @@ async function connectWithRetry(addr: SocketAddress, opts: SocketOptions, maxRet
 }
 ```
 
-### Timeout
+### Tempo esgotado
 
 ```typescript
 async function connectWithTimeout(addr: SocketAddress, opts: SocketOptions, ms = 5000): Promise<Socket> {
@@ -115,7 +115,7 @@ async function connectWithTimeout(addr: SocketAddress, opts: SocketOptions, ms =
 }
 ```
 
-### Fallback
+### Cair pra trás
 
 ```typescript
 async function connectWithFallback(primary: string, fallback: string, port: number): Promise<Socket> {
@@ -129,9 +129,9 @@ async function connectWithFallback(primary: string, fallback: string, port: numb
 }
 ```
 
-## Security Patterns
+##Padrões de segurança
 
-### Destination Allowlist (Prevent SSRF)
+### Lista de permissões de destino (prevenir SSRF)
 
 ```typescript
 const ALLOWED_HOSTS = ['db.internal.company.net', 'api.internal.company.net', /^10\.0\.1\.\d+$/]
@@ -150,7 +150,7 @@ export default {
 }
 ```
 
-### Connection Pooling
+### Pool de conexões
 
 ```typescript
 class SocketPool {
@@ -176,7 +176,7 @@ class SocketPool {
 }
 ```
 
-## Multi-Protocol Gateway
+##Gateway multiprotocolo
 
 ```typescript
 interface Protocol {

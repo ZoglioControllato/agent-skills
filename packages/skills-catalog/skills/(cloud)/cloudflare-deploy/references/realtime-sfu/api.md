@@ -7,19 +7,18 @@ curl -X POST 'https://rtc.live/v1/apps/${CALLS_APP_ID}/sessions/new' \
   -H "Authorization: Bearer ${CALLS_APP_SECRET}"
 ```
 
-## Core Concepts
+## Conceitos Básicos
 
-**Sessions:** PeerConnection to Cloudflare edge  
-**Tracks:** Media/data channels (audio/video/datachannel)  
-**No rooms:** Build presence via track sharing
+**Sessões:** PeerConnection com a borda da Cloudflare
+**Faixas:** Canais de mídia/dados (áudio/vídeo/canal de dados)
+**Sem salas:** Crie presença por meio do compartilhamento de trilhas
 
-## Client Libraries
+## Bibliotecas Cliente
 
-**PartyTracks (Recommended):** Observable-based client library for production use. Handles device changes, network switches, ICE restarts automatically. Push/pull API with React hooks. See patterns.md for full examples.
-
-```bash
+**PartyTracks (recomendado):** Biblioteca cliente baseada em observáveis para uso em produção. Lida com alterações de dispositivos, switches de rede, o ICE reinicia automaticamente. API push/pull com ganchos React. Veja padrões.md para exemplos completos.```bash
 npm install partytracks @cloudflare/calls
-```
+
+````
 
 **Raw API:** Direct HTTP + WebRTC for custom requirements (documented below).
 
@@ -30,7 +29,7 @@ npm install partytracks @cloudflare/calls
 ```http
 POST /v1/apps/{appId}/sessions/new
 → {sessionId, sessionDescription}
-```
+````
 
 ### Add Track (Publish)
 

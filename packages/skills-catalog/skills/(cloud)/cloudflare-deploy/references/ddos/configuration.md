@@ -1,14 +1,14 @@
-# DDoS Configuration
+# Configuração DDoS
 
-## Dashboard Setup
+## Configuração do painel
 
-1. Navigate to Security > DDoS
-2. Select HTTP DDoS or Network-layer DDoS
-3. Configure sensitivity & action per ruleset/category/rule
-4. Apply overrides with optional expressions (Enterprise Advanced)
-5. Enable Adaptive DDoS toggle (Enterprise/Enterprise Advanced, requires 7 days traffic history)
+1. Navegue até Segurança > DDoS
+2. Selecione HTTP DDoS ou DDoS de camada de rede
+3. Configure a sensibilidade e a ação por conjunto de regras/categoria/regra
+4. Aplicar substituições com expressões opcionais (Enterprise Advanced)
+5. Ative a alternância Adaptive DDoS (Enterprise/Enterprise Advanced, requer histórico de tráfego de 7 dias)
 
-## Rule Structure
+## Estrutura de regras
 
 ```typescript
 interface DDoSOverride {
@@ -36,59 +36,58 @@ interface DDoSOverride {
 }
 ```
 
-## Expression Availability
+##Disponibilidade de expressão
 
-| Plan                | Custom Expressions | Example                                                  |
-| ------------------- | ------------------ | -------------------------------------------------------- |
-| Free/Pro/Business   | ✗                  | Use `"true"` only                                        |
-| Enterprise          | ✗                  | Use `"true"` only                                        |
-| Enterprise Advanced | ✓                  | `ip.src in {...}`, `http.request.uri.path matches "..."` |
+| Plano               | Expressões personalizadas | Exemplo                                                        |
+| ------------------- | ------------------------- | -------------------------------------------------------------- |
+| Grátis/Pro/Negócios | ✗                         | Use `"true"` apenas                                            |
+| Empresa             | ✗                         | Use `"true"` apenas                                            |
+| Empresa Avançada    | ✓                         | `ip.src em {...}`, `http.request.uri.path corresponde a "..."` |
 
-## Sensitivity Mapping
+## Mapeamento de Sensibilidade
 
-| UI              | API       | Threshold          |
-| --------------- | --------- | ------------------ |
-| High            | `default` | Most aggressive    |
-| Medium          | `medium`  | Balanced           |
-| Low             | `low`     | Less aggressive    |
-| Essentially Off | `eoff`    | Minimal mitigation |
+| UI                       | API      | Limite           |
+| ------------------------ | -------- | ---------------- |
+| alto                     | `padrão` | Mais agressivo   |
+| Médio                    | `médio`  | Equilibrado      |
+| Baixa                    | `baixo`  | Menos agressivos |
+| Essencialmente desligado | `eoff`   | Mitigação mínima |
 
-## Common Categories
+## Categorias Comuns
 
-- `http-flood`, `http-anomaly` (L7)
+- `http-flood`, `http-anomalia` (L7)
 - `udp-flood`, `syn-flood`, `dns-flood` (L3/4)
 
-## Override Precedence
+## Substituir precedência
 
-Multiple override layers apply in this order (higher precedence wins):
-
-```
+Múltiplas camadas de substituição se aplicam nesta ordem (ganha precedência mais alta):```
 Zone-level > Account-level
 Individual Rule > Category > Global sensitivity/action
+
 ```
+**Exemplo**: a regra de zona para `/api/*` substitui as configurações globais no nível da conta.
 
-**Example**: Zone rule for `/api/*` overrides account-level global settings.
+## Perfis DDoS adaptáveis
 
-## Adaptive DDoS Profiles
+**Disponibilidade**: Empresarial, Empresarial Avançado
+**Período de aprendizagem**: são necessários 7 dias de histórico de tráfego
 
-**Availability**: Enterprise, Enterprise Advanced  
-**Learning period**: 7 days of traffic history required
-
-| Profile Type    | Description                          | Detects                                 |
+| Tipo de perfil | Descrição | Detecta |
 | --------------- | ------------------------------------ | --------------------------------------- |
-| **Origins**     | Traffic patterns per origin server   | Anomalous requests to specific origins  |
-| **User-Agents** | Traffic patterns per User-Agent      | Malicious/anomalous user agent strings  |
-| **Locations**   | Traffic patterns per geo-location    | Attacks from specific countries/regions |
-| **Protocols**   | Traffic patterns per protocol (L3/4) | Protocol-specific flood attacks         |
+| **Origens** | Padrões de tráfego por servidor de origem | Pedidos anómalos para origens específicas |
+| **Agentes de usuário** | Padrões de tráfego por User-Agent | Sequências de agentes de usuário maliciosos/anômalos |
+| **Locais** | Padrões de tráfego por geolocalização | Ataques de países/regiões específicos |
+| **Protocolos** | Padrões de tráfego por protocolo (L3/4) | Ataques de inundação específicos do protocolo |
 
-Configure by targeting specific adaptive rule IDs via API (see api.md#typed-override-examples).
+Configure visando IDs de regras adaptativas específicas via API (consulte api.md#typed-override-examples).
 
-## Alerting
+## Alerta
 
-Configure via Notifications:
+Configurar via notificações:
 
-- Alert types: `http_ddos_attack_alert`, `layer_3_4_ddos_attack_alert`, `advanced_*` variants
-- Filters: zones, hostnames, RPS/PPS/Mbps thresholds, IPs, protocols
-- Mechanisms: email, webhooks, PagerDuty
+- Tipos de alerta: variantes `http_ddos_attack_alert`, `layer_3_4_ddos_attack_alert`, `advanced_*`
+- Filtros: zonas, nomes de host, limites RPS/PPS/Mbps, IPs, protocolos
+- Mecanismos: e-mail, webhooks, PagerDuty
 
-See [api.md](./api.md#alert-configuration) for API examples.
+Consulte [api.md](./api.md#alert-configuration) para obter exemplos de API.
+```

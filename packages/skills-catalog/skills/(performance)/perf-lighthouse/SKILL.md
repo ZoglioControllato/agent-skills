@@ -1,43 +1,43 @@
 ---
 name: perf-lighthouse
-description: 'Run Lighthouse audits locally via CLI or Node API, parse and interpret reports, and set performance budgets. Use when measuring site performance, understanding Lighthouse scores, setting up budgets, or integrating audits into CI. Triggers on: lighthouse, run lighthouse, lighthouse score, performance audit, performance budget. Do NOT use for fixing specific performance issues (use perf-web-optimization or core-web-vitals) or Astro-specific optimization (use perf-astro).'
+description: 'Rode auditorias Lighthouse localmente via CLI ou API Node, interprete relatórios e defina budgets de performance. Use quando medir performance do site, entender scores Lighthouse, configurar budgets ou integrar auditorias em CI. Aciona em lighthouse, rodar lighthouse, score lighthouse, auditoria de performance, budget de performance. NÃO use para corrigir problemas pontuais de performance (use perf-web-optimization ou core-web-vitals) ou otimização específica de Astro (use perf-astro).'
 ---
 
-# Lighthouse Audits
+# Auditorias Lighthouse
 
-## CLI Quick Start
+## Início rápido com CLI
 
 ```bash
-# Install
+# Instalar
 npm install -g lighthouse
 
-# Basic audit
+# Auditoria básica
 lighthouse https://example.com
 
-# Mobile performance only (faster)
+# Só performance mobile (mais rápido)
 lighthouse https://example.com --preset=perf --form-factor=mobile
 
-# Output JSON for parsing
+# Saída JSON para parse
 lighthouse https://example.com --output=json --output-path=./report.json
 
-# Output HTML report
+# Relatório HTML
 lighthouse https://example.com --output=html --output-path=./report.html
 ```
 
-## Common Flags
+## Flags comuns
 
 ```bash
---preset=perf           # Performance only (skip accessibility, SEO, etc.)
---form-factor=mobile    # Mobile device emulation (default)
+--preset=perf           # Só performance (pula acessibilidade, SEO, etc.)
+--form-factor=mobile    # Emulação mobile (padrão)
 --form-factor=desktop   # Desktop
---throttling-method=devtools  # More accurate throttling
---only-categories=performance,accessibility  # Specific categories
---chrome-flags="--headless"   # Headless Chrome
+--throttling-method=devtools  # Throttling mais fiel
+--only-categories=performance,accessibility  # Categorias específicas
+--chrome-flags="--headless"   # Chrome headless
 ```
 
-## Performance Budgets
+## Budgets de performance
 
-Create `budget.json`:
+Crie `budget.json`:
 
 ```json
 [
@@ -58,13 +58,13 @@ Create `budget.json`:
 ]
 ```
 
-Run with budget:
+Rodar com budget:
 
 ```bash
 lighthouse https://example.com --budget-path=./budget.json
 ```
 
-## Node API
+## API Node
 
 ```javascript
 import lighthouse from 'lighthouse'
@@ -129,17 +129,17 @@ jobs:
 
 ## Lighthouse CI (LHCI)
 
-For full CI integration with historical tracking:
+Para CI completo com histórico:
 
 ```bash
-# Install
+# Instalar
 npm install -g @lhci/cli
 
-# Initialize config
+# Inicializar config
 lhci wizard
 ```
 
-Creates `lighthouserc.js`:
+Cria `lighthouserc.js`:
 
 ```javascript
 module.exports = {
@@ -159,26 +159,26 @@ module.exports = {
       },
     },
     upload: {
-      target: 'temporary-public-storage', // or 'lhci' for self-hosted
+      target: 'temporary-public-storage', // ou 'lhci' self-hosted
     },
   },
 }
 ```
 
-Run:
+Executar:
 
 ```bash
 lhci autorun
 ```
 
-## Parse JSON Report
+## Parsear relatório JSON
 
 ```javascript
 import fs from 'fs'
 
 const report = JSON.parse(fs.readFileSync('./report.json'))
 
-// Overall scores (0-1, multiply by 100 for percentage)
+// Scores gerais (0-1, multiplique por 100 para %)
 const scores = {
   performance: report.categories.performance.score,
   accessibility: report.categories.accessibility.score,
@@ -193,26 +193,26 @@ const vitals = {
   tbt: report.audits['total-blocking-time'].numericValue,
 }
 
-// Failed audits
+// Auditorias que falharam
 const failed = Object.values(report.audits)
   .filter((a) => a.score !== null && a.score < 0.9)
   .map((a) => ({ id: a.id, score: a.score, title: a.title }))
 ```
 
-## Compare Builds
+## Comparar builds
 
 ```bash
-# Save baseline
+# Salvar baseline
 lighthouse https://prod.example.com --output=json --output-path=baseline.json
 
-# Run on PR
+# Rodar no PR
 lighthouse https://preview.example.com --output=json --output-path=pr.json
 
-# Compare (custom script)
+# Comparar (script customizado)
 node compare-reports.js baseline.json pr.json
 ```
 
-Simple comparison script:
+Script simples de comparação:
 
 ```javascript
 const baseline = JSON.parse(fs.readFileSync(process.argv[2]))
@@ -229,11 +229,11 @@ metrics.forEach((metric) => {
 })
 ```
 
-## Troubleshooting
+## Solução de problemas
 
-| Issue               | Solution                                              |
-| ------------------- | ----------------------------------------------------- |
-| Inconsistent scores | Run multiple times (`--number-of-runs=3`), use median |
-| Chrome not found    | Set `CHROME_PATH` env var                             |
-| Timeouts            | Increase with `--max-wait-for-load=60000`             |
-| Auth required       | Use `--extra-headers` or puppeteer script             |
+| Problema              | Solução                                              |
+| --------------------- | ---------------------------------------------------- |
+| Scores inconsistentes | Várias execuções (`--number-of-runs=3`), use mediana |
+| Chrome não encontrado | Defina env `CHROME_PATH`                             |
+| Timeouts              | Aumente com `--max-wait-for-load=60000`              |
+| Autenticação          | Use `--extra-headers` ou script Puppeteer            |

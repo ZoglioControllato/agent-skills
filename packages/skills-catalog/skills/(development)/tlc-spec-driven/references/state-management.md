@@ -1,12 +1,11 @@
-# State Management
+# Gestão de Estado
 
-**Purpose:** Persistent memory across sessions - decisions, blockers, learnings.
+**Objetivo:** Memória persistente entre sessões – decisões, bloqueadores, aprendizados.
 
-## Structure
+## Estrutura
 
-**Output:** `.specs/project/STATE.md`
+**Saída:** `.specs/project/STATE.md````markdown
 
-```markdown
 # State
 
 **Last Updated:** [ISO timestamp]
@@ -74,57 +73,57 @@ Capture in-progress thoughts and action items that don't fit in active tasks.
 
 - [ ] [TODO: action item]
 - [ ] [TODO: action item]
-```
 
-## When to Update
+````
+## Quando atualizar
 
-| Event                            | Action                                 |
+| Evento | Ação |
 | -------------------------------- | -------------------------------------- |
-| Significant architectural choice | Add AD-[NNN]                           |
-| Implementation blocked           | Add B-[NNN]                            |
-| Important discovery/learning     | Add L-[NNN]                            |
-| Quick task completed             | Add row to Quick Tasks table           |
-| Scope creep captured             | Add to Deferred Ideas                  |
-| In-progress thought              | Add to Todos                           |
-| Session end                      | Update "Last Updated" + "Current Work" |
+| Escolha arquitetônica significativa | Adicionar AD-[NNN] |
+| Implementação bloqueada | Adicionar B-[NNN] |
+| Descoberta/aprendizagem importante | Adicionar L-[NNN] |
+| Tarefa rápida concluída | Adicionar linha às Tarefas Rápidas
 
-## Size Management (Hybrid Strategy)
+mesa |
+| Aumento do escopo capturado | Adicionar às ideias diferidas |
+| Pensamento em andamento | Adicionar a Todos |
+| Fim da sessão | Atualizar "Última atualização" + "Trabalho atual" |
 
-**Zones:**
+## Gerenciamento de tamanho (estratégia híbrida)
 
-- 🟢 <7k tokens: No action
-- 🟡 7-10k tokens: Footer note "STATE.md at [X]k. Cleanup recommended."
-- 🔴 >10k tokens: Active prompt "STATE.md critical ([X]k). Cleanup now?"
+**Zonas:**
 
-**Cleanup process:**
+- 🟢 <7k tokens: Sem ação
+- 🟡 7-10k tokens: Nota de rodapé "STATE.md em [X]k. Limpeza recomendada."
+- 🔴 >10k tokens: Prompt ativo "STATE.md crítico ([X]k). Limpar agora?"
 
-- Move decisions >60 days to STATE-ARCHIVE.md
-- Keep only active blockers
-- Preserve recent learnings (<60 days)
+**Processo de limpeza:**
 
-**Validation:**
+- Mover decisões >60 dias para STATE-ARCHIVE.md
+- Mantenha apenas bloqueadores ativos
+- Preservar aprendizados recentes (<60 dias)
 
-- Decisions have clear rationale?
-- Blockers include resolution path?
-- Learnings are actionable?
+**Validação:**
+
+- As decisões têm uma fundamentação clara?
+- Os bloqueadores incluem caminho de resolução?
+- Os aprendizados são acionáveis?
 
 ---
 
-## Preferences
+## Preferências
 
-Track user-facing behavioral state in STATE.md:
-
-```markdown
+Rastreie o estado comportamental do usuário em STATE.md:```markdown
 ## Preferences
 
 **Model Guidance Shown:** [ISO date or "never"]
-```
+````
 
-**Update when:**
+**Atualizar quando:**
 
-| Event                       | Action                   |
-| --------------------------- | ------------------------ |
-| First model tip given       | Set date                 |
-| User acknowledges/dismisses | Keep date (don't repeat) |
+| Evento                       | Ação                         |
+| ---------------------------- | ---------------------------- |
+| Primeira dica de modelo dada | Definir data                 |
+| O usuário reconhece/dispensa | Mantenha a data (não repita) |
 
-This prevents repetitive suggestions while maintaining natural, helpful behavior.
+Isso evita sugestões repetitivas, ao mesmo tempo que mantém um comportamento natural e útil.

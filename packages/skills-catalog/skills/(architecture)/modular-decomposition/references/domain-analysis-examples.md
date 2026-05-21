@@ -1,236 +1,255 @@
-# Subdomain Identification Examples
+# Exemplos de identificação de subdomínio
 
-This document provides practical examples of applying subdomain identification across different types of codebases.
+Este documento fornece exemplos práticos de aplicação de identificação de subdomínio em diferentes tipos de bases de código.
 
-## Example 1: E-Commerce Platform
+## Exemplo 1: Plataforma de comércio eletrônico
 
-### Discovered Concepts
+### Conceitos Descobertos
 
-**Entities**:
-- Product, Category, Inventory, SKU
-- Order, OrderItem, Cart, CartItem
-- Customer, Address, PaymentMethod
-- Shipment, Tracking, Warehouse
+**Entidades**:
 
-**Services**:
+- Produto, categoria, estoque, SKU
+- Pedido, OrderItem, Carrinho, CartItem
+- Cliente, Endereço, Método de Pagamento
+- Remessa, Rastreamento, Armazém
+
+**Serviços**:
+
 - ProductCatalogService, InventoryService
 - OrderProcessingService, CartService
-- PaymentService, ShippingService
-- CustomerService
+- Serviço de pagamento, serviço de envio
+- Atendimento ao Cliente
 
-### Language Groups
+### Grupos de idiomas
 
-**Catalog Language**: product, category, SKU, inventory, stock
-**Order Language**: order, cart, checkout, fulfillment
-**Payment Language**: payment, transaction, refund, charge
-**Shipping Language**: shipment, tracking, delivery, carrier
-**Customer Language**: customer, account, profile, address
+**Idioma do catálogo**: produto, categoria, SKU, estoque, estoque
+**Idioma do pedido**: pedido, carrinho, finalização da compra, atendimento
+**Idioma de pagamento**: pagamento, transação, reembolso, cobrança
+**Idioma de envio**: envio, rastreamento, entrega, transportadora
+**Idioma do cliente**: cliente, conta, perfil, endereço
 
-### Identified Subdomains
+### Subdomínios identificados
 
-#### 1. Product Catalog (Core Domain)
-- **Type**: Core (if differentiation is product discovery)
-- **Ubiquitous Language**: product, category, catalog, search, browse
-- **Concepts**: Product, Category, ProductCatalogService
-- **Cohesion**: 9/10
-- **Bounded Context**: CatalogContext
+#### 1. Catálogo de produtos (domínio principal)
 
-#### 2. Inventory Management (Supporting)
-- **Type**: Supporting
-- **Ubiquitous Language**: stock, inventory, SKU, warehouse, allocation
-- **Concepts**: Inventory, SKU, InventoryService, Warehouse
-- **Cohesion**: 8/10
-- **Bounded Context**: InventoryContext
+- **Tipo**: Principal (se diferenciação for descoberta de produto)
+- **Linguagem onipresente**: produto, categoria, catálogo, pesquisa, navegação
+- **Conceitos**: Produto, Categoria, ProductCatalogService
+- **Coesão**: 9/10
+- **Contexto limitado**: CatalogContext
 
-#### 3. Order Processing (Core Domain)
-- **Type**: Core (if differentiation is checkout experience)
-- **Ubiquitous Language**: order, cart, checkout, fulfillment
-- **Concepts**: Order, Cart, OrderProcessingService
-- **Cohesion**: 9/10
-- **Bounded Context**: OrderContext
+#### 2. Gerenciamento de estoque (suporte)
 
-#### 4. Payment Processing (Generic)
-- **Type**: Generic (standard payment gateway)
-- **Ubiquitous Language**: payment, transaction, charge, refund
-- **Concepts**: Payment, PaymentService, PaymentGateway
-- **Cohesion**: 7/10
-- **Bounded Context**: PaymentContext
+- **Tipo**: Suporte
+- **Linguagem onipresente**: estoque, inventário, SKU, armazém, alocação
+- **Conceitos**: Estoque, SKU, InventoryService, Armazém
+- **Coesão**: 8/10
+- **Contexto limitado**: InventoryContext
 
-#### 5. Shipping (Supporting)
-- **Type**: Supporting
-- **Ubiquitous Language**: shipment, tracking, delivery, carrier
-- **Concepts**: Shipment, Tracking, ShippingService
-- **Cohesion**: 8/10
-- **Bounded Context**: ShippingContext
+#### 3. Processamento de pedidos (domínio principal)
 
-### Cohesion Analysis
+- **Tipo**: Core (se diferenciação for experiência de checkout)
+- **Linguagem onipresente**: pedido, carrinho, finalização da compra, atendimento
+- **Conceitos**: Pedido, Carrinho, OrderProcessingService
+- **Coesão**: 9/10
+- **Contexto limitado**: OrderContext
 
-| Domain A | Domain B | Cohesion | Relationship |
-|----------|----------|----------|--------------|
-| Catalog | Inventory | 6/10 | ⚠️ Product availability check |
-| Order | Catalog | 5/10 | ⚠️ Product reference in order |
-| Order | Payment | 7/10 | ✅ Order triggers payment |
-| Order | Shipping | 7/10 | ✅ Order triggers shipment |
-| Customer | Order | 3/10 | ❌ Direct entity reference |
+#### 4. Processamento de pagamento (genérico)
 
-### Low Cohesion Issues
+- **Tipo**: Genérico (gateway de pagamento padrão)
+- **Linguagem onipresente**: pagamento, transação, cobrança, reembolso
+- **Conceitos**: Pagamento, PaymentService, PaymentGateway
+- **Coesão**: 7/10
+- **Contexto limitado**: PaymentContext
 
-**Issue 1**: Customer entity directly referenced in Order
-- **Problem**: Different contexts (Identity vs Order)
-- **Recommendation**: Use CustomerId value object, not entity reference
-- **Pattern**: Published Language
+#### 5. Envio (Suporte)
 
-**Issue 2**: Catalog service checks Inventory directly
-- **Problem**: Core Domain depends on Supporting
-- **Recommendation**: Use event-based inventory updates
-- **Pattern**: Domain Events
+- **Tipo**: Suporte
+- **Linguagem onipresente**: envio, rastreamento, entrega, transportadora
+- **Conceitos**: Remessa, Rastreamento, Serviço de Remessa
+- **Coesão**: 8/10
+- **Contexto limitado**: ShippingContext
 
----
+### Análise de Coesão
 
-## Example 2: Healthcare System
+| Domínio A  | Domínio B  | Coesão | Relacionamento                               |
+| ---------- | ---------- | ------ | -------------------------------------------- |
+| Catálogo   | Inventário | 6/10   | ⚠️ Verificação de disponibilidade do produto |
+| Encomendar | Catálogo   | 5/10   | ⚠️ Referência do produto em ordem            |
+| Encomendar | Pagamento  | 7/10   | ✅ Pedido aciona pagamento                   |
+| Encomendar | Envio      | 7/10   | ✅ Pedido aciona envio                       |
+| Cliente    | Encomendar | 3/10   | ❌ Referência direta da entidade             |
 
-### Discovered Concepts
+### Problemas de baixa coesão
 
-**Entities**:
-- Patient, MedicalRecord, Diagnosis
-- Appointment, Schedule, Availability
-- Prescription, Medication, Dosage
-- Doctor, Nurse, Staff
-- Billing, Claim, Insurance
+**Problema 1**: entidade do cliente diretamente referenciada no pedido
 
-### Language Groups
+- **Problema**: Contextos diferentes (Identidade vs Ordem)
+- **Recomendação**: use o objeto de valor CustomerId, não a referência de entidade
+- **Padrão**: Idioma publicado
 
-**Clinical Language**: patient, diagnosis, treatment, medical record
-**Scheduling Language**: appointment, schedule, availability, slot
-**Pharmacy Language**: prescription, medication, dosage, drug
-**Staff Language**: doctor, nurse, practitioner, credential
-**Billing Language**: claim, insurance, copay, reimbursement
+**Problema 2**: o serviço de catálogo verifica o inventário diretamente
 
-### Identified Subdomains
-
-#### 1. Patient Care (Core Domain)
-- **Type**: Core
-- **Ubiquitous Language**: patient, diagnosis, treatment, care plan
-- **Concepts**: Patient, MedicalRecord, Diagnosis, CareService
-- **Cohesion**: 9/10
-- **Bounded Context**: ClinicalContext
-
-#### 2. Appointment Management (Supporting)
-- **Type**: Supporting
-- **Ubiquitous Language**: appointment, schedule, availability, booking
-- **Concepts**: Appointment, Schedule, SchedulingService
-- **Cohesion**: 8/10
-- **Bounded Context**: SchedulingContext
-
-#### 3. Pharmacy (Supporting)
-- **Type**: Supporting (or Core if pharmacy is differentiator)
-- **Ubiquitous Language**: prescription, medication, dosage, drug interaction
-- **Concepts**: Prescription, Medication, PharmacyService
-- **Cohesion**: 8/10
-- **Bounded Context**: PharmacyContext
-
-#### 4. Medical Billing (Supporting)
-- **Type**: Supporting
-- **Ubiquitous Language**: claim, insurance, billing, reimbursement
-- **Concepts**: Claim, Insurance, BillingService
-- **Cohesion**: 7/10
-- **Bounded Context**: BillingContext
-
-### Key Insight
-
-**"Patient" Concept Has Different Meanings**:
-
-| Context | Patient Meaning | Properties |
-|---------|-----------------|------------|
-| Clinical | Medical subject | Diagnosis, vitals, allergies |
-| Scheduling | Appointment holder | Availability, preferences |
-| Billing | Payer/beneficiary | Insurance, balance, claims |
-
-→ These are different bounded contexts despite sharing the term "Patient"
+- **Problema**: o domínio principal depende do suporte
+- **Recomendação**: use atualizações de inventário baseadas em eventos
+- **Padrão**: Eventos de Domínio
 
 ---
 
-## Example 3: SaaS Project Management Tool
+## Exemplo 2: Sistema de Saúde
 
-### Discovered Concepts
+### Conceitos Descobertos
 
-**Entities**:
-- Project, Task, Milestone, Sprint
-- User, Team, Role, Permission
-- Comment, Attachment, Activity
-- Subscription, Plan, Invoice
-- Notification, Alert
+**Entidades**:
 
-### Language Groups
+- Paciente, Registro Médico, Diagnóstico
+- Compromisso, Horário, Disponibilidade
+- Prescrição, Medicação, Dosagem
+- Médico, Enfermeira, Funcionários
+- Faturamento, reclamação, seguro
 
-**Project Language**: project, task, milestone, sprint, backlog
-**Collaboration Language**: comment, discussion, mention, activity
-**Access Language**: user, team, role, permission, access
-**Billing Language**: subscription, plan, invoice, payment
-**Notification Language**: notification, alert, reminder
+### Grupos de idiomas
 
-### Identified Subdomains
+**Linguagem Clínica**: paciente, diagnóstico, tratamento, prontuário médico
+**Idioma de Agendamento**: compromisso, horário, disponibilidade, horário
+**Linguagem da Farmácia**: prescrição, medicamento, dosagem, medicamento
+**Idioma da equipe**: médico, enfermeiro, profissional, credencial
+**Idioma de cobrança**: reclamação, seguro, copagamento, reembolso
 
-#### 1. Project Management (Core Domain)
-- **Type**: Core
-- **Ubiquitous Language**: project, task, milestone, workflow
-- **Concepts**: Project, Task, Milestone, ProjectService
-- **Cohesion**: 9/10
-- **Bounded Context**: ProjectContext
+### Subdomínios identificados
 
-#### 2. Collaboration (Core/Supporting)
-- **Type**: Core if differentiator, Supporting otherwise
-- **Ubiquitous Language**: comment, discussion, activity, collaboration
-- **Concepts**: Comment, Activity, CollaborationService
-- **Cohesion**: 8/10
-- **Bounded Context**: CollaborationContext
+#### 1. Atendimento ao paciente (domínio principal)
 
-#### 3. Identity & Access (Generic)
-- **Type**: Generic
-- **Ubiquitous Language**: user, authentication, authorization, role
-- **Concepts**: User, Role, Permission, AuthService
-- **Cohesion**: 9/10
-- **Bounded Context**: IdentityContext
+- **Tipo**: Núcleo
+- **Linguagem onipresente**: paciente, diagnóstico, tratamento, plano de cuidados
+- **Conceitos**: Paciente, Registro Médico, Diagnóstico, CareService
+- **Coesão**: 9/10
+- **Contexto limitado**: ClinicalContext
 
-#### 4. Billing (Supporting)
-- **Type**: Supporting
-- **Ubiquitous Language**: subscription, plan, invoice, billing
-- **Concepts**: Subscription, Invoice, BillingService
-- **Cohesion**: 8/10
-- **Bounded Context**: BillingContext
+#### 2. Gerenciamento de compromissos (suporte)
 
-#### 5. Notifications (Generic)
-- **Type**: Generic
-- **Ubiquitous Language**: notification, alert, message, reminder
-- **Concepts**: Notification, NotificationService
-- **Cohesion**: 7/10
-- **Bounded Context**: NotificationContext
+- **Tipo**: Suporte
+- **Linguagem onipresente**: agendamento, horário, disponibilidade, reserva
+- **Conceitos**: Consulta, Agendamento, AgendamentoServiço
+- **Coesão**: 8/10
+- **Contexto limitado**: SchedulingContext
 
-### Low Cohesion Issue
+#### 3. Farmácia (Apoio)
 
-**Issue**: User entity used everywhere
-```typescript
+- **Tipo**: Apoio (ou Básico se farmácia for diferenciadora)
+- **Linguagem onipresente**: prescrição, medicação, dosagem, interação medicamentosa
+- **Conceitos**: Prescrição, Medicamentos, FarmáciaServiço
+- **Coesão**: 8/10
+- **Contexto limitado**: PharmacyContext
+
+#### 4. Faturamento Médico (Suporte)
+
+- **Tipo**: Suporte
+- **Linguagem onipresente**: reclamação, seguro, cobrança, reembolso
+- **Conceitos**: Sinistro, Seguro, FaturamentoServiço
+- **Coesão**: 7/10
+- **Contexto limitado**: BillingContext
+
+### Principais insights
+
+**O conceito de "paciente" tem significados diferentes**:
+
+| Contexto    | Paciente Significado   | Propriedades                         |
+| ----------- | ---------------------- | ------------------------------------ |
+| Clínica     | Disciplina médica      | Diagnóstico, sinais vitais, alergias |
+| Agendamento | Titular da nomeação    | Disponibilidade, preferências        |
+| Faturamento | Ordenador/beneficiário | Seguros, saldo, sinistros            |
+
+→ Estes são contextos delimitados diferentes, apesar de compartilharem o termo "Paciente"
+
+---
+
+## Exemplo 3: Ferramenta de gerenciamento de projetos SaaS
+
+### Conceitos Descobertos
+
+**Entidades**:
+
+- Projeto, Tarefa, Marco, Sprint
+- Usuário, equipe, função, permissão
+- Comentário, Anexo, Atividade
+- Assinatura, Plano, Fatura
+- Notificação, Alerta
+
+### Grupos de idiomas
+
+**Linguagem do projeto**: projeto, tarefa, marco, sprint, backlog
+**Linguagem de colaboração**: comentário, discussão, menção, atividade
+**Idioma de acesso**: usuário, equipe, função, permissão, acesso
+**Idioma de cobrança**: assinatura, plano, fatura, pagamento
+**Idioma de notificação**: notificação, alerta, lembrete
+
+### Subdomínios identificados
+
+#### 1. Gerenciamento de Projetos (Domínio Principal)
+
+- **Tipo**: Núcleo
+- **Linguagem onipresente**: projeto, tarefa, marco, fluxo de trabalho
+- **Conceitos**: Projeto, Tarefa, Marco, ProjectService
+- **Coesão**: 9/10
+- **Contexto limitado**: ProjectContext
+
+#### 2. Colaboração (principal/suporte)
+
+- **Tipo**: Núcleo se diferenciador, Suporte caso contrário
+- **Linguagem onipresente**: comentário, discussão, atividade, colaboração
+- **Conceitos**: Comentário, Atividade, Serviço de Colaboração
+- **Coesão**: 8/10
+- **Contexto limitado**: CollaborationContext
+
+#### 3. Identidade e acesso (genérico)
+
+- **Tipo**: Genérico
+- **Linguagem onipresente**: usuário, autenticação, autorização, função
+- **Conceitos**: Usuário, Função, Permissão, AuthService
+- **Coesão**: 9/10
+- **Contexto limitado**: IdentityContext
+
+#### 4. Faturamento (Suporte)
+
+- **Tipo**: Suporte
+- **Linguagem onipresente**: assinatura, plano, fatura, cobrança
+- **Conceitos**: Assinatura, Fatura, BillingService
+- **Coesão**: 8/10
+- **Contexto limitado**: BillingContext
+
+#### 5. Notificações (genéricas)
+
+- **Tipo**: Genérico
+- **Linguagem onipresente**: notificação, alerta, mensagem, lembrete
+- **Conceitos**: Notificação, NotificationService
+- **Coesão**: 7/10
+- **Contexto limitado**: NotificationContext
+
+### Problema de baixa coesão
+
+**Problema**: entidade de usuário usada em todos os lugares```typescript
 // Project domain
 class Project {
-  owner: User;        // ❌ Direct reference
-  members: User[];    // ❌ Direct reference
+owner: User; // ❌ Direct reference
+members: User[]; // ❌ Direct reference
 }
 
 // Collaboration domain
 class Comment {
-  author: User;       // ❌ Direct reference
+author: User; // ❌ Direct reference
 }
 
 // Billing domain
 class Subscription {
-  subscriber: User;   // ❌ Direct reference
+subscriber: User; // ❌ Direct reference
 }
-```
 
-**Problem**: Identity context concept leaked into all domains
+````
 
-**Recommendation**: Use context-specific concepts
-```typescript
+**Problema**: o conceito de contexto de identidade vazou em todos os domínios
+
+**Recomendação**: use conceitos específicos do contexto```typescript
 // Project domain
 class Project {
   ownerId: OwnerId;           // ✅ Value object
@@ -246,168 +265,177 @@ class Comment {
 class Subscription {
   subscriberId: CustomerId;   // ✅ Context-specific
 }
-```
+````
 
 ---
 
-## Example 4: Streaming Video Platform
+## Exemplo 4: Plataforma de streaming de vídeo
 
-### Discovered Concepts
+### Conceitos Descobertos
 
-**Entities**:
-- Movie, TVShow, Episode, Season
-- Video, Stream, Encoding, Quality
-- Watchlist, Viewing, Progress
-- Recommendation, Preference
-- Subscription, Plan, Billing
+**Entidades**:
 
-### Language Groups
+- Filme, programa de TV, episódio, temporada
+- Vídeo, Stream, Codificação, Qualidade
+- Lista de observação, visualização, progresso
+- Recomendação, Preferência
+- Assinatura, Plano, Faturamento
 
-**Content Language**: movie, show, episode, season, catalog
-**Streaming Language**: video, stream, encoding, bitrate, quality
-**Engagement Language**: watchlist, viewing, progress, rating
-**Recommendation Language**: recommendation, preference, algorithm
-**Billing Language**: subscription, plan, billing, payment
+### Grupos de idiomas
 
-### Identified Subdomains
+**Idioma do conteúdo**: filme, programa, episódio, temporada, catálogo
+**Idioma de streaming**: vídeo, stream, codificação, taxa de bits, qualidade
+**Idioma de engajamento**: lista de observação, visualização, progresso, classificação
+**Linguagem de recomendação**: recomendação, preferência, algoritmo
+**Idioma de cobrança**: assinatura, plano, cobrança, pagamento
 
-#### 1. Content Catalog (Supporting)
-- **Type**: Supporting (unless unique content is differentiator)
-- **Ubiquitous Language**: movie, show, episode, catalog, metadata
-- **Concepts**: Movie, TVShow, Episode, CatalogService
-- **Cohesion**: 9/10
-- **Bounded Context**: CatalogContext
+### Subdomínios identificados
 
-#### 2. Video Streaming (Supporting)
-- **Type**: Supporting
-- **Ubiquitous Language**: video, stream, encoding, playback, quality
-- **Concepts**: Video, Stream, StreamingService
-- **Cohesion**: 8/10
-- **Bounded Context**: StreamingContext
+#### 1. Catálogo de conteúdo (suporte)
 
-#### 3. User Engagement (Supporting)
-- **Type**: Supporting
-- **Ubiquitous Language**: watchlist, viewing, progress, rating
-- **Concepts**: Watchlist, Viewing, EngagementService
-- **Cohesion**: 8/10
-- **Bounded Context**: EngagementContext
+- **Tipo**: Suporte (a menos que conteúdo exclusivo seja um diferencial)
+- **Linguagem onipresente**: filme, programa, episódio, catálogo, metadados
+- **Conceitos**: Filme, Programa de TV, Episódio, Serviço de Catálogo
+- **Coesão**: 9/10
+- **Contexto limitado**: CatalogContext
 
-#### 4. Recommendation Engine (Core Domain)
-- **Type**: Core (if algorithm is competitive advantage)
-- **Ubiquitous Language**: recommendation, preference, algorithm, personalization
-- **Concepts**: Recommendation, RecommendationEngine
-- **Cohesion**: 9/10
-- **Bounded Context**: RecommendationContext
+#### 2. Streaming de vídeo (suporte)
 
-#### 5. Video Processing (Generic)
-- **Type**: Generic
-- **Ubiquitous Language**: transcoding, encoding, compression
-- **Concepts**: VideoProcessor, EncodingService
-- **Cohesion**: 7/10
-- **Bounded Context**: ProcessingContext
+- **Tipo**: Suporte
+- **Linguagem onipresente**: vídeo, stream, codificação, reprodução, qualidade
+- **Conceitos**: Vídeo, Stream, StreamingService
+- **Coesão**: 8/10
+- **Contexto limitado**: StreamingContext
 
-### Integration Pattern
+#### 3. Envolvimento do usuário (suporte)
 
-```
+- **Tipo**: Suporte
+- **Linguagem onipresente**: lista de observação, visualização, progresso, classificação
+- **Conceitos**: Watchlist, Visualização, EngagementService
+- **Coesão**: 8/10
+- **Contexto limitado**: EngagementContext
+
+#### 4. Mecanismo de recomendação (domínio principal)
+
+- **Tipo**: Núcleo (se o algoritmo for uma vantagem competitiva)
+- **Linguagem onipresente**: recomendação, preferência, algoritmo, personalização
+- **Conceitos**: Recomendação, RecommendationEngine
+- **Coesão**: 9/10
+- **Contexto limitado**: RecommendationContext
+
+#### 5. Processamento de vídeo (genérico)
+
+- **Tipo**: Genérico
+- **Linguagem onipresente**: transcodificação, codificação, compactação
+- **Conceitos**: VideoProcessor, EncodingService
+- **Coesão**: 7/10
+- **Contexto limitado**: ProcessingContext
+
+### Padrão de Integração```
+
 Catalog Context → publishes → ContentPublished event
-                              ↓
-                   Recommendation Context ← consumes
-                              ↓
+↓
+Recommendation Context ← consumes
+↓
 Engagement Context → publishes → UserWatched event
-                              ↓
-                   Recommendation Context ← consumes
-```
+↓
+Recommendation Context ← consumes
 
-**Pattern**: Event-Driven Architecture with Domain Events
+````
+
+**Padrão**: Arquitetura Orientada a Eventos com Eventos de Domínio
 
 ---
 
-## Common Patterns Across Examples
+## Padrões comuns entre exemplos
 
-### Pattern 1: Identity Leakage
+### Padrão 1: Vazamento de Identidade
 
-**Problem**: User/Identity entities used directly everywhere
+**Problema**: entidades de usuário/identidade usadas diretamente em todos os lugares
 
-**Solution**: Context-specific identifiers
-- Project context: OwnerId, MemberId
-- Billing context: CustomerId, SubscriberId
-- Content context: CreatorId, ViewerId
+**Solução**: identificadores específicos do contexto
+- Contexto do projeto: OwnerId, MemberId
+- Contexto de cobrança: CustomerId, SubscriberId
+- Contexto do conteúdo: CreatorId, ViewerId
 
-### Pattern 2: Shared Kernel Overuse
+### Padrão 2: uso excessivo do kernel compartilhado
 
-**Problem**: Large shared models used everywhere
+**Problema**: grandes modelos compartilhados usados em todos os lugares
 
-**Solution**: Minimal shared kernel, mostly value objects
-- Share: UserId (as string/UUID), Email (as value object)
-- Don't share: User entity, Customer entity
+**Solução**: Kernel mínimo compartilhado, principalmente objetos de valor
+- Compartilhar: UserId (como string/UUID), Email (como objeto de valor)
+- Não compartilhar: entidade usuário, entidade cliente
 
-### Pattern 3: Core vs Supporting Confusion
+### Padrão 3: Confusão central vs. suporte
 
-**Key Question**: "Is this our competitive advantage?"
-- If YES → Core Domain (best team, most attention)
-- If NO but business-specific → Supporting
-- If NO and standard → Generic
+**Pergunta-chave**: "Esta é a nossa vantagem competitiva?"
+- Se SIM → Domínio Principal (melhor equipe, mais atenção)
+- Se NÃO, mas específico do negócio → Apoio
+- Se NÃO e padrão → Genérico
 
-### Pattern 4: Bounded Context Size
+### Padrão 4: Tamanho do contexto limitado
 
-**Too Small**:
-```
+**Muito pequeno**:```
 OrderContext
 OrderItemContext        ❌ Gaping holes
 OrderStatusContext      ❌ Fragmented
-```
+````
 
-**Right Size**:
-```
-OrderContext            ✅ Complete language
+**Tamanho certo**:```
+OrderContext ✅ Complete language
 ├── Order
 ├── OrderItem
 └── OrderStatus
-```
 
-**Too Large**:
-```
+````
+
+**Muito grande**:```
 SalesContext            ❌ Mixed concerns
 ├── Order
 ├── Product
 ├── Customer
 └── Invoice
-```
+````
 
-### Pattern 5: Integration Types
+### Padrão 5: Tipos de integração
 
-**Synchronous** (use sparingly):
-- When immediate consistency required
-- Example: Order → Payment (need immediate response)
+**Síncrono** (use com moderação):
 
-**Asynchronous** (prefer):
-- When eventual consistency acceptable
-- Example: Order → Shipping (can be delayed)
+- Quando é necessária consistência imediata
+- Exemplo: Pedido → Pagamento (precisa de resposta imediata)
 
-**Event-Driven** (best for decoupling):
-- When multiple contexts need to react
-- Example: OrderPlaced → [Billing, Shipping, Analytics]
+**Assíncrono** (preferir):
+
+- Quando a consistência eventual for aceitável
+- Exemplo: Pedido → Envio (pode ser atrasado)
+
+**Orientado por eventos** (melhor para dissociação):
+
+- Quando vários contextos precisam reagir
+- Exemplo: OrderPlaced → [Faturamento, Envio, Análise]
 
 ---
 
-## Quick Analysis Template
+## Modelo de análise rápida
 
-Use this template when analyzing any codebase:
+Use este modelo ao analisar qualquer base de código:```markdown
 
-```markdown
 ## Codebase: {Name}
 
 ### Step 1: Concepts Extracted
+
 - Entities: [list]
 - Services: [list]
 - Use Cases: [list]
 - Controllers: [list]
 
 ### Step 2: Language Groups
+
 - Group 1: {name} - terms: [list]
 - Group 2: {name} - terms: [list]
 
 ### Step 3: Subdomains Identified
+
 1. {Subdomain} (Core/Supporting/Generic)
    - Language: [terms]
    - Concepts: [list]
@@ -415,16 +443,22 @@ Use this template when analyzing any codebase:
    - Bounded Context: {Name}Context
 
 ### Step 4: Cohesion Matrix
+
 | Domain A | Domain B | Cohesion | Issue |
-|----------|----------|----------|-------|
-| ... | ... | X/10 | ... |
+| -------- | -------- | -------- | ----- |
+| ...      | ...      | X/10     | ...   |
 
 ### Step 5: Issues Found
+
 - Priority High: [list]
 - Priority Medium: [list]
 - Priority Low: [list]
 
 ### Step 6: Recommendations
+
 1. [recommendation]
 2. [recommendation]
+
+```
+
 ```

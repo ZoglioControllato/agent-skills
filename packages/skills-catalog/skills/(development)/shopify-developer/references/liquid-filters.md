@@ -1,101 +1,81 @@
-# Liquid Filters Reference
+# Referência de filtros líquidos
 
-Filters modify output using pipe syntax: `{{ value | filter: parameter }}`
+Os filtros modificam a saída usando a sintaxe de pipe: `{{ valor | filtro: parâmetro }}`
 
-## String Filters
+## Filtros de String
 
-### upcase
+### sofisticado
 
-Convert to uppercase:
-
-```liquid
+Converter para maiúsculas:```liquid
 {{ "hello world" | upcase }}
 {# Output: HELLO WORLD #}
-```
 
-### downcase
+````
+### caixa baixa
 
-Convert to lowercase:
-
-```liquid
+Converter para minúsculas:```liquid
 {{ "HELLO WORLD" | downcase }}
 {# Output: hello world #}
-```
+````
 
-### capitalize
+### capitalizar
 
-Capitalize first letter only:
-
-```liquid
+Capitalizar apenas a primeira letra:```liquid
 {{ "hello world" | capitalize }}
 {# Output: Hello world #}
-```
 
-### reverse
+````
+### reverso
 
-Reverse string or array:
-
-```liquid
+String ou matriz reversa:```liquid
 {{ "hello" | reverse }}
 {# Output: olleh #}
 
 {{ array | reverse }}
 {# Reverses array order #}
-```
+````
 
-### size
+### tamanho
 
-Get character count or array length:
-
-```liquid
+Obtenha a contagem de caracteres ou o comprimento do array:```liquid
 {{ "hello" | size }}
 {# Output: 5 #}
 
 {{ collection.products | size }}
 {# Output: number of products #}
-```
 
-### remove
+````
+### remover
 
-Remove all occurrences of substring:
-
-```liquid
+Remova todas as ocorrências de substring:```liquid
 {{ "hello world world" | remove: "world" }}
 {# Output: hello   #}
-```
+````
 
-### remove_first
+### remover_primeiro
 
-Remove first occurrence only:
-
-```liquid
+Remover apenas a primeira ocorrência:```liquid
 {{ "hello world world" | remove_first: "world" }}
-{# Output: hello  world #}
-```
+{# Output: hello world #}
 
-### replace
+````
+### substituir
 
-Replace all occurrences:
-
-```liquid
+Substitua todas as ocorrências:```liquid
 {{ "hello" | replace: "l", "L" }}
 {# Output: heLLo #}
-```
+````
 
-### replace_first
+### substituir_primeiro
 
-Replace first occurrence only:
-
-```liquid
+Substitua apenas a primeira ocorrência:```liquid
 {{ "hello" | replace_first: "l", "L" }}
 {# Output: heLlo #}
-```
 
-### split
+````
+### divisão
 
-Split string into array:
-
-```liquid
+Divida a string em array:```liquid
 {{ "a,b,c,d" | split: "," }}
 {# Output: ["a", "b", "c", "d"] #}
 
@@ -103,40 +83,32 @@ Split string into array:
 {% for tag in tags %}
   {{ tag }}
 {% endfor %}
-```
+````
 
-### strip
+### tira
 
-Remove leading and trailing whitespace:
-
-```liquid
+Remova os espaços em branco à esquerda e à direita:```liquid
 {{ "  hello  " | strip }}
 {# Output: hello #}
-```
 
-### lstrip
+````
+### tira
 
-Remove leading whitespace only:
-
-```liquid
+Remova apenas os espaços em branco iniciais:```liquid
 {{ "  hello  " | lstrip }}
 {# Output: hello   #}
-```
+````
 
 ### rstrip
 
-Remove trailing whitespace only:
-
-```liquid
+Remova apenas os espaços em branco à direita:```liquid
 {{ "  hello  " | rstrip }}
-{# Output:   hello #}
-```
+{# Output: hello #}
 
-### truncate
+````
+### truncar
 
-Limit string length with ellipsis:
-
-```liquid
+Limite o comprimento da string com reticências:```liquid
 {{ "hello world" | truncate: 8 }}
 {# Output: hello... #}
 
@@ -145,171 +117,139 @@ Limit string length with ellipsis:
 
 {{ "hello world" | truncate: 50 }}
 {# Output: hello world (no truncation if shorter) #}
-```
+````
 
-### truncatewords
+### palavras truncadas
 
-Limit by word count:
-
-```liquid
+Limite por contagem de palavras:```liquid
 {{ "hello world testing" | truncatewords: 2 }}
 {# Output: hello world... #}
 
 {{ "hello world testing" | truncatewords: 2, "--" }}
 {# Output: hello world-- #}
-```
 
-### append
+````
+### anexar
 
-Add string to end:
-
-```liquid
+Adicione string ao final:```liquid
 {{ "hello" | append: " world" }}
 {# Output: hello world #}
 
 {% assign file_name = "image" | append: ".jpg" %}
 {# file_name: image.jpg #}
-```
+````
 
-### prepend
+### preceder
 
-Add string to beginning:
-
-```liquid
+Adicione string ao início:```liquid
 {{ "world" | prepend: "hello " }}
 {# Output: hello world #}
-```
 
+````
 ### newline_to_br
 
-Convert newlines to `<br>` tags:
-
-```liquid
+Converta novas linhas em tags `<br>`:```liquid
 {{ product.description | newline_to_br }}
 {# Converts \n to <br> #}
-```
+````
 
 ### strip_html
 
-Remove all HTML tags:
-
-```liquid
+Remova todas as tags HTML:```liquid
 {{ "<p>Hello <strong>world</strong></p>" | strip_html }}
 {# Output: Hello world #}
-```
 
-### escape
+````
+### escapar
 
-Escape HTML special characters:
-
-```liquid
+Escape de caracteres especiais HTML:```liquid
 {{ "<div>Test</div>" | escape }}
 {# Output: &lt;div&gt;Test&lt;/div&gt; #}
-```
+````
 
 ### escape_once
 
-Escape HTML but don't double-escape:
-
-```liquid
+Escape do HTML, mas não faça escape duplo:```liquid
 {{ "&lt;div&gt;" | escape_once }}
 {# Output: &lt;div&gt; (not double-escaped) #}
-```
 
+````
 ### url_encode
 
-URL-encode string:
-
-```liquid
+String de codificação de URL:```liquid
 {{ "hello world" | url_encode }}
 {# Output: hello+world #}
 
 {{ "foo@bar.com" | url_encode }}
 {# Output: foo%40bar.com #}
-```
+````
 
-### url_decode
+###url_decode
 
-Decode URL-encoded string:
-
-```liquid
+Decodificar string codificada em URL:```liquid
 {{ "hello+world" | url_decode }}
 {# Output: hello world #}
-```
 
+````
 ### base64_encode
 
-Encode to base64:
-
-```liquid
+Codifique para base64:```liquid
 {{ "hello" | base64_encode }}
 {# Output: aGVsbG8= #}
-```
+````
 
-### base64_decode
+###base64_decode
 
-Decode from base64:
-
-```liquid
+Decodificação de base64:```liquid
 {{ "aGVsbG8=" | base64_decode }}
 {# Output: hello #}
-```
 
-### slice
+````
+### fatia
 
-Extract substring or array slice:
-
-```liquid
+Extraia substring ou fatia de array:```liquid
 {{ "hello" | slice: 0, 3 }}
 {# Output: hel #}
 
 {{ "hello" | slice: -3, 3 }}
 {# Output: llo #}
-```
+````
 
-## Numeric Filters
+## Filtros Numéricos
 
-### abs
+###abdômen
 
-Absolute value:
-
-```liquid
+Valor absoluto:```liquid
 {{ -5 | abs }}
 {# Output: 5 #}
 
 {{ 5 | abs }}
 {# Output: 5 #}
-```
 
-### ceil
+````
+### teto
 
-Round up to nearest integer:
-
-```liquid
+Arredonde para o número inteiro mais próximo:```liquid
 {{ 1.2 | ceil }}
 {# Output: 2 #}
 
 {{ 1.9 | ceil }}
 {# Output: 2 #}
-```
+````
 
-### floor
+### andar
 
-Round down to nearest integer:
-
-```liquid
+Arredonde para o número inteiro mais próximo:```liquid
 {{ 1.9 | floor }}
 {# Output: 1 #}
 
 {{ 1.1 | floor }}
 {# Output: 1 #}
-```
 
-### round
+````
+### rodada
 
-Round to specified decimal places:
-
-```liquid
+Arredondar para casas decimais especificadas:```liquid
 {{ 1.5 | round }}
 {# Output: 2 #}
 
@@ -318,46 +258,38 @@ Round to specified decimal places:
 
 {{ 1.234 | round: 1 }}
 {# Output: 1.2 #}
-```
+````
 
-### plus
+### mais
 
-Addition:
-
-```liquid
+Adição:```liquid
 {{ 5 | plus: 3 }}
 {# Output: 8 #}
 
 {{ product.price | plus: 1000 }}
 {# Add $10.00 (prices in cents) #}
-```
 
-### minus
+````
+### menos
 
-Subtraction:
-
-```liquid
+Subtração:```liquid
 {{ 5 | minus: 3 }}
 {# Output: 2 #}
-```
+````
 
-### times
+### vezes
 
-Multiplication:
-
-```liquid
+Multiplicação:```liquid
 {{ 5 | times: 3 }}
 {# Output: 15 #}
 
 {{ product.price | times: 0.8 }}
 {# 20% discount #}
-```
 
-### divided_by
+````
+### dividido_por
 
-Integer division:
-
-```liquid
+Divisão inteira:```liquid
 {{ 10 | divided_by: 2 }}
 {# Output: 5 #}
 
@@ -366,116 +298,96 @@ Integer division:
 
 {{ 10.0 | divided_by: 3 }}
 {# Output: 3.33... (float division) #}
-```
+````
 
-### modulo
+### módulo
 
-Get remainder:
-
-```liquid
+Obtenha o restante:```liquid
 {{ 10 | modulo: 3 }}
 {# Output: 1 #}
 
 {# Check if even #}
 {% if forloop.index | modulo: 2 == 0 %}
-  Even row
+Even row
 {% endif %}
-```
 
-### at_least
+````
+### pelo menos
 
-Ensure minimum value:
-
-```liquid
+Garanta o valor mínimo:```liquid
 {{ 1 | at_least: 5 }}
 {# Output: 5 #}
 
 {{ 10 | at_least: 5 }}
 {# Output: 10 #}
-```
+````
 
-### at_most
+### no máximo
 
-Ensure maximum value:
-
-```liquid
+Garanta o valor máximo:```liquid
 {{ 100 | at_most: 50 }}
 {# Output: 50 #}
 
 {{ 10 | at_most: 50 }}
 {# Output: 10 #}
-```
 
-## Array/Collection Filters
+````
+## Filtros de matriz/coleção
 
-### first
+### primeiro
 
-Get first element:
-
-```liquid
+Obtenha o primeiro elemento:```liquid
 {{ collection.products | first }}
 {# Returns first product #}
 
 {{ "a,b,c" | split: "," | first }}
 {# Output: a #}
-```
+````
 
-### last
+### último
 
-Get last element:
-
-```liquid
+Obtenha o último elemento:```liquid
 {{ collection.products | last }}
 {# Returns last product #}
-```
 
-### join
+````
+### junte-se
 
-Join array with separator:
-
-```liquid
+Junte-se à matriz com separador:```liquid
 {{ product.tags | join: ", " }}
 {# Output: sale, new, featured #}
-```
+````
 
-### map
+### mapa
 
-Extract property from each object:
-
-```liquid
+Extraia a propriedade de cada objeto:```liquid
 {{ collection.products | map: "title" }}
 {# Returns array of product titles #}
 
 {{ collection.products | map: "title" | join: ", " }}
 {# Output: Product 1, Product 2, Product 3 #}
-```
 
-### sort
+````
+### classificar
 
-Sort array by property:
-
-```liquid
+Classifique a matriz por propriedade:```liquid
 {{ collection.products | sort: "price" }}
 {# Sort by price ascending #}
 
 {{ collection.products | sort: "title" }}
 {# Sort alphabetically #}
-```
+````
 
-### sort_natural
+###sort_natural
 
-Case-insensitive sort:
-
-```liquid
+Classificação sem distinção entre maiúsculas e minúsculas:```liquid
 {{ collection.products | sort_natural: "title" }}
 {# Sorts: Apple, banana, Cherry (natural order) #}
-```
 
-### where
+````
+### onde
 
-Filter array by property value:
-
-```liquid
+Filtre a matriz por valor da propriedade:```liquid
 {{ collection.products | where: "vendor", "Nike" }}
 {# Only Nike products #}
 
@@ -484,115 +396,93 @@ Filter array by property value:
 
 {{ collection.products | where: "type", "shoes" | map: "title" }}
 {# Combine with map #}
-```
+````
 
-### uniq
+### único
 
-Remove duplicates:
-
-```liquid
+Remover duplicatas:```liquid
 {{ collection.all_vendors | uniq }}
 {# Unique vendor names #}
-```
 
-### limit
+````
+### limite
 
-Limit array to N items:
-
-```liquid
+Limite a matriz a N itens:```liquid
 {{ collection.products | limit: 5 }}
 {# First 5 products #}
-```
+````
 
-### offset
+### deslocamento
 
-Skip first N items:
-
-```liquid
+Pule os primeiros N itens:```liquid
 {{ collection.products | offset: 10 }}
 {# Products from 11th onward #}
-```
 
+````
 ### concat
 
-Merge two arrays:
-
-```liquid
+Mesclar duas matrizes:```liquid
 {% assign array1 = "a,b,c" | split: "," %}
 {% assign array2 = "d,e,f" | split: "," %}
 {{ array1 | concat: array2 | join: ", " }}
 {# Output: a, b, c, d, e, f #}
-```
+````
 
-### compact
+### compacto
 
-Remove nil values from array:
-
-```liquid
+Remova valores nulos da matriz:```liquid
 {{ array | compact }}
 {# Removes nil/null elements #}
-```
 
-## Shopify-Specific Filters
+````
+## Filtros específicos do Shopify
 
-### money
+### dinheiro
 
-Format as currency with symbol:
-
-```liquid
+Formatar como moeda com símbolo:```liquid
 {{ 1000 | money }}
 {# Output: $10.00 #}
 
 {{ 1599 | money }}
 {# Output: $15.99 #}
-```
+````
 
-### money_without_currency
+### dinheiro_sem_moeda
 
-Format without currency symbol:
-
-```liquid
+Formato sem símbolo de moeda:```liquid
 {{ 1000 | money_without_currency }}
 {# Output: 10.00 #}
-```
 
-### money_without_trailing_zeros
+````
+### dinheiro_sem_trailing_zeros
 
-Remove unnecessary decimals:
-
-```liquid
+Remova decimais desnecessários:```liquid
 {{ 1000 | money_without_trailing_zeros }}
 {# Output: $10 #}
 
 {{ 1050 | money_without_trailing_zeros }}
 {# Output: $10.50 #}
-```
+````
 
-### weight_with_unit
+### peso_com_unidade
 
-Add weight unit:
-
-```liquid
+Adicione unidade de peso:```liquid
 {{ 500 | weight_with_unit }}
 {# Output: 500 g #}
 
 {{ product.variants.first.weight | weight_with_unit }}
-```
 
-### asset_url
+````
+###asset_url
 
-Get theme asset CDN URL:
-
-```liquid
+Obtenha o URL do CDN do ativo do tema:```liquid
 {{ 'logo.png' | asset_url }}
 {# Output: //cdn.shopify.com/s/files/1/0000/0000/t/1/assets/logo.png #}
-```
+````
 
-### img_url
+###img_url
 
-Generate image URL with size:
-
-```liquid
+Gere o URL da imagem com tamanho:```liquid
 {{ product.featured_image | img_url: '500x500' }}
 {# Resize to 500x500 #}
 
@@ -601,126 +491,100 @@ Generate image URL with size:
 
 {{ product.featured_image | img_url: '500x500', crop: 'center' }}
 {# With crop #}
-```
 
+````
 ### link_to_type
 
-Create link to product type collection:
-
-```liquid
+Crie um link para a coleção de tipos de produto:```liquid
 {{ product.type | link_to_type }}
 {# Output: <a href="/collections/types?q=Shoes">Shoes</a> #}
-```
+````
 
 ### link_to_vendor
 
-Create link to vendor collection:
-
-```liquid
+Crie um link para a coleção do fornecedor:```liquid
 {{ product.vendor | link_to_vendor }}
 {# Output: <a href="/collections/vendors?q=Nike">Nike</a> #}
-```
 
+````
 ### link_to_tag
 
-Create link to tag filter:
-
-```liquid
+Criar link para filtro de tags:```liquid
 {{ tag | link_to_tag: tag }}
 {# Output: <a href="/collections/all/sale">sale</a> #}
-```
+````
 
-### highlight
+### destaque
 
-Highlight search terms:
-
-```liquid
+Destaque os termos de pesquisa:```liquid
 {{ product.title | highlight: search.terms }}
 {# Wraps search terms in <strong class="highlight"> tags #}
-```
 
-### highlight_active_tag
+````
+### destaque_active_tag
 
-Highlight current tag:
-
-```liquid
+Destaque a tag atual:```liquid
 {{ tag | highlight_active_tag: tag }}
 {# Wraps current tag in <span class="active"> #}
-```
+````
 
-### payment_type_img_url
+### pagamento_type_img_url
 
-Get payment icon URL:
-
-```liquid
+Obtenha o URL do ícone de pagamento:```liquid
 {{ 'visa' | payment_type_img_url }}
 {# Returns Shopify-hosted Visa icon URL #}
-```
 
+````
 ### placeholder_svg_tag
 
-Generate placeholder SVG:
-
-```liquid
+Gere o espaço reservado SVG:```liquid
 {{ 'product-1' | placeholder_svg_tag }}
 {# Generates placeholder product image SVG #}
 
 {{ 'collection-1' | placeholder_svg_tag: 'custom-class' }}
 {# With custom CSS class #}
-```
+````
 
 ### color_to_rgb
 
-Convert hex to RGB:
-
-```liquid
+Converter hexadecimal em RGB:```liquid
 {{ '#ff0000' | color_to_rgb }}
 {# Output: rgb(255, 0, 0) #}
-```
 
+````
 ### color_to_hsl
 
-Convert hex to HSL:
-
-```liquid
+Converter hexadecimal em HSL:```liquid
 {{ '#ff0000' | color_to_hsl }}
 {# Output: hsl(0, 100%, 50%) #}
-```
+````
 
 ### color_extract
 
-Extract colour component:
-
-```liquid
+Extrair componente de cor:```liquid
 {{ '#ff0000' | color_extract: 'red' }}
 {# Output: 255 #}
-```
 
-### color_brightness
+````
+### color_brilho
 
-Calculate brightness:
-
-```liquid
+Calcular brilho:```liquid
 {{ '#ff0000' | color_brightness }}
 {# Output: brightness value 0-255 #}
-```
+````
 
 ### color_modify
 
-Modify colour properties:
-
-```liquid
+Modifique as propriedades da cor:```liquid
 {{ '#ff0000' | color_modify: 'alpha', 0.5 }}
 {# Adjust alpha channel #}
-```
 
-## Date Filters
+````
+## Filtros de data
 
-### date
+### data
 
-Format date using strftime:
-
-```liquid
+Formatar data usando strftime:```liquid
 {{ order.created_at | date: '%B %d, %Y' }}
 {# Output: November 10, 2026 #}
 
@@ -729,27 +593,27 @@ Format date using strftime:
 
 {{ order.created_at | date: '%Y-%m-%d %H:%M:%S' }}
 {# Output: 2026-11-10 14:30:00 #}
-```
+````
 
-**Common format codes:**
+**Códigos de formato comuns:**
 
-- `%Y` - 4-digit year (2026)
-- `%y` - 2-digit year (26)
-- `%m` - Month number (11)
-- `%B` - Full month (November)
-- `%b` - Short month (Nov)
-- `%d` - Day of month (10)
-- `%e` - Day without leading zero (10)
-- `%A` - Full weekday (Monday)
-- `%a` - Short weekday (Mon)
-- `%H` - Hour 24-hour (14)
-- `%I` - Hour 12-hour (02)
-- `%M` - Minutes (30)
-- `%S` - Seconds (45)
+- `%Y` - ano de 4 dígitos (2026)
+- `%y` - ano de 2 dígitos (26)
+- `%m` - Número do mês (11)
+- `%B` - Mês completo (novembro)
+- `%b` - Mês curto (novembro)
+- `%d` - Dia do mês (10)
+- `%e` - Dia sem zero à esquerda (10)
+- `%A` - Dia inteiro da semana (segunda-feira)
+- `%a` - Dia da semana curto (segunda-feira)
+- `%H` - Hora 24 horas (14)
+- `%I` - Hora 12 horas (02)
+- `%M` - Minutos (30)
+- `%S` - Segundos (45)
 - `%p` - AM/PM
-- `%z` - Timezone offset (+0000)
+- `%z` - Deslocamento de fuso horário (+0000)
 
-**Examples:**
+**Exemplos:**
 
 ```liquid
 {{ "now" | date: "%Y-%m-%d" }}
@@ -759,75 +623,61 @@ Format date using strftime:
 {# November 10, 2026 at 02:30 PM #}
 ```
 
-## URL Filters
+## Filtros de URL
 
 ### url_for_type
 
-Get collection URL for product type:
-
-```liquid
+Obtenha o URL da coleção para o tipo de produto:```liquid
 {{ product.type | url_for_type }}
 {# Output: /collections/types?q=Shoes #}
-```
 
+````
 ### url_for_vendor
 
-Get collection URL for vendor:
-
-```liquid
+Obtenha o URL de coleta do fornecedor:```liquid
 {{ product.vendor | url_for_vendor }}
 {# Output: /collections/vendors?q=Nike #}
-```
+````
 
-### within
+### dentro
 
-Scope URL within collection:
-
-```liquid
+URL do escopo na coleção:```liquid
 {{ product.url | within: collection }}
 {# Output: /collections/sale/products/product-handle #}
-```
 
+````
 ### default_pagination
 
-Generate pagination HTML:
-
-```liquid
+Gere HTML de paginação:```liquid
 {{ paginate | default_pagination }}
 {# Outputs complete pagination HTML #}
-```
+````
 
-## Utility Filters
+## Filtros Utilitários
 
-### default
+### padrão
 
-Provide fallback value:
-
-```liquid
+Forneça um valor substituto:```liquid
 {{ product.metafield | default: "N/A" }}
 {# If metafield is nil, outputs "N/A" #}
 
 {{ variant.title | default: "Default" }}
-```
 
-### json
+````
+###json
 
-Convert to JSON:
-
-```liquid
+Converter para JSON:```liquid
 {{ product | json }}
 {# Outputs product object as JSON string #}
 
 <script>
 var productData = {{ product | json }};
 </script>
-```
+````
 
-## Filter Chaining
+## Encadeamento de filtros
 
-Filters execute left-to-right and can be chained:
-
-```liquid
+Os filtros são executados da esquerda para a direita e podem ser encadeados:```liquid
 {{ "hello world" | upcase | replace: "WORLD", "SHOPIFY" }}
 {# Output: HELLO SHOPIFY #}
 
@@ -839,13 +689,11 @@ Filters execute left-to-right and can be chained:
 
 {{ product.description | strip_html | truncatewords: 50 | escape }}
 {# Strip HTML → truncate → escape for safety #}
-```
 
-## Performance Tips
+````
+## Dicas de desempenho
 
-1. **Cache filtered results** if used multiple times:
-
-```liquid
+1. **Resultados filtrados em cache** se usados várias vezes:```liquid
 {# ❌ Inefficient: #}
 {% for i in (1..10) %}
   {{ collection.products | where: "available" | size }}
@@ -856,18 +704,19 @@ Filters execute left-to-right and can be chained:
 {% for i in (1..10) %}
   {{ available_products.size }}
 {% endfor %}
-```
+````
 
-2. **Use `limit` and `offset` filters** instead of manual iteration control
+2. **Use filtros `limit` e `offset`** em vez de controle de iteração manual
 
-3. **Combine filters intelligently** to reduce operations:
-
-```liquid
-{# ❌ Less efficient: #}
-{% assign titles = collection.products | map: "title" %}
-{% assign sorted = titles | sort %}
-{% assign limited = sorted | limit: 5 %}
+3. **Combine filtros de forma inteligente** para reduzir operações:```liquid
+   {# ❌ Less efficient: #}
+   {% assign titles = collection.products | map: "title" %}
+   {% assign sorted = titles | sort %}
+   {% assign limited = sorted | limit: 5 %}
 
 {# ✅ More efficient: #}
 {% assign limited_titles = collection.products | map: "title" | sort | limit: 5 %}
+
+```
+
 ```

@@ -1,30 +1,27 @@
-# Render Configuration Guide
+# Guia de configuração de renderização
 
-Common configuration patterns, best practices, and troubleshooting for Render deployments.
+Padrões de configuração comuns, práticas recomendadas e solução de problemas para implantações de Render.
 
-## Environment Variables
+## Variáveis de ambiente
 
-### Required vs Optional Variables
+### Variáveis obrigatórias versus variáveis opcionais
 
-**Always declare ALL environment variables in render.yaml**, even if values are provided by user later.
+**Sempre declare TODAS as variáveis de ambiente em render.yaml**, mesmo que os valores sejam fornecidos pelo usuário posteriormente.
 
-**Three categories:**
+**Três categorias:**
 
-1. **Configuration values** (hardcoded):
+1. **Valores de configuração** (codificados):```yaml
+   envVars:
 
-```yaml
-envVars:
-  - key: NODE_ENV
-    value: production
-  - key: LOG_LEVEL
-    value: info
-  - key: API_URL
-    value: https://api.example.com
-```
+- key: NODE_ENV
+  value: production
+- key: LOG_LEVEL
+  value: info
+- key: API_URL
+  value: https://api.example.com
 
-2. **Secrets** (user provides):
-
-```yaml
+````
+2. **Segredos** (o usuário fornece):```yaml
 envVars:
   - key: JWT_SECRET
     sync: false
@@ -32,19 +29,18 @@ envVars:
     sync: false
   - key: API_KEY
     sync: false
-```
+````
 
-3. **Auto-generated** (Render provides):
+3. **Gerado automaticamente** (a renderização fornece):```yaml
+   envVars:
 
-```yaml
-envVars:
-  - key: SESSION_SECRET
-    generateValue: true
-  - key: ENCRYPTION_KEY
-    generateValue: true
-```
+- key: SESSION_SECRET
+  generateValue: true
+- key: ENCRYPTION_KEY
+  generateValue: true
 
-### Database Connection Patterns
+````
+### Padrões de conexão de banco de dados
 
 **PostgreSQL:**
 
@@ -54,9 +50,9 @@ envVars:
     fromDatabase:
       name: postgres
       property: connectionString
-```
+````
 
-**Redis:**
+**Redes:**
 
 ```yaml
 envVars:
@@ -66,7 +62,7 @@ envVars:
       property: connectionString
 ```
 
-**Multiple databases:**
+**Vários bancos de dados:**
 
 ```yaml
 envVars:
@@ -84,38 +80,36 @@ envVars:
       property: connectionString
 ```
 
-### Cross-Service References
+### Referências entre serviços
 
-Reference other services in your account:
-
-```yaml
+Consulte outros serviços em sua conta:```yaml
 services:
-  - type: web
-    name: frontend
-    runtime: node
-    envVars:
-      - key: API_URL
-        fromService:
-          name: backend-api
-          type: web
-          property: host # or hostport, port
 
-  - type: web
+- type: web
+  name: frontend
+  runtime: node
+  envVars:
+  - key: API_URL
+    fromService:
     name: backend-api
-    runtime: node
-```
+    type: web
+    property: host # or hostport, port
 
-**Available properties:**
+- type: web
+  name: backend-api
+  runtime: node
 
-- `host`: Service hostname
-- `port`: Service port
-- `hostport`: Combined `host:port`
+````
 
-### Environment Variable Groups
+**Imóveis disponíveis:**
 
-Share common configuration across services:
+- `host`: nome do host do serviço
+- `porta`: Porta de serviço
+- `hostport`: `host:port` combinado
 
-```yaml
+### Grupos de variáveis de ambiente
+
+Compartilhe configurações comuns entre serviços:```yaml
 envVarGroups:
   - name: common-config
     envVars:
@@ -140,26 +134,26 @@ services:
     runtime: node
     envVars:
       - fromGroup: common-config
-```
+````
 
 ---
 
-## Port Binding
+## Ligação de porta
 
-### The Port Binding Requirement
+### O requisito de vinculação de porta
 
-**CRITICAL:** Web services must bind to `0.0.0.0:$PORT`
+**CRÍTICO:** Os serviços da Web devem ser vinculados a `0.0.0.0:$PORT`
 
-**Why this matters:**
+**Por que isso é importante:**
 
-- Render sets `PORT` environment variable (default: 10000)
-- Services must bind to `0.0.0.0` (not `localhost` or `127.0.0.1`)
-- Health checks fail if port binding is incorrect
-- Deployment will fail or service won't receive traffic
+- Renderização define a variável de ambiente `PORT` (padrão: 10000)
+- Os serviços devem ser vinculados a `0.0.0.0` (não a `localhost` ou `127.0.0.1`)
+- As verificações de integridade falham se a ligação da porta estiver incorreta
+- A implantação falhará ou o serviço não receberá tráfego
 
-### Code Examples by Language
+### Exemplos de código por idioma
 
-**Node.js / Express:**
+**Node.js/Expresso:**
 
 ```javascript
 const express = require('express')
@@ -172,7 +166,7 @@ app.listen(PORT, '0.0.0.0', () => {
 })
 ```
 
-**Python / Flask:**
+**Python/Frasco:**
 
 ```python
 import os
@@ -185,22 +179,20 @@ if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port)
 ```
 
-**Python / Django:**
+**Python/Django:**
 
-In `settings.py`:
+Em `settings.py`:```python
 
-```python
 # Django runs on port specified by environment
+
 ALLOWED_HOSTS = ['*']
-```
 
-Start command in render.yaml:
-
-```yaml
+````
+Comando inicial em render.yaml:```yaml
 startCommand: gunicorn config.wsgi:application --bind 0.0.0.0:$PORT
-```
+````
 
-**Python / FastAPI:**
+**Python/FastAPI:**
 
 ```python
 import os
@@ -214,13 +206,12 @@ if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=port)
 ```
 
-Start command:
-
-```yaml
+Comando de início:```yaml
 startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
-```
 
-**Go:**
+````
+
+**Ir:**
 
 ```go
 package main
@@ -241,18 +232,17 @@ func main() {
     fmt.Printf("Server starting on port %s\n", port)
     http.ListenAndServe(":"+port, nil)
 }
-```
+````
 
-**Ruby / Rails:**
+**Rubi/Rails:**
 
-In `config/puma.rb`:
-
-```ruby
+Em `config/puma.rb`:```ruby
 port ENV.fetch("PORT") { 3000 }
 bind "tcp://0.0.0.0:#{ENV.fetch('PORT', 3000)}"
-```
 
-**Rust / Actix:**
+````
+
+**Ferrugem / Actix:**
 
 ```rust
 use actix_web::{App, HttpServer};
@@ -268,15 +258,15 @@ async fn main() -> std::io::Result<()> {
         .run()
         .await
 }
-```
+````
 
 ---
 
-## Build Commands
+## Comandos de construção
 
-### Non-Interactive Flags
+### Sinalizadores não interativos
 
-**Always use non-interactive flags** to prevent builds from hanging waiting for input.
+**Sempre use sinalizadores não interativos** para evitar que compilações sejam interrompidas aguardando entrada.
 
 **npm (Node.js):**
 
@@ -292,80 +282,79 @@ buildCommand: pip install -r requirements.txt
 # Already non-interactive
 ```
 
-**apt (System packages):**
+**apt (pacotes do sistema):**
 
 ```yaml
 buildCommand: apt-get update && apt-get install -y libpq-dev
 # Use -y flag to auto-confirm
 ```
 
-**bundler (Ruby):**
+**empacotador (Ruby):**
 
 ```yaml
 buildCommand: bundle install --jobs=4 --retry=3
 ```
 
-### Build with Additional Steps
+### Construa com etapas adicionais
 
-**Node.js with build step:**
+**Node.js com etapa de construção:**
 
 ```yaml
 buildCommand: npm ci && npm run build
 ```
 
-**Python Django with static files:**
+**Python Django com arquivos estáticos:**
 
 ```yaml
 buildCommand: pip install -r requirements.txt && python manage.py collectstatic --no-input
 ```
 
-**Ruby Rails with assets:**
+**Ruby Rails com ativos:**
 
 ```yaml
 buildCommand: bundle install && bundle exec rails assets:precompile
 ```
 
-### Build Timeouts
+### Tempo limite de construção
 
-**Free tier:** 15 minutes
-**Paid tiers:** Configurable
+**Nível gratuito:** 15 minutos
+**Níveis pagos:** Configurável
 
-**If builds timeout:**
+**Se o tempo limite da compilação:**
 
-1. Optimize dependencies (remove unused packages)
-2. Use build caching
-3. Consider pre-building in CI/CD
-4. Upgrade to paid tier for longer timeouts
+1. Otimize dependências (remova pacotes não utilizados)
+2. Use cache de compilação
+3. Considere a pré-construção em CI/CD
+4. Atualize para o nível pago para tempos limite mais longos
 
 ---
 
-## Database Connections
+## Conexões de banco de dados
 
-### Internal vs External URLs
+### URLs internos x externos
 
-**Use internal URLs for better performance:**
+**Use URLs internos para melhorar o desempenho:**
 
-When using `fromDatabase`, Render automatically provides internal `.render-internal.com` URLs:
-
-```yaml
+Ao usar `fromDatabase`, o Render fornece automaticamente URLs internos `.render-internal.com`:```yaml
 envVars:
-  - key: DATABASE_URL
-    fromDatabase:
-      name: postgres
-      property: connectionString
-```
 
-This provides: `postgresql://user:pass@postgres.render-internal.com:5432/db`
+- key: DATABASE_URL
+  fromDatabase:
+  name: postgres
+  property: connectionString
 
-**Benefits:**
+````
+Isso fornece: `postgresql://user:pass@postgres.render-internal.com:5432/db`
 
-- Lower latency (same data center)
-- No external bandwidth charges
-- Automatic internal DNS
+**Benefícios:**
 
-### Connection Pooling
+- Menor latência (mesmo data center)
+- Sem cobranças de largura de banda externa
+- DNS interno automático
 
-**Node.js / PostgreSQL:**
+### Pool de conexões
+
+**Node.js/PostgreSQL:**
 
 ```javascript
 const { Pool } = require('pg')
@@ -377,9 +366,9 @@ const pool = new Pool({
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
 })
-```
+````
 
-**Python / PostgreSQL:**
+**Python/PostgreSQL:**
 
 ```python
 import psycopg2.pool
@@ -391,7 +380,7 @@ pool = psycopg2.pool.SimpleConnectionPool(
 )
 ```
 
-**Django Settings:**
+**Configurações do Django:**
 
 ```python
 DATABASES = {
@@ -403,9 +392,9 @@ DATABASES = {
 }
 ```
 
-### Database Migrations
+### Migrações de banco de dados
 
-**Run migrations during build:**
+**Execute migrações durante a compilação:**
 
 **Django:**
 
@@ -413,13 +402,13 @@ DATABASES = {
 buildCommand: pip install -r requirements.txt && python manage.py migrate
 ```
 
-**Rails:**
+**Trilhos:**
 
 ```yaml
 buildCommand: bundle install && bundle exec rails db:migrate
 ```
 
-**Node.js / Prisma:**
+**Node.js/Prisma:**
 
 ```yaml
 buildCommand: npm ci && npx prisma migrate deploy
@@ -427,56 +416,56 @@ buildCommand: npm ci && npx prisma migrate deploy
 
 ---
 
-## Free Tier Limitations
+## Limitações do nível gratuito
 
-### What's Included
+### O que está incluído
 
-**Free tier provides:**
+**O nível gratuito oferece:**
 
-- 1 web service
-- 1 PostgreSQL database (1 GB storage, 97 MB RAM)
-- 750 hours/month compute
-- 512 MB RAM per service
-- 0.5 CPU per service
-- 100 GB bandwidth/month
+- 1 serviço web
+- 1 banco de dados PostgreSQL (1 GB de armazenamento, 97 MB de RAM)
+- 750 horas/mês de computação
+- 512 MB de RAM por serviço
+- 0,5 CPU por serviço
+- 100 GB de largura de banda/mês
 
-### Resource Limits
+### Limites de recursos
 
-**Memory (512 MB):**
+**Memória (512 MB):**
 
-- Monitor memory usage in logs
-- Optimize for memory-constrained environments
-- Use lightweight dependencies
+- Monitore o uso de memória em logs
+- Otimize para ambientes com restrição de memória
+- Use dependências leves
 
-**CPU (0.5 cores):**
+**CPU (0,5 núcleos):**
 
-- Suitable for low-traffic applications
-- Consider upgrading for higher traffic
+- Adequado para aplicações de baixo tráfego
+- Considere atualizar para maior tráfego
 
-**Spin Down (Free services):**
+**Spin Down (serviços gratuitos):**
 
-- Services spin down after 15 minutes of inactivity
-- First request after spin down takes ~30 seconds (cold start)
-- Upgrade to paid tier for always-on services
+- Os serviços diminuem após 15 minutos de inatividade
+- A primeira solicitação após a desaceleração leva cerca de 30 segundos (inicialização a frio)
+- Atualize para o nível pago para serviços sempre ativos
 
-### When to Upgrade
+### Quando atualizar
 
-**Upgrade to paid plan when:**
+**Faça upgrade para o plano pago quando:**
 
-- Need more than 1 web service
-- Need always-on services (no spin down)
-- Traffic exceeds free tier limits
-- Need more memory/CPU
-- Need faster build times
-- Need preview environments
+- Precisa de mais de 1 serviço web
+- Precisa de serviços sempre ativos (sem redução de velocidade)
+- O tráfego excede os limites do nível gratuito
+- Precisa de mais memória/CPU
+- Precisa de tempos de construção mais rápidos
+- Precisa de ambientes de visualização
 
 ---
 
-## Health Checks
+## Verificações de integridade
 
-### Adding Health Check Endpoints
+### Adicionando endpoints de verificação de integridade
 
-**Node.js / Express:**
+**Node.js/Expresso:**
 
 ```javascript
 app.get('/health', (req, res) => {
@@ -487,7 +476,7 @@ app.get('/health', (req, res) => {
 })
 ```
 
-**Python / Flask:**
+**Python/Frasco:**
 
 ```python
 @app.route('/health')
@@ -495,7 +484,7 @@ def health():
     return {'status': 'ok'}, 200
 ```
 
-**Python / FastAPI:**
+**Python/FastAPI:**
 
 ```python
 @app.get("/health")
@@ -503,7 +492,7 @@ async def health():
     return {"status": "ok"}
 ```
 
-**Go:**
+**Ir:**
 
 ```go
 http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
@@ -512,33 +501,32 @@ http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 })
 ```
 
-### Configure in render.yaml
+### Configurar em render.yaml```yaml
 
-```yaml
 services:
-  - type: web
-    name: my-app
-    runtime: node
-    healthCheckPath: /health
-```
 
-**Benefits:**
+- type: web
+  name: my-app
+  runtime: node
+  healthCheckPath: /health
 
-- Faster deployment detection
-- Better monitoring
-- Automatic restart on health check failures
+````
+
+**Benefícios:**
+
+- Detecção de implantação mais rápida
+- Melhor monitoramento
+- Reinicialização automática em caso de falhas na verificação de integridade
 
 ---
 
-## Common Deployment Issues
+## Problemas comuns de implantação
 
-### Issue 1: Missing Environment Variables
+### Problema 1: Variáveis de ambiente ausentes
 
-**Symptom:** Service crashes with "undefined variable" errors
+**Sintoma:** O serviço falha com erros de "variável indefinida"
 
-**Solution:** Add all required env vars to render.yaml:
-
-```yaml
+**Solução:** Adicione todos os env vars necessários ao render.yaml:```yaml
 envVars:
   - key: DATABASE_URL
     fromDatabase:
@@ -546,114 +534,110 @@ envVars:
       property: connectionString
   - key: JWT_SECRET
     sync: false # User fills in Dashboard
-```
+````
 
-### Issue 2: Port Binding Errors
+### Problema 2: Erros de vinculação de porta
 
-**Symptom:** `EADDRINUSE` or health check timeout errors
+**Sintoma:** `EADDRINUSE` ou erros de tempo limite de verificação de integridade
 
-**Solution:** Ensure app binds to `0.0.0.0:$PORT`:
-
-```javascript
+**Solução:** Garanta que o aplicativo esteja vinculado a `0.0.0.0:$PORT`:```javascript
 const PORT = process.env.PORT || 3000
 app.listen(PORT, '0.0.0.0')
-```
 
-### Issue 3: Build Hangs
+````
+### Edição 3: travamentos de compilação
 
-**Symptom:** Build times out after 15 minutes
+**Sintoma:** A compilação expira após 15 minutos
 
-**Solution:** Use non-interactive build commands:
-
-```yaml
+**Solução:** use comandos de compilação não interativos:```yaml
 buildCommand: npm ci # NOT npm install
-```
+````
 
-### Issue 4: Database Connection Fails
+### Problema 4: falha na conexão com o banco de dados
 
-**Symptom:** `ECONNREFUSED` on port 5432
+**Sintoma:** `ECONNREFUSED` na porta 5432
 
-**Solutions:**
+**Soluções:**
 
-1. Use `fromDatabase` for automatic internal URLs
-2. Enable SSL for external connections
-3. Check `ipAllowList` settings
+1. Use `fromDatabase` para URLs internos automáticos
+2. Habilite SSL para conexões externas
+3. Verifique as configurações de `ipAllowList`
 
-### Issue 5: Static Site 404s
+### Edição 5: Site Estático 404s
 
-**Symptom:** Client-side routes return 404
+**Sintoma:** Rotas do lado do cliente retornam 404
 
-**Solution:** Add SPA rewrite rules:
-
-```yaml
+**Solução:** Adicione regras de reescrita de SPA:```yaml
 routes:
-  - type: rewrite
-    source: /*
-    destination: /index.html
+
+- type: rewrite
+  source: /\*
+  destination: /index.html
+
 ```
+### Edição 6: Falta de memória (OOM)
 
-### Issue 6: Out of Memory (OOM)
+**Sintoma:** O serviço falha com `pilha JavaScript sem memória`
 
-**Symptom:** Service crashes with `JavaScript heap out of memory`
+**Soluções:**
 
-**Solutions:**
-
-1. Optimize application memory usage
-2. Reduce dependency size
-3. Upgrade to higher plan with more RAM
-
----
-
-## Best Practices Checklist
-
-**Environment Variables:**
-
-- [ ] All env vars declared in render.yaml
-- [ ] Secrets marked with `sync: false`
-- [ ] Database URLs use `fromDatabase` references
-
-**Port Binding:**
-
-- [ ] App binds to `process.env.PORT`
-- [ ] Bind to `0.0.0.0` (not `localhost`)
-
-**Build Commands:**
-
-- [ ] Use non-interactive flags (`npm ci`, `-y`, etc.)
-- [ ] Build completes under 15 minutes (free tier)
-
-**Start Commands:**
-
-- [ ] Command starts HTTP server correctly
-- [ ] Server binds to correct port
-
-**Health Checks:**
-
-- [ ] `/health` endpoint implemented
-- [ ] Returns 200 status code
-
-**Database:**
-
-- [ ] Connection pooling configured
-- [ ] Using internal URLs (`.render-internal.com`)
-- [ ] SSL enabled if needed
-
-**Plans:**
-
-- [ ] Using `plan: free` by default
-- [ ] Documented upgrade path for users
-
-**Git Repository:**
-
-- [ ] render.yaml committed to repository
-- [ ] Pushed to git remote (GitHub/GitLab/Bitbucket)
-- [ ] Branch specified in render.yaml (if not main)
+1. Otimize o uso de memória do aplicativo
+2. Reduza o tamanho da dependência
+3. Atualize para um plano superior com mais RAM
 
 ---
 
-## Additional Resources
+## Lista de verificação de melhores práticas
 
-- Blueprint Specification: [blueprint-spec.md](blueprint-spec.md)
-- Service Types: [service-types.md](service-types.md)
-- Runtimes: [runtimes.md](runtimes.md)
-- Official Render Docs: https://render.com/docs
+**Variáveis de Ambiente:**
+
+- [] Todos os env vars declarados em render.yaml
+- [] Segredos marcados com `sync: false`
+- [] URLs de banco de dados usam referências `fromDatabase`
+
+**Vinculação de porta:**
+
+- [] O aplicativo se liga a `process.env.PORT`
+- [] Vincular a `0.0.0.0` (não `localhost`)
+
+**Comandos de compilação:**
+
+- [] Use sinalizadores não interativos (`npm ci`, `-y`, etc.)
+- [] A compilação é concluída em menos de 15 minutos (nível gratuito)
+
+**Comandos de início:**
+
+- [] O comando inicia o servidor HTTP corretamente
+- [] Servidor se liga à porta correta
+
+**Verificações de saúde:**
+
+- [ ] endpoint `/health` implementado
+- [] Retorna o código de status 200
+
+**Banco de dados:**
+
+- [] Pool de conexões configurado
+- [] Usando URLs internos (`.render-internal.com`)
+- [] SSL ativado, se necessário
+
+**Planos:**
+
+- [] Usando `plan: free` por padrão
+- [] Caminho de atualização documentado para usuários
+
+**Repositório Git:**
+
+- [] render.yaml confirmado no repositório
+- [] Enviado para git remoto (GitHub/GitLab/Bitbucket)
+- [] Ramificação especificada em render.yaml (se não for principal)
+
+---
+
+## Recursos Adicionais
+
+- Especificação do projeto: [blueprint-spec.md](blueprint-spec.md)
+- Tipos de serviço: [service-types.md](service-types.md)
+- Tempos de execução: [runtimes.md](runtimes.md)
+- Documentos oficiais de renderização: https://render.com/docs
+```

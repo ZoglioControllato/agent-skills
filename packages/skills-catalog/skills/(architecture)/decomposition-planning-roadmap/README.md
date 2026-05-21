@@ -1,126 +1,125 @@
-# Decomposition Planning and Roadmap Skill
+# Planejamento de decomposição e habilidade de roteiro
 
-A skill for creating structured decomposition plans and roadmaps to guide the migration from monolithic to distributed architectures.
+Habilidade para criar planos de decomposição estruturados e roteiros para orientar a migração de arquiteturas monolíticas para arquiteturas distribuídas.
 
-## What This Skill Does
+## O que essa habilidade faz
 
-This skill analyzes codebases and decomposition progress to:
+Esta habilidade analisa bases de código e o progresso da decomposição para:
 
-1. **Assess current state** of decomposition efforts
-2. **Identify patterns to apply** based on what's been done
-3. **Prioritize work** by risk, value, and dependencies
-4. **Create phased roadmaps** with milestones and timelines
-5. **Generate architecture stories** for tracking work
-6. **Track progress** through decomposition phases
-7. **Identify blockers** and dependencies
+1. **Avaliar o estado atual** dos esforços de decomposição
+2. **Identifique padrões a serem aplicados** com base no que foi feito
+3. **Priorize o trabalho** por risco, valor e dependências
+4. **Crie roteiros em fases** com marcos e cronogramas
+5. **Gere histórias de arquitetura** para monitorar o trabalho
+6. **Acompanhe o progresso** através das fases de decomposição
+7. **Identifique bloqueadores** e dependências
 
-## When to Use This Skill
+## Quando usar esta habilidade
 
-This skill is applied when you:
+Esta habilidade é aplicada quando você:
 
-- Ask to create a decomposition roadmap
-- Request migration planning or strategy
-- Need help prioritizing decomposition work
-- Want to track decomposition progress
-- Ask about decomposition planning
-- Discuss architectural roadmaps
-- Need structured approach to decomposition
+- Peça para criar um roteiro de decomposição
+- Solicitar planejamento ou estratégia de migração
+- Precisa de ajuda para priorizar o trabalho de decomposição
+- Deseja acompanhar o progresso da decomposição
+- Pergunte sobre o planejamento de decomposição
+- Discutir roteiros arquitetônicos
+- Precisa de abordagem estruturada para decomposição
 
-## Key Features
+## Principais recursos
 
-### Current State Assessment
+### Avaliação do estado atual
 
-Evaluates what's already been done:
+Avalia o que já foi feito:
 
-- Checks component inventory completion
-- Reviews common component analysis
-- Assesses component structure
-- Reviews dependency analysis
-- Checks domain identification status
-- Assesses service extraction progress
+- Verifica a conclusão do inventário de componentes
+- Revisa a análise de componentes comuns
+- Avalia a estrutura dos componentes
+- Revisa a análise de dependência
+- Verifica o status de identificação do domínio
+- Avalia o progresso da extração de serviço
 
-### Pattern-Based Planning
+### Planejamento Baseado em Padrões
 
-Plans based on the six decomposition patterns:
+Planos baseados nos seis padrões de decomposição:
 
-1. Identify and Size Components
-2. Gather Common Domain Components
-3. Flatten Components
-4. Determine Component Dependencies
-5. Create Component Domains
-6. Create Domain Services
+1. Identificar e dimensionar componentes
+2. Reúna componentes de domínio comuns
+3. Achatar componentes
+4. Determine as dependências dos componentes
+5. Crie domínios de componentes
+6. Crie serviços de domínio
 
-### Prioritization Framework
+### Estrutura de Priorização
 
-Prioritizes work using:
+Prioriza o trabalho usando:
 
-- **Risk Assessment**: Low/Medium/High risk
-- **Value Assessment**: High/Medium/Low value
-- **Dependency Analysis**: Independent/Dependent/Blocking
-- **Priority Scoring**: Calculated priority scores
+- **Avaliação de Risco**: Risco Baixo/Médio/Alto
+- **Avaliação de Valor**: Valor Alto/Médio/Baixo
+- **Análise de Dependência**: Independente/Dependente/Bloqueio
+- **Pontuação de prioridade**: pontuações de prioridade calculadas
 
-### Phased Roadmap Creation
+### Criação de roteiro em fases
 
-Creates structured roadmaps with:
+Cria roteiros estruturados com:
 
-- **Phase Definition**: Analysis, Organization, Extraction
-- **Milestone Setting**: Clear completion markers
-- **Timeline Estimation**: Realistic timeframes
-- **Deliverable Definition**: Expected outputs
+- **Definição de Fase**: Análise, Organização, Extração
+- **Configuração de marco**: Limpar marcadores de conclusão
+- **Estimativa de cronograma**: prazos realistas
+- **Definição de entrega**: resultados esperados
 
-## Files Included
+## Arquivos incluídos
 
-### SKILL.md (Main Skill)
+### SKILL.md (habilidade principal)
 
-The primary skill file containing:
+O arquivo de habilidade principal contendo:
 
-- Current state assessment methodology
-- Pattern identification process
-- Prioritization framework
-- Roadmap creation techniques
-- Architecture story generation
-- Progress tracking approach
-- Output format templates
+- Metodologia de avaliação do estado atual
+- Processo de identificação de padrões
+- Estrutura de priorização
+- Técnicas de criação de roadmap
+- Geração de histórias de arquitetura
+- Abordagem de acompanhamento do progresso
+- Modelos de formato de saída
 
-### QUICK-REFERENCE.md (Quick Lookup)
+### QUICK-REFERENCE.md (pesquisa rápida)
 
-Fast reference for common scenarios:
+Referência rápida para cenários comuns:
 
-- Pattern sequence
-- Prioritization matrix
-- Roadmap templates
-- Story templates
-- Progress tracking checklist
+- Sequência de padrões
+- Matriz de priorização
+- Modelos de roteiro
+- Modelos de histórias
+- Lista de verificação de acompanhamento de progresso
 
-### README.md (This File)
+### README.md (este arquivo)
 
-Complete documentation including:
+Documentação completa incluindo:
 
-- What the skill does
-- When to use it
-- Usage examples
-- Core concepts
-- Integration with other skills
+- O que a habilidade faz
+- Quando usar
+- Exemplos de uso
+- Conceitos centrais
+- Integração com outras habilidades
 
-## Usage Examples
+## Exemplos de uso
 
-### Example 1: Create Complete Roadmap
+### Exemplo 1: Crie um roteiro completo```
 
-```
 User: "Create a decomposition roadmap for this codebase"
 
 The skill will:
+
 1. Assess current state
 2. Identify patterns to apply
 3. Prioritize work
 4. Create phased roadmap
 5. Generate architecture stories
 6. Estimate timeline
-```
 
-**Output**:
+````
 
-```markdown
+**Saída**:```markdown
 # Decomposition Roadmap
 
 ## Current State Assessment
@@ -149,23 +148,22 @@ The skill will:
 - Extract domain services
 - Define API boundaries
 - Deploy services
-```
+````
 
-### Example 2: Prioritize Work
+### Exemplo 2: Priorizar o trabalho```
 
-```
 User: "Prioritize decomposition work based on component analysis"
 
 The skill will:
+
 1. Review component inventory
 2. Assess risk and value
 3. Calculate priority scores
 4. Create prioritized plan
-```
 
-**Output**:
+````
 
-```markdown
+**Saída**:```markdown
 ## Prioritized Work Plan
 
 ### High Priority
@@ -177,23 +175,22 @@ The skill will:
 2. Dependency Analysis (Priority: 8/10)
    - Risk: Low, Value: High
    - Effort: 1 week
-```
+````
 
-### Example 3: Track Progress
+### Exemplo 3: Acompanhar o progresso```
 
-```
 User: "Show decomposition progress"
 
 The skill will:
+
 1. Check pattern completion
 2. Review story status
 3. Calculate metrics
 4. Identify blockers
-```
 
-**Output**:
+````
 
-```markdown
+**Saída**:```markdown
 ## Progress Dashboard
 
 ### Pattern Completion
@@ -209,159 +206,142 @@ The skill will:
 - Components Refactored: 45 (60%)
 - Domains Created: 0
 - Services Extracted: 0
-```
+````
 
-## Core Concepts
+## Conceitos Básicos
 
-### Decomposition Pattern Sequence
+### Sequência de padrões de decomposição
 
-The six patterns should be applied in sequence:
+Os seis padrões devem ser aplicados em sequência:
 
-1. **Identify and Size Components** → Foundation
-2. **Gather Common Domain Components** → Find duplicates
-3. **Flatten Components** → Clean structure
-4. **Determine Component Dependencies** → Assess feasibility
-5. **Create Component Domains** → Group components
-6. **Create Domain Services** → Extract services
+1. **Identificar e dimensionar componentes** → Fundação
+2. **Reúna componentes de domínio comuns** → Encontre duplicatas
+3. **Achatar componentes** → Estrutura limpa
+4. **Determinar dependências de componentes** → Avaliar a viabilidade
+5. **Criar domínios de componentes** → Agrupar componentes
+6. **Criar serviços de domínio** → Extrair serviços
 
-### Phased Approach
+### Abordagem em fases
 
-Decomposition follows three main phases:
+A decomposição segue três fases principais:
 
-**Phase 1: Analysis & Preparation**
+**Fase 1: Análise e Preparação**
 
-- Component identification and sizing
-- Common component detection
-- Component flattening
-- Dependency analysis
+- Identificação e dimensionamento de componentes
+- Detecção de componentes comuns
+- Achatamento de componentes
+- Análise de dependência
 
-**Phase 2: Domain Organization**
+**Fase 2: Organização do Domínio**
 
-- Domain identification
-- Component grouping
-- Namespace refactoring
+- Identificação de domínio
+- Agrupamento de componentes
+- Refatoração de namespace
 
-**Phase 3: Service Extraction**
+**Fase 3: Extração de Serviço**
 
-- Domain service creation
-- Service extraction
-- API boundary definition
+- Criação de serviço de domínio
+- Extração de serviço
+- Definição de limite de API
 
-### Prioritization Factors
+### Fatores de Priorização
 
-When prioritizing work, consider:
+Ao priorizar o trabalho, considere:
 
-- **Risk**: How risky is this work?
-- **Value**: How valuable is this work?
-- **Dependencies**: What must be done first?
-- **Complexity**: How complex is this work?
+- **Risco**: Quão arriscado é esse trabalho?
+- **Valor**: Qual é o valor deste trabalho?
+- **Dependências**: O que deve ser feito primeiro?
+- **Complexidade**: Quão complexo é esse trabalho?
 
-## How to Use
+## Como usar
 
-### Quick Start
+### Início rápido
 
-Request creation of a plan:
-
-```
+Solicite a criação de um plano:```
 "Create a decomposition roadmap for this codebase"
 "Prioritize decomposition work based on component analysis"
 "Create a phased decomposition plan"
 "Show decomposition progress"
-```
 
-### Step-by-Step Usage
+````
+### Uso passo a passo
 
-#### 1. Assess Current State
+#### 1. Avalie o estado atual
 
-Start by understanding what's been done:
-
-```
+Comece entendendo o que foi feito:```
 User: "What's the current state of decomposition?"
-```
+````
 
-This will:
+Isto irá:
 
-- Check what patterns are complete
-- Identify what's in progress
-- Find what hasn't started
+- Verifique quais padrões estão completos
+- Identifique o que está em andamento
+- Encontre o que ainda não começou
 
-#### 2. Create Roadmap
+#### 2. Criar roteiro
 
-Build a structured plan:
-
-```
+Construa um plano estruturado:```
 User: "Create a decomposition roadmap"
-```
 
-This will:
+````
+Isto irá:
 
-- Identify patterns to apply
-- Prioritize work
-- Create phased roadmap
-- Generate architecture stories
+- Identificar padrões a serem aplicados
+- Priorize o trabalho
+- Criar roteiro faseado
+- Gerar histórias de arquitetura
 
-#### 3. Prioritize Work
+#### 3. Priorize o trabalho
 
-Focus on high-priority items:
-
-```
+Concentre-se em itens de alta prioridade:```
 User: "Prioritize decomposition work"
-```
+````
 
-This will:
+Isto irá:
 
-- Assess risk and value
-- Calculate priority scores
-- Create prioritized plan
+- Avaliar risco e valor
+- Calcular pontuações de prioridade
+- Criar plano priorizado
 
-#### 4. Track Progress
+#### 4. Acompanhe o progresso
 
-Monitor progress over time:
-
-```
+Monitore o progresso ao longo do tempo:```
 User: "Show decomposition progress"
-```
 
-This will:
+````
+Isto irá:
 
-- Check pattern completion
-- Review story status
-- Calculate metrics
-- Identify blockers
+- Verifique a conclusão do padrão
+- Revise o status da história
+- Calcular métricas
+- Identificar bloqueadores
 
-### Advanced Usage
+### Uso Avançado
 
-#### Custom Phases
+#### Fases personalizadas
 
-Define custom phases:
-
-```
+Defina fases personalizadas:```
 User: "Create roadmap with custom phases: Analysis, Refactoring, Extraction, Optimization"
-```
+````
 
-#### Risk-Based Prioritization
+#### Priorização baseada em risco
 
-Focus on risk:
-
-```
+Concentre-se no risco:```
 User: "Prioritize work by risk, starting with lowest risk"
-```
 
-#### Timeline Estimation
+````
+#### Estimativa de cronograma
 
-Get time estimates:
-
-```
+Obtenha estimativas de tempo:```
 User: "Estimate timeline for complete decomposition"
-```
+````
 
-## Output Format
+## Formato de saída
 
-The skill generates structured output:
+A habilidade gera resultados estruturados:
 
-### Decomposition Roadmap
+### Roteiro de decomposição```markdown
 
-```markdown
 # Decomposition Roadmap
 
 ## Current State Assessment
@@ -381,11 +361,9 @@ The skill generates structured output:
 ### Phase 3: Service Extraction
 
 [Patterns, milestones, timeline]
-```
 
-### Prioritized Work Plan
-
-```markdown
+````
+### Plano de Trabalho Priorizado```markdown
 ## Prioritized Work Plan
 
 ### High Priority
@@ -398,11 +376,10 @@ The skill generates structured output:
 ### Medium Priority
 
 [Similar format]
-```
+````
 
-### Architecture Stories
+### Histórias de Arquitetura```markdown
 
-```markdown
 ## Architecture Stories
 
 ### Story 1: [Title]
@@ -419,11 +396,9 @@ so that [benefit].
 **Estimate**: X story points
 **Priority**: High/Medium/Low
 **Dependencies**: [List]
-```
 
-### Progress Dashboard
-
-```markdown
+````
+### Painel de progresso```markdown
 ## Progress Dashboard
 
 ### Pattern Completion Status
@@ -437,53 +412,48 @@ so that [benefit].
 ### Key Metrics
 
 [Components, domains, services metrics]
-```
+````
 
-## Integration with Other Skills
+## Integração com outras habilidades
 
-This skill coordinates the use of other decomposition skills:
+Esta habilidade coordena o uso de outras habilidades de decomposição:
 
-1. **Component Identification & Sizing** → Provides foundation data
-2. **Common Domain Component Detection** → Identifies consolidation work
-3. **Component Flattening** → Prepares for domain grouping
-4. **Component Dependency Analysis** → Validates feasibility
-5. **Domain Identification & Grouping** → Enables service extraction
-6. **Decomposition Planning & Roadmap** (this skill) → Coordinates everything
+1. **Identificação e dimensionamento de componentes** → Fornece dados básicos
+2. **Detecção de componente de domínio comum** → Identifica o trabalho de consolidação
+3. **Achatamento de componentes** → Prepara para agrupamento de domínio
+4. **Análise de dependência de componentes** → Valida a viabilidade
+5. **Identificação e agrupamento de domínio** → Permite extração de serviço
+6. **Planejamento e roteiro de decomposição** (esta habilidade) → Coordena tudo
 
-Use this skill to orchestrate the entire decomposition effort.
+Use esta habilidade para orquestrar todo o esforço de decomposição.
 
-## Installation
+## Instalação
 
-This skill is installed at the project level:
-
-```
+Esta habilidade é instalada no nível do projeto:```
 skills/decomposition-planning-roadmap/
-```
 
-This means it's:
+````
+Isso significa que é:
 
-- **Shared with the repository**: Anyone cloning this repo gets the skill
-- **Version controlled**: Changes are tracked in git
-- **Project-specific**: Can be customized for this codebase
+- **Compartilhado com o repositório**: qualquer pessoa que clonar este repositório obtém a habilidade
+- **Controlado por versão**: as alterações são rastreadas no git
+- **Específico do projeto**: pode ser personalizado para esta base de código
 
-The skill will be automatically discovered and used when appropriate based on the description in the frontmatter.
+A habilidade será automaticamente descoberta e usada quando apropriado com base na descrição no frontmatter.
 
-## Customization
+## Personalização
 
-### For Project-Specific Patterns
+### Para padrões específicos do projeto
 
-Document your project's decomposition approach:
-
-```
+Documente a abordagem de decomposição do seu projeto:```
 skills/decomposition-planning-roadmap/
 └── project-approach.md  # Document project-specific patterns
-```
+````
 
-### Custom Phases
+### Fases personalizadas
 
-Modify phase definitions in SKILL.md:
+Modifique as definições de fase em SKILL.md:```markdown
 
-```markdown
 ## Custom Phases
 
 For this project:
@@ -492,148 +462,143 @@ For this project:
 - Phase 2: Refactoring (4 weeks)
 - Phase 3: Extraction (8 weeks)
 - Phase 4: Optimization (2 weeks)
-```
 
-### Custom Prioritization
+````
+### Priorização personalizada
 
-Modify prioritization formula:
-
-```markdown
+Modifique a fórmula de priorização:```markdown
 ## Custom Prioritization
 
 For this project:
 Priority = (Value × 4) - (Risk × 2) - (Dependencies × 1)
-```
+````
 
-## Best Practices
+## Melhores práticas
 
-### Do's ✅
+### O que fazer ✅
 
-- Start with analysis patterns (Patterns 1-4)
-- Prioritize low-risk, high-value work
-- Create architecture stories for tracking
-- Set clear milestones and success criteria
-- Track progress regularly
-- Adjust roadmap based on learnings
-- Collaborate with stakeholders on priorities
-- Respect pattern dependencies
+- Comece com padrões de análise (Padrões 1-4)
+- Priorize trabalhos de baixo risco e alto valor
+- Crie histórias de arquitetura para rastreamento
+- Defina marcos claros e critérios de sucesso
+- Acompanhe o progresso regularmente
+- Ajustar o roteiro com base nos aprendizados
+- Colaborar com as partes interessadas nas prioridades
+- Respeite as dependências dos padrões
 
-### Don'ts ❌
+### O que não fazer ❌
 
-- Don't skip analysis patterns
-- Don't start service extraction too early
-- Don't ignore dependencies between patterns
-- Don't create unrealistic timelines
-- Don't skip progress tracking
-- Don't forget to validate with stakeholders
-- Don't proceed without feasibility assessment
-- Don't create roadmap without current state assessment
+- Não pule os padrões de análise
+- Não inicie a extração de serviço muito cedo
+- Não ignore dependências entre padrões
+- Não crie cronogramas irrealistas
+- Não pule o acompanhamento do progresso
+- Não se esqueça de validar com as partes interessadas
+- Não prossiga sem avaliação de viabilidade
+- Não crie um roteiro sem uma avaliação do estado atual
 
-## Common Patterns
+## Padrões Comuns
 
-### Typical Roadmap Structure
+### Estrutura típica de roteiro
 
-**Small Project** (3-6 months):
+**Pequeno Projeto** (3-6 meses):
 
-- Phase 1: Analysis (1 month)
-- Phase 2: Refactoring (2 months)
-- Phase 3: Extraction (2-3 months)
+- Fase 1: Análise (1 mês)
+- Fase 2: Refatoração (2 meses)
+- Fase 3: Extração (2-3 meses)
 
-**Medium Project** (6-12 months):
+**Projeto Médio** (6 a 12 meses):
 
-- Phase 1: Analysis & Preparation (2 months)
-- Phase 2: Domain Organization (2 months)
-- Phase 3: Service Extraction (4-6 months)
-- Phase 4: Optimization (2 months)
+- Fase 1: Análise e Preparação (2 meses)
+- Fase 2: Organização do Domínio (2 meses)
+- Fase 3: Extração de Serviço (4-6 meses)
+- Fase 4: Otimização (2 meses)
 
-**Large Project** (12+ months):
+**Grande Projeto** (mais de 12 meses):
 
-- Phase 1: Analysis & Preparation (3-4 months)
-- Phase 2: Domain Organization (3-4 months)
-- Phase 3: Service Extraction (6-8 months)
-- Phase 4: Optimization (2-3 months)
+- Fase 1: Análise e Preparação (3-4 meses)
+- Fase 2: Organização do Domínio (3-4 meses)
+- Fase 3: Extração de Serviço (6-8 meses)
+- Fase 4: Otimização (2-3 meses)
 
-### Prioritization Matrix
+### Matriz de Priorização```
 
-```
-High Value, Low Risk    | High Value, High Risk
-(Do First)              | (Do Carefully)
+High Value, Low Risk | High Value, High Risk
+(Do First) | (Do Carefully)
 ────────────────────────┼──────────────────────
-Low Value, Low Risk     | Low Value, High Risk
-(Do Later)              | (Avoid/Defer)
-```
+Low Value, Low Risk | Low Value, High Risk
+(Do Later) | (Avoid/Defer)
 
-## Troubleshooting
+````
+## Solução de problemas
 
-### Roadmap Too Aggressive
+### Roteiro muito agressivo
 
-**Issue**: Timeline seems unrealistic
+**Problema**: o cronograma parece irreal
 
-**Solution**:
+**Solução**:
 
-- Add buffer time to estimates
-- Break work into smaller chunks
-- Reassess complexity
-- Consider dependencies more carefully
+- Adicionar tempo de buffer às estimativas
+- Divida o trabalho em partes menores
+- Reavaliar a complexidade
+- Considere as dependências com mais cuidado
 
-### Unclear Priorities
+### Prioridades pouco claras
 
-**Issue**: Hard to prioritize work
+**Problema**: é difícil priorizar o trabalho
 
-**Solution**:
+**Solução**:
 
-- Use prioritization matrix
-- Assess risk and value objectively
-- Get stakeholder input
-- Consider dependencies
+- Use matriz de priorização
+- Avaliar risco e valor objetivamente
+- Obtenha a opinião das partes interessadas
+- Considere dependências
 
-### Progress Stalled
+### Progresso paralisado
 
-**Issue**: Not making progress
+**Problema**: não há progresso
 
-**Solution**:
+**Solução**:
 
-- Identify blockers
-- Reassess priorities
-- Break work into smaller pieces
-- Get help with blockers
+- Identificar bloqueadores
+- Reavaliar prioridades
+- Divida o trabalho em pedaços menores
+- Obtenha ajuda com bloqueadores
 
-## References
+## Referências
 
-This skill is based on:
+Esta habilidade é baseada em:
 
-- **Software Architecture: The Hard Parts** by Neal Ford, Mark Richards, Pramod Sadalage, Zhamak Dehghani
-- **Component-Based Decomposition Patterns** (Chapter 5)
-- **Fundamentals of Software Architecture** by Mark Richards & Neal Ford
-- **Agile Project Management** principles
+- **Arquitetura de software: as partes difíceis** por Neal Ford, Mark Richards, Pramod Sadalage, Zhamak Dehghani
+- **Padrões de decomposição baseados em componentes** (Capítulo 5)
+- **Fundamentos de Arquitetura de Software** por Mark Richards e Neal Ford
+- **Princípios de gerenciamento ágil de projetos**
 
-## Contributing
+## Contribuindo
 
-To improve this skill:
+Para melhorar esta habilidade:
 
-1. Add more roadmap templates
-2. Expand prioritization frameworks
-3. Add progress tracking examples
-4. Document new patterns or approaches
-5. Share real-world case studies
+1. Adicione mais modelos de roteiro
+2. Expanda as estruturas de priorização
+3. Adicione exemplos de acompanhamento de progresso
+4. Documente novos padrões ou abordagens
+5. Compartilhe estudos de caso do mundo real
 
-## Version
+## Versão
 
-**Version**: 1.0.0  
-**Created**: 2026-02-05  
-**Based on**: Component-Based Decomposition Patterns from "Software Architecture: The Hard Parts"
+**Versão**: 1.0.0
+**Criado**: 05/02/2026
+**Baseado em**: Padrões de decomposição baseados em componentes de "Arquitetura de software: as partes difíceis"
 
 ---
 
-## Quick Start
+## Início rápido
 
-To use this skill immediately:
-
-```
+Para usar esta habilidade imediatamente:```
 User: "Create a decomposition roadmap for this codebase"
 User: "Prioritize decomposition work based on component analysis"
 User: "Create a phased decomposition plan"
 User: "Show decomposition progress"
-```
+````
 
-This skill will automatically be applied to provide comprehensive decomposition planning and roadmap creation.
+Essa habilidade será aplicada automaticamente para fornecer planejamento de decomposição abrangente e criação de roteiros.

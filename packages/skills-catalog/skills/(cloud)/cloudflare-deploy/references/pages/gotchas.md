@@ -1,105 +1,105 @@
 # Gotchas
 
-## Functions Not Running
+## Functions não executam
 
-**Problem**: Function endpoints return 404 or don't execute  
-**Causes**: `_routes.json` excludes path; wrong file extension (`.jsx`/`.tsx`); Functions dir not at output root  
-**Solution**: Check `_routes.json`, rename to `.ts`/`.js`, verify build output structure
+**Problema**: endpoints de function retornam 404 ou não rodam  
+**Causas**: `_routes.json` exclui o caminho; extensão errada (`.jsx`/`.tsx`); pasta Functions fora da raiz de saída  
+**Solução**: confira `_routes.json`, renomeie para `.ts`/`.js`, valide estrutura do build
 
-## 404 on Static Assets
+## 404 em assets estáticos
 
-**Problem**: Static files not serving  
-**Causes**: Build output dir misconfigured; Functions catching requests; Advanced mode missing `env.ASSETS.fetch()`  
-**Solution**: Verify output dir, add exclusions to `_routes.json`, call `env.ASSETS.fetch()` in `_worker.js`
+**Problema**: arquivos estáticos não servem  
+**Causas**: diretório de saída errado; Functions interceptando; modo avançado sem `env.ASSETS.fetch()`  
+**Solução**: valide output, exclusões em `_routes.json`, chame `env.ASSETS.fetch()` em `_worker.js`
 
-## Bindings Not Working
+## Bindings não funcionam
 
-**Problem**: `env.BINDING` undefined or errors  
-**Causes**: wrangler.jsonc syntax error; wrong binding IDs; missing `.dev.vars`; out-of-sync types  
-**Solution**: Validate config, verify IDs, create `.dev.vars`, run `npx wrangler types`
+**Problema**: `env.BINDING` indefinido ou erro  
+**Causas**: erro de sintaxe no wrangler.jsonc; IDs errados; falta `.dev.vars`; tipos desatualizados  
+**Solução**: valide config, IDs; crie `.dev.vars`; `npx wrangler types`
 
-## Build Failures
+## Falhas de build
 
-**Problem**: Deployment fails during build  
-**Causes**: Wrong build command/output dir; Node version incompatibility; missing env vars; 20min timeout; OOM  
-**Solution**: Check Dashboard → Deployments → Build log; verify settings; add `.nvmrc`; optimize build
+**Problema**: deploy falha no build  
+**Causas**: comando/saída errados; versão Node; env faltando; timeout 20 min; OOM  
+**Solução**: Dashboard → Deployments → Build log; settings; `.nvmrc`; otimize build
 
-## Middleware Not Running
+## Middleware não roda
 
-**Problem**: Middleware doesn't execute  
-**Causes**: Wrong filename (not `_middleware.ts`); missing `onRequest` export; didn't call `next()`  
-**Solution**: Rename file with underscore prefix; export handler; call `next()` or return Response
+**Problema**: middleware não executa  
+**Causas**: nome errado (não `_middleware.ts`); sem export `onRequest`; não chamou `next()`  
+**Solução**: prefixo underscore no arquivo; exporte handler; chame `next()` ou retorne Response
 
-## Headers/Redirects Not Working
+## Headers/redirects não aplicam
 
-**Problem**: `_headers` or `_redirects` not applying  
-**Causes**: Only work for static assets; Functions override; syntax errors; exceeded limits  
-**Solution**: Set headers in Response object for Functions; verify syntax; check limits (100 headers, 2,100 redirects)
+**Problema**: `_headers` ou `_redirects` sem efeito  
+**Causas**: só para estáticos; Functions sobrescrevem; sintaxe; limites  
+**Solução**: headers no objeto Response para Functions; sintaxe; limites (100 headers, 2.100 redirects)
 
-## TypeScript Errors
+## Erros TypeScript
 
-**Problem**: Type errors in Functions code  
-**Causes**: Types not generated; Env interface doesn't match wrangler.jsonc  
-**Solution**: Run `npx wrangler types --path='./functions/types.d.ts'`; update Env interface
+**Problema**: erros de tipo no código Functions  
+**Causas**: tipos não gerados; `Env` não bate com wrangler.jsonc  
+**Solução**: `npx wrangler types --path='./functions/types.d.ts'`; atualize `Env`
 
-## Local Dev Issues
+## Problemas no dev local
 
-**Problem**: Dev server errors or bindings don't work  
-**Causes**: Port conflict; bindings not passed; local vs HTTPS differences  
-**Solution**: Use `--port=3000`; pass bindings via CLI or wrangler.jsonc; account for HTTP/HTTPS differences
+**Problema**: servidor de dev ou bindings  
+**Causas**: porta em uso; bindings não passados; HTTP vs HTTPS  
+**Solução**: `--port=3000`; bindings via CLI ou wrangler.jsonc; diferenças HTTP/HTTPS
 
-## Performance Issues
+## Desempenho
 
-**Problem**: Slow responses or CPU limit errors  
-**Causes**: Functions invoked for static assets; cold starts; 10ms CPU limit; large bundle  
-**Solution**: Exclude static via `_routes.json`; optimize hot paths; keep bundle < 1MB
+**Problema**: respostas lentas ou limite de CPU  
+**Causas**: Functions invocadas para estáticos; cold starts; 10ms CPU; bundle grande  
+**Solução**: exclua estáticos em `_routes.json`; otimize caminhos quentes; bundle < 1MB
 
-## Framework-Specific
+## Específico de framework
 
-### ⚠️ Deprecated Frameworks
+### Frameworks depreciados
 
-**Next.js**: Official adapter (`@cloudflare/next-on-pages`) **deprecated** and unmaintained.
+**Next.js**: adapter oficial (`@cloudflare/next-on-pages`) **depreciado** e sem manutenção.
 
-- **Problem**: No updates since 2024; incompatible with Next.js 15+; missing App Router features
-- **Cause**: Cloudflare discontinued official support; community fork exists but limited
-- **Solutions**:
-  1. **Recommended**: Use Vercel (official Next.js host)
-  2. **Advanced**: Self-host on Workers using custom adapter (complex, unsupported)
-  3. **Migration**: Switch to SvelteKit/Nuxt (similar DX, full Pages support)
+- **Problema**: sem updates desde 2024; incompatível com Next.js 15+; faltam recursos do App Router
+- **Causa**: Cloudflare descontinuou suporte oficial; fork da comunidade com alcance limitado
+- **Soluções**:
+  1. **Recomendado**: Vercel (host oficial Next.js)
+  2. **Avançado**: self-host em Workers com adapter custom (complexo, sem suporte)
+  3. **Migração**: SvelteKit/Nuxt (DX similar, suporte Pages completo)
 
-**Remix**: Official adapter (`@remix-run/cloudflare-pages`) **deprecated**.
+**Remix**: adapter oficial (`@remix-run/cloudflare-pages`) **depreciado**.
 
-- **Problem**: No maintenance from Remix team; compatibility issues with Remix v2+
-- **Cause**: Remix team deprecated all framework adapters
-- **Solutions**:
-  1. **Recommended**: Migrate to SvelteKit (similar file-based routing, better DX)
-  2. **Alternative**: Use Astro (static-first with optional SSR)
-  3. **Workaround**: Continue using deprecated adapter (no future support)
+- **Problema**: equipe Remix sem manutenção dos adapters; issues com Remix v2+
+- **Causa**: adapters de framework depreciados pelo time Remix
+- **Soluções**:
+  1. **Recomendado**: SvelteKit (roteamento por arquivo similar, melhor DX)
+  2. **Alternativa**: Astro (estático primeiro com SSR opcional)
+  3. **Contorno**: adapter depreciado (sem suporte futuro)
 
-### ✅ Supported Frameworks
+### Frameworks suportados
 
 **SvelteKit**:
 
-- Use `@sveltejs/adapter-cloudflare`
-- Access bindings via `platform.env` in server load functions
-- Set `platform: 'cloudflare'` in `svelte.config.js`
+- `@sveltejs/adapter-cloudflare`
+- Bindings via `platform.env` em load server
+- `platform: 'cloudflare'` em `svelte.config.js`
 
 **Astro**:
 
-- Built-in Cloudflare adapter
-- Access bindings via `Astro.locals.runtime.env`
+- Adapter Cloudflare embutido
+- Bindings via `Astro.locals.runtime.env`
 
 **Nuxt**:
 
-- Set `nitro.preset: 'cloudflare-pages'` in `nuxt.config.ts`
-- Access bindings via `event.context.cloudflare.env`
+- `nitro.preset: 'cloudflare-pages'` em `nuxt.config.ts`
+- Bindings via `event.context.cloudflare.env`
 
 **Qwik, Solid Start**:
 
-- Built-in or official Cloudflare adapters available
-- Check respective framework docs for binding access
+- Adapters Cloudflare oficiais/embutidos
+- Veja docs do framework para acesso a bindings
 
-## Debugging
+## Debug
 
 ```typescript
 // Log request details
@@ -108,111 +108,103 @@ console.log('Env:', Object.keys(env))
 console.log('Params:', params)
 ```
 
-**View logs**: `npx wrangler pages deployment tail --project-name=my-project`
+**Logs**: `npx wrangler pages deployment tail --project-name=my-project`
 
-## Smart Placement Issues
+## Smart Placement
 
-### Increased Cold Start Latency
+### Cold start maior
 
-**Problem**: First requests slower after enabling Smart Placement  
-**Cause**: Initial optimization period while system learns traffic patterns  
-**Solution**: Expected behavior during first 24-48 hours; monitor latency trends over time
+**Problema**: primeiras requisições mais lentas após habilitar Smart Placement  
+**Causa**: fase inicial de otimização  
+**Solução**: esperado nas primeiras 24–48 h; monitore tendência de latência
 
-### Inconsistent Response Times
+### Tempos de resposta inconsistentes
 
-**Problem**: Latency varies significantly across requests during initial deployment  
-**Cause**: Smart Placement testing different execution locations to find optimal placement  
-**Solution**: Normal during learning phase; stabilizes after traffic patterns emerge (1-2 days)
+**Problema**: latência varia após deploy inicial  
+**Causa**: sistema testa locais de execução  
+**Solução**: normal na fase de aprendizado; estabiliza em 1–2 dias
 
-### No Performance Improvement
+### Sem ganho de performance
 
-**Problem**: Smart Placement enabled but no latency reduction observed  
-**Cause**: Traffic evenly distributed globally, or no data locality constraints  
-**Solution**: Smart Placement most effective with centralized data (D1/DO) or regional traffic; disable if no benefit
+**Problema**: Smart Placement sem redução de latência  
+**Causa**: tráfego global uniforme ou sem localidade de dados  
+**Solução**: mais útil com D1/DO centralizado ou tráfego regional; desligue se não ajuda
 
-## Remote Bindings Issues
+## Bindings remotos
 
-### Accidentally Modified Production Data
+### Dados de produção alterados por engano
 
-**Problem**: Local dev with `--remote` altered production database/KV  
-**Cause**: Remote bindings connect directly to production resources; writes are real  
-**Solution**:
+**Problema**: `dev --remote` mudou KV/DB de produção  
+**Causa**: bindings remotos são produção real  
+**Solução**: `--remote` só para leitura; ambientes preview; nunca writes perigosos em dev
 
-- Use `--remote` only for read-heavy debugging
-- Create separate preview environments for testing
-- Never use `--remote` for write operations during development
+### Erro de auth no binding remoto
 
-### Remote Binding Auth Errors
+**Problema**: `pages dev --remote` com Unauthorized  
+**Causa**: não logado, sessão expirada ou permissões  
+**Solução**: `npx wrangler login`; confira acesso ao projeto e IDs
 
-**Problem**: `npx wrangler pages dev --remote` fails with "Unauthorized" or auth error  
-**Cause**: Not logged in, session expired, or insufficient account permissions  
-**Solution**:
+### Dev lento com remoto
 
-1. Run `npx wrangler login` to re-authenticate
-2. Verify account has access to project and bindings
-3. Check binding IDs match production configuration
+**Problema**: dev lento com `--remote`  
+**Causa**: cada requisição vai à rede até produção  
+**Solução**: bindings locais no dia a dia; `--remote` só para validação final
 
-### Slow Local Dev with Remote Bindings
-
-**Problem**: Local dev server slow when using `--remote`  
-**Cause**: Every request makes network calls to production bindings  
-**Solution**: Use local bindings for development; reserve `--remote` for final validation
-
-## Common Errors
+## Erros comuns
 
 ### "Module not found"
 
-**Cause**: Dependencies not bundled or build output incorrect  
-**Solution**: Check build output directory, ensure dependencies bundled
+**Causa**: dependências não bundled ou saída de build errada  
+**Solução**: diretório de saída; dependências no bundle
 
 ### "Binding not found"
 
-**Cause**: Binding not configured or types out of sync  
-**Solution**: Verify wrangler.jsonc, run `npx wrangler types`
+**Causa**: binding não configurado ou tipos desatualizados  
+**Solução**: wrangler.jsonc; `npx wrangler types`
 
 ### "Request exceeded CPU limit"
 
-**Cause**: Code execution too slow or heavy compute  
-**Solution**: Optimize hot paths, upgrade to Workers Paid
+**Causa**: código lento ou compute pesado  
+**Solução**: otimize caminhos quentes; Workers Paid
 
 ### "Script too large"
 
-**Cause**: Bundle size exceeds limit  
-**Solution**: Tree-shake, use dynamic imports, code-split
+**Causa**: bundle acima do limite  
+**Solução**: tree-shake; imports dinâmicos; code-split
 
 ### "Too many subrequests"
 
-**Cause**: Exceeded 50 subrequest limit  
-**Solution**: Batch or reduce fetch calls
+**Causa**: > 50 subrequisições  
+**Solução**: em lote ou reduza fetches
 
 ### "KV key not found"
 
-**Cause**: Key doesn't exist or wrong namespace  
-**Solution**: Check namespace matches environment
+**Causa**: key inexistente ou namespace errado  
+**Solução**: namespace por ambiente
 
 ### "D1 error"
 
-**Cause**: Wrong database_id or missing migrations  
-**Solution**: Verify config, run `wrangler d1 migrations list`
+**Causa**: `database_id` errado ou migrations faltando  
+**Solução**: config; `wrangler d1 migrations list`
 
-## Limits Reference (Jan 2026)
+## Referência de limites (jan. 2026)
 
-| Resource           | Free      | Paid        |
-| ------------------ | --------- | ----------- |
-| Functions Requests | 100k/day  | Unlimited   |
-| CPU Time           | 10ms/req  | 30ms/req    |
-| Memory             | 128MB     | 128MB       |
-| Script Size        | 1MB       | 10MB        |
-| Subrequests        | 50/req    | 1,000/req   |
-| Deployments        | 500/month | 5,000/month |
+| Recurso               | Grátis   | Pago      |
+| --------------------- | -------- | --------- |
+| Requisições Functions | 100k/dia | Ilimitado |
+| CPU                   | 10ms/req | 30ms/req  |
+| Memória               | 128MB    | 128MB     |
+| Tamanho script        | 1MB      | 10MB      |
+| Subrequisições        | 50/req   | 1.000/req |
+| Deployments           | 500/mês  | 5.000/mês |
 
-**Tip**: Hitting CPU limit? Optimize hot paths or upgrade to Workers Paid plan.
+**Dica**: limite de CPU? Otimize ou Workers Paid.
 
-[Full limits](https://developers.cloudflare.com/pages/platform/limits/)
+[Limites completos](https://developers.cloudflare.com/pages/platform/limits/)
 
-## Getting Help
+## Ajuda
 
-1. Check [Pages Docs](https://developers.cloudflare.com/pages/)
-2. Search [Discord #functions](https://discord.com/channels/595317990191398933/910978223968518144)
-3. Review [Workers Examples](https://developers.cloudflare.com/workers/examples/)
-4. Check framework-specific docs/adapters
+1. [Pages Docs](https://developers.cloudflare.com/pages/)
+2. [Discord #functions](https://discord.com/channels/595317990191398933/910978223968518144)
+3. [Workers Examples](https://developers.cloudflare.com/workers/examples/)
+4. Docs/adapters por framework

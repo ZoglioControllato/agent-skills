@@ -1,12 +1,10 @@
-# Bindings API Reference
+# Referência da API Bindings
 
-## TypeScript Types
+## Tipos TypeScript
 
-Cloudflare generates binding types via `npx wrangler types`. This creates `.wrangler/types/runtime.d.ts` with your Env interface.
+A Cloudflare gera tipos via `npx wrangler types`, criando `.wrangler/types/runtime.d.ts` com sua interface `Env`.
 
-### Generated Env Interface
-
-After running `wrangler types`, TypeScript knows your bindings:
+### Interface Env gerada
 
 ```typescript
 interface Env {
@@ -25,9 +23,9 @@ interface Env {
 }
 ```
 
-### Binding Types
+### Tipos por config
 
-| Config                                                     | TypeScript Type          | Package                     |
+| Config                                                     | Tipo TypeScript          | Pacote                      |
 | ---------------------------------------------------------- | ------------------------ | --------------------------- |
 | `kv_namespaces`                                            | `KVNamespace`            | `@cloudflare/workers-types` |
 | `r2_buckets`                                               | `R2Bucket`               | `@cloudflare/workers-types` |
@@ -45,9 +43,9 @@ interface Env {
 | `mtls_certificates` / `vars` / `text_blobs` / `data_blobs` | `string`                 | Built-in                    |
 | `wasm_modules`                                             | `WebAssembly.Module`     | Built-in                    |
 
-## Accessing Bindings
+## Acessar bindings
 
-### Method 1: fetch() Handler (Recommended)
+### Método 1: handler fetch() (recomendado)
 
 ```typescript
 export default {
@@ -58,9 +56,9 @@ export default {
 }
 ```
 
-**Why:** Type-safe, aligns with Workers API, supports ctx for waitUntil/passThroughOnException.
+**Por quê:** tipado, alinhado à API Workers, suporta `ctx` para waitUntil/passThroughOnException.
 
-### Method 2: Hono Framework
+### Método 2: framework Hono
 
 ```typescript
 import { Hono } from 'hono'
@@ -75,9 +73,9 @@ app.get('/', async (c) => {
 export default app
 ```
 
-**Why:** c.env auto-typed, ergonomic for routing-heavy apps.
+**Por quê:** `c.env` tipado, ergonômico para apps com muito roteamento.
 
-### Method 3: Module Workers (Legacy)
+### Método 3: Module Workers (legado)
 
 ```typescript
 export async function handleRequest(request: Request, env: Env): Promise<Response> {
@@ -90,32 +88,26 @@ addEventListener('fetch', (event) => {
 })
 ```
 
-**Avoid:** Use fetch() handler instead (Method 1).
+**Evite:** prefira handler `fetch()` (método 1).
 
-## Type Generation Workflow
+## Fluxo de geração de tipos
 
-### Initial Setup
+### Setup inicial
 
 ```bash
-# Install wrangler
 npm install -D wrangler
-
-# Generate types from wrangler.jsonc
 npx wrangler types
 ```
 
-### After Changing Bindings
+### Após alterar bindings
 
 ```bash
-# Added/modified binding in wrangler.jsonc
 npx wrangler types
-
-# TypeScript now sees updated Env interface
 ```
 
-**Note:** `wrangler types` outputs to `.wrangler/types/runtime.d.ts`. TypeScript picks this up automatically if `@cloudflare/workers-types` is in `tsconfig.json` `"types"` array.
+**Nota:** saída em `.wrangler/types/runtime.d.ts`. O TypeScript encontra se `@cloudflare/workers-types` estiver em `tsconfig.json` `"types"`.
 
-## Key Binding Methods
+## Métodos principais por binding
 
 **KV:**
 
@@ -168,23 +160,23 @@ const stub = env.MY_DO.get(id)
 await stub.fetch(new Request('https://fake/increment'))
 ```
 
-## Runtime vs Build-Time Types
+## Tipos em runtime vs build
 
-| Type Source                 | When Generated      | Use Case                                    |
-| --------------------------- | ------------------- | ------------------------------------------- |
-| `@cloudflare/workers-types` | npm install         | Base Workers APIs (Request, Response, etc.) |
-| `wrangler types`            | After config change | Your specific bindings (Env interface)      |
+| Origem                      | Quando            | Uso                              |
+| --------------------------- | ----------------- | -------------------------------- |
+| `@cloudflare/workers-types` | npm install       | APIs base (Request, Response, …) |
+| `wrangler types`            | Após mudar config | Seus bindings (interface `Env`)  |
 
-**Install both:**
+**Instale os dois abaixo:**
 
 ```bash
 npm install -D @cloudflare/workers-types
 npx wrangler types
 ```
 
-## Type Safety Best Practices
+## Boas práticas de tipagem
 
-1. **Never use `any` for env:**
+1. **Nunca use `any` em env:**
 
 ```typescript
 // ❌ BAD
@@ -194,21 +186,15 @@ async fetch(request: Request, env: any) { }
 async fetch(request: Request, env: Env) { }
 ```
 
-2. **Run wrangler types after config changes:**
+2. **Rode `wrangler types` após mudar config.**
+
+3. **Confira tipos gerados:**
 
 ```bash
-# After editing wrangler.jsonc
-npx wrangler types
-```
-
-3. **Check generated types match config:**
-
-```bash
-# View generated Env interface
 cat .wrangler/types/runtime.d.ts
 ```
 
-## See Also
+## Ver também
 
 - [Workers Types Package](https://www.npmjs.com/package/@cloudflare/workers-types)
 - [Wrangler Types Command](https://developers.cloudflare.com/workers/wrangler/commands/#types)

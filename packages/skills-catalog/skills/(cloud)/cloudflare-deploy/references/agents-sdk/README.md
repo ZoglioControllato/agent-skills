@@ -1,33 +1,33 @@
 # Cloudflare Agents SDK
 
-Cloudflare Agents SDK enables building AI-powered agents on Durable Objects with state, WebSockets, SQL, scheduling, and AI integration.
+O Cloudflare Agents SDK permite criar agentes com IA sobre Durable Objects, com estado, WebSockets, SQL, agendamento e integração com IA.
 
-## Core Value
+## Valor principal
 
-Build stateful, globally distributed AI agents with persistent memory, real-time connections, scheduled tasks, and async workflows.
+Crie agentes de IA com estado, distribuídos globalmente, com memória persistente, conexões em tempo real, tarefas agendadas e fluxos assíncronos.
 
-## When to Use
+## Quando usar
 
-- Persistent state + memory required
-- Real-time WebSocket connections
-- Long-running workflows (minutes/hours)
-- Chat interfaces with AI models
-- Scheduled/recurring tasks with state
-- DB queries with agent state
+- Estado persistente + memória necessários
+- Conexões WebSocket em tempo real
+- Fluxos de longa duração (minutos/horas)
+- Interfaces de chat com modelos de IA
+- Tarefas agendadas/recorrentes com estado
+- Consultas ao banco com estado do agente
 
-## What Type of Agent?
+## Que tipo de agente?
 
-| Use Case                | Class         | Key Features                                      |
-| ----------------------- | ------------- | ------------------------------------------------- |
-| AI chat interface       | `AIChatAgent` | Auto-streaming, tools, message history, resumable |
-| MCP tool provider       | `Agent` + MCP | Expose tools to AI systems                        |
-| Custom logic/routing    | `Agent`       | Full control, WebSockets, email, SQL              |
-| Real-time collaboration | `Agent`       | WebSocket state, broadcasts                       |
-| Email processing        | `Agent`       | `onEmail()` handler                               |
+| Caso de uso                   | Classe        | Principais recursos                                  |
+| ----------------------------- | ------------- | ---------------------------------------------------- |
+| Interface de chat com IA      | `AIChatAgent` | Stream automático, ferramentas, histórico, retomável |
+| Provedor de ferramentas MCP   | `Agent` + MCP | Expõe ferramentas para sistemas de IA                |
+| Lógica/roteamento customizado | `Agent`       | Controle total, WebSockets, e-mail, SQL              |
+| Colaboração em tempo real     | `Agent`       | Estado WebSocket, broadcasts                         |
+| Processamento de e-mail       | `Agent`       | Handler `onEmail()`                                  |
 
-## Quick Start
+## Início rápido
 
-**AI Chat Agent:**
+**Agente de chat com IA:**
 
 ```typescript
 import { AIChatAgent } from 'agents'
@@ -44,7 +44,7 @@ export class ChatAgent extends AIChatAgent<Env> {
 }
 ```
 
-**Base Agent:**
+**Agente base:**
 
 ```typescript
 import { Agent } from 'agents'
@@ -60,36 +60,36 @@ export class MyAgent extends Agent<Env> {
 }
 ```
 
-## Reading Order
+## Ordem de leitura
 
-| Task               | Files to Read                                 |
-| ------------------ | --------------------------------------------- |
-| Quick start        | README only                                   |
-| Build chat agent   | README → api.md (AIChatAgent) → patterns.md   |
-| Setup project      | README → configuration.md                     |
-| Add React frontend | README → api.md (Client Hooks) → patterns.md  |
-| Build MCP server   | api.md (MCP) → patterns.md                    |
-| Background tasks   | api.md (Scheduling, Task Queue) → patterns.md |
-| Debug issues       | gotchas.md                                    |
+| Tarefa                   | Arquivos para ler                             |
+| ------------------------ | --------------------------------------------- |
+| Início rápido            | Só o README                                   |
+| Construir chat           | README → api.md (AIChatAgent) → patterns.md   |
+| Configurar projeto       | README → configuration.md                     |
+| Frontend React           | README → api.md (Client Hooks) → patterns.md  |
+| Servidor MCP             | api.md (MCP) → patterns.md                    |
+| Tarefas em segundo plano | api.md (Scheduling, Task Queue) → patterns.md |
+| Depurar problemas        | gotchas.md                                    |
 
-## Package Entry Points
+## Pontos de entrada do pacote
 
-| Import            | Purpose                                     |
-| ----------------- | ------------------------------------------- |
-| `agents`          | Server-side Agent classes, lifecycle        |
-| `agents/react`    | `useAgent()` hook for WebSocket connections |
-| `agents/ai-react` | `useAgentChat()` hook for AI chat UIs       |
+| Import            | Finalidade                                    |
+| ----------------- | --------------------------------------------- |
+| `agents`          | Classes Agent no servidor, ciclo de vida      |
+| `agents/react`    | Hook `useAgent()` para conexões WebSocket     |
+| `agents/ai-react` | Hook `useAgentChat()` para UIs de chat com IA |
 
-## In This Reference
+## Nesta referência
 
-- [configuration.md](./configuration.md) - SDK setup, wrangler config, routing
-- [api.md](./api.md) - Agent classes, lifecycle, client hooks
-- [patterns.md](./patterns.md) - Common workflows, best practices
-- [gotchas.md](./gotchas.md) - Common issues, limits
+- [configuration.md](./configuration.md) — setup do SDK, configuração do Wrangler, roteamento
+- [api.md](./api.md) — classes Agent, ciclo de vida, hooks no cliente
+- [patterns.md](./patterns.md) — fluxos comuns, boas práticas
+- [gotchas.md](./gotchas.md) — problemas frequentes, limites
 
-## See Also
+## Ver também
 
-- durable-objects - Agent infrastructure
-- d1 - External database integration
-- workers-ai - AI model integration
-- vectorize - Vector search for RAG patterns
+- durable-objects — infraestrutura do agente
+- d1 — integração com banco externo
+- workers-ai — integração com modelos de IA
+- vectorize — busca vetorial para padrões RAG

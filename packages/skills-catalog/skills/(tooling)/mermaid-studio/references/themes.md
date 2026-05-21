@@ -1,94 +1,98 @@
-# Themes and Styling — Complete Reference
+# Temas e Estilo – Referência Completa
 
-Load this file when the user requests custom themes, specific colors, or styled diagrams.
+Carregue este arquivo quando o usuário solicitar temas personalizados, cores específicas ou diagramas estilizados.
 
-## Theme Sources
+## Fontes temáticas
 
-Two rendering engines provide different theme sets:
+Dois mecanismos de renderização fornecem conjuntos de temas diferentes:
 
-### Engine 1: @mermaid-js/mermaid-cli (mmdc)
+### Mecanismo 1: @mermaid-js/mermaid-cli (mmdc)
 
-5 built-in themes controlled via `--theme` flag or frontmatter:
+5 temas integrados controlados pelo sinalizador `--theme` ou frontmatter:
 
-| Theme     | Best for                                   |
-| --------- | ------------------------------------------ |
-| `default` | General use, light backgrounds             |
-| `forest`  | Nature-inspired green tones, presentations |
-| `dark`    | Dark backgrounds, dark-mode docs           |
-| `neutral` | Minimal, grayscale, professional docs      |
-| `base`    | Starting point for custom themes           |
+| Tema       | Melhor para                                          |
+| ---------- | ---------------------------------------------------- |
+| `padrão`   | Uso geral, fundos claros                             |
+| `floresta` | Tons verdes inspirados na natureza, apresentações    |
+| `escuro`   | Fundos escuros, documentos em modo escuro            |
+| `neutro`   | Documentos profissionais mínimos, em escala de cinza |
+| `base`     | Ponto de partida para temas personalizados           |
 
-### Engine 2: beautiful-mermaid
+### Motor 2: linda sereia
 
-15 curated themes with consistent design:
+15 temas selecionados com design consistente:
 
-**Light themes:**
-| Theme | Style | Best for |
+**Temas leves:**
+| Tema | Estilo | Melhor para |
 |-------|-------|----------|
-| `zinc-light` | Clean gray tones | Professional documents |
-| `tokyo-night-light` | Warm light | General use |
-| `catppuccin-latte` | Soft pastels | Friendly docs |
-| `nord-light` | Arctic cool tones | Technical docs |
-| `github-light` | GitHub-style | READMEs, GitHub pages |
-| `solarized-light` | Warm yellows | Long reading |
+| `zinco-light` | Tons de cinza limpos | Documentos profissionais |
+| `tóquio-luz noturna` | Luz quente | Uso geral |
+| `catppuccin-latte` | Pastéis suaves | Documentos amigáveis ​​|
+| `nord-light` | Tons frios do Ártico | Documentos técnicos |
+| `github-light` | Estilo GitHub | READMEs, páginas do GitHub |
+| `luz solarizada` | Amarelos quentes | Leitura longa |
 
-**Dark themes:**
-| Theme | Style | Best for |
+**Temas escuros:**
+| Tema | Estilo | Melhor para |
 |-------|-------|----------|
-| `zinc-dark` | Dark gray | Dark mode docs |
-| `tokyo-night` | Vibrant dark | Developer tools |
-| `tokyo-night-storm` | Deep blue-dark | Presentations |
-| `catppuccin-mocha` | Rich dark | Dark mode, cozy feel |
-| `nord` | Arctic dark | Technical, minimal |
-| `dracula` | Purple-tinted dark | Developer-favorite |
-| `github-dark` | GitHub dark mode | Dark READMEs |
-| `solarized-dark` | Warm dark | Extended reading |
-| `one-dark` | Atom-inspired | Code-adjacent docs |
+| `zinco-escuro` | Cinza escuro | Documentos do modo escuro |
+| `tóquio-noite` | Escuro vibrante | Ferramentas para desenvolvedores |
+| `tóquio-noite-tempestade` | Profundo azul-escuro | Apresentações |
+| `catppuccin-mocha` | Escuro rico | Modo escuro, sensação aconchegante |
+| `norte` | Ártico escuro | Técnico, mínimo |
+| `drácula` | Escuro roxo | Favorito do desenvolvedor |
+| `github-escuro` | Modo escuro do GitHub | READMEs escuros |
+| `solariz
 
-### Theme Selection Guide
+ed-escuro`| Escuro quente | Leitura estendida |
+|`one-escuro` | Inspirado no átomo | Documentos adjacentes ao código |
 
-| Context                      | Recommended                              |
-| ---------------------------- | ---------------------------------------- |
-| GitHub/GitLab README         | `github-light` or `github-dark`          |
-| Technical documentation      | `nord-light` or `neutral`                |
-| Presentations (light room)   | `zinc-light` or `default`                |
-| Presentations (dark room)    | `tokyo-night-storm` or `dracula`         |
-| Developer tools / terminal   | `tokyo-night` or `one-dark`              |
-| Client-facing / professional | `zinc-light` or `neutral`                |
-| Personal blog / casual       | `catppuccin-latte` or `catppuccin-mocha` |
+### Guia de seleção de tema
 
-## Custom Theming (mermaid-cli)
+| Contexto                       | Recomendado                              |
+| ------------------------------ | ---------------------------------------- |
+| LEIA-ME do GitHub/GitLab       | `github-light` ou `github-dark`          |
+| Documentação técnica           | `nord-light` ou `neutro`                 |
+| Apresentações (sala iluminada) | `zinc-light` ou `default`                |
+| Apresentações (sala escura)    | `tóquio-tempestade noturna` ou `drácula` |
 
-When using the `base` theme, you can override any variable:
+|
+| Ferramentas / terminal de desenvolvedor | `tóquio-noite` ou `one-dark` |
+| Voltado ao cliente / profissional | `zinco-light` ou `neutro` |
+| Blog pessoal/casual | `catppuccin-latte` ou `catppuccin-mocha` |
 
-### Via Frontmatter
+## Tema personalizado (sereia-cli)
 
-```mermaid
+Ao usar o tema `base`, você pode substituir qualquer variável:
+
+### Via FrontMatter```mermaid
+
 ---
+
 config:
-  theme: base
-  themeVariables:
-    primaryColor: "#4f46e5"
-    primaryTextColor: "#ffffff"
-    primaryBorderColor: "#3730a3"
-    lineColor: "#6b7280"
-    secondaryColor: "#10b981"
-    tertiaryColor: "#f59e0b"
-    background: "#ffffff"
-    mainBkg: "#f8fafc"
-    nodeBorder: "#e2e8f0"
-    clusterBkg: "#f1f5f9"
-    clusterBorder: "#cbd5e1"
-    titleColor: "#1e293b"
-    edgeLabelBackground: "#ffffff"
+theme: base
+themeVariables:
+primaryColor: "#4f46e5"
+primaryTextColor: "#ffffff"
+primaryBorderColor: "#3730a3"
+lineColor: "#6b7280"
+secondaryColor: "#10b981"
+tertiaryColor: "#f59e0b"
+background: "#ffffff"
+mainBkg: "#f8fafc"
+nodeBorder: "#e2e8f0"
+clusterBkg: "#f1f5f9"
+clusterBorder: "#cbd5e1"
+titleColor: "#1e293b"
+edgeLabelBackground: "#ffffff"
+
 ---
+
 flowchart LR
-    A --> B
-```
+A --> B
 
-### Via Init Directive
-
-```
+````
+### Via Diretiva Init```
 %%{init: {'theme': 'base', 'themeVariables': {
   'primaryColor': '#4f46e5',
   'primaryTextColor': '#fff',
@@ -97,79 +101,80 @@ flowchart LR
   'secondaryColor': '#10b981',
   'tertiaryColor': '#f59e0b'
 }}}%%
-```
+````
 
-### Via Render Script Config
+### Através da configuração do script de renderização```bash
 
-```bash
 node $SKILL_DIR/scripts/render.mjs \
-  --input diagram.mmd \
-  --output diagram.svg \
-  --format svg \
-  --theme base \
-  --config '{"theme":"base","themeVariables":{"primaryColor":"#4f46e5"}}'
-```
+ --input diagram.mmd \
+ --output diagram.svg \
+ --format svg \
+ --theme base \
+ --config '{"theme":"base","themeVariables":{"primaryColor":"#4f46e5"}}'
 
-## Available Theme Variables
+````
+## Variáveis de tema disponíveis
 
-### Core Colors
+### Cores principais
 
-| Variable             | Controls                         |
+| Variável | Controles |
 | -------------------- | -------------------------------- |
-| `primaryColor`       | Main node fill color             |
-| `primaryTextColor`   | Text on primary-colored elements |
-| `primaryBorderColor` | Border of primary elements       |
-| `secondaryColor`     | Secondary elements, alternates   |
-| `tertiaryColor`      | Tertiary elements, highlights    |
-| `lineColor`          | Edge/connection lines            |
-| `background`         | Diagram background               |
-| `mainBkg`            | Default node background          |
-| `nodeBorder`         | Default node border              |
+| `primaryColor` | Cor de preenchimento do nó principal |
+| `primaryTextColor` | Texto em elementos de cores primárias |
+| `primaryBorderColor` | Fronteira dos elementos primários |
+| `secondaryColor` | Elementos secundários, suplentes |
+| `tertiaryColor` | Elementos terciários, destaques |
+| `linhaCor` | Borda/
 
-### Text
+linhas de ligação |
+| `fundo` | Fundo do diagrama |
+| `mainBkg` | Plano de fundo do nó padrão |
+| `nodeBorder` | Borda do nó padrão |
 
-| Variable              | Controls                      |
+### Texto
+
+| Variável | Controles |
 | --------------------- | ----------------------------- |
-| `titleColor`          | Diagram title text            |
-| `textColor`           | General text                  |
-| `edgeLabelBackground` | Background behind edge labels |
+| `titleColor` | Texto do título do diagrama |
+| `textColor` | Texto geral |
+| `edgeLabelBackground` | Fundo por trás dos rótulos de borda |
 
-### Clusters / Subgraphs
+### Clusters/Subgrafos
 
-| Variable        | Controls                  |
+| Variável | Controles |
 | --------------- | ------------------------- |
-| `clusterBkg`    | Subgraph/group background |
-| `clusterBorder` | Subgraph/group border     |
+| `clusterBkg` | Fundo do subgrafo/grupo |
+| `clusterBorder` | Fronteira de subgrafo/grupo |
 
-### Sequence Diagram Specific
+### Específico do diagrama de sequência
 
-| Variable                | Controls                      |
+| Variável | Controles |
 | ----------------------- | ----------------------------- |
-| `actorBkg`              | Participant box fill          |
-| `actorBorder`           | Participant box border        |
-| `actorTextColor`        | Participant text              |
-| `activationBkgColor`    | Activation box fill           |
-| `activationBorderColor` | Activation box border         |
-| `signalColor`           | Message arrow color           |
-| `signalTextColor`       | Message text color            |
-| `noteBkgColor`          | Note background               |
-| `noteBorderColor`       | Note border                   |
-| `noteTextColor`         | Note text                     |
-| `labelBoxBkgColor`      | Alt/loop/opt label background |
-| `labelBoxBorderColor`   | Alt/loop/opt label border     |
-| `loopTextColor`         | Loop label text               |
+| `atorBkg` | Preenchimento da caixa do participante |
+| `atorBorder` | Borda da caixa do participante |
+| `actorTextColor` | Texto do participante |
+| `ativaçãoBkgColor` | Preenchimento da caixa de ativação |
+| `ativaçãoBorderColor` | Borda da caixa de ativação |
+| `signalColor` | Meu
 
-### Flowchart Specific
+cor da seta ssage |
+| `signalTextColor` | Cor do texto da mensagem |
+| `noteBkgColor` | Nota de fundo |
+| `noteBorderColor` | Borda de nota |
+| `noteTextColor` | Texto da nota |
+| `labelBoxBkgColor` | Fundo do rótulo Alt/loop/opt |
+| `labelBoxBorderColor` | Borda do rótulo Alt/loop/opt |
+| `loopTextColor` | Texto do rótulo de loop |
 
-| Variable        | Controls  |
+### Específico do fluxograma
+
+| Variável | Controles |
 | --------------- | --------- |
-| `nodeTextColor` | Node text |
+| `nodeTextColor` | Texto do nó |
 
-## Element-Level Styling
+## Estilo em nível de elemento
 
-### CSS Classes (Flowchart)
-
-```mermaid
+### Classes CSS (Fluxograma)```mermaid
 flowchart LR
     A[Success]:::success
     B[Warning]:::warning
@@ -183,53 +188,47 @@ flowchart LR
     classDef error fill:#ef4444,stroke:#dc2626,color:#fff
     classDef info fill:#3b82f6,stroke:#2563eb,color:#fff
     classDef default fill:#f8fafc,stroke:#e2e8f0,color:#1e293b
-```
+````
 
-### Inline Styles (Flowchart)
+### Estilos embutidos (fluxograma)```mermaid
 
-```mermaid
 flowchart LR
-    A --> B --> C
-    style A fill:#f97316,stroke:#ea580c,color:#fff
-    style B fill:#8b5cf6,stroke:#7c3aed,color:#fff
-    style C fill:#06b6d4,stroke:#0891b2,color:#fff
-```
+A --> B --> C
+style A fill:#f97316,stroke:#ea580c,color:#fff
+style B fill:#8b5cf6,stroke:#7c3aed,color:#fff
+style C fill:#06b6d4,stroke:#0891b2,color:#fff
 
-### Link Styles (Flowchart)
-
-```mermaid
+````
+### Estilos de link (fluxograma)```mermaid
 flowchart LR
     A --> B --> C
 
     linkStyle 0 stroke:#ef4444,stroke-width:3px
     linkStyle 1 stroke:#10b981,stroke-width:2px,stroke-dasharray:5
-```
+````
 
-## Brand Color Presets
+## Predefinições de cores da marca
 
-### Tailwind-Inspired Palette
+### Paleta inspirada no Tailwind```
 
-```
 %%{init: {'theme': 'base', 'themeVariables': {
-  'primaryColor': '#3b82f6',
-  'primaryTextColor': '#ffffff',
-  'primaryBorderColor': '#2563eb',
-  'secondaryColor': '#10b981',
-  'tertiaryColor': '#f59e0b',
-  'lineColor': '#6b7280',
-  'background': '#ffffff',
-  'mainBkg': '#f8fafc',
-  'nodeBorder': '#e2e8f0',
-  'clusterBkg': '#f1f5f9',
-  'clusterBorder': '#cbd5e1'
+'primaryColor': '#3b82f6',
+'primaryTextColor': '#ffffff',
+'primaryBorderColor': '#2563eb',
+'secondaryColor': '#10b981',
+'tertiaryColor': '#f59e0b',
+'lineColor': '#6b7280',
+'background': '#ffffff',
+'mainBkg': '#f8fafc',
+'nodeBorder': '#e2e8f0',
+'clusterBkg': '#f1f5f9',
+'clusterBorder': '#cbd5e1'
 }}}%%
-```
 
-### AWS-Themed (Elegant)
+````
+### Tema AWS (elegante)
 
-Uses AWS orange for primary with **soft slate lines** instead of the harsh default black:
-
-```
+Usa laranja AWS para primário com **linhas suaves** em vez do preto padrão severo:```
 %%{init: {'theme': 'base', 'themeVariables': {
   'primaryColor': '#FF9900',
   'primaryTextColor': '#232F3E',
@@ -244,32 +243,29 @@ Uses AWS orange for primary with **soft slate lines** instead of the harsh defau
   'clusterBorder': '#d4a574',
   'edgeLabelBackground': '#ffffff'
 }}}%%
-```
+````
 
-### Monochrome Professional
+### Profissional Monocromático```
 
-```
 %%{init: {'theme': 'base', 'themeVariables': {
-  'primaryColor': '#374151',
-  'primaryTextColor': '#ffffff',
-  'primaryBorderColor': '#1f2937',
-  'secondaryColor': '#6b7280',
-  'tertiaryColor': '#9ca3af',
-  'lineColor': '#94a3b8',
-  'background': '#ffffff',
-  'mainBkg': '#f9fafb',
-  'nodeBorder': '#d1d5db',
-  'clusterBkg': '#f3f4f6',
-  'clusterBorder': '#9ca3af',
-  'edgeLabelBackground': '#ffffff'
+'primaryColor': '#374151',
+'primaryTextColor': '#ffffff',
+'primaryBorderColor': '#1f2937',
+'secondaryColor': '#6b7280',
+'tertiaryColor': '#9ca3af',
+'lineColor': '#94a3b8',
+'background': '#ffffff',
+'mainBkg': '#f9fafb',
+'nodeBorder': '#d1d5db',
+'clusterBkg': '#f3f4f6',
+'clusterBorder': '#9ca3af',
+'edgeLabelBackground': '#ffffff'
 }}}%%
-```
 
-### Indigo-Emerald (Modern SaaS)
+````
+### Índigo-Esmeralda (SaaS moderno)
 
-A fresh, modern palette for SaaS architecture diagrams:
-
-```
+Uma paleta nova e moderna para diagramas de arquitetura SaaS:```
 %%{init: {'theme': 'base', 'themeVariables': {
   'primaryColor': '#4f46e5',
   'primaryTextColor': '#ffffff',
@@ -286,34 +282,31 @@ A fresh, modern palette for SaaS architecture diagrams:
   'edgeLabelBackground': '#ffffff',
   'textColor': '#334155'
 }}}%%
-```
+````
 
-## C4 Diagram Styling
+## Estilo do Diagrama C4
 
-C4 diagrams have fixed element colors (blue for systems, gray for persons, etc.) but the **relationship lines default to harsh black**. Always override them.
+Os diagramas C4 têm cores de elementos fixas (azul para sistemas, cinza para pessoas, etc.), mas as **linhas de relacionamento são pretas por padrão**. Sempre os substitua.
 
-**CRITICAL — Arrow Spaghetti Prevention:**
+**CRÍTICO - Prevenção de espaguete com flechas:**
 
-The #1 cause of messy C4 diagrams is too many `Rel()` relationships. Mermaid's Dagre layout engine routes ALL arrows, and with more than ~6 relationships, they inevitably cross and overlap. Follow these rules:
+A causa número 1 de diagramas C4 confusos são muitos relacionamentos `Rel()`. O mecanismo de layout Dagre da Mermaid roteia TODAS as setas e, com mais de aproximadamente 6 relacionamentos, elas inevitavelmente se cruzam e se sobrepõem. Siga estas regras:
 
-- **Maximum 6 Rel() per diagram** — if you need more, split into multiple diagrams
-- **Tree-shaped topology** — each node should ideally have 1 incoming and 1-2 outgoing edges
-- **Avoid mesh connections** — don't connect everything to everything
-- **Declare elements in flow order** — top-to-bottom or left-to-right; the order of declaration affects layout
+- **Máximo de 6 Rel() por diagrama** — se precisar de mais, divida em vários diagramas
+- **Topologia em forma de árvore** — idealmente, cada nó deve ter 1 borda de entrada e 1-2 bordas de saída
+- **Evite conexões mesh** — não conecte tudo a tudo
+- **Declarar elementos em ordem de fluxo** — de cima para baixo ou da esquerda para a direita; a ordem da declaração afeta o layout
 
-### Soft Lines (Mandatory for All C4)
+### Linhas suaves (obrigatórias para todos os C4)```
 
-```
     %% Apply to EVERY Rel() in the diagram
     UpdateRelStyle(from, to, $textColor="#475569", $lineColor="#94a3b8")
     UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
-```
 
-### Highlighted Paths in C4
+````
+### Caminhos destacados em C4
 
-Use accent colors for primary flows while keeping secondary lines soft:
-
-```
+Use cores de destaque para fluxos primários, mantendo as linhas secundárias suaves:```
     %% Primary/user-facing relationship
     UpdateRelStyle(user, api, $textColor="#1e40af", $lineColor="#3b82f6")
 
@@ -322,105 +315,104 @@ Use accent colors for primary flows while keeping secondary lines soft:
 
     %% External/risky connection
     UpdateRelStyle(api, external, $textColor="#92400e", $lineColor="#f59e0b")
-```
+````
 
-### Custom Element Colors in C4
+### Cores de elementos personalizados em C4```
 
-```
     UpdateElementStyle(elementAlias, $bgColor="#4f46e5", $fontColor="#ffffff", $borderColor="#3730a3")
-```
 
-| Purpose              | bgColor   | fontColor | borderColor |
+````
+| Finalidade | bgCor | fonteCor | bordaCor |
 | -------------------- | --------- | --------- | ----------- |
-| Primary emphasis     | `#4f46e5` | `#ffffff` | `#3730a3`   |
-| Success / Data store | `#059669` | `#ffffff` | `#047857`   |
-| Warning / External   | `#d97706` | `#ffffff` | `#b45309`   |
-| Neutral / Supporting | `#64748b` | `#ffffff` | `#475569`   |
+| Ênfase primária | `#4f46e5` | `#ffffff` | `#3730a3` |
+| Sucesso / Armazenamento de dados | `#059669` | `#ffffff` | `#047857` |
+| Aviso / Externo | `#d97706` | `#ffffff` | `#b45309` |
+| Neutro / Apoio | `#64748b` | `#ffffff` | `#475569` |
 
-## Look Options
-
-```mermaid
+## Opções de aparência```mermaid
 ---
 config:
   look: handDrawn
 ---
 flowchart LR
     A[Sketch Style] --> B[Looks Hand-drawn]
-```
+````
 
-| Look        | Effect                             |
+| Veja        | Efeito                             |
 | ----------- | ---------------------------------- |
-| `classic`   | Standard clean rendering (default) |
-| `handDrawn` | Sketch-like, informal appearance   |
+| `clássico`  | Renderização limpa padrão (padrão) |
+| `handDrawn` | Aparência informal e tipo esboço   |
 
-## Configuration via Frontmatter
+## Configuração via Frontmatter
 
-Full example combining theme, look, and layout:
+## Exemplo completo combinando tema, aparência e layout:```mermaid
 
-```mermaid
----
 config:
-  theme: base
-  look: classic
-  layout: dagre
-  themeVariables:
-    primaryColor: "#4f46e5"
-    lineColor: "#94a3b8"
+theme: base
+look: classic
+layout: dagre
+themeVariables:
+primaryColor: "#4f46e5"
+lineColor: "#94a3b8"
+
 ---
+
 flowchart TD
-    A --> B --> C
+A --> B --> C
+
 ```
 
-**Layout engines:**
-| Engine | When to use |
-|--------|-------------|
-| `dagre` | Default — good for most diagrams |
-| `elk` | Complex diagrams with many crossings (requires plugin) |
+**Mecanismos de layout:**
+| Motor | Quando usar |
+|--------|------------|
+| `dagre` | Padrão — bom para a maioria dos diagramas |
+| `alce` | Diagramas complexos com muitos cruzamentos (requer plugin) |
 
-## Modern Design Principles
+## Princípios de Design Moderno
 
-### The Golden Rule: Soft Lines
+### A regra de ouro: linhas suaves
 
-The single biggest improvement to any Mermaid diagram is replacing the default black lines with a softer color. **Always use `lineColor: '#94a3b8'`** (Slate-400) for light backgrounds or `lineColor: '#64748b'` (Slate-500) for dark themes.
+A maior melhoria em qualquer diagrama Mermaid é substituir as linhas pretas padrão por uma cor mais suave. **Sempre use `lineColor: '#94a3b8'`** (Slate-400) para fundos claros ou `lineColor: '#64748b'` (Slate-500) para temas escuros.
 
-### Color Harmony
+### Harmonia de cores
 
-Use max 3-4 colors per diagram and map them to meaning:
+Use no máximo 3-4 cores por diagrama e mapeie-as de acordo com o significado:
 
-- **Blue tones** → internal systems, primary services
-- **Green tones** → data stores, success states
-- **Amber tones** → external systems, warnings
-- **Slate tones** → lines, borders, secondary elements
-- **Red tones** → error states ONLY (never decoration)
+- **Tons azuis** → sistemas internos, serviços primários
+- **Tons verdes** → armazenamentos de dados, estados de sucesso
+- **Tons âmbar** → sistemas externos, avisos
+- **Tons de ardósia** → linhas, bordas, elementos secundários
+- **Tons vermelhos** → SOMENTE estados de erro (nunca decoração)
 
-### Typography and Labels
+### Tipografia e rótulos
 
-- Keep labels short (max 3-4 words)
-- Use `<br/>` for multi-line labels when needed
-- Use natural language, not abbreviations
-- Include protocol/technology in relationship labels
+- Mantenha os rótulos curtos (máximo de 3-4 palavras)
+- Use `<br/>` para rótulos multilinhas quando necessário
+- Use linguagem natural, não abreviações
+- Incluir protocolo/tecnologia nos rótulos de relacionamento
 
-**CRITICAL — Font Compatibility:**
+**CRÍTICO — Compatibilidade de fontes:**
 
-Do NOT use `system-ui`, `-apple-system`, or `Segoe UI` in `fontFamily` theme variables. These fonts are not available in headless Chromium (used by `mmdc` for rendering) and will silently fall back to a serif font like Times New Roman, making the diagram look unprofessional.
+NÃO use `system-ui`, `-apple-system` ou `Segoe UI` nas variáveis ​​do tema `fontFamily`. Essas fontes não estão disponíveis no Chromium headless (usado por `mmdc` para renderização) e retornarão silenciosamente para uma fonte serifada como Times New Roman, fazendo com que o diagrama pareça pouco profissional.
 
-**Safe font stacks for `fontFamily`:**
-- Default (best): `'trebuchet ms', 'verdana', 'arial', sans-serif` — this is Mermaid's built-in default and works everywhere
-- If you must customize: `'verdana', 'arial', 'helvetica', sans-serif`
+** Pilhas de fontes seguras para `fontFamily`:**
+- Padrão (melhor): `'trebuchet ms', 'verdana', 'arial', sans-serif` — este é o padrão integrado do Mermaid e funciona em qualquer lugar
+- Se você precisar personalizar: `'verdana', 'arial', 'helvetica', sans-serif`
 
-In practice, do NOT set `fontFamily` at all unless you have a specific reason. The Mermaid default font is already professional and universally compatible.
+Na prática, NÃO defina `fontFamily` a menos que você tenha um motivo específico. A fonte padrão Mermaid já é profissional e universalmente compatível.
 
-### Density and Whitespace
+### Densidade e espaço em branco
 
-- Max 15 nodes per diagram
-- Use subgraphs to create visual grouping and whitespace
-- Use invisible links (`A ~~~ B`) to add spacing when needed
-- Prefer LR over TD for most diagrams (reads more naturally)
+- Máximo de 15 nós por diagrama
+- Use subgráficos para criar agrupamento visual e espaços em branco
+- Use links invisíveis (`A ~~~ B`) para adicionar espaçamento quando necessário
+- Prefira LR a TD para a maioria dos diagramas (lê mais naturalmente)
 
-### Init Directive Override Behavior
+### Comportamento de substituição da diretiva de inicialização
 
-When using the render script, the `--theme` flag writes a config file passed to `mmdc -c`. If your `.mmd` file contains a `%%{init}%%` directive, the render script automatically detects it and does NOT pass a theme in the config, so your init directive takes full precedence. This means:
+Ao usar o script de renderização, o sinalizador `--theme` grava um arquivo de configuração passado para `mmdc -c`. Se o seu arquivo `.mmd` contém uma diretiva `%%{init}%%`, o script de renderização o detecta automaticamente e NÃO passa um tema na configuração, então sua diretiva init tem precedência total. Isso significa:
 
-- If your `.mmd` has `%%{init: {'theme': 'dark', ...}}%%`, it will render with dark theme correctly
-- If your `.mmd` has NO init directive, the render script's `--theme` flag (default: `default`) will be applied
-- You do NOT need to pass `--theme` when using init directives
+- Se o seu `.mmd` tiver `%%{init: {'theme': 'dark', ...}}%%`, ele será renderizado com o tema escuro corretamente
+- Se o seu `.mmd` NÃO tiver diretiva init, o sinalizador `--theme` do script de renderização (padrão: `default`) será aplicado
+- Você NÃO precisa passar `--theme` ao usar diretivas init
+```

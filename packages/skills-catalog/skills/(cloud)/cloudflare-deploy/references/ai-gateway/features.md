@@ -1,96 +1,96 @@
-# Features & Capabilities
+# Recursos e capacidades
 
-## Caching
+## Cache
 
 Dashboard: Settings → Cache Responses → Enable
 
 ```typescript
-// Custom TTL (1 hour)
+// TTL customizado (1 hora)
 headers: { 'cf-aig-cache-ttl': '3600' }
 
-// Skip cache
+// Pular cache
 headers: { 'cf-aig-skip-cache': 'true' }
 
-// Custom cache key
+// Chave de cache customizada
 headers: { 'cf-aig-cache-key': 'greeting-en' }
 ```
 
-**Limits:** TTL 60s - 30 days. **Does NOT work with streaming.**
+**Limites:** TTL de 60 s a 30 dias. **Não funciona com streaming.**
 
-## Rate Limiting
+## Rate limiting
 
 Dashboard: Settings → Rate-limiting → Enable
 
-- **Fixed window:** Resets at intervals
-- **Sliding window:** Rolling window (more accurate)
-- Returns `429` when exceeded
+- **Fixed window:** reinicia em intervalos fixos
+- **Sliding window:** janela móvel (mais precisa)
+- Retorna `429` quando excedido
 
 ## Guardrails
 
 Dashboard: Settings → Guardrails → Enable
 
-Filter prompts/responses for inappropriate content. Actions: Flag (log) or Block (reject).
+Filtra prompts/respostas com conteúdo inadequado. Ações: Flag (log) ou Block (rejeitar).
 
 ## Data Loss Prevention (DLP)
 
 Dashboard: Settings → DLP → Enable
 
-Detect PII (emails, SSNs, credit cards). Actions: Flag, Block, or Redact.
+Detecta PII (e-mail, SSN, cartões). Ações: Flag, Block ou Redact.
 
-## Billing Modes
+## Modos de cobrança
 
-| Mode                | Description                              | Setup                                  |
-| ------------------- | ---------------------------------------- | -------------------------------------- |
-| **Unified Billing** | Pay through Cloudflare, no provider keys | Use `cf-aig-authorization` header only |
-| **BYOK**            | Store provider keys in dashboard         | Add keys in Provider Keys section      |
-| **Pass-through**    | Send provider key with each request      | Include provider's auth header         |
+| Modo                | Descrição                                   | Setup                              |
+| ------------------- | ------------------------------------------- | ---------------------------------- |
+| **Unified billing** | Paga via Cloudflare, sem chaves do provedor | Só o header `cf-aig-authorization` |
+| **BYOK**            | Chaves armazenadas no dashboard             | Seção Provider Keys                |
+| **Pass-through**    | Envia a chave do provedor a cada request    | Incluir header de auth do provedor |
 
-## Zero Data Retention
+## Zero data retention
 
 Dashboard: Settings → Privacy → Zero Data Retention
 
-No prompts/responses stored. Request counts and costs still tracked.
+Não armazena prompts/respostas. Contagens e custos de request continuam sendo rastreados.
 
 ## Logging
 
-Dashboard: Settings → Logs → Enable (up to 10M logs)
+Dashboard: Settings → Logs → Enable (até 10M logs)
 
-Each entry: prompt, response, provider, model, tokens, cost, duration, cache status, metadata.
+Cada entrada: prompt, resposta, provedor, modelo, tokens, custo, duração, status de cache, metadados.
 
 ```typescript
-// Skip logging for request
+// Não registrar este request
 headers: { 'cf-aig-collect-log': 'false' }
 ```
 
-**Export:** Use Logpush to S3, GCS, Datadog, Splunk, etc.
+**Exportar:** Logpush para S3, GCS, Datadog, Splunk etc.
 
-## Custom Cost Tracking
+## Rastreamento de custo customizado
 
-For models not in Cloudflare's pricing database:
+Para modelos fora da base de preços da Cloudflare:
 
 Dashboard: Gateway → Settings → Custom Costs
 
-Or via API: set `model`, `input_cost`, `output_cost`.
+Ou via API: defina `model`, `input_cost`, `output_cost`.
 
-## Supported Providers (22+)
+## Provedores suportados (22+)
 
-| Provider                                             | Unified API                         | Notes            |
-| ---------------------------------------------------- | ----------------------------------- | ---------------- |
-| OpenAI                                               | `openai/gpt-4o`                     | Full support     |
-| Anthropic                                            | `anthropic/claude-sonnet-4-5`       | Full support     |
-| Google AI                                            | `google-ai-studio/gemini-2.0-flash` | Full support     |
-| Workers AI                                           | `workersai/@cf/meta/llama-3`        | Native           |
-| Azure OpenAI                                         | `azure-openai/*`                    | Deployment names |
-| AWS Bedrock                                          | Provider endpoint only              | `/bedrock/*`     |
-| Groq                                                 | `groq/*`                            | Fast inference   |
-| Mistral, Cohere, Perplexity, xAI, DeepSeek, Cerebras | Full support                        | -                |
+| Provedor                                             | API unificada                       | Notas               |
+| ---------------------------------------------------- | ----------------------------------- | ------------------- |
+| OpenAI                                               | `openai/gpt-4o`                     | Suporte completo    |
+| Anthropic                                            | `anthropic/claude-sonnet-4-5`       | Suporte completo    |
+| Google AI                                            | `google-ai-studio/gemini-2.0-flash` | Suporte completo    |
+| Workers AI                                           | `workersai/@cf/meta/llama-3`        | Nativo              |
+| Azure OpenAI                                         | `azure-openai/*`                    | Nomes de deployment |
+| AWS Bedrock                                          | Só endpoint do provedor             | `/bedrock/*`        |
+| Groq                                                 | `groq/*`                            | Inferência rápida   |
+| Mistral, Cohere, Perplexity, xAI, DeepSeek, Cerebras | Suporte completo                    | -                   |
 
-## Best Practices
+## Boas práticas
 
-1. Enable caching for deterministic prompts
-2. Set rate limits to prevent abuse
-3. Use guardrails for user-facing AI
-4. Enable DLP for sensitive data
-5. Use unified billing or BYOK for simpler key management
-6. Enable logging for debugging
-7. Use zero data retention when privacy required
+1. Habilite cache para prompts determinísticos
+2. Configure rate limits contra abuso
+3. Use guardrails em IA voltada ao usuário
+4. Habilite DLP para dados sensíveis
+5. Use billing unificado ou BYOK para gestão de chaves mais simples
+6. Habilite logging para debug
+7. Use zero data retention quando a privacidade exigir

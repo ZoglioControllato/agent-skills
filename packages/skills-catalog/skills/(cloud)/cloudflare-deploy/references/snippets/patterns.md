@@ -1,6 +1,6 @@
-# Snippets Patterns
+# Padrões de trechos
 
-## Security Headers
+## Cabeçalhos de segurança
 
 ```javascript
 export default {
@@ -15,9 +15,9 @@ export default {
 }
 ```
 
-**Rule:** `true` (all requests)
+**Regra:** `true` (todas as solicitações)
 
-## Geo-Based Routing
+## Roteamento baseado em localização geográfica
 
 ```javascript
 export default {
@@ -33,7 +33,7 @@ export default {
 }
 ```
 
-## A/B Testing
+##Teste A/B
 
 ```javascript
 export default {
@@ -55,7 +55,7 @@ export default {
 }
 ```
 
-## Bot Detection
+##Detecção de bots
 
 ```javascript
 export default {
@@ -67,9 +67,9 @@ export default {
 }
 ```
 
-**Requires:** Bot Management plan
+**Requer:** Plano de gerenciamento de bots
 
-## API Auth Header Injection
+## Injeção de cabeçalho de autenticação de API
 
 ```javascript
 export default {
@@ -85,7 +85,7 @@ export default {
 }
 ```
 
-## CORS Headers
+##Cabeçalhos CORS
 
 ```javascript
 export default {
@@ -108,7 +108,7 @@ export default {
 }
 ```
 
-## Maintenance Mode
+##Modo de manutenção
 
 ```javascript
 export default {
@@ -122,14 +122,14 @@ export default {
 }
 ```
 
-## Pattern Selection
+##Seleção de padrão
 
-| Pattern          | Complexity | Use Case                |
-| ---------------- | ---------- | ----------------------- |
-| Security Headers | Low        | All sites               |
-| Geo-Routing      | Low        | Regional content        |
-| A/B Testing      | Medium     | Experiments             |
-| Bot Detection    | Medium     | Requires Bot Management |
-| API Auth         | Low        | Backend protection      |
-| CORS             | Low        | API endpoints           |
-| Maintenance      | Low        | Deployments             |
+| Padrão                  | Complexidade | Caso de uso                 |
+| ----------------------- | ------------ | --------------------------- |
+| Cabeçalhos de segurança | Baixo        | Todos os sites              |
+| Geo-Roteamento          | Baixo        | Conteúdo regional           |
+| Teste A/B               | Médio        | Experimentos                |
+| Detecção de bots        | Médio        | Requer gerenciamento de bot |
+| Autenticação de API     | Baixo        | Proteção de back-end        |
+| CORS                    | Baixo        | Terminais de API            |
+| Manutenção              | Baixo        | Implantações                |

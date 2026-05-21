@@ -1,58 +1,55 @@
-# Deployment Details
+# Detalhes de implantação
 
-Use this reference for service discovery, configuration patterns, quick commands, and common issues.
+Use esta referência para descoberta de serviços, padrões de configuração, comandos rápidos e problemas comuns.
 
-## Service Discovery
+## Descoberta de serviço
 
-**List all services:**
+**Listar todos os serviços:**
 
 ```
 list_services()
 ```
 
-Returns all services with IDs, names, types, and status.
+Retorna todos os serviços com IDs, nomes, tipos e status.
 
-**Get specific service details:**
+**Obtenha detalhes específicos do serviço:**
 
 ```
 get_service(serviceId: "<id>")
 ```
 
-Returns full configuration including environment variables and build/start commands.
+Retorna a configuração completa, incluindo variáveis ​​de ambiente e comandos de construção/inicialização.
 
-**List PostgreSQL databases:**
+**Listar bancos de dados PostgreSQL:**
 
 ```
 list_postgres_instances()
 ```
 
-**List Key-Value stores:**
+**Listar armazenamentos de valores-chave:**
 
 ```
 list_key_value()
 ```
 
-## Configuration Details
+## Detalhes de configuração
 
-### Environment Variables
+### Variáveis de ambiente
 
-**All environment variables must be declared in render.yaml.**
+**Todas as variáveis de ambiente devem ser declaradas em render.yaml.**
 
-**Three patterns for environment variables:**
+**Três padrões para variáveis de ambiente:**
 
-1. **Hardcoded values** (non-sensitive configuration):
+1. **Valores codificados** (configuração não sensível):```yaml
+   envVars:
 
-```yaml
-envVars:
-  - key: NODE_ENV
-    value: production
-  - key: API_URL
-    value: https://api.example.com
-```
+- key: NODE_ENV
+  value: production
+- key: API_URL
+  value: https://api.example.com
 
-2. **Database connections** (auto-generated):
-
-```yaml
+````
+2. **Conexões de banco de dados** (geradas automaticamente):```yaml
 envVars:
   - key: DATABASE_URL
     fromDatabase:
@@ -62,36 +59,35 @@ envVars:
     fromDatabase:
       name: redis
       property: connectionString
-```
+````
 
-3. **Secrets** (user fills in Dashboard):
+3. **Segredos** (o usuário preenche o Dashboard):```yaml
+   envVars:
 
-```yaml
-envVars:
-  - key: JWT_SECRET
-    sync: false
-  - key: API_KEY
-    sync: false
-  - key: STRIPE_SECRET_KEY
-    sync: false
-```
+- key: JWT_SECRET
+  sync: false
+- key: API_KEY
+  sync: false
+- key: STRIPE_SECRET_KEY
+  sync: false
 
-Complete environment variable guide: [configuration-guide.md](configuration-guide.md)
+````
+Guia completo de variáveis de ambiente: [configuration-guide.md](configuration-guide.md)
 
-### Port Binding
+### Ligação de porta
 
-**CRITICAL:** Web services must bind to `0.0.0.0:$PORT` (NOT `localhost`). Render sets the `PORT` environment variable.
+**CRÍTICO:** Os serviços da Web devem ser vinculados a `0.0.0.0:$PORT` (NÃO a `localhost`). Render define a variável de ambiente `PORT`.
 
-**Node.js Example:**
+**Exemplo de Node.js:**
 
 ```javascript
 const PORT = process.env.PORT || 3000
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`)
 })
-```
+````
 
-**Python Example:**
+**Exemplo de Python:**
 
 ```python
 import os
@@ -100,7 +96,7 @@ port = int(os.environ.get('PORT', 5000))
 app.run(host='0.0.0.0', port=port)
 ```
 
-**Go Example:**
+**Vá Exemplo:**
 
 ```go
 port := os.Getenv("PORT")
@@ -110,43 +106,44 @@ if port == "" {
 http.ListenAndServe(":"+port, handler)
 ```
 
-### Plan Defaults
+### Padrões do plano
 
-**Use `plan: free` unless the user specifies otherwise.** Refer to Render pricing for current limits and capacity.
+**Use `plan: free` a menos que o usuário especifique o contrário.** Consulte Preço de renderização para limites e capacidade atuais.
 
-### Build Commands
+### Comandos de construção
 
-**Use non-interactive flags to prevent build hangs:**
+**Use sinalizadores não interativos para evitar travamentos de compilação:**
 
 - npm: `npm ci`
-- yarn: `yarn install --frozen-lockfile`
+- fio: `yarn install --frozen-lockfile`
 - pnpm: `pnpm install --frozen-lockfile`
 - bun: `bun install --frozen-lockfile`
-- pip: `pip install -r requirements.txt`
-- uv: `uv sync`
-- apt: `apt-get install -y <package>`
-- bundler: `bundle install --jobs=4 --retry=3`
+- pip: `pip install -r requisitos.txt`
+- uv: `sincronização uv`
+- apt: `apt-get install -y <pacote>`
+- bundler: `instalação do pacote --jobs=4 --retry=3`
 
-### Database Connections
+### Conexões de banco de dados
 
-When services connect to databases in the same Render account, use `fromDatabase` references for internal URLs.
+Quando os serviços se conectam a bancos de dados na mesma conta Render, use referências `fromDatabase` para URLs internos.
 
-### Health Checks
+### Verificações de saúde
 
-Optional but recommended: add a `/health` endpoint for faster deployment detection.
+Opcional, mas recomendado: adicione um endpoint `/health` para detecção de implantação mais rápida.
 
-## Quick Reference
+## Referência rápida
 
-### MCP Tools (Preferred)
+### Ferramentas MCP (preferencial)```
 
-```
 # Service Discovery
+
 list_services()
 get_service(serviceId: "<id>")
 list_postgres_instances()
 list_key_value()
 
 # Service Creation
+
 create_web_service(name, runtime, buildCommand, startCommand, ...)
 create_static_site(name, buildCommand, publishPath, ...)
 create_cron_job(name, runtime, schedule, buildCommand, startCommand, ...)
@@ -154,21 +151,22 @@ create_postgres(name, plan, region)
 create_key_value(name, plan, region)
 
 # Environment Variables
+
 update_environment_variables(serviceId, envVars: [{key, value}, ...])
 
 # Deployment & Monitoring
+
 list_deploys(serviceId, limit)
 list_logs(resource: ["<id>"], level: ["error"])
 get_metrics(resourceId, metricTypes: [...])
 
 # Workspace
+
 get_selected_workspace()
 list_workspaces()
-```
 
-### CLI Commands
-
-```bash
+````
+### Comandos CLI```bash
 # Validate Blueprint
 render blueprints validate
 
@@ -184,59 +182,59 @@ render logs -r <service-id> -o json
 
 # Create deployment
 render deploys create <service-id> --wait
-```
+````
 
-### Templates by Framework
+### Modelos por Framework
 
 - Node.js Express: [../assets/node-express.yaml](../assets/node-express.yaml)
 - Next.js + Postgres: [../assets/nextjs-postgres.yaml](../assets/nextjs-postgres.yaml)
-- Django + Worker: [../assets/python-django.yaml](../assets/python-django.yaml)
-- Static Site: [../assets/static-site.yaml](../assets/static-site.yaml)
-- Go API: [../assets/go-api.yaml](../assets/go-api.yaml)
+- Django + Trabalhador: [../assets/python-django.yaml](../assets/python-django.yaml)
+- Site estático: [../assets/static-site.yaml](../assets/static-site.yaml)
+- API Go: [../assets/go-api.yaml](../assets/go-api.yaml)
 - Docker: [../assets/docker.yaml](../assets/docker.yaml)
 
-### Documentation
+### Documentação
 
-- Full Blueprint specification: [blueprint-spec.md](blueprint-spec.md)
-- Service types explained: [service-types.md](service-types.md)
-- Runtime options: [runtimes.md](runtimes.md)
-- Configuration guide: [configuration-guide.md](configuration-guide.md)
+- Especificação completa do Blueprint: [blueprint-spec.md](blueprint-spec.md)
+- Tipos de serviço explicados: [service-types.md](service-types.md)
+- Opções de tempo de execução: [runtimes.md](runtimes.md)
+- Guia de configuração: [configuration-guide.md](configuration-guide.md)
 
-## Common Issues
+## Problemas comuns
 
-**Issue:** Deployment fails with port binding error
+**Problema:** A implantação falha com erro de vinculação de porta
 
-**Solution:** Ensure app binds to `0.0.0.0:$PORT` (see Port Binding section above)
-
----
-
-**Issue:** Build hangs or times out
-
-**Solution:** Use non-interactive build commands (see Build Commands section above)
+**Solução:** Certifique-se de que o aplicativo esteja vinculado a `0.0.0.0:$PORT` (consulte a seção Ligação de porta acima)
 
 ---
 
-**Issue:** Missing environment variables in Dashboard
+**Problema:** A compilação trava ou expira
 
-**Solution:** All env vars must be declared in render.yaml. Add missing vars with `sync: false` for secrets.
-
----
-
-**Issue:** Database connection fails
-
-**Solution:** Use `fromDatabase` references for internal connection strings.
+**Solução:** Use comandos de compilação não interativos (consulte a seção Comandos de compilação acima)
 
 ---
 
-**Issue:** Static site shows 404 for routes
+**Problema:** Variáveis de ambiente ausentes no Dashboard
 
-**Solution:** Add rewrite rules to render.yaml for SPA routing:
+**Solução:** Todos os env vars devem ser declarados em render.yaml. Adicione vars ausentes com `sync: false` para segredos.
 
-```yaml
+---
+
+**Problema:** Falha na conexão com o banco de dados
+
+**Solução:** Use referências `fromDatabase` para strings de conexão internas.
+
+---
+
+**Problema:** site estático mostra 404 para rotas
+
+**Solução:** adicione regras de reescrita a render.yaml para roteamento SPA:```yaml
 routes:
-  - type: rewrite
-    source: /*
-    destination: /index.html
-```
 
-For more detailed troubleshooting, see the debug skill or [configuration-guide.md](configuration-guide.md).
+- type: rewrite
+  source: /\*
+  destination: /index.html
+
+```
+Para solução de problemas mais detalhada, consulte a habilidade de depuração ou [configuration-guide.md](configuration-guide.md).
+```

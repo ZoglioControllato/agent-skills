@@ -1,92 +1,91 @@
-# Cloudflare Observability Skill Reference
+# Referência de habilidade de observabilidade da Cloudflare
 
-**Purpose**: Comprehensive guidance for implementing observability in Cloudflare Workers, covering traces, logs, metrics, and analytics.
+**Objetivo**: Orientação abrangente para implementar a observabilidade no Cloudflare Workers, abrangendo rastreamentos, logs, métricas e análises.
 
-**Scope**: Cloudflare Observability features ONLY - Workers Logs, Traces, Analytics Engine, Logpush, Metrics & Analytics, and OpenTelemetry exports.
+**Escopo**: APENAS recursos de observabilidade da Cloudflare: Workers Logs, Traces, Analytics Engine, Logpush, Metrics & Analytics e exportações OpenTelemetry.
 
 ---
 
-## Decision Tree: Which File to Load?
+## Árvore de decisão: qual arquivo carregar?
 
-Use this to route to the correct file without loading all content:
+Use isto para rotear para o arquivo correto sem carregar todo o conteúdo:```
+├─ "Como eu habilito/configuro o X?" → configuração.md
+├─ "Qual é a API/método/ligação para X?" → api.md
+├─ "Como faço para implementar o padrão X?" → padrões.md
+│ ├─ Rastreamento de uso/faturamento → padrões.md
+│ ├─ Rastreamento de erros → padrões.md
+│ ├─ Monitoramento de desempenho → padrões.md
+│ ├─ Rastreamento multilocatário → padrões.md
+│ ├─ Filtragem do Tail Worker → padrões.md
+│ └─ Exportação OpenTelemetry → padrões.md
+└─ "Por que o X não está funcionando?" / "Limites?" → pegadinhas.md
 
 ```
-├─ "How do I enable/configure X?"           → configuration.md
-├─ "What's the API/method/binding for X?"   → api.md
-├─ "How do I implement X pattern?"          → patterns.md
-│   ├─ Usage tracking/billing               → patterns.md
-│   ├─ Error tracking                       → patterns.md
-│   ├─ Performance monitoring               → patterns.md
-│   ├─ Multi-tenant tracking                → patterns.md
-│   ├─ Tail Worker filtering                → patterns.md
-│   └─ OpenTelemetry export                 → patterns.md
-└─ "Why isn't X working?" / "Limits?"       → gotchas.md
-```
+## Ordem de leitura
 
-## Reading Order
+Carregue os arquivos nesta ordem com base na tarefa:
 
-Load files in this order based on task:
-
-| Task Type             | Load Order                        | Reason                             |
+| Tipo de tarefa | Ordem de carregamento | Razão |
 | --------------------- | --------------------------------- | ---------------------------------- |
-| **Initial setup**     | configuration.md → gotchas.md     | Setup first, avoid pitfalls        |
-| **Implement feature** | patterns.md → api.md → gotchas.md | Pattern → API details → edge cases |
-| **Debug issue**       | gotchas.md → configuration.md     | Common issues first                |
-| **Query data**        | api.md → patterns.md              | API syntax → query examples        |
+| **Configuração inicial** | configuração.md → gotchas.md | Configure primeiro, evite armadilhas |
+| **Implementar recurso** | padrões.md → api.md → gotchas.md | Padrão → detalhes da API → casos extremos |
+| **Problema de depuração** | gotchas.md → configuração.md | Problemas comuns primeiro |
+| **Consultar dados** | api.md → padrões.md | Sintaxe da API → exemplos de consulta |
 
-## Product Overview
+## Visão geral do produto
 
-### Workers Logs
+### Registros de trabalhadores
 
-- **What:** Console output from Workers (console.log/warn/error)
-- **Access:** Dashboard (Real-time Logs), Logpush, Tail Workers
-- **Cost:** Free (included with all Workers)
-- **Retention:** Real-time only (no historical storage in dashboard)
+- **O que:** Saída do console de Workers (console.log/warn/error)
+- **Acesso:** Painel (registros em tempo real), Logpush, Tail Workers
+- **Custo:** Gratuito (incluído em todos os Trabalhadores)
+- **Retenção:** Somente em tempo real (sem armazenamento histórico no painel)
 
-### Workers Traces
+### Rastreamentos de trabalhadores
 
-- **What:** Execution traces with timing, CPU usage, outcome
-- **Access:** Dashboard (Workers Analytics → Traces), Logpush
-- **Cost:** $0.10/1M spans (GA pricing starts March 1, 2026), 10M free/month
-- **Retention:** 14 days included
+- **O que:** Rastreamentos de execução com tempo, uso de CPU, resultado
+- **Acesso:** Painel (Workers Analytics → Traces), Logpush
+- **Custo:** US$ 0,10/1 milhão de períodos (o preço do GA começa em 1º de março de 2026), 10 milhões gratuitos/mês
+- **Retenção:** 14 dias incluídos
 
-### Analytics Engine
+### Mecanismo de análise
 
-- **What:** High-cardinality event storage and SQL queries
-- **Access:** SQL API, Dashboard (Analytics → Analytics Engine)
-- **Cost:** $0.25/1M writes beyond 10M free/month
-- **Retention:** 90 days (configurable up to 1 year)
+- **O quê:** Armazenamento de eventos de alta cardinalidade e consultas SQL
+- **Acesso:** API SQL, Dashboard (Analytics → Analytics Engine)
+- **Custo:** US$ 0,25/1 milhão de gravações além de 10 milhões gratuitas/mês
+- **Retenção:** 90 dias (configurável até 1 ano)
 
-### Tail Workers
+### Trabalhadores de cauda
 
-- **What:** Workers that receive logs/traces from other Workers
-- **Use Cases:** Log filtering, transformation, external export
-- **Cost:** Standard Workers pricing
+- **O que:** Trabalhadores que recebem logs/rastreamentos de outros Trabalhadores
+- **Casos de uso:** Filtragem de log, transformação, exportação externa
+- **Custo:** Preços de trabalhadores padrão
 
 ### Logpush
 
-- **What:** Stream logs to external storage (S3, R2, Datadog, etc.)
-- **Access:** Dashboard, API
-- **Cost:** Requires Business/Enterprise plan
+- **O que:** Transmita logs para armazenamento externo (S3, R2, Datadog, etc.)
+- **Acesso:** Painel, API
+- **Custo:** Requer plano Business/Enterprise
 
-## Pricing Summary (2026)
+## Resumo de preços (2026)
 
-| Feature          | Free Tier        | Cost Beyond Free Tier | Plan Requirement                 |
+| Recurso | Nível gratuito | Custo além do nível gratuito | Requisito do plano |
 | ---------------- | ---------------- | --------------------- | -------------------------------- |
-| Workers Logs     | Unlimited        | Free                  | Any                              |
-| Workers Traces   | 10M spans/month  | $0.10/1M spans        | Paid Workers (GA: March 1, 2026) |
-| Analytics Engine | 10M writes/month | $0.25/1M writes       | Paid Workers                     |
-| Logpush          | N/A              | Included in plan      | Business/Enterprise              |
+| Registros de trabalhadores | Ilimitado | Grátis | Qualquer |
+| Traços de trabalhadores | 10 milhões de vãos/mês | Períodos de US$ 0,10/1 milhão | Trabalhadores remunerados (GA: 1º de março de 2026) |
+| Mecanismo de análise | 10 milhões de gravações/mês | US$ 0,25/1 milhão de gravações | Trabalhadores remunerados |
+| Logpush | N/A | Incluído no plano | Negócios/Empresa |
 
-## In This Reference
+## Nesta referência
 
-- **[configuration.md](configuration.md)** - Setup, deployment, configuration (Logs, Traces, Analytics Engine, Tail Workers, Logpush)
-- **[api.md](api.md)** - API endpoints, methods, interfaces (GraphQL, SQL, bindings, types)
-- **[patterns.md](patterns.md)** - Common patterns, use cases, examples (billing, monitoring, error tracking, exports)
-- **[gotchas.md](gotchas.md)** - Troubleshooting, best practices, limitations (common errors, performance gotchas, pricing)
+- **[configuration.md](configuration.md)** - Instalação, implantação, configuração (Logs, Traces, Analytics Engine, Tail Workers, Logpush)
+- **[api.md](api.md)** - endpoints de API, métodos, interfaces (GraphQL, SQL, ligações, tipos)
+- **[patterns.md](patterns.md)** - Padrões comuns, casos de uso, exemplos (faturamento, monitoramento, rastreamento de erros, exportações)
+- **[gotchas.md](gotchas.md)** - Solução de problemas, práticas recomendadas, limitações (erros comuns, dicas de desempenho, preços)
 
-## See Also
+## Veja também
 
-- [Cloudflare Workers Docs](https://developers.cloudflare.com/workers/)
-- [Analytics Engine Docs](https://developers.cloudflare.com/analytics/analytics-engine/)
-- [Workers Traces Docs](https://developers.cloudflare.com/workers/observability/traces/)
+- [Documentos do Cloudflare Workers](https://developers.cloudflare.com/workers/)
+- [Documentos do Analytics Engine](https://developers.cloudflare.com/analytics/analytics-engine/)
+- [Documentos sobre rastreamentos de trabalhadores](https://developers.cloudflare.com/workers/observability/traces/)
+```

@@ -22,7 +22,9 @@ const RegistrySchema = z.object({
   version: z.string(),
   categories: z.record(z.string(), z.object({ name: z.string(), description: z.string() })),
   skills: z.array(SkillEntrySchema),
-  deprecated: z.array(z.object({ name: z.string(), message: z.string(), alternatives: z.array(z.string()) })).optional(),
+  deprecated: z
+    .array(z.object({ name: z.string(), message: z.string(), alternatives: z.array(z.string()) }))
+    .optional(),
 })
 
 let cache: RegistryCache | null = null
@@ -83,7 +85,14 @@ export function buildIndexes(registry: Registry): Indexes {
     const desc = skill.description
 
     let usageHint: string
-    const useWhenIdx = desc.indexOf('Use when')
+    const usageMarkers = ['Use when', 'Use quando']
+    let useWhenIdx = -1
+    for (const marker of usageMarkers) {
+      const idx = desc.indexOf(marker)
+      if (idx > 0 && (useWhenIdx === -1 || idx < useWhenIdx)) {
+        useWhenIdx = idx
+      }
+    }
 
     if (useWhenIdx > 0) {
       usageHint = desc.slice(0, useWhenIdx).trim()

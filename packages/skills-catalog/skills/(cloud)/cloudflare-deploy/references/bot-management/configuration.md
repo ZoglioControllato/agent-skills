@@ -42,15 +42,15 @@ Dashboard: Security > Bots > Configure
 ### Bot Management for Enterprise
 
 ```txt
-Dashboard: Security > Bots > Configure > Auto-updates: ON (recommended)
+Painel: Segurança > Bots > Configurar > Atualizações automáticas: ATIVADO (recomendado)
 
-# Template 1: Block definite bots
-(cf.bot_management.score eq 1 and not cf.bot_management.verified_bot and not cf.bot_management.static_resource)
-Action: Block
+# Modelo 1: Bloquear bots definidos
+(cf.bot_management.score eq 1 e não cf.bot_management.verified_bot e não cf.bot_management.static_resource)
+Ação: Bloquear
 
-# Template 2: Challenge likely bots
-(cf.bot_management.score ge 2 and cf.bot_management.score le 29 and not cf.bot_management.verified_bot and not cf.bot_management.static_resource)
-Action: Managed Challenge
+# Modelo 2: Desafie prováveis bots
+(cf.bot_management.score ge 2 e cf.bot_management.score le 29 e não cf.bot_management.verified_bot e não cf.bot_management.static_resource)
+Ação: Desafio Gerenciado
 ```
 
 ## JavaScript Detections Setup
@@ -78,47 +78,45 @@ Update CSP: script-src 'self' /cdn-cgi/challenge-platform/;
 <script src="/cdn-cgi/challenge-platform/scripts/jsd/api.js?onload=jsdOnload" async></script>
 ```
 
-**Use API for**: Selective deployment on specific pages  
-**Don't combine**: Zone-wide toggle + manual injection
+**Use API para**: implantação seletiva em páginas específicas
+**Não combine**: alternância em toda a zona + injeção manual
 
-### WAF Rules for JSD
+### Regras WAF para JSD```txt
 
-```txt
-# NEVER use on first page visit (needs HTML page first)
-(not cf.bot_management.js_detection.passed and http.request.uri.path eq "/api/user/create" and http.request.method eq "POST" and not cf.bot_management.verified_bot)
-Action: Managed Challenge (always use Managed Challenge, not Block)
-```
+# NUNCA use na primeira visita à página (precisa primeiro da página HTML)
 
-### Limitations
+(não cf.bot_management.js_detection.passed e http.request.uri.path eq "/api/user/create" e http.request.method eq "POST" e não cf.bot_management.verified_bot)
+Ação: Desafio Gerenciado (sempre use Desafio Gerenciado, não Bloquear)
 
-- First request won't have JSD data (needs HTML page first)
-- Strips ETags from HTML responses
-- Not supported with CSP via `<meta>` tags
-- Websocket endpoints not supported
-- Native mobile apps won't pass
-- cf_clearance cookie: 15-minute lifespan, max 4096 bytes
+````
+### Limitações
+
+- A primeira solicitação não terá dados JSD (precisa primeiro da página HTML)
+- Remove ETags de respostas HTML
+- Não compatível com CSP por meio de tags `<meta>`
+- Endpoints Websocket não suportados
+- Aplicativos móveis nativos não serão aprovados
+- cookie cf_clearance: vida útil de 15 minutos, máximo de 4.096 bytes
 
 ## \_\_cf_bm Cookie
 
-Cloudflare sets `__cf_bm` cookie to smooth bot scores across user sessions:
+Cloudflare define o cookie `__cf_bm` para suavizar as pontuações do bot nas sessões do usuário:
 
-- **Purpose:** Reduces false positives from score volatility
-- **Scope:** Per-domain, HTTP-only
-- **Lifespan:** Session duration
-- **Privacy:** No PII—only session classification
-- **Automatic:** No configuration required
+- **Objetivo:** Reduz falsos positivos da volatilidade da pontuação
+- **Escopo:** Por domínio, somente HTTP
+- **Vida útil:** Duração da sessão
+- **Privacidade:** Sem PII – apenas classificação de sessão
+- **Automático:** Nenhuma configuração necessária
 
-Bot scores for repeat visitors consider session history via this cookie.
+As pontuações do bot para visitantes repetidos consideram o histórico da sessão por meio deste cookie.
 
-## Static Resource Protection
+## Proteção de recursos estáticos
 
-**File Extensions**: ico, jpg, png, jpeg, gif, css, js, tif, tiff, bmp, pict, webp, svg, svgz, class, jar, txt, csv, doc, docx, xls, xlsx, pdf, ps, pls, ppt, pptx, ttf, otf, woff, woff2, eot, eps, ejs, swf, torrent, midi, mid, m3u8, m4a, mp3, ogg, ts  
-**Plus**: `/.well-known/` path (all files)
-
-```txt
+**Extensões de arquivo**: ico, jpg, png, jpeg, gif, css, js, tif, tiff, bmp, pict, webp, svg, svgz, class, jar, txt, csv, doc, docx, xls, xlsx, pdf, ps, pls, ppt, pptx, ttf, otf, woff, woff2, eot, eps, ejs, swf, torrent, midi, mid, m3u8, m4a, mp3, ogg, ts
+**Mais**: caminho `/.well-known/` (todos os arquivos)```txt
 # Exclude static resources from bot rules
 (cf.bot_management.score lt 30 and not cf.bot_management.static_resource)
-```
+````
 
 **WARNING**: May block mail clients fetching static images
 
@@ -147,29 +145,29 @@ Action: Block
 # Or use dashboard: Security > Settings > Bot Management > Block AI Bots
 ```
 
-| Category                | String Value                 | Example                        |
-| ----------------------- | ---------------------------- | ------------------------------ |
-| AI Crawler              | `AI Crawler`                 | GPTBot, Claude-Web             |
-| AI Assistant            | `AI Assistant`               | Perplexity-User, DuckAssistBot |
-| AI Search               | `AI Search`                  | OAI-SearchBot                  |
-| Accessibility           | `Accessibility`              | Accessible Web Bot             |
-| Academic Research       | `Academic Research`          | Library of Congress            |
-| Advertising & Marketing | `Advertising & Marketing`    | Google Adsbot                  |
-| Aggregator              | `Aggregator`                 | Pinterest, Indeed              |
-| Archiver                | `Archiver`                   | Internet Archive, CommonCrawl  |
-| Feed Fetcher            | `Feed Fetcher`               | RSS/Podcast updaters           |
-| Monitoring & Analytics  | `Monitoring & Analytics`     | Uptime monitors                |
-| Page Preview            | `Page Preview`               | Facebook/Slack link preview    |
-| SEO                     | `Search Engine Optimization` | Google Lighthouse              |
-| Security                | `Security`                   | Vulnerability scanners         |
-| Social Media Marketing  | `Social Media Marketing`     | Brandwatch                     |
-| Webhooks                | `Webhooks`                   | Payment processors             |
-| Other                   | `Other`                      | Uncategorized bots             |
+| Categoria                   | Valor da sequência                  | Exemplo                                |
+| --------------------------- | ----------------------------------- | -------------------------------------- |
+| Rastreador de IA            | `Rastreador de IA`                  | GPTBot, Claude-Web                     |
+| Assistente de IA            | `Assistente de IA`                  | Usuário de perplexidade, DuckAssistBot |
+| Pesquisa de IA              | `Pesquisa de IA`                    | OAI-SearchBot                          |
+| Acessibilidade              | `Acessibilidade`                    | Bot Web Acessível                      |
+| Pesquisa Acadêmica          | `Pesquisa Acadêmica`                | Biblioteca do Congresso                |
+| Publicidade e Marketing     | `Publicidade e Marketing`           | Google Adsbot                          |
+| Agregador                   | `Agregador`                         | Pinterest, de fato                     |
+| Arquivador                  | `Arquivador`                        | Arquivo da Internet, CommonCrawl       |
+| Coletor de feeds            | `Feed Coletor`                      | Atualizadores RSS/Podcast              |
+| Monitoramento e Análise     | `Monitoramento e Análise`           | Monitores de tempo de atividade        |
+| Visualização da página      | `Visualização da página`            | Visualização do link do Facebook/Slack |
+| SEO                         | `Otimização de Mecanismos de Busca` | Farol do Google                        |
+| Segurança                   | `Segurança`                         | Verificadores de vulnerabilidade       |
+| Marketing em mídias sociais | `Marketing em mídias sociais`       | Relógio de marca                       |
+| Webhooks                    | `Webhooks`                          | Processadores de pagamentos            |
+| Outros                      | `Outro`                             | Bots sem categoria                     |
 
-## Best Practices
+## Melhores práticas
 
-- **ML Auto-Updates**: Enable on Enterprise for latest models
-- **Start with Managed Challenge**: Test before blocking
-- **Always exclude verified bots**: Use `not cf.bot_management.verified_bot`
-- **Exempt corporate proxies**: For B2B traffic via `cf.bot_management.corporate_proxy`
-- **Use static resource exception**: Improves performance, reduces overhead
+- **Atualizações automáticas de ML**: habilite no Enterprise para os modelos mais recentes
+- **Comece com Desafio Gerenciado**: teste antes de bloquear
+- **Sempre excluir bots verificados**: Use `not cf.bot_management.verified_bot`
+- **Proxies corporativos isentos**: Para tráfego B2B via `cf.bot_management.corporate_proxy`
+- **Usar exceção de recurso estático**: melhora o desempenho e reduz a sobrecarga

@@ -1,18 +1,18 @@
-# Roadmap Creation
+# Criação de roteiro
 
-**Trigger:** "Create roadmap", "Plan features", "Map project phases"
+**Acionador:** "Criar roteiro", "Planejar recursos", "Mapear fases do projeto"
 
-## Process
+## Processo
 
-Based on PROJECT.md, decompose vision into:
+Com base em PROJECT.md, decomponha a visão em:
 
-- Milestones (shippable increments)
-- Features (user-facing capabilities)
-- Status tracking (planned/in-progress/complete)
+- Marcos (incrementos entregáveis)
+- Recursos (capacidades voltadas para o usuário)
+- Acompanhamento de status (planejado/em andamento/concluído)
 
-## Output: .specs/project/ROADMAP.md
+## Saída: .specs/project/ROADMAP.md
 
-**Structure:**
+**Estrutura:**
 
 ```markdown
 # Roadmap
@@ -59,22 +59,22 @@ Based on PROJECT.md, decompose vision into:
 - [Potential future capability]
 ```
 
-**Status values:**
+**Valores de status:**
 
-- PLANNED: Not started
-- IN PROGRESS: Currently implementing
-- COMPLETE: Shipped and verified
+- PLANEJADO: Não iniciado
+- EM ANDAMENTO: Atualmente em implementação
+- COMPLETO: Enviado e verificado
 
-**Size limit:** 3,000 tokens (~1,800 words)
+**Limite de tamanho:** 3.000 tokens (aproximadamente 1.800 palavras)
 
-**Update strategy:**
+**Estratégia de atualização:**
 
-- Mark features PLANNED → IN PROGRESS when starting
-- Mark IN PROGRESS → COMPLETE when verified
-- Add new milestones as project evolves
+- Marcar recursos PLANEJADOS → EM ANDAMENTO ao iniciar
+- Marque EM ANDAMENTO → CONCLUÍDO quando verificado
+- Adicione novos marcos à medida que o projeto evolui
 
-**Validation:**
+**Validação:**
 
-- Each milestone has clear shippable outcome?
-- Features are user-facing capabilities?
-- Status reflects current reality?
+- Cada marco tem um resultado claro e entregável?
+- Os recursos são recursos voltados para o usuário?
+- O status reflete a realidade atual?

@@ -1,14 +1,14 @@
-# Workers Frameworks
+# Frameworks para Workers
 
-## Hono (Recommended)
+## Hono (recomendado)
 
-Workers-native web framework with excellent TypeScript support and middleware ecosystem.
+Framework web nativo de Workers com excelente suporte a TypeScript e ecossistema de middleware.
 
 ```bash
 npm install hono
 ```
 
-### Basic Setup
+### Configuração básica
 
 ```typescript
 import { Hono } from 'hono'
@@ -24,7 +24,7 @@ app.post('/api/users', async (c) => {
 export default app
 ```
 
-### Typed Environment
+### Ambiente tipado
 
 ```typescript
 import type { Env } from './.wrangler/types/runtime'
@@ -32,7 +32,7 @@ import type { Env } from './.wrangler/types/runtime'
 const app = new Hono<{ Bindings: Env }>()
 
 app.get('/data', async (c) => {
-  const value = await c.env.MY_KV.get('key') // Fully typed
+  const value = await c.env.MY_KV.get('key') // Totalmente tipado
   return c.text(value || 'Not found')
 })
 ```
@@ -46,7 +46,7 @@ import { logger } from 'hono/logger'
 app.use('*', logger())
 app.use('/api/*', cors({ origin: '*' }))
 
-// Custom middleware
+// Middleware customizado
 app.use('/protected/*', async (c, next) => {
   const auth = c.req.header('Authorization')
   if (!auth?.startsWith('Bearer ')) return c.text('Unauthorized', 401)
@@ -54,7 +54,7 @@ app.use('/protected/*', async (c, next) => {
 })
 ```
 
-### Request Validation (Zod)
+### Validação de requisição (Zod)
 
 ```typescript
 import { zValidator } from '@hono/zod-validator'
@@ -66,14 +66,14 @@ const schema = z.object({
 })
 
 app.post('/users', zValidator('json', schema), async (c) => {
-  const validated = c.req.valid('json') // Type-safe, validated data
+  const validated = c.req.valid('json') // Dados tipados e validados
   return c.json({ id: 1, ...validated })
 })
 ```
 
-**Error handling**: Automatic 400 response with validation errors
+**Tratamento de erros**: resposta 400 automática com erros de validação
 
-### Route Groups
+### Grupos de rotas
 
 ```typescript
 const api = new Hono().basePath('/api')
@@ -81,10 +81,10 @@ const api = new Hono().basePath('/api')
 api.get('/users', (c) => c.json([]))
 api.post('/users', (c) => c.json({ id: 1 }))
 
-app.route('/', api) // Mounts at /api/*
+app.route('/', api) // Monta em /api/*
 ```
 
-### Error Handling
+### Tratamento de erros
 
 ```typescript
 app.onError((err, c) => {
@@ -95,7 +95,7 @@ app.onError((err, c) => {
 app.notFound((c) => c.json({ error: 'Not Found' }, 404))
 ```
 
-### Accessing ExecutionContext
+### Acessar ExecutionContext
 
 ```typescript
 export default {
@@ -104,7 +104,7 @@ export default {
   },
 }
 
-// In route handlers:
+// Em handlers de rota:
 app.get('/log', (c) => {
   c.executionCtx.waitUntil(logRequest(c.req))
   return c.text('OK')
@@ -135,7 +135,7 @@ app.openapi(route, (c) => {
 app.doc('/openapi.json', { openapi: '3.0.0', info: { version: '1.0.0', title: 'API' } })
 ```
 
-### Testing with Hono
+### Testes com Hono
 
 ```typescript
 import { describe, it, expect } from 'vitest'
@@ -150,9 +150,9 @@ describe('API', () => {
 })
 ```
 
-## Other Frameworks
+## Outros frameworks
 
-### itty-router (Minimalist)
+### itty-router (minimalista)
 
 ```typescript
 import { Router } from 'itty-router'
@@ -164,9 +164,9 @@ router.get('/users/:id', ({ params }) => new Response(params.id))
 export default { fetch: router.handle }
 ```
 
-**Use case**: Tiny bundle size (~500 bytes), simple routing needs
+**Caso de uso**: bundle minúsculo (~500 bytes), roteamento simples
 
-### Worktop (Advanced)
+### Worktop (avançado)
 
 ```typescript
 import { Router } from 'worktop'
@@ -180,18 +180,18 @@ router.add('GET', '/users/:id', (req, res) => {
 router.listen()
 ```
 
-**Use case**: Advanced routing, built-in CORS/cache utilities
+**Caso de uso**: roteamento avançado, utilitários CORS/cache embutidos
 
-## Framework Comparison
+## Comparação de frameworks
 
-| Framework   | Bundle Size | TypeScript | Middleware | Validation | Best For        |
-| ----------- | ----------- | ---------- | ---------- | ---------- | --------------- |
-| Hono        | ~12KB       | Excellent  | Rich       | Zod        | Production apps |
-| itty-router | ~500B       | Good       | Basic      | Manual     | Minimal APIs    |
-| Worktop     | ~8KB        | Good       | Advanced   | Manual     | Complex routing |
+| Framework   | Tamanho do bundle | TypeScript | Middleware | Validação | Melhor para         |
+| ----------- | ----------------- | ---------- | ---------- | --------- | ------------------- |
+| Hono        | ~12KB             | Excelente  | Rico       | Zod       | Apps em produção    |
+| itty-router | ~500B             | Bom        | Básico     | Manual    | APIs mínimas        |
+| Worktop     | ~8KB              | Bom        | Avançado   | Manual    | Roteamento complexo |
 
-## See Also
+## Ver também
 
-- [Patterns](./patterns.md) - Common workflows
-- [API](./api.md) - Runtime APIs
-- [Gotchas](./gotchas.md) - Framework-specific issues
+- [Patterns](./patterns.md) — fluxos comuns
+- [API](./api.md) — APIs de runtime
+- [Gotchas](./gotchas.md) — problemas específicos de framework

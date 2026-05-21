@@ -1,20 +1,17 @@
-# netlify.toml Configuration Reference
+# Referência de configuração netlify.toml
 
-Configuration file for Netlify builds and deployments.
+Arquivo de configuração para compilações e implantações do Netlify.
 
-## Basic Structure
+## Estrutura Básica```toml
 
-```toml
 [build]
-  command = "npm run build"
-  publish = "dist"
-```
+command = "npm run build"
+publish = "dist"
 
-## Build Settings
+````
+## Configurações de compilação
 
-### Common Configuration
-
-```toml
+### Configuração Comum```toml
 [build]
   # Command to build your site
   command = "npm run build"
@@ -30,86 +27,75 @@ Configuration file for Netlify builds and deployments.
 
   # Ignore builds for specific conditions
   ignore = "git diff --quiet HEAD^ HEAD package.json"
-```
+````
 
-## Environment Variables
+## Variáveis ​​de ambiente```toml
 
-```toml
 [build.environment]
-  NODE_VERSION = "18"
-  NPM_FLAGS = "--prefix=/dev/null"
+NODE_VERSION = "18"
+NPM_FLAGS = "--prefix=/dev/null"
 
 [context.production.environment]
-  NODE_ENV = "production"
-```
+NODE_ENV = "production"
 
-## Framework Detection
+````
+## Detecção de estrutura
 
-Netlify auto-detects frameworks, but you can override:
+O Netlify detecta automaticamente estruturas, mas você pode substituir:
 
-### Next.js
-
-```toml
+### Próximo.js```toml
 [build]
   command = "npm run build"
   publish = ".next"
-```
+````
 
-### React (Vite)
+### Reagir (Vite)```toml
 
-```toml
+[build]
+command = "npm run build"
+publish = "dist"
+
+````
+### Vista```toml
 [build]
   command = "npm run build"
   publish = "dist"
-```
+````
 
-### Vue
+### Astro```toml
 
-```toml
 [build]
-  command = "npm run build"
-  publish = "dist"
-```
+command = "npm run build"
+publish = "dist"
 
-### Astro
-
-```toml
-[build]
-  command = "npm run build"
-  publish = "dist"
-```
-
-### SvelteKit
-
-```toml
+````
+### Kit Svelte```toml
 [build]
   command = "npm run build"
   publish = "build"
-```
+````
 
-## Redirects and Rewrites
-
-```toml
-[[redirects]]
-  from = "/old-path"
-  to = "/new-path"
-  status = 301
+## Redirecionamentos e reescritas```toml
 
 [[redirects]]
-  from = "/api/*"
-  to = "https://api.example.com/:splat"
-  status = 200
+from = "/old-path"
+to = "/new-path"
+status = 301
+
+[[redirects]]
+from = "/api/\*"
+to = "https://api.example.com/:splat"
+status = 200
 
 # SPA fallback (for client-side routing)
+
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-```
+from = "/\*"
+to = "/index.html"
+status = 200
 
-## Headers
-
-```toml
+````
+## Cabeçalhos```toml
 [[headers]]
   for = "/*"
   [headers.values]
@@ -121,35 +107,36 @@ Netlify auto-detects frameworks, but you can override:
   for = "/assets/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
-```
+````
 
-## Context-Specific Configuration
+## Configuração específica do contexto
 
-Deploy different settings per context:
+Implante configurações diferentes por contexto:```toml
 
-```toml
 # Production
+
 [context.production]
-  command = "npm run build:prod"
-  [context.production.environment]
-    NODE_ENV = "production"
+command = "npm run build:prod"
+[context.production.environment]
+NODE_ENV = "production"
 
 # Deploy previews
+
 [context.deploy-preview]
-  command = "npm run build:preview"
+command = "npm run build:preview"
 
 # Branch deploys
+
 [context.branch-deploy]
-  command = "npm run build:staging"
+command = "npm run build:staging"
 
 # Specific branch
+
 [context.staging]
-  command = "npm run build:staging"
-```
+command = "npm run build:staging"
 
-## Functions Configuration
-
-```toml
+````
+## Configuração de funções```toml
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
@@ -157,59 +144,53 @@ Deploy different settings per context:
 [[functions]]
   path = "/api/*"
   function = "api"
-```
+````
 
-## Build Plugins
-
-```toml
-[[plugins]]
-  package = "@netlify/plugin-lighthouse"
-
-  [plugins.inputs]
-    output_path = "reports/lighthouse.html"
+## Construir plug-ins```toml
 
 [[plugins]]
-  package = "netlify-plugin-submit-sitemap"
+package = "@netlify/plugin-lighthouse"
 
-  [plugins.inputs]
-    baseUrl = "https://example.com"
-    sitemapPath = "/sitemap.xml"
-```
+[plugins.inputs]
+output_path = "reports/lighthouse.html"
 
-## Edge Functions
+[[plugins]]
+package = "netlify-plugin-submit-sitemap"
 
-```toml
+[plugins.inputs]
+baseUrl = "https://example.com"
+sitemapPath = "/sitemap.xml"
+
+````
+## Funções de borda```toml
 [[edge_functions]]
   function = "geolocation"
   path = "/api/location"
-```
+````
 
-## Processing
+## Processamento```toml
 
-```toml
 [build.processing]
-  skip_processing = false
+skip_processing = false
 
 [build.processing.css]
-  bundle = true
-  minify = true
+bundle = true
+minify = true
 
 [build.processing.js]
-  bundle = true
-  minify = true
+bundle = true
+minify = true
 
 [build.processing.html]
-  pretty_urls = true
+pretty_urls = true
 
 [build.processing.images]
-  compress = true
-```
+compress = true
 
-## Common Patterns
+````
+## Padrões Comuns
 
-### Single Page Application (SPA)
-
-```toml
+### Aplicativo de página única (SPA)```toml
 [build]
   command = "npm run build"
   publish = "dist"
@@ -218,20 +199,17 @@ Deploy different settings per context:
   from = "/*"
   to = "/index.html"
   status = 200
-```
+````
 
-### Monorepo with Base Directory
+### Monorepo com diretório base```toml
 
-```toml
 [build]
-  base = "packages/web"
-  command = "npm run build"
-  publish = "dist"
-```
+base = "packages/web"
+command = "npm run build"
+publish = "dist"
 
-### Multiple Redirects with Country-Based Routing
-
-```toml
+````
+### Múltiplos Redirecionamentos com Roteamento Baseado no País```toml
 [[redirects]]
   from = "/"
   to = "/uk"
@@ -243,17 +221,16 @@ Deploy different settings per context:
   to = "/us"
   status = 302
   conditions = {Country = ["US"]}
-```
+````
 
-## Validation
+## Validação
 
-Validate your netlify.toml:
-
-```bash
+Valide seu netlify.toml:```bash
 npx netlify build --dry
+
 ```
+## Recursos
 
-## Resources
-
-- Full configuration reference: https://docs.netlify.com/configure-builds/file-based-configuration/
-- Framework-specific guides: https://docs.netlify.com/frameworks/
+- Referência completa de configuração: https://docs.netlify.com/configure-builds/file-based-configuration/
+- Guias específicos da estrutura: https://docs.netlify.com/frameworks/
+```

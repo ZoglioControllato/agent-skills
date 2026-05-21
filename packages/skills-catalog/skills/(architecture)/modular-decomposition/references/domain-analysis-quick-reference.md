@@ -1,35 +1,32 @@
-# Quick Reference Card
+# Cartão de referência rápida
 
-## Decision Trees
+## Árvores de Decisão
 
-### Subdomain Classification
+### Classificação de subdomínio```
 
-```
 ┌─────────────────────────────────────────┐
-│ Is it a competitive advantage?         │
-│ Does it differentiate the business?    │
+│ Is it a competitive advantage? │
+│ Does it differentiate the business? │
 └─────────────┬───────────────────────────┘
-              │
-         YES  │  NO
-      ┌───────┴────────┐
-      ▼                ▼
-┌──────────┐    ┌─────────────────────────┐
-│   CORE   │    │ Is it business-specific?│
-│  DOMAIN  │    │ Requires domain knowledge?
-└──────────┘    └────────┬────────────────┘
-                         │
-                    YES  │  NO
-                 ┌───────┴──────┐
-                 ▼              ▼
-          ┌────────────┐  ┌─────────┐
-          │ SUPPORTING │  │ GENERIC │
-          │ SUBDOMAIN  │  │SUBDOMAIN│
-          └────────────┘  └─────────┘
-```
+│
+YES │ NO
+┌───────┴────────┐
+▼ ▼
+┌──────────┐ ┌─────────────────────────┐
+│ CORE │ │ Is it business-specific?│
+│ DOMAIN │ │ Requires domain knowledge?
+└──────────┘ └────────┬────────────────┘
+│
+YES │ NO
+┌───────┴──────┐
+▼ ▼
+┌────────────┐ ┌─────────┐
+│ SUPPORTING │ │ GENERIC │
+│ SUBDOMAIN │ │SUBDOMAIN│
+└────────────┘ └─────────┘
 
-### Bounded Context Detection
-
-```
+````
+### Detecção de contexto limitado```
 ┌──────────────────────────────────┐
 │ Same term, different meaning?   │
 └────────────┬─────────────────────┘
@@ -45,45 +42,42 @@
 Examples:
 • "Customer" in Sales vs Support → DIFFERENT
 • "Product" everywhere same → SAME (but verify!)
-```
+````
 
-## Cohesion Scoring
+## Pontuação de Coesão
 
-### Quick Score
+### Pontuação Rápida```
 
-```
 Linguistic (0-3):
 └─ Same vocabulary?
-   3 = All terms shared
-   2 = Most terms shared
-   1 = Some terms shared
-   0 = Different vocabulary
+3 = All terms shared
+2 = Most terms shared
+1 = Some terms shared
+0 = Different vocabulary
 
 Usage (0-3):
 └─ Used together?
-   3 = Always used together
-   2 = Frequently together
-   1 = Sometimes together
-   0 = Rarely together
+3 = Always used together
+2 = Frequently together
+1 = Sometimes together
+0 = Rarely together
 
 Data (0-2):
 └─ Direct relationships?
-   2 = Direct entity relationships
-   1 = Indirect relationships
-   0 = No relationships
+2 = Direct entity relationships
+1 = Indirect relationships
+0 = No relationships
 
 Change (0-2):
 └─ Change together?
-   2 = Always change together
-   1 = Sometimes together
-   0 = Independently
+2 = Always change together
+1 = Sometimes together
+0 = Independently
 
 Total: X / 10
-```
 
-### Interpretation
-
-```
+````
+### Interpretação```
 8-10 ✅ HIGH
      └─ Strong subdomain candidate
      └─ Good bounded context boundary
@@ -95,29 +89,26 @@ Total: X / 10
 0-4  ❌ LOW
      └─ Wrong grouping
      └─ Needs separation
-```
+````
 
-## Red Flags
+## Bandeiras Vermelhas
 
-### Linguistic Issues
+### Questões Linguísticas```
 
-```
 ❌ User + Subscription in same service
-   → Identity mixed with Billing
+→ Identity mixed with Billing
 
 ❌ Movie + Invoice in same context
-   → Content mixed with Billing
+→ Content mixed with Billing
 
 ❌ Authentication + Content in same module
-   → Generic mixed with Core
+→ Generic mixed with Core
 
 ✅ Subscription + Invoice + Payment together
-   → All Billing language
-```
+→ All Billing language
 
-### Coupling Issues
-
-```
+````
+### Problemas de acoplamento```
 ❌ Direct entity import across domains
    import { User } from '@identity/entities'
 
@@ -135,47 +126,41 @@ Total: X / 10
 
 ✅ Value object sharing
    class Order { customerId: CustomerId }
-```
+````
 
-## Common Subdomains
+## Subdomínios Comuns
 
-### Generic (can outsource)
+### Genérico (pode terceirizar)```
 
-```
 • Authentication/Authorization
 • Email/SMS sending
 • File storage
 • Logging/Monitoring
 • Caching
 • Search indexing (basic)
-```
 
-### Supporting (business-specific)
-
-```
+````
+### Suporte (específico do negócio)```
 • Inventory management
 • Order fulfillment
 • Content moderation
 • User notifications
 • Reporting/Analytics
 • Invoice generation
-```
+````
 
-### Core (competitive advantage)
+### Núcleo (vantagem competitiva)```
 
-```
 • Recommendation algorithm (unique)
 • Pricing strategy (custom)
 • Matching algorithm (proprietary)
 • Risk assessment (specialized)
 • Forecasting model (custom)
-```
 
-## Integration Patterns
+````
+## Padrões de Integração
 
-### When to Use Each
-
-```
+### Quando usar cada um```
 SHARED KERNEL
 ├─ Use: Rarely, small value objects only
 ├─ Example: Money, Address, Email
@@ -200,13 +185,12 @@ OPEN HOST SERVICE
 ├─ Use: Published API for others
 ├─ Example: Payment gateway API
 └─ Pattern: REST/GraphQL API
-```
+````
 
-## Analysis Checklist
+## Lista de verificação de análise
 
-### Per Concept
+### Por conceito```
 
-```
 □ Business language identified?
 □ Domain assigned?
 □ Subdomain assigned?
@@ -214,11 +198,9 @@ OPEN HOST SERVICE
 □ Related concepts identified?
 □ Dependencies mapped?
 □ Linguistic mismatches checked?
-```
 
-### Per Domain
-
-```
+````
+### Por domínio```
 □ Ubiquitous Language defined?
 □ Key concepts listed?
 □ Subdomains identified?
@@ -226,11 +208,10 @@ OPEN HOST SERVICE
 □ Cross-domain dependencies mapped?
 □ Internal cohesion assessed?
 □ Boundaries validated?
-```
+````
 
-### Per Bounded Context
+### Por contexto limitado```
 
-```
 □ Linguistic boundary clear?
 □ Contains complete model?
 □ Integration points defined?
@@ -238,13 +219,11 @@ OPEN HOST SERVICE
 □ Size appropriate (Mozart Principle)?
 □ Not driven by architecture?
 □ Not driven by team structure?
-```
 
-## Size Guidelines
+````
+## Diretrizes de tamanho
 
-### Too Small
-
-```
+### Muito pequeno```
 ❌ Gaping holes in Ubiquitous Language
 ❌ Incomplete business capability
 ❌ Too many integration points
@@ -255,11 +234,10 @@ Example:
 - InventoryContext (only Stock)
 - PricingContext (only Price)
 → Should be: CatalogContext
-```
+````
 
-### Just Right
+### Certo```
 
-```
 ✅ Complete Ubiquitous Language
 ✅ Full business capability
 ✅ Clear integration points
@@ -271,11 +249,9 @@ CatalogContext
 ├── Category
 ├── Inventory
 └── Pricing
-```
 
-### Too Large
-
-```
+````
+### Muito grande```
 ❌ Multiple vocabularies mixed
 ❌ Multiple business capabilities
 ❌ Low internal cohesion
@@ -288,26 +264,25 @@ BusinessContext
 ├── User (identity language)
 └── Payment (billing language)
 → Should be: 4 separate contexts
-```
+````
 
-## Common Mistakes
+## Erros Comuns
 
-### Mistake 1: Grouping by Technical Layer
+### Erro 1: agrupamento por camada técnica```
 
-```
 ❌ WRONG:
+
 - ControllerContext
 - ServiceContext
 - RepositoryContext
 
 ✅ RIGHT:
+
 - OrderContext (all layers for orders)
 - ProductContext (all layers for products)
-```
 
-### Mistake 2: Sharing Entities Directly
-
-```
+````
+### Erro 2: Compartilhando entidades diretamente```
 ❌ WRONG:
 class Order {
   user: User;  // Full entity from Identity
@@ -317,22 +292,20 @@ class Order {
 class Order {
   customerId: CustomerId;  // Value object
 }
-```
+````
 
-### Mistake 3: One Size Fits All
+### Erro 3: tamanho único serve para todos```
 
-```
 ❌ WRONG: Force all domains to have same size
 
 ✅ RIGHT: Size based on Ubiquitous Language
+
 - Small domain: 3-5 concepts (if complete)
 - Medium domain: 6-15 concepts
 - Large domain: 16+ concepts (if cohesive)
-```
 
-### Mistake 4: Technical Boundaries
-
-```
+````
+### Erro 4: Limites Técnicos```
 ❌ WRONG: Bounded contexts for:
 - Frontend vs Backend
 - Microservice per entity
@@ -341,83 +314,76 @@ class Order {
 ✅ RIGHT: Linguistic boundaries:
 - Where terms have specific meanings
 - Where business capabilities are distinct
-```
+````
 
-## Key Questions
+## Perguntas-chave
 
-### For Subdomain Classification
+### Para classificação de subdomínio```
 
-```
 1. Does this provide competitive advantage?
 2. Is it business-specific or generic?
 3. Is it essential to core business?
 4. Could we outsource it?
 5. How often does it change?
 6. Does it require domain experts?
-```
 
-### For Bounded Context Definition
-
-```
+````
+### Para definição de contexto limitado```
 1. Does this term have different meanings elsewhere?
 2. Can we define all terms unambiguously here?
 3. Is this a complete business capability?
 4. Are all concepts linguistically related?
 5. Where do we translate between contexts?
 6. What are the integration points?
-```
+````
 
-### For Cohesion Assessment
+### Para avaliação de coesão```
 
-```
 1. Do these concepts share vocabulary?
 2. Are they used together frequently?
 3. Do changes affect them together?
 4. Do they solve the same business problem?
 5. Are they in the same lifecycle?
 6. Do they have direct relationships?
-```
 
-## Signal Words
+````
+## Palavras de sinalização
 
-### Core Domain Signals
-
-```
+### Sinais de Domínio Central```
 "competitive advantage"
 "unique to our business"
 "our secret sauce"
 "what makes us different"
 "complex business rules"
 "needs domain experts"
-```
+````
 
-### Supporting Signals
+### Sinais de suporte```
 
-```
 "necessary but standard"
 "business-specific"
 "supports core operations"
 "moderate complexity"
 "internal tool"
-```
 
-### Generic Signals
-
-```
+````
+### Sinais Genéricos```
 "could buy this"
 "standard functionality"
 "well-known solution"
 "common to all businesses"
 "infrastructure"
-```
+````
 
-### Low Cohesion Signals
+### Sinais de baixa coesão```
 
-```
 "mixed concerns"
 "different vocabularies"
 "unrelated concepts"
 "tight coupling"
 "unclear boundary"
 "linguistic mismatch"
+
+```
+
 ```

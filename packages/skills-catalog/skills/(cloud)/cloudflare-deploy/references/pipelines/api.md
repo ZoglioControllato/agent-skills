@@ -21,27 +21,27 @@ export default {
 } satisfies ExportedHandler<Env>
 ```
 
-**Key points:**
+**Pontos principais:**
 
-- `send()` accepts single object or array
-- Always returns `Promise<void>` (no confirmation data)
-- Throws on network/validation errors (wrap in try/catch)
-- Use `ctx.waitUntil()` for fire-and-forget pattern
+- `send()` aceita um único objeto ou array
+- Sempre retorna `Promise<void>` (sem dados de confirmação)
+- Lança erros de rede/validação (envolver em try/catch)
+- Use `ctx.waitUntil()` para o padrão disparar e esquecer
 
-## Writing Events
+## Escrevendo eventos
 
-### Single Event
+### Evento único```typescript
 
-```typescript
 await env.STREAM.send([
-  {
-    user_id: '12345',
-    event_type: 'purchase',
-    product_id: 'widget-001',
-    amount: 29.99,
-  },
+{
+user_id: '12345',
+event_type: 'purchase',
+product_id: 'widget-001',
+amount: 29.99,
+},
 ])
-```
+
+````
 
 ### Batch Events
 
@@ -51,7 +51,7 @@ const events = [
   { user_id: 'user2', event_type: 'purchase', amount: 50 },
 ]
 await env.STREAM.send(events)
-```
+````
 
 **Limits:**
 
@@ -122,49 +122,49 @@ curl -X POST https://{stream-id}.ingest.cloudflare.com \
   -d '[{"event": "data"}]'
 ```
 
-**Required permission:** Workers Pipeline Send
+**Permissão necessária:** Envio de pipeline de trabalhadores
 
-Create token: Dashboard → Workers → API tokens → Create with Pipeline Send permission
+Criar token: Painel → Trabalhadores → Tokens de API → Criar com permissão de envio de pipeline
 
-### Response Codes
+### Códigos de Resposta
 
-| Code | Meaning           | Action                             |
-| ---- | ----------------- | ---------------------------------- |
-| 200  | Accepted          | Success                            |
-| 400  | Invalid format    | Check JSON array, schema match     |
-| 401  | Auth failed       | Verify token valid                 |
-| 413  | Payload too large | Split into smaller batches (<1 MB) |
-| 429  | Rate limited      | Back off, retry with delay         |
-| 5xx  | Server error      | Retry with exponential backoff     |
+| Código | Significado             | Ação                                                |
+| ------ | ----------------------- | --------------------------------------------------- |
+| 200    | Aceito                  | Sucesso                                             |
+| 400    | Formato inválido        | Verifique a matriz JSON, correspondência de esquema |
+| 401    | Falha na autenticação   | Verifique se o token é válido                       |
+| 413    | Carga útil muito grande | Dividido em lotes menores (<1 MB)                   |
+| 429    | Taxa limitada           | Recue, tente novamente com atraso                   |
+| 5xx    | Erro no servidor        | Tentar novamente com espera exponencial             |
 
-## SQL Functions Quick Reference
+## Referência rápida de funções SQL
 
-Available in `INSERT INTO sink SELECT ... FROM stream` transformations:
+Disponível nas transformações `INSERT INTO sink SELECT ... FROM stream`:
 
-| Function                     | Example                                             | Use Case                  |
-| ---------------------------- | --------------------------------------------------- | ------------------------- |
-| `UPPER(s)`                   | `UPPER(event_type)`                                 | Normalize strings         |
-| `LOWER(s)`                   | `LOWER(email)`                                      | Case-insensitive matching |
-| `CONCAT(...)`                | `CONCAT(user_id, '_', product_id)`                  | Generate composite keys   |
-| `CASE WHEN ... THEN ... END` | `CASE WHEN amount > 100 THEN 'high' ELSE 'low' END` | Conditional enrichment    |
-| `CAST(x AS type)`            | `CAST(timestamp AS string)`                         | Type conversion           |
-| `COALESCE(x, y)`             | `COALESCE(amount, 0.0)`                             | Default values            |
-| Math operators               | `amount * 1.1`, `price / quantity`                  | Calculations              |
-| Comparison                   | `amount > 100`, `status IN ('active', 'pending')`   | Filtering                 |
+| Função                          | Exemplo                                                 | Caso de uso                                                 |
+| ------------------------------- | ------------------------------------------------------- | ----------------------------------------------------------- |
+| `SUPERIOR(es)`                  | `UPPER(tipo_evento)`                                    | Normalizar strings                                          |
+| `INFERIOR(es)`                  | `INFERIOR(e-mail)`                                      | Correspondência sem distinção entre maiúsculas e minúsculas |
+| `CONCAT(...)`                   | `CONCAT(id_usuário, '_', id_produto)`                   | Gerar chaves compostas                                      |
+| `CASO QUANDO ... ENTÃO ... FIM` | `CASE WHEN montante > 100 THEN 'alto' ELSE 'baixo' END` | Enriquecimento condicional                                  |
+| `CAST(x tipo AS)`               | `CAST(timestamp AS string)`                             | Conversão de tipo                                           |
+| `COALESCE(x, y)`                | `COALESCE(quantidade, 0,0)`                             | Valores padrão                                              |
+| Operadores matemáticos          | `quantidade * 1,1`, `preço/quantidade`                  | Cálculos                                                    |
+| Comparação                      | `valor > 100`, `status IN ('ativo', 'pendente')`        | Filtragem                                                   |
 
-**String types for CAST:** `string`, `int32`, `int64`, `float32`, `float64`, `bool`, `timestamp`
+**Tipos de string para CAST:** `string`, `int32`, `int64`, `float32`, `float64`, `bool`, `timestamp`
 
-Full reference: [Pipelines SQL Reference](https://developers.cloudflare.com/pipelines/sql-reference/)
+Referência completa: [Referência SQL de Pipelines](https://developers.cloudflare.com/pipelines/sql-reference/)
 
-## SQL Transform Examples
+## Exemplos de transformação SQL
 
-### Filter Events
+### Filtrar eventos```sql
 
-```sql
 INSERT INTO my_sink
-SELECT * FROM my_stream
+SELECT \* FROM my_stream
 WHERE event_type = 'purchase' AND amount > 100
-```
+
+````
 
 ### Select Specific Fields
 
@@ -172,7 +172,7 @@ WHERE event_type = 'purchase' AND amount > 100
 INSERT INTO my_sink
 SELECT user_id, event_type, timestamp, amount
 FROM my_stream
-```
+````
 
 ### Transform and Enrich
 

@@ -1,13 +1,13 @@
 ---
-title: CSS content-visibility for Long Lists
+title: Visibilidade de conteúdo CSS para listas mais longas
 impact: HIGH
-impactDescription: faster initial render
+impactDescription: renderização inicial mais rápida
 tags: rendering, css, content-visibility, long-lists
 ---
 
-## CSS content-visibility for Long Lists
+## CSS content-visibility para listas mais longas
 
-Apply `content-visibility: auto` to defer off-screen rendering.
+Aplique `content-visibility: auto` para adiar renderização fora da tela.
 
 **CSS:**
 
@@ -18,13 +18,13 @@ Apply `content-visibility: auto` to defer off-screen rendering.
 }
 ```
 
-**Example:**
+**Exemplo:**
 
 ```tsx
 function MessageList({ messages }: { messages: Message[] }) {
   return (
     <div className="overflow-y-auto h-screen">
-      {messages.map(msg => (
+      {messages.map((msg) => (
         <div key={msg.id} className="message-item">
           <Avatar user={msg.author} />
           <div>{msg.content}</div>
@@ -35,4 +35,4 @@ function MessageList({ messages }: { messages: Message[] }) {
 }
 ```
 
-For 1000 messages, browser skips layout/paint for ~990 off-screen items (10× faster initial render).
+Para 1000 mensagens, o navegador pula layout/pintura de ~990 itens fora da tela (renderização inicial ~10× mais rápida).

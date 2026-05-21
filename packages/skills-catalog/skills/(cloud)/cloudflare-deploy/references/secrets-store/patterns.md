@@ -1,10 +1,10 @@
-# Patterns
+# Padrões
 
-## Secret Rotation
+## Rotação Secreta
 
-Zero-downtime rotation with versioned naming (`api_key_v1`, `api_key_v2`):
+Rotação com tempo de inatividade zero com nomenclatura versionada (`api_key_v1`, `api_key_v2`):
 
-```typescript
+````typescript
 interface Env {
   PRIMARY_KEY: { get(): Promise<string> }
   FALLBACK_KEY?: { get(): Promise<string> }
@@ -26,12 +26,9 @@ export default {
     return resp
   },
 }
-```
+```Fluxo de trabalho: Criar `api_key_v2` → adicionar ligação de fallback → implantar → trocar primário → implantar → remover `v1`
 
-Workflow: Create `api_key_v2` → add fallback binding → deploy → swap primary → deploy → remove `v1`
-
-## Encryption with KV
-
+## Criptografia com KV
 ```typescript
 interface Env {
   CACHE: KVNamespace
@@ -58,9 +55,9 @@ export default {
     return Response.json({ ok: true })
   },
 }
-```
+````
 
-## HMAC Signing
+##Assinatura HMAC
 
 ```typescript
 interface Env {
@@ -86,7 +83,7 @@ export default {
 }
 ```
 
-## Audit & Monitoring
+##Auditoria e Monitoramento
 
 ```typescript
 export default {
@@ -128,32 +125,32 @@ export default {
 }
 ```
 
-## Migration from Worker Secrets
+##Migração de segredos de trabalho
 
-Change `env.SECRET` (direct) to `await env.SECRET.get()` (async).
+Altere `env.SECRET` (direto) para `await env.SECRET.get()` (assíncrono).
 
-Steps:
+Etapas:
 
-1. Create in Secrets Store: `wrangler secrets-store secret create <store-id> --name API_KEY --scopes workers --remote`
-2. Add binding to `wrangler.jsonc`: `{"binding": "API_KEY", "store_id": "abc123", "secret_name": "api_key"}`
-3. Update code: `const key = await env.API_KEY.get();`
-4. Test staging, deploy
-5. Remove old: `wrangler secret delete API_KEY`
+1. Crie no Secrets Store: `wrangler secrets-store secret create <store-id> --name API_KEY --scopes workers --remote`
+2. Adicione ligação a `wrangler.jsonc`: `{"binding": "API_KEY", "store_id": "abc123", "secret_name": "api_key"}`
+3. Atualizar código: `const key = await env.API_KEY.get();`
+4. Teste a preparação, implante
+5. Remova o antigo: `wrangler secret delete API_KEY`
 
-## Sharing Across Workers
+## Compartilhamento entre trabalhadores
 
-Same secret, different binding names:
+O mesmo segredo, nomes de ligação diferentes:
 
 ```jsonc
 // worker-1: binding="SHARED_DB", secret_name="postgres_url"
 // worker-2: binding="DB_CONN", secret_name="postgres_url"
 ```
 
-## JSON Secret Parsing
+##Análise de segredo JSON
 
-Store structured config as JSON secrets:
+Armazene configurações estruturadas como segredos JSON:
 
-```typescript
+````typescript
 interface Env {
   DB_CONFIG: { get(): Promise<string> }
 }
@@ -183,22 +180,19 @@ export default {
     }
   },
 }
-```
-
-Store JSON secret:
-
+```Armazene o segredo JSON:
 ```bash
 echo '{"host":"db.example.com","port":5432,"username":"app","password":"secret"}' | \
   wrangler secrets-store secret create <store-id> \
     --name DB_CONFIG --scopes workers --remote
-```
+````
 
-## Integration
+##Integração
 
-### Service Bindings
+### Ligações de serviço
 
-Auth Worker signs JWT with Secrets Store; API Worker verifies via service binding.
+Auth Worker assina JWT com Secrets Store; O API Worker verifica por meio da vinculação de serviço.
 
-See: [workers](../workers/) for service binding patterns.
+Consulte: [workers](../workers/) para padrões de vinculação de serviço.
 
-See: [api.md](./api.md), [gotchas.md](./gotchas.md)
+Veja: [api.md](./api.md), [gotchas.md](./gotchas.md)

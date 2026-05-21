@@ -1,137 +1,133 @@
-# Execute: Validate & Verify
+# Executar: validar e verificar
 
-**Goal**: Verify implementation meets spec AND coding principles. This is NOT a separate phase — verification is part of every task's completion within Execute.
+**Objetivo**: verificar se a implementação atende às especificações E aos princípios de codificação. Esta NÃO é uma fase separada — a verificação faz parte da conclusão de cada tarefa no Execute.
 
-**Two levels of verification:**
+**Dois níveis de verificação:**
 
-1. **Per-task verification (always):** After implementing each task, verify its "Done when" criteria before committing. This is mandatory and automatic.
+1. **Verificação por tarefa (sempre):** Após implementar cada tarefa, verifique seus critérios "Concluído quando" antes de confirmar. Isso é obrigatório e automático.
 
-2. **Feature-level validation (on completion or on demand):** After all tasks for a feature (or priority group) are done, run a comprehensive validation. Includes acceptance criteria check, code quality review, and optionally interactive UAT.
+2. **Validação em nível de recurso (na conclusão ou sob demanda):** Depois que todas as tarefas de um recurso (ou grupo prioritário) forem concluídas, execute uma validação abrangente. Inclui verificação de critérios de aceitação, revisão de qualidade de código e UAT opcionalmente interativo.
 
-**Interactive UAT is triggered when:** The feature has complex user-facing behavior where human judgment matters (UI flows, interaction patterns, visual design). For backend-only or infrastructure work, automated checks are sufficient.
+**O UAT interativo é acionado quando:** O recurso tem um comportamento complexo voltado para o usuário, onde o julgamento humano é importante (fluxos de interface do usuário, padrões de interação, design visual). Para trabalhos apenas de back-end ou de infraestrutura, as verificações automatizadas são suficientes.
 
-**Trigger for explicit validation:** "Validate", "verify work", "UAT", "test with me", "walk me through it"
+**Acionador para validação explícita:** "Validar", "verificar trabalho", "UAT", "testar comigo", "orientar-me sobre isso"
 
 ---
 
-## Process
+## Processo
 
-### 1. Check Completed Tasks
+### 1. Verifique as tarefas concluídas
 
-Go through tasks.md:
+Acesse tarefas.md:
 
-- [ ] All tasks marked done?
-- [ ] Any blocked or partial?
+- [] Todas as tarefas marcadas como concluídas?
+- [ ] Algum bloqueado ou parcial?
 
-### 2. Verify Acceptance Criteria
+### 2. Verifique os critérios de aceitação
 
-For each user story in spec.md:
+Para cada história de usuário em spec.md:```markdown
 
-```markdown
 ### P1: [Story Title]
 
 **Acceptance Criteria**:
 
 1. WHEN [X] THEN [Y] → [PASS/FAIL]
 2. WHEN [X] THEN [Y] → [PASS/FAIL]
-```
 
-### 3. Check Edge Cases
+````
+### 3. Verifique casos extremos
 
-From spec.md edge cases:
+Em casos extremos spec.md:
 
-- [ ] [Edge case 1] handled correctly
-- [ ] [Edge case 2] handled correctly
+- [] [Caso extremo 1] tratado corretamente
+- [] [Caso extremo 2] tratado corretamente
 
-### 4. Run Build-Level Gate Check (MANDATORY)
+### 4. Execute a verificação do portão no nível de construção (OBRIGATÓRIO)
 
-Run the Build-level gate check from TESTING.md. This is NOT optional.
+Execute a verificação de portão no nível de construção em TESTING.md. Isso NÃO é opcional.
 
-If TESTING.md does not exist (greenfield project), use the gate command agreed upon with the user during the Tasks phase.
+Se TESTING.md não existir (projeto greenfield), use o comando gate acordado com o usuário durante a fase de Tarefas.
 
-1. Run: `[build gate command from TESTING.md, or the command agreed during planning]`
-2. Non-zero exit code = STOP. Do not proceed to Code Quality Check.
-3. Record results:
-   - Total test count: [N]
-   - Passed: [N]
-   - Failed: [list]
-   - Skipped: [list — each skip must be justified]
+1. Execute: `[comando build gate de TESTING.md, ou o comando acordado durante o planejamento]`
+2. Código de saída diferente de zero = STOP. Não prossiga para a verificação de qualidade do código.
+3. Registre os resultados:
+   - Contagem total de testes: [N]
+   - Aprovado: [N]
+   - Falhou: [lista]
+   - Ignorados: [lista — cada salto deve ser justificado]
 
-**Test Integrity Check:**
+**Verificação de integridade do teste:**
 
-- Compare current test count against the count before this feature was implemented
-- If test count DECREASED: investigate why. Tests should only be deleted with explicit justification.
-- If assertions were weakened (less specific than before): flag as potential regression
+- Compare a contagem de testes atual com a contagem antes da implementação deste recurso
+- Se a contagem de testes DIMINUIR: investigue o porquê. Os testes só devem ser excluídos com justificativa explícita.
+- Se as afirmações foram enfraquecidas (menos específicas do que antes): sinalizar como possível regressão
 
-### 5. Code Quality Check (MANDATORY)
+### 5. Verificação de qualidade do código (OBRIGATÓRIO)
 
-For each changed file, verify against [coding-principles.md](coding-principles.md):
+Para cada arquivo alterado, verifique [coding-principles.md](coding-principles.md):
 
-| Check                                | Pass? |
+| Verifique | Passar? |
 | ------------------------------------ | ----- |
-| No features beyond what was asked    |       |
-| No abstractions for single-use code  |       |
-| No unnecessary "flexibility" added   |       |
-| Only touched files required for task |       |
-| Didn't "improve" unrelated code      |       |
-| Matches existing patterns/style      |       |
-| Would senior engineer approve?       |       |
+| Nenhum recurso além do que foi solicitado |       |
+| Sem abstrações para código de uso único |       |
+| Nenhuma "flexibilidade" desnecessária adicionada |       |
+| Tocou apenas nos arquivos necessários para a tarefa |       |
+| Não "melhorou" o código não relacionado |       |
+| Corresponde aos padrões/estilos existentes |       |
+| O engenheiro sênior aprovaria?       |       |
 
-❌ Any "No"? → Fix before marking complete.
+❌ Algum “Não”? → Corrija antes de concluir a marcação.
 
-### 6. Interactive UAT (if user-facing feature)
+### 6. UAT interativo (se for recurso voltado para o usuário)
 
-For each testable deliverable, present one test at a time:
-
-```
+Para cada entrega testável, apresente um teste de cada vez:```
 Test [N]: [Test Name]
 
 Expected: [What should happen — specific and observable]
 
 → Does this work? Describe what you see.
-```
+````
 
-Wait for user response:
+Aguarde a resposta do usuário:
 
-| User says                      | Interpret as            |
-| ------------------------------ | ----------------------- |
-| "yes", "pass", "works", "next" | ✅ Pass                 |
-| "skip", "can't test", "n/a"    | ⏭️ Skip                 |
-| Anything else                  | ❌ Issue — log verbatim |
+| O usuário diz                           | Interprete como                     |
+| --------------------------------------- | ----------------------------------- |
+| "sim", "passar", "funciona", "próximo"  | ✅ Passe                            |
+| "pular", "não é possível testar", "n/a" | ⏭️ Pular                            |
+| Qualquer outra coisa                    | ❌ Problema — registre literalmente |
 
-**Severity inference (never ask the user for severity):**
+**Inferência de gravidade (nunca pergunte a gravidade ao usuário):**
 
-| User description contains               | Inferred severity |
-| --------------------------------------- | ----------------- |
-| crash, error, exception, fails, broken  | Blocker           |
-| doesn't work, wrong, missing, can't     | Major             |
-| slow, weird, off, minor, small          | Minor             |
-| color, font, spacing, alignment, visual | Cosmetic          |
-| (unclear)                               | Major (default)   |
+| A descrição do usuário contém                | Gravidade inferida |
+| -------------------------------------------- | ------------------ |
+| acidente, erro, exceção, falha, quebrado     | Bloqueador         |
+| não funciona, errado, falta, não consigo     | Principal          |
+| lento, estranho, desligado, menor, pequeno   | Menor              |
+| cor, fonte, espaçamento, alinhamento, visual | Cosméticos         |
+| (não claro)                                  | Principal (padrão) |
 
-### 7. Generate Fix Plans (if issues found)
+### 7. Gere planos de correção (se forem encontrados problemas)
 
-For each issue found during UAT:
+Para cada problema encontrado durante o UAT:
 
-1. **Diagnose** — Analyze the codebase to find root cause
-2. **Create fix task** — Write a task definition with:
-   - What: The specific fix
-   - Where: File paths
-   - Verify: How to prove the fix works
-   - Done when: Acceptance criteria for the fix
-3. **Present fix plan** — Show all fix tasks to user for approval
+1. **Diagnosticar** — Analise a base de código para encontrar a causa raiz
+2. **Criar tarefa de correção** — Escreva uma definição de tarefa com:
+   - O quê: a correção específica
+   - Onde: Caminhos de arquivo
+   - Verificar: como provar que a correção funciona
+   - Feito quando: Critérios de aceitação para a correção
+3. **Apresentar plano de correção** — Mostre todas as tarefas de correção ao usuário para aprovação
 
-Fix tasks follow the same format as regular tasks and can be executed with the implement phase.
+As tarefas de correção seguem o mesmo formato das tarefas regulares e podem ser executadas com a fase de implementação.
 
-**Guardrail:** Maximum 3 diagnostic iterations per issue. If root cause isn't found after 3 attempts, flag for human investigation.
+**Guardrail:** Máximo de três iterações de diagnóstico por problema. Se a causa raiz não for encontrada após três tentativas, sinalize para investigação humana.
 
-### 8. Report
+### 8. Relatório
 
 ---
 
-## Validation Report Template
+## Modelo de relatório de validação```markdown
 
-```markdown
 # [Feature] Validation
 
 **Date**: [YYYY-MM-DD]
@@ -240,17 +236,20 @@ Update spec.md requirement statuses:
 **Issues found**: [Issue 1: How to fix]
 
 **Next steps**: [Action]
-```
 
+```
 ---
 
-## Tips
+## Pontas
 
-- **P1 first** — MVP must work before P2/P3
-- **WHEN/THEN = Test** — Each criterion is a test case
-- **Be specific** — "Doesn't work" isn't helpful
-- **Recommend fixes** — Don't just report problems, create fix tasks
-- **Quality check is mandatory** — Not optional
-- **Infer severity** — Never ask the user "how bad is this?"
-- **Max 3 diagnostic iterations** — Prevents infinite investigation loops
-- **Update traceability** — Every verified requirement updates spec.md status
+- **P1 primeiro** — MVP deve funcionar antes de P2/P3
+- **WHEN/THEN = Teste** — Cada critério é um caso de teste
+- **Seja específico** — "Não funciona" não ajuda
+- **Recomende correções** — Não apenas relate problemas, crie tarefas de correção
+- **A verificação de qualidade é obrigatória** — Não opcional
+- **Inferir gravidade** — Nunca pergunte ao usuário "quão ruim é isso?"
+- **Máximo de 3 iterações de diagnóstico** — Evita loops de investigação infinitos
+- **Rastreabilidade de atualização** — Cada exigência verificada
+
+mento atualiza status spec.md
+```

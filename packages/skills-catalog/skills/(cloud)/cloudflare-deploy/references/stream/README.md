@@ -1,54 +1,54 @@
 # Cloudflare Stream
 
-Serverless live and on-demand video streaming platform with one API.
+Plataforma serverless de vídeo ao vivo e sob demanda com uma única API.
 
-## Overview
+## Visão geral
 
-Cloudflare Stream provides video upload, storage, encoding, and delivery without managing infrastructure. Runs on Cloudflare's global network.
+O Cloudflare Stream oferece envio, armazenamento, codificação e entrega de vídeo sem gerenciar infraestrutura. Roda na rede global da Cloudflare.
 
-### Key Features
+### Recursos principais
 
-- **On-demand video**: Upload, encode, store, deliver
-- **Live streaming**: RTMPS/SRT ingestion with ABR
-- **Direct creator uploads**: End users upload without API keys
-- **Signed URLs**: Token-based access control
-- **Analytics**: Server-side metrics via GraphQL
-- **Webhooks**: Processing notifications
-- **Captions**: Upload or AI-generate subtitles
-- **Watermarks**: Apply branding to videos
-- **Downloads**: Enable MP4 offline viewing
+- **Vídeo sob demanda:** enviar, codificar, armazenar, entregar
+- **Streaming ao vivo:** ingestão RTMPS/SRT com ABR
+- **Uploads diretos do criador:** usuários finais enviam sem chaves de API
+- **URLs assinadas:** controle de acesso baseado em token
+- **Analytics:** métricas no servidor via GraphQL
+- **Webhooks:** notificações de processamento
+- **Legendas:** envio ou geração com IA
+- **Marcas d’água:** aplicar marca na mídia
+- **Downloads:** habilitar MP4 para visualização offline
 
-## Core Concepts
+## Conceitos centrais
 
-### Video Upload Methods
+### Formas de envio de vídeo
 
-1. **API Upload (TUS protocol)**: Direct server upload
-2. **Upload from URL**: Import from external source
-3. **Direct Creator Uploads**: User-generated content (recommended)
+1. **Upload via API (protocolo TUS):** envio direto do servidor
+2. **Upload a partir de URL:** importar de fonte externa
+3. **Direct Creator Uploads:** conteúdo gerado pelo usuário (recomendado)
 
-### Playback Options
+### Opções de reprodução
 
-1. **Stream Player (iframe)**: Built-in, optimized player
-2. **Custom Player (HLS/DASH)**: Video.js, HLS.js integration
-3. **Thumbnails**: Static or animated previews
+1. **Stream Player (iframe):** player integrado e otimizado
+2. **Player customizado (HLS/DASH):** integração com Video.js, HLS.js
+3. **Thumbnails:** prévias estáticas ou animadas
 
-### Access Control
+### Controle de acesso
 
-- **Public**: No restrictions
-- **requireSignedURLs**: Token-based access
-- **allowedOrigins**: Domain restrictions
-- **Access Rules**: Geo/IP restrictions in tokens
+- **Público:** sem restrições
+- **requireSignedURLs:** acesso por token
+- **allowedOrigins:** restrição por domínio
+- **Access Rules:** restrições Geo/IP nos tokens
 
-### Live Streaming
+### Streaming ao vivo
 
-- RTMPS/SRT ingest from OBS, FFmpeg
-- Automatic recording to on-demand
-- Simulcast to YouTube, Twitch, etc.
-- WebRTC support for browser streaming
+- Ingestão RTMPS/SRT a partir do OBS, FFmpeg
+- Gravação automática para sob demanda
+- Simulcast para YouTube, Twitch etc.
+- Suporte WebRTC para streaming pelo navegador
 
-## Quick Start
+## Início rápido
 
-**Upload video via API**
+**Enviar vídeo via API**
 
 ```bash
 curl -X POST \
@@ -58,7 +58,7 @@ curl -X POST \
   -d '{"url": "https://example.com/video.mp4"}'
 ```
 
-**Embed player**
+**Incorporar player**
 
 ```html
 <iframe
@@ -71,7 +71,7 @@ curl -X POST \
 ></iframe>
 ```
 
-**Create live input**
+**Criar entrada ao vivo**
 
 ```bash
 curl -X POST \
@@ -81,43 +81,45 @@ curl -X POST \
   -d '{"recording": {"mode": "automatic"}}'
 ```
 
-## Limits
+## Limites
 
-- Max file size: 30 GB
-- Max frame rate: 60 fps (recommended)
-- Supported formats: MP4, MKV, MOV, AVI, FLV, MPEG-2 TS/PS, MXF, LXF, GXF, 3GP, WebM, MPG, QuickTime
+- Tamanho máx. do arquivo: 30 GB
+- Taxa de quadros máx.: 60 fps (recomendado)
+- Formatos: MP4, MKV, MOV, AVI, FLV, MPEG-2 TS/PS, MXF, LXF, GXF, 3GP, WebM, MPG, QuickTime
 
-## Pricing
+## Preços
 
-- $5/1000 min stored
-- $1/1000 min delivered
+- US$ 5 / 1000 min armazenados
+- US$ 1 / 1000 min entregues
 
-## Resources
+## Recursos
 
-- Dashboard: https://dash.cloudflare.com/?to=/:account/stream
-- API Docs: https://developers.cloudflare.com/api/resources/stream/
-- Stream Docs: https://developers.cloudflare.com/stream/
+- Painel: https://dash.cloudflare.com/?to=/:account/stream
+- API: https://developers.cloudflare.com/api/resources/stream/
+- Stream: https://developers.cloudflare.com/stream/
 
-## Reading Order
+## Ordem de leitura
 
-| Order | File                                   | Purpose                            | When to Use                   |
-| ----- | -------------------------------------- | ---------------------------------- | ----------------------------- |
-| 1     | [configuration.md](./configuration.md) | Setup SDKs, env vars, signing keys | Starting new project          |
-| 2     | [api.md](./api.md)                     | On-demand video APIs               | Implementing uploads/playback |
-| 3     | [api-live.md](./api-live.md)           | Live streaming APIs                | Building live streaming       |
-| 4     | [patterns.md](./patterns.md)           | Full-stack flows, TUS, JWT signing | Implementing workflows        |
-| 5     | [gotchas.md](./gotchas.md)             | Errors, limits, troubleshooting    | Debugging issues              |
+| Ordem | Arquivo                                | Objetivo                            | Quando usar        |
+| ----- | -------------------------------------- | ----------------------------------- | ------------------ |
+| 1     | [configuration.md](./configuration.md) | SDKs, variáveis de ambiente, chaves | Início de projeto  |
+| 2     | [api.md](./api.md)                     | APIs de vídeo sob demanda           | Uploads/reprodução |
+| 3     | [api-live.md](./api-live.md)           | APIs de ao vivo                     | Streaming ao vivo  |
+| 4     | [patterns.md](./patterns.md)           | Fluxos full-stack, TUS, JWT         | Workflows          |
+| 5     | [gotchas.md](./gotchas.md)             | Erros, limites                      | Depuração          |
 
-## In This Reference
+## Nesta referência
 
-- [configuration.md](./configuration.md) - Setup, environment variables, wrangler config
-- [api.md](./api.md) - On-demand video upload, playback, management APIs
-- [api-live.md](./api-live.md) - Live streaming (RTMPS/SRT/WebRTC), simulcast
-- [patterns.md](./patterns.md) - Full-stack flows, state management, best practices
-- [gotchas.md](./gotchas.md) - Error codes, troubleshooting, limits
+- [configuration.md](./configuration.md) — setup, variáveis, wrangler
+- [api.md](./api.md) — envio, reprodução e gestão sob demanda
+- [api-live.md](./api-live.md) — ao vivo (RTMPS/SRT/WebRTC), simulcast
+- [patterns.md](./patterns.md) — fluxos, estado, boas práticas
+- [gotchas.md](./gotchas.md) — códigos de erro, limites
 
-## See Also
+## Ver também
 
-- [workers](../workers/) - Deploy Stream APIs in Workers
-- [pages](../pages/) - Integrate Stream with Pages
-- [workers-ai](../workers-ai/) - AI-generate captions
+- [workers](../workers/) — expor APIs Stream em Workers
+- [pages](../pages/) — integrar Stream com Pages
+- [workers-ai](../workers-ai/) — legendas com IA
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

@@ -209,29 +209,29 @@ export default {
 }
 ```
 
-## Best Practices
+## Melhores práticas
 
-### Security
+### Segurança
 
-1. **Never expose API tokens client-side** - Generate participant tokens server-side only
-2. **Don't reuse participant tokens** - Generate fresh token per session, use refresh endpoint if expired
-3. **Use custom participant IDs** - Map to your user system for cross-session tracking
+1. **Nunca exponha tokens de API do lado do cliente** - Gere tokens de participantes apenas no lado do servidor
+2. **Não reutilize tokens de participantes** - Gere um novo token por sessão, use o endpoint de atualização se expirar
+3. **Use IDs de participantes personalizados** - Mapeie para seu sistema de usuário para rastreamento de sessões cruzadas
 
-### Performance
+### Desempenho
 
-1. **Event-driven updates** - Listen to events, don't poll. Use `toArray()` only when needed
-2. **Media quality constraints** - Set appropriate resolution/bitrate limits based on network conditions
-3. **Device management** - Enable `autoSwitchAudioDevice` for better UX, handle device list updates
+1. **Atualizações orientadas por eventos** - Ouça os eventos, não faça pesquisas. Use `toArray()` somente quando necessário
+2. **Restrições de qualidade de mídia** - Defina limites apropriados de resolução/taxa de bits com base nas condições da rede
+3. **Gerenciamento de dispositivos** - Ative `autoSwitchAudioDevice` para melhor experiência do usuário e controle as atualizações da lista de dispositivos
 
-### Architecture
+### Arquitetura
 
-1. **Separate Apps for environments** - staging vs production to prevent data mixing
-2. **Preset strategy** - Create presets at App level, reuse across meetings
-3. **Token management** - Backend generates tokens, frontend receives via authenticated endpoint
+1. **Aplicativos separados para ambientes** - preparação versus produção para evitar mistura de dados
+2. **Estratégia predefinida** - Crie predefinições no nível do aplicativo e reutilize-as nas reuniões
+3. **Gerenciamento de tokens** – Backend gera tokens, frontend recebe via endpoint autenticado
 
-## In This Reference
+## Nesta referência
 
-- [README.md](README.md) - Overview, core concepts, quick start
-- [configuration.md](configuration.md) - SDK config, presets, wrangler setup
-- [api.md](api.md) - Client SDK APIs, REST endpoints
-- [gotchas.md](gotchas.md) - Common issues, troubleshooting, limits
+- [README.md](README.md) - Visão geral, conceitos básicos, início rápido
+- [configuration.md](configuration.md) - Configuração do SDK, predefinições, configuração do wrangler
+- [api.md](api.md) - APIs do SDK do cliente, endpoints REST
+- [gotchas.md](gotchas.md) - Problemas comuns, solução de problemas, limites

@@ -49,29 +49,26 @@ await container.start()
 await container.start({ envVars: { KEY: 'value' } })
 ```
 
-Returns when **process starts**, NOT when ports ready. Use for fire-and-forget.
+Retorna quando **o processo inicia**, NÃO quando as portas estão prontas. Use para disparar e esquecer.
 
-### startAndWaitForPorts() - Recommended (20s timeout)
+### startAndWaitForPorts() - Recomendado (tempo limite de 20s)```typescript
 
-```typescript
 await container.startAndWaitForPorts() // Uses requiredPorts
 await container.startAndWaitForPorts({ ports: [8080, 9090] })
 await container.startAndWaitForPorts({
-  ports: [8080],
-  startOptions: { envVars: { KEY: 'value' } },
+ports: [8080],
+startOptions: { envVars: { KEY: 'value' } },
 })
-```
 
-Returns when **ports listening**. Use before HTTP/TCP requests.
+````
+Retorna quando **portas escutando**. Use antes de solicitações HTTP/TCP.
 
-**Port resolution:** explicit ports → requiredPorts → defaultPort → port 33
+**Resolução da porta:** portas explícitas → portas obrigatórias → porta padrão → porta 33
 
-### waitForPort() - Wait for specific port
-
-```typescript
+### waitForPort() - Aguarde uma porta específica```typescript
 await container.waitForPort(8080)
 await container.waitForPort(8080, { timeout: 30000 })
-```
+````
 
 ## Communication
 
@@ -126,15 +123,14 @@ onStart() {
 }
 ```
 
-### onStop()
+###onStop()
 
-Called when SIGTERM received. 15 minutes until SIGKILL. Use for graceful shutdown.
-
-```typescript
+Chamado quando SIGTERM foi recebido. 15 minutos até SIGKILL. Use para um desligamento normal.```typescript
 onStop() {
-  // Save state, close connections, flush logs
+// Save state, close connections, flush logs
 }
-```
+
+````
 
 ### onError()
 
@@ -144,7 +140,7 @@ Called when container crashes or fails to start.
 onError(error: Error) {
   console.error("Container error:", error);
 }
-```
+````
 
 ### onActivityExpired()
 
@@ -194,4 +190,4 @@ export class MyContainer extends Container {
 }
 ```
 
-**⚠️ Use `getState()` for external checks, `ctx.container.running` for internal.**
+**⚠️ Use `getState()` para verificações externas, `ctx.container.running` para verificações internas.**

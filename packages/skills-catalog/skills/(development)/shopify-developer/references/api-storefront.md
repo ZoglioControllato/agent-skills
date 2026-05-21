@@ -1,94 +1,91 @@
-# Storefront and Ajax API Reference
+# Referência de API Storefront e Ajax
 
-## Storefront API
+## API de vitrine
 
-Public API for headless/custom storefronts.
+API pública para vitrines headless/personalizadas.
 
-**Endpoint:**
+**Ponto final:**
+
 ```
 POST https://{store}.myshopify.com/api/2026-01/graphql.json
 ```
 
-### Authentication
+### Autenticação
 
-The Storefront API supports three types of access tokens:
+A API Storefront oferece suporte a três tipos de tokens de acesso:
 
-**1. Public Access Token (Client-Side)**
-- Limited scope, safe for browser-side code
-- Create in Shopify Admin: Apps > Manage private apps > Storefront API
-- Exposes only public storefront data (products, collections, cart)
-- Cannot access customer data or admin functions
+**1. Token de acesso público (lado do cliente)**
 
-```javascript
-{
+- Escopo limitado, seguro para código do navegador
+- Criar no Shopify Admin: Aplicativos > Gerenciar aplicativos privados > API Storefront
+- Expõe apenas dados públicos da vitrine (produtos, coleções, carrinho)
+- Não é possível acessar dados do cliente ou funções administrativas```javascript
+  {
   'Content-Type': 'application/json',
   'X-Shopify-Storefront-Access-Token': '{public_token}'
-}
-```
+  }
 
-**2. Private Access Token (Server-Side)**
-- Broader scope, for server-side implementations
-- Must be kept secure, never exposed to client
-- Can access additional resources based on app permissions
+````
 
-**3. Delegate Access Tokens**
-- Customer-specific tokens for authenticated operations
-- Used for customer login, order history, profile management
-- Short-lived, scoped to individual customer sessions
+**2. Token de acesso privado (lado do servidor)**
+- Escopo mais amplo, para implementações no lado do servidor
+- Deve ser mantido seguro, nunca exposto ao cliente
+- Pode acessar recursos adicionais com base nas permissões do aplicativo
 
-### Headers (Public Access)
+**3. Delegar tokens de acesso**
+- Tokens específicos do cliente para operações autenticadas
+- Usado para login do cliente, histórico de pedidos, gerenciamento de perfil
+- De curta duração, com escopo para sessões individuais de clientes
 
-```javascript
+### Cabeçalhos (acesso público)```javascript
 {
   'Content-Type': 'application/json',
   'X-Shopify-Storefront-Access-Token': '{public_token}' // Optional for public stores
 }
-```
+````
 
-### Query Products
+### Consultar produtos```graphql
 
-```graphql
 query GetProducts($first: Int!) {
-  products(first: $first) {
-    edges {
-      node {
-        id
-        title
-        handle
-        description
-        priceRange {
-          minVariantPrice { amount currencyCode }
-          maxVariantPrice { amount currencyCode }
-        }
-        images(first: 3) {
-          edges {
-            node {
-              url
-              altText
-            }
-          }
-        }
-        variants(first: 10) {
-          edges {
-            node {
-              id
-              title
-              price { amount currencyCode }
-              availableForSale
-              sku
-            }
-          }
-        }
-      }
-    }
-  }
+products(first: $first) {
+edges {
+node {
+id
+title
+handle
+description
+priceRange {
+minVariantPrice { amount currencyCode }
+maxVariantPrice { amount currencyCode }
 }
-```
+images(first: 3) {
+edges {
+node {
+url
+altText
+}
+}
+}
+variants(first: 10) {
+edges {
+node {
+id
+title
+price { amount currencyCode }
+availableForSale
+sku
+}
+}
+}
+}
+}
+}
+}
 
-### Cart Operations
+````
+### Operações do carrinho
 
-Create cart:
-```graphql
+Criar carrinho:```graphql
 mutation CreateCart($input: CartInput!) {
   cartCreate(input: $input) {
     cart {
@@ -117,32 +114,32 @@ mutation CreateCart($input: CartInput!) {
     }
   }
 }
-```
+````
 
-Add to cart:
-```graphql
+Adicionar ao carrinho:```graphql
 mutation AddToCart($cartId: ID!, $lines: [CartLineInput!]!) {
-  cartLinesAdd(cartId: $cartId, lines: $lines) {
-    cart {
-      id
-      lines(first: 10) {
-        edges {
-          node {
-            id
-            quantity
-          }
-        }
-      }
-    }
-  }
+cartLinesAdd(cartId: $cartId, lines: $lines) {
+cart {
+id
+lines(first: 10) {
+edges {
+node {
+id
+quantity
 }
-```
+}
+}
+}
+}
+}
 
-## Ajax API (Theme-Only)
+````
+## API Ajax (somente tema)
 
-JavaScript API for cart operations in themes.
+API JavaScript para operações de carrinho em temas.
 
-**Get Cart:**
+**Obter carrinho:**
+
 ```javascript
 fetch('/cart.js')
   .then(response => response.json())
@@ -152,82 +149,89 @@ fetch('/cart.js')
     console.log('Total:', cart.total_price);
     console.log('Items:', cart.items);
   });
-```
+````
 
-**Add to Cart:**
+**Adicionar ao carrinho:**
+
 ```javascript
 fetch('/cart/add.js', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({
-    id: variantId,              // Required: variant ID
-    quantity: 1,                 // Optional: default 1
-    properties: {                // Optional: custom data
+    id: variantId, // Required: variant ID
+    quantity: 1, // Optional: default 1
+    properties: {
+      // Optional: custom data
       'Gift wrap': 'Yes',
-      'Note': 'Happy Birthday!'
-    }
-  })
+      Note: 'Happy Birthday!',
+    },
+  }),
 })
-  .then(response => response.json())
-  .then(item => {
-    console.log('Added to cart:', item);
+  .then((response) => response.json())
+  .then((item) => {
+    console.log('Added to cart:', item)
   })
-  .catch(error => {
-    console.error('Error:', error);
-  });
+  .catch((error) => {
+    console.error('Error:', error)
+  })
 ```
 
-**Update Cart:**
+**Atualizar carrinho:**
+
 ```javascript
 fetch('/cart/change.js', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({
-    line: 1,          // Line item index (1-based)
-    quantity: 2       // New quantity (0 = remove)
-  })
+    line: 1, // Line item index (1-based)
+    quantity: 2, // New quantity (0 = remove)
+  }),
 })
-  .then(response => response.json())
-  .then(cart => console.log('Updated cart:', cart));
+  .then((response) => response.json())
+  .then((cart) => console.log('Updated cart:', cart))
 ```
 
-**Clear Cart:**
+**Limpar carrinho:**
+
 ```javascript
 fetch('/cart/clear.js', { method: 'POST' })
-  .then(response => response.json())
-  .then(cart => console.log('Cart cleared'));
+  .then((response) => response.json())
+  .then((cart) => console.log('Cart cleared'))
 ```
 
-**Update Cart Attributes:**
+**Atualizar atributos do carrinho:**
+
 ```javascript
 fetch('/cart/update.js', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({
     attributes: {
-      'gift_wrap': 'true',
-      'gift_message': 'Happy Birthday!'
+      gift_wrap: 'true',
+      gift_message: 'Happy Birthday!',
     },
-    note: 'Please handle with care'
-  })
+    note: 'Please handle with care',
+  }),
 })
-  .then(response => response.json())
-  .then(cart => console.log('Cart updated'));
+  .then((response) => response.json())
+  .then((cart) => console.log('Cart updated'))
 ```
 
-## Customer Account API
+## API de conta do cliente
 
-Shopify's newer API for customer-facing account operations (replaces legacy customer endpoints):
+API mais recente da Shopify para operações de conta voltadas ao cliente (substitui endpoints legados do cliente):
 
-**Endpoint:**
+**Ponto final:**
+
 ```
 POST https://{store}.myshopify.com/account/customer/api/2026-01/graphql
 ```
 
-**Key operations:**
-- Customer login and registration
-- Order history and tracking
-- Address management
-- Profile updates
+**Operações principais:**
 
-**Note:** This API uses a different authentication flow via customer access tokens. See [Shopify docs](https://shopify.dev/docs/api/customer) for implementation details.
+- Login e registro do cliente
+- Histórico de pedidos e rastreamento
+- Gerenciamento de endereços
+- Atualizações de perfil
+
+**Observação:** Esta API usa um fluxo de autenticação diferente por meio de tokens de acesso do cliente. Consulte [documentos do Shopify](https://shopify.dev/docs/api/customer) para obter detalhes de implementação.

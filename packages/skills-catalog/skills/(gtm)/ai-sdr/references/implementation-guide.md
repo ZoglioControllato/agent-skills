@@ -1,48 +1,45 @@
-## Section 3: Signal-to-Action Routing
+## Seção 3: Roteamento de sinal para ação
 
-### Signal Detection and Response Matrix
+### Detecção de Sinal e Matriz de Resposta```
 
-```
 +----------------------------+----------------------------------+-------------+----------+
-| Signal Detected            | Automated Action                 | Priority    | Channel  |
+| Signal Detected | Automated Action | Priority | Channel |
 +----------------------------+----------------------------------+-------------+----------+
-| Funding announced          | Personalized congrats +          | P1 - 24hr   | Email    |
-|                            | relevant case study              |             |          |
+| Funding announced | Personalized congrats + | P1 - 24hr | Email |
+| | relevant case study | | |
 +----------------------------+----------------------------------+-------------+----------+
-| Hiring for your category   | "Noticed you're building out     | P1 - 24hr   | Email +  |
-|                            | [team]" email with ROI data      |             | LinkedIn |
+| Hiring for your category | "Noticed you're building out | P1 - 24hr | Email + |
+| | [team]" email with ROI data | | LinkedIn |
 +----------------------------+----------------------------------+-------------+----------+
-| Competitor contract        | Competitive displacement         | P1 - 48hr   | Email +  |
-| renewal approaching        | sequence with migration offer    |             | Phone    |
+| Competitor contract | Competitive displacement | P1 - 48hr | Email + |
+| renewal approaching | sequence with migration offer | | Phone |
 +----------------------------+----------------------------------+-------------+----------+
-| Website visit (pricing     | Immediate follow-up with         | P0 - 5min   | Email    |
-| page or demo page)         | calendar link                    |             |          |
+| Website visit (pricing | Immediate follow-up with | P0 - 5min | Email |
+| page or demo page) | calendar link | | |
 +----------------------------+----------------------------------+-------------+----------+
-| Job posting matches your   | "Companies hiring for X          | P2 - 72hr   | Email    |
-| solution category          | typically need Y" outreach       |             |          |
+| Job posting matches your | "Companies hiring for X | P2 - 72hr | Email |
+| solution category | typically need Y" outreach | | |
 +----------------------------+----------------------------------+-------------+----------+
-| Usage milestone (for       | In-product expansion prompt +    | P1 - 24hr   | In-app + |
-| existing customers)        | upsell sequence                  |             | Email    |
+| Usage milestone (for | In-product expansion prompt + | P1 - 24hr | In-app + |
+| existing customers) | upsell sequence | | Email |
 +----------------------------+----------------------------------+-------------+----------+
-| Content engagement (liked  | "Saw you engaged with [topic]"   | P2 - 48hr   | LinkedIn |
-| post, downloaded asset)    | connection request               |             |          |
+| Content engagement (liked | "Saw you engaged with [topic]" | P2 - 48hr | LinkedIn |
+| post, downloaded asset) | connection request | | |
 +----------------------------+----------------------------------+-------------+----------+
-| Executive change           | New exec welcome + intro to      | P1 - 1wk    | Email +  |
-| (new CRO, VP Sales)        | your champion at the account     |             | LinkedIn |
+| Executive change | New exec welcome + intro to | P1 - 1wk | Email + |
+| (new CRO, VP Sales) | your champion at the account | | LinkedIn |
 +----------------------------+----------------------------------+-------------+----------+
-| Tech stack change          | "Noticed you adopted [tool]"     | P2 - 72hr   | Email    |
-| detected                   | integration pitch                |             |          |
+| Tech stack change | "Noticed you adopted [tool]" | P2 - 72hr | Email |
+| detected | integration pitch | | |
 +----------------------------+----------------------------------+-------------+----------+
-| Earnings call mentions     | Relevant case study tied to      | P2 - 1wk    | Email    |
-| pain you solve             | stated priority                  |             |          |
+| Earnings call mentions | Relevant case study tied to | P2 - 1wk | Email |
+| pain you solve | stated priority | | |
 +----------------------------+----------------------------------+-------------+----------+
-```
 
-### Signal Source Stack
+````
+### Pilha de fonte de sinal
 
-Where to detect these signals:
-
-```
+Onde detectar esses sinais:```
 FIRST-PARTY SIGNALS (highest intent):
   - Website visits (Clearbit Reveal, RB2B, Factors.ai)
   - Product usage data (Segment, Amplitude)
@@ -60,50 +57,49 @@ THIRD-PARTY SIGNALS (contextual):
   - News and PR monitoring (Google Alerts, Mention)
   - SEC filings and earnings calls (for enterprise)
   - BuiltWith / Wappalyzer (tech stack changes)
-```
+````
 
-### Signal Scoring Model
+### Modelo de pontuação de sinal
 
-Not all signals deserve the same response:
-
-```
+Nem todos os sinais merecem a mesma resposta:```
 SIGNAL SCORE = Intent Weight x Recency Multiplier x ICP Fit Score
 
 Intent weights:
-  - Pricing page visit:       10
-  - Demo request:             10
-  - Competitor evaluation:     9
-  - Funding round:             7
-  - Hiring for category:       7
-  - Content download:          5
-  - LinkedIn engagement:       3
-  - Job posting match:         3
+
+- Pricing page visit: 10
+- Demo request: 10
+- Competitor evaluation: 9
+- Funding round: 7
+- Hiring for category: 7
+- Content download: 5
+- LinkedIn engagement: 3
+- Job posting match: 3
 
 Recency multipliers:
-  - Last 24 hours:            3x
-  - Last 7 days:              2x
-  - Last 30 days:             1x
-  - Older than 30 days:       0.5x
+
+- Last 24 hours: 3x
+- Last 7 days: 2x
+- Last 30 days: 1x
+- Older than 30 days: 0.5x
 
 ICP fit scores:
-  - Tier 1:                   3x
-  - Tier 2:                   1.5x
-  - Tier 3:                   0.5x
-```
 
-Score above 50 = P0 (immediate action). Score 25-50 = P1 (same day). Score 10-25 = P2 (within 72 hours). Score below 10 = nurture sequence.
+- Tier 1: 3x
+- Tier 2: 1.5x
+- Tier 3: 0.5x
+
+````
+Pontuação acima de 50 = P0 (ação imediata). Pontuação 25-50 = P1 (mesmo dia). Pontuação 10-25 = P2 (dentro de 72 horas). Pontuação abaixo de 10 = sequência de nutrição.
 
 ---
 
-## Section 4: Agent Architecture (Over Tools)
+## Seção 4: Arquitetura do agente (sobre ferramentas)
 
-### Why Architecture Beats Tool Selection
+### Por que a arquitetura supera a seleção de ferramentas
 
-The most common mistake: teams spend months evaluating AI SDR platforms when the architecture around the agent matters 3x more than which agent you pick.
+O erro mais comum: as equipes passam meses avaliando plataformas AI SDR quando a arquitetura em torno do agente é três vezes mais importante do que o agente escolhido.
 
-Three components that determine AI SDR success:
-
-```
+Três componentes que determinam o sucesso do AI SDR:```
 1. INSTRUCTION STACKS
    - Brand voice and tone rules
    - ICP definition and scoring logic
@@ -123,51 +119,48 @@ Three components that determine AI SDR success:
    - Meeting conversion data informs ICP scoring
    - Lost deal reasons refine objection handling
    - Human rep corrections retrain the agent
-```
+````
 
-### Reference Architecture Diagram
+### Diagrama de Arquitetura de Referência```
 
-```
 +------------------------------------------------------------------+
-|                     ORCHESTRATION LAYER                            |
-|  (n8n / Make / Relevance AI / custom code)                       |
+| ORCHESTRATION LAYER |
+| (n8n / Make / Relevance AI / custom code) |
 +------------------------------------------------------------------+
-         |              |              |              |
-         v              v              v              v
+| | | |
+v v v v
 +-------------+ +-------------+ +-------------+ +--------------+
-| SIGNAL      | | ENRICHMENT  | | SEQUENCING  | | QUALIFICATION|
-| DETECTION   | | ENGINE      | | ENGINE      | | ENGINE       |
-|             | |             | |             | |              |
-| - Clay      | | - Clay      | | - Instantly | | - LLM-based  |
-| - RB2B      | |   waterfall | | - Smartlead | |   BANT/CHAMP |
-| - Factors   | | - Clearbit  | | - Salesforge| | - ICP scoring|
-| - G2 intent | | - ZoomInfo  | | - HubSpot   | | - Sentiment  |
-| - LinkedIn  | | - Claygent  | |   sequences | |   analysis   |
+| SIGNAL | | ENRICHMENT | | SEQUENCING | | QUALIFICATION|
+| DETECTION | | ENGINE | | ENGINE | | ENGINE |
+| | | | | | | |
+| - Clay | | - Clay | | - Instantly | | - LLM-based |
+| - RB2B | | waterfall | | - Smartlead | | BANT/CHAMP |
+| - Factors | | - Clearbit | | - Salesforge| | - ICP scoring|
+| - G2 intent | | - ZoomInfo | | - HubSpot | | - Sentiment |
+| - LinkedIn | | - Claygent | | sequences | | analysis |
 +------+------+ +------+------+ +------+------+ +------+-------+
-       |               |               |               |
-       v               v               v               v
+| | | |
+v v v v
 +------------------------------------------------------------------+
-|                      CRM / DATA LAYER                             |
-|  (HubSpot / Salesforce / Pipedrive)                              |
-|                                                                   |
-|  - Contact records    - Deal pipeline    - Activity logging      |
-|  - Signal history     - Lead scoring     - Attribution tracking  |
+| CRM / DATA LAYER |
+| (HubSpot / Salesforce / Pipedrive) |
+| |
+| - Contact records - Deal pipeline - Activity logging |
+| - Signal history - Lead scoring - Attribution tracking |
 +------------------------------------------------------------------+
-         |              |              |              |
-         v              v              v              v
+| | | |
+v v v v
 +------------------------------------------------------------------+
-|                     HUMAN HANDOFF LAYER                           |
-|                                                                   |
-|  Trigger: positive reply, meeting booked, high-value objection   |
-|  Action: Slack notification + CRM task + context brief           |
+| HUMAN HANDOFF LAYER |
+| |
+| Trigger: positive reply, meeting booked, high-value objection |
+| Action: Slack notification + CRM task + context brief |
 +------------------------------------------------------------------+
-```
 
-### Instruction Stack Design
+````
+### Design de pilha de instruções
 
-Your AI SDR is only as good as its instructions. Build layered instruction stacks:
-
-```
+Seu AI SDR é tão bom quanto suas instruções. Construa pilhas de instruções em camadas:```
 LAYER 1: IDENTITY
   "You are an SDR for [Company]. You help [ICP] solve [problem]
    by [mechanism]. Your tone is [professional/casual/consultative]."
@@ -193,40 +186,37 @@ LAYER 5: GUARDRAILS
   "If the prospect replies with 'not interested', mark as closed-lost
    and remove from all sequences. If they ask about pricing, route
    to AE immediately. If they raise a technical question, CC the SE."
-```
+````
 
-### Feedback Loop Implementation
+### Implementação do ciclo de feedback```
 
-```
-DATA IN:                          DATA OUT:
+DATA IN: DATA OUT:
 
-Reply received                    Updated message templates
-  |                               Updated ICP scoring weights
-  v                               Updated sequence timing
-Sentiment classified              Updated objection playbooks
-  |
-  v
-Outcome tracked                   FEEDBACK CYCLE:
-  (meeting, objection,
-   unsubscribe, ghost)            Weekly: Review reply rates by variant
-  |                               Bi-weekly: Adjust ICP scoring
-  v                               Monthly: Rebuild underperforming sequences
-CRM updated                       Quarterly: Full playbook review
-  |
-  v
+Reply received Updated message templates
+| Updated ICP scoring weights
+v Updated sequence timing
+Sentiment classified Updated objection playbooks
+|
+v
+Outcome tracked FEEDBACK CYCLE:
+(meeting, objection,
+unsubscribe, ghost) Weekly: Review reply rates by variant
+| Bi-weekly: Adjust ICP scoring
+v Monthly: Rebuild underperforming sequences
+CRM updated Quarterly: Full playbook review
+|
+v
 Model retrained on
 new examples
-```
 
+````
 ---
 
-## Section 5: Qualification Automation
+## Seção 5: Automação de qualificação
 
-### Modern Qualification Frameworks
+### Quadros de Qualificação Modernos
 
-Traditional BANT adapted for AI SDR qualification:
-
-```
+BANT tradicional adaptado para qualificação AI SDR:```
 BANT (AI-Enhanced):
   B - Budget:    Inferred from company size, funding, tech spend signals
   A - Authority: Mapped from org chart enrichment + title analysis
@@ -238,57 +228,54 @@ CHAMP (Challenger-Focused):
   A  - Authority:   Same as BANT
   M  - Money:       Same as Budget
   P  - Prioritize:  Signal recency + engagement velocity
-```
+````
 
-### Automated Qualification Flow
+### Fluxo de qualificação automatizado```
 
-```
 PROSPECT ENTERS SYSTEM
-         |
-         v
-  ICP Score >= 50?  ----NO----> Nurture sequence or disqualify
-         |
-        YES
-         |
-         v
-  Signal score >= 25?  ----NO----> Add to low-priority drip
-         |
-        YES
-         |
-         v
-  QUALIFICATION SEQUENCE (3-5 touches)
-         |
-         v
-  Reply received?  ----NO----> Archive after sequence completes
-         |
-        YES
-         |
-         v
-  AI classifies reply sentiment
-         |
-    +----+----+----+
-    |    |    |    |
-   POS  NEU  NEG  OBJ
-    |    |    |    |
-    v    v    v    v
-  ROUTE  AI    REMOVE  AI HANDLES
-  TO     FOLLOW-       WITH
-  HUMAN  UP            PLAYBOOK
-         |                  |
-         v                  v
-       Reply?          Resolved?
-         |                  |
-        YES              YES --> Route to human
-         |               NO  --> Escalate or remove
-         v
-       Route to human
-```
+|
+v
+ICP Score >= 50? ----NO----> Nurture sequence or disqualify
+|
+YES
+|
+v
+Signal score >= 25? ----NO----> Add to low-priority drip
+|
+YES
+|
+v
+QUALIFICATION SEQUENCE (3-5 touches)
+|
+v
+Reply received? ----NO----> Archive after sequence completes
+|
+YES
+|
+v
+AI classifies reply sentiment
+|
++----+----+----+
+| | | |
+POS NEU NEG OBJ
+| | | |
+v v v v
+ROUTE AI REMOVE AI HANDLES
+TO FOLLOW- WITH
+HUMAN UP PLAYBOOK
+| |
+v v
+Reply? Resolved?
+| |
+YES YES --> Route to human
+| NO --> Escalate or remove
+v
+Route to human
 
-### Qualification Data Collection
+````
+### Coleta de dados de qualificação
 
-What the AI SDR should capture before routing to a human rep:
-
-```
+O que o AI SDR deve capturar antes de encaminhar para um representante humano:```
 REQUIRED BEFORE HANDOFF:
   [ ] Company name and size confirmed
   [ ] Contact title and role verified
@@ -303,55 +290,52 @@ NICE TO HAVE:
   [ ] Evaluation criteria stated
   [ ] Competitor tools in consideration
   [ ] Decision process described
-```
+````
 
 ---
 
-## Section 6: Human-in-the-Loop Design
+## Seção 6: Design humano no circuito
 
-### The Golden Rule
+### A Regra de Ouro
 
-AI handles: research, enrichment, personalization, sequencing, scheduling, data entry, initial qualification.
+A IA trata de: pesquisa, enriquecimento, personalização, sequenciamento, agendamento, entrada de dados, qualificação inicial.
 
-Humans handle: discovery calls, demos, objection negotiation, proposal customization, closing, relationship building.
+Os humanos lidam com: chamadas de descoberta, demonstrações, negociação de objeções, personalização de propostas, fechamento, construção de relacionamento.
 
-The handoff point determines your conversion rate. Move it too early and you waste human time. Move it too late and you lose deals to poor AI judgment on nuanced situations.
+O ponto de transferência determina sua taxa de conversão. Mova-se muito cedo e você desperdiçará tempo humano. Se for tarde demais, você perderá negócios devido ao mau julgamento da IA ​​em situações diferenciadas.
 
-### Handoff Trigger Matrix
+### Matriz de gatilho de transferência```
 
-```
 +-------------------------+------------------+-------------------+
-| Trigger                 | Route To         | Context Provided  |
+| Trigger | Route To | Context Provided |
 +-------------------------+------------------+-------------------+
-| Positive reply          | Assigned SDR/AE  | Full conversation |
-| (interested)            |                  | + enrichment data |
+| Positive reply | Assigned SDR/AE | Full conversation |
+| (interested) | | + enrichment data |
 +-------------------------+------------------+-------------------+
-| Meeting booked          | Calendar owner   | Prospect brief +  |
-|                         |                  | signal summary    |
+| Meeting booked | Calendar owner | Prospect brief + |
+| | | signal summary |
 +-------------------------+------------------+-------------------+
-| Pricing question        | AE               | Deal stage +      |
-|                         |                  | company profile   |
+| Pricing question | AE | Deal stage + |
+| | | company profile |
 +-------------------------+------------------+-------------------+
-| Technical question      | SE or product    | Question + tech   |
-|                         |                  | stack context     |
+| Technical question | SE or product | Question + tech |
+| | | stack context |
 +-------------------------+------------------+-------------------+
-| High-value objection    | Senior AE or     | Objection type +  |
-|                         | manager          | account history   |
+| High-value objection | Senior AE or | Objection type + |
+| | manager | account history |
 +-------------------------+------------------+-------------------+
-| Enterprise prospect     | Enterprise AE    | Full account      |
-| (>1000 employees)       |                  | research brief    |
+| Enterprise prospect | Enterprise AE | Full account |
+| (>1000 employees) | | research brief |
 +-------------------------+------------------+-------------------+
-| Referred lead           | Original         | Referral source + |
-|                         | relationship     | context           |
-|                         | owner            |                   |
+| Referred lead | Original | Referral source + |
+| | relationship | context |
+| | owner | |
 +-------------------------+------------------+-------------------+
-```
 
-### Notification Design
+````
+### Design de Notificação
 
-When routing to a human, provide a structured brief:
-
-```
+Ao encaminhar para um humano, forneça um resumo estruturado:```
 SLACK NOTIFICATION FORMAT:
 
 New qualified lead routed to you
@@ -372,43 +356,46 @@ Recommended next step: Confirm meeting, prep demo focused on
 outbound automation use case
 
 [Open in CRM] [View full thread] [Claim lead]
-```
+````
 
 ---
 
-## Section 7: Cost Analysis and ROI Framework
+## Seção 7: Análise de custos e estrutura de ROI
 
-### Build vs. Buy Decision
+### Construir vs. Decisão de compra```
 
-```
 BUILD YOUR OWN STACK:
-  Clay (enrichment):          $149-800/mo
-  Instantly or Smartlead:     $30-97/mo
-  n8n or Make (orchestration): $20-99/mo
-  LLM API costs (GPT-4/Claude): $50-200/mo
-  Domain + mailbox costs:     $50-100/mo
-  ----------------------------------------
-  TOTAL:                      $300-1,300/mo
+Clay (enrichment): $149-800/mo
+Instantly or Smartlead: $30-97/mo
+n8n or Make (orchestration): $20-99/mo
+LLM API costs (GPT-4/Claude): $50-200/mo
+Domain + mailbox costs: $50-100/mo
+
+---
+
+TOTAL: $300-1,300/mo
 
 BUY AN AI SDR PLATFORM:
-  AiSDR:                      $900-2,500/mo
-  Artisan:                    $2,400-7,200/mo
-  11x:                        $5,000-10,000/mo
-  ----------------------------------------
-  TOTAL:                      $900-10,000/mo
+AiSDR: $900-2,500/mo
+Artisan: $2,400-7,200/mo
+11x: $5,000-10,000/mo
+
+---
+
+TOTAL: $900-10,000/mo
 
 HIRE A HUMAN SDR:
-  Salary:                     $50K-80K/yr
-  Benefits + overhead:        $15K-25K/yr
-  Tools + tech stack:         $200-500/mo
-  Ramp time:                  3-6 months
-  ----------------------------------------
-  TOTAL:                      $6K-9K/mo (fully loaded)
-```
+Salary: $50K-80K/yr
+Benefits + overhead: $15K-25K/yr
+Tools + tech stack: $200-500/mo
+Ramp time: 3-6 months
 
-### ROI Calculation Template
+---
 
-```
+TOTAL: $6K-9K/mo (fully loaded)
+
+````
+### Modelo de cálculo de ROI```
 MONTHLY INPUTS:
   Prospects contacted:         ______
   Reply rate:                  ______%
@@ -432,46 +419,48 @@ EXAMPLE (mid-market SaaS):
   1.6 deals x $25,000 ACV = $40,000 revenue/month
   AI SDR cost: $1,500/month
   ROI: ($40,000 - $1,500) / $1,500 = 2,567%
-```
+````
 
 ---
 
-## Section 8: Common Failure Modes
+## Seção 8: Modos de falha comuns
 
-### Why AI SDR Deployments Fail
+### Por que as implantações de AI SDR falham```
+
+## FAILURE MODE FIX
+
+Bad data in, bad outreach out Fix enrichment waterfall first.
+80%+ match rate before launching.
+
+Generic messaging at scale Invest in signal-based
+personalization. "Spray and pray"
+with AI is still spray and pray.
+
+No human handoff process Define handoff triggers before
+launch. Build Slack/CRM routing
+on day 1.
+
+Burning domains Follow warmup protocol. Never
+exceed 50 emails/day/mailbox.
+Monitor bounce and complaint rates.
+
+Over-automating the close AI generates pipeline. Humans
+close deals. Do not let AI handle
+pricing negotiations or contracts.
+
+Ignoring reply sentiment Negative replies left in sequence
+destroy reputation. Classify
+every reply, remove negatives
+immediately.
+
+No feedback loop If you are not adjusting ICP
+scores and message variants
+monthly, your AI SDR decays.
+
+Tool obsession over architecture Switching from 11x to Artisan
+will not fix bad instruction
+stacks or missing context.
 
 ```
-FAILURE MODE                          FIX
-------------------------------------------------------------------
-Bad data in, bad outreach out         Fix enrichment waterfall first.
-                                      80%+ match rate before launching.
 
-Generic messaging at scale            Invest in signal-based
-                                      personalization. "Spray and pray"
-                                      with AI is still spray and pray.
-
-No human handoff process              Define handoff triggers before
-                                      launch. Build Slack/CRM routing
-                                      on day 1.
-
-Burning domains                       Follow warmup protocol. Never
-                                      exceed 50 emails/day/mailbox.
-                                      Monitor bounce and complaint rates.
-
-Over-automating the close             AI generates pipeline. Humans
-                                      close deals. Do not let AI handle
-                                      pricing negotiations or contracts.
-
-Ignoring reply sentiment              Negative replies left in sequence
-                                      destroy reputation. Classify
-                                      every reply, remove negatives
-                                      immediately.
-
-No feedback loop                      If you are not adjusting ICP
-                                      scores and message variants
-                                      monthly, your AI SDR decays.
-
-Tool obsession over architecture      Switching from 11x to Artisan
-                                      will not fix bad instruction
-                                      stacks or missing context.
 ```

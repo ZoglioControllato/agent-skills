@@ -49,28 +49,27 @@ export default {
 }
 ```
 
-**CRITICAL:** Use fetch-based Service Bindings (shown above). If using RPC with `WorkerEntrypoint`, Smart Placement will NOT optimize those method calls - only `fetch` handlers are affected.
+**CRÍTICO:** Use vinculações de serviço baseadas em busca (mostradas acima). Se estiver usando RPC com `WorkerEntrypoint`, o Smart Placement NÃO otimizará essas chamadas de método - apenas os manipuladores `fetch` serão afetados.
 
-**RPC vs Fetch - CRITICAL:** Smart Placement ONLY works with fetch-based bindings, NOT RPC.
-
-```typescript
+**RPC vs Fetch - CRÍTICO:** O Smart Placement funciona SOMENTE com vinculações baseadas em busca, NÃO RPC.```typescript
 // ❌ RPC - Smart Placement has NO EFFECT on backend RPC methods
 export class BackendRPC extends WorkerEntrypoint {
-  async getData() {
-    // ALWAYS runs at edge, Smart Placement ignored
-    return await this.env.DATABASE.prepare('SELECT * FROM table').all()
-  }
+async getData() {
+// ALWAYS runs at edge, Smart Placement ignored
+return await this.env.DATABASE.prepare('SELECT \* FROM table').all()
+}
 }
 
 // ✅ Fetch - Smart Placement WORKS
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
-    // Runs close to DATABASE when Smart Placement enabled
-    const data = await env.DATABASE.prepare('SELECT * FROM table').all()
-    return Response.json(data)
-  },
+async fetch(request: Request, env: Env): Promise<Response> {
+// Runs close to DATABASE when Smart Placement enabled
+const data = await env.DATABASE.prepare('SELECT \* FROM table').all()
+return Response.json(data)
+},
 }
-```
+
+````
 
 ## External API Integration
 
@@ -91,7 +90,7 @@ export default {
     })
   },
 }
-```
+````
 
 ## SSR / API Gateway Pattern
 
@@ -118,19 +117,17 @@ export default {
 }
 ```
 
-## Durable Objects with Smart Placement
+## Objetos duráveis com posicionamento inteligente
 
-**Key principle:** Smart Placement does NOT control WHERE Durable Objects run. DOs always run in their designated region (based on jurisdiction or smart location hints).
+**Princípio fundamental:** O posicionamento inteligente NÃO controla ONDE os objetos duráveis são executados. Os DOs sempre funcionam em sua região designada (com base na jurisdição ou em dicas de localização inteligente).
 
-**What Smart Placement DOES affect:** The location of the coordinator Worker's `fetch` handler that makes calls to multiple DOs.
+**O que o Smart Placement afeta:** A localização do manipulador `fetch` do Worker coordenador que faz chamadas para vários DOs.
 
-**Pattern:** Enable Smart Placement on coordinator Worker that aggregates data from multiple DOs:
-
-```typescript
+**Padrão:** Habilite o posicionamento inteligente no trabalhador coordenador que agrega dados de vários DOs:```typescript
 // Worker with Smart Placement - aggregates data from multiple DOs
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
-    const userId = new URL(request.url).searchParams.get('user')
+async fetch(request: Request, env: Env): Promise<Response> {
+const userId = new URL(request.url).searchParams.get('user')
 
     // Get DO stubs
     const userDO = env.USER_DO.get(env.USER_DO.idFromName(userId))
@@ -147,9 +144,11 @@ export default {
       user: await userData.json(),
       analytics: await analyticsData.json(),
     })
-  },
+
+},
 }
-```
+
+````
 
 ```jsonc
 // wrangler.jsonc
@@ -162,24 +161,24 @@ export default {
     ],
   },
 }
-```
+````
 
-**When this helps:**
+**Quando isso ajuda:**
 
-- Worker's `fetch` handler runs closer to DO regions, reducing network latency for multiple DO calls
-- Most beneficial when DOs are geographically concentrated or in specific jurisdictions
-- Helps when coordinator makes many sequential or parallel DO calls
+- O manipulador `fetch` do trabalhador é executado mais próximo das regiões DO, reduzindo a latência da rede para múltiplas chamadas DO
+- Mais benéfico quando as DO estão geograficamente concentradas ou em jurisdições específicas
+- Ajuda quando o coordenador faz muitas chamadas DO sequenciais ou paralelas
 
-**When this DOESN'T help:**
+**Quando isso NÃO ajuda:**
 
-- DOs are globally distributed (no single optimal Worker location)
-- Worker only calls a single DO
-- DO calls are infrequent or cached
+- Os DOs são distribuídos globalmente (nenhuma localização ideal do trabalhador)
+- O trabalhador chama apenas um único DO
+- As chamadas DO são pouco frequentes ou armazenadas em cache
 
-## Best Practices
+## Melhores práticas
 
-- Split full-stack apps: frontend at edge, backend with Smart Placement
-- Use fetch-based Service Bindings (not RPC)
-- Enable for backend logic: APIs, data aggregation, DB operations
-- Don't enable for: static content, edge logic, RPC methods, Pages with `run_worker_first`
-- Wait 15+ min for analysis, verify `placement_status = SUCCESS`
+- Divida aplicativos full-stack: frontend na borda, backend com Smart Placement
+- Use ligações de serviço baseadas em busca (não RPC)
+- Habilitar lógica de back-end: APIs, agregação de dados, operações de banco de dados
+- Não habilitar para: conteúdo estático, lógica de borda, métodos RPC, páginas com `run_worker_first`
+- Aguarde mais de 15 minutos para análise, verifique `placement_status = SUCCESS`

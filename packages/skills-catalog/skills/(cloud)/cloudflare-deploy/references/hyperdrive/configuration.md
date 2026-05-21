@@ -1,8 +1,8 @@
-# Configuration
+# Configuração
 
-See [README.md](./README.md) for overview.
+Veja [README.md](./README.md) para visão geral.
 
-## Create Config
+## Criar config
 
 **PostgreSQL:**
 
@@ -45,9 +45,9 @@ npx wrangler hyperdrive create my-db \
 }
 ```
 
-**Generate TypeScript types:** Run `npx wrangler types` to auto-generate `worker-configuration.d.ts` from your wrangler.jsonc.
+**Gerar tipos TypeScript:** execute `npx wrangler types` para gerar automaticamente `worker-configuration.d.ts` a partir do `wrangler.jsonc`.
 
-**Multiple configs:**
+**Várias configs:**
 
 ```jsonc
 {
@@ -58,7 +58,7 @@ npx wrangler hyperdrive create my-db \
 }
 ```
 
-## Management
+## Gerenciamento
 
 ```bash
 npx wrangler hyperdrive list
@@ -67,23 +67,23 @@ npx wrangler hyperdrive update <ID> --max-age=180
 npx wrangler hyperdrive delete <ID>
 ```
 
-## Config Options
+## Opções de config
 
-Hyperdrive create/update CLI flags:
+Flags da CLI ao criar/atualizar Hyperdrive:
 
-| Option                      | Default   | Notes                  |
-| --------------------------- | --------- | ---------------------- |
-| `--caching-disabled`        | `false`   | Disable caching        |
-| `--max-age`                 | `60`      | Cache TTL (max 3600s)  |
-| `--swr`                     | `15`      | Stale-while-revalidate |
-| `--origin-connection-limit` | 20/100    | Free/paid              |
-| `--access-client-id`        | -         | Tunnel auth            |
-| `--access-client-secret`    | -         | Tunnel auth            |
-| `--sslmode`                 | `require` | PostgreSQL only        |
+| Opção                       | Padrão    | Notas                     |
+| --------------------------- | --------- | ------------------------- |
+| `--caching-disabled`        | `false`   | Desativa cache            |
+| `--max-age`                 | `60`      | TTL do cache (máx. 3600s) |
+| `--swr`                     | `15`      | Stale-while-revalidate    |
+| `--origin-connection-limit` | 20/100    | Free/pago                 |
+| `--access-client-id`        | -         | Autenticação do Tunnel    |
+| `--access-client-secret`    | -         | Autenticação do Tunnel    |
+| `--sslmode`                 | `require` | Só PostgreSQL             |
 
-## Smart Placement Integration
+## Integração com Smart Placement
 
-For Workers making **multiple queries** per request, enable Smart Placement to execute near your database:
+Para Workers que fazem **várias consultas** por requisição, habilite Smart Placement para executar perto do banco:
 
 ```jsonc
 {
@@ -101,15 +101,15 @@ For Workers making **multiple queries** per request, enable Smart Placement to e
 }
 ```
 
-**Benefits:** Multi-query Workers run closer to DB, reducing round-trip latency. See [patterns.md](./patterns.md) for examples.
+**Benefícios:** Workers com várias consultas rodam mais perto do DB, reduzindo latência de ida e volta. Veja exemplos em [patterns.md](./patterns.md).
 
-## Private DB via Tunnel
+## Banco privado via Tunnel
 
 ```
 Worker → Hyperdrive → Access → Tunnel → Private Network → DB
 ```
 
-**Setup:**
+**Configuração:**
 
 ```bash
 # 1. Create tunnel
@@ -132,11 +132,11 @@ npx wrangler hyperdrive create my-private-db \
   --access-client-id=<ID> --access-client-secret=<SECRET>
 ```
 
-**⚠️ Don't specify `--port` with Tunnel** - port configured in tunnel service settings.
+**⚠️ Não use `--port` com Tunnel** — a porta fica nas configurações do serviço do tunnel.
 
-## Local Dev
+## Desenvolvimento local
 
-**Option 1: Local (RECOMMENDED):**
+**Opção 1: Local (RECOMENDADO):**
 
 ```bash
 # Env var (takes precedence)
@@ -147,7 +147,7 @@ npx wrangler dev
 {"hyperdrive": [{"binding": "HYPERDRIVE", "localConnectionString": "postgres://..."}]}
 ```
 
-**Remote DB locally:**
+**Banco remoto localmente:**
 
 ```bash
 # PostgreSQL
@@ -157,10 +157,12 @@ export CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVE="postgres://user
 export CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVE="mysql://user:pass@remote:3306/db?sslMode=REQUIRED"
 ```
 
-**Option 2: Remote execution:**
+**Opção 2: Execução remota:**
 
 ```bash
 npx wrangler dev --remote  # Uses deployed config, affects production
 ```
 
-See [api.md](./api.md), [patterns.md](./patterns.md), [gotchas.md](./gotchas.md).
+Veja [api.md](./api.md), [patterns.md](./patterns.md) e [gotchas.md](./gotchas.md).
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

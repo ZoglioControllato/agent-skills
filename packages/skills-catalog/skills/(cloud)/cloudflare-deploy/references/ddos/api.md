@@ -1,6 +1,6 @@
-# DDoS API
+# API DDoS
 
-## Endpoints
+## Pontos finais
 
 ### HTTP DDoS (L7)
 
@@ -14,7 +14,7 @@ PUT / accounts / { accountId } / rulesets / phases / ddos_l7 / entrypoint
 GET / accounts / { accountId } / rulesets / phases / ddos_l7 / entrypoint
 ```
 
-### Network DDoS (L3/4)
+### Rede DDoS (L3/4)
 
 ```typescript
 // Account-level only
@@ -22,9 +22,9 @@ PUT / accounts / { accountId } / rulesets / phases / ddos_l4 / entrypoint
 GET / accounts / { accountId } / rulesets / phases / ddos_l4 / entrypoint
 ```
 
-## TypeScript SDK
+##SDK TypeScript
 
-**SDK Version**: Requires `cloudflare` >= 3.0.0 for ruleset phase methods.
+**Versão do SDK**: Requer `cloudflare` >= 3.0.0 para métodos da fase de conjunto de regras.
 
 ```typescript
 import Cloudflare from 'cloudflare'
@@ -68,7 +68,7 @@ const l4Ruleset = await client.accounts.rulesets.phases.entrypoint.get('ddos_l4'
 })
 ```
 
-## Alert Configuration
+##Configuração de alerta
 
 ```typescript
 interface DDoSAlertConfig {
@@ -107,9 +107,9 @@ await fetch(`https://api.cloudflare.com/client/v4/accounts/${accountId}/alerting
 })
 ```
 
-## Typed Override Examples
+##Exemplos de substituição digitada
 
-```typescript
+````typescript
 // Override by category
 interface CategoryOverride {
   action: 'execute'
@@ -153,6 +153,5 @@ const adaptiveOverride: RuleOverride = {
     },
   },
 }
-```
-
-See [patterns.md](./patterns.md) for complete implementation patterns.
+```Consulte [patterns.md](./patterns.md) para padrões de implementação completos.
+````

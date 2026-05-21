@@ -78,46 +78,47 @@ Warehouse: my-bucket
 npx wrangler r2 bucket catalog disable <BUCKET_NAME>
 ```
 
-⚠️ **Warning:** Disabling does NOT delete tables/data. Files remain in bucket. Metadata becomes inaccessible until re-enabled.
+⚠️ **Aviso:** Desativar NÃO exclui tabelas/dados. Os arquivos permanecem no bucket. Os metadados ficam inacessíveis até serem reativados.
 
-## API Token Creation
+## Criação de token de API
 
-R2 Data Catalog requires API token with **both** R2 Storage + R2 Data Catalog permissions.
+O R2 Data Catalog requer token de API com **ambas** permissões R2 Storage + R2 Data Catalog.
 
-### Dashboard Method (Recommended)
+### Método de painel (recomendado)
 
-1. Go to **R2** → **Manage R2 API Tokens** → **Create API Token**
-2. Select permission level:
-   - **Admin Read & Write** - Full catalog + storage access (read/write)
-   - **Admin Read only** - Read-only access (for query engines)
-3. Copy token value immediately (shown only once)
+1. Vá para **R2** → **Gerenciar tokens de API R2** → **Criar token de API**
+2. Selecione o nível de permissão:
 
-**Permission groups included:**
+- **Admin Read & Write** - Catálogo completo + acesso ao armazenamento (leitura/gravação)
+- **Admin Somente leitura** - Acesso somente leitura (para mecanismos de consulta)
 
-- `Workers R2 Data Catalog Write` (or Read)
-- `Workers R2 Storage Bucket Item Write` (or Read)
+3. Copie o valor do token imediatamente (mostrado apenas uma vez)
 
-### API Method (Programmatic)
+**Grupos de permissão incluídos:**
 
-Use Cloudflare API to create tokens programmatically. Required permissions:
+- `Escrita do catálogo de dados Workers R2` (ou leitura)
+- `Escrita de item do bucket de armazenamento Workers R2` (ou leitura)
 
-- `Workers R2 Data Catalog Write` (or Read)
-- `Workers R2 Storage Bucket Item Write` (or Read)
+### Método API (Programático)
 
-## Client Configuration
+Use a API Cloudflare para criar tokens programaticamente. Permissões necessárias:
 
-### PyIceberg
+- `Escrita do catálogo de dados Workers R2` (ou leitura)
+- `Escrita de item do bucket de armazenamento Workers R2` (ou leitura)
 
-```python
+## Configuração do cliente
+
+###PyIceberg```python
 from pyiceberg.catalog.rest import RestCatalog
 
 catalog = RestCatalog(
-    name="my_catalog",
-    warehouse="<bucket-name>",           # Same as bucket name
-    uri="<catalog-uri>",                 # From enable command
-    token="<api-token>",                 # From token creation
+name="my_catalog",
+warehouse="<bucket-name>", # Same as bucket name
+uri="<catalog-uri>", # From enable command
+token="<api-token>", # From token creation
 )
-```
+
+````
 
 **Full example with credentials:**
 
@@ -139,48 +140,44 @@ catalog = RestCatalog(
 
 # Test connection
 print(catalog.list_namespaces())
-```
+````
 
-### Spark / Trino / DuckDB
+### Spark/Trino/DuckDB
 
-See [patterns.md](patterns.md) for integration examples with other query engines.
+Consulte [patterns.md](patterns.md) para exemplos de integração com outros mecanismos de consulta.
 
-## Connection String Format
+## Formato da string de conexão
 
-For quick reference:
+Para referência rápida:```
+Catalog URI: https://<account-id>.r2.cloudflarestorage.com/iceberg/<bucket>
+Warehouse: <bucket-name>
+Token: <r2-api-token>
 
-```
-Catalog URI:  https://<account-id>.r2.cloudflarestorage.com/iceberg/<bucket>
-Warehouse:    <bucket-name>
-Token:        <r2-api-token>
-```
+````
+**Onde encontrar valores:**
 
-**Where to find values:**
+| Valor | Fonte |
+| -------------- | ---------------------------------------------------------- |
+| `<ID da conta>` | URL do painel ou `wrangler whoami` |
+| `<balde>` | Nome do intervalo R2 |
+| URI do catálogo | Saída de `catálogo de balde wrangler r2 habilitado` |
+| Ficha | Página de criação de token API R2 |
 
-| Value          | Source                                          |
-| -------------- | ----------------------------------------------- |
-| `<account-id>` | Dashboard URL or `wrangler whoami`              |
-| `<bucket>`     | R2 bucket name                                  |
-| Catalog URI    | Output from `wrangler r2 bucket catalog enable` |
-| Token          | R2 API Token creation page                      |
+## Melhores práticas de segurança
 
-## Security Best Practices
+1. **Armazene tokens com segurança** - Use variáveis de ambiente ou gerenciadores de segredos, nunca codifique
+2. **Use privilégios mínimos** - Tokens somente leitura para mecanismos de consulta, grave tokens apenas quando necessário
+3. **Alterne tokens regularmente** - Crie novos tokens, teste e revogue os antigos
+4. **Um token por aplicativo** – Mais fácil de rastrear e revogar se comprometido
+5. **Monitore o uso de tokens** - Verifique a análise R2 em busca de padrões inesperados
+6. **Tokens com escopo de bucket** - Crie tokens por bucket, não para toda a conta
 
-1. **Store tokens securely** - Use environment variables or secret managers, never hardcode
-2. **Use least privilege** - Read-only tokens for query engines, write tokens only where needed
-3. **Rotate tokens regularly** - Create new tokens, test, then revoke old ones
-4. **One token per application** - Easier to track and revoke if compromised
-5. **Monitor token usage** - Check R2 analytics for unexpected patterns
-6. **Bucket-scoped tokens** - Create tokens per bucket, not account-wide
-
-## Environment Variables Pattern
-
-```bash
+## Padrão de variáveis de ambiente```bash
 # .env (never commit)
 R2_CATALOG_URI=https://<account-id>.r2.cloudflarestorage.com/iceberg/<bucket>
 R2_WAREHOUSE=<bucket-name>
 R2_TOKEN=<api-token>
-```
+````
 
 ```python
 import os

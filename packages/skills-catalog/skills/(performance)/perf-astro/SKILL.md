@@ -1,13 +1,13 @@
 ---
 name: perf-astro
-description: 'Astro-specific performance optimizations for 95+ Lighthouse scores. Covers critical CSS inlining, compression, font loading, and LCP optimization. Use when optimizing Astro site performance, improving Astro Lighthouse scores, or configuring astro-critters. Do NOT use for non-Astro sites (use perf-web-optimization or core-web-vitals) or running Lighthouse audits (use perf-lighthouse).'
+description: 'Otimizações de performance específicas de Astro para scores Lighthouse 95+. Cobre critical CSS inline, compressão, carregamento de fontes e otimização de LCP. Use quando otimizar performance de site Astro, melhorar scores Lighthouse em Astro ou configurar astro-critters. NÃO use para sites que não sejam Astro (use perf-web-optimization ou core-web-vitals) ou para rodar auditorias Lighthouse (use perf-lighthouse).'
 ---
 
-# Astro Performance Playbook
+# Guia de performance Astro
 
-Astro-specific optimizations for 95+ Lighthouse scores.
+Otimizações específicas de Astro para scores Lighthouse acima de 95.
 
-## Quick Setup
+## Configuração rápida
 
 ```bash
 npm install astro-critters @playform/compress
@@ -33,19 +33,19 @@ export default defineConfig({
 })
 ```
 
-## Integrations
+## Integrações
 
 ### astro-critters
 
-Automatically extracts and inlines critical CSS. No configuration needed.
+Extrai e inclui automaticamente CSS crítico. Sem configuração obrigatória.
 
-What it does:
+O que faz:
 
-- Scans rendered HTML for above-the-fold elements
-- Inlines only the CSS those elements need
-- Lazy-loads the rest
+- Varre o HTML renderizado em busca de elementos above-the-fold
+- Injeta só o CSS necessário para esses elementos
+- Carrega o restante com lazy loading
 
-Build output shows what it inlined:
+O build mostra o que foi inlined:
 
 ```
 Inlined 40.70 kB (80% of original 50.50 kB) of _astro/index.xxx.css.
@@ -53,23 +53,23 @@ Inlined 40.70 kB (80% of original 50.50 kB) of _astro/index.xxx.css.
 
 ### @playform/compress
 
-Minifies HTML, CSS, and JavaScript in the final build.
+Minifica HTML, CSS e JavaScript no build final.
 
-Options:
+Opções:
 
 ```js
 compress({
-  CSS: true, // Minify CSS
-  HTML: true, // Minify HTML
-  JavaScript: true, // Minify JS
-  Image: false, // Skip if using external image optimization
-  SVG: false, // Skip if SVGs are already optimized
+  CSS: true, // Minificar CSS
+  HTML: true, // Minificar HTML
+  JavaScript: true, // Minificar JS
+  Image: false, // Pular se usar otimização externa de imagem
+  SVG: false, // Pular se SVGs já estiverem otimizados
 })
 ```
 
-## Layout Pattern
+## Padrão de layout
 
-Structure your `Layout.astro` for performance:
+Estruture seu `Layout.astro` pensando em performance:
 
 ```astro
 ---
@@ -129,21 +129,21 @@ import '../styles/global.css'
 </html>
 ```
 
-## Measuring
+## Medição
 
 ```bash
 npx lighthouse https://your-site.com --preset=perf --form-factor=mobile
 ```
 
-See also:
+Veja também:
 
-- **perf-lighthouse** - Running audits, reading reports, setting budgets
-- **perf-web-optimization** - Core Web Vitals, bundle size, caching strategies
+- **perf-lighthouse** — rodar auditorias, ler relatórios, definir budgets
+- **perf-web-optimization** — Core Web Vitals, tamanho de bundle, cache
 
 ## Checklist
 
-- [ ] `astro-critters` installed and configured
-- [ ] `@playform/compress` installed and configured
-- [ ] Google Fonts use `media="print" onload` pattern
-- [ ] Third-party scripts deferred to user interaction
-- [ ] LCP images preloaded in `<head>`
+- [ ] `astro-critters` instalado e configurado
+- [ ] `@playform/compress` instalado e configurado
+- [ ] Google Fonts com padrão `media="print" onload`
+- [ ] Scripts de terceiros adiados até interação do usuário
+- [ ] Imagens LCP com preload no `<head>`

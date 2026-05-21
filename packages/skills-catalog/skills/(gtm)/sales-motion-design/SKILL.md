@@ -1,42 +1,41 @@
 ---
 name: sales-motion-design
-description: "When the user wants to choose between PLG and sales-led, design a sales motion, optimize time-to-first-value, or build a value-before-purchase experience. Also use when the user mentions 'PLG,' 'product-led growth,' 'sales-led,' 'sales motion,' 'free trial,' 'freemium,' 'self-serve,' 'demo-first,' 'time-to-first-value,' 'TTFV,' or 'agent-led sales.' This skill covers sales motion selection, value delivery design, and go-to-market motion architecture. Do NOT use for technical implementation, code review, or software architecture."
+description: "Use quando o usuário quiser escolher entre PLG e sales-led, desenhar um sales motion, otimizar tempo até o primeiro valor ou construir uma experiência de valor antes da compra. Use também quando o usuário mencionar 'PLG,' 'product-led growth,' 'sales-led,' 'sales motion,' 'free trial,' 'freemium,' 'self-serve,' 'demo-first,' 'time-to-first-value,' 'TTFV' ou 'agent-led sales.' Esta habilidade cobre seleção de motion de vendas, design de entrega de valor e arquitetura de go-to-market. NÃO use para implementação técnica, revisão de código ou arquitetura de software."
 metadata:
   original_author: Chad Boyda / agent-gtm-skills
   modified_by: Felipe Rodrigues - github.com/felipfr
   source: https://github.com/chadboyda/agent-gtm-skills
   version: '1.0.0'
+---
+
+# Design de sales motion
+
+Você é um estrategista de go-to-market especializado em arquitetura de sales motion,
+product-led growth e design de entrega de valor. Você ajuda fundadores e líderes de GTM
+a escolher o sales motion certo, otimizar o tempo até o primeiro valor e construir
+experiências de valor antes da compra que convertem.
+
+## Antes de começar
+
+Reúna estas informações do usuário antes de recomendar:
+
+1. **Tipo de produto** - SaaS, API, marketplace, hardware, serviços
+2. **Ticket médio** - Valor mensal ou anual do contrato
+3. **Complexidade do produto** - O usuário obtém valor sem ajuda humana?
+4. **Movimento atual** - O que fazem hoje (se algo)
+5. **Tamanho do time** - Pessoas disponíveis em vendas, CS, marketing
+6. **Comprador-alvo** - Desenvolvedor, operador, executivo, dono de PME
+7. **Estágio de funding** - Bootstrapped, seed, Série A+, lucrativo
+8. **CAC e payback atuais** - Se souberem
+9. **Principal gargalo** - Pipeline, conversão, expansão, churn
+
+Se o usuário pular inputs, faça suposições razoáveis e declare-as explicitamente.
 
 ---
 
-# Sales Motion Design
+## 1. A matriz de escolha de movimento
 
-You are a go-to-market strategist specializing in sales motion architecture,
-product-led growth, and value delivery design. You help founders and GTM leaders
-choose the right sales motion, optimize time-to-first-value, and build
-value-before-purchase experiences that convert.
-
-## Before Starting
-
-Gather these inputs from the user before making recommendations:
-
-1. **Product type** - SaaS, API, marketplace, hardware, services
-2. **Average deal size** - Monthly or annual contract value
-3. **Product complexity** - Can a user get value without human help?
-4. **Current motion** - What they do today (if anything)
-5. **Team size** - Headcount available for sales, CS, marketing
-6. **Target buyer** - Developer, operator, executive, SMB owner
-7. **Funding stage** - Bootstrapped, seed, Series A+, profitable
-8. **Current CAC and payback** - If known
-9. **Biggest bottleneck** - Pipeline, conversion, expansion, churn
-
-If the user skips inputs, make reasonable assumptions and state them explicitly.
-
----
-
-## 1. The Motion Selection Matrix
-
-Choose your primary motion based on two axes: price and complexity.
+Escolha o movimento primário com base em dois eixos: preço e complexidade.
 
 ```
                      PRODUCT COMPLEXITY
@@ -61,253 +60,256 @@ Choose your primary motion based on two axes: price and complexity.
            +------------------+-------------------+
 ```
 
-### Decision criteria beyond price x complexity
+### Critérios de decisão além de preço x complexidade
 
-| Signal                              | Points to PLG     | Points to Sales-Led |
-|-------------------------------------|--------------------|--------------------|
-| Buyer can self-evaluate product     | Yes                | No                 |
-| Time to first value < 15 min        | Yes                | No                 |
-| Multiple stakeholders in decision   | No                 | Yes                |
-| Compliance/security review needed   | No                 | Yes                |
-| Product requires config/integration | No                 | Yes                |
-| Network effects drive adoption      | Yes                | No                 |
-| User and buyer are same person      | Yes                | No                 |
-| Average deal cycle > 30 days        | No                 | Yes                |
-| Product is horizontal (broad use)   | Yes                | No                 |
-| Product is vertical (niche use)     | No                 | Yes                |
+| Sinal                                      | Indica PLG | Indica sales-led |
+| ------------------------------------------ | ---------- | ---------------- |
+| Comprador consegue autoavaliar o produto   | Sim        | Não              |
+| Tempo até primeiro valor menor que 15 min  | Sim        | Não              |
+| Múltiplos stakeholders na decisão          | Não        | Sim              |
+| Revisão de compliance/segurança necessária | Não        | Sim              |
+| Produto exige config/integração            | Não        | Sim              |
+| Efeitos de rede impulsionam adoção         | Sim        | Não              |
+| Usuário e comprador são a mesma pessoa     | Sim        | Não              |
+| Ciclo médio de venda maior que 30 dias     | Não        | Sim              |
+| Produto é horizontal (uso amplo)           | Sim        | Não              |
+| Produto é vertical (uso de nicho)          | Não        | Sim              |
 
-**Scoring**: 7+ PLG signals = pure PLG. 4-6 = hybrid. 0-3 = sales-led.
+**Pontuação**: 7+ sinais PLG = PLG puro. 4-6 = híbrido. 0-3 = sales-led.
 
 ---
 
-## 2. Motion Archetypes in Detail
+## 2. Arquétipos de movimento em detalhe
 
-### 2A. Pure PLG
+### 2A. PLG puro
 
-**When it works**: Low price, low complexity, user = buyer, fast TTFV.
+**Quando funciona**: Baixo preço, baixa complexidade, usuário = comprador, TTFV rápido.
 
-**Examples**: Notion, Canva, Calendly, Loom, Figma early days.
+**Exemplos**: Notion, Canva, Calendly, Loom, Figma nos primeiros dias.
 
-**Conversion funnel**:
+**Funil de conversão**:
+
 ```
 Visit -> Sign up -> Activate -> Engage -> Convert -> Expand
                                                       |
                                             (product handles all)
 ```
 
-**Key metrics and benchmarks**:
-| Metric                        | Median         | Top Quartile   |
+**Métricas e benchmarks-chave**:
+| Métrica | Mediana | Quartil superior |
 |-------------------------------|----------------|----------------|
-| Visitor to sign-up            | 2-5%           | 8-12%          |
-| Free to paid (freemium)       | 3-5%           | 6-8%           |
-| Free to paid (opt-in trial)   | 18%            | 25%+           |
-| Free to paid (opt-out trial)  | 49%            | 60%+           |
-| Time to first value           | < 5 min        | < 2 min        |
-| Net revenue retention         | 110%           | 120%+          |
-| CAC payback (months)          | 6-9            | < 6            |
+| Visitante para cadastro | 2-5% | 8-12% |
+| Grátis para pago (freemium) | 3-5% | 6-8% |
+| Grátis para pago (trial opt-in) | 18% | 25%+ |
+| Grátis para pago (trial opt-out) | 49% | 60%+ |
+| Tempo até primeiro valor | menor que 5 min | menor que 2 min |
+| Retenção líquida de receita | 110% | 120%+ |
+| Payback de CAC (meses) | 6-9 | menor que 6 |
 
-**Opt-in vs opt-out**: Opt-out (card required) shows 49% conversion but fewer
-sign-ups. Opt-in (no card) shows 18% but higher volume. Use opt-out only when
-TTFV < 5 min and activation rate > 40%.
+**Opt-in vs opt-out**: Opt-out (cartão exigido) mostra 49% de conversão, porém menos
+cadastros. Opt-in (sem cartão) mostra 18%, porém maior volume. Use opt-out só quando
+TTFV menor que 5 min e taxa de ativação maior que 40%.
 
-**Growth levers**: Viral loops, usage limits creating upgrade pressure, team
-features expanding individual-to-org, integrations increasing switching cost.
+**Alavancas de crescimento**: Loops virais, limites de uso criando pressão para upgrade, recursos
+de time expandindo indivíduo→organização, integrações aumentando custo de troca.
 
-**Failure modes**: TTFV > 15 min, no expansion trigger, weak activation,
-pricing wall too high (free too generous or upgrade too expensive).
+**Modos de falha**: TTFV maior que 15 min, sem gatilho de expansão, ativação fraca,
+muro de preço alto (grátis generoso demais ou upgrade caro demais).
 
-### 2B. PLG + Sales Hybrid
+### 2B. Híbrido PLG + vendas
 
-**When it works**: Low price but complex product, or product needs light
-onboarding to unlock value. Most common motion in 2025-2026.
+**Quando funciona**: Baixo preço, porém produto complexo, ou produto precisa de onboarding leve
+para liberar valor. Movimento mais comum em 2025-2026.
 
-**Examples**: Slack, Datadog, Twilio, Vercel, Linear.
+**Exemplos**: Slack, Datadog, Twilio, Vercel, Linear.
 
-**Conversion funnel**:
+**Funil de conversão**:
+
 ```
 Visit -> Sign up -> Activate -> PQL trigger -> Sales touch -> Close
                         |                          |
                    (product)              (human assists)
 ```
 
-**What triggers the sales touch (PQL signals)**:
-- Seats/usage exceeds free tier by 20%+
-- Second team or department added
-- Admin/billing page visited 3+ times
-- Integration with production system connected
-- API call volume crosses threshold
-- Feature gate hit on enterprise capability
+**O que dispara o toque de vendas (sinais PQL)**:
 
-**PQL vs MQL performance comparison**:
-| Lead Type | Avg Conversion to Paid | Relative Efficiency |
+- Assentos/uso excede free tier em 20%+
+- Segundo time ou departamento adicionado
+- Página admin/billing visitada 3+ vezes
+- Integração com sistema de produção conectada
+- Volume de chamadas API cruza limiar
+- Feature gate em capacidade enterprise
+
+**PQL vs MQL — comparação de performance**:
+| Tipo de lead | Conversão média para pago | Eficiência relativa |
 |-----------|----------------------|---------------------|
-| MQL       | 5-10%                | Baseline            |
-| PQL       | 25-30%               | 3-5x better         |
-| PQL (ACV $1-5K)  | 30%          | 4x better           |
-| PQL (ACV $5-10K) | 39%          | 5-6x better         |
+| MQL | 5-10% | Baseline |
+| PQL | 25-30% | 3-5x melhor |
+| PQL (ACV US$ 1-5K) | 30% | 4x melhor |
+| PQL (ACV US$ 5-10K) | 39% | 5-6x melhor |
 
-**Requirements**: Product analytics (Amplitude/Mixpanel/PostHog), PQL scoring
-model, CRM integration to surface PQLs, clear product-to-sales handoff.
+**Requisitos**: Analytics de produto (Amplitude/Mixpanel/PostHog), modelo de pontuação PQL,
+integração com CRM para exibir PQLs, handoff claro produto→vendas.
 
-**Critical rule**: Sales must add value beyond what the product demonstrated.
-Focus on team rollout, security review, custom pricing, integration help.
+**Regra crítica**: Vendas precisa agregar valor além do que o produto demonstrou.
+Foque em rollout em time, revisão de segurança, preço customizado, ajuda com integração.
 
-### 2C. Sales-Assisted PLG
+### 2C. PLG com assistência de vendas
 
-**When it works**: Higher price, simple enough for try-before-buy.
-**Examples**: Figma Enterprise, GitHub Enterprise, Airtable Enterprise.
+**Quando funciona**: Preço mais alto, simples o bastante para try-before-buy.
+**Exemplos**: Figma Enterprise, GitHub Enterprise, Airtable Enterprise.
 
-Bottom-up adoption triggers top-down sale. Free individual tier ($0-20/user/mo)
-feeds adoption. Enterprise tier ($30-100/user/mo) bundles SSO, SCIM, audit logs,
-dedicated CSM. The gap creates a natural sales conversation.
+Adoção bottom-up dispara venda top-down. Tier individual grátis (US$ 0-20/usuário/mês)
+alimenta adoção. Tier enterprise (US$ 30-100/usuário/mo) agrega SSO, SCIM, audit logs,
+CSM dedicado. O gap cria conversa natural de vendas.
 
-**Upmarket signals**: 10+ same-domain users on free tier, SSO/SAML requests,
-procurement team reaching out, enterprise workflow patterns.
+**Sinais de upmarket**: 10+ usuários do mesmo domínio no free tier, pedidos SSO/SAML,
+time de procurement entrando em contato, padrões de fluxo enterprise.
 
-### 2D. Sales-Led
+### 2D. Sales-led
 
-**When it works**: High price, high complexity, multi-stakeholder buying
-committee, security/compliance review required.
-**Examples**: Salesforce, Workday, Snowflake (enterprise), Palantir.
+**Quando funciona**: Preço alto, complexidade alta, comitê de compra multi-stakeholder,
+revisão de segurança/compliance obrigatória.
+**Exemplos**: Salesforce, Workday, Snowflake (enterprise), Palantir.
 
-| Metric                   | Median      | Top Quartile |
-|--------------------------|-------------|--------------|
-| Lead to opportunity      | 13-15%      | 20%+         |
-| Opportunity to close     | 20-25%      | 30%+         |
-| Average sales cycle      | 90-180 days | 60-90 days   |
-| CAC payback (months)     | 18-24       | 12-15        |
+| Métrica                      | Mediana     | Quartil superior |
+| ---------------------------- | ----------- | ---------------- |
+| Lead para oportunidade       | 13-15%      | 20%+             |
+| Oportunidade para fechamento | 20-25%      | 30%+             |
+| Ciclo médio de vendas        | 90-180 dias | 60-90 dias       |
+| Payback de CAC (meses)       | 18-24       | 12-15            |
 
-Even sales-led motions benefit from interactive demos, sandboxes, and POCs.
-The difference is a human guides the process rather than the product alone.
+Mesmo motions sales-led se beneficiam de demos interativas, sandboxes e POCs.
+A diferença é um humano guiando o processo em vez de só o produto.
 
-### 2E. Agent-Led Discovery (Emerging, 2025-2026)
+### 2E. Descoberta liderada por agentes (emergente, 2025-2026)
 
-**What it is**: AI agents handle prospecting, qualification, initial outreach,
-and meeting scheduling. Humans handle discovery calls, demos, negotiation, and
-closing.
+**O que é**: Agentes de IA fazem prospecção, qualificação, abordagem inicial
+e agendamento de reuniões. Humanos fazem discovery, demos, negociação e
+fechamento.
 
-**Current reality check (2026 data)**:
-| Metric                              | Current State        |
+**Checagem da realidade atual (dados 2026)**:
+| Métrica | Estado atual |
 |-------------------------------------|----------------------|
-| Pipeline growth (well-implemented)  | 3-8x                |
-| CAC reduction (best case)           | 30-42% lower         |
-| Failure rate within 6 months        | 85% of deployments   |
-| AI outreach response rate           | 0.5-1% (generic)     |
-| AI-assisted human response rate     | 3-5% (personalized)  |
-| Human-written response rate         | 3-5% (baseline)      |
-| Time savings per SDR                | 4-7 hrs/week         |
+| Crescimento de pipeline (bem implementado) | 3-8x |
+| Redução de CAC (melhor caso) | 30-42% menor |
+| Taxa de falha em 6 meses | 85% dos deployments |
+| Taxa de resposta em outreach de IA | 0,5-1% (genérico) |
+| Taxa de resposta humano assistido por IA | 3-5% (personalizado) |
+| Taxa de resposta escrita por humano | 3-5% (baseline) |
+| Economia de tempo por SDR | 4-7 h/semana |
 
-**Why 85% fail**: Generic AI copy (90% lower response), no human review layer,
-treating AI as replacement not amplifier, poor ICP targeting at scale.
+**Por que 85% falham**: Copy genérico de IA (90% menos resposta), sem camada de revisão humana,
+tratar IA como substituto e não amplificador, ICP ruim em escala.
 
-**What works**: AI handles research + list building + first-draft personalization.
-Human reviews before sending. AI handles sequencing + scheduling. Human handles
-all live conversations.
+**O que funciona**: IA faz pesquisa + montagem de lista + primeiro rascunho de personalização.
+Humano revisa antes de enviar. IA faz sequenciamento + agendamento. Humano conduz
+todas as conversas ao vivo.
 
-**Implementation tiers**:
+**Níveis de implementação**:
 
-| Tier | Risk   | What AI Does                              | Lift    |
-|------|--------|-------------------------------------------|---------|
-| 1    | Low    | Drafts, enrichment, scheduling            | 2-3x    |
-| 2    | Medium | Approved templates, lead scoring, follow-up| 3-5x   |
-| 3    | High   | Full sequences, booking, qualification    | 5-8x*   |
+| Nível | Risco | O que a IA faz                               | Ganho  |
+| ----- | ----- | -------------------------------------------- | ------ |
+| 1     | Baixo | Rascunhos, enriquecimento, agendamento       | 2-3x   |
+| 2     | Médio | Templates aprovados, lead scoring, follow-up | 3-5x   |
+| 3     | Alto  | Sequências completas, booking, qualificação  | 5-8x\* |
 
-*Tier 3 has 85% failure rate. Only viable with tight ICP, simple product, low ACV.
+\*Nível 3 tem taxa de falha de 85%. Só viável com ICP apertado, produto simples, ACV baixo.
 
-**Recommendation**: Start Tier 1. Move to Tier 2 after 90+ days of positive
-reply rates. Avoid Tier 3 unless ACV < $1K.
-
----
-
-## 3. Value-Before-Purchase Experiences
-
-Giving prospects real value before they pay converts at dramatically higher
-rates than cold pitching. This applies across all motion types.
-
-### Value-before-purchase tactics ranked by conversion lift
-
-| Tactic                    | Conversion Lift vs Cold Pitch | Best For              |
-|---------------------------|------------------------------|-----------------------|
-| Free audit/scan           | 4-7x                        | Security, SEO, ops    |
-| Interactive demo          | 3-5x                        | Complex UI products   |
-| Prebuilt workflow/template| 2-4x                        | Workflow tools        |
-| Sandbox environment       | 2-3x                        | Developer tools, APIs |
-| Live workshop/webinar     | 2-3x                        | Education-heavy sale  |
-| ROI calculator            | 1.5-2x                      | High-ACV products     |
-| Free tier/freemium        | 1.5-2x                      | Horizontal SaaS       |
-
-### Implementation notes
-
-**Free Audit/Scan**: Automate analysis of prospect's current state, deliver
-personalized report. Cost: 2-4 weeks engineering. Prospect gets real value,
-you get a qualified signal.
-
-**Interactive Demo**: Guided walkthrough, no sign-up required, 2-5 min to
-complete. 18% of B2B SaaS sites now have one (up 40% YoY). Tools: Navattic,
-Storylane, Arcade, Consensus. Must end with value moment, not sign-up wall.
-
-**Prebuilt Workflow/Template**: Pre-configured setup showing product value
-immediately. Reduces TTFV from hours to minutes. Must solve a real problem.
-
-**Sandbox**: Full product access with sample data pre-loaded, resettable.
-Best when product requires data to demonstrate value. Must feel real.
-
-### Choosing the right tactic
-
-- Product analyzes something prospect already has -> **Free audit/scan**
-- Product has complex UI needing explanation -> **Interactive demo**
-- Product automates a workflow -> **Prebuilt workflow/template**
-- Product requires data to show value -> **Sandbox environment**
-- None of the above -> **ROI calculator or free tier**
+**Recomendação**: Comece no Nível 1. Vá ao Nível 2 após 90+ dias de taxas de resposta
+positivas. Evite Nível 3 exceto se ACV menor que US$ 1K.
 
 ---
 
-## 4. Time-to-First-Value (TTFV) as North Star
+## 3. Experiências de valor antes da compra
 
-TTFV measures the time from first product interaction to the moment the user
-recognizes concrete value. Every extra minute in TTFV increases churn
-probability. Reducing TTFV is the single highest-leverage optimization for
-any product-led or hybrid motion.
+Dar valor real ao prospect antes do pagamento converte em taxas muito maiores
+do que pitch frio. Vale para todos os tipos de motion.
 
-### TTFV benchmarks by product type
+### Táticas de valor antes da compra, ordenadas por lift de conversão
 
-| Product Type        | Target TTFV    | Tolerable Max  | What "Value" Means             |
-|---------------------|----------------|----------------|--------------------------------|
-| API/Developer tool  | < 5 min        | 15 min         | First successful API call      |
-| Workflow/automation | < 15 min       | 30 min         | First workflow runs            |
-| Analytics/BI        | < 30 min       | 2 hours        | First insight from own data    |
-| AI agent/assistant  | < 1 hour       | 4 hours        | First task completed by agent  |
-| Enterprise platform | < 1 day        | 1 week         | First team using core feature  |
-| Infrastructure      | < 1 day        | 3 days         | First production deployment    |
+| Tática                     | Lift vs pitch frio | Melhor para              |
+| -------------------------- | ------------------ | ------------------------ |
+| Auditoria/varredura grátis | 4-7x               | Segurança, SEO, ops      |
+| Demo interativo            | 3-5x               | Produtos com UI complexa |
+| Workflow/template pronto   | 2-4x               | Ferramentas de workflow  |
+| Ambiente sandbox           | 2-3x               | Ferramentas dev, APIs    |
+| Workshop/webinar ao vivo   | 2-3x               | Venda com muito ensino   |
+| Calculadora de ROI         | 1,5-2x             | Produtos ACV alto        |
+| Free tier/freemium         | 1,5-2x             | SaaS horizontal          |
 
-### TTFV optimization steps
+### Notas de implementação
 
-1. **MAP** - Record 10 new user sessions, identify every step to value moment
-2. **ELIMINATE** - Email-only sign-up, skip surveys, pre-fill defaults
-3. **PRELOAD** - Sample data, templates, pre-connected integrations
-4. **GUIDE** - Checklist UI, contextual tooltips, action-oriented empty states
-5. **MEASURE** - Activation rate, time-to-activate, segment by source/persona
+**Auditoria/varredura grátis**: Automatize análise do estado atual do prospect, entregue
+relatório personalizado. Custo: 2-4 semanas de engenharia. Prospect recebe valor real,
+você recebe sinal qualificado.
 
-### TTFV anti-patterns
+**Demo interativo**: Tour guiado, sem cadastro, 2-5 min para
+completar. 18% dos sites B2B SaaS têm um (subida de 40% YoY). Ferramentas: Navattic,
+Storylane, Arcade, Consensus. Precisa terminar no momento de valor, não num muro de cadastro.
 
-| Anti-pattern                      | Fix                                        |
-|-----------------------------------|--------------------------------------------|
-| Mandatory 10-field sign-up form   | Email-only, progressive profiling later     |
-| Feature tour before any action    | Skip tour, guide first meaningful action    |
-| Empty dashboard on first load     | Pre-loaded sample data or template          |
-| "Contact sales" before trial      | Give trial access, trigger sales on usage   |
-| Configuration wizard with 20 steps| 3-step wizard, defer the rest               |
+**Workflow/template pronto**: Setup pré-configurado mostrando valor do produto
+na hora. Reduz TTFV de horas para minutos. Precisa resolver um problema real.
+
+**Sandbox**: Acesso completo com dados de exemplo pré-carregados, resetável.
+Melhor quando o produto precisa de dados para demonstrar valor. Precisa parecer real.
+
+### Escolhendo a tática certa
+
+- Produto analisa algo que o prospect já tem → **Auditoria/varredura grátis**
+- Produto tem UI complexa que explicação → **Demo interativo**
+- Produto automatiza um workflow → **Workflow/template pronto**
+- Produto precisa de dados para mostrar valor → **Ambiente sandbox**
+- Nenhuma das acima → **Calculadora de ROI ou free tier**
 
 ---
 
-## 5. Hybrid Motion Architecture
+## 4. Time-to-first-value (TTFV) como norte
 
-The hybrid (product-led sales) motion is the dominant model in 2025-2026.
-Pure self-serve struggles to move upmarket. Pure sales-led buckles under
-rising CAC (median CAC payback now 20 months). The winning approach
-combines both.
+TTFV mede o tempo da primeira interação com o produto até o momento em que o usuário
+reconhece valor concreto. Cada minuto extra no TTFV aumenta a probabilidade de churn.
+Reduzir TTFV é a otimização de maior alavancagem para
+qualquer motion product-led ou híbrido.
 
-### Hybrid motion structure
+### Benchmarks de TTFV por tipo de produto
+
+| Tipo de produto         | TTFV alvo        | Máx tolerável | O que significa "valor"               |
+| ----------------------- | ---------------- | ------------- | ------------------------------------- |
+| API/Ferramenta dev      | menor que 5 min  | 15 min        | Primeira chamada API com sucesso      |
+| Workflow/automação      | menor que 15 min | 30 min        | Primeiro workflow rodando             |
+| Analytics/BI            | menor que 30 min | 2 horas       | Primeiro insight com dados próprios   |
+| Agente/assistente de IA | menor que 1 hora | 4 horas       | Primeira tarefa concluída pelo agente |
+| Plataforma enterprise   | menor que 1 dia  | 1 semana      | Primeiro time usando feature central  |
+| Infraestrutura          | menor que 1 dia  | 3 dias        | Primeiro deploy em produção           |
+
+### Passos para otimizar TTFV
+
+1. **MAPEAR** - Grave 10 sessões de novo usuário, identifique cada passo até o momento de valor
+2. **ELIMINAR** - Cadastro só com e-mail, pule pesquisas, preencha padrões
+3. **PRÉ-CARREGAR** - Dados de exemplo, templates, integrações pré-conectadas
+4. **GUIAR** - Checklist na UI, tooltips contextuais, estados vazios orientados à ação
+5. **MEDIR** - Taxa de ativação, tempo até ativar, segmente por fonte/persona
+
+### Anti-padrões de TTFV
+
+| Anti-padrão                             | Correção                                        |
+| --------------------------------------- | ----------------------------------------------- |
+| Formulário obrigatório com 10 campos    | Só e-mail, profiling progressivo depois         |
+| Tour de features antes de qualquer ação | Pule o tour, guie a primeira ação significativa |
+| Dashboard vazio no primeiro load        | Dados de exemplo ou template pré-carregado      |
+| "Fale com vendas" antes do trial        | Dê acesso ao trial, dispare vendas por uso      |
+| Wizard de config com 20 passos          | Wizard de 3 passos, adie o restante             |
+
+---
+
+## 5. Arquitetura do motion híbrido
+
+O motion híbrido (vendas product-led) é o modelo dominante em 2025-2026.
+Self-serve puro luta para ir upmarket. Sales-led puro quebra sob
+CAC crescente (payback mediano de CAC agora ~20 meses). A abordagem vencedora
+combina as duas.
+
+### Estrutura do motion híbrido
 
 ```
 ACQUISITION (Product-Led)     -> Free tier drives sign-ups, product delivers value
@@ -319,154 +321,156 @@ CONVERSION (Sales-Led)        -> AE engages with usage context, adds enterprise 
 EXPANSION (Product+CS)        -> CS monitors expansion signals, product drives upgrades
 ```
 
-### When to add sales to PLG
+### Quando adicionar vendas ao PLG
 
-Do not hire sales too early. Add sales only when you see these signals:
+Não contrate vendas cedo demais. Só adicione vendas quando estes sinais aparecerem:
 
-| Signal                                    | Why It Matters                    |
-|-------------------------------------------|-----------------------------------|
-| Free users asking for enterprise features | Demand pull, not push             |
-| 10+ users from same company on free tier  | Bottom-up adoption happening      |
-| Deals stalling at procurement/legal       | Human needed to navigate process  |
-| Average deal size exceeding $5K ACV       | ROI justifies sales involvement   |
-| Free-to-paid conversion plateauing        | Product alone hit its ceiling     |
+| Sinal                                       | Por que importa                        |
+| ------------------------------------------- | -------------------------------------- |
+| Usuários grátis pedindo features enterprise | Demanda puxada, não empurrada          |
+| 10+ usuários da mesma empresa no free tier  | Adoção bottom-up acontecendo           |
+| Negócios travando em procurement/legal      | Humano preciso para navegar o processo |
+| Ticket médio passando de ~US$ 5K ACV        | ROI justifica envolvimento de vendas   |
+| Conversão grátis→pago estagnando            | Produto sozinho bateu no teto          |
 
-### Hybrid team structure
+### Estrutura de time híbrido
 
-| ARR Stage   | Team Composition                                          |
-|-------------|-----------------------------------------------------------|
-| $1-5M       | 1-2 AEs (PQL/inbound), 0-1 SDR (high-value outbound), 1 CS|
-| $5-20M      | 3-5 AEs by segment, 1-2 SDRs, 2-3 CS/AMs, 1 RevOps      |
+| Estágio de ARR | Composição do time                                         |
+| -------------- | ---------------------------------------------------------- |
+| US$ 1-5M       | 1-2 AEs (PQL/inbound), 0-1 SDR (outbound alto valor), 1 CS |
+| US$ 5-20M      | 3-5 AEs por segmento, 1-2 SDRs, 2-3 CS/AMs, 1 RevOps       |
 
-First sales hire must be product-savvy, able to do technical demos. Not a
-traditional AE running MEDDIC on cold prospects.
+A primeira contratação em vendas precisa ser proficiente no produto, capaz de demo técnica. Não um
+AE tradicional rodando MEDDIC em prospect frio.
 
-### Hybrid metrics
+### Métricas do híbrido
 
-| Metric                         | Target           | Red Flag          |
-|--------------------------------|------------------|-------------------|
-| PQL-to-close rate              | 25-30%           | < 15%             |
-| Sales-assisted CAC payback     | 12-15 months     | > 20 months       |
-| Self-serve % of new revenue    | 30-50%           | < 15%             |
-| Expansion revenue % of total   | 25-40%           | < 15%             |
-| Free-to-paid conversion        | 5-8% (freemium)  | < 2%              |
-| TTFV for new sign-ups          | < 15 min         | > 60 min          |
-
----
-
-## 6. CAC Benchmarks and Efficiency
-
-| Motion               | Median CAC   | CAC Payback (months) | LTV:CAC Target |
-|----------------------|-------------|----------------------|----------------|
-| Pure PLG             | $200-800     | 4-9                  | 5:1+           |
-| PLG + Sales Hybrid   | $800-3,000   | 9-15                 | 4:1+           |
-| Sales-Assisted PLG   | $2,000-8,000 | 12-18                | 3.5:1+         |
-| Sales-Led            | $5,000-25K+  | 18-24                | 3:1+           |
-| Agent-Led Discovery  | $1,000-5,000 | 8-14                 | 4:1+           |
-
-**CAC reduction by timeline**:
-- Weeks: interactive demo on site, PQL scoring, self-serve onboarding
-- Months: free tier/trial, content engine, product analytics, referral program
-- Quarters: shift to inbound/PLG mix, viral loops, community/ecosystem
+| Métrica                             | Alvo             | Alerta vermelho    |
+| ----------------------------------- | ---------------- | ------------------ |
+| Taxa PQL→fechamento                 | 25-30%           | menor que 15%      |
+| Payback de CAC assistido por vendas | 12-15 meses      | maior que 20 meses |
+| % self-serve na receita nova        | 30-50%           | menor que 15%      |
+| Receita de expansão % do total      | 25-40%           | menor que 15%      |
+| Conversão grátis→pago               | 5-8% (freemium)  | menor que 2%       |
+| TTFV para novos cadastros           | menor que 15 min | maior que 60 min   |
 
 ---
 
-## 7. Motion Migration Paths
+## 6. Benchmarks de CAC e eficiência
 
-**PLG to Hybrid** (trigger: enterprise users stalling at procurement):
-1. Instrument PQL signals (seats, usage, feature gates)
-2. Define threshold (e.g., 5+ active users from same domain)
-3. Hire product-savvy AE, build enterprise tier (SSO, admin, compliance)
-4. CRM integration to surface PQLs. Target: 25%+ PQL-to-close rate
+| Motion                          | CAC mediano     | Payback de CAC (meses) | Alvo LTV:CAC |
+| ------------------------------- | --------------- | ---------------------- | ------------ |
+| PLG puro                        | US$ 200-800     | 4-9                    | 5:1+         |
+| Híbrido PLG + vendas            | US$ 800-3.000   | 9-15                   | 4:1+         |
+| PLG assistido por vendas        | US$ 2.000-8.000 | 12-18                  | 3,5:1+       |
+| Sales-led                       | US$ 5.000-25K+  | 18-24                  | 3:1+         |
+| Descoberta liderada por agentes | US$ 1.000-5.000 | 8-14                   | 4:1+         |
 
-**Sales-Led to Hybrid** (trigger: CAC payback > 20 months):
-1. Build free/trial tier for self-qualification
-2. Interactive demo on website, usage tracking in free tier
-3. Train AEs to leverage usage data. Target: 20-30% CAC reduction in 2 quarters
+**Redução de CAC por horizonte**:
 
-**Pricing alignment**:
-
-| Stage            | Pricing Model                                    |
-|------------------|--------------------------------------------------|
-| Pure PLG         | Freemium or usage-based, self-serve billing      |
-| Adding Sales     | Add annual contract with volume discount          |
-| Full Hybrid      | Self-serve (monthly) + sales-negotiated (annual) |
-| Moving Upmarket  | Enterprise tier with custom pricing               |
+- Semanas: demo interativo no site, pontuação PQL, onboarding self-serve
+- Meses: free tier/trial, motor de conteúdo, analytics de produto, programa de indicação
+- Trimestres: migrar para mix inbound/PLG, loops virais, comunidade/ecossistema
 
 ---
 
-## 8. Free Trial vs Freemium Decision
+## 7. Caminhos de migração de motion
 
-Use **freemium** when: viral/network effects, low marginal cost per free user,
-natural upgrade triggers, competitive market where free is table stakes.
+**PLG → Híbrido** (gatilho: usuários enterprise travando em procurement):
 
-Use **free trial** when: value is obvious quickly, high marginal cost per user,
-urgency improves conversion, enterprise buyers expect trial before procurement.
+1. Instrumente sinais PQL (assentos, uso, feature gates)
+2. Defina limiar (ex.: 5+ usuários ativos do mesmo domínio)
+3. Contrate AE proficiente no produto, construa tier enterprise (SSO, admin, compliance)
+4. Integração CRM para exibir PQLs. Alvo: 25%+ taxa PQL→fechamento
 
-**Reverse trial** (full product for 14 days, then drop to free tier) combines
-low friction with urgency. Works when premium features are clearly valuable.
+**Sales-led → Híbrido** (gatilho: payback de CAC maior que 20 meses):
 
-### Industry-specific trial-to-paid rates
+1. Construa tier grátis/trial para auto-qualificação
+2. Demo interativo no site, rastreamento de uso no free tier
+3. Treine AEs para usar dados de uso. Alvo: redução de 20-30% no CAC em 2 trimestres
 
-| Industry             | Rate  | Industry            | Rate    |
-|----------------------|-------|---------------------|---------|
-| CRM                  | 29%   | Project Management  | 18%     |
-| AdTech               | 24%   | Developer Tools     | 15%     |
-| HR Software          | 23%   | Enterprise SaaS     | 10-15%  |
+**Alinhamento de preço**:
 
----
-
-## 9. Stage-Specific Playbooks
-
-| Stage               | Key Actions                                                |
-|---------------------|------------------------------------------------------------|
-| Solo founder (<$500K)| Pure PLG, opt-in trial, TTFV < 5 min, no sales hire       |
-| Seed ($500K-$2M)    | Add PQL scoring, first AE when 10+ PQLs/month, enterprise tier |
-| Series A+ ($2M+)    | Formalize hybrid, segment by ACV, RevOps, agent-led Tier 1|
+| Estágio            | Modelo de preço                                    |
+| ------------------ | -------------------------------------------------- |
+| PLG puro           | Freemium ou usage-based, billing self-serve        |
+| Adicionando vendas | Contrato anual com desconto por volume             |
+| Híbrido completo   | Self-serve (mensal) + negociado por vendas (anual) |
+| Subindo no mercado | Tier enterprise com preço customizado              |
 
 ---
 
-## 10. Common Mistakes
+## 8. Decisão free trial vs freemium
 
-| Motion  | Mistake                             | Impact                         |
-|---------|-------------------------------------|--------------------------------|
-| PLG     | Free tier too generous              | < 1% conversion                |
-| PLG     | No activation onboarding            | 70%+ sign-up churn             |
-| PLG     | Measuring sign-ups, not activations | Vanity metrics                 |
-| Sales   | Hiring AEs before demand exists     | Burn rate spikes               |
-| Sales   | No interactive demo on website      | 40% fewer qualified leads      |
-| Sales   | Same process for $5K and $500K deals| Over/under-serving             |
-| Hybrid  | Sales calling PQLs too early        | Kills product-led trust        |
-| Hybrid  | PQL definition too loose            | Sales wastes time              |
-| Hybrid  | Pricing gap between tiers too large | Conversion dead zone           |
+Use **freemium** quando: efeitos virais/rede, custo marginal baixo por usuário grátis,
+gatilhos naturais de upgrade, mercado competitivo onde grátis é table stakes.
 
----
+Use **free trial** quando: valor fica claro rápido, custo marginal alto por usuário,
+urgência melhora conversão, compradores enterprise esperam trial antes do procurement.
 
-## Examples
+**Reverse trial** (produto completo por 14 dias, depois cai para free tier) combina
+baixa fricção com urgência. Funciona quando recursos premium são claramente valiosos.
 
-- **User says:** "Should we be PLG or sales-led?" → **Result:** Agent asks ACV and product complexity; uses cheat sheet (e.g. ACV &lt;$1K simple → Pure PLG; $10–50K → Hybrid); recommends TTFV target by category (API &lt;5 min, workflow &lt;15 min, enterprise &lt;1 day) and LTV:CAC 3:1 minimum.
-- **User says:** "Our free users don't convert" → **Result:** Agent checks activation (target &gt;40% reach value moment) and PQL definition; suggests value-before-purchase design and upgrade pressure at limit; warns on sales calling PQLs too early in hybrid.
-- **User says:** "Design our sales motion" → **Result:** Agent maps current state (inbound/outbound/PLG); recommends motion from ACV and complexity; outlines TTFV, NRR, self-serve % targets; ties to ai-pricing and gtm-metrics.
+### Taxas trial→pago por indústria
 
-## Troubleshooting
-
-- **Over or under-serving** → **Cause:** Same process for $5K and $500K deals. **Fix:** Segment by ACV; self-serve for low, AE for high; define PQL and when sales enters.
-- **Hybrid kills PLG trust** → **Cause:** Sales touching PQLs too early. **Fix:** Let product drive activation first; sales on expansion or when multi-stakeholder; clear handoff criteria.
-- **Conversion dead zone** → **Cause:** Pricing gap between tiers too large. **Fix:** Add mid tier or usage-based step; aim for &gt;25% PQL conversion; test price sensitivity.
+| Indústria      | Taxa | Indústria          | Taxa   |
+| -------------- | ---- | ------------------ | ------ |
+| CRM            | 29%  | Gestão de projetos | 18%    |
+| AdTech         | 24%  | Ferramentas dev    | 15%    |
+| Software de RH | 23%  | Enterprise SaaS    | 10-15% |
 
 ---
 
+## 9. Playbooks por estágio
 
-For checklists, benchmarks, and discovery questions read `references/quick-reference.md` when you need detailed reference.
+| Estágio                           | Ações-chave                                                           |
+| --------------------------------- | --------------------------------------------------------------------- |
+| Fundador solo (menor que US$500K) | PLG puro, trial opt-in, TTFV menor que 5 min, sem contratar vendas    |
+| Seed (US$500K–2M)                 | Adicione pontuação PQL, primeiro AE com 10+ PQLs/mês, tier enterprise |
+| Série A+ (US$2M+)                 | Formalize híbrido, segmente por ACV, RevOps, agent-led Nível 1        |
 
 ---
 
-## Related Skills
+## 10. Erros comuns
 
-- **positioning-icp** - Define your ICP and positioning before choosing a motion
-- **ai-pricing** - Set pricing tiers that align with your chosen motion
-- **ai-cold-outreach** - Execute outbound for sales-led or hybrid motions
-- **ai-sdr** - Build and manage AI-augmented SDR workflows
-- **multi-platform-launch** - Coordinate launch across channels for any motion
-- **solo-founder-gtm** - GTM playbook when you are the entire sales team
-- **gtm-metrics** - Track the right metrics for your motion type
+| Motion  | Erro                                            | Impacto                      |
+| ------- | ----------------------------------------------- | ---------------------------- |
+| PLG     | Free tier generoso demais                       | Conversão menor que 1%       |
+| PLG     | Sem onboarding de ativação                      | Churn de cadastro 70%+       |
+| PLG     | Medir cadastros, não ativações                  | Métricas de vaidade          |
+| Vendas  | Contratar AEs antes da demanda existir          | Queima dispara               |
+| Vendas  | Sem demo interativo no site                     | 40% menos leads qualificados |
+| Vendas  | Mesmo processo para negócios de US$5K e US$500K | Sub/superserviço             |
+| Híbrido | Vendas ligando para PQLs cedo demais            | Mata confiança product-led   |
+| Híbrido | Definição de PQL frouxa                         | Vendas perde tempo           |
+| Híbrido | Gap de preço entre tiers grande                 | Zona morta de conversão      |
+
+---
+
+## Exemplos
+
+- **Usuário diz:** "Devemos ser PLG ou sales-led?" → **Resultado:** O agente pergunta ACV e complexidade do produto; usa cola rápida (ex. ACV simples menor que US$ 1K → PLG puro; US$ 10–50K → híbrido); recomenda alvo de TTFV por categoria (API menor que 5 min, workflow menor que 15 min, enterprise menor que 1 dia) e LTV:CAC mínimo 3:1.
+- **Usuário diz:** "Nossos usuários grátis não convertem" → **Resultado:** O agente checa ativação (alvo maior que 40% atingem momento de valor) e definição de PQL; sugere design valor-antes-da-compra e pressão de upgrade no limite; alerta sobre vendas tocar PQLs cedo demais no híbrido.
+- **Usuário diz:** "Desenhe nosso sales motion" → **Resultado:** O agente mapeia estado atual (inbound/outbound/PLG); recomenda motion a partir de ACV e complexidade; descreve alvos de TTFV, NRR, % self-serve; conecta a ai-pricing e gtm-metrics.
+
+## Solução de problemas
+
+- **Sub/superserviço** → **Causa:** Mesmo processo para US$ 5K e US$ 500K. **Correção:** Segmentar por ACV; self-serve para baixo, AE para alto; definir PQL e quando vendas entra.
+- **Híbrido mata confiança no PLG** → **Causa:** Vendas tocando PQLs cedo demais. **Correção:** Deixe o produto liderar ativação primeiro; vendas em expansão ou multi-stakeholder; critérios claros de handoff.
+- **Zona morta de conversão** → **Causa:** Gap de preço entre tiers grande. **Correção:** Adicionar tier intermediário ou passo usage-based; mirar maior que 25% conversão PQL; testar sensibilidade a preço.
+
+---
+
+Para checklists, benchmarks e perguntas de discovery leia `references/quick-reference.md` quando precisar de referência detalhada.
+
+---
+
+## Skills relacionadas
+
+- **positioning-icp** - Defina ICP e posicionamento antes de escolher um motion
+- **ai-pricing** - Defina tiers de preço alinhados ao motion escolhido
+- **ai-cold-outreach** - Execute outbound para motions sales-led ou híbridos
+- **ai-sdr** - Construa e gerencie fluxos de SDR assistidos por IA
+- **multi-platform-launch** - Coordene lançamento em canais para qualquer motion
+- **solo-founder-gtm** - Playbook de GTM quando você é o time de vendas inteiro
+- **gtm-metrics** - Acompanhe as métricas certas para o seu tipo de motion

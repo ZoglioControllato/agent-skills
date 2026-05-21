@@ -1,24 +1,24 @@
 ---
-title: Rule Title Here
+title: Título da regra aqui
 impact: MEDIUM
-impactDescription: brief description of impact
+impactDescription: descrição breve do impacto
 tags: composition, components
 ---
 
-## Rule Title Here
+## Título da regra aqui
 
-Brief explanation of the rule and why it matters.
+Breve explicação da regra e por que ela é importante.
 
-**Incorrect:**
-
-```tsx
-// Bad code example
-```
-
-**Correct:**
+**Incorreto:**
 
 ```tsx
-// Good code example
+// Exemplo de código ruim
 ```
 
-Reference: [Link](https://example.com)
+**Correto:**
+
+```tsx
+// Exemplo de código bom
+```
+
+Referência: [Link](https://example.com)

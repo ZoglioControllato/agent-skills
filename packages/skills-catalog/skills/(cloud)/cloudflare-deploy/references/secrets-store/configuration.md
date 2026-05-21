@@ -1,70 +1,64 @@
-# Configuration
+#Configuração
 
-## Wrangler Config
+## Configuração do Wrangler
 
-### Basic Binding
+### Encadernação Básica
 
-**wrangler.jsonc**:
-
-```jsonc
+**wrangler.jsonc**:```jsonc
 {
-  "secrets_store_secrets": [
-    {
-      "binding": "API_KEY",
-      "store_id": "abc123",
-      "secret_name": "stripe_api_key",
-    },
-  ],
+"secrets_store_secrets": [
+{
+"binding": "API_KEY",
+"store_id": "abc123",
+"secret_name": "stripe_api_key",
+},
+],
 }
-```
 
-**wrangler.toml** (alternative):
+````
 
-```toml
+**wrangler.toml** (alternativa):```toml
 [[secrets_store_secrets]]
 binding = "API_KEY"
 store_id = "abc123"
 secret_name = "stripe_api_key"
-```
+````
 
-Fields:
+Campos:
 
-- `binding`: Variable name for `env` access
-- `store_id`: From `wrangler secrets-store store list`
-- `secret_name`: Identifier (no spaces)
+- `binding`: Nome da variável para acesso `env`
+- `store_id`: Da `lista de lojas da loja de segredos do wrangler`
+- `secret_name`: Identificador (sem espaços)
 
-### Environment-Specific
+### Específico do ambiente
 
-**wrangler.jsonc**:
-
-```jsonc
+**wrangler.jsonc**:```jsonc
 {
-  "env": {
-    "production": {
-      "secrets_store_secrets": [
-        {
-          "binding": "API_KEY",
-          "store_id": "prod-store",
-          "secret_name": "prod_api_key",
-        },
-      ],
-    },
-    "staging": {
-      "secrets_store_secrets": [
-        {
-          "binding": "API_KEY",
-          "store_id": "staging-store",
-          "secret_name": "staging_api_key",
-        },
-      ],
-    },
-  },
+"env": {
+"production": {
+"secrets_store_secrets": [
+{
+"binding": "API_KEY",
+"store_id": "prod-store",
+"secret_name": "prod_api_key",
+},
+],
+},
+"staging": {
+"secrets_store_secrets": [
+{
+"binding": "API_KEY",
+"store_id": "staging-store",
+"secret_name": "staging_api_key",
+},
+],
+},
+},
 }
-```
 
-**wrangler.toml** (alternative):
+````
 
-```toml
+**wrangler.toml** (alternativa):```toml
 [env.production]
 [[env.production.secrets_store_secrets]]
 binding = "API_KEY"
@@ -76,21 +70,18 @@ secret_name = "prod_api_key"
 binding = "API_KEY"
 store_id = "staging-store"
 secret_name = "staging_api_key"
-```
+````
 
-## Wrangler Commands
+## Comandos do Wrangler
 
-### Store Management
+### Gerenciamento de loja```bash
 
-```bash
 wrangler secrets-store store list
 wrangler secrets-store store create my-store --remote
 wrangler secrets-store store delete <store-id> --remote
-```
 
-### Secret Management (Production)
-
-```bash
+````
+### Gerenciamento Secreto (Produção)```bash
 # Create (interactive)
 wrangler secrets-store secret create <store-id> \
   --name MY_SECRET --scopes workers --remote
@@ -108,23 +99,21 @@ wrangler secrets-store secret delete <store-id> --name MY_SECRET --remote
 # Duplicate
 wrangler secrets-store secret duplicate <store-id> \
   --name ORIG --new-name COPY --remote
-```
+````
 
-### Local Development
+### Desenvolvimento Local
 
-**CRITICAL**: Production secrets (`--remote`) NOT accessible in local dev.
+**CRÍTICO**: Segredos de produção (`--remote`) NÃO acessíveis no desenvolvedor local.```bash
 
-```bash
 # Create local-only (no --remote)
+
 wrangler secrets-store secret create <store-id> --name DEV_KEY --scopes workers
 
-wrangler dev    # Uses local secrets
+wrangler dev # Uses local secrets
 wrangler deploy # Uses production secrets
-```
 
-Best practice: Separate names for local/prod:
-
-```jsonc
+````
+Prática recomendada: nomes separados para local/prod:```jsonc
 {
   "env": {
     "development": {
@@ -135,49 +124,46 @@ Best practice: Separate names for local/prod:
     },
   },
 }
-```
+````
 
-## Dashboard
+## Painel
 
-### Creating Secrets
+### Criando segredos
 
-1. **Secrets Store** → **Create secret**
-2. Fill: Name (no spaces), Value, Scope (`Workers`), Comment
-3. **Save** (value hidden after)
+1. **Loja de segredos** → **Criar segredo**
+2. Preencha: Nome (sem espaços), Valor, Escopo (`Workers`), Comentário
+3. **Salvar** (valor oculto depois)
 
-### Adding Bindings
+### Adicionando ligações
 
-**Method 1**: Worker → Settings → Bindings → Add → Secrets Store
-**Method 2**: Create secret directly from Worker settings dropdown
+**Método 1**: Trabalhador → Configurações → Vinculações → Adicionar → Armazenamento de segredos
+**Método 2**: crie um segredo diretamente no menu suspenso Configurações do trabalhador
 
-Deploy options:
+Opções de implantação:
 
-- **Deploy**: Immediate 100%
-- **Save version**: Gradual rollout
+- **Implantação**: 100% imediato
+- **Salvar versão**: lançamento gradual
 
 ## CI/CD
 
-### GitHub Actions
+### Ações do GitHub```yaml
 
-```yaml
 - name: Create secret
   env:
-    CLOUDFLARE_API_TOKEN: ${{ secrets.CF_TOKEN }}
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CF_TOKEN }}
   run: |
     echo "${{ secrets.API_KEY }}" | \
-    npx wrangler secrets-store secret create $STORE_ID \
-      --name API_KEY --scopes workers --remote
+   npx wrangler secrets-store secret create $STORE_ID \
+   --name API_KEY --scopes workers --remote
 
 - name: Deploy
   run: npx wrangler deploy
-```
 
-### GitLab CI
-
-```yaml
+````
+### NO GitLab```yaml
 script:
   - echo "$API_KEY_VALUE" | npx wrangler secrets-store secret create $STORE_ID --name API_KEY --scopes workers --remote
   - npx wrangler deploy
-```
+````
 
-See: [api.md](./api.md), [patterns.md](./patterns.md)
+Consulte: [api.md](./api.md), [patterns.md](./patterns.md)

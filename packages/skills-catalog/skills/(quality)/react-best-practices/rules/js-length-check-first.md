@@ -1,17 +1,17 @@
 ---
-title: Early Length Check for Array Comparisons
+title: Verifique o comprimento primeiro em comparações de arrays
 impact: MEDIUM-HIGH
-impactDescription: avoids expensive operations when lengths differ
+impactDescription: evita operações caras quando os tamanhos aumentam
 tags: javascript, arrays, performance, optimization, comparison
 ---
 
-## Early Length Check for Array Comparisons
+## Verifique o comprimento primeiro em comparações de arrays
 
-When comparing arrays with expensive operations (sorting, deep equality, serialization), check lengths first. If lengths differ, the arrays cannot be equal.
+Ao comparar arrays com operações caras (ordenação, igualdade profunda, serialização), verifique primeiro os comprimentos. Se forem diferentes, os arrays não podem ser iguais.
 
-In real-world applications, this optimization is especially valuable when the comparison runs in hot paths (event handlers, render loops).
+Em aplicações reais, isso vale especialmente em caminhos quentes (manipuladores de eventos, loops de renderização).
 
-**Incorrect (always runs expensive comparison):**
+**Incorreto (sempre executado em comparação cara):**
 
 ```typescript
 function hasChanges(current: string[], original: string[]) {
@@ -20,9 +20,9 @@ function hasChanges(current: string[], original: string[]) {
 }
 ```
 
-Two O(n log n) sorts run even when `current.length` is 5 and `original.length` is 100. There is also overhead of joining the arrays and comparing the strings.
+Duas ordenações O(n log n) rodam mesmo quando `current.length` é 5 e `original.length` é 100. Há também o custo de juntar os arrays e comparar as strings.
 
-**Correct (O(1) length check first):**
+**Correto (checagem O(1) de comprimento primeiro):**
 
 ```typescript
 function hasChanges(current: string[], original: string[]) {
@@ -42,8 +42,9 @@ function hasChanges(current: string[], original: string[]) {
 }
 ```
 
-This new approach is more efficient because:
-- It avoids the overhead of sorting and joining the arrays when lengths differ
-- It avoids consuming memory for the joined strings (especially important for large arrays)
-- It avoids mutating the original arrays
-- It returns early when a difference is found
+Esta abordagem é mais eficiente porque:
+
+- Evite o custo de ordenar e juntar quando os comprimentos próximos
+- Evita alocar strings grandes para o join (importante em arrays grandes)
+- Evita mudar os arrays originais
+- Voltar cedo ao encontrar diferença

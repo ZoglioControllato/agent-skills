@@ -180,60 +180,62 @@ ip.geoip.country eq "US" or ip.geoip.country eq "CA"
 not http.headers["user-agent"] contains "bot"
 ```
 
-### Expression Functions
+### Funções de expressão
 
-| Function        | Example                                          | Description          |
-| --------------- | ------------------------------------------------ | -------------------- |
-| `starts_with()` | `starts_with(http.request.uri.path, "/api/")`    | Check prefix         |
-| `ends_with()`   | `ends_with(http.request.uri.path, ".json")`      | Check suffix         |
-| `contains()`    | `contains(http.headers["user-agent"], "Mobile")` | Check substring      |
-| `matches()`     | `matches(http.request.uri.path, "^/api/")`       | Regex match          |
-| `lower()`       | `lower(http.host) eq "example.com"`              | Convert to lowercase |
-| `upper()`       | `upper(http.headers["x-api-key"])`               | Convert to uppercase |
-| `len()`         | `len(http.request.uri.path) gt 100`              | String length        |
+| Função               | Exemplo                                             | Descrição                 |
+| -------------------- | --------------------------------------------------- | ------------------------- |
+| `inicia_com()`       | `inicia_com(http.request.uri.path, "/api/")`        | Verifique o prefixo       |
+| `termina_com()`      | `ends_with(http.request.uri.path, ".json")`         | Verifique o sufixo        |
+| `contém()`           | `contém(http.headers["user-agent"], "Mobile")`      | Verifique a substring     |
+| `correspondências()` | `correspondências(http.request.uri.path, "^/api/")` | Correspondência Regex     |
+| `inferior()`         | `inferior(http.host) eq "example.com"`              | Converter para minúsculas |
+| `superior()`         | `superior(http.headers["x-api-key"])`               | Converter para maiúsculas |
+| `len()`              | `len(http.request.uri.path) gt 100`                 | Comprimento da corda      |
 
-## Deployment Workflow
+## Fluxo de trabalho de implantação
 
-### Development
+### Desenvolvimento
 
-1. Write snippet code locally
-2. Test syntax with `node snippet.js` or TypeScript compiler
-3. Deploy to Dashboard or use API with `Save as Draft`
-4. Test with Preview/HTTP tabs in Dashboard
-5. Enable rule when ready
+1. Escreva o código do snippet localmente
+2. Teste a sintaxe com `node snippet.js` ou compilador TypeScript
+3. Implante no Dashboard ou use API com `Salvar como rascunho`
+4. Teste com guias Preview/HTTP no Dashboard
+5. Habilite a regra quando estiver pronto
 
-### Production
+### Produção
 
-1. Store snippet code in version control
-2. Use Terraform/Pulumi for reproducible deployments
-3. Deploy to staging zone first
-4. Test with real traffic (use low-traffic subdomain)
-5. Apply to production zone
-6. Monitor with Analytics/Logpush
+1. Armazene o código do snippet no controle de versão
+2. Use Terraform/Pulumi para implantações reproduzíveis
+3. Implante primeiro na zona de teste
+4. Teste com tráfego real (use subdomínio de baixo tráfego)
+5. Inscreva-se na zona de produção
+6. Monitore com Analytics/Logpush
 
-## Limits & Requirements
+## Limites e Requisitos
 
-| Resource          | Limit      | Notes                                |
-| ----------------- | ---------- | ------------------------------------ |
-| Snippet size      | 32 KB      | Per snippet, compressed              |
-| Snippet name      | 64 chars   | `a-z`, `0-9`, `_` only, immutable    |
-| Snippets per zone | 20         | Soft limit, contact support for more |
-| Rules per zone    | 20         | One rule per snippet typical         |
-| Expression length | 4096 chars | Per rule expression                  |
+| Recurso                  | Limite          | Notas                                                  |
+| ------------------------ | --------------- | ------------------------------------------------------ |
+| Tamanho do trecho        | 32 KB           | Por trecho, compactado                                 |
+| Nome do trecho           | 64 caracteres   | `a-z`, `0-9`, `_` somente, imutável                    |
+| Trechos por zona         | 20              | Limite suave, entre em contato com o suporte para mais |
+| Regras por zona          | 20              | Uma regra por snippet típica                           |
+| Comprimento da expressão | 4096 caracteres | Expressão por regra                                    |
 
-## Authentication
+## Autenticação
 
-### API Token (Recommended)
+### Token de API (recomendado)```bash
 
-```bash
 # Create token at: https://dash.cloudflare.com/profile/api-tokens
+
 # Required permissions: Zone.Snippets:Edit, Zone.Rules:Edit
+
 export CLOUDFLARE_API_TOKEN="your_token_here"
-```
+
+````
 
 ### API Key (Legacy)
 
 ```bash
 export CLOUDFLARE_EMAIL="your@email.com"
 export CLOUDFLARE_API_KEY="your_global_api_key"
-```
+````

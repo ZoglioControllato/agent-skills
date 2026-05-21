@@ -1,21 +1,21 @@
-# Cloudflare Argo Smart Routing Skill Reference
+# Referência de habilidade de roteamento inteligente Cloudflare Argo
 
-## Overview
+## Visão geral
 
-Cloudflare Argo Smart Routing is a performance optimization service that detects real-time network issues and routes web traffic across the most efficient network path. It continuously monitors network conditions and intelligently routes traffic through the fastest, most reliable routes in Cloudflare's network.
+Cloudflare Argo Smart Routing é um serviço de otimização de desempenho que detecta problemas de rede em tempo real e roteia o tráfego da web pelo caminho de rede mais eficiente. Ele monitora continuamente as condições da rede e roteia o tráfego de maneira inteligente pelas rotas mais rápidas e confiáveis ​​da rede da Cloudflare.
 
-**Note on Smart Shield:** Argo Smart Routing is being integrated into Cloudflare's Smart Shield product for enhanced DDoS protection and performance. Existing Argo customers maintain full functionality with gradual migration to Smart Shield features.
+**Observação sobre o Smart Shield:** O Argo Smart Routing está sendo integrado ao produto Smart Shield da Cloudflare para melhorar a proteção e o desempenho contra DDoS. Os clientes existentes da Argo mantêm todas as funcionalidades com a migração gradual para os recursos do Smart Shield.
 
-## Quick Start
+## Início rápido
 
-### Enable via cURL
+### Habilitar via cURL```bash
 
-```bash
 curl -X PATCH "https://api.cloudflare.com/client/v4/zones/{zone_id}/argo/smart_routing" \
-  -H "Authorization: Bearer YOUR_API_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"value": "on"}'
-```
+ -H "Authorization: Bearer YOUR_API_TOKEN" \
+ -H "Content-Type: application/json" \
+ -d '{"value": "on"}'
+
+````
 
 ### Enable via TypeScript SDK
 
@@ -30,67 +30,67 @@ const result = await client.argo.smartRouting.edit({
 })
 
 console.log(`Argo enabled: ${result.value}`)
-```
+````
 
-## Core Concepts
+## Conceitos Básicos
 
-### What It Does
+### O que faz
 
-- **Intelligent routing**: Detects congestion, outages, packet loss in real-time
-- **Global optimization**: Routes across 300+ Cloudflare data centers
-- **Automatic failover**: Switches paths when issues detected (typically <1s)
-- **Works with existing setup**: No origin changes required
+- **Roteamento inteligente**: detecta congestionamentos, interrupções e perda de pacotes em tempo real
+- **Otimização global**: rotas em mais de 300 data centers da Cloudflare
+- **Failover automático**: alterna caminhos quando problemas são detectados (normalmente <1s)
+- **Funciona com configuração existente**: não são necessárias alterações de origem
 
-### Billing Model
+### Modelo de cobrança
 
-- Usage-based: Charged per GB of traffic (excluding DDoS/WAF mitigated traffic)
-- Requires billing configuration before enabling
-- Available on Enterprise+ plans (check zone eligibility)
+- Com base no uso: cobrado por GB de tráfego (excluindo tráfego mitigado de DDoS/WAF)
+- Requer configuração de faturamento antes de ativar
+- Disponível nos planos Enterprise+ (verifique a elegibilidade da zona)
 
-### When to Use
+### Quando usar
 
-- **High-traffic production sites** with global user base
-- **Latency-sensitive applications** (APIs, real-time services)
-- **Sites behind Cloudflare proxy** (orange-clouded DNS records)
-- **Combined with Tiered Cache** for maximum performance gains
+- **Sites de produção de alto tráfego** com base de usuários global
+- **Aplicativos sensíveis à latência** (APIs, serviços em tempo real)
+- **Sites por trás do proxy Cloudflare** (registros DNS em nuvem laranja)
+- **Combinado com Tiered Cache** para ganhos máximos de desempenho
 
-### When NOT to Use
+### Quando NÃO usar
 
-- Development/staging environments (cost control)
-- Low-traffic sites (<1TB/month) where cost may exceed benefit
-- Sites with primarily single-region traffic
+- Ambientes de desenvolvimento/staging (controle de custos)
+- Sites de baixo tráfego (<1 TB/mês) onde o custo pode exceder o benefício
+- Sites com tráfego principalmente de uma única região
 
-## Should I Enable Argo?
+## Devo ativar o Argo?
 
-| Your Situation                            | Recommendation                      |
-| ----------------------------------------- | ----------------------------------- |
-| Global production app, >1TB/month traffic | ✅ Enable - likely ROI positive     |
-| Enterprise plan, latency-critical APIs    | ✅ Enable - performance matters     |
-| Regional site, <100GB/month traffic       | ⚠️ Evaluate - cost may not justify  |
-| Development/staging environment           | ❌ Disable - use in production only |
-| Not yet configured billing                | ❌ Configure billing first          |
+| Sua situação                                     | Recomendação                             |
+| ------------------------------------------------ | ---------------------------------------- |
+| Aplicativo de produção global, tráfego >1 TB/mês | ✅ Habilitar - provável ROI positivo     |
+| Plano empresarial, APIs críticas para latência   | ✅ Habilitar - o desempenho é importante |
+| Site regional, tráfego <100 GB/mês               | ⚠️ Avalie – o custo pode não justificar  |
+| Ambiente de desenvolvimento/preparação           | ❌ Desativar - uso somente em produção   |
+| Faturamento ainda não configurado                | ❌ Configure o faturamento primeiro      |
 
-## Reading Order by Task
+## Ordem de leitura por tarefa
 
-| Your Goal                     | Start With                                               | Then Read                  |
-| ----------------------------- | -------------------------------------------------------- | -------------------------- |
-| Enable Argo for first time    | Quick Start above → [configuration.md](configuration.md) | [gotchas.md](gotchas.md)   |
-| Use TypeScript/Python SDK     | [api.md](api.md)                                         | [patterns.md](patterns.md) |
-| Terraform/IaC setup           | [configuration.md](configuration.md)                     | -                          |
-| Enable for Spectrum TCP app   | [patterns.md](patterns.md) → Spectrum section            | [api.md](api.md)           |
-| Troubleshoot enablement issue | [gotchas.md](gotchas.md)                                 | [api.md](api.md)           |
-| Manage billing/usage          | [patterns.md](patterns.md) → Billing section             | [gotchas.md](gotchas.md)   |
+| Seu objetivo                           | Comece com                                                 | Então leia               |
+| -------------------------------------- | ---------------------------------------------------------- | ------------------------ |
+| Habilite o Argo pela primeira vez      | Início rápido acima → [configuration.md](configuration.md) | [gotchas.md](gotchas.md) |
+| Use o SDK TypeScript/Python            | [api.md](api.md)                                           | [padrões.md](padrões.md) |
+| Configuração do Terraform/IaC          | [configuração.md](configuração.md)                         | -                        |
+| Habilitar para aplicativo Spectrum TCP | [patterns.md](patterns.md) → seção Espectro                | [api.md](api.md)         |
+| Solucionar problema de ativação        | [gotchas.md](gotchas.md)                                   | [api.md](api.md)         |
+| Gerenciar faturamento/uso              | [patterns.md](patterns.md) → Seção de cobrança             | [gotchas.md](gotchas.md) |
 
-## In This Reference
+## Nesta referência
 
-- **[api.md](api.md)** - API endpoints, SDK methods, error handling, Python/TypeScript examples
-- **[configuration.md](configuration.md)** - Terraform setup, environment config, billing configuration
-- **[patterns.md](patterns.md)** - Tiered Cache integration, Spectrum TCP apps, billing management, validation patterns
-- **[gotchas.md](gotchas.md)** - Common errors, permission issues, limits, best practices
+- **[api.md](api.md)** - endpoints de API, métodos SDK, tratamento de erros, exemplos de Python/TypeScript
+- **[configuration.md](configuration.md)** - Configuração do Terraform, configuração do ambiente, configuração de faturamento
+- **[patterns.md](patterns.md)** - Integração de cache em camadas, aplicativos Spectrum TCP, gerenciamento de faturamento, padrões de validação
+- **[gotchas.md](gotchas.md)** - Erros comuns, problemas de permissão, limites, práticas recomendadas
 
-## See Also
+## Veja também
 
-- [Cloudflare Argo Smart Routing Docs](https://developers.cloudflare.com/argo-smart-routing/)
-- [Cloudflare Smart Shield](https://developers.cloudflare.com/smart-shield/)
-- [Spectrum Documentation](https://developers.cloudflare.com/spectrum/)
-- [Tiered Cache](https://developers.cloudflare.com/cache/how-to/tiered-cache/)
+- [Documentos de roteamento inteligente Cloudflare Argo](https://developers.cloudflare.com/argo-smart-routing/)
+- [Escudo Inteligente Cloudflare](https://developers.cloudflare.com/smart-shield/)
+- [Documentação do Spectrum](https://developers.cloudflare.com/spectrum/)
+- [Cache em camadas](https://developers.cloudflare.com/cache/how-to/tiered-cache/)

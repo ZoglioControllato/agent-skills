@@ -1,38 +1,38 @@
-# Gotchas & Troubleshooting
+# Dicas e solução de problemas
 
-## Common Errors
+## Erros Comuns
 
-### "Slow initial connect (~1.8s)"
+### "Conexão inicial lenta (~1,8s)"
 
-**Cause:** First STUN delayed during consensus forming (normal behavior)
-**Solution:** Subsequent connections are faster. CF detects DTLS ClientHello early to compensate.
+**Causa:** Primeiro STUN atrasado durante a formação de consenso (comportamento normal)
+**Solução:** As conexões subsequentes são mais rápidas. CF detecta DTLS ClientHello antecipadamente para compensar.
 
-### "No media flow"
+### "Sem fluxo de mídia"
 
-**Cause:** SDP exchange incomplete, connection not established, tracks not added before offer, browser permissions missing
-**Solution:**
+**Causa:** Troca SDP incompleta, conexão não estabelecida, faixas não adicionadas antes da oferta, permissões do navegador ausentes
+**Solução:**
 
-1. Verify SDP exchange complete
-2. Check `pc.connectionState === 'connected'`
-3. Ensure tracks added before creating offer
-4. Confirm browser permissions granted
-5. Use `chrome://webrtc-internals` for debugging
+1. Verifique se a troca SDP foi concluída
+2. Verifique `pc.connectionState === 'conectado'`
+3. Certifique-se de que as faixas foram adicionadas antes de criar a oferta
+4. Confirme as permissões concedidas ao navegador
+5. Use `chrome://webrtc-internals` para depuração
 
-### "Track not receiving"
+### "Rastrear não recebendo"
 
-**Cause:** Track not published, track ID not shared, session IDs mismatch, `pc.ontrack` not set, renegotiation needed
-**Solution:**
+**Causa:** trilha não publicada, ID da trilha não compartilhada, IDs de sessão incompatíveis, `pc.ontrack` não definido, renegociação necessária
+**Solução:**
 
-1. Verify track published successfully
-2. Confirm track ID shared between peers
-3. Check session IDs match
-4. Set `pc.ontrack` handler before answer
-5. Trigger renegotiation if needed
+1. Verifique a faixa publicada com sucesso
+2. Confirme o ID da faixa compartilhado entre pares
+3. Verifique a correspondência dos IDs de sessão
+4. Defina o manipulador `pc.ontrack` antes de responder
+5. Acione a renegociação, se necessário
 
-### "ICE connection failed"
+### "Falha na conexão ICE"
 
-**Cause:** Network changed, firewall blocked UDP, TURN needed, transient network issue
-**Solution:**
+**Causa:** Rede alterada, firewall bloqueado UDP, TURN necessário, problema transitório de rede
+**Solução:**
 
 ```typescript
 pc.oniceconnectionstatechange = async () => {
@@ -53,21 +53,21 @@ pc.oniceconnectionstatechange = async () => {
 }
 ```
 
-### "Track stuck/frozen"
+### "Trilha presa/congelada"
 
-**Cause:** Sender paused track, network congestion, codec mismatch, mobile browser backgrounded
-**Solution:**
+**Causa:** trilha pausada pelo remetente, congestionamento de rede, incompatibilidade de codec, navegador móvel em segundo plano
+**Solução:**
 
-1. Check `track.enabled` and `track.readyState === 'live'`
-2. Verify sender active: `pc.getSenders().find(s => s.track === track)`
-3. Check stats for packet loss/jitter (see patterns.md)
-4. On mobile: Re-acquire tracks when app foregrounded
-5. Test with different codecs if persistent
+1. Verifique `track.enabled` e `track.readyState === 'live'`
+2. Verifique o remetente ativo: `pc.getSenders().find(s => s.track === track)`
+3. Verifique as estatísticas de perda/jitter de pacotes (consulte padrões.md)
+4. No celular: readquira trilhas quando o aplicativo estiver em primeiro plano
+5. Teste com codecs diferentes se for persistente
 
-### "Network change disconnects call"
+### "Mudança de rede desconecta chamada"
 
-**Cause:** Mobile switching WiFi↔cellular, laptop changing networks
-**Solution:**
+**Causa:** Troca móvel de WiFi↔celular, troca de redes de laptop
+**Solução:**
 
 ```typescript
 // Listen for network changes
@@ -100,39 +100,39 @@ async function fetchWithRetry(url: string, options: RequestInit, maxRetries = 3)
 }
 ```
 
-## Debugging with chrome://webrtc-internals
+## Depuração com chrome://webrtc-internals
 
-1. Open `chrome://webrtc-internals` in Chrome/Edge
-2. Find your PeerConnection in the list
-3. Check **Stats graphs** for packet loss, jitter, bandwidth
-4. Check **ICE candidate pairs**: Look for `succeeded` state, relay vs host candidates
-5. Check **getStats**: Raw metrics for inbound/outbound RTP
-6. Look for errors in **Event log**: `iceConnectionState`, `connectionState` changes
-7. Export data with "Download the PeerConnection updates and stats data" button
-8. Common issues visible here: ICE failures, high packet loss, bitrate drops
+1. Abra `chrome://webrtc-internals` no Chrome/Edge
+2. Encontre seu PeerConnection na lista
+3. Verifique **Gráficos de estatísticas** para perda de pacotes, jitter, largura de banda
+4. Verifique **pares de candidatos ICE**: procure por estado `bem-sucedido`, candidatos de retransmissão versus host
+5. Verifique **getStats**: Métricas brutas para RTP de entrada/saída
+6. Procure erros em **Log de eventos**: alterações em `iceConnectionState`, `connectionState`
+7. Exporte dados com o botão "Baixar atualizações e dados estatísticos do PeerConnection"
+8. Problemas comuns visíveis aqui: falhas de ICE, alta perda de pacotes, quedas de taxa de bits
 
-## Limits
+## Limites
 
-| Resource/Limit     | Value          | Notes                                               |
-| ------------------ | -------------- | --------------------------------------------------- |
-| Egress (Free)      | 1TB/month      | Per account                                         |
-| Egress (Paid)      | $0.05/GB       | After free tier                                     |
-| Inbound traffic    | Free           | All plans                                           |
-| TURN service       | Free           | Included with SFU                                   |
-| Participants       | No hard limit  | Client bandwidth/CPU bound (typically 10-50 tracks) |
-| Tracks per session | No hard limit  | Client resources limited                            |
-| Session duration   | No hard limit  | Production calls run for hours                      |
-| WebRTC ports       | UDP 1024-65535 | Outbound only, required for media                   |
-| API rate limit     | 600 req/min    | Per app, burst allowed                              |
+| Recurso/Limite     | Valor                | Notas                                                                      |
+| ------------------ | -------------------- | -------------------------------------------------------------------------- |
+| Saída (grátis)     | 1TB/mês              | Por conta                                                                  |
+| Saída (paga)       | US$ 0,05/GB          | Após o nível gratuito                                                      |
+| Tráfego de entrada | Grátis               | Todos os planos                                                            |
+| Serviço TURN       | Grátis               | Incluído com SFU                                                           |
+| Participantes      | Sem limite rígido    | Limite de largura de banda/CPU do cliente (normalmente de 10 a 50 trilhas) |
+| Faixas por sessão  | Sem limite rígido    | Recursos do cliente limitados                                              |
+| Duração da sessão  | Sem limite rígido    | As chamadas de produção duram horas                                        |
+| Portas WebRTC      | UDP 1024-65535       | Somente saída, obrigatório para mídia                                      |
+| Limite de taxa API | 600 necessidades/min | Por aplicativo, burst permitido                                            |
 
-## Security Checklist
+## Lista de verificação de segurança
 
-- ✅ **Never expose** `CALLS_APP_SECRET` to client
-- ✅ **Validate user identity** in backend before creating sessions
-- ✅ **Implement auth tokens** for session access (JWT in custom header)
-- ✅ **Rate limit** session creation endpoints
-- ✅ **Expire sessions** server-side after inactivity
-- ✅ **Validate track IDs** before subscribing (prevent unauthorized access)
-- ✅ **Use HTTPS** for all signaling (API calls)
-- ✅ **Enable DTLS-SRTP** (automatic with Cloudflare, encrypts media)
-- ⚠️ **Consider E2EE** for sensitive content (implement client-side with Insertable Streams API)
+- ✅ **Nunca exponha** `CALLS_APP_SECRET` ao cliente
+- ✅ **Validar a identidade do usuário** no back-end antes de criar sessões
+- ✅ **Implementar tokens de autenticação** para acesso à sessão (JWT no cabeçalho personalizado)
+- ✅ **Limite de taxa** endpoints de criação de sessão
+- ✅ **Sessões expiradas** no lado do servidor após inatividade
+- ✅ **Validar IDs de faixa** antes de assinar (evitar acesso não autorizado)
+- ✅ **Use HTTPS** para todas as sinalizações (chamadas de API)
+- ✅ **Ativar DTLS-SRTP** (automático com Cloudflare, criptografa mídia)
+- ⚠️ **Considere E2EE** para conteúdo confidencial (implemente no lado do cliente com API Insertable Streams)

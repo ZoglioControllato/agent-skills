@@ -1,15 +1,15 @@
 ---
-title: Parallel Data Fetching with Component Composition
+title: Busca paralela com composição de componentes
 impact: CRITICAL
-impactDescription: eliminates server-side waterfalls
+impactDescription: elimina cascatas no servidor
 tags: server, rsc, parallel-fetching, composition
 ---
 
-## Parallel Data Fetching with Component Composition
+##Busca paralela com composição de componentes
 
-React Server Components execute sequentially within a tree. Restructure with composition to parallelize data fetching.
+Componentes do React Server na árvore seguem ordenação sequencial quando aninhados de um jeito que bloqueia. Reestruturação com composição para buscar dados em paralelo.
 
-**Incorrect (Sidebar waits for Page's fetch to complete):**
+**Incorreto (barra lateral espera ou busca do final da página):**
 
 ```tsx
 export default async function Page() {
@@ -28,7 +28,7 @@ async function Sidebar() {
 }
 ```
 
-**Correct (both fetch simultaneously):**
+**Correto (dois fetch em paralelo):**
 
 ```tsx
 async function Header() {
@@ -51,7 +51,7 @@ export default function Page() {
 }
 ```
 
-**Alternative with children prop:**
+**Alternativa com `children`:**
 
 ```tsx
 async function Header() {

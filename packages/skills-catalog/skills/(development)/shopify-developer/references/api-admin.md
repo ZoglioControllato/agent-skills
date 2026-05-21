@@ -1,15 +1,17 @@
-# Admin API Reference
+# Referência da API Admin
 
-## GraphQL Admin API
+## API de administração GraphQL
 
-Modern API for Shopify Admin operations with efficient data fetching.
+API moderna para operações administrativas do Shopify com busca de dados eficiente.
 
-**Endpoint:**
+**Ponto final:**
+
 ```
 POST https://{store}.myshopify.com/admin/api/2026-01/graphql.json
 ```
 
-**Headers:**
+**Cabeçalhos:**
+
 ```javascript
 {
   'X-Shopify-Access-Token': 'shpat_...',
@@ -17,7 +19,8 @@ POST https://{store}.myshopify.com/admin/api/2026-01/graphql.json
 }
 ```
 
-**Basic Query:**
+**Consulta Básica:**
+
 ```graphql
 query GetProducts($first: Int!) {
   products(first: $first) {
@@ -32,8 +35,14 @@ query GetProducts($first: Int!) {
 
         # Pricing
         priceRange {
-          minVariantPrice { amount currencyCode }
-          maxVariantPrice { amount currencyCode }
+          minVariantPrice {
+            amount
+            currencyCode
+          }
+          maxVariantPrice {
+            amount
+            currencyCode
+          }
         }
 
         # Images
@@ -73,14 +82,16 @@ query GetProducts($first: Int!) {
 }
 ```
 
-**Variables:**
+**Variáveis:**
+
 ```json
 {
   "first": 10
 }
 ```
 
-**JavaScript Example:**
+**Exemplo JavaScript:**
+
 ```javascript
 async function getProducts(accessToken, store, limit = 10) {
   const query = `
@@ -102,55 +113,50 @@ async function getProducts(accessToken, store, limit = 10) {
         }
       }
     }
-  `;
+  `
 
-  const response = await fetch(
-    `https://${store}.myshopify.com/admin/api/2026-01/graphql.json`,
-    {
-      method: 'POST',
-      headers: {
-        'X-Shopify-Access-Token': accessToken,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        query,
-        variables: { first: limit },
-      }),
-    }
-  );
+  const response = await fetch(`https://${store}.myshopify.com/admin/api/2026-01/graphql.json`, {
+    method: 'POST',
+    headers: {
+      'X-Shopify-Access-Token': accessToken,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      query,
+      variables: { first: limit },
+    }),
+  })
 
-  const { data, errors } = await response.json();
+  const { data, errors } = await response.json()
 
   if (errors) {
-    console.error('GraphQL Errors:', errors);
-    throw new Error(errors[0].message);
+    console.error('GraphQL Errors:', errors)
+    throw new Error(errors[0].message)
   }
 
-  return data.products;
+  return data.products
 }
 ```
 
-**Common Mutations:**
+**Mutações Comuns:**
 
-Create product:
-```graphql
+Criar produto:```graphql
 mutation CreateProduct($input: ProductInput!) {
-  productCreate(input: $input) {
-    product {
-      id
-      title
-      handle
-    }
-    userErrors {
-      field
-      message
-    }
-  }
+productCreate(input: $input) {
+product {
+id
+title
+handle
 }
-```
+userErrors {
+field
+message
+}
+}
+}
 
-Update product:
-```graphql
+````
+Atualizar produto:```graphql
 mutation UpdateProduct($input: ProductInput!) {
   productUpdate(input: $input) {
     product {
@@ -164,87 +170,86 @@ mutation UpdateProduct($input: ProductInput!) {
     }
   }
 }
-```
+````
 
-Set metafield:
-```graphql
+Definir metacampo:```graphql
 mutation SetMetafield($input: MetafieldInput!) {
-  metafieldSet(input: $input) {
-    metafield {
-      id
-      namespace
-      key
-      value
-      type
-    }
-    userErrors {
-      field
-      message
-    }
-  }
+metafieldSet(input: $input) {
+metafield {
+id
+namespace
+key
+value
+type
 }
+userErrors {
+field
+message
+}
+}
+}
+
+```
+## REST Admin API (legado)
+
+> **Observação:** GraphQL é a API principal do Shopify. Use GraphQL para todos os novos desenvolvimentos. Os endpoints REST permanecem disponíveis, mas recebem menos atualizações e podem ser descontinuados em versões futuras da API.
+
+API REST tradicional para operações de administração do Shopify.
+
+**URL base:**
+
 ```
 
-## REST Admin API (Legacy)
-
-> **Note:** GraphQL is Shopify's primary API. Use GraphQL for all new development. REST endpoints remain available but receive fewer updates and may be deprecated in future API versions.
-
-Traditional REST API for Shopify Admin operations.
-
-**Base URL:**
-```
 https://{store}.myshopify.com/admin/api/2026-01/
-```
 
-**Authentication:**
+````
+
+**Autenticação:**
+
 ```javascript
 headers: {
   'X-Shopify-Access-Token': 'shpat_...'
 }
-```
+````
 
-**Common Endpoints:**
+**Endpoints comuns:**
 
-Get products:
-```javascript
+Obtenha produtos:```javascript
 GET /admin/api/2026-01/products.json?limit=50&status=active
 
 // JavaScript
 const response = await fetch(
-  `https://${store}.myshopify.com/admin/api/2026-01/products.json?limit=50`,
-  {
-    headers: {
-      'X-Shopify-Access-Token': accessToken,
-    },
-  }
+`https://${store}.myshopify.com/admin/api/2026-01/products.json?limit=50`,
+{
+headers: {
+'X-Shopify-Access-Token': accessToken,
+},
+}
 );
 
 const { products } = await response.json();
-```
 
-Get single product:
-```javascript
+````
+Obtenha um único produto:```javascript
 GET /admin/api/2026-01/products/{product_id}.json
-```
+````
 
-Create product:
-```javascript
+Criar produto:```javascript
 POST /admin/api/2026-01/products.json
 
 // Body
 {
-  "product": {
-    "title": "New Product",
-    "body_html": "<p>Description</p>",
-    "vendor": "My Vendor",
-    "product_type": "Shoes",
-    "status": "draft"
-  }
+"product": {
+"title": "New Product",
+"body_html": "<p>Description</p>",
+"vendor": "My Vendor",
+"product_type": "Shoes",
+"status": "draft"
 }
-```
+}
 
-Update product:
-```javascript
+````
+Atualizar produto:```javascript
 PUT /admin/api/2026-01/products/{product_id}.json
 
 // Body
@@ -254,23 +259,22 @@ PUT /admin/api/2026-01/products/{product_id}.json
     "title": "Updated Title"
   }
 }
-```
+````
 
-Get orders:
-```javascript
+Receba pedidos:```javascript
 GET /admin/api/2026-01/orders.json?status=any&limit=50
-```
 
-Get customers:
-```javascript
+````
+Obtenha clientes:```javascript
 GET /admin/api/2026-01/customers.json?limit=50
-```
+````
 
-## OAuth 2.0 Authentication
+## Autenticação OAuth 2.0
 
-Complete OAuth flow for custom apps.
+Fluxo OAuth completo para aplicativos personalizados.
 
-**Step 1: Authorization Request**
+**Etapa 1: Solicitação de autorização**
+
 ```
 GET https://{shop}.myshopify.com/admin/oauth/authorize?
   client_id={api_key}&
@@ -279,7 +283,8 @@ GET https://{shop}.myshopify.com/admin/oauth/authorize?
   state={random_state}
 ```
 
-**Scopes:**
+**Escopos:**
+
 ```javascript
 const scopes = [
   'read_products',
@@ -292,10 +297,11 @@ const scopes = [
   'write_inventory',
   'read_metafields',
   'write_metafields',
-].join(',');
+].join(',')
 ```
 
-**Step 2: Handle Callback**
+**Etapa 2: lidar com o retorno de chamada**
+
 ```javascript
 // User approves, Shopify redirects to:
 GET {redirect_uri}?code={auth_code}&state={state}&hmac={hmac}&shop={shop}
@@ -318,7 +324,8 @@ function verifyHmac(query, secret) {
 }
 ```
 
-**Step 3: Exchange Code for Token**
+**Etapa 3: Trocar código por token**
+
 ```javascript
 POST https://{shop}.myshopify.com/admin/oauth/access_token
 
@@ -355,59 +362,63 @@ async function getAccessToken(shop, code, apiKey, apiSecret) {
 }
 ```
 
-## Rate Limiting
+## Limitação de taxa
 
-GraphQL uses points-based rate limiting.
+GraphQL usa limitação de taxa baseada em pontos.
 
-**Rate Limits:**
-- 50 cost points per second maximum
-- Bucket refills at 50 points/second
-- Each query has a calculated cost
+**Limites de Tarifas:**
 
-**Check Rate Limit:**
+- 50 pontos de custo por segundo no máximo
+- O balde é reabastecido a 50 pontos/segundo
+- Cada consulta tem um custo calculado
+
+**Verifique o limite de taxa:**
+
 ```javascript
-const response = await fetch(graphqlEndpoint, options);
+const response = await fetch(graphqlEndpoint, options)
 
-const rateLimitHeader = response.headers.get('X-Shopify-GraphQL-Admin-Api-Call-Limit');
+const rateLimitHeader = response.headers.get('X-Shopify-GraphQL-Admin-Api-Call-Limit')
 // Example: "42/50" (42 points used, 50 max)
 
-const [used, limit] = rateLimitHeader.split('/').map(Number);
+const [used, limit] = rateLimitHeader.split('/').map(Number)
 
 if (used > 40) {
   // Approaching limit, slow down
-  await delay(1000);
+  await delay(1000)
 }
 ```
 
-**Implement Retry Logic:**
+**Implementar lógica de nova tentativa:**
+
 ```javascript
 async function fetchWithRetry(url, options, maxRetries = 3) {
   for (let i = 0; i < maxRetries; i++) {
-    const response = await fetch(url, options);
+    const response = await fetch(url, options)
 
     if (response.status === 429) {
       // Rate limited
-      const retryAfter = response.headers.get('Retry-After') || 2;
-      await delay(retryAfter * 1000 * Math.pow(2, i)); // Exponential backoff
-      continue;
+      const retryAfter = response.headers.get('Retry-After') || 2
+      await delay(retryAfter * 1000 * Math.pow(2, i)) // Exponential backoff
+      continue
     }
 
-    return response;
+    return response
   }
 
-  throw new Error('Max retries exceeded');
+  throw new Error('Max retries exceeded')
 }
 
 function delay(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms))
 }
 ```
 
 ## Webhooks
 
-Event-driven notifications for app integrations.
+Notificações orientadas por eventos para integrações de aplicativos.
 
-**Common Webhooks:**
+**Webhooks comuns:**
+
 ```javascript
 // Product events
 'products/create'
@@ -437,7 +448,8 @@ Event-driven notifications for app integrations.
 'app/uninstalled'
 ```
 
-**Register Webhook (GraphQL):**
+**Registrar Webhook (GraphQL):**
+
 ```graphql
 mutation CreateWebhook($input: WebhookSubscriptionInput!) {
   webhookSubscriptionCreate(input: $input) {
@@ -459,7 +471,8 @@ mutation CreateWebhook($input: WebhookSubscriptionInput!) {
 }
 ```
 
-**Variables:**
+**Variáveis:**
+
 ```json
 {
   "input": {
@@ -472,47 +485,43 @@ mutation CreateWebhook($input: WebhookSubscriptionInput!) {
 }
 ```
 
-**Handle Webhook (Node.js/Express):**
+**Lidar com Webhook (Node.js/Express):**
+
 ```javascript
 app.post('/webhooks/orders', async (req, res) => {
   // Verify webhook HMAC
-  const hmac = req.headers['x-shopify-hmac-sha256'];
-  const body = JSON.stringify(req.body);
+  const hmac = req.headers['x-shopify-hmac-sha256']
+  const body = JSON.stringify(req.body)
 
-  const hash = crypto
-    .createHmac('sha256', SHOPIFY_WEBHOOK_SECRET)
-    .update(body)
-    .digest('base64');
+  const hash = crypto.createHmac('sha256', SHOPIFY_WEBHOOK_SECRET).update(body).digest('base64')
 
   if (hash !== hmac) {
-    return res.status(401).send('Invalid HMAC');
+    return res.status(401).send('Invalid HMAC')
   }
 
   // Process order
-  const order = req.body;
-  console.log('New order:', order.id, order.email);
+  const order = req.body
+  console.log('New order:', order.id, order.email)
 
   // Respond quickly (within 5 seconds)
-  res.status(200).send('OK');
+  res.status(200).send('OK')
 
   // Process in background
-  await processOrder(order);
-});
+  await processOrder(order)
+})
 ```
 
-## Common Patterns
+## Padrões Comuns
 
-### Pagination (GraphQL)
+### Paginação (GraphQL)```javascript
 
-```javascript
 async function getAllProducts(accessToken, store) {
-  let allProducts = [];
-  let hasNextPage = true;
-  let cursor = null;
+let allProducts = [];
+let hasNextPage = true;
+let cursor = null;
 
-  while (hasNextPage) {
-    const query = `
-      query GetProducts($first: Int!, $after: String) {
+while (hasNextPage) {
+const query = `       query GetProducts($first: Int!, $after: String) {
         products(first: $first, after: $after) {
           edges {
             node { id title }
@@ -542,15 +551,14 @@ async function getAllProducts(accessToken, store) {
 
     hasNextPage = data.products.pageInfo.hasNextPage;
     cursor = data.products.pageInfo.endCursor;
-  }
 
-  return allProducts;
 }
-```
 
-### Error Handling
+return allProducts;
+}
 
-```javascript
+````
+### Tratamento de erros```javascript
 async function safeApiCall(query, variables) {
   try {
     const response = await fetch(endpoint, {
@@ -579,17 +587,17 @@ async function safeApiCall(query, variables) {
     throw error;
   }
 }
-```
+````
 
-## Best Practices
+## Melhores práticas
 
-1. **Always check API version** - Use latest stable (2026-01)
-2. **Implement rate limit handling** - Use exponential backoff
-3. **Verify webhook HMAC** - Security critical
-4. **Use GraphQL over REST** when possible - More efficient
-5. **Request only needed fields** - Reduce response size
-6. **Handle errors gracefully** - Check `errors` and `userErrors`
-7. **Store access tokens securely** - Never expose in client code
-8. **Use minimum necessary scopes** - Security best practice
-9. **Implement retry logic** - Handle transient failures
-10. **Respond to webhooks quickly** - Within 5 seconds
+1. **Sempre verifique a versão da API** - Use a versão estável mais recente (2026-01)
+2. **Implementar tratamento de limite de taxa** - Use backoff exponencial
+3. **Verifique o webhook HMAC** – Segurança crítica
+4. **Use GraphQL sobre REST** quando possível - Mais eficiente
+5. **Solicite apenas os campos necessários** - Reduza o tamanho da resposta
+6. **Trate de erros normalmente** - Verifique `errors` e `userErrors`
+7. **Armazene tokens de acesso com segurança** - Nunca exponha no código do cliente
+8. \*\*Use sc mínimo necessário
+
+opes** - Melhores práticas de segurança 9. **Implementar lógica de repetição** - Lidar com falhas transitórias 10. **Responda aos webhooks rapidamente\*\* - Em 5 segundos

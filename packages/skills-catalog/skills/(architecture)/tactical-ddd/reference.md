@@ -1,40 +1,37 @@
-# Tactical DDD Reference
+# Referência Tática de DDD
 
-## Entity
+## Entidade
 
-**Use when**: Object needs individual identity tracked over time, even if attributes change.
-
-```typescript
+**Usar quando**: o objeto precisa de uma identidade individual rastreada ao longo do tempo, mesmo que os atributos mudem.```typescript
 class Entity<T> {
-  constructor(protected readonly id: T) {}
-  equals(other: Entity<T>): boolean {
-    if (!other || this.constructor !== other.constructor) return false;
-    return this.id === other.id;  // identity only
-  }
+constructor(protected readonly id: T) {}
+equals(other: Entity<T>): boolean {
+if (!other || this.constructor !== other.constructor) return false;
+return this.id === other.id; // identity only
 }
-```
+}
 
-**Rules**:
-- Identity is `readonly`, set once in constructor, never changed
-- Setters are `private`; public API uses expressive methods
-- Publishes Domain Events on significant state changes
-- Validates invariants in constructor and in each mutating method
+````
 
-**Checklist**:
-- [ ] Unique immutable identity?
-- [ ] Equality by identity (not attributes)?
-- [ ] Methods express Ubiquitous Language?
-- [ ] Setters private/protected?
-- [ ] Domain Events on significant changes?
-- [ ] Invariants validated on construction and mutation?
+**Regras**:
+- A identidade é `readonly`, definida uma vez no construtor, nunca alterada
+- Os setters são `privados`; API pública usa métodos expressivos
+- Publica eventos de domínio sobre mudanças significativas de estado
+- Valida invariantes no construtor e em cada método mutante
+
+**Lista de verificação**:
+- [] Identidade única e imutável?
+- [ ] Igualdade por identidade (não por atributos)?
+- [ ] Métodos expressam linguagem onipresente?
+- [ ] Setters privados/protegidos?
+- [] Eventos de Domínio sobre mudanças significativas?
+- [] Invariantes validados em construção e mutação?
 
 ---
 
-## Value Object
+## Objeto de valor
 
-**Use when**: Concept is described by its attributes, has no individual identity.
-
-```typescript
+**Usar quando**: O conceito é descrito por seus atributos, não possui identidade individual.```typescript
 class Money {
   constructor(readonly amount: number, readonly currency: string) {
     if (amount < 0) throw new Error('Amount cannot be negative');
@@ -50,95 +47,95 @@ class Money {
 // Mutation = replacement
 let price = new Money(100, 'USD');
 price = price.add(new Money(20, 'USD'));  // new object, not mutation
-```
+````
 
-**Rules**:
-- All fields `readonly` — never mutate after construction
-- Side-effect-free methods return new instances
-- Equality compares all attributes
-- Validates on construction
+**Regras**:
 
-**Common VOs**: `UserId`, `OrderId`, `Money`, `Address`, `EmailAddress`, `DateRange`, `FullName`
+- Todos os campos `readonly` — nunca sofrem mutação após a construção
+- Métodos sem efeitos colaterais retornam novas instâncias
+- Igualdade compara todos os atributos
+- Valida na construção
 
-**Checklist**:
-- [ ] Fully immutable (all fields `readonly`)?
-- [ ] Equality by value?
-- [ ] Methods return new instances?
-- [ ] Forms a conceptual whole?
-- [ ] Validated on construction?
+**VOs comuns**: `UserId`, `OrderId`, `Money`, `Address`, `EmailAddress`, `DateRange`, `FullName`
+
+**Lista de verificação**:
+
+- [] Totalmente imutável (todos os campos `somente leitura`)?
+- [ ] Igualdade por valor?
+- [] Métodos retornam novas instâncias?
+- [ ] Forma um todo conceitual?
+- [ ] Validado na construção?
 
 ---
 
-## Aggregate
+## Agregado
 
-**Use when**: A group of Entities + VOs must be consistent as a unit.
+**Use quando**: Um grupo de Entidades + VOs deve ser consistente como uma unidade.
 
-**Four rules**:
+**Quatro regras**:
 
-| Rule | Description |
-|------|-------------|
-| **True invariants only** | Only group objects when there's a business rule requiring them to be consistent in the same transaction |
-| **Keep it small** | Root + VOs by default. Add child Entities only for true invariants |
-| **Reference by ID** | `sprintId: SprintId` not `sprint: Sprint` |
-| **One Aggregate per transaction** | Cross-Aggregate coordination uses Domain Events |
+| Regra                               | Descrição                                                                                                          |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------ | ------------- |
+| **Somente invariantes verdadeiros** | Agrupar objetos somente quando houver uma regra de negócio exigindo que eles sejam consistentes na mesma transação |
+| **Mantenha-o pequeno**              | Root + VOs por padrão. Adicionar entidades filhas apenas para invariantes verdadeiros                              |
+| **Referência por ID**               | `sprintId: SprintId` e não `sprint: Sprint`                                                                        |
+| **Um agregado por transação**       | A coordenação cruzada agregada usa eventos de domínio                                                              | ```typescript |
 
-```typescript
 // ✅ Small Aggregate with true invariant
 class BacklogItem {
-  private tasks: Task[] = [];
-  private status: BacklogItemStatus;
-  private productId: ProductId;   // reference by ID — not Product object
-  private sprintId: SprintId | null;
+private tasks: Task[] = [];
+private status: BacklogItemStatus;
+private productId: ProductId; // reference by ID — not Product object
+private sprintId: SprintId | null;
 
-  estimateTaskHours(taskId: TaskId, hours: number): void {
-    this.findTask(taskId).estimateHoursRemaining(hours);
-    if (this.allTasksCompleted()) {
-      this.status = BacklogItemStatus.DONE;
-    }
-    // Invariant: task hours affect item status — true invariant justifying grouping
-  }
-
-  commitTo(sprint: Sprint): void {
-    if (!this.isScheduledForRelease()) throw new Error('Must be scheduled.');
-    if (this.isCommittedToSprint() && sprint.sprintId !== this.sprintId) {
-      this.uncommitFromSprint();
-    }
-    this.sprintId = sprint.sprintId;
-    this.status = BacklogItemStatus.COMMITTED;
-    DomainEventPublisher.publish(new BacklogItemCommitted(this.backlogItemId, sprint.sprintId));
-  }
+estimateTaskHours(taskId: TaskId, hours: number): void {
+this.findTask(taskId).estimateHoursRemaining(hours);
+if (this.allTasksCompleted()) {
+this.status = BacklogItemStatus.DONE;
 }
-```
+// Invariant: task hours affect item status — true invariant justifying grouping
+}
 
-**When to break the one-transaction rule** (rare):
-- UI batch creation with no invariants between items
-- No messaging infrastructure available
-- Explicit global transaction policy (document the reason in code)
+commitTo(sprint: Sprint): void {
+if (!this.isScheduledForRelease()) throw new Error('Must be scheduled.');
+if (this.isCommittedToSprint() && sprint.sprintId !== this.sprintId) {
+this.uncommitFromSprint();
+}
+this.sprintId = sprint.sprintId;
+this.status = BacklogItemStatus.COMMITTED;
+DomainEventPublisher.publish(new BacklogItemCommitted(this.backlogItemId, sprint.sprintId));
+}
+}
 
-**Checklist**:
-- [ ] Clear Root Entity?
-- [ ] True invariant justifies the grouping?
-- [ ] Small enough (no large collections)?
-- [ ] Other Aggregates referenced by ID only?
-- [ ] One Aggregate per transaction?
-- [ ] Eventual consistency via Domain Events for cross-Aggregate rules?
+````
+
+**Quando quebrar a regra de uma transação** (raro):
+- Criação de lote de UI sem invariantes entre itens
+- Nenhuma infraestrutura de mensagens disponível
+- Política de transação global explícita (documente o motivo no código)
+
+**Lista de verificação**:
+- [] Limpar entidade raiz?
+- [ ] Verdadeiro invariante justifica o agrupamento?
+- [ ] Pequeno o suficiente (sem coleções grandes)?
+- [] Outros agregados referenciados apenas por ID?
+- [ ] Um agregado por transação?
+- [] Consistência eventual via eventos de domínio para regras de agregação cruzada?
 
 ---
 
-## Domain Service
+## Serviço de Domínio
 
-**Use when**: A business operation involves multiple Aggregates or doesn't naturally belong to any single one.
+**Usar quando**: uma operação comercial envolve vários agregados ou não pertence naturalmente a nenhum deles.
 
-**Warning**: Overuse leads back to anemic model. Ask first: "Can this live in the Aggregate?"
+**Aviso**: O uso excessivo leva de volta ao modelo anêmico. Pergunte primeiro: “Isso pode viver no Agregado?”
 
-| Criterion | Belongs in Entity/Aggregate | Belongs in Domain Service |
-|-----------|-----------------------------|--------------------------|
-| Involves only one Aggregate's state | ✅ | — |
-| Requires loading multiple Aggregates | — | ✅ |
-| Calculation needs context from many objects | — | ✅ |
-| Stateless business rule | ✅ (if single aggregate) | ✅ (if multi-aggregate) |
-
-```typescript
+| Critério | Pertence à Entidade/Agregado | Pertence ao Serviço de Domínio |
+|-----------|------------------|--------------------------|
+| Envolve apenas o estado de um agregado | ✅ | — |
+| Requer o carregamento de vários agregados | — | ✅ |
+| Cálculo precisa de contexto de muitos objetos | — | ✅ |
+| Regra de negócios apátridas | ✅ (se agregado único) | ✅ (se multiagregado) |```typescript
 // ✅ Domain Service: authentication spans Tenant + User
 class AuthenticationService {
   authenticate(tenantId: TenantId, username: string, password: string): UserDescriptor | null {
@@ -149,45 +146,46 @@ class AuthenticationService {
     return user?.isEnabled() ? user.toDescriptor() : null;
   }
 }
-```
+````
 
-**Checklist**:
-- [ ] Operation doesn't belong to any single Entity or VO?
-- [ ] Stateless?
-- [ ] Expresses Ubiquitous Language?
-- [ ] NOT being used to avoid behaviour in Entities?
-- [ ] Business rules here, not in Application Service?
+**Lista de verificação**:
+
+- [ ] A operação não pertence a nenhuma Entidade ou VO?
+- [ ] Apátrida?
+- [ ] Expressa linguagem onipresente?
+- [ ] NÃO está sendo usado para evitar comportamento em Entidades?
+- [] Regras de negócios aqui, não no Application Service?
 
 ---
 
-## Domain Events
+## Eventos de Domínio
 
-**Naming**: Past tense + Ubiquitous Language. `OrderConfirmed`, `BacklogItemCommitted`, `UserRegistered`.
-
-```typescript
+**Nomeação**: Passado + Linguagem Onipresente. `OrderConfirmed`, `BacklogItemCommitted`, `UserRegistered`.```typescript
 interface DomainEvent {
-  readonly occurredOn: Date;
-  readonly eventVersion: number;
+readonly occurredOn: Date;
+readonly eventVersion: number;
 }
 
 class OrderConfirmed implements DomainEvent {
-  readonly occurredOn = new Date();
-  readonly eventVersion = 1;
-  constructor(
-    readonly orderId: OrderId,
-    readonly confirmedBy: UserId,
-  ) {}
+readonly occurredOn = new Date();
+readonly eventVersion = 1;
+constructor(
+readonly orderId: OrderId,
+readonly confirmedBy: UserId,
+) {}
 }
+
 ```
 
-**Publication pattern**:
-1. Complete state change
-2. Publish event (state is already consistent)
-3. Subscribers run in separate transactions for cross-Aggregate consistency
+**Padrão de publicação**:
+1. Mudança completa de estado
+2. Publicar evento (o estado já é consistente)
+3. Os assinantes executam transações separadas para consistência entre agregados
 
-**Checklist**:
-- [ ] Named in past tense?
-- [ ] All fields `readonly`?
-- [ ] Published after (not during) state change?
-- [ ] Carries only data the Aggregate already owns?
-- [ ] Cross-Aggregate handlers run in separate transactions?
+**Lista de verificação**:
+- [] Nomeado no passado?
+- [] Todos os campos `somente leitura`?
+- [] Publicado após (não durante) a mudança de estado?
+- [ ] Transporta apenas dados que o Aggregate já possui?
+- [] Os manipuladores cross-agregados são executados em transações separadas?
+```

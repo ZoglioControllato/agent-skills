@@ -1,65 +1,65 @@
-# Cloudflare API Integration
+# Integração de API Cloudflare
 
-Guide for working with Cloudflare's REST API - authentication, SDK usage, common patterns, and troubleshooting.
+Guia para trabalhar com a API REST da Cloudflare: autenticação, uso de SDK, padrões comuns e solução de problemas.
 
-## Quick Decision Tree
+## Árvore de decisão rápida```
+
+Como você está chamando a API Cloudflare?
+├─ Do tempo de execução dos trabalhadores → Use ligações, não API REST (consulte ../bindings/)
+├─ Lado do servidor (Node/Python/Go) → SDK oficial (consulte api.md)
+├─ CLI/scripts → Wrangler ou curl (veja configuração.md)
+├─ Infraestrutura como código → Consulte ../pulumi/ ou ../terraform/
+└─ Solicitações únicas → exemplos de curl (consulte api.md)
 
 ```
-How are you calling the Cloudflare API?
-├─ From Workers runtime → Use bindings, not REST API (see ../bindings/)
-├─ Server-side (Node/Python/Go) → Official SDK (see api.md)
-├─ CLI/scripts → Wrangler or curl (see configuration.md)
-├─ Infrastructure-as-code → See ../pulumi/ or ../terraform/
-└─ One-off requests → curl examples (see api.md)
-```
+## Seleção de SDK
 
-## SDK Selection
-
-| Language   | Package            | Best For                       | Default Retries |
+| Idioma | Pacote | Melhor para | Novas tentativas padrão |
 | ---------- | ------------------ | ------------------------------ | --------------- |
-| TypeScript | `cloudflare`       | Node.js, Bun, Next.js, Workers | 2               |
-| Python     | `cloudflare`       | FastAPI, Django, scripts       | 2               |
-| Go         | `cloudflare-go/v4` | CLI tools, microservices       | 10              |
+| Datilografado | `cloudflare` | Node.js, Bun, Next.js, Trabalhadores | 2 |
+| Pitão | `cloudflare` | FastAPI, Django, scripts | 2 |
+| Vá | `cloudflare-go/v4` | Ferramentas CLI, microsserviços | 10 |
 
-All SDKs are Stainless-generated from OpenAPI spec (consistent APIs).
+Todos os SDKs são gerados pelo Stainless a partir de especificações OpenAPI (APIs consistentes).
 
-## Authentication Methods
+## Métodos de autenticação
 
-| Method           | Security            | Use Case             | Scope               |
+| Método | Segurança | Caso de uso | Escopo |
 | ---------------- | ------------------- | -------------------- | ------------------- |
-| **API Token** ✓  | Scoped, rotatable   | Production           | Per-zone or account |
-| API Key + Email  | Full account access | Legacy only          | Everything          |
-| User Service Key | Limited             | Origin CA certs only | Origin CA           |
+| **Token de API** ✓ | Escopo, giratório | Produção | Por zona ou conta |
+| Chave API + E-mail | Acesso total à conta | Somente legado | Tudo |
+| Chave de serviço do usuário | Limitado | Apenas certificados CA de origem | Origem CA |
 
-**Always use API tokens** for new projects.
+**Sempre use tokens de API** para novos projetos.
 
-## Rate Limits
+## Limites de taxa
 
-| Limit          | Value                        |
+| Limite | Valor |
 | -------------- | ---------------------------- |
-| Per user/token | 1200 requests / 5 minutes    |
-| Per IP         | 200 requests / second        |
-| GraphQL        | 320 / 5 minutes (cost-based) |
+| Por usuário/token | 1200 solicitações/5 minutos |
+| Por IP | 200 solicitações/segundo |
+| GráficoQL | 320/5 minutos (com base no custo) |
 
-## Reading Order
+## Ordem de leitura
 
-| Task                         | Files to Read                     |
+| Tarefa | Arquivos para ler |
 | ---------------------------- | --------------------------------- |
-| Initialize SDK client        | api.md                            |
-| Configure auth/timeout/retry | configuration.md                  |
-| Find usage patterns          | patterns.md                       |
-| Debug errors/rate limits     | gotchas.md                        |
-| Product-specific APIs        | ../workers/, ../r2/, ../kv/, etc. |
+| Inicializar cliente SDK | API.md |
+| Configurar autenticação/tempo limite/nova tentativa | configuração.md |
+| Encontre padrões de uso | padrões.md |
+| Erros de depuração/limites de taxa | pegadinhas.md |
+| APIs específicas do produto | ../trabalhadores/, ../r2/, ../kv/, etc. |
 
-## In This Reference
+## Nesta referência
 
-- **[api.md](api.md)** - SDK client initialization, pagination, error handling, examples
-- **[configuration.md](configuration.md)** - Environment variables, SDK config, Wrangler setup
-- **[patterns.md](patterns.md)** - Real-world patterns, batch operations, workflows
-- **[gotchas.md](gotchas.md)** - Rate limits, SDK-specific issues, troubleshooting
+- **[api.md](api.md)** - Inicialização do cliente SDK, paginação, tratamento de erros, exemplos
+- **[configuration.md](configuration.md)** - Variáveis de ambiente, configuração do SDK, configuração do Wrangler
+- **[patterns.md](patterns.md)** - Padrões do mundo real, operações em lote, fluxos de trabalho
+- **[gotchas.md](gotchas.md)** - Limites de taxa, problemas específicos do SDK, solução de problemas
 
-## See Also
+## Veja também
 
-- [Cloudflare API Docs](https://developers.cloudflare.com/api/)
-- [Bindings Reference](../bindings/) - Workers runtime bindings (preferred over REST API)
-- [Wrangler Reference](../wrangler/) - CLI tool for Cloudflare development
+- [Documentos da API Cloudflare](https://developers.cloudflare.com/api/)
+- [Referência de vinculações](../bindings/) - Vinculações de tempo de execução de trabalhadores (preferenciais à API REST)
+- [Referência do Wrangler](../wrangler/) - Ferramenta CLI para desenvolvimento Cloudflare
+```

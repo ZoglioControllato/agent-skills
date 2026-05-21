@@ -1,6 +1,6 @@
-# Workers Patterns
+# Padrões do Workers
 
-## Error Handling
+## Tratamento de erros
 
 ```typescript
 class HTTPError extends Error {
@@ -39,7 +39,7 @@ const corsHeaders = {
 if (request.method === 'OPTIONS') return new Response(null, { headers: corsHeaders })
 ```
 
-## Routing
+## Roteamento
 
 ```typescript
 const router = { 'GET /api/users': handleGetUsers, 'POST /api/users': handleCreateUser }
@@ -48,9 +48,9 @@ const handler = router[`${request.method} ${url.pathname}`]
 return handler ? handler(request, env) : new Response('Not Found', { status: 404 })
 ```
 
-**Production**: Use Hono, itty-router, or Worktop (see [frameworks.md](./frameworks.md))
+**Produção**: use Hono, itty-router ou Worktop (veja [frameworks.md](./frameworks.md))
 
-## Request Validation (Zod)
+## Validação de requisição (Zod)
 
 ```typescript
 import { z } from 'zod'
@@ -64,7 +64,7 @@ const userSchema = z.object({
 async function handleCreateUser(request: Request) {
   try {
     const body = await request.json()
-    const validated = userSchema.parse(body) // Throws on invalid data
+    const validated = userSchema.parse(body) // Lança se inválido
     return new Response(JSON.stringify({ id: 1, ...validated }), {
       status: 201,
       headers: { 'Content-Type': 'application/json' },
@@ -78,16 +78,16 @@ async function handleCreateUser(request: Request) {
 }
 ```
 
-**With Hono**: Use `@hono/zod-validator` for automatic validation (see [frameworks.md](./frameworks.md))
+**Com Hono**: use `@hono/zod-validator` para validação automática (veja [frameworks.md](./frameworks.md))
 
-## Performance
+## Desempenho
 
 ```typescript
-// ❌ Sequential
+// ❌ Sequencial
 const user = await fetch('/api/user/1')
 const posts = await fetch('/api/posts?user=1')
 
-// ✅ Parallel
+// ✅ Paralelo
 const [user, posts] = await Promise.all([fetch('/api/user/1'), fetch('/api/posts?user=1')])
 ```
 
@@ -120,7 +120,7 @@ response.body
   .pipeThrough(new TextEncoderStream())
 ```
 
-## Testing
+## Testes
 
 ```typescript
 import { describe, it, expect } from 'vitest'
@@ -136,16 +136,16 @@ describe('Worker', () => {
 })
 ```
 
-## Deployment
+## Deploy
 
 ```bash
-npx wrangler deploy              # production
+npx wrangler deploy              # produção
 npx wrangler deploy --env staging
 npx wrangler versions upload --message "Add feature"
 npx wrangler rollback
 ```
 
-## Monitoring
+## Monitoramento
 
 ```typescript
 const start = Date.now()
@@ -158,27 +158,27 @@ ctx.waitUntil(
 )
 ```
 
-## Security & Rate Limiting
+## Segurança e rate limiting
 
 ```typescript
-// Security headers
+// Cabeçalhos de segurança
 const security = { 'X-Content-Type-Options': 'nosniff', 'X-Frame-Options': 'DENY' }
 
 // Auth
 const auth = request.headers.get('Authorization')
 if (!auth?.startsWith('Bearer ')) return new Response('Unauthorized', { status: 401 })
 
-// Gradual rollouts (deterministic user bucketing)
+// Rollouts graduais (bucketização determinística por usuário)
 const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(userId))
 if (new Uint8Array(hash)[0] % 100 < rolloutPercent) return newFeature(request)
 ```
 
-Rate limiting: See [Durable Objects](../durable-objects/README.md)
+Rate limiting: veja [Durable Objects](../durable-objects/README.md)
 
-## R2 Multipart Upload
+## Upload multipart no R2
 
 ```typescript
-// For files > 100MB
+// Para arquivos > 100MB
 const upload = await env.MY_BUCKET.createMultipartUpload('large-file.bin')
 try {
   const parts = []
@@ -192,9 +192,9 @@ try {
 }
 ```
 
-Parallel uploads, resume on failure, handle files > 5GB
+Uploads paralelos, retomada em falha, arquivos > 5 GB
 
-## Workflows (Step Orchestration)
+## Workflows (orquestração de passos)
 
 ```typescript
 import { WorkflowEntrypoint, WorkflowStep, WorkflowEvent } from 'cloudflare:workers'
@@ -210,11 +210,11 @@ export class MyWorkflow extends WorkflowEntrypoint {
 }
 ```
 
-Multi-step jobs with automatic retries, state persistence, resume from failure
+Jobs multi-etapas com retries automáticos, persistência de estado, retomada após falha
 
-## See Also
+## Ver também
 
-- [API](./api.md) - Runtime APIs
-- [Gotchas](./gotchas.md) - Common issues
-- [Configuration](./configuration.md) - Setup
-- [Frameworks](./frameworks.md) - Hono, routing, validation
+- [API](./api.md) — APIs de runtime
+- [Gotchas](./gotchas.md) — problemas comuns
+- [Configuration](./configuration.md) — configuração
+- [Frameworks](./frameworks.md) — Hono, roteamento, validação

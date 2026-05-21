@@ -1,6 +1,6 @@
-# Cron Triggers Patterns
+# Padrões de gatilhos Cron
 
-## API Data Sync
+## Sincronização de dados da API
 
 ```typescript
 export default {
@@ -14,7 +14,7 @@ export default {
 }
 ```
 
-## Database Cleanup
+##Limpeza de banco de dados
 
 ```typescript
 export default {
@@ -26,7 +26,7 @@ export default {
 }
 ```
 
-## Report Generation
+##Geração de Relatório
 
 ```typescript
 export default {
@@ -60,7 +60,7 @@ export default {
 }
 ```
 
-## Health Checks
+##Verificações de integridade
 
 ```typescript
 export default {
@@ -95,7 +95,7 @@ export default {
 }
 ```
 
-## Batch Processing (Rate-Limited)
+##Processamento em lote (taxa limitada)
 
 ```typescript
 export default {
@@ -118,7 +118,7 @@ export default {
 }
 ```
 
-## Queue Integration
+##Integração de fila
 
 ```typescript
 export default {
@@ -135,7 +135,7 @@ export default {
 }
 ```
 
-## Monitoring & Observability
+##Monitoramento e Observabilidade
 
 ```typescript
 export default {
@@ -165,9 +165,9 @@ export default {
 }
 ```
 
-**View logs:** `npx wrangler tail` or Dashboard → Workers & Pages → Worker → Logs
+**Ver logs:** `npx wrangler tail` ou Dashboard → Workers & Pages → Worker → Logs
 
-## Durable Objects Coordination
+## Coordenação de objetos duráveis
 
 ```typescript
 export default {
@@ -187,7 +187,7 @@ export default {
 }
 ```
 
-## Python Handler
+##Manipulador Python
 
 ```python
 from workers import WorkerEntrypoint
@@ -198,9 +198,9 @@ class Default(WorkerEntrypoint):
         ctx.waitUntil(env.DB.execute("DELETE FROM logs WHERE created_at < datetime('now', '-7 days')"))
 ```
 
-## Testing Patterns
+##Padrões de teste
 
-**Local testing with /\_\_scheduled:**
+**Testes locais com /\_\_scheduled:**
 
 ```bash
 # Start dev server
@@ -213,7 +213,7 @@ curl "http://localhost:8787/__scheduled?cron=*/5+*+*+*+*"
 curl "http://localhost:8787/__scheduled?cron=0+2+*+*+*&scheduledTime=1704067200000"
 ```
 
-**Unit tests:**
+**Testes unitários:**
 
 ```typescript
 // test/scheduled.test.ts
@@ -238,8 +238,8 @@ describe('Scheduled Handler', () => {
 })
 ```
 
-## See Also
+##Veja também
 
-- [README.md](./README.md) - Overview
-- [api.md](./api.md) - Handler implementation
-- [gotchas.md](./gotchas.md) - Troubleshooting
+- [README.md](./README.md) - Visão geral
+- [api.md](./api.md) - Implementação do manipulador
+- [gotchas.md](./gotchas.md) - Solução de problemas

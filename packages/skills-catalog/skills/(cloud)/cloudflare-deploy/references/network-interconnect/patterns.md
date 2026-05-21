@@ -1,19 +1,19 @@
-# CNI Patterns
+# Padrões CNI
 
-See [README.md](README.md) for overview.
+Consulte [README.md](README.md) para obter uma visão geral.
 
-## High Availability
+## Alta disponibilidade
 
-**Critical:** Design for resilience from day one.
+**Crítico:** Projete para resiliência desde o primeiro dia.
 
-**Requirements:**
+**Requisitos:**
 
-- Device-level diversity (separate hardware)
-- Backup Internet connectivity (no SLA on CNI)
-- Network-resilient locations preferred
-- Regular failover testing
+- Diversidade em nível de dispositivo (hardware separado)
+- Backup de conectividade com a Internet (sem SLA no CNI)
+- Locais resilientes à rede preferidos
+- Testes regulares de failover
 
-**Architecture:**
+**Arquitetura:**
 
 ```
 Your Network A ──10G CNI v2──> CF CCR Device 1
@@ -23,31 +23,30 @@ Your Network B ──10G CNI v2──> CF CCR Device 2
                             CF Global Network (AS13335)
 ```
 
-**Capacity Planning:**
+**Planejamento de Capacidade:**
 
-- Plan across all links
-- Account for failover scenarios
-- Your responsibility
+- Planeje todos os links
+- Conta para cenários de failover
+- Sua responsabilidade
 
-## Pattern: Magic Transit + CNI v2
+## Padrão: Magic Transit + CNI v2
 
-**Use Case:** DDoS protection, private connectivity, no GRE overhead.
-
-```typescript
+**Caso de uso:** Proteção DDoS, conectividade privada, sem sobrecarga de GRE.```typescript
 // 1. Create interconnect
 const ic = await client.networkInterconnects.interconnects.create({
-  account_id: id,
-  type: 'direct',
-  facility: 'EWR1',
-  speed: '10G',
-  name: 'magic-transit-primary',
+account_id: id,
+type: 'direct',
+facility: 'EWR1',
+speed: '10G',
+name: 'magic-transit-primary',
 })
 
 // 2. Poll until active
 const status = await pollUntilActive(id, ic.id)
 
 // 3. Configure Magic Transit tunnel via Dashboard/API
-```
+
+````
 
 **Benefits:** 1500 MTU both ways, simplified routing.
 
@@ -67,7 +66,7 @@ await configureStaticRoutes(id, {
   prefix: '10.0.0.0/8',
   nexthop: 'aws-direct-connect',
 })
-```
+````
 
 **GCP Cloud Interconnect:**
 
@@ -120,55 +119,55 @@ const tertiary = await client.networkInterconnects.interconnects.create({
 // Internet: Last resort
 ```
 
-## Pattern: Partner Interconnect (Equinix)
+## Padrão: Interconexão de parceiros (Equinix)
 
-**Use Case:** Quick deployment, no colocation.
+**Caso de uso:** Implantação rápida, sem colocation.
 
-**Setup:**
+**Configuração:**
 
-1. Order virtual circuit in Equinix Fabric Portal
-2. Select Cloudflare as destination
-3. Choose facility
-4. Send details to CF account team
-5. CF accepts in portal
-6. Configure BGP
+1. Solicite um circuito virtual no Equinix Fabric Portal
+2. Selecione Cloudflare como destino
+3. Escolha a instalação
+4. Envie detalhes para a equipe de conta CF
+5. CF aceita no portal
+6. Configurar BGP
 
-**No API automation** – partner portals managed separately.
+**Sem automação de API** – portais de parceiros gerenciados separadamente.
 
-## Failover & Security
+## Failover e segurança
 
-**Failover Best Practices:**
+**Práticas recomendadas de failover:**
 
-- Use BGP local preferences for priority
-- Configure BFD for fast detection (v1)
-- Test regularly with traffic shift
-- Document runbooks
+- Use as preferências locais do BGP para prioridade
+- Configurar BFD para detecção rápida (v1)
+- Teste regularmente com mudança de tráfego
+- Cadernos de documentos
 
-**Security:**
+**Segurança:**
 
-- BGP password authentication
-- BGP route filtering
-- Monitor unexpected routes
-- Magic Firewall for DDoS/threats
-- Minimum API token permissions
-- Rotate credentials periodically
+- Autenticação de senha BGP
+- Filtragem de rota BGP
+- Monitore rotas inesperadas
+- Magic Firewall para DDoS/ameaças
+- Permissões mínimas de token de API
+- Alternar credenciais periodicamente
 
-## Decision Matrix
+## Matriz de decisão
 
-| Requirement        | Recommended |
-| ------------------ | ----------- |
-| Collocated with CF | Direct      |
-| Not collocated     | Partner     |
-| AWS/GCP workloads  | Cloud       |
-| 1500 MTU both ways | v2          |
-| VLAN tagging       | v1          |
-| Public peering     | v1          |
-| Simplest config    | v2          |
-| BFD fast failover  | v1          |
-| LACP bundling      | v1          |
+| Requisito                     | Recomendado |
+| ----------------------------- | ----------- |
+| Colocado com CF               | Direto      |
+| Não colocado                  | Parceiro    |
+| Cargas de trabalho AWS/GCP    | Nuvem       |
+| 1500 MTU em ambos os sentidos | v2          |
+| Marcação de VLAN              | v1          |
+| Peering público               | v1          |
+| Configuração mais simples     | v2          |
+| Failover rápido BFD           | v1          |
+| Pacote LACP                   | v1          |
 
-## Resources
+## Recursos
 
-- [Magic Transit Docs](https://developers.cloudflare.com/magic-transit/)
-- [Magic WAN Docs](https://developers.cloudflare.com/magic-wan/)
-- [Argo Smart Routing](https://developers.cloudflare.com/argo/)
+- [Documentos do Magic Transit](https://developers.cloudflare.com/magic-transit/)
+- [Documentos Magic WAN](https://developers.cloudflare.com/magic-wan/)
+- [Roteamento Inteligente Argo](https://developers.cloudflare.com/argo/)

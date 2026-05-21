@@ -1,6 +1,6 @@
-# Integration Patterns
+# Padrões de Integração
 
-## Enable Argo + Tiered Cache
+## Habilitar Argo + cache em camadas
 
 ```typescript
 async function enableOptimalPerformance(client: Cloudflare, zoneId: string) {
@@ -11,11 +11,11 @@ async function enableOptimalPerformance(client: Cloudflare, zoneId: string) {
 }
 ```
 
-**Flow:** Visitor → Edge (Lower-Tier) → [Cache Miss] → Upper-Tier → [Cache Miss + Argo] → Origin
+**Fluxo:** Visitante → Edge (Nível Inferior) → [Perda de Cache] → Camada Superior → [Perda de Cache + Argo] → Origem
 
-**Impact:** Argo ~30% latency reduction + Tiered Cache 50-80% origin offload
+**Impacto:** Argo ~30% de redução de latência + Tiered Cache 50-80% de descarregamento de origem
 
-## Usage Analytics (GraphQL)
+## Análise de uso (GraphQL)
 
 ```graphql
 query ArgoAnalytics($zoneTag: string!) {
@@ -32,11 +32,11 @@ query ArgoAnalytics($zoneTag: string!) {
 }
 ```
 
-**Billing:** ~$0.10/GB. DDoS-mitigated and WAF-blocked traffic NOT charged.
+**Faturamento:** ~$0,10/GB. Tráfego mitigado por DDoS e bloqueado por WAF NÃO é cobrado.
 
-## Spectrum TCP Integration
+## Integração TCP do espectro
 
-Enable Argo for non-HTTP traffic (databases, game servers, IoT):
+Habilite o Argo para tráfego não HTTP (bancos de dados, servidores de jogos, IoT):
 
 ```typescript
 // Update existing app
@@ -52,9 +52,9 @@ await client.spectrum.apps.create({
 })
 ```
 
-**Use cases:** MySQL/PostgreSQL (3306/5432), game servers, MQTT (1883), SSH (22)
+**Casos de uso:** MySQL/PostgreSQL (3306/5432), servidores de jogos, MQTT (1883), SSH (22)
 
-## Pre-Flight Validation
+## Validação pré-voo
 
 ```typescript
 async function validateArgoEligibility(client: Cloudflare, zoneId: string) {
@@ -70,7 +70,7 @@ async function validateArgoEligibility(client: Cloudflare, zoneId: string) {
 }
 ```
 
-## Post-Enable Verification
+##Verificação pós-ativação
 
 ```typescript
 async function verifyArgoEnabled(client: Cloudflare, zoneId: string): Promise<boolean> {
@@ -80,7 +80,7 @@ async function verifyArgoEnabled(client: Cloudflare, zoneId: string): Promise<bo
 }
 ```
 
-## Full Setup Pattern
+##Padrão de configuração completa
 
 ```typescript
 async function setupArgo(client: Cloudflare, zoneId: string) {
@@ -104,4 +104,4 @@ async function setupArgo(client: Cloudflare, zoneId: string) {
 }
 ```
 
-**When to combine:** High-traffic sites (>1TB/mo), global users, cacheable content.
+**Quando combinar:** Sites de alto tráfego (>1 TB/mês), usuários globais, conteúdo armazenável em cache.

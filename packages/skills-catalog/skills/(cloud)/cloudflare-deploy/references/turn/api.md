@@ -1,28 +1,28 @@
-# TURN API Reference
+# Referência da API TURN
 
-Complete API documentation for Cloudflare TURN service credentials and key management.
+Documentação completa da API para credenciais de serviço Cloudflare TURN e gerenciamento de chaves.
 
-## Authentication
+## Autenticação
 
-All endpoints require Cloudflare API token with "Calls Write" permission.
+Todos os endpoints requerem token de API Cloudflare com permissão de "gravação de chamadas".
 
-Base URL: `https://api.cloudflare.com/client/v4`
+URL base: `https://api.cloudflare.com/client/v4`
 
-## TURN Key Management
+## TURN Gerenciamento de Chaves
 
-### List TURN Keys
+### Listar teclas TURN
 
 ```
 GET /accounts/{account_id}/calls/turn_keys
 ```
 
-### Get TURN Key Details
+### Obtenha detalhes da chave TURN
 
 ```
 GET /accounts/{account_id}/calls/turn_keys/{key_id}
 ```
 
-### Create TURN Key
+### Criar chave TURN
 
 ```
 POST /accounts/{account_id}/calls/turn_keys
@@ -33,15 +33,15 @@ Content-Type: application/json
 }
 ```
 
-**Response includes**:
+**A resposta inclui**:
 
-- `uid`: Key identifier
-- `key`: The actual secret key (only returned on creation—save immediately)
-- `name`: Human-readable name
-- `created`: ISO 8601 timestamp
-- `modified`: ISO 8601 timestamp
+- `uid`: identificador da chave
+- `key`: A chave secreta real (retornada apenas na criação - salve imediatamente)
+- `nome`: nome legível por humanos
+- `criado`: carimbo de data/hora ISO 8601
+- `modificado`: carimbo de data/hora ISO 8601
 
-### Update TURN Key
+### Atualizar chave TURN
 
 ```
 PUT /accounts/{account_id}/calls/turn_keys/{key_id}
@@ -52,13 +52,13 @@ Content-Type: application/json
 }
 ```
 
-### Delete TURN Key
+### Excluir chave TURN
 
 ```
 DELETE /accounts/{account_id}/calls/turn_keys/{key_id}
 ```
 
-## Generate Temporary Credentials
+##Gerar credenciais temporárias
 
 ```
 POST https://rtc.live.cloudflare.com/v1/turn/keys/{key_id}/credentials/generate
@@ -70,15 +70,15 @@ Content-Type: application/json
 }
 ```
 
-### Credential Constraints
+### Restrições de credenciais
 
-| Parameter | Min | Max            | Default | Notes                      |
-| --------- | --- | -------------- | ------- | -------------------------- |
-| ttl       | 1   | 172800 (48hrs) | varies  | API rejects values >172800 |
+| Parâmetro | Mínimo | Máx.              | Padrão | Notas                       |
+| --------- | ------ | ----------------- | ------ | --------------------------- |
+| ttl       | 1      | 172800 (48 horas) | varia  | API rejeita valores >172800 |
 
-**CRITICAL**: Maximum TTL is 48 hours (172800 seconds). API will reject requests exceeding this limit.
+**CRÍTICO**: O TTL máximo é de 48 horas (172.800 segundos). A API rejeitará solicitações que excedam esse limite.
 
-### Response Schema
+### Esquema de Resposta
 
 ```json
 {
@@ -98,9 +98,9 @@ Content-Type: application/json
 }
 ```
 
-**Port 53 Warning**: Filter port 53 URLs for browser clients—blocked by Chrome/Firefox. See [gotchas.md](./gotchas.md#using-port-53-in-browsers).
+**Aviso da porta 53**: filtre URLs da porta 53 para clientes de navegador — bloqueados pelo Chrome/Firefox. Consulte [gotchas.md](./gotchas.md#using-port-53-in-browsers).
 
-## Revoke Credentials
+## Revogar credenciais
 
 ```
 POST https://rtc.live.cloudflare.com/v1/turn/keys/{key_id}/credentials/revoke
@@ -112,11 +112,11 @@ Content-Type: application/json
 }
 ```
 
-**Response**: 204 No Content
+**Resposta**: 204 Sem conteúdo
 
-Billing stops immediately. Active connection drops after short delay (~seconds).
+O faturamento é interrompido imediatamente. A conexão ativa cai após um pequeno atraso (~segundos).
 
-## TypeScript Types
+## Tipos TypeScript
 
 ```typescript
 interface CloudflareTURNConfig {
@@ -153,7 +153,7 @@ interface TURNKeyResponse {
 }
 ```
 
-## Validation Function
+##Função de validação
 
 ```typescript
 function validateRTCIceServer(obj: unknown): obj is RTCIceServer {
@@ -179,7 +179,7 @@ function validateRTCIceServer(obj: unknown): obj is RTCIceServer {
 }
 ```
 
-## Type-Safe Credential Generation
+##Geração de credenciais com segurança de tipo
 
 ```typescript
 async function fetchTURNServers(config: CloudflareTURNConfig): Promise<RTCIceServer[]> {
@@ -226,8 +226,8 @@ async function fetchTURNServers(config: CloudflareTURNConfig): Promise<RTCIceSer
 }
 ```
 
-## See Also
+##Veja também
 
-- [configuration.md](./configuration.md) - Worker setup, environment variables
-- [patterns.md](./patterns.md) - Implementation examples using these APIs
-- [gotchas.md](./gotchas.md) - Security best practices, common mistakes
+- [configuration.md](./configuration.md) - Configuração do trabalhador, variáveis de ambiente
+- [patterns.md](./patterns.md) – Exemplos de implementação usando essas APIs
+- [gotchas.md](./gotchas.md) - Melhores práticas de segurança, erros comuns

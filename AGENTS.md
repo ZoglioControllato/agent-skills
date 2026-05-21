@@ -1,136 +1,144 @@
 # AGENTS.md
 
-Guidance for AI Coding Agents when working with code in this repository.
+Orientações para agentes de codificação com IA ao trabalhar neste repositório.
 
-## Workflow Orchestration
+## Orquestração de workflow
 
-### 1. Plan Mode Default
+### 1. Modo plano por padrão
 
-- Enter plan mode for ANY non-trivial task (3+ steps or architectural decisions)
-- If something goes sideways, STOP and re-plan immediately — don't keep pushing
-- Use plan mode for verification steps, not just building
-- Write detailed specs upfront to reduce ambiguity
+- Entre em modo plano para qualquer tarefa não trivial (3+ passos ou decisões de arquitetura)
+- Se algo sair do controle, PARE e replaneje imediatamente — não force a barra
+- Use modo plano para verificação, não só para implementação
+- Escreva especificações detalhadas no início para reduzir ambiguidade
 
-### 2. Subagent Strategy
+### 2. Estratégia de subagentes
 
-- Use subagents liberally to keep main context window clean
-- Offload research, exploration, and parallel analysis to subagents
-- For complex problems, throw more compute at it via subagents
-- One task per subagent for focused execution
+- Use subagentes com liberdade para manter a janela de contexto principal limpa
+- Delegue pesquisa, exploração e análise paralela a subagentes
+- Para problemas complexos, use mais compute via subagentes
+- Uma tarefa por subagente para execução focada
 
-### 3. Verification Before Done
+### 3. Verificação antes de concluir
 
-- Never mark a task complete without proving it works
-- Run the full test suite before considering work done
-- Verify your changes against the existing behavior
-- Ask yourself: "Would a staff engineer approve this?"
+- Nunca marque uma tarefa como concluída sem provar que funciona
+- Execute a suíte de testes completa antes de considerar o trabalho pronto
+- Verifique suas mudanças contra o comportamento existente
+- Pergunte-se: "Um staff engineer aprovaria isso?"
 
-### 4. Demand Elegance (Balanced)
+### 4. Busque elegância (com equilíbrio)
 
-- For nontrivial changes: pause and ask "is there a more elegant way?"
-- If a fix feels hacky: "Knowing everything I know now, implement the elegant solution"
-- Skip this for simple, obvious fixes — don't over-engineer
-- Challenge your own work before presenting it
+- Em mudanças não triviais: pause e pergunte "existe um jeito mais elegante?"
+- Se um fix parecer gambiarra: "Sabendo tudo que sei agora, implemente a solução elegante"
+- Pule isso para correções simples e óbvias — não superengenharia
+- Desafie seu próprio trabalho antes de apresentar
 
-### 5. Autonomous Bug Fixing
+### 5. Correção autônoma de bugs
 
-- When given a bug report: just fix it. Don't ask for hand-holding
-- Run tests to identify the root cause
-- Zero context switching required from the user
-- Go fix failing tests without being told how
+- Diante de um bug reportado: apenas corrija. Não peça orientação passo a passo
+- Rode testes para achar a causa raiz
+- Zero troca de contexto exigida do usuário
+- Corrija testes falhando sem que te digam como
 
-## Core Principles
+## Princípios centrais
 
-- **Simplicity First**: Make every change as simple as possible. Minimal code impact.
-- **No Laziness**: Find root causes. No temporary workarounds. Senior developer standards.
-- **Minimal Impact**: Changes should only touch what's necessary. Avoid introducing bugs.
+- **Simplicidade primeiro**: faça cada mudança o mais simples possível. Impacto mínimo no código.
+- **Sem preguiça**: encontre causas raiz. Sem workarounds temporários. Padrão de desenvolvedor sênior.
+- **Impacto mínimo**: mudanças devem tocar só o necessário. Evite introduzir bugs.
 
 ---
 
-## Repository
+## Repositório
 
-**Agent Skills Monorepo** — a registry and CLI for distributing "skills" (packaged instructions) to AI coding agents (Claude Code, Cursor, Copilot, Windsurf, Cline, and 14 others).
+**Monorepo Agent Skills** — registry e CLI para distribuir "skills" (instruções empacotadas) a agentes de codificação com IA (Claude Code, Cursor, Copilot, Windsurf, Cline e mais 14).
 
-## Commands
+Mantido pelo **Controllato Club** (fork/localização PT-BR do ecossistema agent-skills).
+
+## Comandos
 
 ```bash
 # Setup
 npm ci && npm run build
 
-# Development
-npm run start:dev:cli          # Run CLI interactively (tsx, no build needed)
-npm run start:dev:mcp          # Build MCP and open Inspector
-SKILLS_CDN_REF=main npm run dev -- install  # Test CLI against local registry
+# Desenvolvimento
+npm run start:dev:cli          # CLI interativo (tsx, sem build)
+npm run start:dev:mcp          # Build MCP e Inspector
+SKILLS_CDN_REF=main npm run dev -- install  # Testar CLI contra registry local
 
-# Build & Test
-npm run build                  # Build all packages (Nx)
-npm run test                   # Run all tests (requires Node --experimental-vm-modules)
-npm run test --workspace=@tech-leads-club/agent-skills  # CLI tests only
+# Build e testes
+npm run build                  # Build de todos os pacotes (Nx)
+npm run test                   # Todos os testes (Node --experimental-vm-modules)
+npm run test --workspace=@tech-leads-club/agent-skills  # Só testes da CLI
 
-# Quality
+# Qualidade
 npm run lint                   # ESLint
 npm run lint:fix
 npm run format:check           # Prettier
 npm run format
 
 # Skills
-npm run generate:data          # Regenerate skills-registry.json + marketplace data
-npm run scan                   # Security scan (snyk-agent-scan, incremental; requires SNYK_TOKEN)
-nx g @tech-leads-club/skill-plugin:skill {name} --category={cat}  # Create new skill
+npm run generate:data          # Regenerar skills-registry.json + dados do marketplace
+npm run scan                   # Scan de segurança (snyk-agent-scan, incremental; SNYK_TOKEN)
+nx g @tech-leads-club/skill-plugin:skill {name} --category={cat}  # Nova skill
 ```
 
-## Architecture
+## Arquitetura
 
-**Nx monorepo** with independent versioning and conventional commits.
+**Monorepo Nx** com versionamento independente e conventional commits.
 
-### Packages
+### Pacotes
 
-- **`packages/cli`** — `@tech-leads-club/agent-skills`. The user-facing installer. Dual-mode: interactive TUI (React + Ink) and non-interactive CLI (Commander.js). Entry: `src/index.ts`. Business logic in `src/services/` (registry fetching, skill installation, lockfile management, agent configs).
-- **`packages/skills-catalog`** — Skill definitions in `skills/{(category)}/{skill-name}/SKILL.md` with YAML frontmatter. `src/generate-registry.ts` produces `skills-registry.json` (committed, published to npm, served via jsDelivr CDN).
-- **`packages/marketplace`** — Next.js 16 static site deployed to GitHub Pages. Reads from `src/data/skills.json` (generated from the registry).
-- **`libs/core`** — `@tech-leads-club/core`. Shared types (`AgentType`, `SkillInfo`, `CategoryInfo`) and constants.
-- **`tools/skill-plugin`** — Nx generator for scaffolding new skills.
+- `**packages/cli`\*\* — `@tech-leads-club/agent-skills`. Instalador para o usuário. Modo duplo: TUI interativa (React + Ink) e CLI não interativa (Commander.js). Entrada: `src/index.ts`. Lógica em `src/services/` (registry, instalação, lockfile, configs de agentes).
+- `**packages/skills-catalog**` — Definições em `skills/{(categoria)}/{nome-skill}/SKILL.md` com frontmatter YAML. `src/generate-registry.ts` gera `skills-registry.json` (commitado, npm, jsDelivr CDN).
+- `**packages/marketplace**` — Site estático Next.js 16 no GitHub Pages. Lê `src/data/skills.json` (gerado do registry).
+- `**libs/core**` — `@tech-leads-club/core`. Tipos compartilhados (`AgentType`, `SkillInfo`, `CategoryInfo`) e constantes.
+- `**tools/skill-plugin**` — Gerador Nx de skills.
 
-### Key Flows
+### Fluxos principais
 
-**Skill installation**: CLI fetches `skills-registry.json` from CDN → downloads skill files (batched, 10 concurrent) to `~/.cache/agent-skillsls/` → installs via copy or symlink to agent-specific directory → records in `.agents/.skill-lock.json` (v2, Zod-validated, atomic writes).
+**Instalação de skill**: CLI busca `skills-registry.json` no CDN → baixa arquivos (lotes, 10 concorrentes) para `~/.cache/agent-skillsls/` → instala por cópia ou symlink no diretório do agente → registra em `.agents/.skill-lock.json` (v2, Zod, escrita atômica).
 
-**Registry generation**: `generate-registry.ts` scans all `SKILL.md` files, parses frontmatter, computes SHA-256 content hashes, outputs `skills-registry.json`.
+**Geração do registry**: `generate-registry.ts` varre `SKILL.md`, parseia frontmatter, calcula SHA-256, gera `skills-registry.json`.
 
-### Agent Configuration
+### Configuração de agentes
 
-Canonical agent config is in `packages/cli/src/services/agents.ts`. Each of the 19 supported agents has `skillsDir` (project-local) and `globalSkillsDir` (home directory) paths. Agents are tiered: Tier 1 (Cursor, Claude Code, Copilot, Windsurf, Cline), Tier 2, Tier 3.
+Config canônica em `packages/cli/src/services/agents.ts`. Cada um dos 19 agentes tem `skillsDir` (projeto) e `globalSkillsDir` (home). Tiers: Tier 1 (Cursor, Claude Code, Copilot, Windsurf, Cline), Tier 2, Tier 3.
 
-## Code Conventions
+## Convenções de código
 
-- **ESM-only** throughout. Jest requires `NODE_OPTIONS='--experimental-vm-modules'`.
-- **TypeScript strict mode**. `@typescript-eslint/no-explicit-any: error`. Unused vars with `_` prefix are allowed.
-- **Prettier**: no semicolons, single quotes, trailing commas, 120 char width, organize-imports plugin.
-- **Node ≥ 24** (monorepo), **Node ≥ 22** (CLI package).
-- Tests: Jest 30 + ts-jest. Property-based tests use fast-check (`*.pbt.test.ts`). Security-specific tests exist for installer and lockfile.
+- **Somente ESM**. Jest exige `NODE_OPTIONS='--experimental-vm-modules'`.
+- **TypeScript strict**. `@typescript-eslint/no-explicit-any: error`. Variáveis não usadas com prefixo `_` são permitidas.
+- **Prettier**: sem ponto e vírgula, aspas simples, trailing commas, largura 120, plugin organize-imports.
+- **Node ≥ 24** (monorepo), **Node ≥ 22** (pacote CLI).
+- Testes: Jest 30 + ts-jest. Testes baseados em propriedades: fast-check (`*.pbt.test.ts`). Testes de segurança para installer e lockfile.
 
-## Skill Structure
+## Estrutura de skill
 
 ```
-skills/(category)/{skill-name}/
-├── SKILL.md          # Required — YAML frontmatter + markdown body
-├── scripts/          # Optional executable scripts
-├── templates/        # Optional file templates
-└── references/       # Optional on-demand documentation
+skills/(categoria)/{nome-skill}/
+├── SKILL.md          # Obrigatório — frontmatter YAML + corpo markdown
+├── scripts/          # Scripts executáveis opcionais
+├── templates/        # Templates de arquivo opcionais
+└── references/       # Documentação sob demanda opcional
 ```
 
-Always use the Nx generator (`nx g @tech-leads-club/skill-plugin:skill`) to create skills. Keep `SKILL.md` under 500 lines; offload reference material to `references/`.
+Use sempre o gerador Nx (`nx g @tech-leads-club/skill-plugin:skill`). Mantenha `SKILL.md` com menos de 500 linhas; material de referência em `references/`.
 
-### Skill Quality Standards
+### Padrões de qualidade de skill
 
-**When creating a new skill or modifying an existing one, you MUST use the `skill-architect` skill** to ensure it follows best practices. If the `skill-architect` skill is not installed, follow these mandatory description rules:
+**Ao criar ou modificar uma skill, você DEVE usar a skill `skill-architect`** para garantir boas práticas. Se `skill-architect` não estiver instalada, siga estas regras obrigatórias de description:
 
-- **Structure**: `[What it does] + [Use when ...] + [Do NOT use for ...]`
-- **"Use when"** is mandatory — include actual phrases users would say
-- **"Do NOT use for"** is mandatory — add negative triggers to prevent overlap with similar skills
-- **Under 1024 characters** — no XML angle brackets (`< >`)
-- **User perspective** — write trigger phrases as things the user would actually say, not internal jargon
+- **Estrutura**: `[O que faz] + [Use quando ...] + [NÃO use para ...]`
+- `**Use quando`\*\* é obrigatório — inclua frases que o usuário diria de fato
+- `**NÃO use para**` é obrigatório — gatilhos negativos para evitar sobreposição com skills similares
+- **Até 1024 caracteres** — sem colchetes angulares XML (`< >`)
+- **Perspectiva do usuário** — frases gatilho como o usuário fala, não jargão interno
+
+### Tooling de tradução (PT-BR)
+
+- Manifesto: `tools/translation-manifest.json` (646 arquivos `.md`)
+- Traduzir: `node tools/translate-markdown.mjs --file <path> [--translate]`
+- Validadores e MCP aceitam padrões EN e PT em descriptions (`Use quando`, `Aciona em`, `NÃO use para`)
 
 ## Release
 
-Nx Release with conventional commits. `chore`, `test`, `style`, `build`, `ci` prefixes do not trigger version bumps. Security scan must pass before release (`npm run scan`). Two independent release groups: `cli` and `skills-catalog`.
+Nx Release com conventional commits. Prefixos `chore`, `test`, `style`, `build`, `ci` não disparam bump. Scan de segurança deve passar antes do release (`npm run scan`). Dois grupos independentes: `cli` e `skills-catalog`.

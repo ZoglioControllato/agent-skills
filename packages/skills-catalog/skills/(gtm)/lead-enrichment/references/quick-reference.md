@@ -1,65 +1,69 @@
-# Quick Reference & Questions to Ask
+# Referência rápida e perguntas a serem feitas
 
-## Quick Reference
+## Referência rápida
 
-### Decision Framework: Which Waterfall to Build
+### Estrutura de decisão: qual cascata construir```
 
-```
 Budget < $200/mo?
-  -> Apollo free + Hunter free + Snov.io ($39)
-  -> Manual verification with MillionVerifier
+-> Apollo free + Hunter free + Snov.io ($39)
+-> Manual verification with MillionVerifier
 
 Budget $200-$1,000/mo?
-  -> Clay Starter ($149) + Apollo Starter ($99) + FindyMail ($49)
-  -> Automated waterfall in Clay
+-> Clay Starter ($149) + Apollo Starter ($99) + FindyMail ($49)
+-> Automated waterfall in Clay
 
 Budget $1,000-$5,000/mo?
-  -> Clay Explorer ($349) + Apollo + ZoomInfo ($833/mo at $10K/yr)
-  -> Full waterfall + intent scoring + Clay AI columns
+-> Clay Explorer ($349) + Apollo + ZoomInfo ($833/mo at $10K/yr)
+-> Full waterfall + intent scoring + Clay AI columns
 
 Budget > $5,000/mo?
-  -> Clay Pro ($800) + ZoomInfo + Bombora + Clearbit
-  -> Enterprise waterfall + real-time intent routing + full automation
+-> Clay Pro ($800) + ZoomInfo + Bombora + Clearbit
+-> Enterprise waterfall + real-time intent routing + full automation
+
 ```
+### Lista de verificação de enriquecimento (pré-campanha)
 
-### Enrichment Checklist (Pre-Campaign)
+1. [] Importação leva para Clay ou plataforma de enriquecimento
+2. [] Pré-filtro: remova domínios inválidos, setores errados, localização geográfica errada
+3. [] Executar cascata: primário> secundário> terciário> LinkedIn
+4. [] Verifique todos os e-mails (limiar de confiança >0,85)
+5. [] Segmentar endereços pega-tudo em um pool separado
+6. [] Calcular pontuações ICP (firmográfico + tecnográfico + intenção)
+7. [] Encaminhe leads importantes (pontuação> 85) para SDR para divulgação imediata
+8. [] Rotear leads quentes
 
-1. [ ] Import leads to Clay or enrichment platform
-2. [ ] Pre-filter: remove invalid domains, wrong industries, wrong geo
-3. [ ] Run waterfall: primary > secondary > tertiary > LinkedIn
-4. [ ] Verify all emails (confidence threshold >0.85)
-5. [ ] Segment catch-all addresses into separate pool
-6. [ ] Calculate ICP scores (firmographic + technographic + intent)
-7. [ ] Route hot leads (>85 score) to SDR for immediate outreach
-8. [ ] Route warm leads (70-84) to automated sequence
-9. [ ] Push enriched data to CRM with source attribution
-10. [ ] Set re-enrichment reminder at 90 days
+(70-84) para sequência automatizada
+9. [] Envie dados enriquecidos para CRM com atribuição de origem
+10. [] Definir lembrete de reenriquecimento em 90 dias
 
-### Key Metrics to Track
+### Principais métricas a serem rastreadas
 
-| Metric | Target | Frequency |
+| Métrica | Alvo | Frequência |
 |---|---|---|
-| Email coverage after waterfall | >85% | Per batch |
-| Verified email rate | >90% of found | Per batch |
-| Bounce rate on sends | <2% | Per campaign |
-| ICP qualification rate | >50% of enriched | Per batch |
-| Credits per qualified lead | <50 credits | Monthly |
-| Cost per verified lead | <$1.00 | Monthly |
-| Enrichment-to-meeting rate | >2% | Monthly |
+| Cobertura de e-mail após cascata | >85% | Por lote |
+| Taxa de e-mail verificado | >90% dos encontrados | Por lote |
+| Taxa de rejeição em envios | <2% | Por campanha |
+| Taxa de qualificação ICP | >50% de enriquecido | Por lote |
+| Créditos por lead qualificado | <50 créditos | Mensalmente |
+| Custo por lead verificado | <US$ 1,00 | Mensalmente |
+| Taxa de enriquecimento por reunião | >2% | Mensalmente |
 
 ---
 
-## Questions to Ask
+## Perguntas a serem feitas
 
-- What CRM do you use? (HubSpot, Salesforce, Pipedrive, other)
-- How many leads per month need enrichment?
-- What is your average deal size? (determines justified spend)
-- Which enrichment providers do you already pay for?
-- Are you selling in the US, EU, or globally? (compliance implications)
-- What outreach tool sends the emails?
-- Do you have intent data today?
-- What is your current email bounce rate?
-- Who owns enrichment operationally? (RevOps, Growth, Sales?)
-- One-time list building or ongoing continuous enrichment?
+- Qual CRM você usa? (HubSpot, Salesforce, Pipedrive, outros)
+- Quantos leads por mês precisam de enriquecimento?
+- Qual é o tamanho médio do seu negócio? (determina gastos justificados)
+- Por quais provedores de enriquecimento você já paga?
+- Você está vendendo nos EUA, na UE ou globalmente? (implicações de conformidade)
+- Qual ferramenta de divulgação envia os e-mails?
+- Você tem dados de intenção hoje?
+- Qual é a sua taxa de rejeição de e-mail atual?
+- Quem é o proprietário operacional do enriquecimento? (Rev.
+
+Operações, crescimento, vendas?)
+- Criação de lista única ou enriquecimento contínuo contínuo?
 
 ---
+```

@@ -1,188 +1,187 @@
 ---
 name: modular-design-principles
 description: >
-  Technology-agnostic guidance for modular systems: bounded contexts, clear boundaries,
-  composability, state isolation, explicit contracts, failure containment, scaffolding workflows,
-  split/merge criteria, sub-units inside a context, and compliance review signals. Use when
-  designing or reviewing module structure, service boundaries, package layout, cross-cutting
-  dependencies, "how should we split this?", modularity assessments, coupling between domains,
-  greenfield context design, or architecture discussions without assuming a specific framework,
-  language, or repository layout. Do NOT use for executing the full Patterns 1–5 repo
-  decomposition pipeline or per-pattern inventories (use modular-decomposition), phased
-  extraction roadmaps as the main deliverable (use decomposition-planning-roadmap), or
-  end-to-end legacy migration strategy (use legacy-migration-planner).
+  Orientação agnóstica de tecnologia para sistemas modulares: bounded contexts, fronteiras claras,
+  composabilidade, isolamento de estado, contratos explícitos, contenção de falhas, fluxos de scaffolding,
+  critérios de divisão/fusão, subunidades dentro de um contexto e sinais de revisão de conformidade. Use quando
+  projetar ou revisar estrutura de módulos, fronteiras de serviço, layout de pacotes, dependências transversais,
+  o usuário pergunta "como dividir isso?", "como modularizar?", avaliações de modularidade, acoplamento entre domínios,
+  design de contexto novo (greenfield) ou discussões de arquitetura sem assumir framework,
+  linguagem ou layout de repositório específicos. NÃO use para executar o pipeline completo de decomposição do repositório Patterns 1–5
+  ou inventários por padrão (use modular-decomposition), roadmaps de extração faseados como entrega principal (use decomposition-planning-roadmap), ou
+  estratégia ponta a ponta de migração legada (use legacy-migration-planner).
 ---
 
-# Modular Design Principles
+# Princípios de design modular
 
-Use this skill when reasoning about **structure and boundaries** in any codebase. It intentionally avoids framework names, folder conventions, and tooling — map principles to your stack locally.
+Use esta skill ao raciocinar sobre **estrutura e fronteiras** em qualquer base de código. Ela evita propositalmente nomes de framework, convenções de pastas e ferramentas — mapeie os princípios para sua stack localmente.
 
-## What to load
+## O que carregar
 
-| Task | Where |
-|------|--------|
-| Principles table + violations + workflows (this file) | `SKILL.md` |
-| Per-principle definition, agent rules, abstract examples | `references/principles.md` |
-
----
-
-## Layered mental model
-
-- **Composition roots** (applications, hosts, runners): wire modules together; keep orchestration thin.
-- **Modules / bounded contexts**: cohesive units of behavior and data ownership; each should be understandable and testable on its own.
-- **Shared kernels** (use sparingly): only stable, truly cross-cutting concepts; resist turning them into a grab-bag of “everything everyone needs.”
-
-How you physically lay this out (mono repo, multi repo, packages, libraries) is a **delivery choice**, not the definition of modularity. The principles below still apply.
+| Tarefa                                                           | Onde                       |
+| ---------------------------------------------------------------- | -------------------------- |
+| Tabela de princípios + violações + fluxos (este arquivo)         | `SKILL.md`                 |
+| Definição por princípio, regras para agentes, exemplos abstratos | `references/principles.md` |
 
 ---
 
-## The ten principles
+## Modelo mental em camadas
 
-| # | Principle | Intent |
-|---|-----------|--------|
-| 1 | **Well-defined boundaries** | A small, stable **public surface**; everything else is internal. Consumers depend on contracts, not internals. |
-| 2 | **Composability** | Modules can be used alone or combined without special knowledge of each other’s internals. |
-| 3 | **Independence** | No hidden shared mutable state across boundaries; each module should be testable in isolation (with fakes or test doubles at the edges). |
-| 4 | **Individual scale** | Resources (compute, storage, rate limits, batch size) can be tuned **per module** where it matters, without rewriting others. |
-| 5 | **Explicit communication** | Cross-module interaction uses **documented contracts** (APIs, events, messages, shared types) — not incidental coupling. |
-| 6 | **Replaceability** | Dependencies on other modules are expressed through **interfaces or protocols** so implementations can change. |
-| 7 | **Deployment independence** | Modules do not assume they share a process, host, or release cadence unless that is an explicit architectural decision. |
-| 8 | **State isolation** | Each module **owns** its persistent state and naming; no silent sharing of the same logical data store or ambiguous global names across boundaries. |
-| 9 | **Observability** | Each module can be diagnosed on its own: logs, metrics, traces, health — attributable to the unit that emitted them. |
-| 10 | **Fail independence** | Failures are **contained** (timeouts, bulkheads, circuit breaking, idempotency) so one module’s outage does not blindly cascade. |
+- **Composition roots** (aplicações, hosts, runners): conectam módulos; mantenha a orquestração fina.
+- **Módulos / bounded contexts**: unidades coesas de comportamento e propriedade de dados; cada uma deve ser compreensível e testável sozinha.
+- **Shared kernels** (use com parcimônia): apenas conceitos estáveis e verdadeiramente transversais; evite virar um saco de “tudo que todo mundo precisa”.
 
-**Principle 8** is often the hardest: ambiguous ownership of data or names is a frequent source of “works until it doesn’t” integration bugs.
-
-For **depth** (rules for agents + abstract examples per principle), load `references/principles.md`.
+Como você organiza fisicamente (monorepo, multirepo, pacotes, bibliotecas) é uma **escolha de entrega**, não a definição de modularidade. Os princípios abaixo continuam válidos.
 
 ---
 
-## Typical violations (stated abstractly)
+## Os dez princípios
 
-1. **Colliding concepts** — the same name or schema for different things in different modules, or duplicate “global” definitions that diverge over time.
-2. **Reach-through persistence** — one module reading or writing another module’s tables, buckets, or documents **without** going through an agreed contract.
-3. **Centralized data ownership** — a single persistence layer that registers and exposes **all** stores for **all** modules, encouraging hidden coupling.
-4. **Logic at the edge** — business rules in transport adapters (HTTP handlers, UI, CLI) instead of domain/application code.
-5. **Edge talking to storage directly** — adapters depending on low-level persistence APIs instead of use cases or application services.
-6. **Unscoped transactions** — writes that span boundaries without clear transaction ownership and failure semantics.
-7. **Leaky exports** — repositories, internal services, or implementation types exposed as the module’s public API.
-8. **Facades that aren’t thin** — “public” entry points that embed querying, mapping, or policy instead of delegating to the right layer inside the module.
+| #   | Princípio                    | Intenção                                                                                                                                                            |
+| --- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | **Fronteiras bem definidas** | **Superfície pública** pequena e estável; o resto é interno. Consumidores dependem de contratos, não de internals.                                                  |
+| 2   | **Composabilidade**          | Módulos podem ser usados sozinhos ou combinados sem conhecimento especial dos internals uns dos outros.                                                             |
+| 3   | **Independência**            | Sem estado mutável compartilhado oculto através de fronteiras; cada módulo deve ser testável isolado (com fakes ou doubles nas bordas).                             |
+| 4   | **Escala individual**        | Recursos (compute, armazenamento, rate limits, tamanho de batch) podem ser ajustados **por módulo** onde importa, sem reescrever os outros.                         |
+| 5   | **Comunicação explícita**    | Interação entre módulos usa **contratos documentados** (APIs, eventos, mensagens, tipos compartilhados) — não acoplamento incidental.                               |
+| 6   | **Substituibilidade**        | Dependências de outros módulos são expressas por **interfaces ou protocols** para que implementações possam mudar.                                                  |
+| 7   | **Independência de deploy**  | Módulos não assumem processo, host ou cadência de release compartilhados salvo decisão arquitetural explícita.                                                      |
+| 8   | **Isolamento de estado**     | Cada módulo **possui** seu estado persistente e nomenclatura; sem compartilhamento silencioso do mesmo datastore lógico ou nomes globais ambíguos entre fronteiras. |
+| 9   | **Observabilidade**          | Cada módulo pode ser diagnosticado sozinho: logs, métricas, traces, health — atribuíveis à unidade que emitiu.                                                      |
+| 10  | **Falha independente**       | Falhas são **contidas** (timeouts, bulkheads, circuit breaking, idempotência) para que a indisponibilidade de um módulo não propague em cascata cega.               |
 
----
+O **princípio 8** costuma ser o mais difícil: propriedade ambígua de dados ou nomes é fonte frequente de bugs de integração do tipo “funciona até não funcionar”.
 
-## Creating a bounded context (workflow)
-
-Use when introducing a **new** cohesive area of the system (greenfield module or extracted domain).
-
-1. **Scope and language** — Name the context; list core nouns/verbs (**ubiquitous language**). Reject vague names that collide with other contexts.
-2. **Responsibilities** — What decisions happen **only** here? What is explicitly *out* of scope?
-3. **State ownership** — Which facts are **authoritative** in this context? Where are they stored conceptually (even if storage tech is undecided)?
-4. **Public contract** — Operations and/or events other contexts may use. Version or evolve this contract intentionally.
-5. **Integrations** — For each neighbor: sync call, async message, shared read model, or batch sync? Document **consistency** (immediate, eventual) and **failure** behavior.
-6. **Invariants and lifecycles** — What must always be true inside this boundary? What starts/completes a lifecycle?
-7. **Isolation check** — Can you test core behavior **without** spinning up unrelated contexts (fakes at ports)?
-8. **Observability** — How will you trace a request or job through **this** context with clear identifiers?
-
-**Cross-module interaction** (while designing): prefer the **minimal** contract; define **timeouts**, **retries**, **idempotency** for async; avoid “temporary” direct store access as a shortcut.
+Para **profundidade** (regras para agentes + exemplos abstratos por princípio), carregue `references/principles.md`.
 
 ---
 
-## When to split or merge
+## Violações típicas (formuladas de modo abstrato)
 
-**Default:** **fewer boundaries** until real pain appears — “flat is often better” than premature fragmentation. Splitting adds coordination, versioning, and operational cost.
-
-### Six-criteria test (favor split when several are true)
-
-| # | Criterion | Question |
-|---|-----------|----------|
-| 1 | **Language** | Do the sub-areas use **different vocabulary** or conflicting definitions of the same word? |
-| 2 | **Rate of change** | Do parts **change on different cadences** or for unrelated reasons (most edits touch one side)? |
-| 3 | **Scale / SLO** | Do parts need **different** throughput, latency, or availability targets? |
-| 4 | **Consistency** | Do they need **different transaction boundaries** (cannot share one atomic write model cleanly)? |
-| 5 | **Ownership** | Would **different teams** or clear ownership lines reduce conflict and review churn? |
-| 6 | **Pain signal** | Is there **observable** integration pain: ripple effects, fear of change, unclear who owns a bug? |
-
-**Cohesion / coupling (qualitative).** Favor **high cohesion** inside a module and **low, explicit coupling** between modules. If the only motivation is “files got big” or “folder aesthetics,” **merge or wait**.
-
-### When to merge or not split yet
-
-- Boundaries are **artificial** (same language, same lifecycle, constant cross-calls).
-- Splitting would **duplicate** logic or data without a clear **single writer** rule.
-- Team is not ready to **own** contracts, versioning, and ops for extra units.
-
-### Decision prompts (short)
-
-- Would separation **reduce** accidental coupling more than it **increases** coordination cost?
-- Is there a natural **ubiquitous language** boundary, or only a technical seam?
+1. **Conceitos colidentes** — mesmo nome ou schema para coisas diferentes em módulos diferentes, ou definições “globais” duplicadas que divergem com o tempo.
+2. **Persistência reach-through** — um módulo lendo ou escrevendo tabelas, buckets ou documentos de outro **sem** passar por contrato acordado.
+3. **Propriedade centralizada de dados** — uma única camada de persistência que registra e expõe **todos** os stores para **todos** os módulos, incentivando acoplamento oculto.
+4. **Lógica na borda** — regras de negócio em adaptadores de transporte (handlers HTTP, UI, CLI) em vez de código de domínio/aplicação.
+5. **Borda falando direto com storage** — adaptadores dependendo de APIs de persistência de baixo nível em vez de casos de uso ou application services.
+6. **Transações sem dono** — escritas que atravessam fronteiras sem dono claro da transação e semântica de falha.
+7. **Exports vazados** — repositórios, serviços internos ou tipos de implementação expostos como API pública do módulo.
+8. **Fachadas que não são finas** — pontos de entrada “públicos” que embutem consulta, mapeamento ou política em vez de delegar à camada certa dentro do módulo.
 
 ---
 
-## Sub-units inside a bounded context
+## Criar um bounded context (fluxo)
 
-Sometimes one outer boundary is right, but inside it there are **named sub-areas** (subdomains, feature areas). Principles still apply **within** the context.
+Use ao introduzir uma área **nova** e coesa do sistema (módulo greenfield ou domínio extraído).
 
-**Ownership**
+1. **Escopo e linguagem** — Nomeie o contexto; liste substantivos/verbos centrais (**ubiquitous language**). Rejeite nomes vagos que colidem com outros contextos.
+2. **Responsabilidades** — Que decisões acontecem **somente** aqui? O que está explicitamente _fora_?
+3. **Propriedade de estado** — Quais fatos são **autoritativos** neste contexto? Onde ficam armazenados conceitualmente (mesmo que a tecnologia ainda não esteja definida)?
+4. **Contrato público** — Operações e/ou eventos que outros contextos podem usar. Evolua esse contrato de forma intencional.
+5. **Integrações** — Para cada vizinho: chamada síncrona, mensagem assíncrona, read model compartilhado ou sync em batch? Documente **consistência** (imediata, eventual) e comportamento em **falha**.
+6. **Invariantes e lifecycles** — O que deve ser sempre verdadeiro dentro desta fronteira? O que inicia/completa um lifecycle?
+7. **Checagem de isolamento** — Você testa o comportamento central **sem** subir contextos não relacionados (fakes nas ports)?
+8. **Observabilidade** — Como rastrear uma requisição ou job **neste** contexto com identificadores claros?
 
-- Each sub-unit should **own** its slice of model and persistence concerns where possible — avoid one mega registration layer that wires **every** store and repository for **every** sub-unit in one place (encourages reach-through and hidden coupling).
-
-**Cross-sub-unit access**
-
-- Prefer **internal application APIs** or **thin internal facades** (same context, explicit surface) over peers importing each other’s storage types directly.
-- For async flows, prefer **enriched payloads** so handlers do not **chat** across sub-units for data that could travel with the event/command.
-
-**Shared kernel inside the context**
-
-- Small, stable shared types or enums can live in a **narrow shared area** — but resist a growing “utils” dump that becomes the real coupling point.
-
-**Anti-pattern:** A single “persistence” or “data” sub-module that becomes the **only** place that knows about all tables/documents for all sub-units, and everyone else reaches through it — same problems as cross-context reach-through, **inside** the boundary.
+**Interação entre módulos** (durante o design): prefira o contrato **mínimo**; defina **timeouts**, **retries**, **idempotência** para fluxos assíncronos; evite atalho de acesso direto a store “temporário”.
 
 ---
 
-## Architecture compliance pass
+## Quando dividir ou fundir
 
-Use for **reviews** or **audits** without assuming tooling. Treat items as **signals**, not proof — confirm with domain experts.
+**Padrão:** **menos fronteiras** até aparecer dor real — “flat is often better” que fragmentação prematura. Dividir aumenta coordenação, versionamento e custo operacional.
 
-### Dependency and API signals
+### Teste dos seis critérios (favoreça divisão quando vários forem verdadeiros)
 
-- **Inbound vs outbound:** Dependencies should align with your chosen architecture (e.g. domain at the center, adapters outside). **Inward** leaks of infrastructure types into core logic are a smell.
-- **Public surface:** Can you list **exported** operations/events/types without including storage or internal services? If not, boundaries are leaky.
-- **Neighbor imports:** Types or clients from **module A** used in **module B** — are they only **contract** types, or persistence/implementation types?
+| #   | Critério             | Pergunta                                                                                                                   |
+| --- | -------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| 1   | **Linguagem**        | As subáreas usam **vocabulários diferentes** ou definições conflitantes da mesma palavra?                                  |
+| 2   | **Ritmo de mudança** | Partes mudam em **cadências diferentes** ou por motivos não relacionados (a maioria dos edits toca um lado)?               |
+| 3   | **Escala / SLO**     | Partes precisam de **diferentes** vazão, latência ou disponibilidade?                                                      |
+| 4   | **Consistência**     | Precisam de **fronteiras de transação diferentes** (não dá para compartilhar um modelo de escrita atômico de forma limpa)? |
+| 5   | **Propriedade**      | **Times diferentes** ou linhas claras de propriedade reduziriam conflito e churn de review?                                |
+| 6   | **Sinal de dor**     | Há dor de integração **observável**: efeito dominó, medo de mudar, dono do bug incerto?                                    |
 
-### Persistence and data signals
+**Coesão / acoplamento (qualitativo).** Favoreça **alta coesão** dentro do módulo e **baixo acoplamento explícito** entre módulos. Se a única motivação é “arquivo ficou grande” ou “estética de pasta”, **fundir ou esperar**.
 
-- **Reach-through:** References to another context’s **physical** data (schema, collection, bucket name) outside an agreed contract.
-- **Naming collisions:** Same logical name for different things, or shared global IDs without a documented mapping rule.
-- **Transaction ownership:** Writes that span contexts without a clear **saga**, **outbox**, or **single-owner** rule and documented failure cases.
+### Quando fundir ou ainda não dividir
 
-### Operational signals
+- Fronteiras são **artificiais** (mesma linguagem, mesmo lifecycle, chamadas cruzadas constantes).
+- Dividir **duplicaria** lógica ou dados sem regra clara de **single writer**.
+- O time não está pronto para **possuir** contratos, versionamento e ops de unidades extras.
 
-- **Blame:** Incidents where “we don’t know which module owns this row/behavior” → ownership or observability gap.
-- **Cascades:** One dependency’s slowdown or failure takes down unrelated user journeys → missing **timeouts**, **bulkheads**, or **degradation** paths.
+### Prompts de decisão (curtos)
 
-### Severity heuristic (for reporting)
-
-| Tier | Meaning |
-|------|--------|
-| **P0** | Data corruption risk, security boundary violation, or cross-context persistence with no contract |
-| **P1** | Unclear ownership, leaky public API, missing failure semantics at boundaries |
-| **P2** | Observability gaps, composability smells, tech debt that increases future coupling |
-
-**Maturity note:** Scoring is **qualitative** unless the team defines numeric gates. Use trends: fewer P0/P1 over time, clearer contracts.
+- A separação **reduziria** acoplamento acidental mais do que **aumentaria** custo de coordenação?
+- Existe uma fronteira natural de **ubiquitous language**, ou só um corte técnico?
 
 ---
 
-## Quick checklist (before proposing structure)
+## Subunidades dentro de um bounded context
 
-- [ ] Public API is minimal; internals are not exported casually.
-- [ ] Names and storage ownership are unambiguous per module.
-- [ ] No cross-module persistence shortcuts without an explicit contract.
-- [ ] Business rules sit behind a clear application/domain layer, not only in adapters.
-- [ ] Cross-module calls have explicit failure and timeout behavior.
-- [ ] Observability can answer “which module failed and why?” without spelunking.
-- [ ] If the context has sub-units: each has clear ownership; no monolithic “registers everything” persistence grab-bag.
+Às vezes uma fronteira externa está certa, mas dentro há **subáreas nomeadas** (subdomínios, áreas de feature). Os princípios continuam válidos **dentro** do contexto.
+
+**Propriedade**
+
+- Cada subunidade deve **possuir** sua fatia de modelo e preocupações de persistência quando possível — evite um mega registration layer que conecte **todo** store e repositório de **toda** subunidade num só lugar (incentiva reach-through e acoplamento oculto).
+
+**Acesso entre subunidades**
+
+- Prefira **application APIs internas** ou **fachadas internas finas** (mesmo contexto, superfície explícita) a peers importando tipos de storage uns dos outros diretamente.
+- Em fluxos assíncronos, prefira **payloads enriquecidos** para que handlers não **conversem** entre subunidades por dado que poderia viajar com o evento/comando.
+
+**Shared kernel dentro do contexto**
+
+- Tipos ou enums compartilhados pequenos e estáveis podem morar numa **área compartilhada estreita** — mas resista a um “utils” em crescimento que vire o verdadeiro ponto de acoplamento.
+
+**Anti-pattern:** Um submódulo único de “persistência” ou “dados” que é o **único** lugar que conhece todas as tabelas/documentos de todas as subunidades, e todos os outros atravessam — os mesmos problemas de reach-through entre contextos, **dentro** da fronteira.
 
 ---
 
-## Relationship to stack-specific skills
+## Passagem de conformidade arquitetural
 
-When a project has **concrete conventions** (framework modules, DI, repository patterns, folder layout, codegen, CI checks), prefer those documents for **how** to implement. Use **this** skill for **why** boundaries exist and **what** good modular design optimizes for — so stack-specific advice stays aligned with the same principles.
+Use em **reviews** ou **auditorias** sem assumir ferramentas. Trate itens como **sinais**, não prova — confirme com especialistas de domínio.
+
+### Sinais de dependência e API
+
+- **Inbound vs outbound:** Dependências devem alinhar à arquitetura escolhida (ex.: domínio no centro, adaptadores fora). **Vazamentos para dentro** de tipos de infra na lógica central são smell.
+- **Superfície pública:** Você lista operações/eventos/tipos **exportados** sem incluir storage ou serviços internos? Se não, há vazamento.
+- **Imports de vizinho:** Tipos ou clientes do **módulo A** usados no **módulo B** — são só tipos de **contrato**, ou tipos de persistência/implementação?
+
+### Sinais de persistência e dados
+
+- **Reach-through:** Referências aos dados **físicos** de outro contexto (schema, coleção, nome de bucket) fora de contrato acordado.
+- **Colisões de nome:** Mesmo nome lógico para coisas diferentes, ou IDs globais compartilhados sem regra de mapeamento documentada.
+- **Dono da transação:** Escritas que atravessam contextos sem **saga**, **outbox** ou regra de **single-owner** documentada e casos de falha.
+
+### Sinais operacionais
+
+- **Blame:** Incidentes em que “não sabemos qual módulo possui esta linha/comportamento” → lacuna de propriedade ou observabilidade.
+- **Cascatas:** Lentidão ou falha de uma dependência derruba jornadas não relacionadas → faltam **timeouts**, **bulkheads** ou caminhos de **degradação**.
+
+### Heurística de severidade (para relatório)
+
+| Camada | Significado                                                                                                  |
+| ------ | ------------------------------------------------------------------------------------------------------------ |
+| **P0** | Risco de corrupção de dados, violação de fronteira de segurança ou persistência entre contextos sem contrato |
+| **P1** | Propriedade pouco clara, API pública vazada, semântica de falha ausente nas fronteiras                       |
+| **P2** | Lacunas de observabilidade, cheiros de composabilidade, dívida técnica que aumenta acoplamento futuro        |
+
+**Nota de maturidade:** Pontuação é **qualitativa** salvo portões numéricos definidos pelo time. Use tendências: menos P0/P1 ao longo do tempo, contratos mais claros.
+
+---
+
+## Checklist rápido (antes de propor estrutura)
+
+- [ ] API pública é mínima; internals não são exportados casualmente.
+- [ ] Nomes e propriedade de armazenamento são inequívocos por módulo.
+- [ ] Sem atalhos de persistência entre módulos sem contrato explícito.
+- [ ] Regras de negócio ficam atrás de uma camada clara de aplicação/domínio, não só em adaptadores.
+- [ ] Chamadas entre módulos têm comportamento explícito de falha e timeout.
+- [ ] Observabilidade responde “qual módulo falhou e por quê?” sem garimpo.
+- [ ] Se o contexto tem subunidades: cada uma tem propriedade clara; sem saco único de persistência que “registra tudo”.
+
+---
+
+## Relação com skills específicas de stack
+
+Quando o projeto tem **convenções concretas** (módulos de framework, DI, padrões de repositório, layout de pastas, codegen, checagens de CI), prefira esses documentos para o **como** implementar. Use **esta** skill para o **porquê** das fronteiras existirem e **o que** um bom design modular otimiza — assim o conselho específico de stack permanece alinhado aos mesmos princípios.

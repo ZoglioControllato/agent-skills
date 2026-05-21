@@ -1,472 +1,461 @@
 ---
 name: ai-cold-outreach
-description: "When the user wants to build an AI-powered outreach system, write cold emails, improve deliverability, or scale personalized outreach. Also use when the user mentions 'cold email,' 'cold outreach,' 'outreach automation,' 'Instantly,' 'Smartlead,' 'Clay,' 'email sequences,' 'deliverability,' 'personalization at scale,' 'reply rate,' or 'outreach stack.' This skill covers the complete AI cold outreach system from signal detection through conversion. Do NOT use for technical implementation, code review, or software architecture."
+description: 'Use quando o usuário quiser montar um sistema de outreach com IA, escrever cold emails, melhorar entregabilidade ou escalar outreach personalizado. Também quando mencionar cold email, cold outreach, automação de outreach, Instantly, Smartlead, Clay, sequências de email, entregabilidade, personalização em escala, taxa de resposta ou stack de outreach. Cobre o sistema completo de cold outreach com IA, da detecção de sinal à conversão. NÃO use para implementação técnica, revisão de código ou arquitetura de software.'
 metadata:
   original_author: Chad Boyda / agent-gtm-skills
   modified_by: Felipe Rodrigues - github.com/felipfr
   source: https://github.com/chadboyda/agent-gtm-skills
   version: '1.0.0'
+---
+
+# Cold outreach com IA
+
+Você é expert em sistemas de cold outreach com IA. Ajuda a construir, otimizar e escalar campanhas de email frio personalizadas que geram pipeline. Domina a stack completa — da detecção de sinal e enriquecimento à personalização, sequenciamento, infra de envio e follow-ups gerados por IA. Prefere orientação específica e acionável com base em dados atuais, não em "boas práticas" genéricas.
+
+## Antes de começar
+
+Antes de construir ou otimizar qualquer sistema de cold outreach, reúna:
+
+1. **Definição de ICP** — Quem é o alvo? (cargo, porte, indústria, stack)
+2. **Estado atual** — Começando do zero ou otimizando sistema existente?
+3. **Metas de volume** — Quantos emails por dia/semana? Quantas reuniões por mês?
+4. **Ferramentas existentes** — CRM, enriquecimento, envio já em uso?
+5. **Faixa de orçamento** — Founder sozinho vs. equipe com budget?
+6. **Clareza da oferta** — Qual o valor? Já validado ou em teste?
+7. **Requisitos de compliance** — Restrições geográficas (GDPR, CAN-SPAM, CASL)?
+8. **Prazo** — Quando precisa de pipeline? (Infra leva 3–4 semanas para aquecer)
+
+Se o usuário pular isso, pergunte. Outreach sem clareza de ICP desperdiça capacidade de envio e queima domínios.
 
 ---
 
-# AI Cold Outreach
+## A stack de outreach com IA
 
-You are an expert in AI-powered cold outreach systems. You help users build, optimize, and scale personalized cold email campaigns that generate pipeline. You understand the full stack from signal detection and enrichment through personalization, sequencing, sending infrastructure, and AI-generated follow-ups. You bias toward specific, actionable guidance grounded in current data rather than generic "best practices."
-
-## Before Starting
-
-Before building or optimizing any cold outreach system, gather:
-
-1. **ICP definition** - Who are they targeting? (title, company size, industry, tech stack)
-2. **Current state** - Are they starting from scratch or optimizing an existing system?
-3. **Volume goals** - How many emails per day/week? How many meetings per month?
-4. **Existing tools** - What CRM, enrichment, sending tools are already in place?
-5. **Budget range** - Solo founder bootstrapping vs. funded team with budget?
-6. **Offer clarity** - What is the value prop? Is it validated or being tested?
-7. **Compliance requirements** - Geographic restrictions (GDPR, CAN-SPAM, CASL)?
-8. **Timeline** - When do they need pipeline flowing? (Infrastructure takes 3-4 weeks to warm)
-
-If the user skips these, ask. Building outreach without ICP clarity wastes send capacity and burns domains.
-
----
-
-## The AI Outreach Stack
-
-The modern cold outreach system is a six-stage pipeline. Each stage has specific tools, metrics, and failure modes.
+O sistema moderno de cold outreach é um pipeline de seis estágios. Cada estágio tem ferramentas, métricas e modos de falha específicos.
 
 ```
 +------------------+     +------------------+     +---------------------+
-|  1. SIGNAL       |---->|  2. ENRICHMENT   |---->|  3. PERSONALIZATION |
-|  DETECTION       |     |                  |     |                     |
-|                  |     |  Clay waterfall  |     |  AI first lines     |
-|  Clay triggers   |     |  Apollo          |     |  Pain point match   |
-|  Bombora intent  |     |  ZoomInfo        |     |  Claude/GPT         |
-|  G2 reviews      |     |  Hunter          |     |  Angle research     |
+|  1. SINAL        |---->|  2. ENRIQUEC.    |---->|  3. PERSONALIZAÇÃO  |
+|  DETECÇÃO        |     |                  |     |                     |
+|                  |     |  Waterfall Clay  |     |  Primeiras linhas IA|
+|  Triggers Clay   |     |  Apollo          |     |  Match de dor       |
+|  Intent Bombora  |     |  ZoomInfo        |     |  Claude/GPT         |
+|  Reviews G2      |     |  Hunter          |     |  Pesquisa de ângulo |
 |  LinkedIn Sales  |     |  Clearbit        |     |                     |
 |  Navigator       |     |  RocketReach     |     |                     |
 +------------------+     +------------------+     +---------------------+
          |                                                   |
          v                                                   v
 +------------------+     +------------------+     +---------------------+
-|  6. FOLLOW-UP    |<----|  5. SENDING      |<----|  4. SEQUENCING      |
+|  6. FOLLOW-UP    |<----|  5. ENVIO         |<----|  4. SEQUÊNCIAS      |
 |                  |     |                  |     |                     |
-|  AI contextual   |     |  Instantly       |     |  Multi-step         |
-|  replies         |     |  Smartlead       |     |  Conditional logic  |
-|  Objection       |     |  Multi-mailbox   |     |  A/B variants       |
-|  handling        |     |  rotation        |     |  Channel mixing     |
-|  Meeting booking |     |  IP sharding     |     |  Timing rules       |
+|  Respostas IA    |     |  Instantly       |     |  Multi-etapa        |
+|  contextuais     |     |  Smartlead       |     |  Lógica condicional |
+|  Objeções        |     |  Multi-caixa     |     |  Variantes A/B      |
+|  Agendamento     |     |  Rotação IP      |     |  Mix de canais      |
 +------------------+     +------------------+     +---------------------+
 ```
 
-### Stage 1: Signal Detection
+### Estágio 1: Detecção de sinais
 
-Signals tell you WHO to reach out to and WHEN. Cold email without signals is spam with extra steps.
+Sinais dizem COM quem falar e QUANDO. Cold email sem sinais é spam com passos extras.
 
-**Signal types ranked by conversion intent:**
+**Tipos de sinal por intenção de conversão:**
 
-| Signal Type | Source | Intent Level | Timing Window |
-|---|---|---|---|
-| Category page view on G2 | G2 Buyer Intent | Very High | 7-14 days |
-| Competitor evaluation | Bombora + G2 | Very High | 7-21 days |
-| Job posting for your category | LinkedIn, Indeed | High | 14-30 days |
-| Funding announcement | Crunchbase, Clay | High | 30-60 days |
-| Tech stack change | BuiltWith, HG Data | Medium-High | 14-30 days |
-| Leadership hire | LinkedIn Sales Nav | Medium | 30-45 days |
-| Content engagement | Bombora cooperative | Medium | 7-14 days |
-| Company growth spike | Clay, LinkedIn | Medium-Low | 30-60 days |
+| Tipo de sinal                   | Fonte               | Nível de intenção | Janela de timing |
+| ------------------------------- | ------------------- | ----------------- | ---------------- |
+| Visualização de categoria no G2 | G2 Buyer Intent     | Muito alto        | 7–14 dias        |
+| Avaliação de concorrente        | Bombora + G2        | Muito alto        | 7–21 dias        |
+| Vaga na sua categoria           | LinkedIn, Indeed    | Alto              | 14–30 dias       |
+| Anúncio de funding              | Crunchbase, Clay    | Alto              | 30–60 dias       |
+| Mudança de stack                | BuiltWith, HG Data  | Médio-alto        | 14–30 dias       |
+| Contratação de liderança        | LinkedIn Sales Nav  | Médio             | 30–45 dias       |
+| Engajamento com conteúdo        | cooperativa Bombora | Médio             | 7–14 dias        |
+| Pico de crescimento             | Clay, LinkedIn      | Médio-baixo       | 30–60 dias       |
 
-**Signal layering strategy:**
-Single signals produce 3-5% reply rates. Layer two or more signals and reply rates jump to 8-15%. Example: "Recently hired a VP Sales" + "Evaluating CRM tools on G2" = high-intent prospect with budget authority and active need.
+**Estratégia de camadas de sinais:**
+Um único sinal costuma gerar 3–5% de taxa de resposta. Empilhe dois ou mais e a taxa salta para 8–15%. Ex.: “Contrataram VP de Vendas” + “Avaliando CRM no G2” = prospect de alta intenção com autoridade e necessidade ativa.
 
-**Bombora intent data:**
-Bombora operates the largest B2B data cooperative, tracking content consumption across 5,000+ websites. It surfaces "surge" scores when a company researches topics above their baseline. G2 and Bombora have a direct integration that combines review-site activity with broader web research signals.
+**Dados de intent Bombora:**
+Bombora opera a maior cooperativa de dados B2B, rastreando consumo de conteúdo em mais de 5.000 sites. Mostra scores de “surge” quando uma empresa pesquisa tópicos acima da linha de base. G2 e Bombora têm integração direta que combina atividade no site de reviews com sinais mais amplos da web.
 
-Best practice: Use G2 for speed (signals come from active buyers) and Bombora for stability (aggregated data delivers more consistent results over time). Layer both for full coverage.
+Boas práticas: use G2 por velocidade (sinais de compradores ativos) e Bombora por estabilidade (dados agregados mais consistentes no tempo). Empilhe os dois para cobertura completa.
 
-**Clay as the signal orchestrator:**
-Clay connects 150+ data sources into a single workflow. Use Clay tables to monitor trigger events, then automatically route qualified signals into enrichment and personalization pipelines. Clay's HTTP request action lets you connect any API as a signal source.
+**Clay como orquestrador de sinais:**
+Clay conecta mais de 150 fontes em um único fluxo. Use tabelas Clay para monitorar eventos-gatilho e rotear sinais qualificados automaticamente para pipelines de enriquecimento e personalização. A ação HTTP do Clay permite usar qualquer API como fonte de sinal.
 
-### Stage 2: Enrichment
+### Estágio 2: Enriquecimento
 
-Enrichment turns a company name + signal into a deliverable contact with context.
+Enriquecimento transforma nome de empresa + sinal em contato entregável com contexto.
 
-**The waterfall enrichment model:**
+**Modelo waterfall:**
 
 ```
-Lead enters Clay table
+Lead entra na tabela Clay
         |
         v
-  [Provider A: Apollo]
-  Found email? ----YES----> Verified? --YES--> Done
+  [Provedor A: Apollo]
+  Achou email? ----SIM----> Verificado? --SIM--> Pronto
         |                       |
-       NO                      NO
-        |                       |
-        v                       v
-  [Provider B: Hunter]    [Provider C: ZoomInfo]
-  Found email? ----YES----> Verified? --YES--> Done
-        |                       |
-       NO                      NO
+       NÃO                     NÃO
         |                       |
         v                       v
-  [Provider D: RocketReach]  [Provider E: Dropcontact]
-  Found email? ----YES----> Verified? --YES--> Done
+  [Provedor B: Hunter]    [Provedor C: ZoomInfo]
+  ...
         |
-       NO
-        |
-        v
-  Skip or manual research
-```
-
-**Why waterfall beats single-provider:**
-No single provider covers more than 60-70% of B2B contacts. Running a waterfall across 3-5 providers routinely triples coverage to 80%+ valid emails. Clay automates this with sequential enrichment steps that stop as soon as a verified email is found, saving credits.
-
-**Enrichment data to collect (in priority order):**
-
-1. **Verified work email** - Required. Bounce rate must stay under 2%.
-2. **Title and seniority** - Required for sequence routing and personalization.
-3. **Company size and revenue** - Required for ICP filtering.
-4. **Recent company news** - Funding, product launches, expansions. Powers first lines.
-5. **Tech stack** - BuiltWith or HG Data. Critical for displacement plays.
-6. **LinkedIn profile URL** - For multichannel sequences and AI research.
-7. **Hiring signals** - Open roles that indicate pain points or growth.
-8. **Social posts or articles** - Fuel for AI-personalized first lines.
-
-**Email verification is non-negotiable:**
-Run every email through verification (ZeroBounce, NeverBounce, or MillionVerifier) before sending. A bounce rate above 2% triggers spam filters at Google and Microsoft. One bad list can burn a domain in a day.
-
-### Stage 3: AI Personalization
-
-Generic cold emails get 1-2% reply rates. AI-personalized emails get 8-12%. The difference is the first two lines.
-
-**The AI personalization pipeline:**
-
-```
-Enriched lead data (company news, tech stack, hiring, social)
+       NÃO
         |
         v
-  [AI Agent: Claude or GPT]
-        |
-        +---> Research summary (2-3 key findings)
-        +---> Personalization angle (why NOW, why THEM)
-        +---> Custom first line (specific observation)
-        +---> Pain hypothesis (inferred from signals)
+  Pular ou pesquisa manual
+```
+
+**Por que waterfall supera um único provedor:**
+Nenhum provedor cobre mais de 60–70% dos contatos B2B. Um waterfall com 3–5 provedores frequentemente leva a 80%+ de emails válidos. O Clay automatiza com etapas sequenciais que param ao achar email verificado, economizando créditos.
+
+**Dados a coletar (ordem de prioridade):**
+
+1. **Email corporativo verificado** — Obrigatório. Taxa de bounce deve ficar abaixo de 2%.
+2. **Cargo e senioridade** — Roteamento de sequência e personalização.
+3. **Porte e receita** — Filtro de ICP.
+4. **Notícias recentes** — Funding, lançamentos, expansões. Alimenta primeiras linhas.
+5. **Stack tecnológico** — BuiltWith ou HG Data. Crítico para jogos de displacements.
+6. **URL do LinkedIn** — Sequências multicanal e pesquisa IA.
+7. **Sinais de contratação** — Vagas abertas indicam dor ou crescimento.
+8. **Posts ou artigos** — Combustível para primeiras linhas personalizadas por IA.
+
+**Verificação de email é inegociável:**
+Todo email deve passar por verificação (ZeroBounce, NeverBounce ou MillionVerifier) antes do envio. Taxa de bounce acima de 2% aciona filtros de spam no Google e Microsoft. Uma lista ruim pode queimar um domínio em um dia.
+
+### Estágio 3: Personalização com IA
+
+Emails genéricos têm 1–2% de resposta. Com personalização por IA chega-se a 8–12%. A diferença está nas duas primeiras linhas.
+
+**Pipeline de personalização:**
+
+```
+Dados enriquecidos (notícias, stack, hiring, social)
         |
         v
-  Merge into email template via {{variables}}
+  [Agente IA: Claude ou GPT]
+        |
+        +---> Resumo de pesquisa (2–3 achados-chave)
+        +---> Ângulo de personalização (por que AGORA, por que ELES)
+        +---> Primeira linha custom (observação específica)
+        +---> Hipótese de dor (inferida dos sinais)
+        |
+        v
+  Mesclar no template via {{variables}}
 ```
 
-**First line frameworks that work:**
+**Frameworks de primeira linha que funcionam:**
 
-| Framework | Example | Best For |
-|---|---|---|
-| Observation + Implication | "Saw you just opened a London office - scaling support across time zones gets messy fast." | Funding/expansion signals |
-| Compliment + Bridge | "Your post on PLG metrics was sharp - especially the bit about activation rate vs. NPS." | Content-active prospects |
-| Trigger + Question | "You're hiring 3 AEs this quarter - curious how you're thinking about ramp time." | Hiring signals |
-| Mutual Connection | "Alex Chen mentioned your team is rethinking outbound - we helped his team at Acme do the same." | Referral/warm intro |
-| Timeline Narrative | "When we started working with teams your size, most were spending 6 hours/week on manual enrichment." | Timeline hooks (highest reply rate) |
+| Framework               | Exemplo                                                                                              | Melhor para                                  |
+| ----------------------- | ---------------------------------------------------------------------------------------------------- | -------------------------------------------- |
+| Observação + implicação | "Vi que abriram escritório em Londres — escalar suporte entre fusos costuma complicar rápido."       | Sinais de funding/expansão                   |
+| Elogio + ponte          | "Seu post sobre métricas PLG foi fino — especialmente a parte de taxa de ativação vs. NPS."          | Prospect ativo em conteúdo                   |
+| Gatilho + pergunta      | "Estão contratando 3 AEs neste trimestre — como estão pensando no tempo de ramp?"                    | Sinais de hiring                             |
+| Conexão mútua           | "O Alex Chen comentou que estão repensando outbound — ajudamos o time dele na Acme no mesmo padrão." | Indicação / intro morna                      |
+| Narrativa de timeline   | "Quando começamos com times do seu porte, a maioria gastava 6 h/semana em enrichment manual."        | Ganchos de timeline (maior taxa de resposta) |
 
-**Timeline hooks outperform everything else:**
-Data from 2025 shows timeline-based hooks achieve 10% reply rates vs. 4.4% for problem-based hooks - a 2.3x gap. Timeline narratives trigger urgency without artificial pressure and mirror the prospect's own decision-making process.
+**Ganchos de timeline superam o resto:**
+Dados de 2025 mostram ganchos baseados em timeline com ~10% de resposta vs. ~4,4% para ganchos baseados em problema — cerca de 2,3×. Narrativas de timeline geram urgência sem pressão artificial e espelham o processo de decisão do prospect.
 
-**AI model selection for personalization:**
+**Seleção de modelo para personalização:**
 
-| Model | Strength | Best Use |
-|---|---|---|
-| Claude Sonnet | Natural tone, avoids corporate speak | First lines, full email drafts |
-| Claude Opus | Deep research synthesis | Complex enterprise personalization |
-| GPT-4o | Speed, structured output | Batch processing at scale |
-| Claude Haiku | Cost-efficient | Simple variable generation |
+| Modelo        | Força                                 | Melhor uso                            |
+| ------------- | ------------------------------------- | ------------------------------------- |
+| Claude Sonnet | Tom natural, evita jargão corporativo | Primeiras linhas, rascunhos completos |
+| Claude Opus   | Síntese profunda de pesquisa          | Personalização enterprise complexa    |
+| GPT-4o        | Velocidade, saída estruturada         | Processamento em lote em escala       |
+| Claude Haiku  | Custo baixo                           | Variáveis simples                     |
 
-Claude models produce the most natural-sounding cold emails. They avoid buzzwords by default and adopt a conversational register that reads as human-written. GPT models tend to default to known spam triggers like "Quick question" and "Hope this finds you well" unless heavily prompted against it.
+Modelos Claude costumam soar mais naturais em cold email, evitando buzzwords e tom conversacional. GPTs tendem a cair em gatilhos de spam como "Quick question" e "Hope this finds you well", salvo prompt forte em contrário.
 
-**Scaling AI personalization with Clay:**
-1. Build a Clay table with enriched leads
-2. Add an AI enrichment column using Claude
-3. Prompt: "Research this company using the data provided. Write a 1-sentence observation about [specific context]. Do not use corporate jargon."
-4. Output flows into Instantly/Smartlead as a merge field
-5. Cost: roughly $0.01-0.03 per lead for Sonnet-tier models
+**Escalando personalização com Clay:**
 
-### Stage 4: Sequencing
+1. Tabela Clay com leads enriquecidos
+2. Coluna de enrichment IA com Claude
+3. Prompt: "Pesquise esta empresa com os dados fornecidos. Escreva uma observação de 1 frase sobre [contexto específico]. Sem jargão corporativo."
+4. Saída vai para Instantly/Smartlead como campo de merge
+5. Custo: cerca de US$ 0,01–0,03 por lead em tier Sonnet
 
-A sequence is the multi-step campaign structure. It defines how many emails, when they send, and what each email does.
+### Estágio 4: Sequenciamento
 
-**The anatomy of a high-performing sequence:**
+Uma sequência é a estrutura multietapas da campanha: quantos emails, quando enviar e o papel de cada um.
+
+**Anatomia de sequência de alto desempenho:**
 
 ```
-Day 0:  Email 1 - The opener (personalized, carries the hook)
+Dia 0:  Email 1 — Abertura (personalizada, leva o gancho)
          |
-Day 3:  Email 2 - Value add (case study, data point, or insight)
+Dia 3:  Email 2 — Valor (case, dado ou insight)
          |
-Day 7:  Email 3 - Social proof (specific result for similar company)
+Dia 7:  Email 3 — Prova social (resultado para empresa similar)
          |
-Day 12: Email 4 - Breakup/new angle (shift approach entirely)
+Dia 12: Email 4 — Novo ângulo / “breakup” (muda a abordagem)
          |
-Day 18: Email 5 - Permission-based close ("Should I close this out?")
+Dia 18: Email 5 — Fechamento por permissão ("Posso encerrar este fio?")
 ```
 
-**Sequence length and timing rules:**
+**Regras de tamanho e timing:**
 
-| Factor | Recommendation | Why |
-|---|---|---|
-| Total emails | 4-7 | First email captures 58% of replies. Diminishing returns after 7. |
-| Gap between emails | 2-4 business days | 3 days is the sweet spot. Less feels pushy, more loses momentum. |
-| Total sequence duration | 14-25 days | Beyond 25 days, leads go stale. |
-| SMB sequences | 5-8 touches over 30 days | Shorter decision cycles. |
-| Enterprise sequences | 10-18 touches over 30-60 days | Multiple stakeholders, longer cycles. |
+| Fator                  | Recomendação               | Por quê                                                                 |
+| ---------------------- | -------------------------- | ----------------------------------------------------------------------- |
+| Total de emails        | 4–7                        | O primeiro captura ~58% das respostas. Retorno decrescente depois de 7. |
+| Intervalo entre emails | 2–4 dias úteis             | 3 dias é o ponto ideal. Menos parece insistente; mais perde ímpeto.     |
+| Duração total          | 14–25 dias                 | Além de 25 dias os leads esfriam.                                       |
+| Sequências SMB         | 5–8 toques em 30 dias      | Ciclos de decisão mais curtos.                                          |
+| Enterprise             | 10–18 toques em 30–60 dias | Vários stakeholders, ciclos longos.                                     |
 
-**Conditional branching logic:**
-Modern sequences are not linear. Build branches based on:
-- **Opens without reply** - Send a shorter follow-up with different angle
-- **Link clicks** - Accelerate sequence, add phone call step
-- **No opens** - Test different subject line, change send time
-- **Positive reply** - Route to AE or book directly
-- **Objection reply** - Trigger AI objection handler or manual review
+**Ramo condicional:**
+Sequências modernas não são lineares. Ramifique com base em:
 
-**A/B testing framework:**
-Test ONE variable at a time across minimum 200 sends per variant:
+- **Aberturas sem resposta** — Follow-up mais curto com outro ângulo
+- **Cliques em link** — Acelerar sequência, incluir ligação
+- **Sem aberturas** — Testar assunto, mudar horário de envio
+- **Resposta positiva** — Rotear para AE ou agendar direto
+- **Objeção** — Acionar handler de objeções IA ou revisão manual
 
-| Priority | Variable | Impact on Reply Rate |
-|---|---|---|
-| 1 | Subject line | 20-40% swing in open rate |
-| 2 | First line / hook | 2-3x reply rate difference |
-| 3 | CTA style | 1.5-2x reply rate difference |
-| 4 | Email length | Moderate impact |
-| 5 | Send time | Marginal impact |
+**Framework A/B:**
+Teste UMA variável por vez, mínimo ~200 envios por variante:
 
-### Stage 5: Sending Infrastructure
+| Prioridade | Variável                | Impacto na taxa de resposta         |
+| ---------- | ----------------------- | ----------------------------------- |
+| 1          | Linha de assunto        | 20–40% de swing na taxa de abertura |
+| 2          | Primeira linha / gancho | Diferença de 2–3× na resposta       |
+| 3          | Estilo de CTA           | 1,5–2× na resposta                  |
+| 4          | Tamanho do email        | Impacto moderado                    |
+| 5          | Horário de envio        | Impacto marginal                    |
 
-Infrastructure is where most outreach systems break. Perfect copy with bad deliverability lands in spam.
+### Estágio 5: Infra de envio
 
-**Domain and mailbox architecture:**
+É aqui que a maioria dos sistemas quebra. Copy perfeita com entregabilidade ruim cai no spam.
 
-```
-Primary Domain: yourcompany.com
-  (NEVER use for cold outreach)
-
-Secondary Domains (for outreach only):
-  yourcompany-team.com    --> mailbox1@, mailbox2@
-  tryyourcompany.com      --> mailbox1@, mailbox2@
-  getyourcompany.com      --> mailbox1@, mailbox2@
-  yourcompanyhq.com       --> mailbox1@, mailbox2@
-
-Formula:
-  Daily volume target / 150 = domains needed (round up)
-  Add 30-50% for rotation reserve
-
-Example: 600 emails/day
-  600 / 150 = 4 domains minimum
-  + 50% reserve = 6 domains total
-  x 2 mailboxes each = 12 mailboxes
-```
-
-**Infrastructure sizing guide:**
-
-| Daily Volume | Domains Needed | Mailboxes | Monthly Domain Cost |
-|---|---|---|---|
-| 100-200 | 2-3 | 4-6 | $20-30 |
-| 300-500 | 3-5 | 6-10 | $30-50 |
-| 500-1,000 | 5-8 | 10-16 | $50-80 |
-| 1,000-2,000 | 8-15 | 16-30 | $80-150 |
-| 2,000+ | 15+ | 30+ | $150+ |
-
-**Per-mailbox sending limits:**
-
-| Type | Daily Limit | Notes |
-|---|---|---|
-| Warmup emails | 15-20/day | Run for 14-21 days before cold sends |
-| Cold emails | 25-30/day | Never exceed 40 |
-| Combined total | 40-50/day | Stay under provider thresholds |
-
-**Domain warmup protocol:**
-
-| Week | Daily Volume/Mailbox | Activity |
-|---|---|---|
-| Week 1 | 10-15 | Warmup only, no cold sends |
-| Week 2 | 20-30 | Warmup + 5-10 cold sends |
-| Week 3 | 30-40 | Warmup + 15-20 cold sends |
-| Week 4 | 40-50 | Full cold sending capacity |
-
-**Authentication setup checklist (do this on Day 1):**
-
-- [ ] SPF record published (authorize sending servers)
-- [ ] DKIM signing enabled (cryptographic signature per message)
-- [ ] DMARC record set (start at p=none, move to p=quarantine, then p=reject)
-- [ ] Custom tracking domain (not shared tracking domains)
-- [ ] List-Unsubscribe header added (required by Google, Yahoo, Microsoft)
-- [ ] MX records configured properly
-- [ ] Reverse DNS (PTR record) set up
-
-Authenticated senders are 2.7x more likely to reach the inbox vs. unauthenticated.
-
-**DMARC rollout sequence:**
-1. Week 1-2: `p=none` with reporting (`rua=mailto:dmarc@yourdomain.com`)
-2. Week 3-4: Review reports, fix any alignment issues
-3. Week 5-6: `p=quarantine` (soft enforcement)
-4. Week 7+: `p=reject` (full enforcement)
-
-Never jump straight to `p=reject` before inventorying all legitimate senders.
-
-**Sending platform comparison: Instantly vs. Smartlead**
-
-| Feature | Instantly | Smartlead |
-|---|---|---|
-| **Best for** | Solo founders, small teams | Agencies, high-volume senders |
-| **Pricing (entry)** | $37/mo | $33/mo |
-| **Pricing (scale)** | $97-358/mo | $94-174/mo |
-| **Email accounts** | Unlimited (Growth+) | Unlimited (all plans) |
-| **Built-in lead database** | Yes (SuperSearch, 450M+) | No (import only) |
-| **Warmup network** | 4.2M+ accounts | Smaller network |
-| **AI reply agent** | Yes (responds in <5 min) | Limited |
-| **Deliverability approach** | IP sharding + rotation (SISR) | Human-mimicking variable volume |
-| **Sending behavior** | Exact daily volume | Variable (sends 22 when set to 25) |
-| **API and webhook support** | Good | Excellent (API-first) |
-| **White-label** | Limited | Full white-label |
-| **CRM integration** | Built-in basic CRM | Via integrations |
-| **Clay integration** | Native | Native |
-| **Inbox rotation** | Automatic | Automatic |
-| **Campaign analytics** | Detailed dashboards | Detailed dashboards |
-| **Multi-channel** | Email + LinkedIn (beta) | Email focused |
-
-**Decision framework:**
+**Arquitetura de domínios e caixas:**
 
 ```
-Need built-in lead database?
-  YES --> Instantly
-  NO  --> Continue
+Domínio primário: suaempresa.com
+  (NUNCA use para cold outreach)
 
-Running an agency or white-labeling?
-  YES --> Smartlead
-  NO  --> Continue
+Domínios secundários (só outreach):
+  suaempresa-team.com    --> caixa1@, caixa2@
+  ...
 
-Need AI auto-replies?
-  YES --> Instantly
-  NO  --> Continue
+Fórmula:
+  Meta de volume diário / 150 = domínios (arredondar para cima)
+  + 30–50% de reserva para rotação
 
-Sending 1,000+/day and need API control?
-  YES --> Smartlead
-  NO  --> Continue
-
-Want simplest setup and UI?
-  YES --> Instantly
-  NO  --> Smartlead
+Ex.: 600 emails/dia
+  600 / 150 = 4 domínios mínimo
+  + 50% reserva = 6 domínios
+  x 2 caixas cada = 12 caixas
 ```
 
-### Stage 6: AI-Powered Follow-Up
+**Guia de dimensionamento:**
 
-Most replies are not "Yes, let's meet." They are questions, objections, or soft interest. AI follow-up handles these at scale.
+| Volume diário | Domínios | Caixas | Custo mensal aprox. (domínios) |
+| ------------- | -------- | ------ | ------------------------------ |
+| 100–200       | 2–3      | 4–6    | US$ 20–30                      |
+| 300–500       | 3–5      | 6–10   | US$ 30–50                      |
+| 500–1.000     | 5–8      | 10–16  | US$ 50–80                      |
+| 1.000–2.000   | 8–15     | 16–30  | US$ 80–150                     |
+| 2.000+        | 15+      | 30+    | US$ 150+                       |
 
-**Reply categories and handling:**
+**Limites por caixa:**
 
-| Reply Type | % of Replies | AI Action |
-|---|---|---|
-| Positive interest | 25-35% | Book meeting link, confirm time |
-| Question about offer | 20-30% | Answer with specifics, re-CTA |
-| Objection (timing) | 15-20% | Acknowledge, offer future follow-up |
-| Objection (budget) | 5-10% | Share ROI data, offer smaller entry |
-| Referral to colleague | 10-15% | Thank, ask for intro or direct email |
-| Not interested | 10-15% | Thank, remove from sequence |
-| Auto-reply/OOO | 5-10% | Pause, re-send after return date |
+| Tipo      | Limite diário | Notas                           |
+| --------- | ------------- | ------------------------------- |
+| Warmup    | 15–20/dia     | 14–21 dias antes dos cold sends |
+| Cold      | 25–30/dia     | Nunca passar de 40              |
+| Combinado | 40–50/dia     | Abaixo dos limites do provedor  |
 
-**AI reply handling setup:**
-1. Classify reply intent with AI (positive, question, objection, referral, not interested)
-2. Route positive replies to a human or booking link immediately
-3. Generate contextual responses for questions and objections
-4. Set a human review flag for any edge cases
-5. Auto-remove "not interested" from all sequences (compliance requirement)
+**Protocolo de aquecimento de domínio:**
 
-Instantly's AI Reply Agent handles this natively and responds in under 5 minutes. Smartlead users typically build this with Clay + webhook integrations.
+| Semana | Volume/caixa/dia | Atividade                |
+| ------ | ---------------- | ------------------------ |
+| 1      | 10–15            | Só warmup, sem cold      |
+| 2      | 20–30            | Warmup + 5–10 cold       |
+| 3      | 30–40            | Warmup + 15–20 cold      |
+| 4      | 40–50            | Capacidade plena de cold |
+
+**Checklist de autenticação (dia 1):**
+
+- [ ] SPF publicado (autoriza servidores de envio)
+- [ ] DKIM ativo (assinatura por mensagem)
+- [ ] DMARC configurado (começar em p=none, depois quarantine, depois reject)
+- [ ] Domínio de tracking próprio (não compartilhado)
+- [ ] Cabeçalho List-Unsubscribe (exigido por Google, Yahoo, Microsoft)
+- [ ] MX corretos
+- [ ] PTR / DNS reverso
+
+Remetentes autenticados chegam à caixa de entrada ~2,7× mais que não autenticados.
+
+**Sequência de rollout DMARC:**
+
+1. Semanas 1–2: `p=none` com relatórios (`rua=mailto:dmarc@seudominio.com`)
+2. Semanas 3–4: Revisar relatórios, corrigir alinhamento
+3. Semanas 5–6: `p=quarantine`
+4. Semana 7+: `p=reject`
+
+Nunca vá direto para `p=reject` sem mapear todos os remetentes legítimos.
+
+**Comparativo Instantly vs. Smartlead**
+
+| Recurso                    | Instantly                        | Smartlead                                      |
+| -------------------------- | -------------------------------- | ---------------------------------------------- |
+| **Melhor para**            | Founders solo, times pequenos    | Agências, alto volume                          |
+| **Preço entrada**          | US$ 37/mês                       | US$ 33/mês                                     |
+| **Preço escala**           | US$ 97–358/mês                   | US$ 94–174/mês                                 |
+| **Contas de email**        | Ilimitado (Growth+)              | Ilimitado (todos os planos)                    |
+| **Base de leads embutida** | Sim (SuperSearch, 450M+)         | Não (só importação)                            |
+| **Rede de warmup**         | 4,2M+ contas                     | Rede menor                                     |
+| **Agente de resposta IA**  | Sim (responde em menos de 5 min) | Limitado                                       |
+| **Entregabilidade**        | IP sharding + rotação (SISR)     | Volume variável que imita humano               |
+| **Comportamento de envio** | Volume diário exato              | Variável (ex.: envia 22 quando configurado 25) |
+| **API / webhooks**         | Bom                              | Excelente (API-first)                          |
+| **White-label**            | Limitado                         | Completo                                       |
+| **Integração Clay**        | Nativa                           | Nativa                                         |
+| **Multicanal**             | Email + LinkedIn (beta)          | Foco em email                                  |
+
+**Árvore de decisão:**
+
+```
+Precisa de base de leads embutida?
+  SIM --> Instantly
+  NÃO --> Continua
+
+Agência ou white-label?
+  SIM --> Smartlead
+  NÃO --> Continua
+
+Precisa de respostas IA automáticas?
+  SIM --> Instantly
+  NÃO --> Continua
+
+Mais de 1.000/dia e controle por API?
+  SIM --> Smartlead
+  NÃO --> Continua
+
+Quer setup e UI mais simples?
+  SIM --> Instantly
+  NÃO --> Smartlead
+```
+
+### Estágio 6: Follow-up com IA
+
+A maioria das respostas não é "Sim, vamos marcar". São dúvidas, objeções ou interesse tímido. Follow-up com IA escala isso.
+
+**Categorias de resposta:**
+
+| Tipo                   | % das respostas | Ação IA                                |
+| ---------------------- | --------------- | -------------------------------------- |
+| Interesse positivo     | 25–35%          | Link de agendamento, confirmar horário |
+| Pergunta sobre oferta  | 20–30%          | Responder com detalhes, novo CTA       |
+| Objeção (timing)       | 15–20%          | Reconhecer, oferecer follow-up futuro  |
+| Objeção (budget)       | 5–10%           | Dados de ROI, entrada menor            |
+| Encaminhamento interno | 10–15%          | Agradecer, pedir intro ou email direto |
+| Sem interesse          | 10–15%          | Agradecer, remover da sequência        |
+| Auto-resposta / fora   | 5–10%           | Pausar, reenviar após retorno          |
+
+**Setup de tratamento:**
+
+1. Classificar intenção com IA
+2. Rotear respostas positivas para humano ou link imediatamente
+3. Gerar respostas contextuais para perguntas e objeções
+4. Flag de revisão humana para casos-limite
+5. Auto-remover "sem interesse" de todas as sequências (compliance)
+
+O AI Reply Agent da Instantly faz isso nativamente em menos de 5 minutos. Usuários Smartlead costumam montar com Clay + webhooks.
 
 ---
 
-## The 3-Line Cold Email Framework
+## Framework de email frio em 3 linhas
 
-The highest-performing cold emails in 2026 follow a simple structure: three lines, under 80 words, zero fluff.
+Os cold emails com melhor performance em 2026 seguem: três linhas, menos de 80 palavras, zero enrolação.
 
 ```
-Line 1 (PAIN): A specific observation about their situation.
-               Derived from signal data + AI research.
-               NOT "Are you struggling with X?" (everyone sends this).
+Linha 1 (DOR): Observação específica sobre a situação.
+               Derivada de sinal + pesquisa IA.
+               NÃO "Está lutando com X?" (todo mundo manda isso).
 
-Line 2 (PROOF): One sentence of credibility.
-                A specific result for a similar company.
-                NOT "We're the leading platform for..."
+Linha 2 (PROVA): Uma frase de credibilidade.
+                 Resultado específico para empresa similar.
+                 NÃO "Somos a plataforma líder em..."
 
-Line 3 (CTA):  A low-friction ask.
-                NOT "Book 30 minutes on my calendar."
-                YES "Worth a quick look?" or "Open to hearing more?"
+Linha 3 (CTA): Pedido de baixo atrito.
+               NÃO "Agende 30 minutos na minha agenda."
+               SIM "Vale um olhar rápido?" ou "Aberto a saber mais?"
 ```
 
-**Example (good):**
+**Exemplo (bom):**
 
-> Noticed you just raised your Series B and are hiring 4 AEs - ramping that many reps
-> without standardized outbound playbooks usually means 2-3 months of wasted pipeline.
+> Vi que fecharam a Série B e estão contratando 4 AEs — fazer ramp de tantos reps
+> sem playbooks padronizados de outbound costuma significar 2–3 meses de pipeline desperdiçado.
 >
-> We helped Acme's team cut AE ramp from 90 to 45 days after their Series B.
+> Ajudamos o time da Acme a reduzir o ramp de AE de 90 para 45 dias depois da Série B.
 >
-> Worth a 10-minute look at how?
+> Vale um olhar de 10 min em como?
 
-**Example (bad):**
+**Exemplo (ruim):**
 
-> Hi [Name], I hope this email finds you well. I'm reaching out because I noticed your
-> company is growing. We're the leading sales enablement platform trusted by 500+
-> companies. I'd love to schedule a 30-minute call to discuss how we can help you
-> scale your sales team. Would Tuesday at 2pm work?
+> Olá [Nome], espero que este email o encontre bem. Entro em contato porque notei que
+> sua empresa está crescendo. Somos a plataforma líder de sales enablement confiada por mais de 500
+> empresas. Adoraria agendar uma call de 30 minutos para discutir como ajudamos a
+> escalar seu time de vendas. Terça às 14h funcionaria?
 
-**Why the bad example fails:**
-- "Hope this finds you well" - spam trigger, zero value
-- Generic observation - "growing" applies to everyone
-- Self-centered proof - "leading platform" is unverifiable
-- High-friction CTA - 30 minutes is a big ask from a stranger
-- Too long - 75 words of fluff before any value
+**Por que o ruim falha:**
 
-**Cold email anatomy rules:**
+- "Hope this finds you well" — gatilho de spam, zero valor
+- Observação genérica — "crescendo" serve para qualquer um
+- Prova egocêntrica — "líder" não é verificável
+- CTA de alto atrito — 30 min de estranho é pedido grande
+- Longo demais — fluff antes de qualquer valor
 
-| Element | Rule | Why |
-|---|---|---|
-| Subject line | 2-5 words, lowercase, no punctuation | Looks like an internal email |
-| Preview text | First 40 chars of body visible in inbox | Make the hook visible |
-| Word count | 50-125 words | Under 50 feels incomplete, over 125 loses attention |
-| Paragraphs | 1-2 sentences each | Mobile-friendly whitespace |
-| Links | Zero in first email | Links trigger spam filters |
-| Images | Zero in first email | Images trigger spam filters |
-| Attachments | Zero in first email | Attachments trigger spam filters |
-| Signature | Name + title + company only | Minimal, no banners or social icons |
-| CTA | One per email | Multiple CTAs reduce response rate |
-| Personalization | First 1-2 lines | Generic everything else is fine if the hook lands |
+**Regras de anatomia:**
 
----
-
-
-For benchmarks, deliverability playbook, week-by-week build, cost analysis, failure modes, and advanced tactics read `references/benchmarks-deliverability-tactics.md`.
-
-
-## Examples
-
-- **User says:** "Build a cold email sequence for our SaaS" → **Result:** Agent gathers ICP and volume, recommends 3-line email framework (observation + relevance + CTA), suggests Instantly + Clay stack, and outputs a 5–7 touch sequence with subject lines and spacing.
-- **User says:** "Our reply rate is low" → **Result:** Agent runs 5-minute audit (subject, first line, length, CTA, spam words), identifies gaps, then suggests A/B tests and enrichment so first lines are specific.
-- **User says:** "Set up our outreach infrastructure" → **Result:** Agent asks domain count and volume, recommends warmup (14–21 days), mailbox and domain math, and step-by-step Instantly/Smartlead + Clay setup.
-
-## Troubleshooting
-
-- **Low reply rates** → **Cause:** Generic first lines, no signal-based targeting, or weak CTA. **Fix:** Add enrichment and use one specific observation in the first line; use a single low-friction CTA (e.g. reply or short call).
-- **Deliverability issues / spam folder** → **Cause:** Sending too fast, poor domain health, or spam triggers in copy. **Fix:** Warm up 14–21 days; cap at 25–30 sends/mailbox/day; remove links/images from first touch; run spam check.
-- **Meetings don’t show up** → **Cause:** CTA is too big (e.g. "book 30 min") or sequence stops too early. **Fix:** Use lower-friction CTA first (reply, short call); extend to 5–7 touches with 3–5 day spacing.
+| Elemento       | Regra                                              | Por quê                                               |
+| -------------- | -------------------------------------------------- | ----------------------------------------------------- |
+| Assunto        | 2–5 palavras, minúsculas, sem pontuação            | Parece email interno                                  |
+| Preview        | Primeiros 40 caracteres do corpo visíveis na caixa | Gancho visível                                        |
+| Palavras       | 50–125                                             | Abaixo de 50 parece vazio; acima de 125 perde atenção |
+| Parágrafos     | 1–2 frases                                         | Espaço em branco no mobile                            |
+| Links          | Zero no primeiro email                             | Links acionam filtros                                 |
+| Imagens        | Zero no primeiro email                             | Idem                                                  |
+| Anexos         | Zero no primeiro email                             | Idem                                                  |
+| Assinatura     | Nome + cargo + empresa só                          | Mínimo, sem banners                                   |
+| CTA            | Um por email                                       | Vários CTAs reduzem resposta                          |
+| Personalização | Primeiras 1–2 linhas                               | O resto genérico pode funcionar se o gancho pegar     |
 
 ---
 
+Para benchmarks, playbook de entregabilidade, construção semana a semana, análise de custo, modos de falha e táticas avançadas leia `references/benchmarks-deliverability-tactics.md`.
 
-For checklists, benchmarks, and discovery questions read `references/quick-reference.md` when you need detailed reference.
+## Exemplos
+
+- **Usuário:** "Monte uma sequência de cold email para nosso SaaS" → **Resultado:** Agente reúne ICP e volume, recomenda framework de 3 linhas, sugere stack Instantly + Clay, entrega sequência de 5–7 toques com assuntos e espaçamento.
+- **Usuário:** "Nossa taxa de resposta está baixa" → **Resultado:** Auditoria rápida (assunto, primeira linha, tamanho, CTA, palavras de spam), lacunas, depois testes A/B e enriquecimento para primeiras linhas específicas.
+- **Usuário:** "Configure nossa infra de outreach" → **Resultado:** Pergunta contagem de domínios e volume, recomenda warmup (14–21 dias), matemática de caixas/domínios e passo a passo Instantly/Smartlead + Clay.
+
+## Solução de problemas
+
+- **Taxa de resposta baixa** → **Causa:** Primeiras linhas genéricas, sem targeting por sinal ou CTA fraco. **Correção:** Enriquecimento + uma observação específica na primeira linha; um único CTA de baixo atrito (responder ou call curta).
+- **Entregabilidade / spam** → **Causa:** Envio rápido demais, saúde ruim do domínio ou gatilhos no texto. **Correção:** Warmup 14–21 dias; teto 25–30 envios/caixa/dia; sem links/imagens no primeiro toque; checagem anti-spam.
+- **Reuniões não aparecem** → **Causa:** CTA grande demais ("agendar 30 min") ou sequência curta. **Correção:** CTA menor primeiro; estender para 5–7 toques com intervalo de 3–5 dias.
 
 ---
 
-## Related Skills
+Para checklists, benchmarks e perguntas de discovery leia `references/quick-reference.md` quando precisar de referência detalhada.
 
-- **ai-sdr** - Building AI-powered SDR agents that automate the full outreach workflow
-- **lead-enrichment** - Deep dive on waterfall enrichment, data providers, and verification
-- **video-outreach** - Adding personalized video to cold sequences for higher engagement
-- **sales-motion-design** - Designing the complete sales motion that outreach feeds into
-- **gtm-engineering** - Technical infrastructure for outreach systems, APIs, and data pipelines
-- **solo-founder-gtm** - Lean outreach playbooks for founders doing their own outbound
-- **positioning-icp** - Nailing the ICP and positioning before building outreach
-- **content-to-pipeline** - Using content as a warm-up channel before cold outreach
-- **social-selling** - LinkedIn-native selling that complements email outreach
+---
+
+## Skills relacionadas
+
+- **ai-sdr** — Agentes SDR com IA que automatizam o fluxo completo de outreach
+- **lead-enrichment** — Aprofundamento em waterfall, provedores e verificação
+- **video-outreach** — Vídeo personalizado em sequências frias
+- **sales-motion-design** — Desenho do motion de vendas que o outreach alimenta
+- **gtm-engineering** — Infra técnica de outreach, APIs e pipelines de dados
+- **solo-founder-gtm** — Playbooks enxutos para founders fazendo outbound
+- **positioning-icp** — ICP e posicionamento antes de escalar outreach
+- **content-to-pipeline** — Conteúdo como canal de aquecimento antes do cold
+- **social-selling** — Vendas nativas no LinkedIn complementando email

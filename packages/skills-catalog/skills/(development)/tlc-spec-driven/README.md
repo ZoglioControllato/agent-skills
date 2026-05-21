@@ -1,110 +1,107 @@
-<p align="center">
-  <img src="https://img.shields.io/badge/Skill-TLC%20Spec--Driven-blue?style=for-the-badge" alt="skill badge" />
+<p alinhar="centro">
+  <img src="https://img.shields.io/badge/Skill-TLC%20Spec--Driven-blue?style=for-the-badge" alt="crachá de habilidade" />
   <img src="https://img.shields.io/badge/Stack-Agnostic-green?style=for-the-badge" alt="stack agnostic" />
-  <img src="https://img.shields.io/badge/Version-2.0.0-purple?style=for-the-badge" alt="version" />
+  <img src="https://img.shields.io/badge/Version-2.0.0-purple?style=for-the-badge" alt="versão" />
 </p>
 
-<h1 align="center">🎯 TLC Spec-Driven</h1>
+<h1 align="center">🎯 Orientado por especificações TLC</h1>
 
-<p align="center">
-  <strong>Plan and implement projects with precision. Granular tasks. Clear dependencies. Right tools. Zero ceremony.</strong>
+<p alinhar="centro">
+  <strong>Planejar e implementar projetos com precisão. Tarefas granulares. Dependências claras. Ferramentas certas. Cerimônia zero.</strong>
 </p>
 
-<p align="center">
-  <em>From the <a href="https://github.com/tech-leads-club">Tech Lead's Club</a> community</em>
+<p alinhar="centro">
+  <em>Da comunidade do <a href="https://github.com/tech-leads-club">Tech Lead's Club</a></em>
 </p>
 
-<p align="center">
-  <strong>Author:</strong> <a href="https://github.com/felipfr">Felipe Rodrigues</a> · 
+<p alinhar="centro">
+  <strong>Autor:</strong> <a href="https://github.com/felipfr">Felipe Rodrigues</a> · 
   <a href="https://linkedin.com/in/felipfr">LinkedIn</a>
 </p>
 
-## ✨ What Is This Skill?
+## ✨ O que é essa habilidade?
 
-**TLC Spec-Driven** transforms how AI agents approach software projects. Instead of a rigid, bureaucratic pipeline, it uses **4 adaptive phases** that auto-size based on complexity — applying full rigor for complex features and skipping ceremony for simple ones:
+**TLC Spec-Driven** transforma a forma como os agentes de IA abordam projetos de software. Em vez de um pipeline rígido e burocrático, ele usa **4 fases adaptativas** que são dimensionadas automaticamente com base na complexidade — aplicando rigor total para recursos complexos e ignorando cerimônias para recursos simples:```
+┌──────────┐ ┌──────────┐ ┌─────────┐ ┌─────────┐
+│ SPECIFY │ → │ DESIGN │ → │ TASKS │ → │ EXECUTE │
+└──────────┘ └──────────┘ └─────────┘ └─────────┘
+required optional* optional* required
 
-```
-┌──────────┐   ┌──────────┐   ┌─────────┐   ┌─────────┐
-│ SPECIFY  │ → │  DESIGN  │ → │  TASKS  │ → │ EXECUTE │
-└──────────┘   └──────────┘   └─────────┘   └─────────┘
-   required      optional*      optional*     required
+- Agent auto-skips when scope doesn't need it
 
-* Agent auto-skips when scope doesn't need it
-```
+````
 
-**The complexity is in the system, not in your workflow.** You talk naturally — the skill decides how deep to go:
+**A complexidade está no sistema, não no seu fluxo de trabalho.** Você fala naturalmente — a habilidade decide até que ponto ir:
 
-| Scope                               | What happens                                                      |
+| Escopo | O que acontece |
 | ----------------------------------- | ----------------------------------------------------------------- |
-| **Small** (≤3 files)                | Quick mode — describe → implement → verify → commit               |
-| **Medium** (clear feature)          | Specify → Execute (design and tasks inline)                       |
-| **Large** (multi-component)         | Full pipeline with formal design and task breakdown               |
-| **Complex** (ambiguity, new domain) | Full pipeline + gray area discussion + research + interactive UAT |
+| **Pequeno** (≤3 arquivos) | Modo rápido — descrever → implementar → verificar → confirmar |
+| **Médio** (recurso claro) | Especifique → Executar (design e tarefas em linha) |
+| **Grande** (vários
 
-## 🚀 Quick Start
+-componente) | Pipeline completo com design formal e divisão de tarefas |
+| **Complexo** (ambiguidade, novo domínio) | Pipeline completo + discussão na área cinzenta + pesquisa + UAT interativo |
 
-### Installation
+## 🚀 Início rápido
 
-```bash
+### Instalação```bash
 npx @tech-leads-club/agent-skills install -s tlc-spec-driven
-```
+````
 
-### First Commands
+### Primeiros Comandos
 
-| What You Want           | Say This                                      |
-| ----------------------- | --------------------------------------------- |
-| Start a new project     | `"Initialize project"` or `"Setup project"`   |
-| Work with existing code | `"Map codebase"` or `"Analyze existing code"` |
-| Plan a feature          | `"Specify feature [name]"`                    |
-| Quick bug fix           | `"Quick fix: [description]"`                  |
-| Resume previous work    | `"Resume work"` or `"Continue"`               |
+| O que você quer               | Diga isto                                                  |
+| ----------------------------- | ---------------------------------------------------------- |
+| Iniciar um novo projeto       | `"Inicializar projeto"` ou `"Configurar projeto"`          |
+| Trabalhe com código existente | `"Mapear base de código"` ou `"Analisar código existente"` |
+| Planeje um recurso            | `"Especificar recurso [nome]"`                             |
+| Correção rápida de bug        | `"Correção rápida: [descrição]"`                           |
 
-> 💬 **Natural Conversation, Not Commands**
+|
+| Retomar trabalho anterior | `"Retomar trabalho"` ou `"Continuar"` |
+
+> 💬 **Conversa natural, não comandos**
 >
-> These are trigger phrases, not strict commands. The skill works through **natural conversation** — talk to your agent like you would to a colleague. Say things like _"I want to build an authentication system"_ or _"Fix the login button, it returns 401"_. The agent understands context and intent, not just keywords.
+> Estas são frases de gatilho, não comandos estritos. A habilidade funciona por meio de uma **conversa natural** – fale com seu agente como faria com um colega. Diga coisas como _"Quero construir um sistema de autenticação"_ ou _"Conserte o botão de login, ele retorna 401"_. O agente entende o contexto e a intenção, não apenas as palavras-chave.
 
-## 📁 Project Structure
+## 📁 Estrutura do Projeto
 
-The skill creates a `.specs/` directory to organize all project documentation:
-
-```
+A habilidade cria um diretório `.specs/` para organizar toda a documentação do projeto:```
 .specs/
 ├── project/
-│   ├── PROJECT.md      # Vision, goals, tech stack, constraints
-│   ├── ROADMAP.md      # Milestones, features, status tracking
-│   └── STATE.md        # Persistent memory: decisions, blockers, learnings, todos, deferred ideas
+│ ├── PROJECT.md # Vision, goals, tech stack, constraints
+│ ├── ROADMAP.md # Milestones, features, status tracking
+│ └── STATE.md # Persistent memory: decisions, blockers, learnings, todos, deferred ideas
 │
-├── codebase/           # Brownfield analysis (existing projects only)
-│   ├── STACK.md        # Technology stack and dependencies
-│   ├── ARCHITECTURE.md # Patterns, data flow, code organization
-│   ├── CONVENTIONS.md  # Naming, style, coding patterns
-│   ├── STRUCTURE.md    # Directory layout and modules
-│   ├── TESTING.md      # Test frameworks and patterns
-│   ├── INTEGRATIONS.md # External services and APIs
-│   └── CONCERNS.md     # Tech debt, risks, fragile areas
+├── codebase/ # Brownfield analysis (existing projects only)
+│ ├── STACK.md # Technology stack and dependencies
+│ ├── ARCHITECTURE.md # Patterns, data flow, code organization
+│ ├── CONVENTIONS.md # Naming, style, coding patterns
+│ ├── STRUCTURE.md # Directory layout and modules
+│ ├── TESTING.md # Test frameworks and patterns
+│ ├── INTEGRATIONS.md # External services and APIs
+│ └── CONCERNS.md # Tech debt, risks, fragile areas
 │
-├── features/           # Feature specifications
-│   └── [feature-name]/
-│       ├── spec.md     # Requirements with traceable IDs (FEAT-01, AUTH-02...)
-│       ├── context.md  # User decisions for gray areas (only when needed)
-│       ├── design.md   # Architecture and components (only for large/complex)
-│       └── tasks.md    # Atomic tasks with dependencies (only for large/complex)
+├── features/ # Feature specifications
+│ └── [feature-name]/
+│ ├── spec.md # Requirements with traceable IDs (FEAT-01, AUTH-02...)
+│ ├── context.md # User decisions for gray areas (only when needed)
+│ ├── design.md # Architecture and components (only for large/complex)
+│ └── tasks.md # Atomic tasks with dependencies (only for large/complex)
 │
-└── quick/              # Ad-hoc tasks (quick mode)
-    └── NNN-slug/
-        ├── TASK.md     # Description + verification
-        └── SUMMARY.md  # What was done + commit
-```
+└── quick/ # Ad-hoc tasks (quick mode)
+└── NNN-slug/
+├── TASK.md # Description + verification
+└── SUMMARY.md # What was done + commit
 
-## 🔄 The Four Adaptive Phases
+````
+## 🔄 As quatro fases adaptativas
 
-### Specify (always)
+### Especifique (sempre)
 
-**Goal:** Capture WHAT to build with testable, traceable requirements.
+**Objetivo:** Capturar O QUE construir com requisitos testáveis e rastreáveis.
 
-The agent acts as a thinking partner — not an interviewer. It asks clarifying questions, challenges vagueness, and captures requirements with traceable IDs:
-
-```markdown
+O agente atua como um parceiro pensante – não como um entrevistador. Ele faz perguntas esclarecedoras, desafia a imprecisão e captura requisitos com IDs rastreáveis:```markdown
 ### P1: User Login ⭐ MVP
 
 **User Story:** As a user, I want to log in so that I can access my account.
@@ -114,116 +111,116 @@ The agent acts as a thinking partner — not an interviewer. It asks clarifying 
 | AUTH-01        | WHEN user enters valid credentials THEN system SHALL authenticate and redirect |
 | AUTH-02        | WHEN user enters invalid credentials THEN system SHALL display error message   |
 | AUTH-03        | WHEN user is already logged in THEN system SHALL redirect to dashboard         |
-```
+````
 
-**Discuss gray areas (auto-triggered):** When the spec has ambiguous, user-facing decisions (layout preferences, interaction patterns, error handling style), the agent automatically asks the user about them — creating a `context.md` that locks those decisions before design. This is NOT a separate phase — it only happens within Specify when ambiguity is detected.
+**Discutir áreas cinzentas (acionadas automaticamente):** Quando a especificação tem decisões ambíguas voltadas para o usuário (preferências de layout, padrões de interação, estilo de tratamento de erros), o agente pergunta automaticamente ao usuário sobre elas — criando um `context.md` que bloqueia essas decisões antes do design. Esta NÃO é uma fase separada — só acontece em Especificar quando a ambiguidade é detectada.
 
-### Design (when needed)
+### Design (quando necessário)
 
-**Goal:** Define HOW to build it. Architecture, components, what to reuse.
+**Objetivo:** Definir COMO construí-lo. Arquitetura, componentes, o que reutilizar.
 
-**Skipped when:** The change is straightforward — no architectural decisions, no new patterns. For simple features, design happens inline during Execute.
+**Ignorado quando:** A mudança é direta — sem decisões arquitetônicas, sem novos padrões. Para recursos simples, o design acontece em linha durante a execução.
 
-**Includes research:** Before designing with unfamiliar tech, the agent follows the **Knowledge Verification Chain** (codebase → project docs → Context7 MCP → web search → flag uncertain). It **never assumes or fabricates** — if it can't find documentation, it says so.
+**Inclui pesquisa:** Antes de projetar com tecnologia desconhecida, o agente segue a **Cadeia de verificação de conhecimento** (base de código → documentos do projeto → Context7 MCP → pesquisa na web → sinalizador incerto). Ela **nunca assume ou fabrica** — se não conseguir encontrar documentação, é o que diz.
 
-**Output:** `design.md` with architecture diagrams, component definitions, and integration points.
+**Saída:** `design.md` com diagramas de arquitetura, definições de componentes e pontos de integração.
 
-### Tasks (when needed)
+### Tarefas (quando necessário)
 
-**Goal:** Break into GRANULAR, ATOMIC tasks with clear dependencies.
+**Objetivo:** Divida em tarefas GRANULARES e ATÔMICAS com dependências claras.
 
-**Skipped when:** There are ≤3 obvious steps. In that case, tasks are listed inline at the start of Execute.
+**Ignorado quando:** Existem ≤3 etapas óbvias. Nesse caso, as tarefas são listadas em linha no início de Executar.
 
-**Safety valve:** If listing inline steps reveals >5 steps or complex dependencies, the agent STOPS and creates a formal `tasks.md` — acknowledging that the Tasks phase was wrongly skipped.
+**Válvula de segurança:** Se a listagem de etapas in-line revelar >5 etapas ou dependências complexas, o agente PÁRA e cria um `tasks.md` formal — reconhecendo que a fase de Tarefas foi ignorada indevidamente.
 
-| ❌ Vague Task | ✅ Atomic Tasks                   |
-| ------------- | --------------------------------- |
-| "Create form" | T1: Create email input component  |
-|               | T2: Add email validation function |
-|               | T3: Create submit button          |
-|               | T4: Add form state management     |
+| ❌ Tarefa Vaga     | ✅ Tarefas Atômicas                                 |
+| ------------------ | --------------------------------------------------- |
+| "Criar formulário" | T1: Criar componente de entrada de e-mail           |
+|                    | T2: Adicionar função de validação de e-mail         |
+|                    | T3: Criar botão de envio                            |
+|                    | T4: Adicionar gerenciamento de estado de formulário |
 
-Each task includes: What (deliverable), Where (file path), Depends on (prerequisites), Reuses (existing code), Requirement (traceable ID), Done when (verifiable criteria), Commit (message format).
+Cada tarefa inclui: O quê (entrega), Onde (caminho do arquivo), Depende de (pré-requisitos), Reutilizações (código existente), Requisito (ID rastreável), Feito quando (critérios verificáveis), Confirmação (formato da mensagem).
 
-### Execute (always)
+### Executar (sempre)
 
-**Goal:** Implement one task at a time. Verify. Commit. Repeat.
+**Objetivo:** implementar uma tarefa por vez. Verificar. Comprometer-se. Repita.
 
-Every task follows the same cycle:
-
-```
+Cada tarefa segue o mesmo ciclo:```
 Plan → Implement → Verify → Commit → Next
-```
 
-**Key principles:**
+````
 
-- **Surgical changes** — Only touch required files
-- **No scope creep** — If it's not in the task, don't touch it. Capture ideas in STATE.md as Deferred Ideas
-- **Verify before commit** — Check all "Done when" criteria
-- **Atomic git commits** — One task = one commit, following [Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/)
+**Princípios-chave:**
 
-```
+- **Alterações cirúrgicas** — Toque apenas nos arquivos necessários
+- **Sem aumento de escopo** — Se não estiver na tarefa, não toque nele. Capture ideias em STATE.md como ideias adiadas
+- **Verificar antes de confirmar** — Verifique todos os critérios "Concluído quando"
+- **Atomic git commits** — Uma tarefa = um commit, seguindo [Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/)```
 feat(auth): add email validation to login form
 
 refactor(api): extract token refresh logic into service
 
 fix(cart): prevent negative quantity on item decrement
-```
+````
 
-**Feature-level validation** happens after all tasks complete — including acceptance criteria checks, code quality review, and optionally interactive UAT for complex user-facing features.
+A **validação em nível de recurso** acontece após a conclusão de todas as tarefas, incluindo verificações de critérios de aceitação, revisão de qualidade de código e UAT opcionalmente interativo para recursos complexos voltados para o usuário.
 
-## ⚡ Quick Mode
+## ⚡ Modo Rápido
 
-For small tasks (bug fixes, config changes, tweaks ≤3 files) that don't need the full pipeline:
-
-```
+Para pequenas tarefas (correções de bugs, alterações de configuração, ajustes ≤3 arquivos) que não precisam do pipeline completo:```
 You: Quick fix: login button returns 401 because token refresh skips expired check
 
 Agent: Quick Task: Fix token refresh expired check
-       Files: src/services/auth.ts
-       Approach: Add expiry validation before refresh attempt
-       Verify: Login with expired token returns new session, not 401
+Files: src/services/auth.ts
+Approach: Add expiry validation before refresh attempt
+Verify: Login with expired token returns new session, not 401
 
        [Implements...]
 
        ✅ Done. Committed: fix(auth): add expiry check to token refresh
-```
 
-**Guardrails:** Max 3 files, max 1 hour, no design decisions, no new dependencies. If any of these are exceeded, the agent recommends the full pipeline.
+````
 
-## 📋 Complete Command Reference
+**Guarda-corpos:** Máximo de 3 arquivos, máximo de 1 hora, sem decisões de design, sem novas dependências. Se algum deles for excedido, o agente recomenda o pipeline completo.
 
-These trigger patterns help the agent recognize your intent, but you don't need to use them verbatim. Speak naturally — the agent understands variations and context.
+## 📋 Referência completa de comandos
 
-### Project-Level
+Esses padrões de gatilho ajudam o agente a reconhecer sua intenção, mas você não precisa usá-los literalmente. Fale naturalmente – o agente entende as variações e o contexto.
 
-| Trigger Pattern                              | Description                                           |
+### Nível do projeto
+
+| Padrão de gatilho | Descrição |
 | -------------------------------------------- | ----------------------------------------------------- |
-| `Initialize project`, `Setup project`        | Create PROJECT.md with vision, goals, and constraints |
-| `Create roadmap`, `Plan features`            | Create ROADMAP.md with milestones and features        |
-| `Map codebase`, `Analyze existing code`      | Create 7 brownfield docs for existing projects        |
-| `Document concerns`, `Find tech debt`        | Identify and document codebase risks                  |
-| `Record decision`, `Log blocker`, `Add todo` | Add entries to STATE.md                               |
-| `Pause work`, `End session`                  | Create handoff for session continuity                 |
-| `Resume work`, `Continue`                    | Load previous state and continue                      |
+| `Inicializar projeto`, `Configurar projeto` | Crie PROJECT.md com visão, objetivos e restrições |
+| `Criar roteiro`, `Planejar recursos` | Crie ROADMAP.md com marcos e recursos |
+| `Mapear base de código`, `Analisar exi
 
-### Feature-Level (auto-sized)
+código de picada` | Crie 7 documentos brownfield para projetos existentes |
+| `Documente preocupações`, `Encontre dívidas tecnológicas` | Identificar e documentar riscos de base de código |
+| `Registrar decisão`, `Bloqueador de log`, `Adicionar tarefas` | Adicionar entradas ao STATE.md |
+| `Pausar trabalho`, `Terminar sessão` | Criar transferência para continuidade da sessão |
+| `Retomar trabalho`, `Continuar` | Carregar anterior
 
-| Trigger Pattern                           | Description                             |
+nós declaramos e continuamos |
+
+### Nível de recurso (dimensionamento automático)
+
+| Padrão de gatilho | Descrição |
 | ----------------------------------------- | --------------------------------------- |
-| `Specify feature`, `Define requirements`  | Create spec.md with requirement IDs     |
-| `Discuss feature`, `How should this work` | Capture user decisions for gray areas   |
-| `Design feature`, `Architecture`          | Create design.md with architecture      |
-| `Break into tasks`, `Create tasks`        | Create tasks.md with atomic breakdown   |
-| `Implement task`, `Build`, `Execute`      | Execute specific task with verification |
-| `Validate`, `Verify work`, `UAT`          | Feature-level validation and testing    |
-| `Quick fix`, `Quick task`, `Bug fix`      | Express lane for small changes          |
+| `Especificar recurso`, `Definir requisitos` | Crie spec.md com IDs de requisitos |
+| `Discutir recurso`, `Como isso deve funcionar` | Capture decisões do usuário para áreas cinzentas |
+| `Recurso de design`, `Arquitetura` | Crie design.md com arquitetura |
+| `Quebre eu
 
-## 🔁 Workflow Examples
+nto tarefas`, `Criar tarefas` | Crie tarefas.md com divisão atômica |
+| `Implementar tarefa`, `Construir`, `Executar` | Execute tarefa específica com verificação |
+| `Validar`, `Verificar trabalho`, `UAT` | Validação e teste em nível de recurso |
+| `Correção rápida`, `Tarefa rápida`, `Correção de bug` | Via expressa para pequenas mudanças |
 
-### Starting a New Project
+## 🔁 Exemplos de fluxo de trabalho
 
-```
+### Iniciando um novo projeto```
 You: Initialize project
 
 Agent: I'll help you set up your project. Let me ask a few questions:
@@ -235,27 +232,21 @@ You: [Answer questions]
 
 Agent: ✅ Created .specs/project/PROJECT.md
        Next: Would you like to create a roadmap? Say "Create roadmap"
-```
+````
 
-### Working with an Existing Codebase
+### Trabalhando com uma base de código existente```
 
-```
 You: Map codebase
 
-Agent: I'll analyze your existing codebase and document:
-       - Technology stack, Architecture patterns, Coding conventions
-       - Project structure, Testing infrastructure, External integrations
-       - Concerns (tech debt, risks, fragile areas)
+Agent: I'll analyze your existing codebase and document: - Technology stack, Architecture patterns, Coding conventions - Project structure, Testing infrastructure, External integrations - Concerns (tech debt, risks, fragile areas)
 
        [Analyzes codebase...]
 
        ✅ Created 7 brownfield docs in .specs/codebase/
        Next: Initialize project to define goals and roadmap
-```
 
-### Implementing a Feature (auto-sized)
-
-```
+````
+### Implementando um recurso (dimensionamento automático)```
 You: Specify feature user-authentication
 
 Agent: [Asks clarifying questions, creates spec.md with requirement IDs]
@@ -281,26 +272,23 @@ Agent: Implementing T1: Create auth service interface
 
        ✅ Committed: feat(auth): create auth service interface
        Next available: T2, T3 [P] (parallel)
-```
+````
 
-### Quick Bug Fix
+### Correção rápida de bug```
 
-```
 You: Quick fix: dark mode toggle doesn't persist after page refresh
 
 Agent: Quick Task: Persist dark mode preference
-       Files: src/hooks/useTheme.ts, src/utils/storage.ts
-       Approach: Save preference to localStorage on toggle
-       Verify: Toggle dark mode, refresh page, preference persists
+Files: src/hooks/useTheme.ts, src/utils/storage.ts
+Approach: Save preference to localStorage on toggle
+Verify: Toggle dark mode, refresh page, preference persists
 
        [Implements...]
 
        ✅ Committed: fix(theme): persist dark mode preference to localStorage
-```
 
-### Session Continuity
-
-```
+````
+### Continuidade da Sessão```
 You: Pause work
 
 Agent: ✅ Created .specs/HANDOFF.md
@@ -319,131 +307,139 @@ Agent: Resuming user-authentication at T3
        - Next: Complete T3, then T4 (parallel with T5)
 
        Continue with T3?
-```
+````
 
-## 🧠 Context Management
+## 🧠 Gerenciamento de Contexto
 
-The skill is designed to work within context limits:
+A habilidade foi projetada para funcionar dentro dos limites do contexto:
 
-| Load Strategy          | Documents                                   | Tokens |
-| ---------------------- | ------------------------------------------- | ------ |
-| **Base load** (always) | PROJECT.md, ROADMAP.md, STATE.md            | ~15k   |
-| **On-demand**          | Current spec, context, design, or tasks     | +5-10k |
-| **Never simultaneous** | Multiple feature specs or architecture docs | —      |
+| Estratégia de Carga     | Documentos                                                     | Fichas |
+| ----------------------- | -------------------------------------------------------------- | ------ |
+| **Carga base** (sempre) | PROJETO.md, ROADMAP.md, ESTADO.md                              | ~15k   |
+| **Sob demanda**         | Especificações, contexto, design ou tarefas atuais             | +5-10k |
+| **Nunca simultâneo**    | Várias especificações de recursos ou documentos de arquitetura | —      |
 
-**Target:** <40k tokens loaded (20% of context)
-**Reserve:** 160k+ tokens for work, reasoning, outputs
+**Meta:** <40 mil tokens carregados (20% do contexto)
+**Reserva:** mais de 160 mil tokens para trabalho, raciocínio e resultados
 
-When context exceeds 40k tokens, the skill displays a status indicator and suggests optimizations.
+Quando o contexto excede 40 mil tokens, a habilidade exibe um indicador de status e sugere otimizações.
 
-## 🔗 Skill Integrations
+## 🔗 Integrações de habilidades
 
-TLC Spec-Driven works even better when combined with complementary skills:
+TLC Spec-Driven funciona ainda melhor quando combinado com habilidades complementares:
 
-| Skill              | Integration                                                                       |
-| ------------------ | --------------------------------------------------------------------------------- |
-| **mermaid-studio** | Diagrams — architecture overviews, data flows, sequence diagrams                  |
-| **codenavi**       | Code exploration — brownfield mapping, pattern identification, dependency tracing |
+| Habilidade         | Integração                                                                                          |
+| ------------------ | --------------------------------------------------------------------------------------------------- |
+| **estúdio sereia** | Diagramas — visões gerais da arquitetura, fluxos de dados, diagramas de sequência                   |
+| **codenavi**       | Exploração de código — mapeamento brownfield, identificação de padrões, rastreamento de dependência |
 
-The skill automatically detects if these are installed and delegates specialized tasks to them. If not installed, it falls back gracefully and recommends them once per session.
+A habilidade detecta automaticamente se eles estão instalados e delega tarefas especializadas a eles. Se não for instalado, ele volta normalmente e os recomenda uma vez por sessão.
 
-## 📚 Reference Files
+## 📚 Arquivos de referência
 
-The skill includes detailed reference documentation loaded on-demand:
+A habilidade inclui documentação de referência detalhada carregada sob demanda:
 
-| File                    | Purpose                                                                |
-| ----------------------- | ---------------------------------------------------------------------- |
-| `project-init.md`       | Project initialization process and template                            |
-| `roadmap.md`            | Roadmap creation and milestone tracking                                |
-| `brownfield-mapping.md` | Comprehensive codebase analysis (7 docs)                               |
-| `concerns.md`           | Tech debt, risks, and fragile area documentation                       |
-| `specify.md`            | Requirements gathering with traceable IDs                              |
-| `discuss.md`            | Gray area discussion and context capture                               |
-| `design.md`             | Architecture, research, and component design                           |
-| `tasks.md`              | Granular task breakdown methodology                                    |
-| `implement.md`          | Execute: implementation + verification + atomic commits                |
-| `validate.md`           | Feature validation and interactive UAT                                 |
-| `quick-mode.md`         | Express lane for ad-hoc tasks                                          |
-| `session-handoff.md`    | Pause/resume work process                                              |
-| `state-management.md`   | Persistent memory: decisions, blockers, lessons, todos, deferred ideas |
-| `coding-principles.md`  | Behavioral guidelines for implementation                               |
-| `context-limits.md`     | Token budget and monitoring                                            |
-| `code-analysis.md`      | Available tools and fallbacks                                          |
+| Arquivo                 | Finalidade                                    |
+| ----------------------- | --------------------------------------------- |
+| `projeto-init.md`       | Processo e modelo de inicialização do projeto |
+| `roadmap.md`            | Criação de roadmap e acompanhamento de marcos |
+| `brownfield-mapping.md` | Código abrangente                             |
 
-## ⚡ Tips for Best Results
+análise básica (7 documentos) |
+| `preocupações.md` | Dívida tecnológica, riscos e documentação de áreas frágeis |
+| `especificar.md` | Levantamento de requisitos com IDs rastreáveis ​​|
+| `discutir.md` | Discussão sobre áreas cinzentas e captura de contexto |
+| `design.md` | Arquitetura, pesquisa e design de componentes
 
-### Do's ✅
+|
+| `tarefas.md` | Metodologia granular de divisão de tarefas |
+| `implementar.md` | Executar: implementação + verificação + commits atômicos |
+| `validar.md` | Validação de recursos e UAT interativo |
+| `modo rápido.md` | Via expressa para tarefas ad hoc |
+| `session-handoff.md` | Pausa/resolução
 
-- **Start with project initialization** — Even for existing codebases
-- **Be specific about scope** — Clear boundaries prevent creep
-- **Trust the auto-sizing** — The agent applies the right depth
-- **Use natural language** — No need to memorize commands
-- **Say "pause work" before ending** — Enables seamless resumption
-- **Challenge the agent** — If something looks wrong, say so
+ume processo de trabalho |
+| `gestão de estado.md` | Memória persistente: decisões, bloqueadores, lições, todos, ideias adiadas |
+| `coding-principles.md` | Diretrizes comportamentais para implementação |
+| `context-limits.md` | Orçamento e monitoramento de tokens |
+| `análise de código.md` | Ferramentas disponíveis e substitutos
 
-### Don'ts ❌
+|
 
-- **Don't force all phases** — Let the agent skip what's unnecessary
-- **Don't work on multiple features at once** — One feature per cycle
-- **Don't ignore verification** — Even quick tasks need a verify step
-- **Don't accept vague answers** — If the agent says something fuzzy, ask for specifics
+## ⚡ Dicas para melhores resultados
 
-## 💡 Model Recommendation
+### O que fazer ✅
 
-> **Best results with modern, reasoning-capable models:**
+- **Comece com a inicialização do projeto** — Mesmo para bases de código existentes
+- **Seja específico sobre o escopo** — Limites claros evitam fluência
+- **Confie no dimensionamento automático** — O agente aplica a profundidade certa
+- **Use linguagem natural** — Não há necessidade de memorizar comandos
+- **Diga "pausar trabalho" antes de terminar** — Permite uma retomada contínua
+- **Desafie o agente** — Se algo parecer errado, diga
+
+### O que não fazer ❌
+
+- **Não force todas as fases** — Deixe o agente pular o que é desnecessário
+- **Não trabalhe em vários recursos ao mesmo tempo** — Um recurso por ciclo
+- **Não ignore a verificação** — Mesmo tarefas rápidas precisam de uma etapa de verificação
+- **Não aceite respostas vagas** — Se o agente disser algo confuso, peça detalhes
+
+## 💡 Recomendação de modelo
+
+> **Melhores resultados com modelos modernos e com capacidade de raciocínio:**
 >
-> - **Claude Opus 4.6 / Sonnet 4.5** — Excellent for all phases
-> - **Gemini 3 Pro / GPT 5.2** — Strong reasoning and large context window
-> - **Gemini 3 Flash / Claude Haiku 4.5** — Great general-purpose performance
+> - **Claude Opus 4.6 / Sonnet 4.5** — Excelente para todas as fases
+> - **Gemini 3 Pro / GPT 5.2** — Raciocínio forte e grande janela de contexto
+> - **Gemini 3 Flash / Claude Haiku 4.5** — Excelente desempenho para uso geral
 >
-> For cost optimization, the skill will suggest when lighter models are sufficient for simple tasks like validation or session handoff.
+> Para otimização de custos, a habilidade irá sugerir quando modelos mais leves são suficientes para tarefas simples como validação ou transferência de sessão.
 
-## 🤖 Compatibility
+## 🤖 Compatibilidade
 
-This skill works with **any AI coding agent** that supports skills or custom instructions.
+Esta habilidade funciona com **qualquer agente de codificação de IA** que ofereça suporte a habilidades ou instruções personalizadas.
 
-**Tested and verified on:**
+**Testado e verificado em:**
 
-| Agent                | Status    |
-| -------------------- | --------- |
-| Antigravity (Gemini) | ✅ Tested |
-| Claude Code          | ✅ Tested |
-| GitHub Copilot       | ✅ Tested |
-| Cursor               | ✅ Tested |
-| Opencode             | ✅ Tested |
+| Agente                 | Estado     |
+| ---------------------- | ---------- |
+| Antigravidade (Gêmeos) | ✅ Testado |
+| Código Cláudio         | ✅ Testado |
+| Copiloto GitHub        | ✅ Testado |
+| Cursor                 | ✅ Testado |
+| Código aberto          | ✅ Testado |
 
-> **Note:** If your agent supports loading custom instructions or skills, this skill should work. The agents above are simply where it has been actively tested.
+> **Observação:** se o seu agente oferece suporte ao carregamento de instruções ou habilidades personalizadas, essa habilidade deverá funcionar. Os agentes acima estão simplesmente onde foram testados ativamente.
 
-## ❓ FAQ
+## ❓ Perguntas frequentes
 
-**Q: Can I skip phases?**
-A: Yes! The skill auto-sizes. Design and Tasks are skipped for simple features. Quick mode skips the entire pipeline for small changes. You only get ceremony when scope demands it.
+**P: Posso pular fases?**
+R: Sim! A habilidade é dimensionada automaticamente. Design e Tarefas são ignorados para recursos simples. O modo rápido ignora todo o pipeline para pequenas alterações. Você só consegue cerimônia quando o escopo exige.
 
-**Q: What if my project already has code?**
-A: Use `"Map codebase"` first. This creates 7 documents analyzing your existing architecture, conventions, stack, and concerns before you start adding features.
+**P: E se meu projeto já tiver código?**
+R: Use `"Map codebase"` primeiro. Isso cria 7 documentos analisando sua arquitetura, convenções, pilha e preocupações existentes antes de você começar a adicionar recursos.
 
-**Q: How does requirement traceability work?**
-A: Each requirement gets a unique ID (e.g., `AUTH-01`) in spec.md. Tasks reference these IDs, and validation checks which requirements are verified. You get a clear trail from spec → design → task → commit.
+**P: Como funciona a rastreabilidade de requisitos?**
+R: Cada requisito recebe um ID exclusivo (por exemplo, `AUTH-01`) em spec.md. As tarefas fazem referência a esses IDs e a validação verifica quais requisitos são verificados. Você obtém uma trilha clara de especificação → design → tarefa → confirmação.
 
-**Q: What are atomic git commits?**
-A: Each task produces exactly one commit following [Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/). This means clean git history, easy bisect for debugging, and simple rollbacks when needed.
+**P: O que são commits atômicos do git?**
+R: Cada tarefa produz exatamente um commit seguindo [Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/). Isso significa histórico limpo do git, divisão fácil para depuração e reversões simples quando necessário.
 
-**Q: Can I use this for small tasks or quick fixes?**
-A: Yes! Say `"Quick fix: [description]"` for bug fixes, config changes, or small tweaks. You get quality guardrails (verify + commit) without the planning overhead.
+**P: Posso usar isso para pequenas tarefas ou soluções rápidas?**
+R: Sim! Diga `"Correção rápida: [descrição]"` para correções de bugs, alterações de configuração ou pequenos ajustes. Você obtém proteções de qualidade (verificar + confirmar) sem sobrecarga de planejamento.
 
-**Q: What happens if I close my session mid-task?**
-A: Say `"Pause work"` before ending your session. This creates a handoff document. Next session, say `"Resume work"` to continue exactly where you left off.
+**P: O que acontece se eu fechar minha sessão no meio de uma tarefa?**
+R: Diga `"Pausar trabalho"` antes de encerrar sua sessão. Isso cria um documento de transferência. Na próxima sessão, diga `"Retomar trabalho"` para continuar exatamente de onde parou.
 
-**Q: Does this work with any tech stack?**
-A: Yes! The skill is completely stack-agnostic. It works with any language, framework, or architecture.
+**P: Isso funciona com qualquer pilha de tecnologia?**
+R: Sim! A habilidade é completamente independente de pilha. Funciona com qualquer linguagem, estrutura ou arquitetura.
 
-**Q: What if the agent invents an API or pattern that doesn't exist?**
-A: The skill enforces a strict **Knowledge Verification Chain**: codebase → project docs → Context7 MCP → web search → flag as uncertain. It NEVER fabricates information. If the agent can't find documentation, it will say "I don't know" instead of guessing.
+**P: E se o agente inventar uma API ou um padrão que não existe?**
+R: A habilidade impõe uma **Cadeia de verificação de conhecimento** rigorosa: base de código → documentos do projeto → Context7 MCP → pesquisa na web → sinalizar como incerto. NUNCA fabrica informações. Se o agente não conseguir encontrar a documentação, dirá “Não sei” em vez de adivinhar.
 
-## 📄 License
+## 📄 Licença
 
-CC-BY-4.0 © [Tech Lead's Club](https://github.com/tech-leads-club)
+CC-BY-4.0 © [Clube de líderes técnicos](https://github.com/tech-leads-club)
 
-<p align="center">
-  <sub>Built with ❤️ by the Tech Lead's Club community</sub>
+<p alinhar="centro">
+  <sub>Construído com ❤️ pela comunidade do Tech Lead's Club</sub>
 </p>

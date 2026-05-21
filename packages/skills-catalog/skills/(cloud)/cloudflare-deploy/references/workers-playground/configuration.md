@@ -1,56 +1,52 @@
-# Configuration
+#Configuração
 
-## Getting Started
+## Primeiros passos
 
-Navigate to [workers.cloudflare.com/playground](https://workers.cloudflare.com/playground)
+Navegue até [workers.cloudflare.com/playground](https://workers.cloudflare.com/playground)
 
-- **No account required** for testing
-- **No CLI or local setup** needed
-- Code executes in real Cloudflare Workers runtime
-- Share code via URL (never expires)
+- **Não é necessária conta** para teste
+- **Não é necessária CLI ou configuração local**
+- O código é executado em tempo de execução real do Cloudflare Workers
+- Compartilhe código via URL (nunca expira)
 
-## Playground Constraints
+## Restrições do playground
 
-⚠️ **Important Limitations**
+⚠️ **Limitações importantes**
 
-| Constraint                | Playground              | Production Workers                |
-| ------------------------- | ----------------------- | --------------------------------- |
-| **Module Format**         | ES modules only         | ES modules or Service Worker      |
-| **TypeScript**            | Not supported (JS only) | Supported via build step          |
-| **Bindings**              | Not available           | KV, D1, R2, Durable Objects, etc. |
-| **wrangler.toml**         | Not used                | Required for config               |
-| **Environment Variables** | Not available           | Full support                      |
-| **Secrets**               | Not available           | Full support                      |
-| **Custom Domains**        | Not available           | Full support                      |
+| Restrição                   | Parque infantil            | Trabalhadores de produção          |
+| --------------------------- | -------------------------- | ---------------------------------- |
+| **Formato do módulo**       | Apenas módulos ES          | Módulos ES ou Service Worker       |
+| **TypeScript**              | Não suportado (somente JS) | Suportado pela etapa de construção |
+| **Encadernações**           | Não disponível             | KV, D1, R2, objetos duráveis, etc. |
+| **wrangler.toml**           | Não utilizado              | Necessário para configuração       |
+| **Variáveis ​​ambientais**  | Não disponível             | Suporte total                      |
+| **Segredos**                | Não disponível             | Suporte total                      |
+| **Domínios personalizados** | Não disponível             | Suporte total                      |
 
-**Playground is for rapid prototyping only.** For production apps, use `wrangler` CLI.
+**O Playground é apenas para prototipagem rápida.** Para aplicativos de produção, use a CLI `wrangler`.
 
-## Code Editor
+##Editor de código
 
-### Syntax Requirements
+### Requisitos de sintaxe
 
-Must export default object with `fetch` handler:
-
-```javascript
+Deve exportar o objeto padrão com o manipulador `fetch`:```javascript
 export default {
-  async fetch(request, env, ctx) {
-    return new Response('Hello World')
-  },
+async fetch(request, env, ctx) {
+return new Response('Hello World')
+},
 }
-```
 
-**Key Points:**
+````
+**Pontos-chave:**
 
-- Must use ES modules (`export default`)
-- `fetch` method receives `(request, env, ctx)`
-- Must return `Response` object
-- TypeScript not supported (use plain JavaScript)
+- Deve usar módulos ES (`export default`)
+- O método `fetch` recebe `(request, env, ctx)`
+- Deve retornar o objeto `Response`
+- TypeScript não suportado (use JavaScript simples)
 
-### Multi-Module Code
+### Código Multimódulo
 
-Import from external URLs or inline modules:
-
-```javascript
+Importe de URLs externos ou módulos embutidos:```javascript
 // Import from CDN
 import { Hono } from 'https://esm.sh/hono@3'
 
@@ -64,106 +60,105 @@ export default {
     return app.fetch(request)
   },
 }
-```
+````
 
-## Preview Panel
+## Painel de visualização
 
-### Browser Tab
+### Guia do navegador
 
-Default interactive preview with address bar:
+Visualização interativa padrão com barra de endereço:
 
-- Enter custom URL paths
-- Automatic reload on code changes
-- DevTools available (right-click → Inspect)
+- Insira caminhos de URL personalizados
+- Recarga automática em alterações de código
+- DevTools disponíveis (clique com o botão direito → Inspecionar)
 
-### HTTP Test Panel
+### Painel de teste HTTP
 
-Switch to **HTTP** tab for raw HTTP testing:
+Mude para a guia **HTTP** para testes HTTP brutos:
 
-- Change HTTP method (GET, POST, PUT, DELETE, PATCH, etc.)
-- Add/edit request headers
-- Modify request body (JSON, form data, text)
-- View response headers and body
-- Test different content types
+- Alterar método HTTP (GET, POST, PUT, DELETE, PATCH, etc.)
+- Adicionar/editar cabeçalhos de solicitação
+- Modificar corpo da solicitação (JSON, dados do formulário, texto)
+- Ver cabeçalhos e corpo de resposta
+- Teste diferentes tipos de conteúdo
 
-Example HTTP test:
-
-```
+Exemplo de teste HTTP:```
 Method: POST
 URL: /api/users
 Headers:
-  Content-Type: application/json
-  Authorization: Bearer token123
+Content-Type: application/json
+Authorization: Bearer token123
 Body:
 {
-  "name": "Alice",
-  "email": "alice@example.com"
+"name": "Alice",
+"email": "alice@example.com"
 }
+
 ```
+## Código de compartilhamento
 
-## Sharing Code
+O botão **Copiar link** gera URL compartilhável:
 
-**Copy Link** button generates shareable URL:
+- Código incorporado no fragmento de URL
+- Links nunca expiram
+- Nenhuma conta necessária
+- Pode ser marcado para mais tarde
 
-- Code embedded in URL fragment
-- Links never expire
-- No account required
-- Can be bookmarked for later
+Exemplo: `https://workers.cloudflare.com/playground#abc123...`
 
-Example: `https://workers.cloudflare.com/playground#abc123...`
+## Implantando do Playground
 
-## Deploying from Playground
+Clique no botão **Implantar** para mover o código para produção:
 
-Click **Deploy** button to move code to production:
+1. **Faça login** na conta Cloudflare (crie uma conta gratuita, se necessário)
+2. **Revisar** Nome e código do trabalhador
+3. **Implantar** na rede global (leva cerca de 30 segundos)
+4. **Obter URL**: implantado no subdomínio `<nome>.workers.dev`
+5. **Gerenciar** no painel: adicionar vinculações, domínios personalizados, análises
 
-1. **Log in** to Cloudflare account (creates free account if needed)
-2. **Review** Worker name and code
-3. **Deploy** to global network (takes ~30 seconds)
-4. **Get URL**: Deployed to `<name>.workers.dev` subdomain
-5. **Manage** from dashboard: add bindings, custom domains, analytics
+**Após a implantação:**
 
-**After deploy:**
+- O código é executado na rede global da Cloudflare (mais de 300 cidades)
+- Pode adicionar ligações KV, D1, R2, objetos duráveis
+- Configurar domínios e rotas personalizadas
+- Ver análises e registros
+- Definir variáveis e segredos de ambiente
 
-- Code runs on Cloudflare's global network (300+ cities)
-- Can add KV, D1, R2, Durable Objects bindings
-- Configure custom domains and routes
-- View analytics and logs
-- Set environment variables and secrets
+**Observação:** Os Deployed Workers estão prontos para produção, mas começam no plano Gratuito (100 mil solicitações/dia).
 
-**Note:** Deployed Workers are production-ready but start on Free plan (100k requests/day).
+## Compatibilidade do navegador
 
-## Browser Compatibility
-
-| Browser     | Status          | Notes                                     |
+| Navegador | Estado | Notas |
 | ----------- | --------------- | ----------------------------------------- |
-| Chrome/Edge | ✅ Full support | Recommended                               |
-| Firefox     | ✅ Full support | Works well                                |
-| Safari      | ⚠️ Broken       | Preview fails with "PreviewRequestFailed" |
+| Cromo/Borda | ✅ Suporte total | Recomendado |
+| Raposa de fogo | ✅ Suporte total | Funciona bem |
+| Safári | ⚠️ Quebrado | A visualização falha com "PreviewRequestFailed" |
 
-**Safari users:** Use Chrome, Firefox, or Edge for Workers Playground.
+**Usuários do Safari:** Use o Chrome, Firefox ou Edge for Workers Playground.
 
-## DevTools Integration
+## Integração com DevTools
 
-1. **Open preview** in browser tab
-2. **Right-click** → Inspect Element
-3. **Console tab** shows Worker logs:
-   - `console.log()` output
-   - Uncaught errors
-   - Network requests (subrequests)
+1. **Abrir visualização** na guia do navegador
+2. **Clique com o botão direito** → Inspecionar elemento
+3. **A guia Console** mostra os registros do Worker:
+- saída `console.log()`
+- Erros não detectados
+- Solicitações de rede (subsolicitações)
 
-**Note:** DevTools show client-side console, not Worker execution logs. For production logging, use Logpush or Tail Workers.
+**Observação:** DevTools mostram o console do lado do cliente, não os logs de execução do Worker. Para registro de produção, use Logpush ou Tail Workers.
 
-## Limits in Playground
+## Limites no Playground
 
-Same as production Free plan:
+Igual ao plano gratuito de produção:
 
-| Resource      | Limit     | Notes                |
+| Recurso | Limite | Notas |
 | ------------- | --------- | -------------------- |
-| CPU time      | 10ms      | Per request          |
-| Memory        | 128 MB    | Per request          |
-| Script size   | 1 MB      | After compression    |
-| Subrequests   | 50        | Outbound fetch calls |
-| Request size  | 100 MB    | Incoming             |
-| Response size | Unlimited | Outgoing (streamed)  |
+| Tempo de CPU | 10ms | Por solicitação |
+| Memória | 128 MB | Por solicitação |
+| Tamanho do roteiro | 1 MB | Após compressão |
+| Subsolicitações | 50 | Chamadas de busca de saída |
+| Tamanho da solicitação | 100 MB | Entrada |
+| Tamanho da resposta | Ilimitado | Saída (transmitida) |
 
-**Exceeding CPU time** throws error immediately. Optimize hot paths or upgrade to Paid plan (50ms CPU).
+**Exceder o tempo de CPU** gera um erro imediatamente. Otimize hot paths ou atualize para plano pago (CPU de 50 ms).
+```

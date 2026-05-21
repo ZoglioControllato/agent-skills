@@ -23,62 +23,58 @@ try {
 }
 ```
 
-### Pipelines Are Immutable
+### Pipelines são imutáveis
 
-Cannot modify SQL after creation. Must delete and recreate.
-
-```bash
+Não é possível modificar o SQL após a criação. Deve excluir e recriar.```bash
 npx wrangler pipelines delete old-pipeline
 npx wrangler pipelines create new-pipeline --sql "..."
-```
 
-**Tip:** Use version naming (`events-pipeline-v1`) and keep SQL in version control.
+````
+**Dica:** Use nomenclatura de versão (`events-pipeline-v1`) e mantenha o SQL no controle de versão.
 
-### Worker Binding Not Found
+### Vinculação de trabalhador não encontrada
 
-**`env.STREAM is undefined`**
+**`env.STREAM é indefinido`**
 
-1. Use **stream ID** (not pipeline ID) in `wrangler.jsonc`
-2. Redeploy after adding binding
-
-```bash
+1. Use **stream ID** (não ID do pipeline) em `wrangler.jsonc`
+2. Reimplante após adicionar vinculação```bash
 npx wrangler pipelines streams list  # Get stream ID
 npx wrangler deploy
-```
+````
 
-## Common Errors
+## Erros Comuns
 
-| Error                      | Cause                         | Fix                                 |
-| -------------------------- | ----------------------------- | ----------------------------------- |
-| Events not in R2           | Roll interval not elapsed     | Wait 10-300s, check `roll_interval` |
-| Schema validation failures | Type mismatch, missing fields | Validate client-side                |
-| Rate limit (429)           | >5 MB/s per stream            | Batch events, request increase      |
-| Payload too large (413)    | >1 MB request                 | Split into smaller batches          |
-| Cannot delete stream       | Pipeline references it        | Delete pipelines first              |
-| Sink credential errors     | Token expired                 | Recreate sink with new credentials  |
+| Erro                           | Causa                                      | Correção                                  |
+| ------------------------------ | ------------------------------------------ | ----------------------------------------- |
+| Eventos que não estão em R2    | Intervalo de rolagem não decorrido         | Espere 10-300s, verifique `roll_interval` |
+| Falhas na validação do esquema | Incompatibilidade de tipo, campos ausentes | Validar do lado do cliente                |
+| Limite de taxa (429)           | >5 MB/s por fluxo                          | Eventos em lote, solicitação de aumento   |
+| Carga útil muito grande (413)  | > Solicitação de 1 MB                      | Dividir em lotes menores                  |
+| Não é possível excluir o fluxo | Pipeline faz referência a ele              | Exclua pipelines primeiro                 |
+| Erros de credencial de coletor | Token expirou                              | Recrie o coletor com novas credenciais    |
 
-## Limits (Open Beta)
+## Limites (Beta Aberto)
 
-| Resource                            | Limit      |
-| ----------------------------------- | ---------- |
-| Streams/Sinks/Pipelines per account | 20 each    |
-| Payload size                        | 1 MB       |
-| Ingest rate per stream              | 5 MB/s     |
-| Event retention                     | 24 hours   |
-| Recommended batch size              | 100 events |
+| Recurso                           | Limite      |
+| --------------------------------- | ----------- |
+| Streams/Sinks/Pipelines por conta | 20 cada     |
+| Tamanho da carga útil             | 1 MB        |
+| Taxa de ingestão por stream       | 5MB/s       |
+| Retenção de eventos               | 24 horas    |
+| Tamanho de lote recomendado       | 100 eventos |
 
-## SQL Limitations
+## Limitações SQL
 
-- **No JOINs** - single stream per pipeline
-- **No window functions** - basic SQL only
-- **No subqueries** - must use `INSERT INTO ... SELECT ... FROM`
-- **No schema evolution** - cannot modify after creation
+- **Sem JOINs** - fluxo único por pipeline
+- **Sem funções de janela** - somente SQL básico
+- **Sem subconsultas** - deve usar `INSERT INTO ... SELECT ... FROM`
+- **Sem evolução de esquema** - não é possível modificar após a criação
 
-## Debug Checklist
+## Lista de verificação de depuração
 
-- [ ] Stream exists: `npx wrangler pipelines streams list`
-- [ ] Pipeline healthy: `npx wrangler pipelines get <ID>`
-- [ ] SQL syntax matches schema
-- [ ] Worker redeployed after binding added
-- [ ] Waited for roll interval
-- [ ] Accepted vs processed count matches (no validation drops)
+- [] O fluxo existe: `lista de fluxos de pipelines do npx wrangler`
+- [] Pipeline íntegro: `pipelines npx wrangler obtêm <ID>`
+- [] A sintaxe SQL corresponde ao esquema
+- [] Trabalhador redistribuído após vinculação adicionada
+- [] Aguardou intervalo de rolagem
+- [] Correspondências de contagem aceitas versus processadas (sem quedas de validação)

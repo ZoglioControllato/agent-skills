@@ -1,59 +1,56 @@
-# Project Structure
+# Estrutura do Projeto
 
-## Expo Router Project Layout
+## Layout do projeto do roteador Expo```
 
-```
 my-app/
-├── app/                      # File-based routing (Expo Router)
-│   ├── _layout.tsx           # Root layout
-│   ├── index.tsx             # Home screen
-│   ├── +not-found.tsx        # 404 screen
-│   ├── (tabs)/               # Tab navigator group
-│   │   ├── _layout.tsx
-│   │   ├── index.tsx
-│   │   ├── search.tsx
-│   │   └── profile.tsx
-│   ├── (auth)/               # Auth screens (no tabs)
-│   │   ├── _layout.tsx
-│   │   ├── login.tsx
-│   │   └── register.tsx
-│   └── [id].tsx              # Dynamic route
+├── app/ # File-based routing (Expo Router)
+│ ├── \_layout.tsx # Root layout
+│ ├── index.tsx # Home screen
+│ ├── +not-found.tsx # 404 screen
+│ ├── (tabs)/ # Tab navigator group
+│ │ ├── \_layout.tsx
+│ │ ├── index.tsx
+│ │ ├── search.tsx
+│ │ └── profile.tsx
+│ ├── (auth)/ # Auth screens (no tabs)
+│ │ ├── \_layout.tsx
+│ │ ├── login.tsx
+│ │ └── register.tsx
+│ └── [id].tsx # Dynamic route
 ├── components/
-│   ├── ui/                   # Reusable UI components
-│   │   ├── Button.tsx
-│   │   ├── Card.tsx
-│   │   └── Input.tsx
-│   └── features/             # Feature-specific components
-│       ├── ProductCard.tsx
-│       └── UserAvatar.tsx
+│ ├── ui/ # Reusable UI components
+│ │ ├── Button.tsx
+│ │ ├── Card.tsx
+│ │ └── Input.tsx
+│ └── features/ # Feature-specific components
+│ ├── ProductCard.tsx
+│ └── UserAvatar.tsx
 ├── hooks/
-│   ├── useAuth.ts
-│   ├── useStorage.ts
-│   └── useApi.ts
+│ ├── useAuth.ts
+│ ├── useStorage.ts
+│ └── useApi.ts
 ├── services/
-│   ├── api.ts                # API client (axios/ky)
-│   └── auth.ts               # Auth service
+│ ├── api.ts # API client (axios/ky)
+│ └── auth.ts # Auth service
 ├── stores/
-│   ├── useUserStore.ts       # Zustand stores
-│   └── atoms/                # Jotai atoms (if using Jotai)
-│       └── userAtoms.ts
+│ ├── useUserStore.ts # Zustand stores
+│ └── atoms/ # Jotai atoms (if using Jotai)
+│ └── userAtoms.ts
 ├── constants/
-│   ├── colors.ts
-│   └── layout.ts
+│ ├── colors.ts
+│ └── layout.ts
 ├── types/
-│   └── index.ts
+│ └── index.ts
 ├── utils/
-│   └── helpers.ts
+│ └── helpers.ts
 ├── assets/
-│   ├── images/
-│   └── fonts/
+│ ├── images/
+│ └── fonts/
 ├── app.json
 └── tsconfig.json
-```
 
-## app.json Configuration
-
-```json
+````
+## configuração do app.json```json
 {
   "expo": {
     "name": "My App",
@@ -103,29 +100,26 @@ my-app/
     }
   }
 }
-```
+````
 
-## tsconfig.json
-
-```json
+##tsconfig.json```json
 {
-  "extends": "expo/tsconfig.base",
-  "compilerOptions": {
-    "strict": true,
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./*"]
-    }
-  },
-  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]
+"extends": "expo/tsconfig.base",
+"compilerOptions": {
+"strict": true,
+"baseUrl": ".",
+"paths": {
+"@/_": ["./_"]
 }
-```
+},
+"include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]
+}
 
-**Note:** With Expo SDK 53+, `babel.config.js` is no longer needed for most setups. Metro handles module resolution and the Reanimated plugin is configured via `app.json`.
+````
 
-## Essential Dependencies
+**Observação:** Com Expo SDK 53+, `babel.config.js` não é mais necessário para a maioria das configurações. Metro cuida da resolução do módulo e o plugin Reanimated é configurado via `app.json`.
 
-```json
+## Dependências essenciais```json
 {
   "dependencies": {
     "expo": "~53.0.0",
@@ -152,21 +146,23 @@ my-app/
     "typescript": "^5.5.0"
   }
 }
-```
+````
 
-**State management note:** Both Zustand and Jotai are excellent choices. Zustand is better when you need a single store with persistence (Zustand persist + MMKV). Jotai shines when you need fine-grained atomic state with derived atoms — its atomic model naturally prevents unnecessary re-renders in list items.
+**Nota da administração do estado:** Zustand e Jotai são excelentes escolhas. Zustand é melhor quando você precisa de um único armazenamento com persistência (Zustand persist + MMKV). Jotai brilha quando você precisa de um estado atômico refinado com átomos derivados - seu modelo atômico evita naturalmente re-renderizações desnecessárias em itens de lista.
 
-## Quick Reference
+## Referência rápida
 
-| Directory              | Purpose                              |
-| ---------------------- | ------------------------------------ |
-| `app/`                 | File-based routes (Expo Router)      |
-| `components/ui/`       | Reusable, generic UI components      |
-| `components/features/` | Feature-specific components          |
-| `hooks/`               | Custom React hooks                   |
-| `services/`            | API clients, auth, external services |
-| `stores/`              | Zustand stores or Jotai atoms        |
-| `constants/`           | App-wide constants (colors, layout)  |
-| `types/`               | TypeScript type definitions          |
-| `utils/`               | Pure utility functions               |
-| `assets/`              | Images, fonts, static files          |
+| Diretório               | Finalidade                                     |
+| ----------------------- | ---------------------------------------------- |
+| `aplicativo/`           | Rotas baseadas em arquivo (Expo Router)        |
+| `componentes/ui/`       | Componentes de UI genéricos e reutilizáveis ​​ |
+| `componentes/recursos/` | Componentes específicos de recursos            |
+| `ganchos/`              | Ganchos React personalizados                   |
+| `serviços/`             | Clientes API, autenticação, externos           |
+
+serviços |
+| `lojas/` | Lojas Zustand ou átomos Jotai |
+| `constantes/` | Constantes em todo o aplicativo (cores, layout) |
+| `tipos/` | Definições de tipo TypeScript |
+| `utils/` | Funções de utilidade pura |
+| `ativos/` | Imagens, fontes, arquivos estáticos |

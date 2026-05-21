@@ -1,12 +1,12 @@
-# Queues Gotchas & Troubleshooting
+# Queues: armadilhas e resolução de problemas
 
-## CRITICAL: Top Production Mistakes
+## CRÍTICO: principais erros em produção
 
-### 1. "Entire Batch Retried After Single Error"
+### 1. “Lote inteiro repetido após um único erro”
 
-**Problem:** Throwing uncaught error in queue handler retries the entire batch, not just the failed message  
-**Cause:** Uncaught exceptions propagate to the runtime, triggering batch-level retry  
-**Solution:** Always wrap individual message processing in try/catch and call `msg.retry()` explicitly
+**Problema:** Lançar erro não tratado no handler da fila repete o lote inteiro, não só a mensagem com falha  
+**Causa:** Exceções não capturadas propagam ao runtime e disparam retry em nível de lote  
+**Solução:** Envolva sempre o processamento de cada mensagem em try/catch e chame `msg.retry()` explicitamente
 
 ```typescript
 // ❌ BAD: Throws error, retries entire batch
@@ -30,11 +30,11 @@ async queue(batch: MessageBatch): Promise<void> {
 }
 ```
 
-### 2. "Messages Retry Forever"
+### 2. “Mensagens repetem para sempre”
 
-**Problem:** Messages not explicitly ack'd or retry'd will auto-retry indefinitely  
-**Cause:** Runtime default behavior retries unhandled messages until `max_retries` reached  
-**Solution:** Always call `msg.ack()` or `msg.retry()` for each message. Never leave messages unhandled.
+**Problema:** Mensagens sem ack ou retry explícito repetem automaticamente  
+**Causa:** O padrão do runtime é repetir mensagens não tratadas até `max_retries`  
+**Solução:** Chame sempre `msg.ack()` ou `msg.retry()` por mensagem. Nunca deixe mensagens sem tratamento explícito.
 
 ```typescript
 // ❌ BAD: Skipped messages auto-retry forever
@@ -61,13 +61,13 @@ async queue(batch: MessageBatch): Promise<void> {
 }
 ```
 
-## Common Errors
+## Erros comuns
 
-### "Duplicate Message Processing"
+### “Processamento duplicado de mensagens”
 
-**Problem:** Same message processed multiple times  
-**Cause:** At-least-once delivery guarantee means duplicates are possible during retries  
-**Solution:** Design consumers to be idempotent by tracking processed message IDs in KV with expiration TTL
+**Problema:** A mesma mensagem é processada várias vezes  
+**Causa:** A garantia at-least-once permite duplicatas durante retentativas  
+**Solução:** Torne os consumidores idempotentes rastreando IDs processados no KV com TTL de expiração
 
 ```typescript
 async queue(batch: MessageBatch, env: Env): Promise<void> {
@@ -85,11 +85,11 @@ async queue(batch: MessageBatch, env: Env): Promise<void> {
 }
 ```
 
-### "Pull Consumer Can't Decode Messages"
+### “Consumidor pull não decodifica mensagens”
 
-**Problem:** Pull consumer or dashboard shows unreadable message bodies  
-**Cause:** Messages sent with `v8` content type are only decodable by Workers push consumers  
-**Solution:** Use `json` content type for pull consumers or dashboard visibility
+**Problema:** Consumidor pull ou dashboard mostra corpos ilegíveis  
+**Causa:** Mensagens com tipo `v8` só são decodificáveis por consumidores push Workers  
+**Solução:** Use tipo `json` para consumidores pull ou visibilidade no dashboard
 
 ```typescript
 // Use json for pull consumers
@@ -99,21 +99,21 @@ await env.MY_QUEUE.send(data, { contentType: 'json' })
 await env.MY_QUEUE.send({ date: new Date(), tags: new Set() }, { contentType: 'v8' })
 ```
 
-### "Messages Not Being Delivered"
+### “Mensagens não são entregues”
 
-**Problem:** Messages sent but consumer not processing  
-**Cause:** Queue paused, consumer not configured, or consumer errors  
-**Solution:** Check queue status with `wrangler queues list`, verify consumer configured with `wrangler queues consumer add`, and check logs with `wrangler tail`
+**Problema:** Mensagens enviadas mas consumidor não processa  
+**Causa:** Fila pausada, consumidor não configurado ou erros no consumidor  
+**Solução:** Verifique o status com `wrangler queues list`, confira consumidor com `wrangler queues consumer add` e logs com `wrangler tail`
 
-### "High Dead Letter Queue Rate"
+### “Taxa alta na Dead Letter Queue”
 
-**Problem:** Many messages ending up in DLQ  
-**Cause:** Consumer repeatedly failing to process messages after max retries  
-**Solution:** Review consumer error logs, check external dependency availability, verify message format matches expectations, or increase retry delay
+**Problema:** Muitas mensagens vão para a DLQ  
+**Causa:** Consumidor falha repetidamente após máximo de retentativas  
+**Solução:** Revise logs de erro do consumidor, disponibilidade de dependências externas, formato das mensagens ou aumente o atraso entre retentativas
 
-## Error Classification Patterns
+## Padrões de classificação de erro
 
-Classify errors to decide whether to retry or DLQ:
+Classifique erros para decidir entre retry ou DLQ:
 
 ```typescript
 async queue(batch: MessageBatch, env: Env): Promise<void> {
@@ -152,29 +152,29 @@ function isRetryable(error: unknown): boolean {
 }
 ```
 
-### "CPU Time Exceeded in Consumer"
+### “Tempo de CPU excedido no consumidor”
 
-**Problem:** Consumer fails with CPU time limit exceeded  
-**Cause:** Consumer processing exceeding 30s default CPU time limit  
-**Solution:** Increase CPU limit in wrangler.jsonc: `{ "limits": { "cpu_ms": 300000 } }` (5 minutes max)
+**Problema:** Consumidor falha por limite de tempo de CPU  
+**Causa:** Processamento ultrapassa o limite padrão de 30s  
+**Solução:** Aumente o limite no wrangler.jsonc: `{ "limits": { "cpu_ms": 300000 } }` (máx. 5 minutos)
 
-## Content Type Decision Guide
+## Guia de decisão de tipo de conteúdo
 
-**When to use each content type:**
+**Quando usar cada tipo:**
 
-| Content Type     | Use When                                             | Readable By               | Supports                             |
-| ---------------- | ---------------------------------------------------- | ------------------------- | ------------------------------------ |
-| `json` (default) | Pull consumers, dashboard visibility, simple objects | All (push/pull/dashboard) | JSON-serializable types only         |
-| `v8`             | Push consumers only, complex JS objects              | Push consumers only       | Date, Map, Set, BigInt, typed arrays |
-| `text`           | String-only payloads                                 | All                       | Strings only                         |
-| `bytes`          | Binary data (images, files)                          | All                       | ArrayBuffer, Uint8Array              |
+| Tipo de conteúdo | Use quando                                    | Legível por                 | Suporta                              |
+| ---------------- | --------------------------------------------- | --------------------------- | ------------------------------------ |
+| `json` (padrão)  | Consumidores pull, dashboard, objetos simples | Todos (push/pull/dashboard) | Apenas tipos serializáveis em JSON   |
+| `v8`             | Somente push, objetos JS complexos            | Somente push                | Date, Map, Set, BigInt, typed arrays |
+| `text`           | Apenas strings                                | Todos                       | Somente strings                      |
+| `bytes`          | Dados binários (imagens, arquivos)            | Todos                       | ArrayBuffer, Uint8Array              |
 
-**Decision tree:**
+**Árvore de decisão:**
 
-1. Need to view in dashboard or use pull consumer? → Use `json`
-2. Need Date, Map, Set, or other V8 types? → Use `v8` (push consumers only)
-3. Just strings? → Use `text`
-4. Binary data? → Use `bytes`
+1. Precisa ver no dashboard ou usar consumidor pull? → Use `json`
+2. Precisa de Date, Map, Set ou outros tipos V8? → Use `v8` (somente push)
+3. Só strings? → Use `text`
+4. Dados binários? → Use `bytes`
 
 ```typescript
 // Dashboard/pull: use json
@@ -190,21 +190,23 @@ await env.QUEUE.send(
 )
 ```
 
-## Limits
+## Limites
 
-| Limit                  | Value                     | Notes                                |
-| ---------------------- | ------------------------- | ------------------------------------ |
-| Max queues             | 10,000                    | Per account                          |
-| Message size           | 128 KB                    | Maximum per message                  |
-| Batch size (consumer)  | 100 messages              | Maximum messages per batch           |
-| Batch size (sendBatch) | 100 msgs or 256 KB        | Whichever limit reached first        |
-| Throughput             | 5,000 msgs/sec            | Per queue                            |
-| Retention              | 4-14 days                 | Configurable retention period        |
-| Max backlog            | 25 GB                     | Maximum queue backlog size           |
-| Max delay              | 12 hours (43,200s)        | Maximum message delay                |
-| Max retries            | 100                       | Maximum retry attempts               |
-| CPU time default       | 30s                       | Per consumer invocation              |
-| CPU time max           | 300s (5 min)              | Configurable via `limits.cpu_ms`     |
-| Operations per message | 3 (write + read + delete) | Base cost per message                |
-| Pricing                | $0.40 per 1M operations   | After 1M free operations             |
-| Message charging       | Per 64 KB chunk           | Messages charged in 64 KB increments |
+| Limite                       | Valor                     | Observação                                 |
+| ---------------------------- | ------------------------- | ------------------------------------------ |
+| Máx. filas                   | 10.000                    | Por conta                                  |
+| Tamanho da mensagem          | 128 KB                    | Máximo por mensagem                        |
+| Tamanho do lote (consumidor) | 100 mensagens             | Máximo por lote                            |
+| Tamanho do lote (sendBatch)  | 100 msgs ou 256 KB        | O que atingir o limite primeiro            |
+| Vazão                        | 5.000 msgs/s              | Por fila                                   |
+| Retenção                     | 4–14 dias                 | Período configurável                       |
+| Backlog máximo               | 25 GB                     | Tamanho máximo do backlog                  |
+| Atraso máximo                | 12 horas (43.200s)        | Atraso máximo da mensagem                  |
+| Retentativas máx.            | 100                       | Tentativas máximas                         |
+| CPU padrão                   | 30s                       | Por invocação do consumidor                |
+| CPU máx.                     | 300s (5 min)              | Configurável via `limits.cpu_ms`           |
+| Operações por mensagem       | 3 (write + read + delete) | Custo base por mensagem                    |
+| Preço                        | US$ 0,40 por 1M ops       | Após 1M operações gratuitas                |
+| Cobrança por mensagem        | Por bloco de 64 KB        | Mensagens cobradas em incrementos de 64 KB |
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

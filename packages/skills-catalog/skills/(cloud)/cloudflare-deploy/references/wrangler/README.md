@@ -1,19 +1,19 @@
 # Cloudflare Wrangler
 
-Official CLI for Cloudflare Workers - develop, manage, and deploy Workers from the command line.
+CLI oficial do Cloudflare Workers — desenvolva, gerencie e faça deploy de Workers pela linha de comando.
 
-## What is Wrangler?
+## O que é Wrangler?
 
-Wrangler is the Cloudflare Developer Platform CLI that allows you to:
+Wrangler é a CLI da Cloudflare Developer Platform que permite:
 
-- Create, develop, and deploy Workers
-- Manage bindings (KV, D1, R2, Durable Objects, etc.)
-- Configure routing and environments
-- Run local development servers
-- Execute migrations and manage resources
-- Perform integration testing
+- Criar, desenvolver e publicar Workers
+- Gerenciar bindings (KV, D1, R2, Durable Objects, etc.)
+- Configurar roteamento e ambientes
+- Rodar servidores de desenvolvimento locais
+- Executar migrações e gerenciar recursos
+- Rodar testes de integração
 
-## Installation
+## Instalação
 
 ```bash
 npm install wrangler --save-dev
@@ -21,21 +21,21 @@ npm install wrangler --save-dev
 npm install -g wrangler
 ```
 
-Run commands: `npx wrangler <command>` (or `pnpm`/`yarn wrangler`)
+Comandos: `npx wrangler <command>` (ou `pnpm`/`yarn wrangler`)
 
-## Reading Order
+## Ordem de leitura
 
-| If you want to...                 | Start here                                                          |
-| --------------------------------- | ------------------------------------------------------------------- |
-| Create/deploy Worker quickly      | Essential Commands below → [patterns.md](./patterns.md) §New Worker |
-| Configure bindings (KV, D1, R2)   | [configuration.md](./configuration.md) §Bindings                    |
-| Write integration tests           | [api.md](./api.md) §startWorker                                     |
-| Debug production issues           | [gotchas.md](./gotchas.md) + Essential Commands §Monitoring         |
-| Set up multi-environment workflow | [configuration.md](./configuration.md) §Environments                |
+| Se você quer…                     | Comece aqui                                                           |
+| --------------------------------- | --------------------------------------------------------------------- |
+| Criar/publicar Worker rapidamente | Comandos essenciais abaixo → [patterns.md](./patterns.md) §New Worker |
+| Configurar bindings (KV, D1, R2)  | [configuration.md](./configuration.md) §Bindings                      |
+| Escrever testes de integração     | [api.md](./api.md) §startWorker                                       |
+| Depurar problemas em produção     | [gotchas.md](./gotchas.md) + Comandos essenciais §Monitoring          |
+| Fluxo multiambiente               | [configuration.md](./configuration.md) §Environments                  |
 
-## Essential Commands
+## Comandos essenciais
 
-### Project & Development
+### Projeto e desenvolvimento
 
 ```bash
 wrangler init [name]              # Create new project
@@ -49,7 +49,7 @@ wrangler login                    # OAuth login
 wrangler whoami                   # Check auth status
 ```
 
-## Resource Management
+## Gerenciamento de recursos
 
 ### KV
 
@@ -76,7 +76,7 @@ wrangler r2 object put BUCKET/key --file path
 wrangler r2 object get BUCKET/key
 ```
 
-### Other Resources
+### Outros recursos
 
 ```bash
 wrangler queues create NAME
@@ -101,7 +101,7 @@ wrangler secret-store:secret put STORE_NAME SECRET_NAME
 wrangler secret-store:secret list STORE_NAME
 ```
 
-### Monitoring
+### Monitoramento
 
 ```bash
 wrangler tail                     # Real-time logs
@@ -109,15 +109,15 @@ wrangler tail --env production    # Tail specific env
 wrangler tail --status error      # Filter by status
 ```
 
-## In This Reference
+## Nesta referência
 
-- [auth.md](./auth.md) - Authentication setup (`wrangler login`, API tokens)
-- [configuration.md](./configuration.md) - wrangler.jsonc setup, environments, bindings
-- [api.md](./api.md) - Programmatic API (`startWorker`, `getPlatformProxy`, events)
-- [patterns.md](./patterns.md) - Common workflows and development patterns
-- [gotchas.md](./gotchas.md) - Common pitfalls, limits, and troubleshooting
+- [auth.md](./auth.md) — Configuração de autenticação (`wrangler login`, tokens de API)
+- [configuration.md](./configuration.md) — Configuração wrangler.jsonc, ambientes, bindings
+- [api.md](./api.md) — API programática (`startWorker`, `getPlatformProxy`, eventos)
+- [patterns.md](./patterns.md) — Fluxos comuns e padrões de desenvolvimento
+- [gotchas.md](./gotchas.md) — Armadilhas, limites e resolução de problemas
 
-## Quick Decision Tree
+## Árvore de decisão rápida
 
 ```
 Need to test your Worker?
@@ -142,8 +142,10 @@ Authentication issues?
 └─ CI/CD setup → auth.md §API Token
 ```
 
-## See Also
+## Ver também
 
-- [workers](../workers/) - Workers runtime API reference
-- [miniflare](../miniflare/) - Local testing with Miniflare
-- [workerd](../workerd/) - Runtime that powers `wrangler dev`
+- [workers](../workers/) — Referência da API de runtime dos Workers
+- [miniflare](../miniflare/) — Testes locais com Miniflare
+- [workerd](../workerd/) — Runtime que sustenta o `wrangler dev`
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

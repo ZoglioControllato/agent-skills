@@ -1,8 +1,8 @@
-# Email Routing Configuration
+# Configuração de roteamento de e-mail
 
-## Wrangler Configuration
+## Configuração do Wrangler
 
-### Basic Email Worker
+### Trabalhador de e-mail básico
 
 ```jsonc
 // wrangler.jsonc
@@ -23,7 +23,7 @@ export default {
 } satisfies ExportedHandler
 ```
 
-### With Storage Bindings
+### Com ligações de armazenamento
 
 ```jsonc
 {
@@ -44,7 +44,7 @@ interface Env {
 }
 ```
 
-## Local Development
+##Desenvolvimento Local
 
 ```bash
 npx wrangler dev
@@ -59,15 +59,15 @@ Subject: Test
 Body'
 ```
 
-## Deployment
+##Implantação
 
 ```bash
 npx wrangler deploy
 ```
 
-**Connect to Email Routing:**
+**Conecte-se ao roteamento de e-mail:**
 
-Dashboard: Email > Email Routing > [domain] > Settings > Email Workers > Select worker
+Painel: E-mail > Roteamento de e-mail > [domínio] > Configurações > Trabalhadores de e-mail > Selecionar trabalhador
 
 API:
 
@@ -77,7 +77,7 @@ curl -X PUT "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/email/routing/s
   -d '{"enabled": true, "worker": "email-worker"}'
 ```
 
-## DNS (Auto-Created)
+##DNS (criado automaticamente)
 
 ```dns
 yourdomain.com. IN MX 1 isaac.mx.cloudflare.net.
@@ -86,7 +86,7 @@ yourdomain.com. IN MX 3 amir.mx.cloudflare.net.
 yourdomain.com. IN TXT "v=spf1 include:_spf.mx.cloudflare.net ~all"
 ```
 
-## Secrets & Variables
+##Segredos e Variáveis
 
 ```bash
 # Secrets (encrypted)
@@ -104,7 +104,7 @@ interface Env {
 }
 ```
 
-## TypeScript Setup
+##Configuração do TypeScript
 
 ```bash
 npm install --save-dev @cloudflare/workers-types
@@ -134,7 +134,7 @@ export default {
 } satisfies ExportedHandler<Env>
 ```
 
-## Dependencies
+##Dependências
 
 ```bash
 npm install postal-mime
@@ -153,7 +153,7 @@ export default {
 } satisfies ExportedHandler
 ```
 
-## Multi-Environment
+##Multiambiente
 
 ```bash
 # wrangler.dev.jsonc
@@ -166,7 +166,7 @@ npx wrangler deploy --config wrangler.dev.jsonc
 npx wrangler deploy --config wrangler.prod.jsonc
 ```
 
-## CI/CD (GitHub Actions)
+##CI/CD (ações do GitHub)
 
 ```yaml
 # .github/workflows/deploy.yml

@@ -1,4 +1,4 @@
-# API Reference
+# Referência da API
 
 ## Workers Binding API
 
@@ -8,7 +8,7 @@
 binding = "IMAGES"
 ```
 
-### Transform Images
+### Transformar imagens
 
 ```typescript
 const imageResponse = await env.IMAGES.input(fileBuffer)
@@ -17,7 +17,7 @@ const imageResponse = await env.IMAGES.input(fileBuffer)
 return imageResponse.response()
 ```
 
-### Transform Options
+### Opções de transformação
 
 ```typescript
 interface TransformOptions {
@@ -39,7 +39,7 @@ interface TransformOptions {
 }
 ```
 
-### Draw/Watermark
+### Desenhar / marca d’água
 
 ```typescript
 await env.IMAGES.input(baseImage)
@@ -49,14 +49,14 @@ await env.IMAGES.input(baseImage)
 
 ## REST API
 
-### Upload Image
+### Enviar imagem
 
 ```bash
 curl -X POST https://api.cloudflare.com/client/v4/accounts/{account_id}/images/v1 \
   -H "Authorization: Bearer {token}" -F file=@image.jpg -F metadata='{"key":"value"}'
 ```
 
-### Other Operations
+### Outras operações
 
 ```bash
 GET  /accounts/{account_id}/images/v1/{image_id}      # Get details
@@ -70,7 +70,7 @@ GET  /accounts/{account_id}/images/v1?page=1         # List
 https://imagedelivery.net/{hash}/{id}/width=800,height=600,fit=cover,format=avif
 ```
 
-**Params:** `w=`, `h=`, `fit=`, `q=`, `f=`, `dpr=`, `gravity=`, `sharpen=`, `blur=`, `rotate=`, `background=`, `metadata=`
+**Parâmetros:** `w=`, `h=`, `fit=`, `q=`, `f=`, `dpr=`, `gravity=`, `sharpen=`, `blur=`, `rotate=`, `background=`, `metadata=`
 
 ## Direct Creator Upload
 
@@ -88,11 +88,13 @@ formData.append('file', file)
 await fetch(result.uploadURL, { method: 'POST', body: formData })
 ```
 
-## Error Codes
+## Códigos de erro
 
-| Code | Message           | Solution                 |
-| ---- | ----------------- | ------------------------ |
-| 5400 | Invalid format    | Use JPEG, PNG, GIF, WebP |
-| 5401 | Too large         | Max 100MB                |
-| 5403 | Invalid transform | Check params             |
-| 9413 | Rate limit        | Implement backoff        |
+| Código | Mensagem          | Solução                  |
+| ------ | ----------------- | ------------------------ |
+| 5400   | Invalid format    | Use JPEG, PNG, GIF, WebP |
+| 5401   | Too large         | Máx. 100 MB              |
+| 5403   | Invalid transform | Verifique os parâmetros  |
+| 9413   | Rate limit        | Implemente backoff       |
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

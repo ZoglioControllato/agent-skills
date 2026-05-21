@@ -1,143 +1,142 @@
-# Coding Principles
+# Princípios de codificação
 
-Read this file during the Execute phase when implementing changes.
-These principles reduce common AI coding mistakes and ensure
-consistent, high-quality output.
+Leia este arquivo durante a fase Executar ao implementar alterações.
+Esses princípios reduzem erros comuns de codificação de IA e garantem
+saída consistente e de alta qualidade.
 
-## 1. Think Before Coding
+## 1. Pense antes de codificar
 
-Before writing any code:
+Antes de escrever qualquer código:
 
-- State your assumptions explicitly. If uncertain, ask.
-- If multiple approaches exist, present them with tradeoffs.
-- If a simpler approach exists, say so. Push back when warranted.
-- If something is unclear, stop. Name what's confusing. Ask.
-- If the developer's approach seems wrong, say so constructively.
-  Don't be sycophantic — honesty prevents bugs.
+- Indique explicitamente as suas suposições. Se não tiver certeza, pergunte.
+- Se existirem múltiplas abordagens, apresente-lhes compensações.
+- Se existir uma abordagem mais simples, diga-o. Empurre para trás quando necessário.
+- Se algo não estiver claro, pare. Nomeie o que é confuso. Perguntar.
+- Se a abordagem do desenvolvedor parecer errada, diga-o de forma construtiva.
+  Não seja bajulador – a honestidade evita erros.
 
-## 2. Simplicity First
+## 2. Simplicidade em primeiro lugar
 
-Write the minimum code that solves the problem.
+Escreva o código mínimo que resolva o problema.
 
-- No features beyond what was asked.
-- No abstractions for single-use code.
-- No "flexibility" or "configurability" that wasn't requested.
-- No error handling for impossible scenarios.
-- No speculative optimization.
-- If you wrote 200 lines and it could be 50, rewrite it.
+- Não há recursos além do que foi solicitado.
+- Sem abstrações para código de uso único.
+- Nenhuma “flexibilidade” ou “configurabilidade” que não foi solicitada.
+- Sem tratamento de erros para cenários impossíveis.
+- Sem otimização especulativa.
+- Se você escreveu 200 linhas e podem ser 50, reescreva.
 
-The test: "Would a senior engineer say this is overcomplicated?"
-If yes, simplify.
+O teste: "Um engenheiro sênior diria que isso é complicado demais?"
+Se sim, simplifique.
 
-## 3. Surgical Changes
+## 3. Alterações Cirúrgicas
 
-When editing existing code:
+Ao editar o código existente:
 
-- Don't "improve" adjacent code, comments, or formatting.
-- Don't refactor things that aren't broken.
-- Match existing style, even if you'd do it differently.
-- If you notice unrelated issues, mention them — don't fix them.
+- Não "melhore" código, comentários ou formatação adjacentes.
+- Não refatore coisas que não estão quebradas.
+- Combine o estilo existente, mesmo que você faça de forma diferente.
+- Se você notar problemas não relacionados, mencione-os – não os corrija.
 
-When your changes create orphans:
+Quando suas alterações criam órfãos:
 
-- Remove imports, variables, and functions that YOUR changes made unused.
-- Don't remove pre-existing dead code unless asked.
+- Remova importações, variáveis e funções que SUAS alterações tornaram não utilizadas.
+- Não remova código morto pré-existente, a menos que seja solicitado.
 
-The test: Every changed line traces directly to the mission objective.
+O teste: cada linha alterada remete diretamente ao objetivo da missão.
 
-## 4. Goal-Driven Execution
+## 4. Execução Orientada a Metas
 
-Transform vague tasks into verifiable goals:
+Transforme tarefas vagas em metas verificáveis:
 
-- "Add validation" → "Write tests for invalid inputs, then make them pass"
-- "Fix the bug" → "Write a test that reproduces it, then make it pass"
-- "Refactor X" → "Ensure tests pass before and after"
+- "Adicionar validação" → "Escreva testes para entradas inválidas e faça-os passar"
+- "Corrigir o bug" → "Escreva um teste que o reproduza e depois faça-o passar"
+- "Refator X" → "Garantir que os testes sejam aprovados antes e depois"
 
-For multi-step tasks, state a brief plan with verification checkpoints.
-Strong success criteria enable autonomous execution. Weak criteria
-("make it work") require constant clarification — ask for better
-criteria rather than guessing.
+Para tarefas de várias etapas, estabeleça um plano resumido com pontos de verificação.
+Critérios de sucesso fortes permitem a execução autônoma. Critérios fracos
+("fazer funcionar") exigem esclarecimentos constantes - peça melhores
+critérios em vez de adivinhações.
 
-## 5. Respect the Codebase
+## 5. Respeite a base de código
 
-You are a guest in this codebase. Act like it.
+Você é um convidado nesta base de código. Aja como tal.
 
-- Use the same naming conventions already in the project.
-- Use the same file organization patterns.
-- Use the same error handling approach.
-- Use the same import style (named vs default, relative vs absolute).
-- If the project uses semicolons, use semicolons. If it doesn't, don't.
+- Use as mesmas convenções de nomenclatura já existentes no projeto.
+- Use os mesmos padrões de organização de arquivos.
+- Use a mesma abordagem de tratamento de erros.
+- Use o mesmo estilo de importação (nomeado versus padrão, relativo versus absoluto).
+- Se o projeto usar ponto e vírgula, use ponto e vírgula. Se não, não faça isso.
 
-If existing conventions conflict with language best practices, flag it
-to the developer. Don't silently introduce a different convention.
+Se as convenções existentes entrarem em conflito com as melhores práticas linguísticas, sinalize-as
+para o desenvolvedor. Não introduza silenciosamente uma convenção diferente.
 
-## 6. Language Best Practices
+## 6. Melhores práticas de linguagem
 
-Always follow the official best practices for the language and
-frameworks in use. This means:
+Sempre siga as melhores práticas oficiais para o idioma e
+estruturas em uso. Isso significa:
 
-- Use idiomatic patterns for the language (e.g., list comprehensions
-  in Python, Optional chaining in TypeScript).
-- Follow the official style guide when the project doesn't have its own.
-- Use current, non-deprecated APIs and methods.
-- Handle errors according to the language's conventions (try/catch,
-  Result types, error returns — whatever the ecosystem prefers).
+- Use padrões idiomáticos para o idioma (por exemplo, compreensões de lista
+  em Python, encadeamento opcional em TypeScript).
+- Siga o guia de estilo oficial quando o projeto não tiver o seu próprio.
+- Use APIs e métodos atuais e não obsoletos.
+- Tratar erros de acordo com as convenções da linguagem (try/catch,
+  Tipos de resultados, retornos de erros — o que o ecossistema preferir).
 
-Critical: Never rely on training memory for API signatures, method
-parameters, or framework behavior. Always verify against current
-documentation using the Knowledge Verification Chain:
-
-```
+Crítico: Nunca confie na memória de treinamento para assinaturas de API, métodos
+parâmetros ou comportamento da estrutura. Sempre verifique em relação à corrente
+documentação usando a cadeia de verificação de conhecimento:```
 .notebook/ → project docs → MCP Context7 → web search → flag as uncertain
+
 ```
+## 7. Dependências e importações
 
-## 7. Dependencies and Imports
+Ao adicionar novas dependências ou importações:
 
-When adding new dependencies or imports:
+- Verifique se o projeto já possui uma dependência que resolva o
+  problema antes de adicionar um novo.
+- Verifique o gerenciador de pacotes e o arquivo de bloqueio do projeto para ver se há
+  versões.
+- Se adicionar uma nova dependência, mencione-a ao desenvolvedor com
+  justificativa - nunca adicione pacotes silenciosamente.
+- Combine o estilo de importação e as convenções de pedido do projeto.
 
-- Check if the project already has a dependency that solves the
-  problem before adding a new one.
-- Check the project's package manager and lockfile for existing
-  versions.
-- If adding a new dependency, mention it to the developer with
-  rationale — never silently add packages.
-- Match the project's import style and ordering conventions.
+## 8. Tratamento de erros
 
-## 8. Error Handling
+- Lidar com erros que podem ocorrer de forma realista.
+- Não adicione blocos catch para cenários teoricamente impossíveis.
+- Use os padrões de tratamento de erros existentes no projeto.
+- As mensagens de erro devem ser acionáveis — contar o que aconteceu e
+  o que fazer a respeito, não apenas "Algo deu errado".
+- Nunca engula erros silenciosamente (esvazie blocos de captura), a menos que
+  há um motivo explícito documentado em um comentário.
 
-- Handle errors that can realistically occur.
-- Don't add catch blocks for theoretically impossible scenarios.
-- Use the project's existing error handling patterns.
-- Error messages should be actionable — tell what happened and
-  what to do about it, not just "Something went wrong."
-- Never swallow errors silently (empty catch blocks) unless
-  there's an explicit reason documented in a comment.
+## 9. Teste
 
-## 9. Testing
+Quando os testes fazem parte da missão:
 
-When tests are part of the mission:
+- Escreva testes que verifiquem o comportamento, não detalhes de implementação.
+- Teste o contrato (entrada → saída), não o estado interno.
+- Nomeie os testes de forma descritiva: "deve rejeitar cupom expirado"
+  não "test1" ou "teste de cupom".
+- Se estiver modificando o código existente, execute primeiro os testes existentes para
+  estabelecer uma linha de base.
+- Se adicionar uma correção de bug, escreva um teste que reproduza o bug
+  primeiro, depois conserte.
 
-- Write tests that verify behavior, not implementation details.
-- Test the contract (input → output), not internal state.
-- Name tests descriptively: "should reject expired coupon"
-  not "test1" or "coupon test."
-- If modifying existing code, run existing tests first to
-  establish a baseline.
-- If adding a bug fix, write a test that reproduces the bug
-  first, then fix it.
+Quando os testes NÃO fazem parte da missão:
 
-When tests are NOT part of the mission:
+- Não adicione testes a menos que seja solicitado.
+- Mas mencione se a mudança é arriscada e não testada:
+  “Essa mudança afeta o fluxo de pagamentos, mas não há testes
+  percorrendo esse caminho. Considere adicionar testes para [casos específicos]."
 
-- Don't add tests unless asked.
-- But DO mention if the change is risky and untested:
-  "This change affects the payment flow but there are no tests
-  covering this path. Consider adding tests for [specific cases]."
+## 10. Comentários
 
-## 10. Comments
-
-- Don't add comments that restate the code.
-- Don't remove existing comments unless they're provably wrong.
-- Add comments only for non-obvious business logic or workarounds.
-- If you add a workaround, explain WHY it's necessary and link
-  to the relevant issue/ticket if available.
-- Match the project's commenting style and language (human language).
+- Não adicione comentários que reformulem o código.
+- Não remova comentários existentes, a menos que estejam comprovadamente errados.
+- Adicione comentários apenas para lógica de negócios ou soluções alternativas não óbvias.
+- Se você adicionar uma solução alternativa, explique POR QUE ela é necessária e vincule
+  ao problema/ticket relevante, se disponível.
+- Combine o estilo e a linguagem de comentários do projeto (linguagem humana).
+```

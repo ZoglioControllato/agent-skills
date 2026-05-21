@@ -54,24 +54,24 @@ export default {
 }
 ```
 
-Configure: Zaraz > Settings > Context Enrichers
+Configurar: Zaraz > Configurações > Enriquecedores de Contexto
 
-**Worker Variables** - Compute dynamic values server-side, use as `{{worker.variable_name}}`.
+**Variáveis de trabalho** - Calcula valores dinâmicos no lado do servidor, use como `{{worker.variable_name}}`.
 
-## GTM Migration
+## Migração GTM
 
-| GTM                                   | Zaraz                                       |
-| ------------------------------------- | ------------------------------------------- |
-| `dataLayer.push({event: 'purchase'})` | `zaraz.ecommerce('Order Completed', {...})` |
-| `{{Page URL}}`                        | `{{system.page.url}}`                       |
-| `{{Page Title}}`                      | `{{system.page.title}}`                     |
-| Page View trigger                     | Pageview trigger                            |
-| Click trigger                         | Click (selector: `*`)                       |
+| GTM                                  | Zaraz                                        |
+| ------------------------------------ | -------------------------------------------- |
+| `dataLayer.push({evento: 'compra'})` | `zaraz.ecommerce('Pedido Concluído', {...})` |
+| `{{URL da página}}`                  | `{{system.page.url}}`                        |
+| `{{Título da página}}`               | `{{system.page.title}}`                      |
+| Gatilho de visualização de página    | Gatilho de visualização de página            |
+| Clique no gatilho                    | Clique em (seletor: `*`)                     |
 
-## Best Practices
+## Melhores práticas
 
-1. Use dashboard triggers over inline code
-2. Enable History Change for SPAs (no manual code)
-3. Debug with `zaraz.debug = true`
-4. Implement consent early (GDPR/CCPA)
-5. Use Context Enrichers for sensitive/server data
+1. Use gatilhos de painel em vez de código embutido
+2. Habilite alteração de histórico para SPAs (sem código manual)
+3. Depure com `zaraz.debug = true`
+4. Implementar o consentimento antecipadamente (GDPR/CCPA)
+5. Use enriquecedores de contexto para dados confidenciais/de servidor

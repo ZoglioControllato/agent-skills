@@ -1,18 +1,18 @@
-# Configuration & Deployment
+# Configuração e implantação
 
-## Dashboard Setup
+## Configuração do painel
 
-1. Navigate to https://dash.cloudflare.com/?to=/:account/calls
-2. Click "Create Application" (or use existing app)
-3. Copy `CALLS_APP_ID` from dashboard
-4. Generate and copy `CALLS_APP_SECRET` (treat as sensitive credential)
-5. Use credentials in Wrangler config or environment variables below
+1. Navegue para https://dash.cloudflare.com/?to=/:account/calls
+2. Clique em "Criar aplicativo" (ou use o aplicativo existente)
+3. Copie `CALLS_APP_ID` do painel
+4. Gere e copie `CALLS_APP_SECRET` (trate como credencial confidencial)
+5. Use credenciais na configuração do Wrangler ou nas variáveis de ambiente abaixo
 
-## Dependencies
+## Dependências
 
-**Backend (Workers):** Built-in fetch API, no additional packages required
+**Back-end (Workers):** API de busca integrada, sem necessidade de pacotes adicionais
 
-**Client (PartyTracks):**
+**Cliente (PartyTracks):**
 
 ```bash
 npm install partytracks @cloudflare/calls
@@ -96,23 +96,21 @@ const pc = new RTCPeerConnection({
 })
 ```
 
-**Ports:** 3478 (UDP/TCP), 53 (UDP), 80 (TCP), 443 (TLS), 5349 (TLS)
+**Portas:** 3478 (UDP/TCP), 53 (UDP), 80 (TCP), 443 (TLS), 5349 (TLS)
 
-**When to use TURN:** Required for restrictive corporate firewalls/networks that block UDP. ~5-10% of connections fallback to TURN. STUN works for most users.
+**Quando usar TURN:** Obrigatório para firewalls/redes corporativas restritivas que bloqueiam UDP. Cerca de 5 a 10% das conexões retornam para TURN. STUN funciona para a maioria dos usuários.
 
-**ICE candidate filtering:** Cloudflare handles candidate filtering automatically. No need to manually filter candidates.
+**Filtragem de candidatos ICE:** a Cloudflare lida com a filtragem de candidatos automaticamente. Não há necessidade de filtrar manualmente os candidatos.
 
-## Durable Object Boilerplate
+## Padrão de objeto durável
 
-Minimal presence system:
-
-```typescript
+Sistema de presença mínima:```typescript
 export class Room {
-  private sessions = new Map<string, { userId: string; tracks: string[] }>()
+private sessions = new Map<string, { userId: string; tracks: string[] }>()
 
-  async fetch(req: Request) {
-    const { pathname } = new URL(req.url)
-    const body = await req.json()
+async fetch(req: Request) {
+const { pathname } = new URL(req.url)
+const body = await req.json()
 
     if (pathname === '/join') {
       this.sessions.set(body.sessionId, { userId: body.userId, tracks: [] })
@@ -126,9 +124,11 @@ export class Room {
     }
 
     return new Response('Not found', { status: 404 })
-  }
+
 }
-```
+}
+
+````
 
 ## Environment Validation
 
@@ -138,4 +138,4 @@ Check credentials before first API call:
 if (!env.CALLS_APP_ID || !env.CALLS_APP_SECRET) {
   throw new Error('CALLS_APP_ID and CALLS_APP_SECRET required')
 }
-```
+````

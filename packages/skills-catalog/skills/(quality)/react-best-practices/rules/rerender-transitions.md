@@ -1,15 +1,15 @@
 ---
-title: Use Transitions for Non-Urgent Updates
+title: Usar transições para atualizações não urgentes
 impact: MEDIUM
-impactDescription: maintains UI responsiveness
+impactDescription: preservar a fluidez da UI
 tags: rerender, transitions, startTransition, performance
 ---
 
-## Use Transitions for Non-Urgent Updates
+## Usar transições para atualizações não urgentes
 
-Mark frequent, non-urgent state updates as transitions to maintain UI responsiveness.
+Marque atualizações de estados frequentes e não urgentes como transições para manter uma interface responsiva.
 
-**Incorrect (blocks UI on every scroll):**
+**Incorreto (trava a UI em cada rolagem):**
 
 ```tsx
 function ScrollTracker() {
@@ -22,7 +22,7 @@ function ScrollTracker() {
 }
 ```
 
-**Correct (non-blocking updates):**
+**Correto (atualizações sem bloqueio):**
 
 ```tsx
 import { startTransition } from 'react'

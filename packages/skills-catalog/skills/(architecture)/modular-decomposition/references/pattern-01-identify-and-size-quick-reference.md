@@ -1,71 +1,66 @@
-# Component Identification & Sizing - Quick Reference
+# Identificação e dimensionamento de componentes - Referência rápida
 
-## Component Definition
+## Definição de componente
 
-**Component** = Leaf node in directory/namespace structure containing source files
+**Component** = Nó folha na estrutura de diretório/namespace contendo arquivos de origem
 
-**Subdomain** = Parent namespace that has been extended (not a component)
+**Subdomínio** = Namespace pai que foi estendido (não um componente)
 
-## Size Metrics
+## Métricas de tamanho
 
-| Metric         | How to Calculate                                  | Purpose               |
-| -------------- | ------------------------------------------------- | --------------------- |
-| **Statements** | Count executable statements (not lines)           | Accurate size measure |
-| **Files**      | Count source files in component                   | Complexity indicator  |
-| **Percent**    | `(component_statements / total_statements) * 100` | Relative size         |
-| **Std Dev**    | `sqrt(sum((size - mean)^2) / (n-1))`              | Outlier detection     |
+| Métrica         | Como calcular                                     | Finalidade                |
+| --------------- | ------------------------------------------------- | ------------------------- |
+| **Declarações** | Contar instruções executáveis ​​(não linhas)      | Medida de tamanho precisa |
+| **Arquivos**    | Contar arquivos de origem no componente           | Indicador de complexidade |
+| **Porcentagem** | `(component_statements / total_statements) * 100` |
 
-## Size Thresholds
+Tamanho relativo |
+| **Desenvolvimento padrão** | `sqrt(soma((tamanho - média)^2) / (n-1))` | Detecção de valores discrepantes |
 
-| App Size                  | Oversized Threshold | Notes                             |
-| ------------------------- | ------------------- | --------------------------------- |
-| Small (<10 components)    | >30% of codebase    | Fewer components, higher variance |
-| Medium (10-20 components) | >15% of codebase    | Balanced threshold                |
-| Large (>20 components)    | >10% of codebase    | More components, lower variance   |
+## Limites de tamanho
 
-**Standard Deviation Rule**: Components >2 std dev from mean are oversized
+| Tamanho do aplicativo     | Limite superdimensionado | Notas                              |
+| ------------------------- | ------------------------ | ---------------------------------- |
+| Pequeno (<10 componentes) | >30% da base de código   | Menos componentes, maior variância |
+| Médio (10-20 componentes) | >15% da base de código   | Limiar equilibrado                 |
+| Grande (>20 componentes)  | >10% da base de código   | Mais componentes, menor variância  |
 
-## Component Status
+**Regra de desvio padrão**: Componentes >2 std dev da média são superdimensionados
 
-- ✅ **OK**: Within 1-2 std dev from mean, appropriate size
-- ⚠️ **Too Large**: >2 std dev above mean or exceeds threshold
-- 🔍 **Too Small**: <1 std dev below mean or <1% of codebase
+## Status do Componente
 
-## Quick Analysis Steps
+- ✅ **OK**: Dentro de 1-2 desvio padrão da média, tamanho apropriado
+- ⚠️ **Muito grande**: >2 desvio padrão acima da média ou excede o limite
+- 🔍 **Muito pequeno**: <1 std dev abaixo da média ou <1% da base de código
 
-1. **Map directories** → Identify leaf nodes (components)
-2. **Count statements** → Per component, sum across files
-3. **Calculate stats** → Mean, std dev, percentages
-4. **Flag outliers** → >2 std dev or threshold violations
-5. **Recommend actions** → Split large, consolidate small
+## Etapas de análise rápida
 
-## Common Patterns
+1. **Mapear diretórios** → Identificar nós folha (componentes)
+2. **Declarações de contagem** → Por componente, soma entre arquivos
+3. **Calcular estatísticas** → Média, desenvolvimento padrão, porcentagens
+4. **Sinalizar valores discrepantes** → >2 desenvolvimento padrão ou violações de limite
+5. **Recomendar ações** → Dividir grande, consolidar pequeno
 
-### Node.js/Express
+## Padrões Comuns
 
-```
-services/ComponentName/     ← Component
-routes/v1/endpoint/        ← Component
-models/ModelName/          ← Component
-```
+### Node.js/Express```
 
-### Java
+services/ComponentName/ ← Component
+routes/v1/endpoint/ ← Component
+models/ModelName/ ← Component
 
-```
+````
+###Java```
 com.company.domain.service ← Component (leaf package)
 com.company.domain         ← Subdomain (parent)
-```
+````
 
-### Python
+###Píton```
+app/domain/service/ ← Component (leaf module)
+app/domain/ ← Subdomain (parent)
 
-```
-app/domain/service/        ← Component (leaf module)
-app/domain/               ← Subdomain (parent)
-```
-
-## Output Template
-
-```markdown
+````
+## Modelo de saída```markdown
 ## Component Inventory
 
 | Component | Namespace | Statements | Files | %   | Status |
@@ -79,4 +74,4 @@ app/domain/               ← Subdomain (parent)
 - Std Dev: Z statements
 - Oversized: [list]
 - Recommendations: [actions]
-```
+````

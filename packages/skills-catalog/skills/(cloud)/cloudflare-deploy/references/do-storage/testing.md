@@ -1,8 +1,8 @@
-# DO Storage Testing
+# FAÇA testes de armazenamento
 
-Testing Durable Objects with storage using `vitest-pool-workers`.
+Testando objetos duráveis com armazenamento usando `vitest-pool-workers`.
 
-## Setup
+## Configuração
 
 **vitest.config.ts:**
 
@@ -18,9 +18,9 @@ export default defineWorkersConfig({
 })
 ```
 
-**package.json:** Add `@cloudflare/vitest-pool-workers` and `vitest` to devDependencies
+**package.json:** Adicione `@cloudflare/vitest-pool-workers` e `vitest` a devDependencies
 
-## Basic Testing
+## Teste Básico
 
 ```typescript
 import { env, runInDurableObject } from 'cloudflare:test'
@@ -40,7 +40,7 @@ describe('Counter DO', () => {
 })
 ```
 
-## Testing SQL Storage
+##Testando armazenamento SQL
 
 ```typescript
 it('creates and queries users', async () => {
@@ -61,7 +61,7 @@ it('handles schema migrations', async () => {
 })
 ```
 
-## Testing Alarms
+##Testando Alarmes
 
 ```typescript
 import { runDurableObjectAlarm } from 'cloudflare:test'
@@ -86,7 +86,7 @@ it('processes batch on alarm', async () => {
 })
 ```
 
-## Testing Concurrency
+##Testando simultaneidade
 
 ```typescript
 it('handles concurrent increments safely', async () => {
@@ -105,7 +105,7 @@ it('handles concurrent increments safely', async () => {
 })
 ```
 
-## Test Isolation
+##Teste de isolamento
 
 ```typescript
 // Per-test unique IDs
@@ -132,7 +132,7 @@ it('with cleanup', async () => {
 })
 ```
 
-## Testing PITR
+##Testando PITR
 
 ```typescript
 it('restores from bookmark', async () => {
@@ -159,7 +159,7 @@ it('restores from bookmark', async () => {
 })
 ```
 
-## Testing Transactions
+##Testando transações
 
 ```typescript
 it('rolls back on error', async () => {

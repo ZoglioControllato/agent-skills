@@ -1,24 +1,24 @@
-# Configuration
+# Configuração
 
-## Script Loading
+## Carregamento do script
 
-### Basic (Implicit Rendering)
+### Básico (renderização implícita)
 
 ```html
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 ```
 
-Automatically renders widgets with `class="cf-turnstile"` on page load.
+Renderiza automaticamente elementos com `class="cf-turnstile"` ao carregar a página.
 
-### Explicit Rendering
+### Renderização explícita
 
 ```html
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"></script>
 ```
 
-Manual control over when/where widgets render via `window.turnstile.render()`.
+Controle manual de quando/onde renderizar via `window.turnstile.render()`.
 
-### With Load Callback
+### Com callback de carregamento
 
 ```html
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=myCallback"></script>
@@ -30,17 +30,17 @@ Manual control over when/where widgets render via `window.turnstile.render()`.
 </script>
 ```
 
-### Compatibility Mode
+### Modo de compatibilidade
 
 ```html
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?compat=recaptcha"></script>
 ```
 
-Provides `grecaptcha` API for Google reCAPTCHA drop-in replacement.
+Expõe a API `grecaptcha` como substituto direto do reCAPTCHA.
 
-## Widget Configuration
+## Configuração do widget
 
-### Complete Options Object
+### Objeto completo de opções
 
 ```javascript
 {
@@ -79,35 +79,35 @@ Provides `grecaptcha` API for Google reCAPTCHA drop-in replacement.
 }
 ```
 
-### Key Options Explained
+### Opções principais
 
 **`execution`:**
 
-- `'render'` (default): Challenge starts immediately on render
-- `'execute'`: Wait for `turnstile.execute()` call
+- `'render'` (padrão): desafio inicia ao renderizar
+- `'execute'`: aguarda chamada a `turnstile.execute()`
 
 **`appearance`:**
 
-- `'always'` (default): Widget always visible
-- `'execute'`: Hidden until `execute()` called
-- `'interaction-only'`: Hidden until user interaction needed
+- `'always'` (padrão): widget sempre visível
+- `'execute'`: oculto até `execute()`
+- `'interaction-only'`: oculto até precisar de interação
 
 **`refresh-expired`:**
 
-- `'auto'` (default): Auto-refresh expired tokens
-- `'manual'`: App must call `reset()` after expiry
-- `'never'`: No refresh, expired-callback triggered
+- `'auto'` (padrão): renova token expirado automaticamente
+- `'manual'`: app deve chamar `reset()` após expirar
+- `'never'`: sem renovação; dispara `expired-callback`
 
 **`retry`:**
 
-- `'auto'` (default): Auto-retry failed challenges
-- `'never'`: Don't retry, trigger error-callback
+- `'auto'` (padrão): tenta novamente após falha
+- `'never'`: não tenta; dispara `error-callback`
 
-## HTML Data Attributes
+## Atributos HTML de dados
 
-For implicit rendering, use data attributes on `<div class="cf-turnstile">`:
+Para renderização implícita, use atributos em `<div class="cf-turnstile">`:
 
-| JavaScript Property   | HTML Data Attribute        | Example                              |
+| Propriedade JS        | Atributo data              | Exemplo                              |
 | --------------------- | -------------------------- | ------------------------------------ |
 | `sitekey`             | `data-sitekey`             | `data-sitekey="YOUR_KEY"`            |
 | `action`              | `data-action`              | `data-action="login"`                |
@@ -128,7 +128,7 @@ For implicit rendering, use data attributes on `<div class="cf-turnstile">`:
 | `appearance`          | `data-appearance`          | `data-appearance="interaction-only"` |
 | `refresh-expired`     | `data-refresh-expired`     | `data-refresh-expired="manual"`      |
 
-**Example:**
+**Exemplo:**
 
 ```html
 <div
@@ -142,14 +142,14 @@ For implicit rendering, use data attributes on `<div class="cf-turnstile">`:
 
 ## Content Security Policy
 
-Add these directives to CSP header/meta tag:
+Adicione ao cabeçalho CSP ou meta tag:
 
 ```
 script-src https://challenges.cloudflare.com;
 frame-src https://challenges.cloudflare.com;
 ```
 
-**Full Example:**
+**Exemplo completo:**
 
 ```html
 <meta
@@ -160,7 +160,7 @@ frame-src https://challenges.cloudflare.com;
 />
 ```
 
-## Framework-Specific Setup
+## Setup por framework
 
 ### React
 
@@ -225,7 +225,7 @@ export default function TurnstileWidget({ sitekey, onSuccess }) {
 }
 ```
 
-## Cloudflare Pages Plugin
+## Plugin Cloudflare Pages
 
 ```bash
 npm install @cloudflare/pages-plugin-turnstile
@@ -240,3 +240,5 @@ export const onRequest = turnstilePlugin({
   onError: () => new Response('CAPTCHA failed', { status: 403 }),
 })
 ```
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

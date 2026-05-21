@@ -1,39 +1,48 @@
-# Figma MCP tools and prompt patterns
+# Ferramentas Figma MCP e padrões de prompt
 
-Quick reference for the Figma MCP toolset, when to use each tool, and prompt examples to steer output toward your stack.
+Referência rápida para o conjunto de ferramentas Figma MCP, quando usar cada ferramenta e exemplos rápidos para direcionar a produção para sua pilha.
 
-## Core tools
+## Ferramentas principais
 
-- `get_design_context` (Figma Design, Figma Make): Primary tool. Returns structured design data and default React + Tailwind code. Selection-based prompting works on desktop; the remote server uses a frame/layer link to extract the node ID.
-- `get_variable_defs` (Figma Design): Lists variables/styles (colors, spacing, typography) used in the selection. Useful to align with tokens.
-- `get_metadata` (Figma Design): Sparse XML outline of layer IDs/names/types/positions/sizes. Use before re-calling `get_design_context` on large nodes to avoid truncation.
-- `get_screenshot` (Figma Design, FigJam): Screenshot of the selection for visual fidelity checks.
-- `get_figjam` (FigJam): XML + screenshots for FigJam diagrams (architecture, flows).
-- `create_design_system_rules` (no file context): Generates a rule file with design-to-code guidance for your stack. Save it where the agent can read it.
-- `get_code_connect_map` (Figma Design): Returns mapping of Figma node IDs to code components (`codeConnectSrc`, `codeConnectName`). Use to reuse existing components.
-- `add_code_connect_map` (Figma Design): Adds/updates a mapping between a Figma node and a code component to improve reuse.
-- `get_strategy_for_mapping` (alpha, local only): Figma-prompted tool to decide mapping strategy for connecting a node to a code component.
-- `send_get_strategy_response` (alpha, local only): Sends the response after `get_strategy_for_mapping`.
-- `whoami` (remote only): Returns the authenticated Figma user identity (email, plans, seat types).
+- `get_design_context` (Figma Design, Figma Make): Ferramenta primária. Retorna dados de design estruturados e código React + Tailwind padrão. A solicitação baseada em seleção funciona no desktop; o servidor remoto usa um link de quadro/camada para extrair o ID do nó.
+- `get_variable_defs` (Figma Design): Lista variáveis/estilos (cores, espaçamento, tipografia) usados ​​na seleção. Útil para alinhar com tokens.
+- `get_metadata` (Figma Design): esboço XML esparso de IDs de camada/n
 
-## Prompt patterns (design context)
+nomes/tipos/posições/tamanhos. Use antes de chamar novamente `get_design_context` em nós grandes para evitar truncamento.
 
-- Change framework: “generate my Figma selection in Vue” or “in plain HTML + CSS” or “for iOS”.
-- Use my components: “generate my Figma selection using components from `src/components/ui`”.
-- Combine: “generate my Figma selection using components from `src/ui` and style with Tailwind”.
-- Note: On the remote server, selection-based prompting requires a frame/layer link; the server extracts the node ID from the URL.
+- `get_screenshot` (Figma Design, FigJam): Captura de tela da seleção para verificações de fidelidade visual.
+- `get_figjam` (FigJam): XML + capturas de tela para diagramas FigJam (arquitetura, fluxos).
+- `create_design_system_rules` (sem contexto de arquivo): Gera um arquivo de regras com orientação de design para código para sua pilha. Salve-o onde o agente possa lê-lo.
+- `g
 
-## Prompt patterns (variables/styles)
+et_code_connect_map` (Figma Design): Retorna o mapeamento de IDs de nós Figma para componentes de código (`codeConnectSrc`, `codeConnectName`). Use para reutilizar componentes existentes.
 
-- “get the variables used in my Figma selection”
-- “what color and spacing variables are used in my Figma selection?”
-- “list the variable names and their values used in my Figma selection”
+- `add_code_connect_map` (Figma Design): Adiciona/atualiza um mapeamento entre um nó Figma e um componente de código para melhorar a reutilização.
+- `get_strategy_for_mapping` (alfa, apenas local): ferramenta solicitada pelo Figma para decidir a estratégia de mapeamento para conectar um nó a um componente de código.
+- `send_get_strategy_re
 
-## Prompt patterns (code connect)
+sponse`(alfa, apenas local): Envia a resposta após`get_strategy_for_mapping`.
 
-- “show the code connect map for this selection”
-- “map this node to `src/components/ui/Button.tsx` with name `Button`”
+- `whoami` (somente remoto): Retorna a identidade do usuário autenticado do Figma (e-mail, planos, tipos de assento).
 
-## Best-practice flow reminder
+## Padrões de prompt (contexto de design)
 
-Use `get_design_context` → (optionally `get_metadata` for large nodes) → `get_screenshot`, and keep project rules from `SKILL.md` in mind when applying the generated output.
+- Alterar framework: “gerar minha seleção Figma em Vue” ou “em HTML + CSS simples” ou “para iOS”.
+- Use meus componentes: “gerar minha seleção Figma usando componentes de `src/components/ui`”.
+- Combine: “gerar minha seleção Figma usando componentes de `src/ui` e estilo com Tailwind”.
+- Observação: no servidor remoto, a solicitação baseada em seleção requer um link de quadro/camada; o servidor extrai o ID do nó da URL.
+
+## Padrões de prompt (variáveis/estilos)
+
+- “obter as variáveis usadas na minha seleção Figma”
+- “quais variáveis de cor e espaçamento são usadas na minha seleção Figma?”
+- “liste os nomes das variáveis ​​e seus valores usados ​​na minha seleção Figma”
+
+## Padrões de prompt (conexão de código)
+
+- “mostrar o mapa de conexão de código para esta seleção”
+- “mapear este nó para `src/components/ui/Button.tsx` com o nome `Button`”
+
+## Lembrete de fluxo de práticas recomendadas
+
+Use `get_design_context` → (opcionalmente `get_metadata` para nós grandes) → `get_screenshot` e mantenha as regras do projeto de `SKILL.md` em mente ao aplicar a saída gerada.

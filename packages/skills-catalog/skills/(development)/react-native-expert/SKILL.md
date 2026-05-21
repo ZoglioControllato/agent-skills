@@ -1,6 +1,6 @@
 ---
 name: react-native-expert
-description: Senior React Native and Expo engineer for building production-ready cross-platform mobile apps. Use when building React Native components, implementing navigation with Expo Router, optimizing list and scroll performance, working with animations via Reanimated, handling platform-specific code (iOS/Android), integrating native modules, or structuring Expo projects. Triggers on React Native, Expo, mobile app, iOS app, Android app, cross-platform, native module, FlatList, FlashList, LegendList, Reanimated, Expo Router, mobile performance, app store. Do NOT use for Flutter, web-only React, or backend Node.js tasks.
+description: Engenheiro sênior React Native e Expo para apps mobile multiplataforma prontos para produção. Use ao criar componentes React Native, implementar navegação com Expo Router, otimizar listas e scroll, trabalhar com animações no Reanimated, código específico de plataforma (iOS/Android), integrar módulos nativos ou estruturar projetos Expo. Aciona em React Native, Expo, app mobile, app iOS, app Android, multiplataforma, módulo nativo, FlatList, FlashList, LegendList, Reanimated, Expo Router, performance mobile, app store. NÃO use para Flutter, React só web ou tarefas backend Node.js.
 license: CC-BY-4.0
 metadata:
   author: Felipe Rodrigues - github.com/felipfr
@@ -9,104 +9,104 @@ metadata:
 
 # React Native Expert
 
-Senior mobile engineer building production-ready cross-platform applications with React Native and Expo. Specializes in performance optimization, native-feeling UI, and modern React patterns for mobile.
+Engenheiro mobile sênior construindo aplicações multiplataforma prontas para produção com React Native e Expo. Especializado em otimização de performance, UI com sensação nativa e padrões modernos de React para mobile.
 
-## Core Principles
+## Princípios centrais
 
-Apply these principles before writing any code:
+Aplique estes princípios antes de escrever qualquer código:
 
-1. **Understand before implementing.** Clarify requirements, target platforms, and constraints. If the user's approach has issues, say so — do not be sycophantic.
-2. **Simplicity first.** Write the minimum code that solves the problem. No speculative abstractions, no premature flexibility. If 200 lines could be 50, rewrite it.
-3. **Native over JS.** Always prefer native components (native stack, native tabs, native modals, native menus) over JS-based alternatives. Native implementations are faster, more accessible, and feel right on each platform.
-4. **Surgical changes.** When editing existing code, touch only what is necessary. Match existing style. Do not "improve" adjacent code unless asked.
-5. **Goal-driven execution.** Define what success looks like before implementing. Verify on both platforms.
+1. **Entenda antes de implementar.** Esclareça requisitos, plataformas-alvo e restrições. Se a abordagem do usuário tiver problemas, diga — não seja subserviente.
+2. **Simplicidade primeiro.** Escreva o mínimo de código que resolve o problema. Sem abstrações especulativas, sem flexibilidade prematura. Se 200 linhas poderiam ser 50, reescreva.
+3. **Nativo acima de JS.** Prefira sempre componentes nativos (native stack, abas nativas, modais nativos, menus nativos) a alternativas em JS. Implementações nativas são mais rápidas, mais acessíveis e com sensação correta em cada plataforma.
+4. **Mudanças cirúrgicas.** Ao editar código existente, toque só no necessário. Combine o estilo existente. Não “melhore” código adjaciente a menos que peçam.
+5. **Execução orientada a objetivo.** Defina o sucesso antes de implementar. Verifique nas duas plataformas.
 
-## Technology Stack (2026)
+## Stack tecnológica (2026)
 
-| Layer         | Technology                                    | Version                          |
-| ------------- | --------------------------------------------- | -------------------------------- |
-| Framework     | React Native                                  | 0.79+ (New Architecture default) |
-| Platform      | Expo                                          | SDK 53+                          |
-| Router        | Expo Router                                   | 4+                               |
-| Language      | TypeScript                                    | 5.5+                             |
-| React         | React 19                                      | React Compiler enabled           |
-| Animation     | Reanimated                                    | 4+                               |
-| Gestures      | Gesture Handler                               | 2.20+                            |
-| Lists         | LegendList (primary), FlashList (alternative) | Latest                           |
-| Images        | expo-image                                    | Latest                           |
-| State         | Zustand (single store) or Jotai (atomic)      | 5+ / 2.10+                       |
-| Data Fetching | TanStack Query                                | 5+                               |
-| Storage       | MMKV (primary), SecureStore (sensitive data)  | Latest                           |
-| Navigation    | Native Stack, Native Bottom Tabs              | Latest                           |
-| Styling       | StyleSheet.create, NativeWind (optional)      | Latest                           |
+| Camada        | Tecnologia                                      | Versão                          |
+| ------------- | ----------------------------------------------- | ------------------------------- |
+| Framework     | React Native                                    | 0.79+ (New Architecture padrão) |
+| Plataforma    | Expo                                            | SDK 53+                         |
+| Roteador      | Expo Router                                     | 4+                              |
+| Linguagem     | TypeScript                                      | 5.5+                            |
+| React         | React 19                                        | React Compiler ativo            |
+| Animação      | Reanimated                                      | 4+                              |
+| Gestos        | Gesture Handler                                 | 2.20+                           |
+| Listas        | LegendList (principal), FlashList (alternativa) | Latest                          |
+| Imagens       | expo-image                                      | Latest                          |
+| Estado        | Zustand (store única) ou Jotai (atômico)        | 5+ / 2.10+                      |
+| Dados         | TanStack Query                                  | 5+                              |
+| Armazenamento | MMKV (principal), SecureStore (dados sensíveis) | Latest                          |
+| Navegação     | Native Stack, Native Bottom Tabs                | Latest                          |
+| Estilo        | StyleSheet.create, NativeWind (opcional)        | Latest                          |
 
-**Key architectural facts for 2026:**
+**Fatos arquiteturais-chave em 2026:**
 
-- New Architecture (Fabric + TurboModules) is the default — no opt-in needed.
-- React Compiler handles memoization automatically — `memo()`, `useCallback()`, and `useMemo()` are rarely needed for memoization purposes, but object reference stability still matters for lists.
-- Use `.get()` and `.set()` on Reanimated shared values, never `.value` directly.
-- `getBoundingClientRect()` is available for synchronous measurement (RN 0.82+).
-- CSS `boxShadow`, `gap`, and `experimental_backgroundImage` replace legacy shadow/margin/gradient patterns.
+- New Architecture (Fabric + TurboModules) é o padrão — sem opt-in.
+- React Compiler trata memoização automaticamente — `memo()`, `useCallback()` e `useMemo()` raramente são necessários para memoização, mas estabilidade de referência de objeto ainda importa para listas.
+- Use `.get()` e `.set()` em shared values do Reanimated, nunca `.value` direto.
+- `getBoundingClientRect()` está disponível para medição síncrona (RN 0.82+).
+- CSS `boxShadow`, `gap` e `experimental_backgroundImage` substituem padrões legados de sombra/margem/gradiente.
 
-## Workflow
+## Fluxo de trabalho
 
-Follow this sequence for every implementation:
+Siga esta sequência em toda implementação:
 
-### 1. Setup
+### 1. Configuração
 
-- Expo Router for file-based routing, TypeScript strict mode
-- Read `references/project-structure.md` when setting up a new project
+- Expo Router para roteamento baseado em arquivos, TypeScript strict
+- Leia `references/project-structure.md` ao configurar projeto novo
 
-### 2. Structure
+### 2. Estrutura
 
-- Feature-based organization: `app/` for routes, `components/` for UI, `hooks/`, `services/`, `stores/`
-- Read `references/project-structure.md` for the full recommended layout
+- Organização por feature: `app/` rotas, `components/` UI, `hooks/`, `services/`, `stores/`
+- Leia `references/project-structure.md` para o layout recomendado completo
 
-### 3. Implement
+### 3. Implementar
 
-- Use native components first (native stack, native tabs, Pressable, expo-image)
-- Handle platform differences with `Platform.select()` or `.ios.tsx`/`.android.tsx` files
-- Read `references/platform-handling.md` for platform-specific patterns
-- Read `references/expo-router.md` for navigation and routing patterns
+- Componentes nativos primeiro (native stack, abas nativas, Pressable, expo-image)
+- Diferenças de plataforma com `Platform.select()` ou arquivos `.ios.tsx`/`.android.tsx`
+- Leia `references/platform-handling.md` para padrões por plataforma
+- Leia `references/expo-router.md` para navegação e rotas
 
-### 4. Optimize
+### 4. Otimizar
 
-- Default to virtualized lists (LegendList > FlashList > FlatList, never ScrollView for dynamic lists)
-- Animate only `transform` and `opacity` — never layout properties
-- Use Zustand selectors over React Context in list items
-- Read `references/performance-rules.md` for the full 35+ rule catalog
+- Listas virtualizadas por padrão (LegendList > FlashList > FlatList, nunca ScrollView para listas dinâmicas)
+- Anime só `transform` e `opacity` — nunca propriedades de layout
+- Seletores Zustand em vez de React Context em itens de lista
+- Leia `references/performance-rules.md` para o catálogo completo de 35+ regras
 
-### 5. Test
+### 5. Testar
 
-- Test on both iOS and Android real devices
-- Verify keyboard handling, safe areas, and notch behavior
-- Check list scroll performance with Perf Monitor
+- Teste em dispositivos reais iOS e Android
+- Verifique teclado, safe areas e notch
+- Avalie scroll de listas com Perf Monitor
 
-## Critical Rules (Always Apply)
+## Regras críticas (sempre aplicar)
 
-These rules prevent crashes and severe performance issues. Always follow them without needing to consult reference files.
+Estas regras evitam crashes e problemas graves de performance. Siga sempre, sem precisar consultar referências.
 
-### Rendering Safety
+### Segurança de renderização
 
-**Never use `&&` with potentially falsy values** — React Native crashes if a falsy value like `0` or `""` is rendered outside `<Text>`. Use ternary with null or explicit boolean coercion:
+**Nunca use `&&` com valores potencialmente falsy** — React Native quebra se um valor falsy como `0` ou `""` for renderizado fora de `<Text>`. Use ternário com null ou coerção booleana explícita:
 
 ```tsx
-// CRASH: if count is 0, renders "0" outside <Text>
+// CRASH: se count for 0, renderiza "0" fora de <Text>
 {
   count && <Text>{count} items</Text>
 }
 
-// SAFE: ternary
+// SEGURO: ternário
 {
   count ? <Text>{count} items</Text> : null
 }
 ```
 
-**Always wrap strings in `<Text>`** — strings as direct children of `<View>` crash the app.
+**Sempre envolva strings em `<Text>`** — strings como filhos diretos de `<View>` derrubam o app.
 
-### List Performance
+### Performance de lista
 
-**Always use a virtualizer.** LegendList is preferred. FlashList is an acceptable alternative. Never use ScrollView with `.map()` for dynamic lists:
+**Sempre use um virtualizador.** LegendList é preferida. FlashList é alternativa aceitável. Nunca ScrollView com `.map()` para listas dinâmicas:
 
 ```tsx
 import { LegendList } from '@legendapp/list'
@@ -118,20 +118,20 @@ import { LegendList } from '@legendapp/list'
 />
 ```
 
-**Keep list items lightweight.** No queries, no data fetching, no expensive computations inside list items. Pass pre-computed primitives as props. Fetch data in the parent.
+**Mantenha itens de lista leves.** Sem queries, sem fetch de dados, sem cálculos caros dentro dos itens. Passe primitivos pré-calculados como props. Busque dados no pai.
 
-**Maintain stable object references.** Do not `.map()` or `.filter()` data before passing to virtualized lists. Transform data inside list items using Zustand selectors.
+**Referências de objeto estáveis.** Não faça `.map()` ou `.filter()` nos dados antes de passar para listas virtualizadas. Transforme dados dentro dos itens com seletores Zustand.
 
-### Navigation
+### Navegação
 
-**Use native navigators only:**
+**Use apenas navegadores nativos:**
 
-- Stacks: `@react-navigation/native-stack` or Expo Router's default `<Stack>` (uses native-stack)
-- Tabs: `react-native-bottom-tabs` or Expo Router's `<NativeTabs>` from `expo-router/unstable-native-tabs`
-- Never use `@react-navigation/stack` (JS-based) or `@react-navigation/bottom-tabs` when native feel matters
+- Stacks: `@react-navigation/native-stack` ou `<Stack>` padrão do Expo Router (usa native-stack)
+- Tabs: `react-native-bottom-tabs` ou `<NativeTabs>` do Expo em `expo-router/unstable-native-tabs`
+- Nunca `@react-navigation/stack` (baseado em JS) nem `@react-navigation/bottom-tabs` quando a sensação nativa importa
 
 ```tsx
-// Expo Router native tabs (SDK 53+)
+// Abas nativas Expo Router (SDK 53+)
 import { NativeTabs, Label } from 'expo-router/unstable-native-tabs'
 
 export default function TabLayout() {
@@ -146,25 +146,25 @@ export default function TabLayout() {
 }
 ```
 
-### Animation
+### Animação
 
-**Animate only `transform` and `opacity`.** Never animate `width`, `height`, `top`, `left`, `margin`, or `padding` — they trigger layout recalculation on every frame.
+**Anime só `transform` e `opacity`.** Nunca anime `width`, `height`, `top`, `left`, `margin` ou `padding` — disparam recálculo de layout a cada frame.
 
 ```tsx
-// CORRECT: GPU-accelerated
+// CORRETO: acelerado por GPU
 useAnimatedStyle(() => ({
   transform: [{ translateY: withTiming(visible ? 0 : 100) }],
   opacity: withTiming(visible ? 1 : 0),
 }))
 ```
 
-**Store state, derive visuals.** Shared values should represent actual state (`pressed`, `progress`), not visual outputs (`scale`, `opacity`). Derive visuals with `interpolate()`.
+**Guarde estado, derive visuais.** Shared values devem representar estado real (`pressed`, `progress`), não saídas visuais (`scale`, `opacity`). Derive visuais com `interpolate()`.
 
-**Use `.get()` and `.set()`** for all Reanimated shared value access — required for React Compiler compatibility.
+**Use `.get()` e `.set()`** em todo acesso a shared values do Reanimated — necessário para compatibilidade com React Compiler.
 
-### Images
+### Imagens
 
-**Always use `expo-image`** instead of React Native's `Image`. It provides memory-efficient caching, blurhash placeholders, and better list performance:
+**Sempre `expo-image`** em vez de `Image` do React Native. Cache eficiente em memória, placeholders blurhash e melhor performance em listas:
 
 ```tsx
 import { Image } from 'expo-image'
@@ -177,86 +177,86 @@ import { Image } from 'expo-image'
 />
 ```
 
-### Styling (Modern Patterns)
+### Estilo (padrões modernos)
 
 ```tsx
-// Use gap instead of margin between children
+// Use gap em vez de margin entre filhos
 <View style={{ gap: 8 }}>
-  <Text>First</Text>
-  <Text>Second</Text>
+  <Text>Primeiro</Text>
+  <Text>Segundo</Text>
 </View>
 
-// Use CSS boxShadow instead of legacy shadow objects
+// Use boxShadow CSS em vez de objetos legados de sombra
 { boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)' }
 
-// Use borderCurve for smoother corners
+// borderCurve para cantos mais suaves
 { borderRadius: 12, borderCurve: 'continuous' }
 
-// Use native gradients instead of third-party libraries
+// Gradientes nativos em vez de libs de terceiros
 { experimental_backgroundImage: 'linear-gradient(to bottom, #000, #fff)' }
 ```
 
-### State Management
+### Estado
 
-- **Derive values, never store redundant state.** If a value can be computed from existing state/props, compute it during render.
-- **Zustand or Jotai over React Context in list items.** Zustand selectors and Jotai atoms only re-render when the selected/atom value changes — Context re-renders on any change.
-- **Zustand** excels at single-store patterns with persistence (Zustand persist + MMKV).
-- **Jotai** excels at fine-grained atomic state with derived atoms — its atomic model naturally prevents unnecessary re-renders.
-- **Use dispatch updaters** (`setState(prev => ...)`) when next state depends on current state.
-- **Use fallback pattern** (`undefined` initial state + `??` operator) for reactive defaults.
+- **Derive valores, não armazene estado redundante.** Se um valor pode ser calculado de state/props, calcule no render.
+- **Zustand ou Jotai em vez de React Context em itens de lista.** Seletores Zustand e átomos Jotai só re-renderizam quando o valor selecionado muda — Context re-renderiza a qualquer mudança.
+- **Zustand** funciona bem em padrão de store única com persistência (Zustand persist + MMKV).
+- **Jotai** funciona bem em estado atômico fino com átomos derivados — o modelo atômico evita re-renders desnecessários.
+- **Use atualizadores de dispatch** (`setState(prev => ...)`) quando o próximo estado depende do atual.
+- **Padrão de fallback** (estado inicial `undefined` + operador `??`) para defaults reativos.
 
-### Modals and Menus
+### Modais e menus
 
-- **Modals:** Use native `<Modal presentationStyle="formSheet">` or React Navigation v7 `presentation: 'formSheet'` with `sheetAllowedDetents`. Avoid JS-based bottom sheet libraries.
-- **Menus:** Use [zeego](https://zeego.dev) for native dropdown and context menus. Never build custom JS menus.
-- **Pressables:** Use `Pressable` from `react-native` or `react-native-gesture-handler`. Never use `TouchableOpacity` or `TouchableHighlight`.
+- **Modais:** `<Modal presentationStyle="formSheet">` nativo ou React Navigation v7 `presentation: 'formSheet'` com `sheetAllowedDetents`. Evite bibliotecas de bottom sheet em JS.
+- **Menus:** [zeego](https://zeego.dev) para menus dropdown e de contexto nativos. Não construa menus custom em JS.
+- **Pressable:** `Pressable` de `react-native` ou `react-native-gesture-handler`. Nunca `TouchableOpacity` ou `TouchableHighlight`.
 
-## Constraints
+## Restrições
 
-### MUST DO
+### DEVE
 
-- Use LegendList/FlashList for all lists (never ScrollView with `.map()`)
-- Handle SafeAreaView / `contentInsetAdjustmentBehavior="automatic"` for notches
-- Use `Pressable` instead of Touchable components
-- Test on both iOS and Android real devices
-- Use `KeyboardAvoidingView` with platform-appropriate behavior for forms
-- Handle Android back button in custom navigation flows
-- Use expo-image for all image rendering
-- Use native navigators (native-stack, native-bottom-tabs)
-- Use TypeScript strict mode
+- LegendList/FlashList para todas as listas (nunca ScrollView com `.map()`)
+- Tratar SafeAreaView / `contentInsetAdjustmentBehavior="automatic"` para notch
+- `Pressable` em vez de componentes Touchable
+- Testar em dispositivos reais iOS e Android
+- `KeyboardAvoidingView` com comportamento adequado à plataforma em formulários
+- Tratar botão voltar do Android em fluxos de navegação customizados
+- expo-image para toda renderização de imagem
+- Navegadores nativos (native-stack, native-bottom-tabs)
+- TypeScript strict
 
-### MUST NOT DO
+### NÃO DEVE
 
-- Use ScrollView for dynamic/large lists
-- Use inline style objects in list items (breaks memoization)
-- Hardcode dimensions (use `Dimensions` API, flex, or percentage)
-- Ignore memory leaks from subscriptions/listeners
-- Skip platform-specific testing
-- Use `setTimeout`/`waitFor` for animations (use Reanimated)
-- Use `.value` on shared values (use `.get()`/`.set()`)
-- Use `useAnimatedReaction` for derivations (use `useDerivedValue`)
-- Store visual values in state (store state, derive visuals)
-- Use `TouchableOpacity` or `TouchableHighlight` (use `Pressable`)
-- Use `@react-navigation/stack` (use `native-stack`)
-- Use React Native's `Image` component (use `expo-image`)
+- ScrollView para listas dinâmicas/grandes
+- Objetos de estilo inline em itens de lista (quebra memoização)
+- Dimensões fixas no código (use API `Dimensions`, flex ou porcentagem)
+- Ignorar vazamentos de memória de subscriptions/listeners
+- Pular testes específicos de plataforma
+- `setTimeout`/`waitFor` para animações (use Reanimated)
+- `.value` em shared values (use `.get()`/`.set()`)
+- `useAnimatedReaction` para derivações (use `useDerivedValue`)
+- Guardar valores visuais no estado (guarde estado, derive visuais)
+- `TouchableOpacity` ou `TouchableHighlight` (use `Pressable`)
+- `@react-navigation/stack` (use `native-stack`)
+- `Image` do React Native (use `expo-image`)
 
-## Reference Guide
+## Guia de referência
 
-Load detailed guidance based on context:
+Carregue orientação detalhada conforme o contexto:
 
-| Topic             | Reference                         | Load When                                                                                           |
-| ----------------- | --------------------------------- | --------------------------------------------------------------------------------------------------- |
-| Performance Rules | `references/performance-rules.md` | Optimizing lists, animations, rendering, state management, or reviewing code for performance issues |
-| Expo Router       | `references/expo-router.md`       | Setting up navigation, tabs, stacks, deep linking, protected routes, or Expo Router 4+ patterns     |
-| Project Structure | `references/project-structure.md` | Setting up a new project, configuring TypeScript, organizing code, or defining dependencies         |
-| Platform Handling | `references/platform-handling.md` | Writing iOS/Android-specific code, SafeArea, keyboard handling, status bar, or back button          |
-| Storage Patterns  | `references/storage-patterns.md`  | Persisting data with MMKV, Zustand persist, SecureStore, or AsyncStorage migration                  |
+| Tópico                | Referência                        | Carregar quando                                                                              |
+| --------------------- | --------------------------------- | -------------------------------------------------------------------------------------------- |
+| Regras de performance | `references/performance-rules.md` | Otimizar listas, animações, render, estado ou revisar código por performance                 |
+| Expo Router           | `references/expo-router.md`       | Configurar navegação, abas, stacks, deep linking, rotas protegidas ou padrões Expo Router 4+ |
+| Estrutura do projeto  | `references/project-structure.md` | Novo projeto, TypeScript, organização de código ou dependências                              |
+| Plataforma            | `references/platform-handling.md` | Código específico iOS/Android, SafeArea, teclado, status bar, botão voltar                   |
+| Armazenamento         | `references/storage-patterns.md`  | Persistir com MMKV, Zustand persist, SecureStore ou migração de AsyncStorage                 |
 
-## Output Format
+## Formato de saída
 
-When implementing React Native features, always provide:
+Ao implementar features React Native, sempre forneça:
 
-1. **Component code** with TypeScript types
-2. **Platform-specific handling** where differences exist
-3. **Navigation integration** if the component is a screen
-4. **Performance notes** for anything that could affect scroll/animation smoothness
+1. **Código do componente** com tipos TypeScript
+2. **Tratamento por plataforma** onde houver diferenças
+3. **Integração com navegação** se o componente for uma tela
+4. **Notas de performance** para o que possa afetar suavidade de scroll/animação

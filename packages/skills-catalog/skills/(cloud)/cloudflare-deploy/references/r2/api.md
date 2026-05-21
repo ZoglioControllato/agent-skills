@@ -1,6 +1,6 @@
-# R2 API Reference
+# Referência da API R2
 
-## PUT (Upload)
+## PUT (upload)
 
 ```typescript
 // Basic
@@ -22,7 +22,7 @@ await env.MY_BUCKET.put(key, value, {
 // Value types: ReadableStream | ArrayBuffer | string | Blob
 ```
 
-## GET (Download)
+## GET (download)
 
 ```typescript
 const object = await env.MY_BUCKET.get(key)
@@ -37,7 +37,7 @@ const object = await env.MY_BUCKET.get(key, { range: { offset: 0, length: 1024 }
 const object = await env.MY_BUCKET.get(key, { onlyIf: { etagMatches: '"abc123"' } })
 ```
 
-## HEAD (Metadata Only)
+## HEAD (só cabeçalhos)
 
 ```typescript
 const object = await env.MY_BUCKET.head(key) // Returns R2Object without body
@@ -70,7 +70,7 @@ while (listed.truncated) {
 }
 ```
 
-## Multipart Uploads
+## Uploads multipart
 
 ```typescript
 const multipart = await env.MY_BUCKET.createMultipartUpload(key, {
@@ -90,7 +90,7 @@ const object = await multipart.complete(uploadedParts)
 const multipart = env.MY_BUCKET.resumeMultipartUpload(key, uploadId)
 ```
 
-## Presigned URLs (S3 SDK)
+## URLs pré-assinadas (SDK S3)
 
 ```typescript
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
@@ -106,7 +106,7 @@ const uploadUrl = await getSignedUrl(s3, new PutObjectCommand({ Bucket: 'my-buck
 return Response.json({ uploadUrl })
 ```
 
-## TypeScript Interfaces
+## Interfaces TypeScript
 
 ```typescript
 interface R2Bucket {
@@ -220,7 +220,7 @@ interface R2UploadedPart {
 }
 ```
 
-## CLI Operations
+## Operações CLI
 
 ```bash
 wrangler r2 object put my-bucket/file.txt --file=./local.txt

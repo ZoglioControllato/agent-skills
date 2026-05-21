@@ -1,47 +1,46 @@
-# Specify
+# Especifique
 
-**Goal**: Capture WHAT to build with testable, traceable requirements.
+**Objetivo**: Capturar O QUE construir com requisitos testáveis e rastreáveis.
 
-If the feature has ambiguous gray areas (multiple valid approaches for user-facing behavior), the agent will automatically trigger the [discuss gray areas](discuss.md) process within this phase. For clear, well-defined features, it goes straight to the next phase.
+Se o recurso tiver áreas cinzentas ambíguas (múltiplas abordagens válidas para comportamento voltado para o usuário), o agente acionará automaticamente o processo [discutir áreas cinzentas](discuss.md) nesta fase. Para recursos claros e bem definidos, vai direto para a próxima fase.
 
-## Process
+## Processo
 
-### 1. Clarify Requirements
+### 1. Esclareça os requisitos
 
-You are a thinking partner, not an interviewer. Start open — let the user dump their mental model. Follow the energy: whatever they emphasize, dig into that.
+Você é um parceiro pensante, não um entrevistador. Comece aberto – deixe o usuário descartar seu modelo mental. Siga a energia: seja o que for que eles enfatizem, mergulhe nisso.
 
-Ask conversationally (not as a checklist):
+Pergunte em conversação (não como uma lista de verificação):
 
-- "What problem are you solving?"
-- "Who is the user and what's their pain?"
-- "What does success look like?"
+- "Que problema você está resolvendo?"
+- “Quem é o usuário e qual a sua dor?”
+- "Como é o sucesso?"
 
-If needed:
+Se necessário:
 
-- "What are the constraints (time, tech, resources)?"
-- "What is explicitly out of scope?"
+- "Quais são as restrições (tempo, tecnologia, recursos)?"
+- "O que está explicitamente fora do escopo?"
 
-**Challenge vagueness.** Never accept fuzzy answers. "Good" means what? "Users" means who? "Simple" means how? Make the abstract concrete: "Walk me through using this." "What does that actually look like?"
+**Desafie a imprecisão.** Nunca aceite respostas confusas. "Bom" significa o quê? "Usuários" significa quem? "Simples" significa como? Torne o abstrato concreto: "Mostre-me como usar isso." "Como é isso realmente?"
 
-**Know when to stop.** When you understand what they're building, why, who it's for, and what done looks like — offer to proceed.
+**Saiba quando parar.** Quando você entender o que eles estão construindo, por que, para quem se destina e o que parece ser feito, ofereça-se para prosseguir.
 
-### 2. Capture User Stories with Priorities
+### 2. Capture histórias de usuários com prioridades
 
-**P1 = MVP** (must ship), **P2** (should have), **P3** (nice to have)
+**P1 = MVP** (deve ser enviado), **P2** (deveria ter), **P3** (é bom ter)
 
-Each story MUST be **independently testable** - you can implement and demo just that story.
+Cada história DEVE ser **testável de forma independente** - você pode implementar e demonstrar apenas essa história.
 
-### 3. Write Acceptance Criteria
+### 3. Escreva os critérios de aceitação
 
-Use **WHEN/THEN/SHALL** format - it's precise and testable:
+Use o formato **WHEN/THEN/SHALL** - é preciso e testável:
 
-- WHEN [event/action] THEN [system] SHALL [response/behavior]
+- QUANDO [evento/ação] ENTÃO [sistema] DEVERÁ [resposta/comportamento]
 
 ---
 
-## Template: `.specs/[feature]/spec.md`
+## Modelo: `.specs/[recurso]/spec.md````markdown
 
-```markdown
 # [Feature Name] Specification
 
 ## Problem Statement
@@ -141,15 +140,18 @@ How we know the feature is successful:
 
 - [ ] [Measurable outcome - e.g., "User can complete X in < 2 minutes"]
 - [ ] [Measurable outcome - e.g., "Zero errors in Y scenario"]
-```
 
+```
 ---
 
-## Tips
+## Pontas
 
-- **P1 = Vertical Slice** — A complete, demo-able feature, not just backend or frontend
-- **WHEN/THEN is code** — If you can't write it as a test, rewrite it
-- **Requirement IDs are mandatory** — Every story maps to trackable IDs
-- **Edge cases matter** — What breaks? What's empty? What's huge?
-- **Out of Scope prevents creep** — If it's not here, it doesn't get built
-- **Confirm before Discuss** — User must approve spec before moving to discuss phase
+- **P1 = Vertical Slice** — Um recurso completo e demonstrável, não apenas backend ou frontend
+- **WHEN/THEN é código** — Se você não pode escrevê-lo como um teste, reescreva-o
+- **IDs de requisitos são obrigatórios** — Cada história é mapeada para IDs rastreáveis
+- **Casos extremos são importantes** — O que quebra? O que está vazio? O que é enorme?
+- **Fora do escopo evita fluência** — Se não estiver aqui, não será construído
+- **Confirmar antes de discutir** — O usuário deve aprovar as especificações antes de prosseguir para a discussão
+
+fase
+```

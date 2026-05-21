@@ -1,21 +1,21 @@
 ---
 name: best-practices
-description: Apply modern web development best practices for security, compatibility, and code quality. Use when asked to "apply best practices", "security audit", "modernize code", "code quality review", or "check for vulnerabilities". Do NOT use for accessibility (use web-accessibility), SEO (use seo), performance (use core-web-vitals), or comprehensive multi-area audits (use web-quality-audit).
+description: Aplica boas práticas modernas de desenvolvimento web em segurança, compatibilidade e qualidade de código. Use quando pedirem "aplique boas práticas", "auditoria de segurança", "modernize o código", "revisão de qualidade" ou "verifique vulnerabilidades". NÃO use para acessibilidade (use web-accessibility), SEO (use seo), performance (use core-web-vitals) ou auditorias multiárea (use web-quality-audit).
 license: MIT
 metadata:
   author: web-quality-skills
   version: '1.0'
 ---
 
-# Best practices
+# Boas práticas
 
-Modern web development standards based on Lighthouse best practices audits. Covers security, browser compatibility, and code quality patterns.
+Padrões modernos de desenvolvimento web alinhados às auditorias de Boas práticas do Lighthouse. Abrange segurança, compatibilidade de navegador e padrões de qualidade de código.
 
-## Security
+## Segurança
 
-### HTTPS everywhere
+### HTTPS em qualquer lugar
 
-**Enforce HTTPS:**
+**Aplicar HTTPS:**
 
 ```html
 <!-- ❌ Mixed content -->
@@ -30,13 +30,13 @@ Modern web development standards based on Lighthouse best practices audits. Cove
 <img src="//example.com/image.jpg" />
 ```
 
-**HSTS Header:**
+**Cabeçalho HSTS:**
 
 ```
 Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
 ```
 
-### Content Security Policy (CSP)
+### Política de Segurança de Conteúdo (CSP)
 
 ```html
 <!-- Basic CSP via meta tag -->
@@ -52,7 +52,7 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
 <!-- Better: HTTP header -->
 ```
 
-**CSP Header (recommended):**
+**Cabeçalho CSP (recomendado):**
 
 ```
 Content-Security-Policy:
@@ -66,7 +66,7 @@ Content-Security-Policy:
   form-action 'self';
 ```
 
-**Using nonces for inline scripts:**
+**Usando nonces para scripts embutidos:**
 
 ```html
 <script nonce="abc123">
@@ -74,9 +74,10 @@ Content-Security-Policy:
 </script>
 ```
 
-### Security headers
+### Cabeçalhos de segurança
 
 ```
+
 # Prevent clickjacking
 X-Frame-Options: DENY
 
@@ -93,9 +94,10 @@ Referrer-Policy: strict-origin-when-cross-origin
 Permissions-Policy: geolocation=(), microphone=(), camera=()
 ```
 
-### No vulnerable libraries
+### Nenhuma biblioteca vulnerável
 
 ```bash
+
 # Check for vulnerabilities
 npm audit
 yarn audit
@@ -107,7 +109,7 @@ npm audit fix
 npm ls lodash
 ```
 
-**Keep dependencies updated:**
+**Mantenha as dependências atualizadas:**
 
 ```json
 // package.json
@@ -119,7 +121,7 @@ npm ls lodash
 }
 ```
 
-**Known vulnerable patterns to avoid:**
+**Padrões vulneráveis ​​conhecidos a serem evitados:**
 
 ```javascript
 // ❌ Prototype pollution vulnerable patterns
@@ -130,7 +132,7 @@ _.merge(target, userInput)
 const safeData = JSON.parse(JSON.stringify(userInput))
 ```
 
-### Input sanitization
+### Sanitização de entrada
 
 ```javascript
 // ❌ XSS vulnerable
@@ -145,9 +147,10 @@ import DOMPurify from 'dompurify'
 element.innerHTML = DOMPurify.sanitize(userInput)
 ```
 
-### Secure cookies
+### Cookies seguros
 
 ```javascript
+
 // ❌ Insecure cookie
 document.cookie = "session=abc123";
 
@@ -157,9 +160,9 @@ Set-Cookie: session=abc123; Secure; HttpOnly; SameSite=Strict; Path=/
 
 ---
 
-## Browser compatibility
+## Compatibilidade do navegador
 
-### Doctype declaration
+### Declaração de tipo de documento
 
 ```html
 <!-- ❌ Missing or invalid doctype -->
@@ -172,7 +175,7 @@ Set-Cookie: session=abc123; Secure; HttpOnly; SameSite=Strict; Path=/
 </html>
 ```
 
-### Character encoding
+### Codificação de caracteres
 
 ```html
 <!-- ❌ Missing or late charset -->
@@ -192,7 +195,7 @@ Set-Cookie: session=abc123; Secure; HttpOnly; SameSite=Strict; Path=/
 </html>
 ```
 
-### Viewport meta tag
+### Meta tag da janela de visualização
 
 ```html
 <!-- ❌ Missing viewport -->
@@ -208,9 +211,10 @@ Set-Cookie: session=abc123; Secure; HttpOnly; SameSite=Strict; Path=/
 </head>
 ```
 
-### Feature detection
+### Detecção de recursos
 
 ```javascript
+
 // ❌ Browser detection (brittle)
 if (navigator.userAgent.includes('Chrome')) {
   // Chrome-specific code
@@ -237,7 +241,7 @@ if ('IntersectionObserver' in window) {
 }
 ```
 
-### Polyfills (when needed)
+### Polyfills (quando necessário)
 
 ```html
 <!-- Load polyfills conditionally -->
@@ -253,11 +257,12 @@ if ('IntersectionObserver' in window) {
 
 ---
 
-## Deprecated APIs
+## APIs obsoletas
 
-### Avoid these
+### Evite estes
 
 ```javascript
+
 // ❌ document.write (blocks parsing)
 document.write('<script src="..."></script>');
 
@@ -282,7 +287,7 @@ if ('serviceWorker' in navigator) {
 }
 ```
 
-### Event listener passive
+### Ouvinte de evento passivo
 
 ```javascript
 // ❌ Non-passive touch/wheel (may block scrolling)
@@ -299,9 +304,9 @@ element.addEventListener('touchstart', handler, { passive: false })
 
 ---
 
-## Console & errors
+## Console e erros
 
-### No console errors
+### Sem erros de console
 
 ```javascript
 // ❌ Errors in production
@@ -319,7 +324,7 @@ try {
 }
 ```
 
-### Error boundaries (React)
+### Limites de erro (React)
 
 ```jsx
 class ErrorBoundary extends React.Component {
@@ -347,7 +352,7 @@ class ErrorBoundary extends React.Component {
 </ErrorBoundary>
 ```
 
-### Global error handler
+### Manipulador de erros global
 
 ```javascript
 // Catch unhandled errors
@@ -363,9 +368,9 @@ window.addEventListener('unhandledrejection', (event) => {
 
 ---
 
-## Source maps
+## Mapas de origem
 
-### Production configuration
+### Configuração de produção
 
 ```javascript
 // ❌ Source maps exposed in production
@@ -387,11 +392,12 @@ module.exports = {
 
 ---
 
-## Performance best practices
+## Performance Boas práticas
 
-### Avoid blocking patterns
+### Evite padrões de bloqueio
 
 ```javascript
+
 // ❌ Blocking script
 <script src="heavy-library.js"></script>
 
@@ -406,7 +412,7 @@ module.exports = {
 <link rel="stylesheet" href="other-styles.css">
 ```
 
-### Efficient event handlers
+### Manipuladores de eventos eficientes
 
 ```javascript
 // ❌ Handler on every element
@@ -422,7 +428,7 @@ container.addEventListener('click', (e) => {
 })
 ```
 
-### Memory management
+### Gerenciamento de memória
 
 ```javascript
 // ❌ Memory leak (never removed)
@@ -450,9 +456,9 @@ controller.abort()
 
 ---
 
-## Code quality
+## Qualidade do código
 
-### Valid HTML
+### HTML válido
 
 ```html
 <!-- ❌ Invalid HTML -->
@@ -480,7 +486,7 @@ controller.abort()
 </div>
 ```
 
-### Semantic HTML
+### HTML semântico
 
 ```html
 <!-- ❌ Non-semantic -->
@@ -508,7 +514,7 @@ controller.abort()
 </main>
 ```
 
-### Image aspect ratios
+### Proporções de imagem
 
 ```html
 <!-- ❌ Distorted images -->
@@ -525,9 +531,9 @@ controller.abort()
 
 ---
 
-## Permissions & privacy
+## Permissões e privacidade
 
-### Request permissions properly
+### Solicite permissões corretamente
 
 ```javascript
 // ❌ Request on page load (bad UX, often denied)
@@ -542,7 +548,7 @@ findNearbyButton.addEventListener('click', async () => {
 })
 ```
 
-### Permissions policy
+### Política de permissões
 
 ```html
 <!-- Restrict powerful features -->
@@ -554,51 +560,54 @@ findNearbyButton.addEventListener('click', async () => {
 
 ---
 
-## Audit checklist
+## Lista de verificação de auditoria
 
-### Security (critical)
+### Segurança (crítica)
 
-- [ ] HTTPS enabled, no mixed content
-- [ ] No vulnerable dependencies (`npm audit`)
-- [ ] CSP headers configured
-- [ ] Security headers present
-- [ ] No exposed source maps
+- [] HTTPS ativado, sem conteúdo misto
+- [] Sem dependências vulneráveis (`auditoria npm`)
+- [] cabeçalhos CSP configurados
+- [] Cabeçalhos de segurança presentes
+- [] Nenhum mapa de origem exposto
 
-### Compatibility
+### Compatibilidade
 
-- [ ] Valid HTML5 doctype
-- [ ] Charset declared first in head
-- [ ] Viewport meta tag present
-- [ ] No deprecated APIs used
-- [ ] Passive event listeners for scroll/touch
+- [] Tipo de documento HTML5 válido
+- [] Charset declarado primeiro no head
+- [] Meta tag da janela de visualização presente
+- [] Nenhuma API obsoleta usada
+- [] Ouvintes de eventos passivos para rolagem/toque
 
-### Code quality
+### Qualidade do código
 
-- [ ] No console errors
-- [ ] Valid HTML (no duplicate IDs)
-- [ ] Semantic HTML elements used
-- [ ] Proper error handling
-- [ ] Memory cleanup in components
+- [] Sem erros de console
+- [] HTML válido (sem IDs duplicados)
+- [] Elementos HTML semânticos usados
+- [] Tratamento adequado de erros
+- [] Limpeza de memória em componentes
 
-### UX
+###experiência do usuário
 
-- [ ] No intrusive interstitials
-- [ ] Permission requests in context
-- [ ] Clear error messages
-- [ ] Appropriate image aspect ratios
+- [] Sem intersticiais intrusivos
+- [] Solicitações de permissão no contexto
+- [] Limpar mensagens de erro
+- [] Proporções de imagem apropriadas
 
-## Tools
+## Ferramentas
 
-| Tool                                               | Purpose                    |
-| -------------------------------------------------- | -------------------------- |
-| `npm audit`                                        | Dependency vulnerabilities |
-| [SecurityHeaders.com](https://securityheaders.com) | Header analysis            |
-| [W3C Validator](https://validator.w3.org)          | HTML validation            |
-| Lighthouse                                         | Best practices audit       |
-| [Observatory](https://observatory.mozilla.org)     | Security scan              |
+| Ferramenta                                         | Finalidade                      |
+| -------------------------------------------------- | ------------------------------- |
+| `auditoria npm`                                    | Vulnerabilidades de dependência |
+| [SecurityHeaders.com](https://securityheaders.com) | Análise de cabeçalho            |
+| [Validador W3C](https://validator.w3.org)          | Validação HTML                  |
 
-## References
+| Farol
 
-- [MDN Web Security](https://developer.mozilla.org/en-US/docs/Web/Security)
+| Boas práticas auditoria |
+| [Observatório](https://observatory.mozilla.org) | Verificação de segurança |
+
+## Referências
+
+- [Segurança Web MDN](https://developer.mozilla.org/en-US/docs/Web/Security)
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/)
-- [Web Quality Audit](../web-quality-audit/SKILL.md)
+- [Auditoria de qualidade da Web](../web-quality-audit/SKILL.md)

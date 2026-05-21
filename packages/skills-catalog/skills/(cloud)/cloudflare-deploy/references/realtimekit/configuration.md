@@ -143,19 +143,18 @@ wrangler deploy --env staging
 wrangler deploy --env production
 ```
 
-## TURN Service Configuration
+##Configuração do serviço TURN
 
-RealtimeKit can use Cloudflare's TURN service for connectivity through restrictive networks:
-
-```jsonc
+O RealtimeKit pode usar o serviço TURN da Cloudflare para conectividade através de redes restritivas:```jsonc
 // wrangler.jsonc
 {
-  "vars": {
-    "TURN_SERVICE_ID": "your_turn_service_id",
-  },
-  // Set secret: wrangler secret put TURN_SERVICE_TOKEN
+"vars": {
+"TURN_SERVICE_ID": "your_turn_service_id",
+},
+// Set secret: wrangler secret put TURN_SERVICE_TOKEN
 }
-```
+
+````
 
 TURN automatically configured when enabled in account - no client-side changes needed.
 
@@ -182,7 +181,7 @@ const uiConfig: UIConfig = {
 
 // Or use CSS variables
 // :root { --rtk-color-brand-500: #0066ff; --rtk-border-radius: 12px; }
-```
+````
 
 ## Internationalization (i18n)
 

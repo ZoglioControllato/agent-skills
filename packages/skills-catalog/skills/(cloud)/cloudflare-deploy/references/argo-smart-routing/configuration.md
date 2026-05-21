@@ -91,27 +91,27 @@ export const argoEnabled = argoSettings.smartRouting
 export const zoneId = zone.id
 ```
 
-## Billing Configuration
+## Configuração de faturamento
 
-Before enabling Argo Smart Routing, ensure billing is configured for the account:
+Antes de ativar o Argo Smart Routing, certifique-se de que o faturamento esteja configurado para a conta:
 
-**Prerequisites:**
+**Pré-requisitos:**
 
-1. Valid payment method on file
-2. Enterprise or higher plan
-3. Zone must have billing enabled
+1. Método de pagamento válido registrado
+2. Plano empresarial ou superior
+3. A zona deve ter o faturamento ativado
 
-**Check Billing Status via Dashboard:**
+**Verifique o status do faturamento via painel:**
 
-1. Navigate to Account → Billing
-2. Verify payment method configured
-3. Check zone subscription status
+1. Navegue até Conta → Faturamento
+2. Verifique a forma de pagamento configurada
+3. Verifique o status da assinatura da zona
 
-**Note:** Attempting to enable Argo without billing configured will result in `editable: false` in API responses.
+**Observação:** A tentativa de ativar o Argo sem o faturamento configurado resultará em `editable: false` nas respostas da API.
 
-## Environment Variable Setup
+## Configuração de variável de ambiente
 
-**Required Environment Variables:**
+**Variáveis de ambiente necessárias:**
 
 ```bash
 # .env
@@ -181,25 +181,25 @@ jobs:
           TF_VAR_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
 ```
 
-## Enterprise Preview Program
+## Programa de visualização empresarial
 
-For early access to Argo Smart Routing features and Smart Shield integration:
+Para acesso antecipado aos recursos do Argo Smart Routing e integração do Smart Shield:
 
-**Eligibility:**
+**Elegibilidade:**
 
-- Enterprise plan customers
-- Active Cloudflare support contract
-- Production traffic >100GB/month
+- Clientes do plano Enterprise
+- Contrato de suporte ativo Cloudflare
+- Tráfego de produção >100GB/mês
 
-**How to Join:**
+**Como participar:**
 
-1. Contact Cloudflare account team or support
-2. Request Argo/Smart Shield preview access
-3. Receive preview zone configuration
+1. Entre em contato com a equipe de conta ou suporte da Cloudflare
+2. Solicite acesso de visualização do Argo/Smart Shield
+3. Receba a configuração da zona de visualização
 
-**Preview Features:**
+**Recursos de visualização:**
 
-- Enhanced analytics and reporting
-- Smart Shield DDoS integration
-- Advanced routing policies
-- Priority support for routing issues
+- Análise e relatórios aprimorados
+- Integração Smart Shield DDoS
+- Políticas de roteamento avançadas
+- Suporte prioritário para problemas de roteamento

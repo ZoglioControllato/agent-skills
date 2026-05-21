@@ -1,63 +1,63 @@
-# D1 API Reference
+# Referência da API D1
 
-## Prepared Statements (Required for Security)
+## Prepared statements (obrigatório por segurança)
 
 ```typescript
-// ❌ NEVER: Direct string interpolation (SQL injection risk)
+// ❌ NUNCA: interpolação direta (risco de SQL injection)
 const result = await env.DB.prepare(`SELECT * FROM users WHERE id = ${userId}`).all()
 
-// ✅ CORRECT: Prepared statements with bind()
+// ✅ CORRETO: prepared statements com bind()
 const result = await env.DB.prepare('SELECT * FROM users WHERE id = ?').bind(userId).all()
 
-// Multiple parameters
+// Múltiplos parâmetros
 const result = await env.DB.prepare('SELECT * FROM users WHERE email = ? AND active = ?').bind(email, true).all()
 ```
 
-## Query Execution Methods
+## Métodos de execução
 
 ```typescript
-// .all() - Returns all rows
+// .all() — retorna todas as linhas
 const { results, success, meta } = await env.DB.prepare('SELECT * FROM users WHERE active = ?').bind(true).all()
-// results: Array of row objects; success: boolean
+// results: array de objetos-linha; success: boolean
 // meta: { duration: number, rows_read: number, rows_written: number }
 
-// .first() - Returns first row or null
+// .first() — primeira linha ou null
 const user = await env.DB.prepare('SELECT * FROM users WHERE id = ?').bind(userId).first()
 
-// .first(columnName) - Returns single column value
+// .first(columnName) — valor de uma única coluna
 const email = await env.DB.prepare('SELECT email FROM users WHERE id = ?').bind(userId).first('email')
-// Returns string | number | null
+// Retorna string | number | null
 
-// .run() - For INSERT/UPDATE/DELETE (no row data returned)
+// .run() — INSERT/UPDATE/DELETE (sem retorno de linhas)
 const result = await env.DB.prepare('UPDATE users SET last_login = ? WHERE id = ?').bind(Date.now(), userId).run()
 // result.meta: { duration, rows_read, rows_written, last_row_id, changes }
 
-// .raw() - Returns array of arrays (efficient for large datasets)
+// .raw() — array de arrays (eficiente para grandes volumes)
 const rawResults = await env.DB.prepare('SELECT id, name FROM users').raw()
 // [[1, 'Alice'], [2, 'Bob']]
 ```
 
-## Batch Operations
+## Operações em lote
 
 ```typescript
-// Execute multiple queries in single round trip (atomic transaction)
+// Várias consultas em uma ida e volta (transação atômica)
 const results = await env.DB.batch([
   env.DB.prepare('SELECT * FROM users WHERE id = ?').bind(1),
   env.DB.prepare('SELECT * FROM posts WHERE author_id = ?').bind(1),
   env.DB.prepare('UPDATE users SET last_access = ? WHERE id = ?').bind(Date.now(), 1),
 ])
-// results is array: [result1, result2, result3]
+// results é array: [result1, result2, result3]
 
-// Batch with same prepared statement, different params
+// Batch com mesmo prepared statement, parâmetros diferentes
 const userIds = [1, 2, 3]
 const stmt = env.DB.prepare('SELECT * FROM users WHERE id = ?')
 const results = await env.DB.batch(userIds.map((id) => stmt.bind(id)))
 ```
 
-## Transactions (via batch)
+## Transações (via batch)
 
 ```typescript
-// D1 executes batch() as atomic transaction - all succeed or all fail
+// O D1 executa batch() como transação atômica — tudo passa ou tudo falha
 const results = await env.DB.batch([
   env.DB.prepare('INSERT INTO accounts (id, balance) VALUES (?, ?)').bind(1, 100),
   env.DB.prepare('INSERT INTO accounts (id, balance) VALUES (?, ?)').bind(2, 200),
@@ -66,44 +66,44 @@ const results = await env.DB.batch([
 ])
 ```
 
-## Sessions API (Paid Plans)
+## API de Sessions (planos pagos)
 
-Long-running sessions for operations exceeding 30s timeout (up to 15 min).
+Sessões longas para operações que excedem timeout de 30 s (até 15 min).
 
 ```typescript
-const session = env.DB.withSession({ timeout: 600 }) // 10 min (1-900s)
+const session = env.DB.withSession({ timeout: 600 }) // 10 min (1–900s)
 try {
   await session.prepare('CREATE INDEX idx_large ON big_table(column)').run()
   await session.prepare('ANALYZE').run()
 } finally {
-  session.close() // CRITICAL: always close to prevent leaks
+  session.close() // CRÍTICO: sempre feche para evitar vazamentos
 }
 ```
 
-**Use cases**: Migrations, ANALYZE, large index creation, bulk transformations
+**Casos de uso**: migrations, ANALYZE, criação de índices grandes, transformações em massa
 
-## Read Replication (Paid Plans)
+## Read replication (planos pagos)
 
-Routes queries to nearest replica for lower latency. Writes always go to primary.
+Encaminha consultas à réplica mais próxima. Escritas sempre no primário.
 
 ```typescript
 interface Env {
-  DB: D1Database // Primary (writes)
-  DB_REPLICA: D1Database // Replica (reads)
+  DB: D1Database // Primário (writes)
+  DB_REPLICA: D1Database // Réplica (reads)
 }
 
-// Reads: use replica
+// Reads: use réplica
 const user = await env.DB_REPLICA.prepare('SELECT * FROM users WHERE id = ?').bind(userId).first()
 
-// Writes: use primary
+// Writes: use primário
 await env.DB.prepare('UPDATE users SET last_login = ? WHERE id = ?').bind(Date.now(), userId).run()
 
-// Read-after-write: use primary for consistency (replication lag <100ms-2s)
+// Read-after-write: use primário para consistência (lag <100ms–2s)
 await env.DB.prepare('INSERT INTO posts (title) VALUES (?)').bind(title).run()
-const post = await env.DB.prepare('SELECT * FROM posts WHERE title = ?').bind(title).first() // Primary
+const post = await env.DB.prepare('SELECT * FROM posts WHERE title = ?').bind(title).first() // Primário
 ```
 
-## Error Handling
+## Tratamento de erros
 
 ```typescript
 async function getUser(userId: number, env: Env): Promise<Response> {
@@ -117,7 +117,7 @@ async function getUser(userId: number, env: Env): Promise<Response> {
   }
 }
 
-// Constraint violations
+// Violações de constraint
 try {
   await env.DB.prepare('INSERT INTO users (email, name) VALUES (?, ?)').bind(email, name).run()
 } catch (error) {
@@ -126,12 +126,12 @@ try {
 }
 ```
 
-## REST API (HTTP) Access
+## API REST (HTTP)
 
-Access D1 from external services (non-Worker contexts) using Cloudflare API.
+Acesse D1 de serviços externos (fora do Worker) usando a API Cloudflare.
 
 ```typescript
-// Single query
+// Consulta única
 const response = await fetch(
   `https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/d1/database/${DATABASE_ID}/query`,
   {
@@ -150,7 +150,7 @@ const response = await fetch(
 const { result, success, errors } = await response.json()
 // result: [{ results: [...], success: true, meta: {...} }]
 
-// Batch queries via HTTP
+// Batch via HTTP
 const response = await fetch(
   `https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/d1/database/${DATABASE_ID}/query`,
   {
@@ -167,12 +167,12 @@ const response = await fetch(
 )
 ```
 
-**Use cases**: Server-side scripts, CI/CD migrations, administrative tools, non-Worker integrations
+**Casos de uso**: scripts server-side, migrations em CI/CD, ferramentas admin, integrações sem Worker
 
-## Testing & Debugging
+## Testes e debug
 
 ```typescript
-// Vitest with unstable_dev
+// Vitest com unstable_dev
 import { unstable_dev } from 'wrangler'
 describe('D1', () => {
   let worker: Awaited<ReturnType<typeof unstable_dev>>
@@ -187,16 +187,16 @@ describe('D1', () => {
   })
 })
 
-// Debug query performance
+// Performance da query
 const result = await env.DB.prepare('SELECT * FROM users').all()
 console.log('Duration:', result.meta.duration, 'ms')
 
-// Query plan analysis
+// Plano de execução
 const plan = await env.DB.prepare('EXPLAIN QUERY PLAN SELECT * FROM users WHERE email = ?').bind(email).all()
 ```
 
 ```bash
-# Inspect local database
+# Inspecionar banco local
 sqlite3 .wrangler/state/v3/d1/<database-id>.sqlite
 .tables; .schema users; PRAGMA table_info(users);
 ```

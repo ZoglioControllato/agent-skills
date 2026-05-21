@@ -1,51 +1,50 @@
 ---
 name: ai-sdr
-description: "When the user wants to deploy AI sales development reps, automate sales qualification, build signal-to-action routing, or design AI agent architecture for sales. Also use when the user mentions 'AI SDR,' 'AI sales agent,' 'automated qualification,' 'signal routing,' 'sales automation,' '11x,' 'Artisan,' 'AiSDR,' 'AI BDR,' or 'autonomous sales.' This skill covers AI SDR deployment, qualification automation, and agent architecture for sales development. Do NOT use for technical implementation, code review, or software architecture."
+description: "Use quando quiser implantar SDR com IA (prospecção automatizada), automatizar qualificação comercial, construir roteamento de sinais até ações ou desenhar a arquitetura de agentes de IA para vendas. Use também quando o usuário mencionar 'AI SDR', 'agente de vendas IA', 'qualificação automatizada', 'roteamento por sinais', 'automação de vendas', '11x', 'Artisan', 'AiSDR', 'AI BDR' ou 'vendas autônomas'. Esta skill cobre implantação de AI SDR, automação da qualificação e arquitetura de agentes para desenvolvimento de vendas. NÃO use para implementação técnica de ferramentas, revisão de código ou arquitetura de software de produto."
 metadata:
   original_author: Chad Boyda / agent-gtm-skills
   modified_by: Felipe Rodrigues - github.com/felipfr
   source: https://github.com/chadboyda/agent-gtm-skills
   version: '1.0.0'
+---
+
+# Skill AI SDR
+
+Você é um estrategista de implantação de AI SDR. Ajuda founders e equipes GTM a desenhar, implantar e otimizar sistemas de desenvolvimento de vendas com IA. Combina targeting baseado em sinais, qualificação automatizada, sequências multicanal e passagem com humanos no circuito para construir pipeline que converte.
+
+## Antes de começar
+
+Antes de orientar sobre AI SDR, esclareça:
+
+1. **Movimento comercial atual** — Inbound, outbound, product-led ou híbrido?
+2. **Tamanho do time** — Founder solo, equipe pequena (2–5) ou organização escalada (10+)?
+3. **Clareza da ICP** — Há uma ICP definida com critérios firmográficos + comportamentais?
+4. **Stack tecnológico** — CRM (HubSpot, Salesforce, Pipedrive), ferramentas de enriquecimento, infraestrutura de envio?
+5. **Faixa de orçamento** — Bootstrap (US$ 500–1K/mês), crescimento (US$ 1K–5K/mês) ou escala (US$ 5K+/mês)?
+6. **Metas de volume** — Quantas reuniões qualificadas por mês precisam?
+7. **Qualidade dos dados** — CRM limpo vs. partir do zero?
+
+Se algo disso não estiver claro, pergunte antes de prosseguir. Entradas ruins geram resultados ruins de AI SDR.
 
 ---
 
-# AI SDR Skill
+## Seção 1: Panorama de AI SDR (2025–2026)
 
-You are an AI SDR deployment strategist. You help founders and GTM teams design, deploy, and optimize AI-powered sales development systems. You combine signal-based targeting, automated qualification, multi-channel sequencing, and human-in-the-loop handoffs to build pipeline that converts.
+### O que AI SDRs fazem na prática
 
-## Before Starting
+AI SDRs automatizam o trabalho repetitivo de desenvolvimento de vendas:
 
-Before giving AI SDR advice, establish:
+- Montagem de listas e enriquecimento de leads
+- Pontuação e qualificação de ICP
+- Geração personalizada de e-mail/LinkedIn/SMS
+- Execução de sequências em vários passos
+- Agendamento de reuniões e coordenação de calendário
+- Classificação e roteamento de respostas
+- Registro no CRM e higiene de dados
 
-1. **Current sales motion** - Inbound-led, outbound-led, product-led, or hybrid?
-2. **Team size** - Solo founder, small team (2-5), or scaled org (10+)?
-3. **ICP clarity** - Do they have a defined ICP with firmographic + behavioral criteria?
-4. **Tech stack** - CRM (HubSpot, Salesforce, Pipedrive), enrichment tools, sending infrastructure?
-5. **Budget range** - Bootstrap ($500-1K/mo), growth ($1K-5K/mo), or scale ($5K+/mo)?
-6. **Volume targets** - How many qualified meetings per month do they need?
-7. **Data quality** - Clean CRM data vs. starting from scratch?
+Eles não substituem humanos nos pontos de conversão. O modelo de handoff importa mais que o modelo de automação.
 
-If any of these are unclear, ask before proceeding. Bad inputs produce bad AI SDR outputs.
-
----
-
-## Section 1: AI SDR Landscape (2025-2026)
-
-### What AI SDRs Actually Do
-
-AI SDRs automate the repetitive work of sales development:
-
-- List building and lead enrichment
-- ICP scoring and qualification
-- Personalized email/LinkedIn/SMS generation
-- Multi-step sequence execution
-- Meeting booking and calendar coordination
-- Reply classification and routing
-- CRM logging and data hygiene
-
-They do NOT replace humans at conversion points. The handoff model matters more than the automation model.
-
-### Platform Comparison Table
+### Tabela comparativa de plataformas
 
 ```
 +---------------+------------+-----------------+---------------------------+------------------+
@@ -77,7 +76,7 @@ They do NOT replace humans at conversion points. The handoff model matters more 
 +---------------+------------+-----------------+---------------------------+------------------+
 ```
 
-### Platform Selection Decision Framework
+### Quadro de decisão para seleção de plataforma
 
 ```
 START
@@ -102,7 +101,7 @@ Do you need a full autonomous agent (minimal human involvement)?
                               NO  --> Instantly or Smartlead (sending layer only)
 ```
 
-### Key Metrics Benchmarks
+### Referências-chave de métricas
 
 ```
 +-------------------------------+-------------+-------------+
@@ -119,17 +118,17 @@ Do you need a full autonomous agent (minimal human involvement)?
 +-------------------------------+-------------+-------------+
 ```
 
-Important: AI SDRs win on volume and cost. Human SDRs win on conversion quality and complex deal navigation. The best teams combine both.
+Importante: AI SDR vence em volume e custo. SDR humano vence em qualidade de conversão e navegação de deals complexos. Os melhores times combinam os dois.
 
 ---
 
-## Section 2: The 4-Week AI SDR Deployment Program
+## Seção 2: programa de implantação de AI SDR em 4 semanas
 
-### Week 1: Foundation (Signal Setup + List Building)
+### Semana 1: fundação (configuração de sinais + montagem da lista)
 
-**Day 1-2: ICP Definition and Signal Configuration**
+**Dias 1–2: Definição de ICP e configuração de sinais**
 
-Define your ICP with scoring criteria:
+Defina sua ICP com critérios de pontuação:
 
 ```
 TIER 1 (Score 80-100) - Auto-enroll in sequence
@@ -150,9 +149,9 @@ TIER 3 (Score 0-49) - Nurture or disqualify
   - No intent signals detected
 ```
 
-**Day 3-4: Enrichment Waterfall Setup**
+**Dias 3–4: Configuração do waterfall de enriquecimento**
 
-Build a Clay table (or equivalent) with cascading data providers:
+Monte uma tabela Clay (ou equivalente) com provedores em cascata:
 
 ```
 Step 1: Apollo         --> Email + phone + title
@@ -165,20 +164,20 @@ Step 7: LinkedIn Sales  --> Social proximity + mutual connections
         Navigator
 ```
 
-Target: 80%+ email match rate across your ICP list. If you are below 60% after the waterfall, your source list quality is the problem.
+Meta: mais de 80% de correspondência de e-mail na lista ICP. Se estiver abaixo de 60% após o waterfall, o problema é a qualidade da lista-fonte.
 
-**Day 5: Build Initial Prospect List**
+**Dia 5: Monte a lista inicial de prospects**
 
-- Pull 500 ICP-scored prospects into your enrichment workflow
-- Score each prospect against your tier criteria
-- Tag with relevant signals (funding, hiring, tech adoption, content engagement)
-- Export Tier 1 prospects (target: 150-200) for Week 2 sequencing
+- Puxe 500 prospects pontuados na ICP para o fluxo de enriquecimento
+- Pontue cada prospect em relação aos critérios de tier
+- Marque com os sinais relevantes (funding, hiring, adoção tech, engajamento com conteúdo)
+- Exporte prospects Tier 1 (meta: 150–200) para a sequência da Semana 2
 
-### Week 2: Content (Sequence Creation + Personalization)
+### Semana 2: conteúdo (criação de sequências + personalização)
 
-**Day 6-7: Persona-Based Email Variants**
+**Dias 6–7: Variantes de e-mail por persona**
 
-Create 3 email variants per buyer persona. Each variant needs:
+Crie 3 variantes de e-mail por persona de compra. Cada variante precisa de:
 
 ```
 VARIANT STRUCTURE:
@@ -190,7 +189,7 @@ VARIANT STRUCTURE:
   Length           --> 50-125 words (5-10 lines max)
 ```
 
-Example persona matrix:
+Exemplo de matriz de personas:
 
 ```
 +------------------+--------------------+---------------------+--------------------+
@@ -207,21 +206,21 @@ Example persona matrix:
 +------------------+--------------------+---------------------+--------------------+
 ```
 
-**Day 8-9: AI Personalization Layer**
+**Dias 8–9: Camada de personalização com IA**
 
-For each prospect, generate a personalized opening line using:
+Para cada prospect, gere uma linha de abertura personalizada usando:
 
-- Recent LinkedIn post or article they published
-- Company news (funding, product launch, expansion)
-- Hiring patterns that indicate pain points
-- Mutual connections or shared communities
-- Tech stack signals that indicate fit
+- Post ou artigo recente no LinkedIn que a pessoa publicou
+- Novidades da empresa (funding, lançamento, expansão)
+- Padrões de contratação que indiquem dores
+- Conexões mútuas ou comunidades compartilhadas
+- Sinais de tech stack que indiquem fit
 
-Personalization formula: [Signal observation] + [Relevance to their role] + [Bridge to your value]
+Fórmula de personalização: [Observação do sinal] + [Relevância para o cargo] + [Ponte ao seu valor]
 
-**Day 10: Conditional Branching Logic**
+**Dia 10: Lógica de ramificação condicional**
 
-Build sequences with conditional paths:
+Construa sequências com caminhos condicionais:
 
 ```
                     Email 1 (Day 0)
@@ -241,7 +240,7 @@ Build sequences with conditional paths:
       human     touch       (Day 7)    ends
                 (Day 5)       |
                    |       Reply?
-                Reply?        |
+                   |          |
                    |     +----+----+
               +----+     |         |
               |    |   Route    Final
@@ -251,11 +250,11 @@ Build sequences with conditional paths:
                    email        Archive
 ```
 
-### Week 3: Launch (Sending Infrastructure + Go-Live)
+### Semana 3: lançamento (infraestrutura de envio + go-live)
 
-**Day 11-12: Domain and Mailbox Setup**
+**Dias 11–12: Domínios e mailboxes**
 
-Infrastructure requirements:
+Requisitos de infraestrutura:
 
 ```
 DOMAIN SETUP:
@@ -273,17 +272,17 @@ WARMUP PROTOCOL:
   - NEVER exceed 50 emails/day per mailbox
 ```
 
-Compliance requirements (2025+ enforcement):
+Requisitos de compliance (enforcement em 2025+):
 
-- SPF, DKIM, DMARC properly configured
-- One-click unsubscribe header included
-- Spam complaint rate below 0.3%
-- Bounce rate below 2%
-- Google, Yahoo, and Microsoft all enforce these rules now
+- SPF, DKIM e DMARC configurados corretamente
+- Cabeçalho de descadastro em um clique
+- Taxa de reclamações de spam abaixo de 0,3%
+- Taxa de bounce abaixo de 2%
+- Google, Yahoo e Microsoft passaram a aplicar essas regras
 
-**Day 13: Sending Platform Configuration**
+**Dia 13: Configuração da plataforma de envio**
 
-Choose your sending layer:
+Escolha sua camada de envio:
 
 ```
 +-------------------+-------------------+-------------------+
@@ -300,19 +299,19 @@ Choose your sending layer:
 +-------------------+-------------------+-------------------+
 ```
 
-**Day 14-15: Soft Launch**
+**Dias 14–15: Lançamento suave**
 
-- Launch to Tier 1 prospects only (100-150 contacts)
-- Monitor deliverability metrics hourly for the first 24 hours
-- Check inbox placement (use GlockApps or mail-tester.com)
-- Watch for bounce rates above 2% and pause if triggered
-- Target: 95%+ delivery rate before expanding volume
+- Lance só para prospects Tier 1 (100–150 contatos)
+- Monitore métricas de entrega de hora em hora nas primeiras 24 horas
+- Verifique placement na caixa de entrada (GlockApps ou mail-tester.com)
+- Fique de olho em taxas de bounce acima de 2% e pause se disparar
+- Meta: mais de 95% de delivery antes de expandir volume
 
-### Week 4: Optimize (Measure + Iterate)
+### Semana 4: otimizar (medir + iterar)
 
-**Day 16-18: A/B Testing Framework**
+**Dias 16–18: Framework de testes A/B**
 
-Test one variable at a time:
+Teste uma variável por vez:
 
 ```
 PRIORITY TEST ORDER:
@@ -325,11 +324,11 @@ PRIORITY TEST ORDER:
      depth
 ```
 
-Minimum sample size: 100 sends per variant before drawing conclusions.
+Tamanho mínimo de amostra: 100 envios por variante antes de tirar conclusões.
 
-**Day 19-20: Reply Sentiment Analysis**
+**Dias 19–20: Análise de sentimento das respostas**
 
-Classify all replies into categories:
+Classifique todas as respostas:
 
 ```
 POSITIVE (route to human immediately):
@@ -354,46 +353,46 @@ OBJECTION (AI handles with playbook):
   - "Need to talk to my team"
 ```
 
-**Day 21: ICP Scoring Adjustment**
+**Dia 21: Ajuste da pontuação da ICP**
 
-Review first 3 weeks of data and adjust:
+Revise os primeiros 3 semanas de dados e ajuste:
 
-- Which firmographic traits correlate with positive replies?
-- Which signals predicted meetings booked?
-- Which personas converted at the highest rate?
-- Which Tier 2 prospects should be upgraded or downgraded?
+- Quais traços firmográficos correlacionam com respostas positivas?
+- Quais sinais previram reuniões agendadas?
+- Quais personas converteram mais?
+- Quais prospects Tier 2 devem ser promovidos ou rebaixados?
 
-Recalibrate scoring weights based on actual conversion data, not assumptions.
-
----
-
-For signal-to-action routing, agent architecture, qualification, human handoff, cost/ROI, and failure modes read `references/implementation-guide.md` when designing or debugging an AI SDR deployment.
+Recalibere os pesos da pontuação com base em dados de conversão reais, não em achismos.
 
 ---
 
-## Examples
-
-- **User says:** "Set up an AI SDR" → **Result:** Agent asks pipeline need, CRM, and budget; recommends platform (11x, Artisan, AiSDR) and 4-week program; outlines 30-second checklist (ICP, enrichment 80%+, 3 email variants, signal-to-action, sending, handoff, CRM, reply classification); sets speed-to-lead (P0 &lt;5 min, reply handoff &lt;5 min).
-- **User says:** "Our AI SDR reply rate is low" → **Result:** Agent checks instruction stack (messaging, personalization, sequence); suggests A/B on first line and CTA; verifies enrichment and signal quality; ties to ai-cold-outreach and lead-enrichment.
-- **User says:** "When to use AI SDR vs human SDR?" → **Result:** Agent maps use cases (volume, qualification, handoff); recommends AI for list build, sequences, reply classification; human for first close, complex deals, and handoff triggers; suggests 4-week ramp and weekly optimization.
-
-## Troubleshooting
-
-- **Low meeting conversion** → **Cause:** Weak qualification or wrong handoff. **Fix:** Define qualification criteria and handoff triggers; ensure positive-reply-to-handoff &lt;5 min; train on objection handling; review reply sentiment accuracy.
-- **Deliverability issues** → **Cause:** Warmup, volume, or authentication. **Fix:** Run deliverability checklist (SPF, DKIM, DMARC, unsubscribe, bounce &lt;2%, warmup 14–28d, &lt;50/mailbox); test inbox placement (GlockApps, mail-tester).
-- **Tool swap didn't help** → **Cause:** Instruction stack or context missing. **Fix:** Document ICP scoring, messaging framework, personalization rules, sequence logic; ensure persistent context and feedback loop; fix architecture before changing tools.
+Para roteamento sinal→ação, arquitetura de agentes, qualificação, handoff humano, custo/ROI e modos de falha, leia `references/implementation-guide.md` ao desenhar ou depurar uma implantação de AI SDR.
 
 ---
 
-For checklists, speed-to-lead targets, deliverability checklist, and discovery questions read `references/quick-reference.md`.
+## Exemplos
+
+- **Usuário diz:** "Montar um AI SDR" → **Resultado:** O agente pergunta necessidade de pipeline, CRM e orçamento; recomenda plataforma (11x, Artisan, AiSDR) e o programa em 4 semanas; descreve checklist de 30 segundos (ICP, enriquecimento 80%+, 3 variantes de e-mail, sinal→ação, envio, handoff, CRM, classificação de respostas); define speed-to-lead (P0 <5 min, handoff na resposta <5 min).
+- **Usuário diz:** "A taxa de resposta do nosso AI SDR está baixa" → **Resultado:** O agente verifica a pilha de instruções (mensagem, personalização, sequência); sugere A/B na primeira linha e no CTA; confere enriquecimento e qualidade de sinais; conecta a **ai-cold-outreach** e **lead-enrichment**.
+- **Usuário diz:** "Quando usar AI SDR vs SDR humano?" → **Resultado:** O agente mapeia casos (volume, qualificação, handoff); recomenda IA para montagem de lista, sequências e classificação de resposta; humano para primeiro fechamento, deals complexos e gatilhos de handoff; sugere ramp de 4 semanas e otimização semanal.
+
+## Solução de problemas
+
+- **Baixa conversão para reunião** → **Causa:** Qualificação fraca ou handoff errado. **Correção:** Defina critérios de qualificação e gatilhos de handoff; garanta resposta positiva→handoff em menos de 5 min; treine tratamento de objeções; revise a precisão do sentimento nas respostas.
+- **Problemas de entregabilidade** → **Causa:** Warmup, volume ou autenticação. **Correção:** Rode checklist de entregabilidade (SPF, DKIM, DMARC, unsubscribe, bounce <2%, warmup 14–28 dias, <50/caixa); teste placement (GlockApps, mail-tester).
+- **Trocar ferramenta não ajudou** → **Causa:** Pilha de instruções ou contexto faltando. **Correção:** Documente pontuação da ICP, framework de mensagem, regras de personalização, lógica de sequências; garanta contexto persistente e loop de feedback; corrija a arquitetura antes de trocar ferramentas.
 
 ---
 
-## Related Skills
+Para checklists, metas de speed-to-lead, checklist de entregabilidade e perguntas de descoberta, leia `references/quick-reference.md`.
 
-- **ai-cold-outreach** - Deep dive on cold email copywriting, deliverability, and multi-channel sequencing
-- **lead-enrichment** - Detailed enrichment waterfall design, data provider selection, and Clay workflows
-- **sales-motion-design** - End-to-end sales motion architecture from first touch to close
-- **gtm-engineering** - Technical GTM infrastructure, API integrations, and workflow automation
-- **solo-founder-gtm** - Lean AI SDR deployment for founders doing everything themselves
-- **gtm-metrics** - Pipeline metrics, attribution modeling, and ROI tracking frameworks
+---
+
+## Skills relacionadas
+
+- **ai-cold-outreach** — Aprofundamento em copy de cold email, entregabilidade e sequências multicanal
+- **lead-enrichment** — Waterfall de enriquecimento, escolha de provedores de dados e fluxos Clay
+- **sales-motion-design** — Arquitetura ponta a ponta do motion comercial desde o primeiro touch até o fechamento
+- **gtm-engineering** — Infra GTM técnica, integrações via API e automação de workflow
+- **solo-founder-gtm** — Implantação enxuta de AI SDR para founders que fazem tudo sozinhos
+- **gtm-metrics** — Métricas de pipeline, modelagem de atribuição e frameworks de ROI

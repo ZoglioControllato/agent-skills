@@ -1,138 +1,138 @@
 ---
 name: react-best-practices
-description: React and Next.js performance optimization guidelines from Vercel Engineering. Use when writing, reviewing, or refactoring React/Next.js code to ensure optimal performance patterns. Triggers on tasks involving React components, Next.js pages, data fetching, bundle optimization, or performance improvements. Do NOT use for component API architecture or composition patterns (use react-composition-patterns instead).
+description: Diretrizes de otimização de performance para React e Next.js da engenharia Vercel. Use ao escrever, revisar ou refatorar código React/Next.js para garantir padrões de performance. Aciona em componentes React, páginas Next.js, data fetching, bundle ou melhorias de performance. NÃO use para arquitetura de API de componentes ou padrões de composição (use react-composition-patterns).
 license: MIT
 metadata:
   author: vercel
   version: '1.0.0'
 ---
 
-# Vercel React Best Practices
+# Boas práticas React (Vercel)
 
-Comprehensive performance optimization guide for React and Next.js applications, maintained by Vercel. Contains 57 rules across 8 categories, prioritized by impact to guide automated refactoring and code generation.
+Guia abrangente de otimização de performance para aplicações React e Next.js, mantido pela Vercel. Contém 57 regras em 8 categorias, priorizadas por impacto, para orientar refatoração automatizada e geração de código.
 
-## When to Apply
+## Quando aplicar
 
-Reference these guidelines when:
+Consulte estas diretrizes quando:
 
-- Writing new React components or Next.js pages
-- Implementing data fetching (client or server-side)
-- Reviewing code for performance issues
-- Refactoring existing React/Next.js code
-- Optimizing bundle size or load times
+- Escrever novos componentes React ou páginas Next.js
+- Implementar data fetching (cliente ou servidor)
+- Revisar código em busca de problemas de performance
+- Refatorar código React/Next.js existente
+- Otimizar tamanho de bundle ou tempos de carregamento
 
-## Rule Categories by Priority
+## Categorias de regras por prioridade
 
-| Priority | Category                  | Impact      | Prefix       |
-| -------- | ------------------------- | ----------- | ------------ |
-| 1        | Eliminating Waterfalls    | CRITICAL    | `async-`     |
-| 2        | Bundle Size Optimization  | CRITICAL    | `bundle-`    |
-| 3        | Server-Side Performance   | HIGH        | `server-`    |
-| 4        | Client-Side Data Fetching | MEDIUM-HIGH | `client-`    |
-| 5        | Re-render Optimization    | MEDIUM      | `rerender-`  |
-| 6        | Rendering Performance     | MEDIUM      | `rendering-` |
-| 7        | JavaScript Performance    | LOW-MEDIUM  | `js-`        |
-| 8        | Advanced Patterns         | LOW         | `advanced-`  |
+| Prioridade | Categoria                      | Impacto     | Prefixo      |
+| ---------- | ------------------------------ | ----------- | ------------ |
+| 1          | Eliminar cascatas (waterfalls) | CRÍTICO     | `async-`     |
+| 2          | Otimização de bundle           | CRÍTICO     | `bundle-`    |
+| 3          | Performance no servidor        | ALTO        | `server-`    |
+| 4          | Data fetching no cliente       | MÉDIO-ALTO  | `client-`    |
+| 5          | Otimização de re-render        | MÉDIO       | `rerender-`  |
+| 6          | Performance de renderização    | MÉDIO       | `rendering-` |
+| 7          | Performance JavaScript         | BAIXO-MÉDIO | `js-`        |
+| 8          | Padrões avançados              | BAIXO       | `advanced-`  |
 
-## Quick Reference
+## Referência rápida
 
-### 1. Eliminating Waterfalls (CRITICAL)
+### 1. Eliminar waterfalls (CRÍTICO)
 
-- `async-defer-await` - Move await into branches where actually used
-- `async-parallel` - Use Promise.all() for independent operations
-- `async-dependencies` - Use better-all for partial dependencies
-- `async-api-routes` - Start promises early, await late in API routes
-- `async-suspense-boundaries` - Use Suspense to stream content
+- `async-defer-await` - Mova await para ramos onde é realmente usado
+- `async-parallel` - Use Promise.all() para operações independentes
+- `async-dependencies` - Use better-all para dependências parciais
+- `async-api-routes` - Inicie promises cedo, await tarde em rotas de API
+- `async-suspense-boundaries` - Use Suspense para streaming de conteúdo
 
-### 2. Bundle Size Optimization (CRITICAL)
+### 2. Otimização de bundle (CRÍTICO)
 
-- `bundle-barrel-imports` - Import directly, avoid barrel files
-- `bundle-dynamic-imports` - Use next/dynamic for heavy components
-- `bundle-defer-third-party` - Load analytics/logging after hydration
-- `bundle-conditional` - Load modules only when feature is activated
-- `bundle-preload` - Preload on hover/focus for perceived speed
+- `bundle-barrel-imports` - Importe direto, evite barrel files
+- `bundle-dynamic-imports` - Use next/dynamic para componentes pesados
+- `bundle-defer-third-party` - Carregue analytics/logs após hidratação
+- `bundle-conditional` - Carregue módulos só quando a feature estiver ativa
+- `bundle-preload` - Preload em hover/focus para sensação de rapidez
 
-### 3. Server-Side Performance (HIGH)
+### 3. Performance no servidor (ALTO)
 
-- `server-auth-actions` - Authenticate server actions like API routes
-- `server-cache-react` - Use React.cache() for per-request deduplication
-- `server-cache-lru` - Use LRU cache for cross-request caching
-- `server-dedup-props` - Avoid duplicate serialization in RSC props
-- `server-serialization` - Minimize data passed to client components
-- `server-parallel-fetching` - Restructure components to parallelize fetches
-- `server-after-nonblocking` - Use after() for non-blocking operations
+- `server-auth-actions` - Autentique server actions como rotas de API
+- `server-cache-react` - Use React.cache() para deduplicação por requisição
+- `server-cache-lru` - Use cache LRU entre requisições
+- `server-dedup-props` - Evite serialização duplicada em props RSC
+- `server-serialization` - Minimize dados enviados a client components
+- `server-parallel-fetching` - Reestruture componentes para paralelizar fetches
+- `server-after-nonblocking` - Use after() para operações não bloqueantes
 
-### 4. Client-Side Data Fetching (MEDIUM-HIGH)
+### 4. Data fetching no cliente (MÉDIO-ALTO)
 
-- `client-swr-dedup` - Use SWR for automatic request deduplication
-- `client-event-listeners` - Deduplicate global event listeners
-- `client-passive-event-listeners` - Use passive listeners for scroll
-- `client-localstorage-schema` - Version and minimize localStorage data
+- `client-swr-dedup` - Use SWR para deduplicação automática
+- `client-event-listeners` - Deduplique listeners globais
+- `client-passive-event-listeners` - Use listeners passivos no scroll
+- `client-localstorage-schema` - Versione e minimize dados em localStorage
 
-### 5. Re-render Optimization (MEDIUM)
+### 5. Otimização de re-render (MÉDIO)
 
-- `rerender-defer-reads` - Don't subscribe to state only used in callbacks
-- `rerender-memo` - Extract expensive work into memoized components
-- `rerender-memo-with-default-value` - Hoist default non-primitive props
-- `rerender-dependencies` - Use primitive dependencies in effects
-- `rerender-derived-state` - Subscribe to derived booleans, not raw values
-- `rerender-derived-state-no-effect` - Derive state during render, not effects
-- `rerender-functional-setstate` - Use functional setState for stable callbacks
-- `rerender-lazy-state-init` - Pass function to useState for expensive values
-- `rerender-simple-expression-in-memo` - Avoid memo for simple primitives
-- `rerender-move-effect-to-event` - Put interaction logic in event handlers
-- `rerender-transitions` - Use startTransition for non-urgent updates
-- `rerender-use-ref-transient-values` - Use refs for transient frequent values
+- `rerender-defer-reads` - Não inscreva em estado só usado em callbacks
+- `rerender-memo` - Extraia trabalho caro para componentes memoizados
+- `rerender-memo-with-default-value` - Eleve props padrão não primitivas
+- `rerender-dependencies` - Use dependências primitivas em effects
+- `rerender-derived-state` - Inscreva-se em booleanos derivados, não valores crus
+- `rerender-derived-state-no-effect` - Derive estado durante render, não em effects
+- `rerender-functional-setstate` - Use forma funcional de setState para callbacks estáveis
+- `rerender-lazy-state-init` - Passe função ao useState para valores caros
+- `rerender-simple-expression-in-memo` - Evite memo para primitivos simples
+- `rerender-move-effect-to-event` - Coloque lógica de interação em handlers
+- `rerender-transitions` - Use startTransition para updates não urgentes
+- `rerender-use-ref-transient-values` - Use refs para valores transientes frequentes
 
-### 6. Rendering Performance (MEDIUM)
+### 6. Performance de renderização (MÉDIO)
 
-- `rendering-animate-svg-wrapper` - Animate div wrapper, not SVG element
-- `rendering-content-visibility` - Use content-visibility for long lists
-- `rendering-hoist-jsx` - Extract static JSX outside components
-- `rendering-svg-precision` - Reduce SVG coordinate precision
-- `rendering-hydration-no-flicker` - Use inline script for client-only data
-- `rendering-hydration-suppress-warning` - Suppress expected mismatches
-- `rendering-activity` - Use Activity component for show/hide
-- `rendering-conditional-render` - Use ternary, not && for conditionals
-- `rendering-usetransition-loading` - Prefer useTransition for loading state
+- `rendering-animate-svg-wrapper` - Anime wrapper div, não o SVG
+- `rendering-content-visibility` - Use content-visibility em listas longas
+- `rendering-hoist-jsx` - Extraia JSX estático para fora dos componentes
+- `rendering-svg-precision` - Reduza precisão de coordenadas SVG
+- `rendering-hydration-no-flicker` - Script inline para dados só cliente
+- `rendering-hydration-suppress-warning` - Suprima mismatches esperados
+- `rendering-activity` - Use componente Activity para mostrar/ocultar
+- `rendering-conditional-render` - Use ternário, não &&, em condicionais
+- `rendering-usetransition-loading` - Prefira useTransition para loading
 
-### 7. JavaScript Performance (LOW-MEDIUM)
+### 7. Performance JavaScript (BAIXO-MÉDIO)
 
-- `js-batch-dom-css` - Group CSS changes via classes or cssText
-- `js-index-maps` - Build Map for repeated lookups
-- `js-cache-property-access` - Cache object properties in loops
-- `js-cache-function-results` - Cache function results in module-level Map
-- `js-cache-storage` - Cache localStorage/sessionStorage reads
-- `js-combine-iterations` - Combine multiple filter/map into one loop
-- `js-length-check-first` - Check array length before expensive comparison
-- `js-early-exit` - Return early from functions
-- `js-hoist-regexp` - Hoist RegExp creation outside loops
-- `js-min-max-loop` - Use loop for min/max instead of sort
-- `js-set-map-lookups` - Use Set/Map for O(1) lookups
-- `js-tosorted-immutable` - Use toSorted() for immutability
+- `js-batch-dom-css` - Agrupe mudanças CSS via classes ou cssText
+- `js-index-maps` - Construa Map para buscas repetidas
+- `js-cache-property-access` - Cacheie acessos a propriedades em loops
+- `js-cache-function-results` - Cacheie resultados em Map no módulo
+- `js-cache-storage` - Cacheie leituras de localStorage/sessionStorage
+- `js-combine-iterations` - Una filter/map em um loop
+- `js-length-check-first` - Verifique length antes de comparação cara
+- `js-early-exit` - Retorne cedo das funções
+- `js-hoist-regexp` - Extraia RegExp para fora dos loops
+- `js-min-max-loop` - Use loop para min/max em vez de sort
+- `js-set-map-lookups` - Use Set/Map para lookup O(1)
+- `js-tosorted-immutable` - Use toSorted() para imutabilidade
 
-### 8. Advanced Patterns (LOW)
+### 8. Padrões avançados (BAIXO)
 
-- `advanced-event-handler-refs` - Store event handlers in refs
-- `advanced-init-once` - Initialize app once per app load
-- `advanced-use-latest` - useLatest for stable callback refs
+- `advanced-event-handler-refs` - Guarde handlers em refs
+- `advanced-init-once` - Inicialize app uma vez por load
+- `advanced-use-latest` - useLatest para refs de callback estáveis
 
-## How to Use
+## Como usar
 
-Read individual rule files for detailed explanations and code examples:
+Leia os arquivos de regra individuais para explicações e exemplos:
 
 ```
 rules/async-parallel.md
 rules/bundle-barrel-imports.md
 ```
 
-Each rule file contains:
+Cada arquivo de regra contém:
 
-- Brief explanation of why it matters
-- Incorrect code example with explanation
-- Correct code example with explanation
-- Additional context and references
+- Breve explicação do porquê importa
+- Exemplo incorreto com explicação
+- Exemplo correto com explicação
+- Contexto extra e referências
 
-## Full Compiled Document
+## Documento compilado completo
 
-For the complete guide with all rules expanded: `AGENTS.md`
+Para o guia completo com todas as regras expandidas: `AGENTS.md`

@@ -1,28 +1,24 @@
-# Nx Best Practices
+# Melhores práticas Nx
 
-## Do's ✅
+## O que fazer ✅
 
-### Use Tags Consistently
+### Use tags de forma consistente
 
-Apply meaningful tags to enforce module boundaries:
-
-```json
+Aplique tags significativas para impor os limites do módulo:```json
 {
-  "tags": ["type:feature", "scope:web"]
+"tags": ["type:feature", "scope:web"]
 }
-```
 
-Benefits:
+````
+Benefícios:
 
-- Prevents circular dependencies
-- Enforces architectural patterns
-- Makes dependency graph clearer
+- Evita dependências circulares
+- Aplica padrões arquitetônicos
+- Torna o gráfico de dependência mais claro
 
-### Enable Caching Early
+### Habilite o cache antecipadamente
 
-Configure caching from the start:
-
-```json
+Configure o cache desde o início:```json
 {
   "targetDefaults": {
     "build": {
@@ -31,185 +27,176 @@ Configure caching from the start:
     }
   }
 }
-```
+````
 
-Benefits:
+Benefícios:
 
-- 50-80% CI time reduction
-- Faster local development
-- Better resource utilization
+- Redução de 50-80% do tempo de CI
+- Desenvolvimento local mais rápido
+- Melhor utilização de recursos
 
-### Keep Libraries Focused
+### Mantenha as bibliotecas focadas
 
-Each library should have single responsibility:
+Cada biblioteca deve ter responsabilidade única:```bash
 
-```bash
 # Good - Focused libraries
+
 libs/
-  ui/
-    buttons/
-    forms/
-  data-access/
-    users/
-    products/
+ui/
+buttons/
+forms/
+data-access/
+users/
+products/
 
 # Avoid - Mixed concerns
+
 libs/
-  shared/  # Too broad
-    everything.ts
-```
+shared/ # Too broad
+everything.ts
 
-### Use Affected Commands
+````
+### Usar comandos afetados
 
-Always test only what changed:
-
-```bash
+Sempre teste apenas o que mudou:```bash
 # In CI
 nx affected -t test --base=main
 
 # Not
 nx run-many -t test --all
-```
+````
 
-### Document Boundaries
+### Limites do Documento
 
-Add README to explain module structure:
+Adicione README para explicar a estrutura do módulo:```markdown
 
-```markdown
 # Library Architecture
 
 ## Type Tags
+
 - `type:feature` - Business logic
 - `type:ui` - Components
 - `type:data-access` - API calls
 
 ## Scope Tags
+
 - `scope:web` - Web app specific
 - `scope:mobile` - Mobile app specific
 - `scope:shared` - Shared across apps
-```
 
-### Always Use `nx show project`
+````
+### Sempre use `nx show project`
 
-Get full resolved configuration:
-
-```bash
+Obtenha a configuração completa resolvida:```bash
 # Correct
 nx show project my-app --json
 
 # Wrong - incomplete config
 cat apps/my-app/project.json
-```
+````
 
-## Don'ts ❌
+## O que não fazer ❌
 
-### Don't Create Circular Dependencies
+### Não crie dependências circulares
 
-Circular deps break build order:
+Deps circulares quebram a ordem de construção:```bash
 
-```bash
 # Bad
-lib-a → lib-b → lib-a  # Circular!
+
+lib-a → lib-b → lib-a # Circular!
 
 # Good
-lib-a → lib-b → lib-c  # Acyclic
-```
 
-Check with:
+lib-a → lib-b → lib-c # Acyclic
 
-```bash
+````
+Verifique com:```bash
 nx graph
-```
+````
 
-### Don't Skip Affected in CI
+### Não ignore os afetados no CI
 
-Running all tests wastes resources:
+Executar todos os testes desperdiça recursos:```bash
 
-```bash
 # Wasteful in CI
-nx run-many -t test --all  # ❌
+
+nx run-many -t test --all # ❌
 
 # Efficient
-nx affected -t test  # ✅
-```
 
-### Don't Ignore Boundary Rules
+nx affected -t test # ✅
 
-Boundary violations accumulate technical debt:
+````
+### Não ignore as regras de limite
 
-```bash
+As violações de limites acumulam dívida técnica:```bash
 # Fix violations immediately
 nx lint --fix
 
 # Don't disable rules
 "@nx/enforce-module-boundaries": "off"  # ❌
-```
+````
 
-### Don't Over-Granularize
+### Não granular demais
 
-Too many small libraries creates overhead:
+Muitas bibliotecas pequenas criam sobrecarga:```bash
 
-```bash
 # Too granular
+
 libs/
-  utils/
-    add/  # Just one function
-    subtract/  # Just one function
+utils/
+add/ # Just one function
+subtract/ # Just one function
 
 # Better
+
 libs/
-  utils/
-    math/  # Related functions together
-```
+utils/
+math/ # Related functions together
 
-### Don't Read project.json Directly
+````
+### Não leia project.json diretamente
 
-It contains only partial configuration:
-
-```bash
+Ele contém apenas configuração parcial:```bash
 # Wrong
 cat project.json  # ❌
 
 # Correct
 nx show project my-app --json  # ✅
-```
+````
 
-## Troubleshooting
+## Solução de problemas
 
-### Package Manager Not Detected
+### Gerenciador de pacotes não detectado
 
-**Problem**: Nx doesn't detect package manager
+**Problema**: Nx não detecta gerenciador de pacotes
 
-**Solution**: Ensure lockfile exists
+**Solução**: verifique se o arquivo de bloqueio existe
 
 - npm: `package-lock.json`
-- yarn: `yarn.lock`
+- fio: `yarn.lock`
 - pnpm: `pnpm-lock.yaml`
 
-### Targets Not Showing
+### Alvos não exibidos
 
-**Problem**: Targets missing in `nx show projects`
+**Problema**: Alvos ausentes em `nx show projects`
 
-**Cause**: Reading project.json instead of resolved config
+**Causa**: Lendo project.json em vez da configuração resolvida
 
-**Solution**:
-
-```bash
+**Solução**:```bash
 nx show project <name> --json | jq '.targets'
-```
 
-### Affected Commands Not Working
+````
+### Comandos afetados não funcionam
 
-**Problem**: All projects shown as affected
+**Problema**: Todos os projetos mostrados como afetados
 
-**Causes**:
+**Causas**:
 
-1. Missing git history
-2. Wrong base branch
+1. Faltando histórico do git
+2. Ramificação base errada
 
-**Solutions**:
-
-```bash
+**Soluções**:```bash
 # In CI: fetch full history
 - uses: actions/checkout@v4
   with:
@@ -217,67 +204,64 @@ nx show project <name> --json | jq '.targets'
 
 # Specify correct base
 nx affected -t test --base=origin/main
-```
+````
 
-### Cache Not Working
+### Cache não funciona
 
-**Problem**: Tasks always re-run
+**Problema**: as tarefas sempre são executadas novamente
 
-**Causes**:
+**Causas**:
 
-1. Cache disabled
-2. Inputs not configured
-3. Cache corrupted
+1. Cache desativado
+2. Entradas não configuradas
+3. Cache corrompido
 
-**Solutions**:
+**Soluções**:```bash
 
-```bash
 # Check if cache enabled
+
 cat nx.json | jq '.targetDefaults.build.cache'
 
 # Clear cache
+
 nx reset
 
 # Configure inputs
+
 {
-  "targetDefaults": {
-    "build": {
-      "cache": true,
-      "inputs": ["production", "^production"]
-    }
-  }
+"targetDefaults": {
+"build": {
+"cache": true,
+"inputs": ["production", "^production"]
 }
-```
+}
+}
 
-### Circular Dependency Errors
+````
+### Erros de dependência circular
 
-**Problem**: Build fails with circular dependency
+**Problema**: a compilação falha com dependência circular
 
-**Detection**:
-
-```bash
+**Detecção**:```bash
 nx graph
-```
+````
 
-**Solution**:
+**Solução**:
 
-1. Find the cycle in dependency graph
-2. Extract shared code to new library
-3. Update imports to break cycle
+1. Encontre o ciclo no gráfico de dependência
+2. Extraia o código compartilhado para uma nova biblioteca
+3. Atualize as importações para interromper o ciclo
 
-### Module Boundary Violations
+### Violações de limite do módulo
 
-**Problem**: Import violates boundary rules
+**Problema**: a importação viola as regras de limite
 
-**Error**:
-
-```
+**Erro**:```
 A project tagged with "scope:web" can only depend on libs tagged with "scope:web", "scope:shared"
-```
 
-**Solutions**:
+````
 
-```bash
+**Soluções**:```bash
 # Check current tags
 nx show project my-lib --json | jq '.tags'
 
@@ -287,41 +271,33 @@ nx show project my-lib --json | jq '.tags'
 }
 
 # Or move code to allowed scope
-```
+````
 
-### Build Performance Issues
+### Problemas de desempenho de compilação
 
-**Problem**: Builds are slow
+**Problema**: as compilações são lentas
 
-**Solutions**:
+**Soluções**:
 
-1. Enable caching:
+1. Habilite o cache:```json
+   {
+   "targetDefaults": {
+   "build": {
+   "cache": true
+   }
+   }
+   }
 
-```json
-{
-  "targetDefaults": {
-    "build": {
-      "cache": true
-    }
-  }
-}
-```
-
-1. Use affected:
-
-```bash
+````
+1. Uso afetado:```bash
 nx affected -t build --base=main
-```
+````
 
-1. Increase parallelization:
+1. Aumente a paralelização:```bash
+   nx affected -t build --parallel=5
 
-```bash
-nx affected -t build --parallel=5
-```
-
-1. Enable Nx Cloud:
-
-```json
+````
+1. Habilite Nx Cloud:```json
 {
   "tasksRunnerOptions": {
     "default": {
@@ -329,29 +305,25 @@ nx affected -t build --parallel=5
     }
   }
 }
-```
+````
 
-### Git Submodule Issues
+### Problemas do submódulo Git
 
-**Problem**: Affected detection wrong with submodules
+**Problema**: detecção afetada incorretamente com submódulos
 
-**Solution**: Configure affected in nx.json:
-
-```json
+**Solução**: Configuração afetada em nx.json:```json
 {
-  "affected": {
-    "defaultBase": "main"
-  }
+"affected": {
+"defaultBase": "main"
 }
-```
+}
 
-## Performance Optimization
+````
+## Otimização de desempenho
 
-### Enable Remote Caching
+### Habilitar cache remoto
 
-Use Nx Cloud or self-hosted cache:
-
-```json
+Use Nx Cloud ou cache auto-hospedado:```json
 {
   "tasksRunnerOptions": {
     "default": {
@@ -363,80 +335,71 @@ Use Nx Cloud or self-hosted cache:
     }
   }
 }
-```
+````
 
-### Configure Inputs Properly
+### Configure as entradas corretamente
 
-Define what affects cache:
-
-```json
+Defina o que afeta o cache:```json
 {
-  "namedInputs": {
-    "default": ["{projectRoot}/**/*"],
-    "production": [
-      "default",
-      "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?"
-    ]
-  }
+"namedInputs": {
+"default": ["{projectRoot}/**/*"],
+"production": [
+"default",
+"!{projectRoot}/\*_/?(_.)+(spec|test).[jt]s?(x)?"
+]
 }
-```
+}
 
-### Use Parallel Execution
+````
+### Usar execução paralela
 
-Leverage multi-core CPUs:
-
-```bash
+Aproveite CPUs multi-core:```bash
 # Local development
 nx affected -t test --parallel=3
 
 # CI with more resources
 nx affected -t test --parallel=5
-```
+````
 
-### Optimize Bundle Size
+### Otimize o tamanho do pacote
 
-Configure production builds:
-
-```json
+Configure compilações de produção:```json
 {
-  "configurations": {
-    "production": {
-      "optimization": true,
-      "sourceMap": false,
-      "extractLicenses": true,
-      "namedChunks": false
-    }
-  }
+"configurations": {
+"production": {
+"optimization": true,
+"sourceMap": false,
+"extractLicenses": true,
+"namedChunks": false
 }
-```
+}
+}
 
-## Migration Guide
+````
+## Guia de migração
 
-### From Lerna to Nx
-
-```bash
+### De Lerna a Nx```bash
 # Add Nx to existing Lerna monorepo
 npx nx@latest init
 
 # Migrate Lerna commands
 lerna run test → nx run-many -t test --all
 lerna run test --since → nx affected -t test
-```
+````
 
-### From Angular CLI to Nx
+### Da CLI Angular para Nx```bash
 
-```bash
 # Add Nx to Angular workspace
+
 npx nx@latest init
 
 # Continue using Angular CLI commands
+
 ng build → nx build
 ng serve → nx serve
-```
 
-### Updating Nx
-
-```bash
+````
+### Atualizando Nx```bash
 # Check for updates
 nx migrate latest
 
@@ -448,4 +411,4 @@ nx migrate --run-migrations
 
 # Clean up
 rm migrations.json
-```
+````

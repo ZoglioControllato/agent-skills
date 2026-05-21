@@ -1,98 +1,90 @@
-# Component Flattening Analysis - Quick Reference
+# Análise de nivelamento de componentes - Referência rápida
 
-## Component Definition
+## Definição de componente
 
-**Component** = Leaf node in directory/namespace structure containing source files
+**Component** = Nó folha na estrutura de diretório/namespace contendo arquivos de origem
 
-**Key Rule**: Components exist only as leaf nodes. If namespace is extended, parent becomes subdomain.
+**Regra principal**: Os componentes existem apenas como nós folha. Se o namespace for estendido, o pai se tornará um subdomínio.
 
-## Root Namespace vs Component
+## Namespace raiz vs componente
 
-| Type               | Definition                    | Example                        | Has Code?               |
-| ------------------ | ----------------------------- | ------------------------------ | ----------------------- |
-| **Component**      | Leaf node (deepest directory) | `ss.survey.templates`          | ✅ Yes                  |
-| **Root Namespace** | Extended by child nodes       | `ss.survey` (has `.templates`) | ❌ No (orphaned if yes) |
-| **Subdomain**      | Same as root namespace        | `ss.survey`                    | ❌ No                   |
+| Tipo               | Definição                          | Exemplo                           | Tem Código?          |
+| ------------------ | ---------------------------------- | --------------------------------- | -------------------- |
+| **Componente**     | Nó folha (diretório mais profundo) | `ss.survey.templates`             | ✅ Sim               |
+| **Namespace raiz** | Estendido por nós filhos           | `ss.survey` (possui `.templates`) | ❌ Não (órfão se sim |
 
-## Orphaned Classes
+) |
+| **Subdomínio** | Igual ao namespace raiz | `ss.pesquisa` | ❌ Não |
 
-**Orphaned Class** = Source file in root namespace (non-leaf node)
+## Classes Órfãs
 
-**Problem**: No definable component associated with it
+**Classe órfã** = Arquivo de origem no namespace raiz (nó não folha)
 
-**Solution**: Move to leaf node namespace (component)
+**Problema**: Nenhum componente definível associado a ele
 
-### Detection
+**Solução**: mover para o namespace do nó folha (componente)
 
-```
+### Detecção```
+
 Root namespace extended?
 ├─ YES → Check for source files
-│   ├─ Has files? → Orphaned classes found
-│   └─ No files? → ✅ OK
+│ ├─ Has files? → Orphaned classes found
+│ └─ No files? → ✅ OK
 └─ NO → Not a root namespace
-```
 
-## Flattening Strategies
+````
+## Estratégias de nivelamento
 
-### Strategy 1: Consolidate Down ✅
+### Estratégia 1: Consolidar ✅
 
-**When**: Leaf nodes are small, related functionality
+**Quando**: os nós folha são pequenos e têm funcionalidade relacionada
 
-**Action**: Move leaf code into root namespace
+**Ação**: mover o código folha para o namespace raiz
 
-**Example**:
-
-```
+**Exemplo**:```
 Before: ss.survey/ + ss.survey.templates/
 After:  ss.survey/ (single component)
-```
+````
 
-### Strategy 2: Split Up ✅
+### Estratégia 2: Dividir ✅
 
-**When**: Root namespace has distinct functional areas
+**Quando**: o namespace raiz tem áreas funcionais distintas
 
-**Action**: Move root code into new leaf nodes
+**Ação**: mover o código raiz para novos nós folha
 
-**Example**:
-
-```
+**Exemplo**:```
 Before: ss.ticket/ (45 orphaned files)
-After:  ss.ticket.maintenance/ + ss.ticket.completion/
-```
+After: ss.ticket.maintenance/ + ss.ticket.completion/
 
-### Strategy 3: Extract Shared ✅
+````
+### Estratégia 3: Extrair Compartilhado ✅
 
-**When**: Root namespace has shared utilities
+**Quando**: o namespace raiz tem utilitários compartilhados
 
-**Action**: Move shared code to `.shared` component
+**Ação**: Mover o código compartilhado para o componente `.shared`
 
-**Example**:
-
-```
+**Exemplo**:```
 Before: ss.survey/ (domain + shared code)
 After:  ss.survey/ + ss.survey.shared/
-```
+````
 
-## Decision Tree
+## Árvore de Decisão```
 
-```
 Found orphaned classes?
 ├─ YES → Analyze functionality
-│   ├─ Related to leaf components?
-│   │   ├─ YES → Consolidate Down
-│   │   └─ NO → Distinct areas?
-│   │       ├─ YES → Split Up
-│   │       └─ NO → Shared code?
-│   │           └─ YES → Extract Shared
-│   └─ NO → ✅ No action needed
+│ ├─ Related to leaf components?
+│ │ ├─ YES → Consolidate Down
+│ │ └─ NO → Distinct areas?
+│ │ ├─ YES → Split Up
+│ │ └─ NO → Shared code?
+│ │ └─ YES → Extract Shared
+│ └─ NO → ✅ No action needed
 └─ NO → ✅ Structure is flat
-```
 
-## Common Patterns
+````
+## Padrões Comuns
 
-### Pattern 1: Simple Consolidation
-
-```
+### Padrão 1: Consolidação Simples```
 Before:
 ss.survey/
 ├── Survey.js           ← Orphaned
@@ -103,27 +95,24 @@ After:
 ss.survey/             ← Component
 ├── Survey.js
 └── Template.js
-```
+````
 
-### Pattern 2: Functional Split
+### Padrão 2: Divisão Funcional```
 
-```
 Before:
-ss.ticket/             ← Root (45 orphaned files)
-├── assign/            ← Component
-└── route/              ← Component
+ss.ticket/ ← Root (45 orphaned files)
+├── assign/ ← Component
+└── route/ ← Component
 
 After:
-ss.ticket/             ← Subdomain
-├── maintenance/       ← Component
-├── completion/         ← Component
-├── assign/            ← Component
-└── route/              ← Component
-```
+ss.ticket/ ← Subdomain
+├── maintenance/ ← Component
+├── completion/ ← Component
+├── assign/ ← Component
+└── route/ ← Component
 
-### Pattern 3: Shared Code Extraction
-
-```
+````
+### Padrão 3: Extração de código compartilhado```
 Before:
 ss.survey/             ← Root
 ├── Survey.js          ← Domain
@@ -135,19 +124,18 @@ ss.survey/             ← Component
 ├── Survey.js
 └── shared/            ← Component
     └── Validator.js
-```
+````
 
-## Quick Analysis Steps
+## Etapas de análise rápida
 
-1. **Map** → Build namespace tree, identify root namespaces
-2. **Detect** → Find orphaned classes in root namespaces
-3. **Analyze** → Determine flattening strategy
-4. **Plan** → Create refactoring steps
-5. **Execute** → Move files, update references
+1. **Mapa** → Construir árvore de namespace, identificar namespaces raiz
+2. **Detectar** → Encontre classes órfãs em namespaces raiz
+3. **Analisar** → Determinar a estratégia de nivelamento
+4. **Planejar** → Criar etapas de refatoração
+5. **Executar** → Mover arquivos, atualizar referências
 
-## Output Template
+## Modelo de saída```markdown
 
-```markdown
 ## Orphaned Classes Analysis
 
 ### Root Namespace: [name]
@@ -174,13 +162,11 @@ ss.survey/             ← Component
 - [Steps]
 - Effort: X days
 - Risk: Low/Medium/High
-```
 
-## Validation Rules
+````
+## Regras de validação
 
-### Rule 1: Components Only as Leaf Nodes
-
-```
+### Regra 1: Componentes apenas como nós folha```
 ✅ Valid:
 ss.survey.templates/   ← Component (leaf node)
 
@@ -188,30 +174,30 @@ ss.survey.templates/   ← Component (leaf node)
 ss.survey/             ← Root namespace with code
 ├── Survey.js          ← Orphaned class
 └── templates/         ← Component
-```
+````
 
-### Rule 2: No Orphaned Classes
+### Regra 2: Não há aulas órfãs```
 
-```
 ✅ Valid:
-ss.survey/             ← Subdomain (no code)
-└── templates/         ← Component (has code)
-    └── Template.js
+ss.survey/ ← Subdomain (no code)
+└── templates/ ← Component (has code)
+└── Template.js
 
 ❌ Invalid:
-ss.survey/             ← Root namespace
-├── Survey.js          ← Orphaned class ❌
-└── templates/         ← Component
-    └── Template.js
+ss.survey/ ← Root namespace
+├── Survey.js ← Orphaned class ❌
+└── templates/ ← Component
+└── Template.js
+
 ```
+## Lista de verificação rápida
 
-## Quick Checklist
-
-- [ ] Mapped namespace hierarchies
-- [ ] Identified root namespaces
-- [ ] Found orphaned classes
-- [ ] Classified orphaned classes
-- [ ] Selected flattening strategy
-- [ ] Created refactoring plan
-- [ ] Updated all references
-- [ ] Verified with tests
+- [] Hierarquias de namespace mapeadas
+- [] Namespaces raiz identificados
+- [] Classes órfãs encontradas
+- [] Classes órfãs classificadas
+- [] Estratégia de nivelamento selecionada
+- [] Plano de refatoração criado
+- [] Atualizadas todas as referências
+- [] Verificado com testes
+```

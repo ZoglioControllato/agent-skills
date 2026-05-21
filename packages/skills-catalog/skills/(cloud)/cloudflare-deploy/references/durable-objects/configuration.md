@@ -53,41 +53,38 @@ const stub = env.MY_DO.get(id)
 await stub.someMethod() // Data stays in EU
 ```
 
-**Key points:**
+**Pontos principais:**
 
-- Set at ID creation time, immutable afterward
-- DO instance physically located within jurisdiction
-- Storage and compute guaranteed within boundary
-- Use for GDPR, FedRAMP, other compliance requirements
-- No cross-jurisdiction access (requests fail if DO in different jurisdiction)
+- Definido no momento da criação do ID, imutável posteriormente
+- DO instância fisicamente localizada dentro da jurisdição
+- Armazenamento e computação garantidos dentro dos limites
+- Use para GDPR, FedRAMP e outros requisitos de conformidade
+- Sem acesso entre jurisdições (as solicitações falham se DO estiver em jurisdição diferente)
 
-## Migrations
+## Migrações```jsonc
 
-```jsonc
 {
-  "migrations": [
-    { "tag": "v1", "new_sqlite_classes": ["MyDO"] }, // Create SQLite (recommended)
-    // { "tag": "v1", "new_classes": ["MyDO"] },                // Create KV (paid only)
-    { "tag": "v2", "renamed_classes": [{ "from": "Old", "to": "New" }] },
-    { "tag": "v3", "transferred_classes": [{ "from": "Src", "from_script": "old", "to": "Dest" }] },
-    { "tag": "v4", "deleted_classes": ["Obsolete"] }, // Destroys ALL data!
-  ],
+"migrations": [
+{ "tag": "v1", "new_sqlite_classes": ["MyDO"] }, // Create SQLite (recommended)
+// { "tag": "v1", "new_classes": ["MyDO"] }, // Create KV (paid only)
+{ "tag": "v2", "renamed_classes": [{ "from": "Old", "to": "New" }] },
+{ "tag": "v3", "transferred_classes": [{ "from": "Src", "from_script": "old", "to": "Dest" }] },
+{ "tag": "v4", "deleted_classes": ["Obsolete"] }, // Destroys ALL data!
+],
 }
-```
 
-**Migration rules:**
+````
+**Regras de migração:**
 
-- Tags must be unique and sequential (v1, v2, v3...)
-- No rollback supported (test with `--dry-run` first)
-- Auto-applied on deploy
-- `new_sqlite_classes` recommended over `new_classes` (SQLite vs KV)
-- `deleted_classes` immediately destroys ALL data (irreversible)
+- As tags devem ser únicas e sequenciais (v1, v2, v3...)
+- Não há suporte para reversão (teste com `--dry-run` primeiro)
+- Aplicado automaticamente na implantação
+- `new_sqlite_classes` recomendado em vez de `new_classes` (SQLite vs KV)
+- `deleted_classes` destrói imediatamente TODOS os dados (irreversível)
 
-## Environment Isolation
+## Isolamento de ambiente
 
-Separate DO namespaces per environment (staging/production have distinct object instances):
-
-```jsonc
+Namespaces DO separados por ambiente (preparação/produção têm instâncias de objetos distintas):```jsonc
 {
   "durable_objects": {
     "bindings": [{ "name": "MY_DO", "class_name": "MyDO" }],
@@ -100,7 +97,7 @@ Separate DO namespaces per environment (staging/production have distinct object 
     },
   },
 }
-```
+````
 
 Deploy: `npx wrangler deploy --env production`
 

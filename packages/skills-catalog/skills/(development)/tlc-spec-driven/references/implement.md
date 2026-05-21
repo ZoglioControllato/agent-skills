@@ -1,192 +1,192 @@
-# Execute
+# Executar
 
-**Goal**: Implement ONE task at a time. Surgical changes. Verify. Commit. Repeat.
+**Objetivo**: implementar UMA tarefa por vez. Alterações cirúrgicas. Verificar. Comprometer-se. Repita.
 
-This is where code gets written. Every task follows the same cycle: plan → implement → verify → commit. Verification is built into every task, not a separate phase.
-
----
-
-## MANDATORY: Before Starting Any Implementation
-
-**Read [coding-principles.md](coding-principles.md) and state:**
-
-1. **Assumptions** - What am I assuming? Any uncertainty?
-2. **Files to touch** - List ONLY files this task requires
-3. **Success criteria** - How will I verify this works?
-
-⚠️ **Do not proceed without stating these explicitly.**
+É aqui que o código é escrito. Cada tarefa segue o mesmo ciclo: planejar → implementar → verificar → confirmar. A verificação está integrada em cada tarefa, não em uma fase separada.
 
 ---
 
-## Process
+## OBRIGATÓRIO: Antes de iniciar qualquer implementação
 
-**Sub-agent context:** When this task is executed by a sub-agent, the sub-agent receives
-the task definition, coding principles, TESTING.md, and relevant spec/design context.
-All steps below apply identically whether running in the main context or a sub-agent.
-The only difference: sub-agents report results back to the orchestrator rather than
-continuing to the next task.
+**Leia [coding-principles.md](coding-principles.md) e declare:**
 
-### 0. List Atomic Steps (MANDATORY when Tasks phase was skipped)
+1. **Suposições** - O que estou assumindo? Alguma incerteza?
+2. **Arquivos para tocar** - Liste APENAS os arquivos que esta tarefa requer
+3. **Critérios de sucesso** - Como verificarei se isso funciona?
 
-If there is no `tasks.md` for this feature, you MUST list atomic steps before writing any code. This is non-negotiable — it prevents the agent from losing focus and doing too many things at once.
+⚠️ **Não prossiga sem declará-los explicitamente.**
 
-```
+---
+
+## Processo
+
+**Contexto do subagente:** Quando esta tarefa é executada por um subagente, o subagente recebe
+a definição da tarefa, princípios de codificação, TESTING.md e contexto de especificação/design relevante.
+Todas as etapas abaixo se aplicam de forma idêntica, seja em execução no contexto principal ou em um subagente.
+A única diferença: os subagentes reportam os resultados ao orquestrador em vez de
+continuando para a próxima tarefa.
+
+### 0. Listar etapas atômicas (OBRIGATÓRIO quando a fase de tarefas foi ignorada)
+
+Se não houver `tasks.md` para este recurso, você DEVE listar as etapas atômicas antes de escrever qualquer código. Isso não é negociável — evita que o agente perca o foco e faça muitas coisas ao mesmo tempo.```
+
 ## Execution Plan
 
 1. [Step] → files: [list] → verify: [how] → commit: [message]
 2. [Step] → files: [list] → verify: [how] → commit: [message]
 3. [Step] → files: [list] → verify: [how] → commit: [message]
-```
 
-**Each step must be:**
+````
 
-- ONE deliverable (one component, one function, one endpoint, one file change)
-- Independently verifiable (can prove it works before moving on)
-- Independently committable (gets its own atomic git commit)
+**Cada etapa deve ser:**
 
-If listing steps reveals >5 steps or complex dependencies, STOP and create a formal `tasks.md` instead. The Tasks phase was wrongly skipped.
+- UMA entrega (um componente, uma função, um endpoint, uma alteração de arquivo)
+- Verificável de forma independente (pode provar que funciona antes de prosseguir)
+- Comprometível de forma independente (obtém seu próprio commit atômico do git)
 
-### 1. Pick Task
+Se a listagem de etapas revelar >5 etapas ou dependências complexas, PARE e crie um `tasks.md` formal. A fase de Tarefas foi ignorada indevidamente.
 
-From tasks.md (if exists) or from the execution plan above. User specifies ("implement T3") or suggest next available.
+### 1. Escolha a tarefa
 
-### 2. Verify Dependencies
+De tarefas.md (se existir) ou do plano de execução acima. O usuário especifica ("implementar T3") ou sugere o próximo disponível.
 
-If tasks.md exists, check dependencies. If using inline plan, follow the order listed.
+### 2. Verifique as dependências
 
-❌ If blocked: "T3 depends on T2 which isn't done. Should I do T2 first?"
+Se tarefas.md existir, verifique as dependências. Se estiver usando o plano inline, siga a ordem listada.
 
-### 3. State Implementation Plan
+❌ Se bloqueado: "T3 depende de T2 o que não foi feito. Devo fazer T2 primeiro?"
 
-Before writing code:
+### 3. Plano Estadual de Implementação
 
-```
+Antes de escrever o código:```
 Files: [list]
 Approach: [brief description]
 Success: [how to verify]
-```
+````
 
-### 4. Write Tests First (RED)
+### 4. Escreva os testes primeiro (RED)
 
-If the task includes tests (per the Tests field in tasks.md or TESTING.md coverage matrix):
+Se a tarefa incluir testes (de acordo com o campo Testes na matriz de cobertura tasks.md ou TESTING.md):
 
-1. Write the test file(s) BEFORE writing any implementation
-2. Tests must encode the expected behavior from the task's "Done when" criteria
-3. Run the test command — confirm tests FAIL (RED state)
-4. If tests pass before implementation exists, the tests are too weak — rewrite them
+1. Escreva o(s) arquivo(s) de teste ANTES de escrever qualquer implementação
+2. Os testes devem codificar o comportamento esperado dos critérios "Concluído quando" da tarefa
+3. Execute o comando de teste - confirme os testes FAIL (estado VERMELHO)
+4. Se os testes forem aprovados antes que a implementação exista, os testes são muito fracos – reescreva-os
 
-**Constraints:**
+**Restrições:**
 
-- Tests define correct behavior independently of implementation
-- Each acceptance criterion from "Done when" maps to at least one test assertion
-- Edge cases from spec.md that apply to this task get test cases too
+- Os testes definem o comportamento correto independentemente da implementação
+- Cada critério de aceitação de "Concluído quando" é mapeado para pelo menos uma afirmação de teste
+- Casos extremos de spec.md que se aplicam a esta tarefa também obtêm casos de teste
 
-If the task does NOT include tests (e.g., entity-only, config-only), skip to Step 4b.
+Se a tarefa NÃO incluir testes (por exemplo, somente entidade, somente configuração), pule para a Etapa 4b.
 
-### 4b. Implement (GREEN)
+###4b. Implementar (VERDE)
 
-Write the minimum implementation needed to satisfy the task's success criteria: pass all relevant tests (when present) and meet the defined verification/gate checks when there are no direct tests.
+Escreva a implementação mínima necessária para satisfazer os critérios de sucesso da tarefa: passar em todos os testes relevantes (quando presentes) e atender às verificações de verificação/gate definidas quando não houver testes diretos.
 
-**HARD CONSTRAINTS:**
+**RESTRIÇÕES RÍGIDAS:**
 
-- Do NOT modify tests written in Step 4. The tests are the spec — implementation conforms to them.
-- Do NOT weaken assertions (making them less specific to pass more easily)
-- Do NOT delete or skip test cases
-- Do NOT use the test framework's skip/disable/pending mechanism to bypass failing tests
-- Minimum code to pass — save structural improvements for a refactor task
+- NÃO modifique os testes escritos na Etapa 4. Os testes são as especificações - a implementação está em conformidade com eles.
+- NÃO enfraqueça as afirmações (tornando-as menos específicas para serem transmitidas com mais facilidade)
+- NÃO exclua ou pule casos de teste
+- NÃO use o mecanismo de ignorar/desativar/pendente da estrutura de teste para ignorar testes com falha
+- Código mínimo a ser aprovado — salve melhorias estruturais para uma tarefa de refatoração
 
-If a test is genuinely wrong (tests the wrong behavior per spec), STOP and ask the user
-before modifying it. Never silently change a test.
+Se um teste estiver genuinamente errado (testa o comportamento errado de acordo com as especificações), PARE e pergunte ao usuário
+antes de modificá-lo. Nunca altere um teste silenciosamente.
 
-Follow [coding-principles.md](coding-principles.md):
+Siga [coding-principles.md](coding-principles.md):
 
-- Simplest code that works
-- Touch ONLY listed files
-- No scope creep
+- Código mais simples que funciona
+- Toque SOMENTE nos arquivos listados
+- Sem aumento de escopo
 
-### 5. Gate Check (VERIFY)
+### 5. Verificação do portão (VERIFICAR)
 
-Run the gate check command from the task definition. This is MANDATORY — not "if applicable."
+Execute o comando gate check a partir da definição de tarefa. Isto é OBRIGATÓRIO - não "se aplicável".
 
-1. Look up the command for the task's Gate level (quick/full/build) in TESTING.md's Gate Check Commands section, then run it
-2. Non-zero exit code = STOP. Fix the failure. Re-run. Do not proceed until green.
-3. Confirm the test count matches expectations (no tests were silently deleted or skipped)
+1. Procure o comando para o nível Gate da tarefa (rápido/completo/build) na seção Gate Check Commands do TESTING.md e execute-o
+2. Código de saída diferente de zero = STOP. Corrija a falha. Execute novamente. Não prossiga até ficar verde.
+3. Confirme se a contagem de testes corresponde às expectativas (nenhum teste foi excluído ou ignorado silenciosamente)
 
-**Tiered gates (from TESTING.md Gate Check Commands):**
+**Portões em camadas (dos comandos de verificação de portão TESTING.md):**
 
-| Task includes                    | Gate level | What runs                |
-| -------------------------------- | ---------- | ------------------------ |
-| Unit tests only                  | Quick      | Unit test command        |
-| E2E or integration tests         | Full       | Unit + E2E commands      |
-| Last task in a phase             | Build      | Build + lint + all tests |
-| No tests (config, entities, etc) | Build      | Build + lint only        |
+| A tarefa inclui                           | Nível do portão | O que funciona                 |
+| ----------------------------------------- | --------------- | ------------------------------ |
+| Apenas testes unitários                   | Rápido          | Comando de teste de unidade    |
+| E2E ou testes de integração               | Completo        | Comandos Unidade + E2E         |
+| Última tarefa de uma fase                 | Construir       | Build + lint + todos os testes |
+| Sem testes (configuração, entidades, etc) | Construir       | Construir + lint ativado       |
 
-The gate check is deterministic. The test runner decides if the code is correct,
-not the agent's self-assessment.
+apenas |
 
-### 6. Post-Gate Review
+A verificação do portão é determinística. O executor de teste decide se o código está correto,
+não a autoavaliação do agente.
 
-After the gate check passes:
+### 6. Revisão pós-gate
 
-1. Verify test count: Are there at least as many test cases as before? (prevents silent deletion)
-2. Verify no SPEC_DEVIATION: If implementation diverged from spec/design, add a marker:
+Depois que a verificação do portão for aprovada:
 
-```
-// SPEC_DEVIATION: [what diverged]
-// Reason: [why the deviation was necessary]
-```
-
-3. Quick complexity check: "Would senior engineer flag this as overcomplicated?"
-   - Yes → Simplify, re-run gate
-   - No → Proceed to commit
-
-### 7. Atomic Git Commit
-
-Each task gets its own commit immediately after verification. Never batch multiple tasks into one commit.
-
-**Format ([Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/)):**
+1. Verifique a contagem de testes: Existem pelo menos tantos casos de teste quanto antes? (impede a exclusão silenciosa)
+2. Verifique se não há SPEC_DEVIATION: Se a implementação divergir da especificação/design, adicione um marcador:```
+   // SPEC_DEVIATION: [what diverged]
+   // Reason: [why the deviation was necessary]
 
 ```
+3. Verificação rápida de complexidade: "O engenheiro sênior sinalizaria isso como complicado demais?"
+   - Sim → Simplifique, execute novamente o portão
+   - Não → Prossiga para confirmar
+
+### 7. Confirmação atômica do Git
+
+Cada tarefa recebe seu próprio commit imediatamente após a verificação. Nunca agrupe várias tarefas em um commit.
+
+**Formato ([Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/)):**
+
+```
+
 <type>(<scope>): <description>
 
 [optional body]
 
 [optional footer(s)]
-```
 
-**Types:**
+````
 
-| Type       | When to use                                             |
+**Tipos:**
+
+| Tipo | Quando usar |
 | ---------- | ------------------------------------------------------- |
-| `feat`     | New feature or capability                               |
-| `fix`      | Bug fix                                                 |
-| `refactor` | Code change that neither fixes a bug nor adds a feature |
-| `docs`     | Documentation only                                      |
-| `test`     | Adding or correcting tests                              |
-| `style`    | Formatting, missing semicolons, etc. (no code change)   |
-| `perf`     | Performance improvement                                 |
-| `build`    | Build system or external dependencies                   |
-| `ci`       | CI configuration files and scripts                      |
-| `chore`    | Maintenance tasks that don't modify src or test files   |
+| `façanha` | Novo recurso ou capacidade |
+| `consertar` | Correção de bug |
+| `refatorar` | Alteração de código que não corrige um bug nem adiciona um recurso |
+| `docs` | Somente documentação |
+| `teste`
 
-**Scope:** Feature name or module area, lowercase, e.g., `auth`, `cart`, `api`
+| Adicionando ou corrigindo testes |
+| `estilo` | Formatação, falta de ponto e vírgula, etc. (sem alteração de código) |
+| `perf` | Melhoria de desempenho |
+| `construir` | Construir sistema ou dependências externas |
+| `ci` | Arquivos e scripts de configuração de CI |
+| `tarefa` | Tarefas de manutenção que não modificam arquivos src ou de teste |
 
-**Description rules:**
+**Escopo:** Nome do recurso ou área do módulo, em letras minúsculas, por exemplo, `auth`, `cart`, `api`
 
-- Imperative mood ("add", not "added" or "adds")
-- Lowercase first letter
-- No period at the end
-- Complete the sentence: "If applied, this commit will _[your description]_"
+**Regras de descrição:**
 
-**Breaking changes:** Append `!` after type/scope AND add `BREAKING CHANGE:` footer:
+- Modo imperativo ("adicionar", não "adicionar" ou "adicionar")
+- Primeira letra minúscula
+- Sem ponto final no final
+- Complete a frase: "Se aplicado, este commit será _[sua descrição]_"
 
-```
+**Alterações significativas:** Anexe `!` após o tipo/escopo E adicione o rodapé `BREAKING CHANGE:`:```
 feat(api)!: change authentication endpoint response format
 
 BREAKING CHANGE: login endpoint now returns JWT in body instead of cookie
-```
+````
 
-**Examples:**
+**Exemplos:**
 
 ```
 feat(auth): add email validation to login form
@@ -203,32 +203,31 @@ Move token refresh from inline handler to dedicated AuthTokenService
 for reuse across multiple endpoints.
 ```
 
-**Rules:**
+**Regras:**
 
-- One task = one commit
-- Description references what was DONE, not what was planned
-- Include only files listed in the task — never sneak in "while I'm here" changes
-- If tests are part of the task, include them in the same commit
+- Uma tarefa = um commit
+- A descrição faz referência ao que foi FEITO, não ao que foi planejado
+- Inclua apenas os arquivos listados na tarefa - nunca insira alterações "enquanto estou aqui"
+- Se os testes fizerem parte da tarefa, inclua-os no mesmo commit
 
-### 8. Scope Guardrail
+### 8. Guarda-corpo do escopo
 
-During implementation, you will notice things that could be improved, refactored, or added. **Do not act on them.** Instead:
+Durante a implementação, você notará coisas que poderiam ser melhoradas, refatoradas ou adicionadas. **Não aja de acordo com eles.** Em vez disso:
 
-- If it's a bug: note it in STATE.md as a blocker or use quick mode
-- If it's an improvement: note it in STATE.md under "Deferred Ideas" or "Lessons Learned"
-- If it's related to the current task: only include it if it's in the "Done when" criteria
+- Se for um bug: anote-o em STATE.md como um bloqueador ou use o modo rápido
+- Se for uma melhoria: anote em STATE.md em "Ideias Adiadas" ou "Lições Aprendidas"
+- Se estiver relacionado à tarefa atual: inclua apenas se estiver no critério “Concluído quando”
 
-**The heuristic:** "Is this in my task definition?" If no, don't touch it.
+**A heurística:** "Isso está na minha definição de tarefa?" Se não, não toque nele.
 
-### 9. Update Task Status
+### 9. Atualizar status da tarefa
 
-Mark task complete in tasks.md. Update requirement traceability in spec.md if requirement IDs are used.
+Marque a tarefa como concluída em tarefas.md. Atualize a rastreabilidade de requisitos em spec.md se IDs de requisitos forem usados.
 
 ---
 
-## Execution Template
+## Modelo de Execução```markdown
 
-```markdown
 ## Implementing T[X]: [Task Title]
 
 **Reading**: task definition from tasks.md
@@ -268,17 +267,20 @@ Mark task complete in tasks.md. Update requirement traceability in spec.md if re
 - [x] Matches existing patterns
 
 **Status**: ✅ Complete | ❌ Blocked | ⚠️ Partial
-```
 
+```
 ---
 
-## Tips
+## Pontas
 
-- **One task at a time** — Focus prevents errors
-- **Tools matter** — Wrong MCP = wrong approach
-- **Reuses save tokens** — Copy patterns, don't reinvent
-- **Check before commit** — Verify all criteria, then commit
-- **Stay surgical** — Touch only what's necessary
-- **Commit per task** — Clean git history enables bisect and rollback
-- **Never "while I'm here"** — Scope creep during implementation is the #1 quality killer
-- **Learn from mistakes** — If something goes wrong, add a Lesson Learned to STATE.md
+- **Uma tarefa por vez** — O foco evita erros
+- **Ferramentas são importantes** — MCP errado = abordagem errada
+- **Reutiliza tokens salvos** — Copie padrões, não reinvente
+- **Verificar antes de confirmar** — Verifique todos os critérios e depois confirme
+- **Permaneça cirúrgico** — Toque apenas no que for necessário
+- **Commit por tarefa** — Limpar o histórico do git permite dividir e reverter
+- **Nunca "enquanto estiver aqui"** — O aumento do escopo durante a implementação é o principal assassino de qualidade
+- **Aprenda com os erros**
+
+— Se algo der errado, adicione uma lição aprendida a STATE.md
+```

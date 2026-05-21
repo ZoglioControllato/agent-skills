@@ -81,49 +81,49 @@ export default {
 }
 ```
 
-### Subdomain-Only
+### Somente subdomínio
 
-1. Wildcard DNS: `*.saas.com` → origin
-2. Route: `*.saas.com/*` → dispatch Worker
-3. Extract subdomain for routing
+1. DNS curinga: `*.saas.com` → origem
+2. Rota: `*.saas.com/*` → despachar Trabalhador
+3. Extraia o subdomínio para roteamento
 
-### Orange-to-Orange (O2O) Behavior
+### Comportamento laranja para laranja (O2O)
 
-When customers use Cloudflare and CNAME to your Workers domain:
+Quando os clientes usam Cloudflare e CNAME em seu domínio Workers:
 
-| Scenario                                | Behavior               | Route Pattern             |
-| --------------------------------------- | ---------------------- | ------------------------- |
-| Customer not on Cloudflare              | Standard routing       | `*/*` or `*.domain.com/*` |
-| Customer on Cloudflare (proxied CNAME)  | Invokes Worker at edge | `*/*` required            |
-| Customer on Cloudflare (DNS-only CNAME) | Standard routing       | Any route works           |
+| Cenário                                   | Comportamento                | Padrão de rota            |
+| ----------------------------------------- | ---------------------------- | ------------------------- |
+| Cliente que não usa Cloudflare            | Roteamento padrão            | `*/*` ou `*.domain.com/*` |
+| Cliente na Cloudflare (CNAME com proxy)   | Invoca Trabalhador no limite | `*/*` obrigatório         |
+| Cliente na Cloudflare (CNAME somente DNS) | Roteamento padrão            | Qualquer rota funciona    |
 
-**Recommendation:** Always use `*/*` wildcard for consistent O2O behavior.
+**Recomendação:** Sempre use o curinga `*/*` para um comportamento O2O consistente.
 
-### Custom Metadata Routing
+### Roteamento de metadados personalizado
 
-For Cloudflare for SaaS: Store worker name in custom hostname `custom_metadata`, retrieve in dispatch worker to route requests. Requires custom hostnames as subdomains of your domain.
+Para Cloudflare for SaaS: armazene o nome do trabalhador no nome de host personalizado `custom_metadata` e recupere no trabalhador de despacho para rotear solicitações. Requer nomes de host personalizados como subdomínios do seu domínio.
 
-## Observability
+## Observabilidade
 
 ### Logpush
 
-- Enable on dispatch Worker → captures all user Worker logs
-- Filter by `Outcome` or `Script Name`
+- Habilitar no despacho Worker → captura todos os logs do Worker do usuário
+- Filtrar por `Resultado` ou `Nome do Script`
 
-### Tail Workers
+### Trabalhadores de cauda
 
-- Real-time logs with custom formatting
-- Receives HTTP status, `console.log()`, exceptions, diagnostics
+- Logs em tempo real com formatação personalizada
+- Recebe status HTTP, `console.log()`, exceções, diagnósticos
 
-### Analytics Engine
+### Mecanismo de análise```typescript
 
-```typescript
 // Track violations
 env.ANALYTICS.writeDataPoint({
-  indexes: [customerName],
-  blobs: ['cpu_limit_exceeded'],
+indexes: [customerName],
+blobs: ['cpu_limit_exceeded'],
 })
-```
+
+````
 
 ### GraphQL
 
@@ -141,7 +141,7 @@ query {
     }
   }
 }
-```
+````
 
 ## Use Case Implementations
 
@@ -174,37 +174,37 @@ const workerName = `${customerId}-${functionName}`
 const userWorker = env.DISPATCHER.get(workerName)
 ```
 
-### Website Builder
+### Construtor de sites
 
-- Deploy static assets + Worker code
-- See [api.md](./api.md#static-assets) for full implementation
-- Salt hashes for asset isolation
+- Implantar ativos estáticos + código de trabalho
+- Consulte [api.md](./api.md#static-assets) para implementação completa
+- Hashes de sal para isolamento de ativos
 
-## Best Practices
+## Melhores práticas
 
-### Architecture
+### Arquitetura
 
-- One namespace per environment (production, staging)
-- Platform logic in dispatch Worker (auth, rate limiting, validation)
-- Isolation automatic (no shared cache, untrusted mode)
+- Um namespace por ambiente (produção, teste)
+- Lógica da plataforma no despacho Worker (autenticação, limitação de taxa, validação)
+- Isolamento automático (sem cache compartilhado, modo não confiável)
 
-### Routing
+### Roteamento
 
-- Use `*/*` wildcard routes
-- Store mappings in KV
-- Handle missing Workers gracefully
+- Use rotas curinga `*/*`
+- Armazenar mapeamentos em KV
+- Lide com trabalhadores ausentes com elegância
 
-### Limits & Security
+### Limites e Segurança
 
-- Set custom limits by plan
-- Track violations with Analytics Engine
-- Use outbound Workers for egress control
-- Sanitize responses
+- Defina limites personalizados por plano
+- Rastreie violações com Analytics Engine
+- Use trabalhadores de saída para controle de saída
+- Sanitizar respostas
 
-### Tags
+### Etiquetas
 
-- Tag all Workers: customer ID, plan, environment
-- Enable bulk operations
-- Filter efficiently
+- Identifique todos os trabalhadores: ID do cliente, plano, ambiente
+- Habilitar operações em massa
+- Filtre com eficiência
 
-See [README.md](./README.md), [configuration.md](./configuration.md), [api.md](./api.md), [gotchas.md](./gotchas.md)
+Consulte [README.md](./README.md), [configuration.md](./configuration.md), [api.md](./api.md), [gotchas.md](./gotchas.md)

@@ -12,42 +12,39 @@
 ></script>
 ```
 
-Place before closing `</body>` tag.
+Coloque antes de fechar a tag `</body>`.
 
-## Framework Examples
+## Exemplos de estrutura
 
-| Framework          | Location                   | Notes                                      |
-| ------------------ | -------------------------- | ------------------------------------------ |
-| React/Vite         | `public/index.html`        | Add `spa: true`                            |
-| Next.js App Router | `app/layout.tsx`           | Use `<Script strategy="afterInteractive">` |
-| Next.js Pages      | `pages/_document.tsx`      | Use `<Script>`                             |
-| Nuxt 3             | `app.vue` with `useHead()` | Or use plugin                              |
-| Vue 3/Vite         | `index.html`               | Add `spa: true`                            |
-| Gatsby             | `gatsby-browser.js`        | `onClientEntry` hook                       |
-| SvelteKit          | `src/app.html`             | Before `</body>`                           |
-| Astro              | Layout component           | Before `</body>`                           |
-| Angular            | `src/index.html`           | Add `spa: true`                            |
-| Docusaurus         | `docusaurus.config.js`     | In `scripts` array                         |
+| Estrutura                      | Localização               | Notas                                           |
+| ------------------------------ | ------------------------- | ----------------------------------------------- |
+| Reagir/Vite                    | `público/index.html`      | Adicione `spa: verdadeiro`                      |
+| Roteador de aplicativo Next.js | `app/layout.tsx`          | Use `<estratégia de script="afterInteractive">` |
+| Páginas Next.js                | `páginas/_document.tsx`   | Use `<Script>`                                  |
+| Próximo 3                      | `app.vue` com `useHead()` | Ou use o plugin                                 |
+| Vista 3/Vite                   | `index.html`              | Adicione `spa: verdadeiro`                      |
+| Gatsby                         | `gatsby-browser.js`       | Gancho `onClientEntry`                          |
+| SvelteKit                      | `src/app.html`            | Antes de `</body>`                              |
+| Astro                          | Componente de layout      | Antes de `</body>`                              |
+| Angular                        | `src/index.html`          | Adicione `spa: verdadeiro`                      |
+| Docussauro                     | `docusaurus.config.js`    | Na matriz `scripts`                             |
 
-## Configuration
+## Configuração```json
 
-```json
 {
-  "token": "YOUR_TOKEN",
-  "spa": true
+"token": "YOUR_TOKEN",
+"spa": true
 }
-```
 
-**Use `spa: true` for:** React Router, Vue Router, Next.js, Nuxt, Gatsby, SvelteKit, Angular
+````
+**Use `spa: true` para:** React Router, Vue Router, Next.js, Nuxt, Gatsby, SvelteKit, Angular
 
-**Use `spa: false` for:** Traditional server-rendered (PHP, Django, Rails, WordPress)
+**Use `spa: false` para:** Servidor tradicional renderizado (PHP, Django, Rails, WordPress)
 
-## CSP Headers
-
-```
+## Cabeçalhos CSP```
 script-src 'self' https://static.cloudflareinsights.com;
 connect-src 'self' https://cloudflareinsights.com;
-```
+````
 
 ## GDPR Consent
 

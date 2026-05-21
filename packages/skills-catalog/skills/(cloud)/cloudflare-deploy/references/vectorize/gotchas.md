@@ -1,14 +1,14 @@
-# Vectorize Gotchas
+# Vectorize: armadilhas
 
-## Critical Warnings
+## Avisos críticos
 
-### Async Mutations
+### Mutações assíncronas
 
-Insert/upsert/delete return immediately but vectors aren't queryable for 5-10 seconds.
+Insert/upsert/delete retornam na hora, mas os vetores só ficam consultáveis após 5–10 segundos.
 
-### Batch Size Limit
+### Limite de tamanho de lote
 
-**Workers API: 500 vectors max per call** (undocumented, silently truncates)
+**API Workers: máx. 500 vetores por chamada** (não documentado; trunca silenciosamente)
 
 ```typescript
 // ✅ Chunk into 500
@@ -17,21 +17,21 @@ for (let i = 0; i < vectors.length; i += 500) {
 }
 ```
 
-### Metadata Truncation
+### Truncagem de metadados
 
-`returnMetadata: "indexed"` returns only first 64 bytes of strings. Use `"all"` for complete metadata (but max topK drops to 20).
+`returnMetadata: "indexed"` devolve apenas os primeiros 64 bytes de strings. Use `"all"` para metadados completos (mas o topK máximo cai para 20).
 
-### topK Limits
+### Limites de topK
 
 | returnMetadata         | returnValues | Max topK |
 | ---------------------- | ------------ | -------- |
 | `"none"` / `"indexed"` | `false`      | 100      |
-| `"all"`                | any          | **20**   |
-| any                    | `true`       | **20**   |
+| `"all"`                | qualquer     | **20**   |
+| qualquer               | `true`       | **20**   |
 
-### Metadata Indexes First
+### Índices de metadados primeiro
 
-Create BEFORE inserting - existing vectors not retroactively indexed.
+Crie ANTES de inserir — vetores existentes não são reindexados retroativamente.
 
 ```bash
 # ✅ Create index FIRST
@@ -39,45 +39,47 @@ wrangler vectorize create-metadata-index my-index --property-name=category --typ
 wrangler vectorize insert my-index --file=data.ndjson
 ```
 
-### Index Config Immutable
+### Configuração do índice imutável
 
-Cannot change dimensions/metric after creation. Must create new index and migrate.
+Não dá para mudar dimensões/métrica após a criação. É preciso criar novo índice e migrar.
 
-## Limits (V2)
+## Limites (V2)
 
-| Resource                | Limit                        |
-| ----------------------- | ---------------------------- |
-| Vectors per index       | 10,000,000                   |
-| Max dimensions          | 1536                         |
-| Batch upsert (Workers)  | **500**                      |
-| Indexed string metadata | **64 bytes**                 |
-| Metadata indexes        | 10                           |
-| Namespaces              | 50,000 (paid) / 1,000 (free) |
+| Recurso                    | Limite                         |
+| -------------------------- | ------------------------------ |
+| Vetores por índice         | 10.000.000                     |
+| Dimensões máx.             | 1536                           |
+| Upsert em lote (Workers)   | **500**                        |
+| Metadados string indexados | **64 bytes**                   |
+| Índices de metadados       | 10                             |
+| Namespaces                 | 50.000 (pago) / 1.000 (grátis) |
 
-## Common Mistakes
+## Erros comuns
 
-1. **Wrong embedding shape:** Extract `result.data[0]` from Workers AI
-2. **Metadata index after data:** Re-upsert all vectors
-3. **Insert vs upsert:** `insert` ignores duplicates, `upsert` overwrites
-4. **Not batching:** Individual inserts ~1K/min, batched ~200K+/min
+1. **Formato de embedding errado:** extraia `result.data[0]` do Workers AI
+2. **Índice de metadados depois dos dados:** faça upsert de todos os vetores de novo
+3. **Insert vs upsert:** `insert` ignora duplicatas, `upsert` sobrescreve
+4. **Sem lotes:** inserts individuais ~1K/min; em lote ~200K+/min
 
-## Troubleshooting
+## Resolução de problemas
 
-**No results?**
+**Sem resultados?**
 
-- Wait 5-10s after insert
-- Check namespace spelling (case-sensitive)
-- Verify metadata index exists
-- Check dimension mismatch
+- Aguarde 5–10s após o insert
+- Confira a grafia do namespace (sensível a maiúsculas)
+- Verifique se o índice de metadados existe
+- Verifique incompatibilidade de dimensões
 
-**Metadata filter not working?**
+**Filtro de metadados não funciona?**
 
-- Index must exist before data insert
-- Strings >64 bytes truncated
-- Use dot notation for nested: `"product.category"`
+- O índice deve existir antes da inserção dos dados
+- Strings >64 bytes são truncadas
+- Use notação com ponto para aninhados: `"product.category"`
 
-## Model Dimensions
+## Dimensões dos modelos
 
 - `@cf/baai/bge-small-en-v1.5`: 384
 - `@cf/baai/bge-base-en-v1.5`: 768
 - `@cf/baai/bge-large-en-v1.5`: 1024
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

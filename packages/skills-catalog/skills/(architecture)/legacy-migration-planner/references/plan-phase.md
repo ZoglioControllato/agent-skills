@@ -1,59 +1,64 @@
-# Plan Phase — Detailed Methodology
+# Fase do Plano — Metodologia Detalhada
 
-This reference contains the step-by-step process for the PLAN phase. The PLAN phase MUST NOT begin until the RESEARCH phase is fully complete with all four output files written.
+Esta referência contém o processo passo a passo para a fase PLAN. A fase PLANEJAR NÃO DEVE começar até que a fase PESQUISA esteja totalmente concluída com todos os quatro arquivos de saída gravados.
 
-Every decision in this phase must trace back to evidence from the RESEARCH output files. If you find yourself making a decision without evidence, stop and go back to RESEARCH.
+Cada decisão nesta fase deve ser baseada nas evidências dos arquivos de resultados da PESQUISA. Se você estiver tomando uma decisão sem evidências, pare e volte para a PESQUISA.
 
-## Step 5: Define Migration Direction
+## Etapa 5: Definir a direção da migração
 
-### 5.1 — Direction Assessment
+### 5.1 — Avaliação de direção
 
-Based on RESEARCH findings, determine which migration direction applies. This is NOT a choice you make — it is determined by evidence.
+Com base nos resultados da PESQUISA, determine qual direção de migração se aplica. Esta NÃO é uma escolha que você faz – é determinada por evidências.
 
-| Direction | Evidence That Points Here |
-|-----------|--------------------------|
-| **Decomposition** (monolith → services) | High coupling ratios across domains, deployment bottlenecks cited in CI/CD config, scaling constraints in infrastructure config, team autonomy requirements stated by user |
-| **Consolidation** (services → modular monolith) | Excessive inter-service communication found in integration catalog, operational overhead in infrastructure config, data consistency issues across services, small team stated by user |
-| **Cross-stack** (language/framework change) | EOL/deprecated stack in dependency inventory, target stack specified by user, performance/ecosystem gaps documented in stack research |
-| **Modernization in-place** (same stack, better architecture) | Stack is current but architecture has issues (circular deps, no domain boundaries, scattered data access) |
-| **Hybrid** | Combination of above — document which direction applies to which domain |
+| Direção                                        | Evidências que apontam aqui                                                                                                                                                                                            |
+| ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Decomposição** (monólito → serviços)         | Altas taxas de acoplamento entre domínios, gargalos de implantação citados na configuração de CI/CD, restrições de escala na configuração da infraestrutura, requisitos de autonomia da equipe declarados pelo usuário |
+| **Consolidação** (serviços → monólito modular) | Comunicação excessiva entre serviços encontrada no catálogo de integração, sobrecarga operacional em infras                                                                                                            |
 
-### 5.2 — Direction Documentation
+configuração da estrutura, problemas de consistência de dados entre serviços, equipe pequena declarada pelo usuário |
+| **Pilha cruzada** (alteração de linguagem/estrutura) | EOL/pilha obsoleta no inventário de dependência, pilha de destino especificada pelo usuário, lacunas de desempenho/ecossistema documentadas na pesquisa de pilha |
+| **Modernização no local** (mesma pilha, melhor arquitetura) | A pilha é atual, mas a arquitetura apresenta problemas (departamentos circulares, sem limites de domínio, acesso a dados dispersos) |
+| \*\*Hyb
 
-In `00-roadmap.md`, document the chosen direction with explicit evidence:
+livrar\*\* | Combinação dos itens acima — documentar qual direção se aplica a qual domínio |
 
-```markdown
+### 5.2 — Documentação de direção
+
+Em `00-roadmap.md`, documente a direção escolhida com evidências explícitas:```markdown
+
 ## Migration Direction: {Direction}
 
 **Rationale**: Based on the following RESEARCH findings:
+
 - {Finding 1 — reference to research/file.md}
 - {Finding 2 — reference to research/file.md}
 - {Finding 3 — reference to research/file.md}
 
 **User-confirmed constraints**:
+
 - {Any constraints the user provided}
-```
 
-If the direction is ambiguous, ASK THE USER. Present the evidence for each option and let them decide. Never choose a direction without sufficient evidence.
+````
+Se a direção for ambígua, PERGUNTE AO USUÁRIO. Apresente as evidências para cada opção e deixe-os decidir. Nunca escolha uma direção sem evidências suficientes.
 
-## Step 6: Design Seams and Facades
+## Etapa 6: Projetar costuras e fachadas
 
-Load `references/strangler-fig-patterns.md` for pattern details.
+Carregue `references/strangler-fig-patterns.md` para detalhes do padrão.
 
-### 6.1 — Seam Identification
+### 6.1 — Identificação da Costura
 
-A seam is a boundary where you can intercept and redirect behavior without modifying the legacy code. For each domain identified in RESEARCH:
+Uma costura é um limite onde você pode interceptar e redirecionar o comportamento sem modificar o código legado. Para cada domínio identificado na PESQUISA:
 
-1. **API seams** — HTTP routes, GraphQL resolvers, gRPC service definitions. Reference the exact route definitions with `file:line`.
-2. **Event seams** — Message queue producers/consumers, event emitters, webhooks. Reference with `file:line`.
-3. **Data seams** — Database access points where reads/writes can be intercepted. Reference the ORM models or query locations with `file:line`.
-4. **UI seams** — Component boundaries, route-level splits, micro-frontend mount points. Reference with `file:line`.
+1. **Seams de API** — rotas HTTP, resolvedores GraphQL, definições de serviço gRPC. Faça referência às definições exatas da rota com `file:line`.
+2. **Seams de eventos** — Produtores/consumidores de filas de mensagens, emissores de eventos, webhooks. Referência com `file:line`.
+3. **Conjuntos de dados** — Pontos de acesso ao banco de dados onde leituras/gravações podem ser interceptadas. Faça referência aos modelos ORM ou locais de consulta com `file:line`.
+4. **Conexões da interface do usuário** — Limites de componentes, divisões em nível de rota, microfone
 
-### 6.2 — Facade Layer Design
+pontos de montagem ro-frontend. Referência com `file:line`.
 
-For each seam, define the facade/router that will enable incremental migration:
+### 6.2 — Projeto de Camada de Fachada
 
-```markdown
+Para cada emenda, defina a fachada/roteador que permitirá a migração incremental:```markdown
 ## Seam: {Name}
 
 **Type**: API | Event | Data | UI
@@ -62,27 +67,26 @@ For each seam, define the facade/router that will enable incremental migration:
 **Facade approach**: {How to intercept — pattern from strangler-fig-patterns.md}
 **Routing mechanism**: Feature flag | API gateway | Proxy | Event interceptor
 **Rollback mechanism**: {How to instantly revert to legacy behavior}
-```
+````
 
-### 6.3 — Dependency Order
+### 6.3 — Ordem de Dependência
 
-Determine the migration order based on dependency analysis from RESEARCH:
+Determine a ordem de migração com base na análise de dependência do RESEARCH:
 
-1. Domains with **zero incoming dependencies** from other domains can be migrated first (leaf nodes).
-2. Domains that **many others depend on** should be migrated last (core/shared).
-3. Shared database tables require special handling — document the dual-write or data sync strategy.
+1. Domínios com **zero dependências de entrada** de outros domínios podem ser migrados primeiro (nós folha).
+2. Domínios dos quais **muitos outros dependem** devem ser migrados por último (principal/compartilhado).
+3. Tabelas de banco de dados compartilhadas exigem tratamento especial — documente a estratégia de gravação dupla ou sincronização de dados.
 
-Produce a dependency graph showing the migration order.
+Produza um gráfico de dependência mostrando a ordem de migração.
 
-## Step 7: Per-Domain Migration Plans
+## Etapa 7: Planos de migração por domínio
 
-For each bounded context identified in RESEARCH, create a dedicated file: `./migration-plan/domains/XX-domain-{name}.md`.
+Para cada contexto limitado identificado em RESEARCH, crie um arquivo dedicado: `./migration-plan/domains/XX-domain-{name}.md`.
 
-### Domain File Template
+### Modelo de arquivo de domínio
 
-Every domain file must follow this structure:
+Todo arquivo de domínio deve seguir esta estrutura:```markdown
 
-```markdown
 # Domain: {Name}
 
 ## Current State
@@ -90,22 +94,25 @@ Every domain file must follow this structure:
 **Modules**: {List with file:line refs}
 **Responsibility**: {One sentence}
 **Dependencies**:
+
 - Depends on: {Other domains, with file:line refs to import statements}
 - Depended on by: {Other domains that import from this one}
-**Data stores**: {Tables/collections with file:line refs to models}
-**External integrations**: {APIs, queues, etc. with file:line refs}
+  **Data stores**: {Tables/collections with file:line refs to models}
+  **External integrations**: {APIs, queues, etc. with file:line refs}
 
 ## Target State
 
 **Architecture**: {Target structure}
 **Technology**: {Stack — verified via web search in RESEARCH, cite stack-research.md}
 **Key changes**:
+
 - {Change 1 — what moves where}
 - {Change 2}
 
 ## Migration Steps
 
 ### Step 1: {Action}
+
 **Pattern**: {Reference to strangler-fig-patterns.md section}
 **Seam**: {Reference to seam identified in Step 6}
 **What changes**: {Specific description}
@@ -115,37 +122,38 @@ Every domain file must follow this structure:
 **Success criteria**: {Measurable metrics}
 
 ### Step 2: {Action}
+
 ...
 
 ## Risks Specific to This Domain
 
-| Risk | Impact | Mitigation | Evidence |
-|------|--------|------------|----------|
+| Risk   | Impact  | Mitigation | Evidence                    |
+| ------ | ------- | ---------- | --------------------------- |
 | {Risk} | {Level} | {Strategy} | {file:line or research ref} |
 
 ## Dependencies on Other Domains
 
 **Must complete before this domain**:
+
 - {Domain X} — because {reason with evidence}
 
 **Blocks these domains**:
+
 - {Domain Y} — because {reason with evidence}
-```
 
-### Writing Guidelines for Domain Files
+````
+### Diretrizes para redação de arquivos de domínio
 
-- Each file should be self-contained enough for another agent to execute the migration for that domain without needing to read all other domain files.
-- Cross-references to other domain files are fine, but the core context must be in-file.
-- Keep each file under 300 lines. If a domain is too complex, split it into sub-domains.
-- Every `file:line` reference must have been actually read during RESEARCH. Never fabricate references.
+- Cada arquivo deve ser independente o suficiente para que outro agente execute a migração para aquele domínio sem precisar ler todos os outros arquivos do domínio.
+- Referências cruzadas para outros arquivos de domínio são aceitáveis, mas o contexto principal deve estar no arquivo.
+- Mantenha cada arquivo com menos de 300 linhas. Se um domínio for muito complexo, divida-o em subdomínios.
+- Toda referência `file:line` deve ter sido realmente lida durante a PESQUISA. Nunca fabrique referências.
 
-## Step 8: Consolidated Roadmap
+## Etapa 8: Roteiro Consolidado
 
-Write `./migration-plan/00-roadmap.md` as the master document that ties everything together.
+Escreva `./migration-plan/00-roadmap.md` como o documento mestre que une tudo.
 
-### Roadmap Template
-
-```markdown
+### Modelo de roteiro```markdown
 # Migration Roadmap
 
 ## Executive Summary
@@ -204,20 +212,23 @@ Write `./migration-plan/00-roadmap.md` as the master document that ties everythi
 ## Open Questions
 
 {Any unresolved items that need user input before execution can begin}
-```
+````
 
-## Plan Completion Checklist
+## Lista de verificação para conclusão do plano
 
-Before declaring the plan complete, verify ALL of the following:
+Antes de declarar o plano concluído, verifique TODOS os seguintes itens:
 
-- [ ] Migration direction is documented with evidence
-- [ ] Every seam is identified with `file:line` refs
-- [ ] Facade/router layer is designed for each seam
-- [ ] Domain migration order is determined by dependency analysis
-- [ ] Every domain has its own plan file in `./migration-plan/domains/`
-- [ ] Every domain file includes: current state, target state, steps, testing, rollback, success criteria
-- [ ] Consolidated roadmap ties all domains into a phased sequence
-- [ ] Cross-domain concerns (shared DB, auth, observability) are addressed
-- [ ] No unreferenced claims exist in any output file
-- [ ] Open questions are listed for the user
-- [ ] All technology recommendations were verified via web search
+- [] A direção da migração é documentada com evidências
+- [] Cada costura é identificada com refs `file:line`
+- [] A camada de fachada/roteador é projetada para cada costura
+- [] A ordem de migração do domínio é determinada pela análise de dependência
+- [] Cada domínio tem seu próprio arquivo de plano em `./migration-plan/domains/`
+- [] Cada arquivo de domínio inclui: estado atual, estado de destino, etapas, testes, reversão, critérios de sucesso
+- [] Roteiro consolidado une todos os domínios int
+
+o uma sequência em fases
+
+- [] Preocupações entre domínios (banco de dados compartilhado, autenticação, observabilidade) são abordadas
+- [] Não existem declarações não referenciadas em nenhum arquivo de saída
+- [] As perguntas abertas são listadas para o usuário
+- [] Todas as recomendações de tecnologia foram verificadas por meio de pesquisa na web

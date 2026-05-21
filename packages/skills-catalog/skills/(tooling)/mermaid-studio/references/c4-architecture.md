@@ -1,75 +1,72 @@
-# C4 Architecture Diagrams — Complete Reference
+# Diagramas de Arquitetura C4 – Referência Completa
 
-Load this file when the user requests C4 diagrams or system architecture documentation. The C4 model provides four levels of abstraction.
+Carregue este arquivo quando o usuário solicitar diagramas C4 ou documentação de arquitetura do sistema. O modelo C4 fornece quatro níveis de abstração.
 
-## CRITICAL: Mandatory Rules
+## CRÍTICO: Regras obrigatórias
 
-**Every C4 diagram MUST follow these rules.** Without them, Mermaid renders harsh black lines that overlap elements and make the diagram unreadable.
+**Cada diagrama C4 DEVE seguir estas regras.** Sem elas, o Mermaid renderiza linhas pretas nítidas que se sobrepõem a elementos e tornam o diagrama ilegível.
 
-1. **Max 6 `Rel()` per diagram.** More relationships cause Dagre to route arrows through nodes, creating unreadable spaghetti. Split complex systems into multiple focused diagrams.
-2. **Always style all relationships.** Apply `UpdateRelStyle` to every `Rel()` with soft line colors (see template below).
-3. **Max 6-8 elements per diagram.** Tree-shaped topology (1 in, 1-2 out per node) renders best. Avoid mesh connections.
-4. **Do NOT set `fontFamily`.** Mermaid's default font works everywhere. Setting `system-ui` or `Segoe UI` will render as Times New Roman in headless Chromium.
+1. **Máximo de 6 `Rel()` por diagrama.** Mais relacionamentos fazem com que Dagre direcione setas através dos nós, criando espaguete ilegível. Divida sistemas complexos em vários diagramas focados.
+2. **Sempre estilize todos os relacionamentos.** Aplique `UpdateRelStyle` a cada `Rel()` com cores de linha suaves (veja o modelo abaixo).
+3. **Máximo de 6 a 8 elementos por diagrama.** A topologia em forma de árvore (1 entrada, 1 a 2 saídas por nó) apresenta melhor renderização. Evite conexões de malha.
+4. \*\* NÃO defina `fontFami
 
-### Template: Add This to Every C4 Diagram
+ly`.** A fonte padrão do Mermaid funciona em qualquer lugar. Definir `system-ui`ou`Segoe UI` será renderizado como Times New Roman no Chromium sem cabeça.
 
-```
+### Modelo: adicione isto a cada diagrama C4```
+
     %% === MANDATORY: Apply to ALL Rel() references ===
     UpdateRelStyle(fromAlias, toAlias, $textColor="#475569", $lineColor="#94a3b8")
     %% Repeat for each relationship in the diagram
 
     %% === MANDATORY: Layout optimization ===
     UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
-```
 
-### When Labels Overlap Elements
+````
+### Quando os rótulos se sobrepõem aos elementos
 
-Add `$offsetX` and `$offsetY` to push labels away from elements:
-
-```
+Adicione `$offsetX` e `$offsetY` para afastar os rótulos dos elementos:```
     UpdateRelStyle(from, to, $textColor="#475569", $lineColor="#94a3b8", $offsetY="-10")
     UpdateRelStyle(from, to, $textColor="#475569", $lineColor="#94a3b8", $offsetX="-40", $offsetY="20")
-```
+````
 
-### Highlighting Important Relationships
+### Destacando relacionamentos importantes
 
-Use accent colors for critical paths while keeping other lines soft:
-
-```
-    %% Primary relationship — emphasized
-    UpdateRelStyle(client, api, $textColor="#1e40af", $lineColor="#3b82f6")
+Use cores de destaque para caminhos críticos enquanto mantém outras linhas suaves:```
+%% Primary relationship — emphasized
+UpdateRelStyle(client, api, $textColor="#1e40af", $lineColor="#3b82f6")
 
     %% Secondary relationships — soft
     UpdateRelStyle(api, db, $textColor="#475569", $lineColor="#94a3b8")
 
     %% External/risky connection — warning
     UpdateRelStyle(api, extPayment, $textColor="#92400e", $lineColor="#f59e0b")
-```
 
-## C4 Levels — When to Use Each
+````
+## Níveis C4 – Quando usar cada um
 
-| Level | Diagram      | Audience       | Purpose                               |
+| Nível | Diagrama | Público | Finalidade |
 | ----- | ------------ | -------------- | ------------------------------------- |
-| 1     | C4Context    | Everyone       | System boundaries and external actors |
-| 2     | C4Container  | Technical team | Applications, databases, services     |
-| 3     | C4Component  | Developers     | Internal module structure             |
-| 4     | C4Deployment | DevOps/SRE     | Infrastructure and deployment nodes   |
-| —     | C4Dynamic    | Technical team | Numbered request flows                |
+| 1 | C4Contexto | Todos | Limites do sistema e atores externos |
+| 2 | C4Contêiner | Equipe técnica | Aplicativos, bancos de dados, serviços |
+| 3 | Componente C4 | Desenvolvedores | Estrutura do módulo interno |
+| 4 | Implantação C4 | DevOps/SRE
 
-**Rule of thumb:** Context + Container diagrams are sufficient for most teams. Only create Component/Code diagrams when they genuinely add clarity.
+| Nós de infraestrutura e implantação |
+| — | C4Dinâmico | Equipe técnica | Fluxos de pedidos numerados |
 
-### Audience-Appropriate Recommendations
+**Regra prática:** Diagramas de contexto + contêiner são suficientes para a maioria das equipes. Crie diagramas de componentes/código apenas quando eles realmente adicionarem clareza.
 
-- **Executives/PMs:** Context only
-- **Architects:** Context + Container
-- **Developers:** Context + Container + Components for their area
-- **DevOps/SRE:** Container + Deployment
+### Recomendações apropriadas ao público
 
-## Element Syntax
+- **Executivos/PMs:** Somente contexto
+- **Arquitetos:** Contexto + Container
+- **Desenvolvedores:** Contexto + Container + Componentes para sua área
+- **DevOps/SRE:** Contêiner + Implantação
 
-### People and Systems
+## Sintaxe do Elemento
 
-```
+### Pessoas e Sistemas```
 Person(alias, "Label", "Description")
 Person_Ext(alias, "Label", "Description")
 System(alias, "Label", "Description")
@@ -78,40 +75,34 @@ SystemDb(alias, "Label", "Description")
 SystemDb_Ext(alias, "Label", "Description")
 SystemQueue(alias, "Label", "Description")
 SystemQueue_Ext(alias, "Label", "Description")
-```
+````
 
-### Containers
+### Contêineres```
 
-```
 Container(alias, "Label", "Technology", "Description")
 Container_Ext(alias, "Label", "Technology", "Description")
 ContainerDb(alias, "Label", "Technology", "Description")
 ContainerDb_Ext(alias, "Label", "Technology", "Description")
 ContainerQueue(alias, "Label", "Technology", "Description")
 ContainerQueue_Ext(alias, "Label", "Technology", "Description")
-```
 
-### Components
-
-```
+````
+### Componentes```
 Component(alias, "Label", "Technology", "Description")
 Component_Ext(alias, "Label", "Technology", "Description")
 ComponentDb(alias, "Label", "Technology", "Description")
 ComponentQueue(alias, "Label", "Technology", "Description")
-```
+````
 
-### Boundaries
+### Limites```
 
-```
 Enterprise_Boundary(alias, "Label") { ... }
 System_Boundary(alias, "Label") { ... }
 Container_Boundary(alias, "Label") { ... }
 Boundary(alias, "Label", "type") { ... }
-```
 
-### Relationships
-
-```
+````
+### Relacionamentos```
 Rel(from, to, "Label")
 Rel(from, to, "Label", "Technology")
 BiRel(from, to, "Label")
@@ -120,25 +111,22 @@ Rel_D(from, to, "Label")       %% Downward
 Rel_L(from, to, "Label")       %% Leftward
 Rel_R(from, to, "Label")       %% Rightward
 Rel_Back(from, to, "Label")    %% Back relationship
-```
+````
 
-**Layout control tip:** When auto-layout causes lines to overlap, use directional variants (`Rel_D`, `Rel_R`, etc.) to force arrows in a specific direction. This is the most effective way to avoid overlapping lines.
+**Dica de controle de layout:** Quando o layout automático faz com que as linhas se sobreponham, use variantes direcionais (`Rel_D`, `Rel_R`, etc.) para forçar as setas em uma direção específica. Esta é a maneira mais eficaz de evitar linhas sobrepostas.
 
-### Deployment Nodes
+### Nós de implantação```
 
-```
 Deployment_Node(alias, "Label", "Type") { ... }
 Deployment_Node(alias, "Label", "Type", "Description") { ... }
 Node(alias, "Label") { ... }
 Node_L(alias, "Label") { ... }
 Node_R(alias, "Label") { ... }
-```
 
-## Complete Examples (All With Mandatory Styling)
+````
+## Exemplos completos (todos com estilo obrigatório)
 
-### Level 1 — System Context
-
-```mermaid
+### Nível 1 — Contexto do Sistema```mermaid
 C4Context
     title System Context — Order Management Platform
 
@@ -169,15 +157,13 @@ C4Context
     UpdateRelStyle(orderPlatform, analytics, $textColor="#475569", $lineColor="#94a3b8", $offsetY="-10")
 
     UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
-```
+````
 
-### Level 2 — Container
+### Nível 2 - Contêiner
 
-**Keep container diagrams focused: max 6-8 elements and 6 Rel().** For complex systems, split into multiple diagrams (one per bounded context or service area).
-
-```mermaid
+**Mantenha os diagramas de contêiner em foco: máximo de 6 a 8 elementos e 6 Rel().** Para sistemas complexos, divida em vários diagramas (um por contexto limitado ou área de serviço).```mermaid
 C4Container
-    title Container Diagram — Order Platform
+title Container Diagram — Order Platform
 
     Person(customer, "Customer", "Places orders online")
 
@@ -203,11 +189,9 @@ C4Container
     UpdateRelStyle(orderSvc, paymentGW, $textColor="#92400e", $lineColor="#f59e0b")
 
     UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
-```
 
-### Level 3 — Component (Order Service)
-
-```mermaid
+````
+### Nível 3 — Componente (Serviço de Pedido)```mermaid
 C4Component
     title Component Diagram — Order Service
 
@@ -243,13 +227,12 @@ C4Component
     UpdateRelStyle(paymentPort, paymentGW, $textColor="#92400e", $lineColor="#f59e0b")
 
     UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
-```
+````
 
-### C4 Dynamic — Request Flow
+### C4 Dinâmico — Fluxo de Solicitação```mermaid
 
-```mermaid
 C4Dynamic
-    title Dynamic Diagram — Place Order Flow
+title Dynamic Diagram — Place Order Flow
 
     Container(spa, "Web App", "React")
     Container(api, "API Gateway", "NestJS")
@@ -276,11 +259,9 @@ C4Dynamic
     UpdateRelStyle(api, spa, $textColor="#475569", $lineColor="#94a3b8", $offsetY="-10")
 
     UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
-```
 
-### C4 Deployment
-
-```mermaid
+````
+### Implantação C4```mermaid
 C4Deployment
     title Deployment — Production Environment
 
@@ -324,48 +305,43 @@ C4Deployment
     UpdateRelStyle(orderSvc, bus, $textColor="#475569", $lineColor="#94a3b8")
 
     UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
-```
+````
 
-## Styling and Layout
+## Estilo e layout
 
-### Layout Configuration
+### Configuração de Layout```
 
-```
 UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
-```
 
-### Element Styling
-
-```
+````
+### Estilo de Elemento```
 UpdateElementStyle(alias, $fontColor="red", $bgColor="grey", $borderColor="red")
-```
+````
 
-### Relationship Styling
+### Estilo de relacionamento
 
-Use `$offsetX` and `$offsetY` to fix overlapping labels:
-
-```
+Use `$offsetX` e `$offsetY` para corrigir rótulos sobrepostos:```
 UpdateRelStyle(from, to, $textColor="#475569", $lineColor="#94a3b8", $offsetY="-10")
-```
 
-### Professional Color Palette for Custom Element Styles
+````
+### Paleta de cores profissional para estilos de elementos personalizados
 
-| Purpose              | bgColor   | fontColor | borderColor | When to use                     |
+| Finalidade | bgCor | fonteCor | bordaCor | Quando usar |
 | -------------------- | --------- | --------- | ----------- | ------------------------------- |
-| Primary emphasis     | `#4f46e5` | `#ffffff` | `#3730a3`   | Core systems, main service      |
-| Success / Data store | `#059669` | `#ffffff` | `#047857`   | Databases, completed states     |
-| Warning / External   | `#d97706` | `#ffffff` | `#b45309`   | External systems, risky paths   |
-| Error / Critical     | `#dc2626` | `#ffffff` | `#b91c1c`   | Error states ONLY               |
-| Neutral / Secondary  | `#64748b` | `#ffffff` | `#475569`   | Supporting services, background |
-| Info / Highlight     | `#0284c7` | `#ffffff` | `#0369a1`   | Informational annotations       |
+| Ênfase primária | `#4f46e5` | `#ffffff` | `#3730a3` | Sistemas centrais, serviço principal |
+| Sucesso / Armazenamento de dados | `#059669` | `#ffffff` | `#047857` | Bancos de dados, estados concluídos |
+| Aviso / Externo | `#d97706` | `#ffffff` | `#b45309` |
 
-## Microservices Patterns
+Sistemas externos, caminhos arriscados |
+| Erro / Crítico | `#dc2626` | `#ffffff` | `#b91c1c` | Estados de erro SOMENTE |
+| Neutro/Secundário | `#64748b` | `#ffffff` | `#475569` | Serviços de apoio, antecedentes |
+| Informações / Destaque | `#0284c7` | `#ffffff` | `#0369a1` | Anotações informativas |
 
-### Single-Team Ownership
+## Padrões de microsserviços
 
-When one team owns all services, model each as a **container**:
+### Propriedade de equipe única
 
-```mermaid
+Quando uma equipe possui todos os serviços, modele cada um como um **contêiner**:```mermaid
 C4Container
     title Microservices — Single Team
 
@@ -383,15 +359,13 @@ C4Container
     UpdateRelStyle(inventorySvc, inventoryDb, $textColor="#475569", $lineColor="#94a3b8")
 
     UpdateLayoutConfig($c4ShapeInRow="2", $c4BoundaryInRow="1")
-```
+````
 
-### Multi-Team Ownership
+### Propriedade de várias equipes
 
-When separate teams own services, promote them to **systems**:
-
-```mermaid
+Quando equipes separadas possuem serviços, promova-os para **sistemas**:```mermaid
 C4Context
-    title Microservices — Multi-Team
+title Microservices — Multi-Team
 
     Person(customer, "Customer")
     System(orderSys, "Order System", "Team Alpha")
@@ -407,13 +381,11 @@ C4Context
     UpdateRelStyle(orderSys, paymentSys, $textColor="#92400e", $lineColor="#f59e0b")
 
     UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
-```
 
-### Event-Driven Architecture
+````
+### Arquitetura Orientada a Eventos
 
-Show individual topics/queues as containers — NOT a single "Kafka" box:
-
-```mermaid
+Mostre tópicos/filas individuais como contêineres - NÃO uma única caixa "Kafka":```mermaid
 C4Container
     title Event-Driven Architecture
 
@@ -433,41 +405,47 @@ C4Container
     UpdateRelStyle(orderSvc, stockTopic, $textColor="#475569", $lineColor="#94a3b8")
 
     UpdateLayoutConfig($c4ShapeInRow="2", $c4BoundaryInRow="1")
-```
+````
 
-## Essential Rules
+## Regras Essenciais
 
-1. **Every element must have:** Name, Type, Technology (where applicable), Description
-2. **Use unidirectional arrows** — bidirectional creates ambiguity
-3. **Label arrows with action verbs** — "Sends email using", not just "uses"
-4. **Include technology labels** — "JSON/HTTPS", "SQL", "gRPC"
-5. **Under 15 elements per diagram** — split if more (elegance > completeness)
-6. **Always include a title**
-7. **Meaningful aliases** — `orderService` not `s1`
-8. **ALWAYS add UpdateRelStyle** — soft line colors are mandatory
-9. **ALWAYS add UpdateLayoutConfig** — prevents element crowding
+1. **Todo elemento deve ter:** Nome, Tipo, Tecnologia (quando aplicável), Descrição
+2. **Use setas unidirecionais** — bidirecional cria ambiguidade
+3. **Rotule as setas com verbos de ação** — "Envia e-mail usando", não apenas "usa"
+4. **Incluir rótulos de tecnologia** — "JSON/HTTPS", "SQL", "gRPC"
+5. **Menos de 15 elementos por diagrama** — dividido se houver mais (elegância > completude)
+6. **Sempre inclua um título**
+7. **Apelidos significativos** — `orderService` não
 
-## Common Mistakes
+`s1` 8. **SEMPRE adicione UpdateRelStyle** — as cores das linhas suaves são obrigatórias 9. **SEMPRE adicione UpdateLayoutConfig** — evita aglomeração de elementos
 
-| Mistake                  | Why it's wrong                  | Fix                                  |
-| ------------------------ | ------------------------------- | ------------------------------------ |
-| Shared lib as Container  | Containers are deployable units | Model as Component                   |
-| Single "Kafka" container | Hides topic structure           | Show individual topics               |
-| "Subcomponents" level    | Not a C4 concept                | Use Component or Class               |
-| Removing type labels     | Loses information               | Always show type/tech                |
-| Bidirectional arrows     | Ambiguous flow direction        | Use unidirectional                   |
-| No technology labels     | Can't assess architecture       | Add protocol/tech                    |
-| No UpdateRelStyle        | Harsh black lines               | Add soft colors to ALL relationships |
-| No UpdateLayoutConfig    | Elements crowd together         | Add layout config at end             |
-| No offset on overlap     | Labels hidden behind elements   | Add $offsetX/$offsetY to fix         |
+## Erros Comuns
 
-## File Naming Convention
+| Erro                                    | Por que está errado                         | Correção                    |
+| --------------------------------------- | ------------------------------------------- | --------------------------- |
+| Biblioteca compartilhada como contêiner | Os contêineres são unidades implantáveis ​​ | Modelo como Componente      |
+| Recipiente único "Kafka"                | Oculta a estrutura do tópico                | Mostrar tópicos individuais |
+| Nível "Subcomponentes"                  | Não é uma concentração C4                   |
 
-```
+epto | Use Componente ou Classe |
+| Removendo etiquetas de tipo | Perde informações | Sempre mostrar tipo/tecnologia |
+| Setas bidirecionais | Direção de fluxo ambígua | Use unidirecional |
+| Sem rótulos de tecnologia | Não é possível avaliar a arquitetura | Adicionar protocolo/tecnologia |
+| Sem atualizaçãoRelStyle | Linhas pretas duras | Adicione cores suaves ao AL
+
+relacionamentos L |
+| Sem atualizaçãoLayoutConfig | Elementos se aglomeram | Adicionar configuração de layout no final |
+| Sem compensação na sobreposição | Etiquetas escondidas atrás de elementos | Adicione $offsetX/$offsetY para corrigir |
+
+## Convenção de nomenclatura de arquivos```
+
 docs/architecture/
 ├── c4-context.md
 ├── c4-containers.md
 ├── c4-components-{feature}.md
 ├── c4-deployment.md
 └── c4-dynamic-{flow}.md
+
+```
+
 ```

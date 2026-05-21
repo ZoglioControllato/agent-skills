@@ -1,15 +1,15 @@
 ---
-title: Use useTransition Over Manual Loading States
+title: Usar useTransition em vez de estados de carregamento manuais
 impact: LOW
-impactDescription: reduces re-renders and improves code clarity
+impactDescription: reduz re-renderizações e esclarece o código
 tags: rendering, transitions, useTransition, loading, state
 ---
 
-## Use useTransition Over Manual Loading States
+## Usar useTransition em vez de estados de carregamento manuais
 
-Use `useTransition` instead of manual `useState` for loading states. This provides built-in `isPending` state and automatically manages transitions.
+Use `useTransition` em vez do manual `useState` para estado de carregamento. Você ganha `isPending` integrado e o gerenciamento automático das transições.
 
-**Incorrect (manual loading state):**
+**Incorreto (estado de carregamento manual):**
 
 ```tsx
 function SearchResults() {
@@ -35,7 +35,7 @@ function SearchResults() {
 }
 ```
 
-**Correct (useTransition with built-in pending state):**
+**Correto (useTransition com estado de pendência integrada):**
 
 ```tsx
 import { useTransition, useState } from 'react'
@@ -47,7 +47,7 @@ function SearchResults() {
 
   const handleSearch = (value: string) => {
     setQuery(value) // Update input immediately
-    
+
     startTransition(async () => {
       // Fetch and update results
       const data = await fetchResults(value)
@@ -65,11 +65,11 @@ function SearchResults() {
 }
 ```
 
-**Benefits:**
+**Benefícios:**
 
-- **Automatic pending state**: No need to manually manage `setIsLoading(true/false)`
-- **Error resilience**: Pending state correctly resets even if the transition throws
-- **Better responsiveness**: Keeps the UI responsive during updates
-- **Interrupt handling**: New transitions automatically cancel pending ones
+- **Pendente automático**: não precisa ficar fazendo `setIsLoading(true/false)` manualmente
+- **Resiliência a erros**: o pendente volta ao normal mesmo quando a transição lança erro
+- **Interface mais fluida**: mantém a UI responsiva durante as atualizações
+- **Interrupções**: novas transições cancelam as anteriores pendentes automaticamente
 
-Reference: [useTransition](https://react.dev/reference/react/useTransition)
+Referência: [useTransition](https://react.dev/reference/react/useTransition)

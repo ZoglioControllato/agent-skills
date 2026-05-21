@@ -1,31 +1,31 @@
 ---
 name: gh-address-comments
-description: Address review and issue comments on the open GitHub PR for the current branch using gh CLI. Use when user says "address PR comments", "fix review feedback", "respond to PR review", or "handle PR comments". Verifies gh auth first and prompts to authenticate if not logged in. Do NOT use for creating PRs, CI debugging (use gh-fix-ci), or general Git operations.
+description: Atende comentários de review e de issues no PR aberto do GitHub da branch atual usando a CLI gh. Use quando o usuário disser "resolver comentários do PR", "corrigir feedback de review", "responder à review do PR" ou "lidar com comentários do PR". Verifica autenticação gh primeiro e orienta a autenticar se não estiver logado. NÃO use para criar PRs, depurar CI (use gh-fix-ci) ou operações Git gerais.
 metadata:
   author: github.com/openai/skills
   version: '1.0.0'
-  short-description: Address comments in a GitHub PR review
+  short-description: Atender comentários em review de PR no GitHub
 ---
 
-# PR Comment Handler
+# Manipulador de comentários de PR
 
-Guide to find the open PR for the current branch and address its comments with gh CLI.
+Guia para encontrar o PR aberto da branch atual e atender aos comentários com a CLI gh.
 
-**Prerequisites:** Ensure `gh` is authenticated before running commands. Check authentication status with `gh auth status`. If not authenticated, instruct the user to run `gh auth login` to authenticate with GitHub.
+**Pré-requisitos:** Garanta que `gh` esteja autenticado antes de rodar comandos. Verifique com `gh auth status`. Se não estiver autenticado, oriente o usuário a rodar `gh auth login`.
 
-## 1) Inspect comments needing attention
+## 1) Inspecionar comentários que precisam de atenção
 
-- Run scripts/fetch_comments.py which will print out all the comments and review threads on the PR
+- Execute `scripts/fetch_comments.py`, que imprime todos os comentários e threads de review do PR
 
-## 2) Ask the user for clarification
+## 2) Pedir esclarecimento ao usuário
 
-- Number all the review threads and comments and provide a short summary of what would be required to apply a fix for it
-- Ask the user which numbered comments should be addressed
+- Numere todos os threads de review e comentários e resuma o que seria preciso para aplicar a correção
+- Pergunte quais comentários numerados devem ser atendidos
 
-## 3) If user chooses comments
+## 3) Se o usuário escolher comentários
 
-- Apply fixes for the selected comments
+- Aplique correções para os comentários selecionados
 
-Notes:
+Notas:
 
-- If gh hits auth/rate issues mid-run, prompt the user to re-authenticate with `gh auth login`, then retry.
+- Se o gh falhar por autenticação ou rate limit no meio da execução, peça para reautenticar com `gh auth login` e tente de novo.

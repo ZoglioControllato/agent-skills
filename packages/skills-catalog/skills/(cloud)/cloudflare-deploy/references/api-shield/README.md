@@ -1,22 +1,20 @@
-# Cloudflare API Shield Reference
+# Referência do Cloudflare API Shield
 
-Expert guidance for API Shield - comprehensive API security suite for discovery, protection, and monitoring.
+Orientação especializada para API Shield – conjunto abrangente de segurança de API para descoberta, proteção e monitoramento.
 
-## Reading Order
+## Ordem de leitura
 
-| Task                     | Files to Read                  |
-| ------------------------ | ------------------------------ |
-| Initial setup            | README → configuration.md      |
-| Implement JWT validation | configuration.md → api.md      |
-| Add schema validation    | configuration.md → patterns.md |
-| Detect API attacks       | patterns.md → api.md           |
-| Debug issues             | gotchas.md                     |
+| Tarefa                         | Arquivos para ler            |
+| ------------------------------ | ---------------------------- |
+| Configuração inicial           | LEIA-ME → configuração.md    |
+| Implementar validação JWT      | configuração.md → api.md     |
+| Adicionar validação de esquema | configuração.md → padrões.md |
+| Detectar ataques de API        | padrões.md → api.md          |
+| Problemas de depuração         | pegadinhas.md                |
 
-## Feature Selection
+## Seleção de recursos
 
-What protection do you need?
-
-```
+Que proteção você precisa?```
 ├─ Validate request/response structure → Schema Validation 2.0 (configuration.md)
 ├─ Verify auth tokens → JWT Validation (configuration.md)
 ├─ Client certificates → mTLS (configuration.md)
@@ -24,6 +22,7 @@ What protection do you need?
 ├─ Track auth coverage → Auth Posture (patterns.md)
 ├─ Stop volumetric abuse → Abuse Detection (patterns.md)
 └─ Discover shadow APIs → API Discovery (api.md)
+
 ```
 
 ## In This Reference
@@ -42,3 +41,4 @@ API Shield: Enterprise-grade API security (Discovery, Schema Validation 2.0, JWT
 - [API Shield Docs](https://developers.cloudflare.com/api-shield/)
 - [API Reference](https://developers.cloudflare.com/api/resources/api_gateway/)
 - [OWASP API Security Top 10](https://owasp.org/www-project-api-security/)
+```

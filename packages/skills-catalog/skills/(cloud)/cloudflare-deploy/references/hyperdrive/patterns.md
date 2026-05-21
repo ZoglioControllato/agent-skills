@@ -1,8 +1,8 @@
-# Patterns
+# Padrões
 
-See [README.md](./README.md), [configuration.md](./configuration.md), [api.md](./api.md).
+Veja [README.md](./README.md), [configuration.md](./configuration.md) e [api.md](./api.md).
 
-## High-Traffic Read-Heavy
+## Tráfego alto, leitura intensiva
 
 ```typescript
 const sql = postgres(env.HYPERDRIVE.connectionString, { max: 5, prepare: true })
@@ -14,9 +14,9 @@ const posts = await sql`SELECT * FROM posts WHERE published = true ORDER BY view
 const [user] = await sql`SELECT id, username, bio FROM users WHERE id = ${userId}`
 ```
 
-**Benefits:** Trending/profiles cached (60s), connection pooling handles spikes.
+**Benefícios:** conteúdo em alta e perfis em cache (60s), pooling absorve picos.
 
-## Mixed Read/Write
+## Leitura e escrita mistas
 
 ```typescript
 interface Env {
@@ -37,7 +37,7 @@ if (req.method === 'POST') {
 }
 ```
 
-## Analytics Dashboard
+## Painel analítico
 
 ```typescript
 const client = new Client({ connectionString: env.HYPERDRIVE.connectionString })
@@ -66,9 +66,9 @@ const topProducts = await client.query(
 )
 ```
 
-**Benefits:** Expensive aggregations cached (avoid NOW() for cacheability), dashboard instant, reduced DB load.
+**Benefícios:** agregações pesadas em cache (evite NOW() para cachear), painel rápido, menos carga no DB.
 
-## Multi-Tenant
+## Multitenant
 
 ```typescript
 const tenantId = req.headers.get('X-Tenant-ID')
@@ -82,9 +82,9 @@ const docs = await sql`
 `
 ```
 
-**Benefits:** Per-tenant caching, shared connection pool, protects DB from multi-tenant load.
+**Benefícios:** cache por tenant, pool compartilhado, protege o DB da carga multitenant.
 
-## Geographically Distributed
+## Distribuição geográfica
 
 ```typescript
 // Worker runs at edge nearest user
@@ -98,11 +98,11 @@ return Response.json({
 })
 ```
 
-**Benefits:** Edge setup + DB pooling = global → single-region DB without replication.
+**Benefícios:** setup na edge + pooling no DB = app global em cima de banco de região única sem replicação.
 
-## Multi-Query + Smart Placement
+## Várias consultas + Smart Placement
 
-For Workers making **multiple queries** per request, enable Smart Placement to execute near DB:
+Para Workers que fazem **várias consultas** por requisição, habilite Smart Placement para executar perto do DB:
 
 ```jsonc
 // wrangler.jsonc
@@ -123,13 +123,13 @@ const stats = await sql`SELECT COUNT(*) as total, SUM(amount) as spent FROM orde
 return Response.json({ user, orders, stats })
 ```
 
-**Benefits:** Worker executes near DB → reduces latency for each query. Without Smart Placement, each query round-trips from edge.
+**Benefícios:** o Worker roda perto do DB → menos latência por consulta. Sem Smart Placement, cada consulta faz ida e volta da edge até a região do DB.
 
-## Connection Pooling
+## Pool de conexões
 
-Operates in **transaction mode**: connection acquired per transaction, `RESET` on return.
+Opera em **modo transação**: conexão adquirida por transação, `RESET` ao devolver.
 
-**SET statements:**
+**Instruções SET:**
 
 ```typescript
 // ✅ Within transaction
@@ -146,7 +146,7 @@ await client.query("SET work_mem = '256MB'")
 await client.query('SELECT * FROM large_table') // SET not applied
 ```
 
-**Best practices:**
+**Boas práticas:**
 
 ```typescript
 // ❌ Long transactions block pooling
@@ -166,15 +166,15 @@ await client.query('SELECT * FROM large_table')
 await client.query('COMMIT')
 ```
 
-## Performance Tips
+## Dicas de desempenho
 
-**Enable prepared statements (required for caching):**
+**Habilitar prepared statements (necessário para cache):**
 
 ```typescript
 const sql = postgres(connectionString, { prepare: true }) // Default, enables caching
 ```
 
-**Optimize connection settings:**
+**Ajustar configurações de conexão:**
 
 ```typescript
 const sql = postgres(connectionString, {
@@ -184,7 +184,7 @@ const sql = postgres(connectionString, {
 })
 ```
 
-**Write cache-friendly queries:**
+**Consultas amigáveis ao cache:**
 
 ```typescript
 // ✅ Cacheable (deterministic)
@@ -198,4 +198,6 @@ const ts = Date.now()
 await sql`SELECT * FROM logs WHERE created_at > ${ts}`
 ```
 
-See [gotchas.md](./gotchas.md) for limits, troubleshooting.
+Veja [gotchas.md](./gotchas.md) para limites e solução de problemas.
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

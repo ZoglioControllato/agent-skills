@@ -1,39 +1,39 @@
-# Basic troubleshooting (deploy-time and startup)
+# Solução de problemas básicos (tempo de implantação e inicialização)
 
-Use this when a deploy fails, the service crashes on start, or health checks time out.
-Keep fixes minimal and redeploy after each change.
+Use-o quando uma implantação falhar, o serviço falhar na inicialização ou o tempo limite das verificações de integridade expirar.
+Mantenha as correções mínimas e reimplante após cada alteração.
 
-## 1) Classify the failure
+## 1) Classifique a falha
 
-- **Build failure**: errors in build logs, missing dependencies, build command issues.
-- **Startup failure**: app exits quickly, crashes, or cannot bind to `$PORT`.
-- **Runtime/health failure**: service is live but health checks fail or 5xx errors.
+- **Falha na compilação**: erros nos logs de compilação, dependências ausentes, problemas de comando de compilação.
+- **Falha na inicialização**: o aplicativo fecha rapidamente, trava ou não pode ser vinculado a `$PORT`.
+- **Falha no tempo de execução/integridade**: o serviço está ativo, mas as verificações de integridade falham ou ocorrem erros 5xx.
 
-## 2) Quick checks by class
+## 2) Verificações rápidas por turma
 
-**Build failure**
+**Falha na compilação**
 
-- Confirm the build command is correct for the runtime.
-- Ensure required dependencies are present in `package.json`, `requirements.txt`, etc.
-- Check for missing build-time env vars.
+- Confirme se o comando de construção está correto para o tempo de execução.
+- Certifique-se de que as dependências necessárias estejam presentes em `package.json`, `requirements.txt`, etc.
+- Verifique se há variáveis de ambiente de tempo de construção ausentes.
 
-**Startup failure**
+**Falha na inicialização**
 
-- Confirm the start command and working directory.
-- Ensure port binding is `0.0.0.0:$PORT`.
-- Check for missing runtime env vars (secrets, DB URLs).
+- Confirme o comando de início e o diretório de trabalho.
+- Certifique-se de que a ligação da porta seja `0.0.0.0:$PORT`.
+- Verifique se há variáveis ​​de ambiente de tempo de execução ausentes (segredos, URLs de banco de dados).
 
-**Runtime/health failure**
+**Falha no tempo de execução/integridade**
 
-- Verify the health endpoint path and response.
-- Confirm the app is actually listening on `$PORT`.
-- Check database connectivity and migrations.
+- Verifique o caminho e a resposta do endpoint de integridade.
+- Confirme se o aplicativo está realmente escutando em `$PORT`.
+- Verifique a conectividade e migrações do banco de dados.
 
-## 3) Map error signatures to fixes
+## 3) Mapeie assinaturas de erros para correções
 
-Use [error-patterns.md](error-patterns.md) for a compact catalog of common log messages.
+Use [error-patterns.md](error-patterns.md) para um catálogo compacto de mensagens de log comuns.
 
-## 4) If still blocked
+## 4) Se ainda estiver bloqueado
 
-Gather the latest build logs and runtime error logs, then consider the optional
-`render-debug` skill for deeper diagnostics (metrics, DB checks, expanded patterns).
+Reúna os logs de compilação e de erros de tempo de execução mais recentes e considere o opcional
+Habilidade `render-debug` para diagnósticos mais profundos (métricas, verificações de banco de dados, padrões expandidos).

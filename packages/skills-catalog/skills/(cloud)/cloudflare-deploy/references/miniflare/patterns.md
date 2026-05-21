@@ -1,22 +1,22 @@
-# Testing Patterns
+# Padrões de teste
 
-## Choosing a Testing Approach
+## Escolhendo uma abordagem de teste
 
-| Approach                | Use Case                        | Speed  | Setup  | Runtime   |
-| ----------------------- | ------------------------------- | ------ | ------ | --------- |
-| **getPlatformProxy**    | Unit tests, logic testing       | Fast   | Low    | Miniflare |
-| **Miniflare API**       | Integration tests, full control | Medium | Medium | Miniflare |
-| **vitest-pool-workers** | Vitest runner integration       | Medium | Medium | workerd   |
+| Abordagem                     | Caso de uso                          | Velocidade | Configuração | Tempo de execução |
+| ----------------------------- | ------------------------------------ | ---------- | ------------ | ----------------- |
+| **getPlatformProxy**          | Testes unitários, testes lógicos     | Rápido     | Baixo        | Miniflare         |
+| **API Miniflare**             | Testes de integração, controle total | Médio      | Médio        | Miniflare         |
+| **vitest-pool-trabalhadores** | Integração do corredor Vitest        | Médio      | Médio        | trabalhador       |
 
-**Quick guide:**
+**Guia rápido:**
 
-- Unit tests → getPlatformProxy
-- Integration tests → Miniflare API
-- Vitest workflows → vitest-pool-workers
+- Testes unitários → getPlatformProxy
+- Testes de integração → API Miniflare
+- Fluxos de trabalho Vitest → vitest-pool-workers
 
 ## getPlatformProxy
 
-Lightweight unit testing - provides bindings without full Worker runtime.
+Teste de unidade leve - fornece ligações sem tempo de execução completo do Worker.
 
 ```js
 // vitest.config.js
@@ -35,12 +35,12 @@ describe('Business logic', () => {
 })
 ```
 
-**Pros:** Fast, simple  
-**Cons:** No full runtime, can't test fetch handler
+**Prós:** Rápido, simples  
+**Contras:** Sem tempo de execução completo, não é possível testar o manipulador de busca
 
-## vitest-pool-workers
+## vitest-pool-trabalhadores
 
-Full Workers runtime in Vitest. Reads `wrangler.toml`.
+Tempo de execução completo dos trabalhadores no Vitest. Lê `wrangler.toml`.
 
 ```bash
 npm i -D @cloudflare/vitest-pool-workers
@@ -67,10 +67,10 @@ it('handles fetch', async () => {
 })
 ```
 
-**Pros:** Full runtime, uses wrangler.toml  
-**Cons:** Requires Wrangler config
+**Prós:** Tempo de execução completo, usa wrangler.toml  
+**Contras:** Requer configuração do Wrangler
 
-## Miniflare API (node:test)
+## API Miniflare (nó:teste)
 
 ```js
 import assert from 'node:assert'
@@ -90,7 +90,7 @@ test('fetch', async () => {
 after(() => mf.dispose())
 ```
 
-## Testing Durable Objects & Events
+##Testando objetos e eventos duráveis
 
 ```js
 // Durable Objects
@@ -110,7 +110,7 @@ await worker.queue('my-queue', [{ id: 'msg1', timestamp: new Date(), body: { use
 await worker.scheduled({ cron: '0 0 * * *' })
 ```
 
-## Test Isolation & Mocking
+##Teste de isolamento e simulação
 
 ```js
 // Per-test isolation
@@ -128,7 +128,7 @@ new Miniflare({
 })
 ```
 
-## Type Safety
+##Digite Segurança
 
 ```ts
 import type { KVNamespace } from '@cloudflare/workers-types'
@@ -148,7 +148,7 @@ export default {
 } satisfies ExportedHandler<Env>
 ```
 
-## WebSocket Testing
+##Teste WebSocket
 
 ```js
 const res = await mf.dispatchFetch('http://localhost/ws', {
@@ -157,7 +157,7 @@ const res = await mf.dispatchFetch('http://localhost/ws', {
 assert.strictEqual(res.status, 101)
 ```
 
-## Migration from unstable_dev
+##Migração de instável_dev
 
 ```js
 // Old (deprecated)
@@ -169,14 +169,13 @@ import { Miniflare } from 'miniflare'
 const mf = new Miniflare({ scriptPath: 'src/index.ts' })
 ```
 
-## CI/CD Tips
+##Dicas de CI/CD
 
-```js
+````js
 // In-memory storage (faster)
 new Miniflare({ kvNamespaces: ['TEST'] }) // No persist = in-memory
 
 // Use dispatchFetch (no port conflicts)
 await mf.dispatchFetch('http://localhost/')
-```
-
-See [gotchas.md](./gotchas.md) for troubleshooting.
+```Consulte [gotchas.md](./gotchas.md) para solução de problemas.
+````

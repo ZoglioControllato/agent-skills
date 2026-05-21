@@ -1,17 +1,17 @@
 ---
-title: Decouple State Management from UI
+title: Desacoplar o gerenciamento de estado da UI
 impact: MEDIUM
-impactDescription: enables swapping state implementations without changing UI
+impactDescription: permite trocar implementações de estado sem alterar a UI
 tags: composition, state, architecture
 ---
 
-## Decouple State Management from UI
+## Desacople o gerenciamento de estado da UI
 
-The provider component should be the only place that knows how state is managed.
-UI components consume the context interface—they don't know if state comes from
-useState, Zustand, or a server sync.
+O componente provedor deve ser o único local que sabe como o estado é gerenciado.
+Os componentes da UI consomem a interface de contexto – eles não sabem se o estado vem
+useState, Zustand ou uma sincronização de servidor.
 
-**Incorrect (UI coupled to state implementation):**
+**Incorreto (IU acoplada à implementação do estado):**
 
 ```tsx
 function ChannelComposer({ channelId }: { channelId: string }) {
@@ -21,36 +21,23 @@ function ChannelComposer({ channelId }: { channelId: string }) {
 
   return (
     <Composer.Frame>
-      <Composer.Input
-        value={state.input}
-        onChange={(text) => sync.updateInput(text)}
-      />
+      <Composer.Input value={state.input} onChange={(text) => sync.updateInput(text)} />
       <Composer.Submit onPress={() => sync.submit()} />
     </Composer.Frame>
   )
 }
 ```
 
-**Correct (state management isolated in provider):**
+**Correto (gestão de estado isolada no provedor):**
 
 ```tsx
 // Provider handles all state management details
-function ChannelProvider({
-  channelId,
-  children,
-}: {
-  channelId: string
-  children: React.ReactNode
-}) {
+function ChannelProvider({ channelId, children }: { channelId: string; children: React.ReactNode }) {
   const { state, update, submit } = useGlobalChannel(channelId)
   const inputRef = useRef(null)
 
   return (
-    <Composer.Provider
-      state={state}
-      actions={{ update, submit }}
-      meta={{ inputRef }}
-    >
+    <Composer.Provider state={state} actions={{ update, submit }} meta={{ inputRef }}>
       {children}
     </Composer.Provider>
   )
@@ -79,7 +66,7 @@ function Channel({ channelId }: { channelId: string }) {
 }
 ```
 
-**Different providers, same UI:**
+**Provedores diferentes, mesma IU:**
 
 ```tsx
 // Local state for ephemeral forms
@@ -88,10 +75,7 @@ function ForwardMessageProvider({ children }) {
   const forwardMessage = useForwardMessage()
 
   return (
-    <Composer.Provider
-      state={state}
-      actions={{ update: setState, submit: forwardMessage }}
-    >
+    <Composer.Provider state={state} actions={{ update: setState, submit: forwardMessage }}>
       {children}
     </Composer.Provider>
   )
@@ -109,5 +93,5 @@ function ChannelProvider({ channelId, children }) {
 }
 ```
 
-The same `Composer.Input` component works with both providers because it only
-depends on the context interface, not the implementation.
+O mesmo componente `Composer.Input` funciona com ambos os provedores porque apenas
+depende da interface de contexto, não da implementação.

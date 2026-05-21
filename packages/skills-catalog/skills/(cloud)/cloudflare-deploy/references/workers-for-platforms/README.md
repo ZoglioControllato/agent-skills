@@ -1,95 +1,92 @@
-# Cloudflare Workers for Platforms
+# Trabalhadores Cloudflare para plataformas
 
-Multi-tenant platform with isolated customer code execution at scale.
+Plataforma multilocatário com execução isolada de código do cliente em escala.
 
-## Use Cases
+## Casos de uso
 
-- Multi-tenant SaaS running customer code
-- AI-generated code execution in secure sandboxes
-- Programmable platforms with isolated compute
-- Edge functions/serverless platforms
-- Website builders with static + dynamic content
-- Unlimited app deployment at scale
+- SaaS multilocatário executando código do cliente
+- Execução de código gerado por IA em sandboxes seguras
+- Plataformas programáveis com computação isolada
+- Funções de borda/plataformas sem servidor
+- Construtores de sites com conteúdo estático + dinâmico
+- Implantação ilimitada de aplicativos em escala
 
-**NOT for general Workers** - only for Workers for Platforms architecture.
+**NÃO para Workers em geral** - apenas para arquitetura Workers for Platforms.
 
-## Quick Start
+## Início rápido
 
-**One-click deploy:** [Platform Starter Kit](https://github.com/cloudflare/workers-for-platforms-example) deploys complete WfP setup with dispatch namespace, dispatch worker, and user worker example.
+**Implantação com um clique:** [Platform Starter Kit](https://github.com/cloudflare/workers-for-platforms-example) implanta a configuração completa do WfP com namespace de despacho, trabalhador de despacho e exemplo de trabalhador de usuário.
 
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/cloudflare/workers-for-platforms-example)
+[![Implantar no Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/cloudflare/workers-for-platforms-example)
 
-**Manual setup:** See [configuration.md](./configuration.md) for namespace creation and dispatch worker configuration.
+**Configuração manual:** Consulte [configuration.md](./configuration.md) para criação de namespace e configuração do trabalhador de despacho.
 
-## Key Features
+## Principais recursos
 
-- Unlimited Workers per namespace (no script limits)
-- Automatic tenant isolation
-- Custom CPU/subrequest limits per customer
-- Hostname routing (subdomains/vanity domains)
-- Egress/ingress control
-- Static assets support
-- Tags for bulk operations
+- Trabalhadores ilimitados por namespace (sem limites de script)
+- Isolamento automático de inquilinos
+- Limites personalizados de CPU/subsolicitação por cliente
+- Roteamento de nome de host (subdomínios/domínios personalizados)
+- Controle de saída/entrada
+- Suporte a ativos estáticos
+- Tags para operações em massa
 
-## Architecture
+## Arquitetura
 
-**4 Components:**
+**4 componentes:**
 
-1. **Dispatch Namespace** - Container for unlimited customer Workers, automatic isolation (untrusted mode by default - no request.cf access, no shared cache)
-2. **Dynamic Dispatch Worker** - Entry point, routes requests, enforces platform logic (auth, limits, validation)
-3. **User Workers** - Customer code in isolated sandboxes, API-deployed, optional bindings (KV/D1/R2/DO)
-4. **Outbound Worker** (optional) - Intercepts external fetch, controls egress, logs subrequests (blocks TCP socket connect() API)
+1. **Dispatch Namespace** - Contêiner para Workers de clientes ilimitados, isolamento automático (modo não confiável por padrão - sem acesso request.cf, sem cache compartilhado)
+2. **Dynamic Dispatch Worker** – Ponto de entrada, roteia solicitações, impõe a lógica da plataforma (autenticação, limites, validação)
+3. **User Workers** – Código do cliente em sandboxes isolados, implantados por API, ligações opcionais (KV/D1/R2/DO)
+4. **Outbound Worker** (opcional) - Intercepta busca externa, controla a saída, registra subsolicitações (bloqueia a API connect() do soquete TCP)
 
-**Request Flow:**
+**Fluxo de solicitação:**
 
 ```
 Request → Dispatch Worker → Determines user Worker → env.DISPATCHER.get("customer")
 → User Worker executes (Outbound Worker for external fetch) → Response → Dispatch Worker → Client
 ```
 
-## Decision Trees
+## Árvores de Decisão
 
-### When to Use Workers for Platforms
+### Quando usar trabalhadores para plataformas```
 
-```
 Need to run code?
 ├─ Your code only → Regular Workers
 ├─ Customer/AI code → Workers for Platforms
 └─ Untrusted code in sandbox → Workers for Platforms OR Sandbox API
-```
 
-### Routing Strategy Selection
-
-```
+````
+### Seleção de estratégia de roteamento```
 Hostname routing needed?
 ├─ Subdomains only (*.saas.com) → `*.saas.com/*` route + subdomain extraction
 ├─ Custom domains → `*/*` wildcard + Cloudflare for SaaS + KV/metadata routing
 └─ Path-based (/customer/app) → Any route + path parsing
-```
+````
 
-### Isolation Mode Selection
+### Seleção do modo de isolamento```
 
-```
 Worker mode?
 ├─ Running customer code → Untrusted (default)
 ├─ Need request.cf geolocation → Trusted mode
 ├─ Internal platform, controlled code → Trusted mode with cache key prefixes
 └─ Maximum isolation → Untrusted + unique resources per customer
+
 ```
+## Nesta referência
 
-## In This Reference
+| Arquivo | Finalidade | Quando ler |
+| -------------------------------------- | -------------------------------------------------------- | ---------------------------------- |
+| [configuração.md](./configuration.md) | Configuração do namespace, configuração do trabalhador de despacho | Configuração inicial, alteração de limites |
+| [api.md](./api.md) | API de trabalhador de usuário, API de despacho, trabalhador de saída | Implantando trabalhadores, integração SDK |
+| [padrões.md](./padrões.md) | Multilocação, roteamento e controle de saída | Arquitetura de planejamento, dimensionamento |
+| [gotchas.md](./gotchas.md) | Limites, questões de isolamento, melhores práticas | Depuração, preparação de produção |
 
-| File                                   | Purpose                                        | When to Read                       |
-| -------------------------------------- | ---------------------------------------------- | ---------------------------------- |
-| [configuration.md](./configuration.md) | Namespace setup, dispatch worker config        | First-time setup, changing limits  |
-| [api.md](./api.md)                     | User worker API, dispatch API, outbound worker | Deploying workers, SDK integration |
-| [patterns.md](./patterns.md)           | Multi-tenancy, routing, egress control         | Planning architecture, scaling     |
-| [gotchas.md](./gotchas.md)             | Limits, isolation issues, best practices       | Debugging, production prep         |
+## Veja também
 
-## See Also
-
-- [workers](../workers/) - Core Workers runtime documentation
-- [durable-objects](../durable-objects/) - Stateful multi-tenant patterns
-- [sandbox](../sandbox/) - Alternative for untrusted code execution
-- [Reference Architecture: Programmable Platforms](https://developers.cloudflare.com/reference-architecture/diagrams/serverless/programmable-platforms/)
-- [Reference Architecture: AI Vibe Coding Platform](https://developers.cloudflare.com/reference-architecture/diagrams/ai/ai-vibe-coding-platform/)
+- [workers](../workers/) - Documentação de tempo de execução do Core Workers
+- [durable-objects](../durable-objects/) - Padrões multilocatários com estado
+- [sandbox](../sandbox/) - Alternativa para execução de código não confiável
+- [Arquitetura de referência: plataformas programáveis](https://developers.cloudflare.com/reference-architecture/diagrams/serverless/programmable-platforms/)
+- [Arquitetura de referência: plataforma de codificação AI Vibe](https://developers.cloudflare.com/reference-architecture/diagrams/ai/ai-vibe-coding-platform/)
+```

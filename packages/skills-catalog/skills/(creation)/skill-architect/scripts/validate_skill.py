@@ -354,17 +354,42 @@ def validate_skill(skill_path: str) -> dict:
         has_xml = "<" in desc_str or ">" in desc_str
         add_check("description_no_xml", not has_xml, "No XML brackets in description" if not has_xml else "XML angle brackets found in description (forbidden)")
 
-        # Trigger phrase check
-        trigger_keywords = ["use when", "use for", "use this", "trigger", "ask for", "asks to", "says", "mentions"]
+        # Trigger phrase check (EN + PT)
+        trigger_keywords = [
+            "use when",
+            "use for",
+            "use this",
+            "trigger",
+            "ask for",
+            "asks to",
+            "says",
+            "mentions",
+            "use quando",
+            "use para",
+            "aciona em",
+            "dispara em",
+            "usuário diz",
+            "usuário pede",
+        ]
         has_triggers = any(kw in desc_str.lower() for kw in trigger_keywords)
         add_check(
             "description_has_triggers",
             has_triggers,
-            "Description includes trigger guidance" if has_triggers else "Missing trigger phrases — add 'Use when...' guidance (mandatory per CONTRIBUTING.md)",
+            "Description includes trigger guidance"
+            if has_triggers
+            else "Missing trigger phrases — add 'Use quando...' / 'Use when...' guidance (mandatory per CONTRIBUTING.md)",
         )
 
-        # Negative scope check
-        negative_keywords = ["do not use", "don't use", "not for", "not intended for"]
+        # Negative scope check (EN + PT)
+        negative_keywords = [
+            "do not use",
+            "don't use",
+            "not for",
+            "not intended for",
+            "não use para",
+            "não usar para",
+            "não serve para",
+        ]
         has_negative_scope = any(kw in desc_str.lower() for kw in negative_keywords)
         add_check(
             "description_has_negative_scope",

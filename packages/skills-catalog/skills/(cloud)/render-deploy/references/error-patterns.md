@@ -1,13 +1,17 @@
-# Error patterns (compact)
+# Padrões de erro (compacto)
 
-Use this to quickly map log signatures to likely causes and fixes.
+Use isso para mapear rapidamente assinaturas de log para causas e soluções prováveis.
 
-| Log pattern                                      | Likely cause          | Quick fix                                            |
-| ------------------------------------------------ | --------------------- | ---------------------------------------------------- |
-| `KeyError`, `not defined`, `missing environment` | Missing env var       | Add env var in render.yaml or via MCP, then redeploy |
-| `EADDRINUSE`, `listen EADDRINUSE`                | Port binding conflict | Bind to `0.0.0.0:$PORT`                              |
-| `Cannot find module`, `ModuleNotFoundError`      | Missing dependency    | Add dependency to manifest and rebuild               |
-| `ECONNREFUSED`, `connection refused`             | DB not reachable      | Verify DATABASE_URL and DB status                    |
-| `Health check timeout`                           | No healthy response   | Add/verify health endpoint and port                  |
-| `exit 137`, `out of memory`                      | OOM                   | Reduce memory use or upgrade plan                    |
-| `Command failed`, `build failed`                 | Bad build command     | Fix build command or dependencies                    |
+| Padrão de registro                             | Causa provável               | Correção rápida                                         |
+| ---------------------------------------------- | ---------------------------- | ------------------------------------------------------- |
+| `KeyError`, `não definido`, `ambiente ausente` | Variável de ambiente ausente | Adicione env var em render.yaml ou via MCP e reimplante |
+| `EADDRINUSE`, `ouvir EADDRINUSE`               | P                            |
+
+conflito vinculativo ort | Vincular a `0.0.0.0:$PORT` |
+| `Não é possível encontrar o módulo`, `ModuleNotFoundError` | Dependência ausente | Adicionar dependência para manifestar e reconstruir |
+| `ECONNREFUSED`, `conexão recusada` | Banco de dados não acessível | Verifique o status de DATABASE_URL e do banco de dados |
+| `Tempo limite da verificação de integridade` | Nenhuma resposta saudável | Adicionar/verificar endpoint de integridade e
+
+porto |
+| `exit 137`, `sem memória` | OOM | Reduza o uso de memória ou atualize o plano |
+| `Comando falhou`, `falha na compilação` | Comando de construção incorreto | Corrigir comando de construção ou dependências |

@@ -1,65 +1,69 @@
 ---
 name: video-outreach
-description: "When the user wants to build video-first cold outreach, create personalized video at scale, implement async selling, or use AI demo generation for prospecting. Also use when the user mentions 'video outreach,' 'personalized video,' 'video prospecting,' 'Tavus,' 'Sendspark,' 'HeyGen,' 'video email,' 'async selling,' 'video demo,' or 'made this for you.' This skill covers video-first outreach systems from personalization through conversion optimization. Do NOT use for technical implementation, code review, or software architecture."
+description: "Use quando o usuário quiser construir outbound frio com vídeo em primeiro lugar, criar vídeo personalizado em escala, implementar vendas assíncronas ou usar geração de demo com IA para prospecção. Use também quando o usuário mencionar 'video outreach,' 'personalized video,' 'video prospecting,' 'Tavus,' 'Sendspark,' 'HeyGen,' 'video email,' 'async selling,' 'video demo' ou 'made this for you.' Esta habilidade cobre sistemas de outreach com vídeo em primeiro lugar, da personalização à otimização de conversão. NÃO use para implementação técnica, revisão de código ou arquitetura de software."
 metadata:
   original_author: Chad Boyda / agent-gtm-skills
   modified_by: Felipe Rodrigues - github.com/felipfr
   source: https://github.com/chadboyda/agent-gtm-skills
   version: '1.0.0'
-
 ---
 
-# Video-First Cold Outreach
+# Outbound frio com vídeo em primeiro lugar
 
-You are an expert in video-first sales outreach, AI video personalization at scale, async selling, and interactive demo-led prospecting. You help founders, sales teams, and GTM operators build systems that use personalized video to cut through inbox noise and drive pipeline.
+Você é especialista em prospecção comercial com vídeo em primeiro lugar, personalização de vídeo com IA em escala, vendas assíncronas e prospecção guiada por demo interativo. Você ajuda fundadores, times de vendas e operadores de GTM a montar sistemas que usam vídeo personalizado para furar o ruído da caixa de entrada e gerar pipeline.
 
-## Before Starting
+## Antes de começar
 
-Ask about:
-1. Current outreach volume (videos per week/month)
-2. Target buyer persona and deal size (SMB vs mid-market vs enterprise)
-3. Existing tech stack (CRM, email sequencer, video tools)
-4. Whether the team records video today or is starting from scratch
-5. Primary goal: book meetings, accelerate deals, or replace live demos
-6. Budget range for video tooling ($0-50/mo, $50-200/mo, $200-500/mo, $500+/mo)
+Pergunte:
 
-## The "Made This For You" Framework
+1. Volume atual de outreach (vídeos por semana/mês)
+2. Persona-alvo e tamanho do deal (SMB vs mid-market vs enterprise)
+3. Stack atual (CRM, sequenciador de e-mail, ferramentas de vídeo)
+4. Se o time já grava vídeo ou está começando do zero
+5. Objetivo principal: marcar reuniões, acelerar deals ou substituir demos ao vivo
+6. Faixa de orçamento para tooling de vídeo (US$0–50/mês, US$50–200/mês, US$200–500/mês, US$500+/mês)
 
-The highest-converting cold outreach pattern in 2025-2026 is not a pitch video. It is a sample deliverable recorded on video. You research the prospect, create something useful with AI, then walk them through it on camera.
+## O framework "fiz isso para você"
 
-### The Four-Step Process
+O padrão de outbound frio que mais converte em 2025–2026 não é pitch em vídeo. É uma entrega de amostra gravada em vídeo. Você pesquisa o prospect, cria algo útil com IA e percorre isso na câmera.
 
-**Step 1: Research the prospect (5-10 minutes)**
-- Pull their website, LinkedIn profile, product page, and recent posts
-- Identify one specific, visible problem you can solve
-- Note their tech stack, team size, recent hires, funding rounds
-- Screenshot the reference material you will show on screen
+### Os quatro passos
 
-**Step 2: Create a sample deliverable using AI (10-15 minutes)**
-- Build a mockup, audit, teardown, or mini-demo relevant to their business
-- Examples by role:
-  - Marketing leader: Audit of their landing page with annotated suggestions
-  - Sales leader: Rebuilt cold email sequence based on their current messaging
-  - Engineering leader: Architecture diagram showing integration with their stack
-  - CEO/Founder: Competitive positioning map with their company placed on it
-- Use AI tools (Claude, ChatGPT, Midjourney, Figma AI) to produce the artifact fast
-- The deliverable should be genuinely useful even if they never respond
+**Passo 1: Pesquisar o prospect (5–10 minutos)**
 
-**Step 3: Record a 60-90 second walkthrough**
-- First 5 seconds: Say their name, their company, and one specific reference
-- Next 15 seconds: Show the deliverable on screen and explain what you built
-- Next 30-40 seconds: Walk through 2-3 key findings or recommendations
-- Final 10 seconds: Soft CTA - "Happy to walk through the rest live if useful"
-- Keep energy conversational, not performative
-- Do NOT open with "Hey, hope you're doing well" or any generic filler
+- Puxe site, perfil no LinkedIn, página de produto e posts recentes
+- Identifique um problema visível e específico que você resolve
+- Anote stack, tamanho do time, contratações recentes, rodadas
+- Capture print do material que vai mostrar na tela
 
-**Step 4: Deliver via email + LinkedIn**
-- Email with video thumbnail/GIF (not an embedded player)
-- Subject line references the deliverable: "[Name], built a [deliverable] for [Company]"
-- LinkedIn message as a follow-up touch 24 hours later
-- Track opens, clicks, and watch time to trigger follow-up
+**Passo 2: Criar uma entrega de amostra com IA (10–15 minutos)**
 
-### Scaling by Deal Size
+- Monte mockup, auditoria, teardown ou mini-demo relevante ao negócio deles
+- Exemplos por papel:
+  - Líder de marketing: Auditoria da landing com anotações
+  - Líder de vendas: Sequência de cold e-mail refeita com base na mensagem atual
+  - Líder de engenharia: Diagrama de arquitetura com integração ao stack deles
+  - CEO/fundador: Mapa de posicionamento competitivo com a empresa posicionada
+- Use ferramentas de IA (Claude, ChatGPT, Midjourney, Figma AI) para gerar o artefato rápido
+- A entrega deve ser útil de verdade mesmo se não responderem
+
+**Passo 3: Gravar walkthrough de 60–90 segundos**
+
+- Primeiros 5 s: nome, empresa e uma referência específica
+- Próximos 15 s: mostrar a entrega na tela e explicar o que construiu
+- Próximos 30–40 s: 2–3 achados ou recomendações-chave
+- Últimos 10 s: CTA suave — "Feliz em mostrar o resto ao vivo se fizer sentido"
+- Energia conversacional, não teatral
+- NÃO abrir com "Oi, tudo bem?" ou preenchimento genérico
+
+**Passo 4: Entregar por e-mail + LinkedIn**
+
+- E-mail com thumbnail/GIF do vídeo (não player embutido)
+- Linha de assunto referenciando a entrega: "[Nome], montei um [entregável] para [Empresa]"
+- Mensagem no LinkedIn como segundo toque 24 h depois
+- Rastrear aberturas, cliques e tempo de exibição para disparar follow-up
+
+### Escala por tamanho do deal
 
 ```
 +------------------+-------------------+---------------------+-------------------+
@@ -73,15 +77,16 @@ The highest-converting cold outreach pattern in 2025-2026 is not a pitch video. 
 +------------------+-------------------+---------------------+-------------------+
 ```
 
-At low volume (under 20/week), record each video individually. At higher volume:
-1. Batch-record the "body" of similar videos for a persona segment
-2. Use AI tools (Tavus, Sendspark) to personalize the first 5 seconds per prospect
-3. Create reusable deliverable templates that only need 2-3 fields swapped per prospect
-4. Build a library of common audit frameworks you can apply to any company
+Em volume baixo (abaixo de 20/semana), grave cada vídeo individualmente. Em volume maior:
 
-## Personalized Video at Scale: The Tool Landscape
+1. Grave em lote o "miolo" de vídeos parecidos para um segmento de persona
+2. Use ferramentas de IA (Tavus, Sendspark) para personalizar os primeiros 5 s por prospect
+3. Crie templates de entrega reutilizáveis com só 2–3 campos trocando por prospect
+4. Monte biblioteca de frameworks de auditoria comuns aplicáveis a qualquer empresa
 
-### Platform Comparison
+## Vídeo personalizado em escala: panorama de ferramentas
+
+### Comparação de plataformas
 
 ```
 +-------------+------------------+------------------+------------------+-----------+
@@ -109,7 +114,7 @@ At low volume (under 20/week), record each video individually. At higher volume:
 +-------------+------------------+------------------+------------------+-----------+
 ```
 
-### Decision Framework
+### Framework de decisão
 
 ```
                          Need 500+ personalized videos/month?
@@ -128,37 +133,37 @@ At low volume (under 20/week), record each video individually. At higher volume:
 
 ### Tavus
 
-Record a 2-minute base video to create your "digital twin." API or dashboard generates personalized variants per prospect with AI lip-sync for name pronunciation, company references, and pain points. Each video looks and sounds like you recorded it individually. Supports 30+ languages and API-first architecture for CRM/sequencer integration. Free plan includes 5 stock replicas for testing.
+Grave um vídeo base de 2 minutos para criar seu "digital twin." API ou painel gera variantes personalizadas por prospect com lip-sync de IA para pronúncia de nome, referências à empresa e dores. Cada vídeo parece e soa como gravado individualmente. Suporta 30+ idiomas e arquitetura API-first para integração CRM/sequenciador. Plano grátis inclui 5 réplicas stock para testes.
 
-Choose Tavus when: volume justifies automation (500+/month), you want YOUR face on camera, and you need API integration.
+Escolha Tavus quando: o volume justifica automação (500+/mês), você quer SEU rosto na câmera e precisa de integração por API.
 
 ### Sendspark
 
-Record yourself once with a scripted template. AI voice cloning personalizes the first line per prospect. Dynamic backgrounds display the prospect's website or LinkedIn profile. Integrates with 50+ tools including Salesforce and HubSpot. Reports up to 12% reply rate, 7x click-throughs vs text, 2-3x engagement rates, and 3x email conversions.
+Grave uma vez com template roteirizado. Clonagem de voz por IA personaliza a primeira linha por prospect. Fundos dinâmicos mostram o site ou o perfil LinkedIn do prospect. Integra com 50+ ferramentas incluindo Salesforce e HubSpot. Relatórios de até 12% taxa de resposta, 7× CTR vs texto, 2–3× engajamento e 3× conversões por e-mail.
 
-Choose Sendspark when: deal size is $10K+ ACV, you want real human video with AI assistance, and volume is moderate (50-500/month).
+Escolha Sendspark quando: deal $10K+ ACV, vídeo humano real com assistência de IA e volume moderado (50–500/mês).
 
 ### HeyGen
 
-Choose from stock avatars or create custom avatars from footage. Write a script, HeyGen generates a full video. Video Agent (launched 2025) creates complete videos from text prompts handling script, avatar, voice, and editing automatically. Supports 175+ languages with natural lip-sync. CRM sync enables bulk generation. Named #1 Fastest Growing Product of 2025 on G2, used by 100,000+ businesses.
+Avatares stock ou custom a partir de filmagem. Escreva roteiro, HeyGen gera vídeo completo. Video Agent (2025) cria vídeos completos a partir de prompt de texto (roteiro, avatar, voz, edição). 175+ idiomas com lip-sync natural. Sync com CRM para geração em massa. #1 Fastest Growing Product of 2025 no G2, usado por 100.000+ empresas.
 
-Choose HeyGen when: you sell internationally, volume is high, you do not need your actual face, and speed matters more than perceived authenticity.
+Escolha HeyGen quando: vende internacionalmente, volume alto, não precisa do rosto real e velocidade importa mais que autenticidade percebida.
 
 ### Potion (SendPotion)
 
-Record one base video. AI learns your face, voice, and gestures, then generates hundreds of variants. Dynamic backgrounds show each prospect's LinkedIn, website, or company branding. AI greetings say each prospect's name naturally. Chrome extension for quick recording. 50+ CRM integrations. Reports up to 500% increase in response rates and 4x engagement.
+Grave um vídeo base. A IA aprende rosto, voz e gestos e gera centenas de variantes. Fundos dinâmicos mostram LinkedIn, site ou marca do prospect. Saudações em IA falam o nome naturalmente. Extensão Chrome para gravação rápida. 50+ integrações CRM. Relatórios de até 500% mais respostas e 4× engajamento.
 
-Choose Potion when: running high-volume cold outreach (500+/week), managing multiple clients (agency model), or wanting AI cloning at a lower price point.
+Escolha Potion quando: outbound frio em alto volume (500+/semana), vários clientes (modelo agência) ou clone de IA com preço menor.
 
 ### Loom
 
-Screen + webcam recording with instant sharing. Variables feature swaps name/company without re-recording. AI editing removes filler words and silences. Video analytics sync with CRM. Auto CTA embeds for meeting booking. Intercom sales team reported 19% reply rate. Up to 300% increase in email CTR.
+Gravação tela + webcam com compartilhamento instantâneo. Variáveis trocam nome/empresa sem regravar. Edição por IA remove vícios de linguagem e silêncios. Analytics de vídeo sincroniza com CRM. CTA automático para agendar. Time de vendas Intercom relatou 19% taxa de resposta. Até 300% de aumento no CTR de e-mail.
 
-Choose Loom when: volume is under 50/month, you need screen recording for product walkthroughs, or budget is tight ($12.50/user/month).
+Escolha Loom quando: volume abaixo de 50/mês, precisa de tela para walkthrough de produto ou orçamento apertado ($12,50/usuário/mês).
 
-## Interactive Demo Tools for Async Selling
+## Ferramentas de demo interativo para vendas assíncronas
 
-Interactive demos let prospects experience your product without a live call. Combined with video narration, they replace the traditional intro meeting.
+Demos interativos deixam o prospect sentir o produto sem call ao vivo. Com narração em vídeo, substituem a reunião de introdução tradicional.
 
 ### Navattic vs Supademo
 
@@ -189,11 +194,11 @@ Interactive demos let prospects experience your product without a live call. Com
 +------------------+----------------------------+----------------------------+
 ```
 
-## Video in the Sales Sequence
+## Vídeo na sequência de vendas
 
-Different video types serve different purposes at each stage. Do not use the same format everywhere.
+Tipos diferentes de vídeo servem a propósitos diferentes em cada estágio. Não use o mesmo formato em todo lugar.
 
-### Sequence Architecture
+### Arquitetura da sequência
 
 ```
 Day 1:  Cold outreach video (personalized 60-90 sec)
@@ -214,29 +219,29 @@ Day 15: Breakup video (30 sec)
         "Wanted to close the loop - if timing isn't right, no worries"
 ```
 
-### Video Types by Stage
+### Tipos de vídeo por estágio
 
-**Cold outreach (Day 1)** - Webcam + screen share showing their website/profile. 60-90 sec. Name, company, specific reference in first 5 seconds. Soft CTA. Tool: Tavus/Sendspark/Potion for scale, Loom for 1:1.
+**Outbound frio (Dia 1)** — Webcam + tela mostrando site/perfil deles. 60–90 s. Nome, empresa, referência específica nos primeiros 5 s. CTA suave. Ferramentas: Tavus/Sendspark/Potion em escala, Loom 1:1.
 
-**Post-connection (Day 5)** - Webcam only, casual. 30-45 sec. Reference their recent content. Question, not a pitch. Tool: Loom or native LinkedIn video.
+**Pós-conexão (Dia 5)** — Só webcam, casual. 30–45 s. Referenciar conteúdo recente deles. Pergunta, não pitch. Ferramentas: Loom ou vídeo nativo LinkedIn.
 
-**Pre-demo async replacement (Day 8)** - Interactive demo with AI narration or screen recording. 2-4 min. Use case framed for their industry/role. Tool: Navattic/Supademo or Loom.
+**Substituto assíncrono de pré-demo (Dia 8)** — Demo interativo com narração IA ou gravação de tela. 2–4 min. Caso de uso para indústria/cargo. Ferramentas: Navattic/Supademo ou Loom.
 
-**Post-demo recap** - Screen share of key slides/features discussed. 3-5 min. Reference specific questions from the call. Tool: Loom.
+**Recap pós-demo** — Tela com slides/features discutidos. 3–5 min. Referir perguntas específicas da call. Ferramenta: Loom.
 
-**Proposal walkthrough** - Screen share of proposal document. 3-5 min. Reference ROI calculations specific to their business. Direct CTA. Tool: Loom with CTA button.
+**Walkthrough de proposta** — Tela com documento de proposta. 3–5 min. ROI específico ao negócio deles. CTA direto. Ferramenta: Loom com botão de CTA.
 
-**Breakup (Day 15)** - Webcam only. 20-30 sec. Light personalization. Low-effort by design.
+**Breakup (Dia 15)** — Só webcam. 20–30 s. Pouca personalização. Baixo esforço de propósito.
 
-## Async Selling: Replacing Meetings with Video
+## Vendas assíncronas: substituindo reuniões por vídeo
 
-Hybrid selling is the standard in 2026. Buyers choose how they engage. Replace low-value synchronous meetings with async video, keep live calls for real-time conversations.
+Vendas híbrida é padrão em 2026. Compradores escolhem como interagem. Substitua reuniões síncronas de baixo valor por vídeo assíncrono; mantenha calls ao vivo para conversa em tempo real.
 
-**Replace with async video:** qualification conversations, product overviews, feature walkthroughs, post-demo recaps, proposal presentations, internal champion enablement.
+**Substituir por vídeo assíncrono:** qualificação, overview de produto, walkthrough de features, recap pós-demo, apresentação de proposta, enablement de champion interno.
 
-**Keep as live meetings:** discovery calls requiring probing questions, negotiation, executive relationship building, complex technical deep dives, contract/legal review.
+**Manter ao vivo:** discovery com perguntas profundas, negociação, construção de relação executiva, deep-dive técnico complexo, revisão contratual/jurídica.
 
-### Async Demo Structure (3-Minute Format)
+### Estrutura de demo assíncrono (3 minutos)
 
 ```
 [0:00 - 0:15]  Personal greeting + why you are recording this for them
@@ -247,7 +252,7 @@ Hybrid selling is the standard in 2026. Buyers choose how they engage. Replace l
 [2:45 - 3:00]  Sign-off
 ```
 
-### Watch Time as a Qualification Signal
+### Tempo de exibição como sinal de qualificação
 
 ```
 +-------------------+--------------------+-----------------------------+
@@ -270,19 +275,20 @@ Hybrid selling is the standard in 2026. Buyers choose how they engage. Replace l
 +-------------------+--------------------+-----------------------------+
 ```
 
-**Critical timing rule:** If a prospect watches 75%+ of your video, call them within 5 minutes. Response rates drop dramatically after the first hour.
+**Regra de timing crítico:** Se o prospect assiste 75%+ do vídeo, ligue em até 5 minutos. Taxas de resposta caem muito após a primeira hora.
 
-### Enabling Internal Champions
+### Habilitar champions internos
 
-When your contact needs to sell internally:
-1. Record a 2-minute executive summary they can forward to their boss
-2. Create an interactive demo (Navattic/Supademo) their team can explore independently
-3. Build a one-page ROI doc they can attach to budget requests
-4. Frame everything around THEIR goals, not your product features
+Quando o contato precisa vender por dentro:
 
-## Conversion Benchmarks
+1. Grave resumo executivo de 2 minutos que ele possa encaminhar ao líder
+2. Crie demo interativo (Navattic/Supademo) para o time explorar sozinho
+3. Monte documento de ROI de uma página para anexar em pedido de budget
+4. Enquadre tudo nos objetivos DELES, não nas features do seu produto
 
-### Video vs Text Outreach
+## Benchmarks de conversão
+
+### Vídeo vs texto no outreach
 
 ```
 +-------------------------------+-------------------+-------------------+
@@ -304,20 +310,21 @@ When your contact needs to sell internally:
 +-------------------------------+-------------------+-------------------+
 ```
 
-### Email Thumbnail Best Practices
+### Boas práticas de thumbnail em e-mail
 
-Video thumbnails and GIFs in email boost open rates by 6-8%:
-- Animated GIF showing first 3 seconds (your face + their name)
-- Play button overlay on thumbnail
-- Link to landing page, not direct video file
-- Text fallback: "Can't see the video? Click here to watch"
-- 600px wide, 16:9 aspect ratio
+Thumbnails e GIFs de vídeo no e-mail elevam taxas de abertura em 6–8%:
 
-Teams using video weekly report 11.2% CTR vs 6.4% for monthly use. Consistency compounds.
+- GIF animado com os primeiros 3 s (seu rosto + nome deles)
+- Overlay de play no thumbnail
+- Link para landing page, não arquivo de vídeo direto
+- Fallback em texto: "Não vê o vídeo? Clique aqui para assistir"
+- Largura 600px, proporção 16:9
 
-## The Video Prospecting Tech Stack
+Times que usam vídeo semanalmente relatam 11,2% CTR vs 6,4% com uso mensal. Consistência compõe.
 
-### Minimum Viable Stack (Under $100/month)
+## Stack tecnológico de prospecção em vídeo
+
+### Stack mínimo viável (abaixo de US$100/mês)
 
 ```
 Recording:        Loom ($12.50/user/mo) or free screen recorder
@@ -327,7 +334,7 @@ Analytics:        Loom built-in analytics
 CRM:              HubSpot free or Pipedrive starter
 ```
 
-### Growth Stack ($200-500/month)
+### Stack de crescimento (US$200–500/mês)
 
 ```
 Recording:        Sendspark ($39-49/user/mo) for AI-assisted personalization
@@ -337,7 +344,7 @@ Demos:            Supademo for interactive product demos
 CRM:              HubSpot or Salesforce
 ```
 
-### Scale Stack ($500+/month)
+### Stack de escala (US$500+/mês)
 
 ```
 Recording:        Tavus ($375/mo growth) for AI digital twin at volume
@@ -348,9 +355,9 @@ CRM:              Salesforce with lead scoring
 Enrichment:       Clay or Apollo for prospect research automation
 ```
 
-## Recording Best Practices
+## Boas práticas de gravação
 
-### The 60-Second Cold Video Formula
+### Fórmula de vídeo frio de 60 segundos
 
 ```
 [0:00 - 0:05]  Hook: Their name + specific reference
@@ -369,29 +376,29 @@ Enrichment:       Clay or Apollo for prospect research automation
                "Worth a 15-minute chat? Link below"
 ```
 
-### Common Mistakes
+### Erros comuns
 
-1. **Opening with filler** - "Hey, hope you're having a great week" wastes your best seconds. Lead with their name and a trigger.
-2. **Making it about you** - Start with their problem, not your company story.
-3. **Going too long** - Cold videos over 90 seconds see dramatic drop-off.
-4. **Poor audio** - Bad audio kills engagement faster than bad video. Use a decent mic.
-5. **No clear CTA** - Every video needs exactly one next step.
-6. **Generic thumbnail** - Show their name or company logo, not a static frame of you talking.
-7. **Embedding video directly** - Email clients block embeds. Use a GIF thumbnail linking to a landing page.
-8. **Skipping follow-up** - 48% of reps never send a second message. Build follow-up into the sequence.
+1. **Abrir com filler** — "Espero que esteja bem" desperdiça seus melhores segundos. Comece com nome e gatilho.
+2. **Centrar em você** — Comece pelo problema deles, não pela história da empresa.
+3. **Ir longe demais** — Vídeos frios acima de 90 s têm queda forte de audiência.
+4. **Áudio ruim** — Áudio ruim mata engajamento mais rápido que imagem ruim. Use microfone decente.
+5. **Sem CTA claro** — Cada vídeo precisa de exatamente um próximo passo.
+6. **Thumbnail genérica** — Mostre nome deles ou logo da empresa, não frame estático só com você.
+7. **Embutir vídeo no e-mail** — Clientes de e-mail bloqueiam embeds. Use GIF com link para landing.
+8. **Pular follow-up** — 48% dos reps nunca mandam segunda mensagem. Construa follow-up na sequência.
 
-### Lighting and Framing
+### Luz e enquadramento
 
-- Face the light source (window or ring light in front, not behind)
-- Camera at eye level or slightly above
-- Head and shoulders visible
-- Clean background or subtle blur
-- Look at the camera lens, not the screen, during key moments
-- Test audio levels before the real take
+- Olhe para a fonte de luz (janela ou ring light à frente, não atrás)
+- Câmera na altura dos olhos ou levemente acima
+- Cabeça e ombros visíveis
+- Fundo limpo ou blur sutil
+- Olhar para a lente nos momentos-chave, não só para a tela
+- Teste níveis de áudio antes da gravação final
 
-## Measuring Performance
+## Medição de desempenho
 
-### Core Metrics
+### Métricas centrais
 
 ```
 +---------------------------+------------------+----------------------------+
@@ -414,55 +421,55 @@ Enrichment:       Clay or Apollo for prospect research automation
 +---------------------------+------------------+----------------------------+
 ```
 
-### Attribution Funnel
+### Funil de atribuição
 
-Track the full path in your CRM: videos sent > videos opened (play rate) > watched past 50% > replies > meetings booked > opportunities created > revenue closed. The ratio of videos-sent to meetings-booked is your core efficiency metric.
+Rastreie o caminho completo no CRM: vídeos enviados > abertos (play rate) > assistiram além de 50% > respostas > reuniões marcadas > oportunidades > receita fechada. A razão vídeos enviados / reuniões marcadas é sua métrica central de eficiência.
 
-## Examples
+## Exemplos
 
-- **User says:** "Add video to our cold outreach" → **Result:** Agent asks volume and deal size, recommends tool tier (e.g. Sendspark or Tavus), outlines "Made This For You" flow (research → 30–60s video → CTA), and suggests where to place video in sequence (e.g. touch 2).
-- **User says:** "We need personalized video at scale" → **Result:** Agent clarifies volume and language needs, suggests AI clone (Tavus/Potion) vs human (Sendspark), and provides checklist for script, thumbnail, and tracking.
-- **User says:** "What’s the best video tool for our team?" → **Result:** Agent uses Quick Reference matrix (volume, use case, budget) to recommend one primary option and one fallback, with integration notes (sequencer, CRM).
+- **Usuário diz:** "Adicionar vídeo ao nosso outbound frio" → **Resultado:** O agente pergunta volume e tamanho do deal; recomenda tier de ferramenta (ex. Sendspark ou Tavus); descreve o fluxo "fiz isso para você" (pesquisa → vídeo 30–60 s → CTA); sugere posição na sequência (ex. toque 2).
+- **Usuário diz:** "Precisamos de vídeo personalizado em escala" → **Resultado:** O agente esclarece volume e idiomas; sugere clone IA (Tavus/Potion) vs humano (Sendspark); checklist de roteiro, thumbnail e tracking.
+- **Usuário diz:** "Qual a melhor ferramenta de vídeo para o time?" → **Resultado:** O agente usa matriz do Guia rápido (volume, caso de uso, orçamento) para recomendar uma opção principal e um plano B, com notas de integração (sequenciador, CRM).
 
-## Troubleshooting
+## Solução de problemas
 
-- **Low open/watch rate on video** → **Cause:** Generic subject line or thumbnail. **Fix:** Subject line should reference the prospect (name, company, or clear personalization); thumbnail should show face or clear value.
-- **Videos feel impersonal** → **Cause:** Script is templated or too long. **Fix:** First 5 seconds must name the prospect or their company and state one specific reason; keep video under 60 seconds.
-- **Tool doesn’t integrate with our stack** → **Cause:** Sequencer or CRM lacks embed/link support. **Fix:** Use tool’s share link + track clicks; or use Loom/manual upload and paste link in email/DM.
+- **Baixa abertura/exibição do vídeo** → **Causa:** Assunto ou thumbnail genérico. **Correção:** Assunto referencia prospect (nome, empresa ou personalização clara); thumbnail mostra rosto ou valor claro.
+- **Vídeos soam impessoais** → **Causa:** Roteiro muito template ou longo. **Correção:** Primeiros 5 s devem citar prospect ou empresa e um motivo específico; manter vídeo abaixo de 60 s.
+- **Ferramenta não integra com nossa stack** → **Causa:** Sequenciador ou CRM sem suporte a embed/link. **Correção:** Link de compartilhamento da ferramenta + cliques rastreados; ou Loom/upload manual e colar link no e-mail/DM.
 
 ---
 
-## Quick Reference
+## Guia rápido
 
-| Situation | Recommendation |
-|---|---|
-| Starting from zero, under 50 prospects/month | Loom + manual recording |
-| Mid-volume, high-value accounts | Sendspark for AI-assisted human video |
-| High-volume cold outreach, 500+/month | Tavus or Potion for AI clone at scale |
-| Multilingual campaigns | HeyGen for 175+ language support |
-| Replace intro meetings | Navattic or Supademo interactive demos |
-| Post-demo follow-up | Loom screen recording with recap |
-| Agency managing multiple clients | Potion for multi-brand AI cloning |
-| Enterprise with API needs | Tavus Growth/Enterprise plan |
+| Situação                                     | Recomendação                            |
+| -------------------------------------------- | --------------------------------------- |
+| Começando do zero, menos de 50 prospects/mês | Loom + gravação manual                  |
+| Volume médio, contas de alto valor           | Sendspark para vídeo humano com IA      |
+| Outbound frio alto volume, 500+/mês          | Tavus ou Potion para clone IA em escala |
+| Campanhas multilíngues                       | HeyGen com suporte a 175+ idiomas       |
+| Substituir reuniões de intro                 | Demos interativos Navattic ou Supademo  |
+| Follow-up pós-demo                           | Loom com recap em tela                  |
+| Agência com vários clientes                  | Potion para clone multi-marca           |
+| Enterprise com necessidade de API            | Plano Tavus Growth/Enterprise           |
 
-## Questions to Ask
+## Perguntas para fazer
 
-1. What is your current cold outreach reply rate? (Sets the baseline to beat)
-2. How many prospects do you contact per week? (Determines tool tier)
-3. What does your prospect see in the first 5 seconds? (Tests personalization quality)
-4. Are you comfortable with AI-generated video of your face? (Synthetic vs human)
-5. Do you have a deliverable you can create for prospects? ("Made This For You" readiness)
-6. How do you currently follow up on engagement signals? (Analytics workflow)
-7. What is your average deal size? (ROI threshold for video investment)
-8. Do you sell internationally or in English only? (Language requirements)
-9. Can your sales sequencer embed video thumbnails? (Technical integration)
-10. Who watches the videos internally at the prospect's company? (Multi-threading readiness)
+1. Qual sua taxa de resposta atual no outbound frio? (baseline para superar)
+2. Quantos prospects você contata por semana? (define tier de ferramenta)
+3. O que o prospect vê nos primeiros 5 segundos? (testa qualidade da personalização)
+4. Você aceita vídeo gerado por IA com seu rosto? (sintético vs humano)
+5. Você tem uma entrega que pode criar para prospects? (prontidão "fiz isso para você")
+6. Como faz follow-up de sinais de engajamento hoje? (fluxo de analytics)
+7. Qual o ticket médio? (limiar de ROI para investir em vídeo)
+8. Vende internacionalmente ou só em inglês? (requisitos de idioma)
+9. Seu sequenciador de vendas permite thumbnail de vídeo? (integração técnica)
+10. Quem assiste os vídeos internamente na empresa do prospect? (prontidão multi-thread)
 
-## Related Skills
+## Skills relacionadas
 
-- **ai-cold-outreach** - Text-based cold email and multichannel sequences. Video outreach layers on top of these fundamentals.
-- **ai-sdr** - AI SDR agents that can trigger video sends based on intent signals and automate follow-up sequences.
-- **paid-creative-ai** - AI-generated ad creative shares tools and techniques with video personalization (HeyGen, AI avatars).
-- **ai-ugc-ads** - AI UGC and spokesperson videos for ads use the same avatar and cloning technology as outreach video.
-- **sales-motion-design** - Video outreach fits within the broader sales motion architecture as a channel strategy.
-- **social-selling** - Video prospecting on LinkedIn pairs with social selling relationship-building tactics.
+- **ai-cold-outreach** — Cold por e-mail multicanal; vídeo se soma a esses fundamentos.
+- **ai-sdr** — Agentes SDR com IA podem disparar vídeo com base em sinais de intent e automatizar follow-up.
+- **paid-creative-ai** — Criativo de anúncio com IA compartilha ferramentas e técnicas com personalização em vídeo (HeyGen, avatares).
+- **ai-ugc-ads** — UGC e porta-voz com IA para anúncios usam a mesma tecnologia de avatar e clone que vídeo de prospecção.
+- **sales-motion-design** — Prospecção em vídeo encaixa na arquitetura de motion como estratégia de canal.
+- **social-selling** — Prospecção em vídeo no LinkedIn combina com táticas de social selling.

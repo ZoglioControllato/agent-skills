@@ -1,25 +1,25 @@
 ---
-title: Subscribe to Derived State
+title: Inscrever-se em estado derivado
 impact: MEDIUM
-impactDescription: reduces re-render frequency
+impactDescription: reduz frequência de re-renderização
 tags: rerender, derived-state, media-query, optimization
 ---
 
-## Subscribe to Derived State
+## Inscreva-se em estado derivado
 
-Subscribe to derived boolean state instead of continuous values to reduce re-render frequency.
+Assine estado booleano derivado em vez de valores que mudam de forma contínua, assim você reduz a frequência de re-renderização.
 
-**Incorrect (re-renders on every pixel change):**
+**Incorreto (re-renderizar cada mudança de pixel):**
 
 ```tsx
 function Sidebar() {
-  const width = useWindowWidth()  // updates continuously
+  const width = useWindowWidth() // updates continuously
   const isMobile = width < 768
   return <nav className={isMobile ? 'mobile' : 'desktop'} />
 }
 ```
 
-**Correct (re-renders only when boolean changes):**
+**Correto (re-renderizar só quando o booleano muda):**
 
 ```tsx
 function Sidebar() {

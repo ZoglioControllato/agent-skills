@@ -1,276 +1,309 @@
 ---
 name: excalidraw-studio
-description: Generate Excalidraw diagrams from natural language descriptions. Outputs .excalidraw JSON files openable in Excalidraw. Use when asked to "create a diagram", "make a flowchart", "visualize a process", "draw a system architecture", "create a mind map", "generate an Excalidraw file", "draw an ER diagram", "create a sequence diagram", or "make a class diagram". Supports flowcharts, relationship diagrams, mind maps, architecture, DFD, swimlane, class, sequence, and ER diagrams. Can use icon libraries (AWS, GCP, etc.) when set up. Do NOT use for code architecture analysis (use the architecture skills), Mermaid diagram rendering (use mermaid-studio), or non-visual documentation (use docs-writer).
+description: Gera diagramas no formato Excalidraw a partir de descrições em linguagem natural. Saída em arquivos JSON .excalidraw abertos no Excalidraw. Use quando pedirem criar diagrama, fluxograma, mapa mental, arquitetura de sistema, diagrama ER, sequência ou classe, ou gerar um .excalidraw. Também use quando mencionarem visualizar processo, desenhar arquitetura ou usar bibliotecas de ícones (AWS, GCP etc.) já configuradas. NÃO use para análise de arquitetura de código (use skills de arquitetura), renderização Mermaid (use mermaid-studio) ou documentação só em texto (use docs-writer).
 license: CC-BY-4.0
 metadata:
   author: Felipe Rodrigues - github.com/felipfr
   version: 1.0.1
 ---
 
-# Excalidraw Studio
+# Excalidraw Estúdio
 
-Generate Excalidraw-format diagrams from natural language descriptions. Outputs `.excalidraw` JSON files that can be opened directly in Excalidraw (web, VS Code extension, or Obsidian plugin).
+Gere diagramas no formato Excalidraw a partir de descrições em linguagem natural. Produz arquivos JSON `.excalidraw` que podem ser abertos diretamente no Excalidraw (web, extensão VS Code ou plugin Obsidian).
 
-## Workflow
+## Fluxo de trabalho
 
 ```
-UNDERSTAND → CHOOSE TYPE → EXTRACT → GENERATE → SAVE
+
+ENTENDER → ESCOLHER TIPO → EXTRAIR → GERAR → SALVAR
 ```
 
-### Step 1: Understand the Request
+### Etapa 1: Entenda a solicitação
 
-Analyze the user's description to determine:
+Analise a descrição do usuário para determinar:
 
-1. **Diagram type** — Use the decision matrix below
-2. **Key elements** — Entities, steps, concepts, actors
-3. **Relationships** — Flow direction, connections, hierarchy
-4. **Complexity** — Number of elements (target: under 20 for clarity)
+1. **Tipo de diagrama** — Use a matriz de decisão abaixo
+2. **Elementos-chave** — Entidades, etapas, conceitos, atores
+3. **Relacionamentos** — Direção do fluxo, conexões, hierarquia
+4. **Complexidade** — Número de elementos (meta: menos de 20 para maior clareza)
 
-### Step 2: Choose the Diagram Type and Visual Mode
+### Etapa 2: Escolha o tipo de diagrama e o modo visual
 
-**Diagram type:**
+**Tipo de diagrama:**
 
-| User Intent                | Diagram Type         | Keywords                                      |
-| -------------------------- | -------------------- | --------------------------------------------- |
-| Process flow, steps        | **Flowchart**        | "workflow", "process", "steps"                |
-| Connections, dependencies  | **Relationship**     | "relationship", "connections", "dependencies" |
-| Concept hierarchy          | **Mind Map**         | "mind map", "concepts", "breakdown"           |
-| System design              | **Architecture**     | "architecture", "system", "components"        |
-| Data movement              | **Data Flow (DFD)**  | "data flow", "data processing"                |
-| Cross-functional processes | **Swimlane**         | "business process", "swimlane", "actors"      |
-| Object-oriented design     | **Class Diagram**    | "class", "inheritance", "OOP"                 |
-| Interaction sequences      | **Sequence Diagram** | "sequence", "interaction", "messages"         |
-| Database design            | **ER Diagram**       | "database", "entity", "data model"            |
+| Intenção do usuário       | Tipo de diagrama   | Palavras-chave                               |
+| ------------------------- | ------------------ | -------------------------------------------- |
+| Fluxo do processo, etapas | **Fluxograma**     | “fluxo de trabalho”, “processo”, “etapas”    |
+| Conexões, dependências    | **Relacionamento** | “relacionamento”, “conexões”, “dependências” |
+| Hierarquia conceitual     | \*\*Mapa Mental    |
 
-**Visual mode** — decide upfront and apply consistently to all elements:
+** | "mapa mental", "conceitos", "detalhamento" |
+| Projeto de sistema | **Arquitetura** | “arquitetura”, “sistema”, “componentes” |
+| Movimentação de dados | **Fluxo de dados (DFD)** | "fluxo de dados", "processamento de dados" |
+| Processos multifuncionais | **Rana** | "processo de negócios", "raia", "atores" |
+| Design orientado a objetos | **Diagrama de Classes\*\* | "classe", "herança", "OOP"
 
-| Mode       | `roughness` | `fontFamily` | When to use                                          |
-| ---------- | ----------- | ------------ | ---------------------------------------------------- |
-| **Sketch** | `1`         | `5`          | Default — informal, approachable, Excalidraw-native  |
-| **Clean**  | `0`         | `2`          | Executive presentations, formal specs                |
-| **Mixed**  | zones: `0`, shapes: `1` | `5` | Architecture diagrams (structural zones + sketchy shapes) |
+|
+| Sequências de interação | **Diagrama de sequência** | “sequência”, “interação”, “mensagens” |
+| Projeto de banco de dados | **Diagrama ER** | “banco de dados”, “entidade”, “modelo de dados” |
 
-### Step 3: Extract Structured Information
+**Modo visual** — decida antecipadamente e aplique de forma consistente a todos os elementos:
 
-Extract the key components based on diagram type. For each type, identify:
+| Modo       | `rugosidade`            | `fonteFamília` | Quando usar                                        |
+| ---------- | ----------------------- | -------------- | -------------------------------------------------- |
+| **Esboço** | `1`                     | `5`            | Padrão - informal, acessível, nativo do Excalidraw |
+| **Limpo**  | `0`                     | `2`            | Apresentações executivas, especificações formais   |
+| **Misto**  | zonas: `0`, formas: `1` | `5`            | Arquiteto                                          |
 
-- **Nodes/entities** — What are the boxes/shapes?
-- **Connections** — What connects to what, and with what label?
-- **Hierarchy** — What contains what, what comes before what?
-- **Decision points** — Where does the flow branch?
+diagramas de estruturas (zonas estruturais + formas esboçadas) |
 
-For detailed extraction guidelines per diagram type, read `references/element-types.md`.
+### Etapa 3: Extrair informações estruturadas
 
-### Step 4: Generate the Excalidraw JSON
+Extraia os principais componentes com base no tipo de diagrama. Para cada tipo, identifique:
 
-**CRITICAL: Read `references/excalidraw-schema.md` before generating your first diagram.** It contains the correct element format, text container model, and binding system.
+- **Nós/entidades** — Quais são as caixas/formas?
+- **Conexões** — O que conecta a quê e com qual rótulo?
+- **Hierarquia** — O que contém o quê, o que vem antes do quê?
+- **Pontos de decisão** — Onde o fluxo se ramifica?
 
-Key rules for generation:
+Para diretrizes detalhadas de extração por tipo de diagrama, leia `references/element-types.md`.
 
-1. **Text inside shapes** — Use `boundElements` on the shape and a separate text element with `containerId`. Never use a `label` shorthand:
+### Etapa 4: gerar o JSON do Excalidraw
 
-   ```json
+**CRÍTICO: Leia `references/excalidraw-schema.md` antes de gerar seu primeiro diagrama.** Ele contém o formato de elemento correto, modelo de contêiner de texto e sistema de ligação.
+
+Regras principais para geração:
+
+1. **Texto dentro de formas** — Use `boundElements` na forma e um elemento de texto separado com `containerId`. Nunca use uma abreviação `label`:
+
+```json
    [
      {
-       "id": "step-1",
-       "type": "rectangle",
-       "x": 100, "y": 100, "width": 200, "height": 80,
-       "boundElements": [{ "type": "text", "id": "text-step-1" }]
+       "id": "etapa-1",
+       "tipo": "retângulo",
+       "x": 100, "y": 100, "largura": 200, "altura": 80,
+       "boundElements": [{ "type": "texto", "id": "text-step-1" }]
      },
      {
-       "id": "text-step-1",
-       "type": "text",
-       "x": 130, "y": 128, "width": 140, "height": 24,
-       "text": "My Step", "originalText": "My Step",
+       "id": "texto-etapa-1",
+       "tipo": "texto",
+       "x": 130, "y": 128, "largura": 140, "altura": 24,
+       "text": "Meu Passo", "originalText": "Meu Passo",
        "fontSize": 20, "fontFamily": 5,
-       "textAlign": "center", "verticalAlign": "middle",
-       "containerId": "step-1", "lineHeight": 1.25, "roundness": null
+       "textAlign": "centro", "verticalAl
+
+ign": "meio",
+       "containerId": "step-1", "lineHeight": 1,25, "redondeza": null
      }
    ]
-   ```
+```
 
-2. **Arrow labels** — Also use `boundElements` + separate text element with `containerId`. Never use a `label` shorthand on arrows:
+2. **Rótulos de seta** — Use também `boundElements` + elemento de texto separado com `containerId`. Nunca use uma abreviação `label` nas setas:
 
-   ```json
+```json
    [
      {
-       "id": "arrow-1",
-       "type": "arrow",
+       "id": "seta-1",
+       "tipo": "seta",
        "x": 100, "y": 150,
-       "points": [[0, 0], [200, 0]],
-       "boundElements": [{ "type": "text", "id": "text-arrow-1" }]
+       "pontos": [[0, 0], [200, 0]],
+       "boundElements": [{ "type": "texto", "id": "text-arrow-1" }]
      },
      {
-       "id": "text-arrow-1",
-       "type": "text",
-       "x": 160, "y": 132, "width": 80, "height": 18,
-       "text": "sends data", "originalText": "sends data",
+       "id": "texto-seta-1",
+       "tipo": "texto",
+       "x": 160, "y": 132, "largura": 80, "altura": 18,
+       "text": "envia dados", "originalText": "envia dados",
        "fontSize": 14, "fontFamily": 5,
-       "textAlign": "center", "verticalAlign": "middle",
-       "containerId": "arrow-1", "lineHeight": 1.25, "roundness": null
+       "textAlign": "centro"
+
+, "verticalAlign": "meio",
+       "containerId": "arrow-1", "lineHeight": 1,25, "redondeza": null
      }
    ]
-   ```
+```
 
-3. **Arrow bindings** — Use `startBinding`/`endBinding` (not `start`/`end`). Connected shapes must list the arrow in their `boundElements`:
+3. **Ligações de seta** — Use `startBinding`/`endBinding` (não `start`/`end`). As formas conectadas devem listar a seta em seus `boundElements`:
 
-   ```json
-   {
-     "id": "shape-1",
-     "boundElements": [
-       { "type": "text", "id": "text-shape-1" },
-       { "type": "arrow", "id": "arrow-1" }
-     ]
-   }
-   ```
-   ```json
-   {
-     "id": "arrow-1",
-     "type": "arrow",
-     "startBinding": { "elementId": "shape-1", "focus": 0, "gap": 1 },
-     "endBinding": { "elementId": "shape-2", "focus": 0, "gap": 1 }
-   }
-   ```
+```json
+{
+  "id": "forma-1",
+  "boundElements": [
+    { "tipo": "texto", "id": "formato de texto-1" },
+    { "tipo": "seta", "id": "seta-1" }
+  ]
+}
+```
 
-4. **Element order for z-index** — Always declare shapes first, arrows second, text elements last. This guarantees text renders on top and is never obscured by arrows or other shapes.
+```json
+{
+  "id": "seta-1",
+  "tipo": "seta",
+  "startBinding": { "elementId": "shape-1", "foco": 0, "gap": 1 },
+  "endBinding": { "elementId": "shape-2", "foco": 0, "gap": 1 }
+}
+```
 
-5. **Positioning** — Use grid-aligned coordinates (multiples of 20px when `gridSize: 20`). Leave 200-300px horizontal gap, 100-150px vertical gap between elements.
+4. **Ordem dos elementos para índice z** — Sempre declare as formas primeiro, as setas depois e os elementos de texto por último. Isso garante que o texto seja renderizado na parte superior e nunca seja obscurecido por setas ou outras formas.
 
-6. **Unique IDs** — Every element must have a unique `id`. Use descriptive IDs like `"step-1"`, `"decision-valid"`, `"arrow-1-to-2"`, `"text-step-1"`.
+5. **Posicionamento** — Use coordenadas alinhadas à grade (múltiplos de 20px quando `gridSize: 20`). Deixe um espaço horizontal de 200-300px e um espaço vertical de 100-150px entre os elementos.
 
-7. **Colors** — Use a consistent palette:
+6. **IDs exclusivos** — Cada elemento deve ter um `id` exclusivo. Use IDs descritivos como `"step-1"`, `"decision-valid"`, `"arrow-1-to-2"`, `"text-step-1"`.
 
-   | Role | Color | Hex |
-   |------|-------|-----|
-   | Primary entities | Light blue | `#a5d8ff` |
-   | Process steps | Light green | `#b2f2bb` |
-   | Important/Central | Yellow | `#ffd43b` |
-   | Warnings/Errors | Light red | `#ffc9c9` |
-   | Secondary | Cyan | `#96f2d7` |
-   | Default stroke | Dark | `#1e1e1e` |
+7. **Cores** — Use uma paleta consistente:
 
-### Step 5: Save and Present
+| Função              | Cor            | Hexágono  |
+| ------------------- | -------------- | --------- |
+| Entidades primárias | Azul claro     | `#a5d8ff` |
+| Etapas do processo  | Verde claro    | `#b2f2bb` |
+| Importante/Central  | Amarelo        | `#ffd43b` |
+| Avisos/Erros        | Vermelho claro | `#ffc9c9` |
+| Secundário          | Ciano          | `#96f2d7` |
+| Curso padrão        | Escuro         | `#1e1e1e` |
 
-1. Save as `<descriptive-name>.excalidraw`
-2. Provide a summary:
+### Etapa 5: Salvar e apresentar
 
-   ```
-   Created: user-workflow.excalidraw
-   Type: Flowchart
-   Elements: 7 shapes, 6 arrows, 1 title
-   Total: 14 elements
+1. Salve como `<nome descritivo>.excalidraw`
+2. Forneça um resumo:
 
-   To view:
-   1. Visit https://excalidraw.com → Open → drag and drop the file
-   2. Or use the Excalidraw VS Code extension
-   3. Or open in Obsidian with the Excalidraw plugin
-   ```
+```
+   Criado: user-workflow.excalidraw
+   Tipo: Fluxograma
+   Elementos: 7 formas, 6 setas, 1 título
+   Total: 14 elementos
 
-## Templates
+   Para visualizar:
+   1. Visite https://excalidraw.com → Abrir → arraste e solte o arquivo
+   2. Ou use a extensão Excalidraw VS Code
+   3. Ou abra em Obsidian com o plugin Excalidraw
+```
 
-Pre-built templates are available in `assets/` for quick starting points. Use these when the diagram type matches — they provide correct structure and styling:
+## Modelos
 
-| Template         | File                                                   |
-| ---------------- | ------------------------------------------------------ |
-| Flowchart        | `assets/flowchart-template.json`                    |
-| Relationship     | `assets/relationship-template.json`                 |
-| Mind Map         | `assets/mindmap-template.json`                      |
-| Data Flow (DFD)  | `assets/data-flow-diagram-template.json`            |
-| Swimlane         | `assets/business-flow-swimlane-template.json`       |
-| Class Diagram    | `assets/class-diagram-template.json`                |
-| Sequence Diagram | `assets/sequence-diagram-template.json`             |
-| ER Diagram       | `assets/er-diagram-template.json`                   |
+Modelos pré-construídos estão disponíveis em `assets/` para pontos de partida rápidos. Use-os quando o tipo de diagrama corresponder — eles fornecem estrutura e estilo corretos:
 
-Read a template when creating that diagram type for the first time. Use its structure as a base, then modify elements to match the user's request.
+| Modelo               | Arquivo                                  |
+| -------------------- | ---------------------------------------- |
+| Fluxograma           | `assets/flowchart-template.json`         |
+| Relacionamento       | `assets/relationship-template.json`      |
+| Mapa Mental          | `assets/mindmap-template.json`           |
+| Fluxo de dados (DFD) | `assets/data-flow-diagram-template.json` |
 
-## Icon Libraries
+|
+| Raia | `assets/business-flow-swimlane-template.json` |
+| Diagrama de classes | `assets/class-diagram-template.json` |
+| Diagrama de sequência | `assets/sequence-diagram-template.json` |
+| Diagrama ER | `assets/er-diagram-template.json` |
 
-For professional architecture diagrams with service icons (AWS, GCP, Azure, etc.), icon libraries can be set up. Read `references/icon-libraries.md` when:
+Leia um modelo ao criar esse tipo de diagrama pela primeira vez. Use sua estrutura como base e modifique os elementos para corresponder à solicitação do usuário.
 
-- User requests an AWS/cloud architecture diagram
-- User mentions wanting specific service icons
-- You need to check if icon libraries are available
+## Bibliotecas de ícones
 
-## Best Practices
+Para diagramas de arquitetura profissional com ícones de serviço (AWS, GCP, Azure, etc.), bibliotecas de ícones podem ser configuradas. Leia `references/icon-libraries.md` quando:
 
-### Element Count
+- O usuário solicita um diagrama de arquitetura AWS/nuvem
+- O usuário menciona querer ícones de serviços específicos
+- Você precisa verificar se as bibliotecas de ícones estão disponíveis
 
-| Diagram Type          | Recommended | Maximum |
-| --------------------- | ----------- | ------- |
-| Flowchart steps       | 3-10        | 15      |
-| Relationship entities | 3-8         | 12      |
-| Mind map branches     | 4-6         | 8       |
-| Sub-topics per branch | 2-4         | 6       |
+##Boas práticas
 
-If the user's request exceeds maximum, suggest breaking into multiple diagrams:
+### Contagem de Elementos
 
-> "Your request includes 15 components. For clarity, I recommend: (1) High-level architecture diagram with 6 main components, (2) Detailed sub-diagrams for each subsystem. Want me to start with the high-level view?"
+| Tipo de diagrama            | Recomendado | Máximo |
+| --------------------------- | ----------- | ------ |
+| Etapas do fluxograma        | 3-10        | 15     |
+| Entidades de relacionamento | 3-8         | 12     |
+| Ramos do mapa mental        | 4-6         | 8      |
+| Subtópicos por ramo         | 2-4         | 6      |
 
-### Layout
+Se a solicitação do usuário exceder o máximo, sugira dividir em vários diagramas:
 
-- **Flow direction**: Left-to-right for processes, top-to-bottom for hierarchies
-- **Spacing**: 200-300px horizontal, 100-150px vertical between elements
-- **Grid alignment**: Position on multiples of 20px for clean alignment
-- **Margins**: Minimum 50px from canvas edge
-- **Text sizing**: 28-36px titles, 18-22px labels, 14-16px annotations
-- **Font**: Use `fontFamily: 5` (Excalifont) for hand-drawn consistency. Fallback to `1` (Virgil) if 5 is not supported.
-- **Background zones**: For architecture diagrams, add semi-transparent dashed zone rectangles (`opacity: 35`, `strokeStyle: "dashed"`, `roughness: 0`) as the first elements in the array to create visual grouping regions. See `references/excalidraw-schema.md` → Background Zones.
-- **Element order**: zones first → shapes → arrows → text elements (ensures correct z-index and text always renders on top)
+> "Sua solicitação inclui 15 componentes. Para maior clareza, recomendo: (1) Diagrama de arquitetura de alto nível com 6 componentes principais, (2) Subdiagramas detalhados para cada subsistema. Quer que eu comece com a visão de alto nível?"
 
-### Common Mistakes to Avoid
+###Layout
 
-- ❌ Using `label: { text: "..." }` shorthand on shapes or arrows — not supported by the Excalidraw parser
-- ❌ Putting `text` directly on shape elements without `containerId`
-- ❌ Using `start`/`end` for arrow bindings — use `startBinding`/`endBinding` with `elementId`/`focus`/`gap`
-- ❌ Forgetting to add arrows to their connected shapes' `boundElements` arrays
-- ❌ Omitting `originalText`, `lineHeight`, `autoResize`, or `backgroundColor: "transparent"` from text elements inside containers
-- ❌ Omitting required base properties (`angle`, `strokeStyle`, `opacity`, `groupIds`, `frameId`, `index`, `isDeleted`, `seed`, `version`, `versionNonce`, `updated`, `link`, `locked`) — elements will not render
-- ❌ Missing `"files": {}` at the top level of the JSON
-- ❌ Using `roundness: { "type": 3 }` on ellipses — ellipses must use `roundness: null`
-- ❌ Missing `lastCommittedPoint`, `startArrowhead`, `endArrowhead` on arrows
-- ❌ Declaring text elements before arrows — text renders underneath and gets obscured
-- ❌ Floating arrows without bindings (won't move with shapes)
-- ❌ Overlapping elements (increase spacing)
-- ❌ Inconsistent color usage (define palette upfront)
-- ❌ Too many elements on one diagram (break into sub-diagrams)
+- **Direção do fluxo**: da esquerda para a direita para processos, de cima para baixo para hierarquias
+- **Espaçamento**: 200-300px horizontal, 100-150px vertical entre elementos
+- **Alinhamento da grade**: posicione em múltiplos de 20px para um alinhamento limpo
+- **Margens**: mínimo de 50px da borda da tela
+- **Dimensionamento do texto**: títulos de 28 a 36 px, rótulos de 18 a 22 px, anotações de 14 a 16 px
+- **Font**: Use `fontFamily: 5` (Excalifont) para consistência do desenho à mão. Fallback para `1` (Virgílio) se 5 for não
 
-## Validation Checklist
+não suportado.
 
-Before delivering the diagram, verify:
+- **Zonas de fundo**: para diagramas de arquitetura, adicione retângulos de zona tracejada semitransparentes (`opacity: 35`, `strokeStyle: "dashed"`, `rugosidade: 0`) como os primeiros elementos na matriz para criar regiões de agrupamento visual. Consulte `references/excalidraw-schema.md` → Zonas de fundo.
+- **Ordem dos elementos**: zonas primeiro → formas → setas → elementos de texto (garante o índice z correto e o texto sempre renderizado na parte superior)
 
-- [ ] All elements have unique IDs
-- [ ] Every element has ALL required base properties: `angle`, `strokeStyle`, `opacity`, `groupIds`, `frameId`, `index`, `isDeleted`, `link`, `locked`, `seed`, `version`, `versionNonce`, `updated`
-- [ ] `index` values are assigned in order (`"a0"`, `"a1"`, …) with text elements getting higher values than shapes/arrows
-- [ ] Top-level JSON includes `"files": {}`
-- [ ] Shapes with text use `boundElements` + separate text element with `containerId`
-- [ ] Text elements inside containers have `containerId`, `originalText`, `lineHeight: 1.25`, `autoResize: true`, `roundness: null`, `backgroundColor: "transparent"`
-- [ ] Arrows use `startBinding`/`endBinding` (with `elementId`, `focus`, `gap`) when connecting shapes, plus `lastCommittedPoint: null`, `startArrowhead: null`, `endArrowhead: "arrow"`
-- [ ] Connected shapes list the arrow in their `boundElements` arrays
-- [ ] Element order: shapes → arrows → text elements (text always on top)
-- [ ] Ellipses use `roundness: null` (not `{ "type": 3 }`)
-- [ ] Coordinates prevent overlapping (check spacing)
-- [ ] Text is readable (font size 16+)
-- [ ] Colors follow consistent scheme
-- [ ] File is valid JSON
-- [ ] Element count is reasonable (<20 for clarity)
+### Erros comuns a evitar
 
-## Troubleshooting
+- ❌ Usando `label: { text: "..." }` abreviação de formas ou setas — não suportado pelo analisador Excalidraw
+- ❌ Colocar `text` diretamente em elementos de forma sem `containerId`
+- ❌ Usando `start`/`end` para vinculações de seta — use `startBinding`/`endBinding` com `elementId`/`focus`/`gap`
+- ❌ Esquecer de adicionar setas aos arrays `boundElements` de suas formas conectadas
+- ❌ Omitindo `originalText`, `lineHeight`, `autoResize` ou `backgroundColor: "transparen
 
-| Issue                         | Solution                                                                                      |
-| ----------------------------- | --------------------------------------------------------------------------------------------- |
-| Text not showing in shapes    | Use `boundElements` + separate text element with `containerId`, `originalText`, `lineHeight`  |
-| Text hidden behind arrows     | Move text elements to end of `elements` array (after all arrows)                             |
-| Arrows don't move with shapes | Use `startBinding`/`endBinding` with `elementId`, `focus: 0`, `gap: 1`                       |
-| Shape not moving with arrows  | Add the arrow to the shape's `boundElements` array                                            |
-| Elements overlap              | Increase spacing between coordinates                                                          |
-| Text doesn't fit              | Increase shape width or reduce font size                                                      |
-| Too many elements             | Break into multiple diagrams                                                                  |
-| Colors look inconsistent      | Define color palette upfront, apply consistently                                              |
+t"` de elementos de texto dentro de contêineres
 
-## Limitations
+- ❌ Omitindo propriedades base obrigatórias (`angle`, `strokeStyle`, `opacity`, `groupIds`, `frameId`, `index`, `isDeleted`, `seed`, `version`, `versionNonce`, `updated`, `link`, `locked`) — os elementos não serão renderizados
+- ❌ Faltando `"files": {}` no nível superior do JSON
+- ❌ Usando `roundness: { "type": 3 }` em elipses — as elipses devem usar `roundness: null`
+- ❌ Faltando `lastCommittedPoint`, `startArrowhead`, `endA
 
-- Complex curves are simplified to straight/basic curved lines
-- Hand-drawn roughness is set to default (1)
-- No embedded images in auto-generation (use icon libraries for service icons)
-- Maximum recommended: 20 elements per diagram for clarity
-- No automatic collision detection — use spacing guidelines
+rrowhead` nas setas
+
+- ❌ Declarar elementos de texto antes das setas — o texto é renderizado abaixo e fica obscurecido
+- ❌ Setas flutuantes sem amarras (não se movem com formas)
+- ❌ Elementos sobrepostos (aumentar espaçamento)
+- ❌ Uso inconsistente de cores (defina a paleta antecipadamente)
+- ❌ Muitos elementos em um diagrama (dividir em subdiagramas)
+
+## Lista de verificação de validação
+
+Antes de entregar o diagrama, verifique:
+
+- [] Todos os elementos possuem IDs exclusivos
+- [] Cada elemento tem TODAS as propriedades básicas necessárias: `angle`, `strokeStyle`, `opacity`, `groupIds`, `frameId`, `index`, `isDeleted`, `link`, `locked`, `seed`, `version`, `versionNonce`, `updated`
+- [ ] valores `index` são atribuídos em ordem (`"a0"`, `"a1"`, …) com elementos de texto obtendo valores mais altos do que formas/setas
+- [] JSON de nível superior inclui `"arquivos": {}`
+- [] Formas com texto usam `boundElements` + separa
+
+o elemento de texto com `containerId`
+
+- [] Elementos de texto dentro de contêineres têm `containerId`, `originalText`, `lineHeight: 1.25`, `autoResize: true`, `roundness: null`, `backgroundColor: "transparent"`
+- [ ] As setas usam `startBinding`/`endBinding` (com `elementId`, `focus`, `gap`) ao conectar formas, mais `lastCommittedPoint: null`, `startArrowhead: null`, `endArrowhead: "arrow"`
+- [] As formas conectadas listam a seta em seus `boundElements` a
+
+raios
+
+- [] Ordem dos elementos: formas → setas → elementos de texto (texto sempre no topo)
+- [] Elipses usam `redondeza: null` (não `{ "type": 3 }`)
+- [] Coordenadas evitam sobreposição (verifique o espaçamento)
+- [] O texto é legível (tamanho da fonte 16+)
+- [] As cores seguem um esquema consistente
+- [] O arquivo é JSON válido
+- [] A contagem de elementos é razoável (<20 para maior clareza)
+
+## Solução de problemas
+
+| Edição                         | Solução                                                                                          |
+| ------------------------------ | ------------------------------------------------------------------------------------------------ |
+| O texto não aparece nas formas | Use `boundElements` + elemento de texto separado com `containerId`, `originalText`, `lineHeight` |
+| Texto escondido atrás de setas | Mover elementos de texto para o final                                                            |
+
+do array `elements` (depois de todas as setas) |
+| As setas não se movem com as formas | Use `startBinding`/`endBinding` com `elementId`, `focus: 0`, `gap: 1` |
+| Forma não se move com setas | Adicione a seta ao array `boundElements` da forma |
+| Sobreposição de elementos | Aumentar o espaçamento entre as coordenadas
+
+|
+| O texto não cabe | Aumentar a largura da forma ou reduzir o tamanho da fonte |
+| Muitos elementos | Divida em vários diagramas |
+| As cores parecem inconsistentes | Defina a paleta de cores antecipadamente e aplique de forma consistente |
+
+## Limitações
+
+- Curvas complexas são simplificadas para linhas curvas retas/básicas
+- A rugosidade desenhada à mão é definida como padrão (1)
+- Sem imagens incorporadas na geração automática (use bibliotecas de ícones para ícones de serviço)
+- Máximo recomendado: 20 elementos por diagrama para maior clareza
+- Sem detecção automática de colisão — use diretrizes de espaçamento

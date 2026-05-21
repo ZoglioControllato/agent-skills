@@ -1,8 +1,8 @@
-# Terraform Configuration Reference
+# Referência de configuração Terraform
 
-Complete resource configurations for Cloudflare infrastructure.
+Configurações completas de recursos para infraestrutura Cloudflare.
 
-## Zone & DNS
+## Zona e DNS
 
 ```hcl
 # Zone + settings
@@ -24,7 +24,7 @@ resource "cloudflare_dns_record" "mx" {
 
 ## Workers
 
-### Simple Pattern (Legacy - Still Works)
+### Padrão simples (legado — ainda funciona)
 
 ```hcl
 resource "cloudflare_workers_script" "api" {
@@ -37,7 +37,7 @@ resource "cloudflare_workers_script" "api" {
 }
 ```
 
-### Gradual Rollouts (Recommended for Production)
+### Implantações graduais (recomendado em produção)
 
 ```hcl
 resource "cloudflare_worker" "api" { account_id = var.account_id; name = "api-worker" }
@@ -56,9 +56,9 @@ resource "cloudflare_workers_deployment" "api" {
 }
 ```
 
-### Worker Binding Types (v5)
+### Tipos de binding de Worker (v5)
 
-| Binding    | Attribute                  | Example                                      |
+| Binding    | Atributo                   | Exemplo                                      |
 | ---------- | -------------------------- | -------------------------------------------- |
 | KV         | `kv_namespace_binding`     | `{ name = "KV", namespace_id = "..." }`      |
 | R2         | `r2_bucket_binding`        | `{ name = "BUCKET", bucket_name = "..." }`   |
@@ -73,7 +73,7 @@ resource "cloudflare_workers_deployment" "api" {
 | Analytics  | `analytics_engine_binding` | `{ name = "ANALYTICS", dataset = "..." }`    |
 | mTLS       | `mtls_certificate_binding` | `{ name = "CERT", certificate_id = "..." }`  |
 
-### Routes & Triggers
+### Rotas e gatilhos
 
 ```hcl
 resource "cloudflare_worker_route" "api" {
@@ -86,7 +86,7 @@ resource "cloudflare_worker_cron_trigger" "task" {
 }
 ```
 
-## Storage (KV, R2, D1)
+## Armazenamento (KV, R2, D1)
 
 ```hcl
 # KV
@@ -126,7 +126,7 @@ resource "cloudflare_pages_domain" "custom" {
 }
 ```
 
-## Rulesets (WAF, Redirects, Cache)
+## Rulesets (WAF, redirecionamentos, cache)
 
 ```hcl
 # WAF
@@ -154,7 +154,7 @@ resource "cloudflare_ruleset" "cache" {
 }
 ```
 
-## Load Balancers
+## Load balancers
 
 ```hcl
 resource "cloudflare_load_balancer_monitor" "http" {
@@ -189,9 +189,11 @@ resource "cloudflare_access_identity_provider" "github" {
 }
 ```
 
-## See Also
+## Ver também
 
-- [README](./README.md) - Provider setup
-- [API](./api.md) - Data sources
-- [Patterns](./patterns.md) - Use cases
-- [Troubleshooting](./gotchas.md) - Issues
+- [README](./README.md) — Configuração do provider
+- [API](./api.md) — Data sources
+- [Patterns](./patterns.md) — Casos de uso
+- [Troubleshooting](./gotchas.md) — Problemas
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

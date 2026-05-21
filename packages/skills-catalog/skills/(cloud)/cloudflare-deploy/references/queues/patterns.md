@@ -1,6 +1,6 @@
-# Queues Patterns & Best Practices
+# Padrões e boas práticas com Queues
 
-## Async Task Processing
+## Processamento assíncrono de tarefas
 
 ```typescript
 // Producer: Accept request, queue work
@@ -25,7 +25,7 @@ export default {
 }
 ```
 
-## Buffering API Calls
+## Buffer de chamadas de API
 
 ```typescript
 // Producer: Queue log entries
@@ -43,7 +43,7 @@ async queue(batch: MessageBatch, env: Env): Promise<void> {
 }
 ```
 
-## Rate Limiting Upstream
+## Rate limiting a montante
 
 ```typescript
 async queue(batch: MessageBatch, env: Env): Promise<void> {
@@ -61,7 +61,7 @@ async queue(batch: MessageBatch, env: Env): Promise<void> {
 }
 ```
 
-## Event-Driven Workflows
+## Fluxos orientados a eventos
 
 ```typescript
 // R2 event → Queue → Worker
@@ -80,7 +80,7 @@ export default {
 }
 ```
 
-## Dead Letter Queue Pattern
+## Padrão Dead Letter Queue
 
 ```typescript
 // Main queue: After max_retries, goes to DLQ automatically
@@ -108,17 +108,17 @@ export default {
 }
 ```
 
-## Priority Queues
+## Filas por prioridade
 
-High priority: `max_batch_size: 5, max_batch_timeout: 1`. Low priority: `max_batch_size: 100, max_batch_timeout: 30`.
+Alta prioridade: `max_batch_size: 5, max_batch_timeout: 1`. Baixa prioridade: `max_batch_size: 100, max_batch_timeout: 30`.
 
-## Delayed Job Processing
+## Processamento de jobs atrasados
 
 ```typescript
 await env.EMAIL_QUEUE.send({ to, template, userId }, { delaySeconds: 3600 })
 ```
 
-## Fan-out Pattern
+## Padrão fan-out
 
 ```typescript
 async fetch(request: Request, env: Env): Promise<Response> {
@@ -135,7 +135,7 @@ async fetch(request: Request, env: Env): Promise<Response> {
 }
 ```
 
-## Idempotency Pattern
+## Padrão de idempotência
 
 ```typescript
 async queue(batch: MessageBatch, env: Env): Promise<void> {
@@ -154,7 +154,7 @@ async queue(batch: MessageBatch, env: Env): Promise<void> {
 }
 ```
 
-## Integration: D1 Batch Writes
+## Integração: escritas em lote no D1
 
 ```typescript
 async queue(batch: MessageBatch, env: Env): Promise<void> {
@@ -174,7 +174,7 @@ async queue(batch: MessageBatch, env: Env): Promise<void> {
 }
 ```
 
-## Integration: Workflows
+## Integração: Workflows
 
 ```typescript
 // Queue triggers Workflow for long-running tasks
@@ -194,7 +194,7 @@ async queue(batch: MessageBatch, env: Env): Promise<void> {
 }
 ```
 
-## Integration: Durable Objects
+## Integração: Durable Objects
 
 ```typescript
 // Queue distributes work to Durable Objects by ID
@@ -218,3 +218,5 @@ async queue(batch: MessageBatch, env: Env): Promise<void> {
   }
 }
 ```
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

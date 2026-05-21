@@ -1,18 +1,18 @@
-# Gotchas & Troubleshooting
+# Armadilhas e solução de problemas
 
-## Execution Order
+## Ordem de execução
 
-**Problem:** Rules execute in unexpected order
-**Cause:** Misunderstanding phase execution
-**Solution:**
+**Problema:** regras executam em ordem inesperada  
+**Causa:** interpretação errada das fases  
+**Solução:**
 
-Phases execute sequentially (can't be changed):
+As fases executam em sequência (não alterável):
 
-1. `http_request_firewall_custom` - Custom rules
-2. `http_request_firewall_managed` - Managed rulesets
-3. `http_ratelimit` - Rate limiting
+1. `http_request_firewall_custom` — regras customizadas
+2. `http_request_firewall_managed` — rulesets gerenciados
+3. `http_ratelimit` — rate limiting
 
-Within phase: top-to-bottom, first match wins (unless `skip`)
+Dentro da fase: de cima para baixo; primeira correspondência vence (exceto `skip`)
 
 ```typescript
 // WRONG: Can't mix phase-specific actions
@@ -29,11 +29,11 @@ await client.rulesets.create({ phase: 'http_request_firewall_custom', rules: [..
 await client.rulesets.create({ phase: 'http_request_firewall_managed', rules: [...] });
 ```
 
-## Expression Errors
+## Erros de expressão
 
-**Problem:** Syntax errors prevent deployment
-**Cause:** Invalid field/operator/syntax
-**Solution:**
+**Problema:** erros de sintaxe impedem deploy  
+**Causa:** campo/operador/sintaxe inválidos  
+**Solução:**
 
 ```typescript
 // Common mistakes
@@ -43,18 +43,18 @@ await client.rulesets.create({ phase: 'http_request_firewall_managed', rules: [.
 'matches ".*[.jpg"' → 'matches ".*\\.jpg$"' // Valid regex
 ```
 
-Test expressions in Security Events before deploying.
+Teste expressões em Security Events antes de publicar.
 
-## Skip Rule Pitfalls
+## Armadilhas de regras skip
 
-**Problem:** Skip rules don't work as expected
-**Cause:** Misunderstanding skip scope
-**Solution:**
+**Problema:** skip não funciona como esperado  
+**Causa:** escopo do skip mal entendido  
+**Solução:**
 
-Skip types:
+Tipos de skip:
 
-- `ruleset: 'current'` - Skip remaining rules in current ruleset only
-- `phases: ['phase_name']` - Skip entire phases
+- `ruleset: 'current'` — pula o restante só no ruleset atual
+- `phases: ['phase_name']` — pula fases inteiras
 
 ```typescript
 // WRONG: Trying to skip managed rules from custom phase
@@ -76,11 +76,11 @@ Skip types:
 }
 ```
 
-## Update Replaces All Rules
+## Update substitui todas as regras
 
-**Problem:** Updating ruleset deletes other rules
-**Cause:** `update()` replaces entire rule list
-**Solution:**
+**Problema:** atualizar ruleset apaga outras regras  
+**Causa:** `update()` substitui a lista inteira  
+**Solução:**
 
 ```typescript
 // WRONG: This deletes all existing rules!
@@ -99,11 +99,11 @@ await client.rulesets.update({
 })
 ```
 
-## Override Conflicts
+## Conflitos de override
 
-**Problem:** Managed ruleset overrides don't apply
-**Cause:** Rule ID doesn't exist or category name incorrect
-**Solution:**
+**Problema:** overrides do ruleset gerenciado não aplicam  
+**Causa:** ID de regra inexistente ou categoria errada  
+**Solução:**
 
 ```typescript
 // List managed ruleset rules to find IDs
@@ -118,23 +118,23 @@ console.log(ruleset.rules.map(r => ({ id: r.id, description: r.description })));
   overrides: { rules: [{ id: '5de7edfa648c4d6891dc3e7f84534ffa', action: 'log' }] } } }
 ```
 
-## False Positives
+## Falsos positivos
 
-**Problem:** Legitimate traffic blocked
-**Cause:** Aggressive rules/thresholds
-**Solution:**
+**Problema:** tráfego legítimo bloqueado  
+**Causa:** regras/limiares agressivos  
+**Solução:**
 
-1. Start with log mode: `overrides: { action: 'log' }`
-2. Review Security Events to identify false positives
-3. Override specific rules: `overrides: { rules: [{ id: 'rule_id', action: 'log' }] }`
+1. Comece em modo log: `overrides: { action: 'log' }`
+2. Revise Security Events
+3. Faça override de regras específicas: `overrides: { rules: [{ id: 'rule_id', action: 'log' }] }`
 
-## Rate Limiting NAT Issues
+## Rate limiting e NAT
 
-**Problem:** Users behind NAT hit rate limits too quickly
-**Cause:** Multiple users sharing single IP
-**Solution:**
+**Problema:** usuários atrás de NAT atingem limite rápido  
+**Causa:** vários usuários no mesmo IP  
+**Solução:**
 
-Add more characteristics: User-Agent, session cookie, or authorization header
+Adicione características: User-Agent, cookie de sessão ou header Authorization
 
 ```typescript
 {
@@ -150,40 +150,40 @@ Add more characteristics: User-Agent, session cookie, or authorization header
 }
 ```
 
-## Performance Issues
+## Desempenho
 
-**Problem:** Increased latency
-**Cause:** Complex expressions, excessive rules
-**Solution:**
+**Problema:** latência aumentada  
+**Causa:** expressões complexas, muitas regras  
+**Solução:**
 
-1. Skip static assets early: `action: 'skip'` for `\\.(jpg|css|js)$`
-2. Path-based deployment: Only run managed on `/api` or `/admin`
-3. Disable unused categories: `{ category: 'wordpress', enabled: false }`
-4. Prefer string operators over regex: `starts_with` vs `matches`
+1. Faça skip de estáticos cedo: `action: 'skip'` para `\\.(jpg|css|js)$`
+2. Deploy por caminho: managed só em `/api` ou `/admin`
+3. Desative categorias não usadas: `{ category: 'wordpress', enabled: false }`
+4. Prefira operadores de string a regex: `starts_with` vs `matches`
 
-## Limits & Quotas
+## Limites e cotas
 
-| Resource                   | Free       | Pro        | Business   | Enterprise |
-| -------------------------- | ---------- | ---------- | ---------- | ---------- |
-| Custom rules               | 5          | 20         | 100        | 1000       |
-| Rate limiting rules        | 1          | 10         | 25         | 100        |
-| Rule expression length     | 4096 chars | 4096 chars | 4096 chars | 4096 chars |
-| Rules per ruleset          | 75         | 75         | 400        | 1000       |
-| Managed rulesets           | Yes        | Yes        | Yes        | Yes        |
-| Rate limit characteristics | 2          | 3          | 5          | 5          |
+| Recurso              | Free       | Pro        | Business   | Enterprise |
+| -------------------- | ---------- | ---------- | ---------- | ---------- |
+| Regras customizadas  | 5          | 20         | 100        | 1000       |
+| Regras de rate limit | 1          | 10         | 25         | 100        |
+| Tamanho da expressão | 4096 chars | 4096 chars | 4096 chars | 4096 chars |
+| Regras por ruleset   | 75         | 75         | 400        | 1000       |
+| Rulesets gerenciados | Sim        | Sim        | Sim        | Sim        |
+| Características RL   | 2          | 3          | 5          | 5          |
 
-**Important Notes:**
+**Notas:**
 
-- Rules execute in order; first match wins (except skip rules)
-- Expression evaluation stops at first `false` in AND chains
-- `matches` regex operator is slower than string operators
-- Rate limit counting happens before mitigation
+- Regras executam em ordem; primeira correspondência vence (exceto skip)
+- Avaliação de expressão para no primeiro `false` em cadeias AND
+- Operador `matches` (regex) é mais lento que operadores de string
+- Contagem de rate limit ocorre antes da mitigação
 
-## API Errors
+## Erros de API
 
-**Problem:** API calls fail with cryptic errors
-**Cause:** Invalid parameters or permissions
-**Solution:**
+**Problema:** chamadas falham com erros obscuros  
+**Causa:** parâmetros ou permissões inválidos  
+**Solução:**
 
 ```typescript
 // Error: "Invalid phase" → Use exact phase name
@@ -205,4 +205,6 @@ if (rulesets.result.length > 0) {
 'http.request.uri.path'      // Not 'http.request.path'
 ```
 
-**Tip**: Test expressions in dashboard Security Events before deploying.
+**Dica:** teste expressões no painel (Security Events) antes do deploy.
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

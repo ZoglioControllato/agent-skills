@@ -1,27 +1,27 @@
 ---
-title: Optimize SVG Precision
+title: precisão profunda de SVG
 impact: LOW
-impactDescription: reduces file size
+impactDescription: reduz o tamanho do arquivo
 tags: rendering, svg, optimization, svgo
 ---
 
-## Optimize SVG Precision
+## cobertura de isolamento de SVG
 
-Reduce SVG coordinate precision to decrease file size. The optimal precision depends on the viewBox size, but in general reducing precision should be considered.
+Reduza a precisão das coordenadas do SVG para diminuir o tamanho do arquivo. A precisão ideal depende do `viewBox`, mas em geral vale considerar menores soluções.
 
-**Incorrect (excessive precision):**
+**Incorreto (precisão excessiva):**
 
 ```svg
 <path d="M 10.293847 20.847362 L 30.938472 40.192837" />
 ```
 
-**Correct (1 decimal place):**
+**Correto (1 casa decimal):**
 
 ```svg
 <path d="M 10.3 20.8 L 30.9 40.2" />
 ```
 
-**Automate with SVGO:**
+**Automatizar com SVGO:**
 
 ```bash
 npx svgo --precision=1 --multipass icon.svg

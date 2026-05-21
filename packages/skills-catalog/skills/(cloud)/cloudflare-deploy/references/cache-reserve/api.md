@@ -3,29 +3,29 @@
 ## Workers Integration
 
 ```
-┌────────────────────────────────────────────────────────────────┐
-│ CRITICAL: Workers Cache API ≠ Cache Reserve                   │
-│                                                                │
-│ • Workers caches.default / cache.put() → edge cache ONLY      │
-│ • Cache Reserve → zone-level setting, automatic, no per-req   │
-│ • You CANNOT selectively write to Cache Reserve from Workers  │
-│ • Cache Reserve works with standard fetch(), not cache.put()  │
-└────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────── ────────────────────────────────┐
+│ CRÍTICO: API de cache de trabalho ≠ Reserva de cache │
+│ │
+│ • Trabalhadores caches.default / cache.put() → SOMENTE cache de borda │
+│ • Reserva de cache → configuração em nível de zona, automática, sem necessidade │
+│ • Você NÃO PODE gravar seletivamente na Reserva de Cache a partir de Trabalhadores │
+│ • Cache Reserve funciona com fetch() padrão, não com cache.put() │
+└──────────────────────────────── ────────────────────────────────┘
 ```
 
-Cache Reserve is a **zone-level configuration**, not a per-request API. It works automatically when enabled for the zone:
+A Reserva de Cache é uma **configuração em nível de zona**, não uma API por solicitação. Funciona automaticamente quando habilitado para a zona:
 
-### Standard Fetch (Recommended)
+### Busca padrão (recomendado)```typescript
 
-```typescript
 // Cache Reserve works automatically via standard fetch
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
-    // Standard fetch uses Cache Reserve automatically
-    return await fetch(request)
-  },
+async fetch(request: Request, env: Env): Promise<Response> {
+// Standard fetch uses Cache Reserve automatically
+return await fetch(request)
+},
 }
-```
+
+````
 
 ### Cache API Limitations
 
@@ -50,7 +50,7 @@ if (!response) {
   response = await fetch(request)
   await customCache.put(request, response.clone()) // Custom cache OK
 }
-```
+````
 
 ## Purging and Cache Management
 
@@ -102,27 +102,25 @@ await fetch(`https://api.cloudflare.com/client/v4/zones/${zoneId}/cache/cache_re
 // Check status: GET same endpoint returns { state: "In-progress" | "Completed" }
 ```
 
-**Process**: Disable Cache Reserve → Call clear endpoint → Wait up to 24hr → Re-enable
+**Processo**: Desativar reserva de cache → Limpar endpoint de chamada → Aguardar até 24 horas → Reativar
 
-## Monitoring and Analytics
+## Monitoramento e Análise
 
-### Dashboard Analytics
+### Análise do painel
 
-Navigate to **Caching > Cache Reserve** to view:
+Navegue até **Caching > Cache Reserve** para visualizar:
 
-- **Egress Savings**: Total bytes served from Cache Reserve vs origin egress cost saved
-- **Requests Served**: Cache Reserve hits vs misses breakdown
-- **Storage Used**: Current GB stored in Cache Reserve (billed monthly)
-- **Operations**: Class A (writes) and Class B (reads) operation counts
-- **Cost Tracking**: Estimated monthly costs based on current usage
+- **Economia de saída**: total de bytes servidos da reserva de cache versus custo de saída de origem economizado
+- **Solicitações atendidas**: detalhamento de acertos versus erros da reserva de cache
+- **Armazenamento usado**: GB atual armazenado na reserva de cache (cobrado mensalmente)
+- **Operações**: contagens de operações Classe A (gravações) e Classe B (leituras)
+- **Acompanhamento de custos**: custos mensais estimados com base no uso atual
 
-### Logpush Integration
+### Integração Logpush```typescript
 
-```typescript
 // Logpush field: CacheReserveUsed (boolean) - filter for Cache Reserve hits
 // Query Cache Reserve hits in analytics
-const logpushQuery = `
-  SELECT 
+const logpushQuery = `  SELECT 
     ClientRequestHost, 
     COUNT(*) as requests, 
     SUM(EdgeResponseBytes) as bytes_served,
@@ -131,18 +129,16 @@ const logpushQuery = `
   FROM http_requests 
   WHERE Timestamp >= NOW() - INTERVAL '24 hours'
   GROUP BY ClientRequestHost 
-  ORDER BY requests DESC
-`
+  ORDER BY requests DESC`
 
 // Filter only Cache Reserve hits
-const crHitsQuery = `
-  SELECT ClientRequestHost, COUNT(*) as requests, SUM(EdgeResponseBytes) as bytes
+const crHitsQuery = `  SELECT ClientRequestHost, COUNT(*) as requests, SUM(EdgeResponseBytes) as bytes
   FROM http_requests 
   WHERE CacheReserveUsed = true AND Timestamp >= NOW() - INTERVAL '7 days'
   GROUP BY ClientRequestHost 
-  ORDER BY bytes DESC
-`
-```
+  ORDER BY bytes DESC`
+
+````
 
 ### GraphQL Analytics
 
@@ -164,7 +160,7 @@ query CacheReserveAnalytics($zoneTag: string, $since: string, $until: string) {
     }
   }
 }
-```
+````
 
 ## Pricing
 
@@ -173,9 +169,9 @@ query CacheReserveAnalytics($zoneTag: string, $since: string, $until: string) {
 // Cache miss: 1A + 1B | Cache hit: 1B | Assets >1GB: proportionally more ops
 ```
 
-## See Also
+## Veja também
 
-- [README](./README.md) - Overview and core concepts
-- [Configuration](./configuration.md) - Setup and Cache Rules
-- [Patterns](./patterns.md) - Best practices and optimization
-- [Gotchas](./gotchas.md) - Common issues and troubleshooting
+- [README](./README.md) - Visão geral e conceitos básicos
+- [Configuração](./configuration.md) - Regras de configuração e cache
+- [Padrões](./patterns.md) - Melhores práticas e otimização
+- [Gotchas](./gotchas.md) - Problemas comuns e solução de problemas

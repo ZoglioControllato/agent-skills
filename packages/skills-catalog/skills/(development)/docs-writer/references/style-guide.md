@@ -1,72 +1,78 @@
-# Documentation style guide
+# Guia de estilo de documentação
 
-## I. Core principles
+## I. Princípios fundamentais
 
-1. **Clarity:** Write for easy understanding. Prioritize clear, direct, and simple language.
-2. **Consistency:** Use consistent terminology, formatting, and style throughout the documentation.
-3. **Accuracy:** Ensure all information is technically correct and up-to-date.
-4. **Accessibility:** Design documentation to be usable by everyone. Focus on semantic structure, clear link text, and image alternatives.
-5. **Global audience:** Write in standard US English. Avoid slang, idioms, and cultural references.
-6. **Prescriptive:** Guide the reader by recommending specific actions and paths, especially for complex tasks.
+1. **Clareza:** Escreva para facilitar o entendimento. Priorize uma linguagem clara, direta e simples.
+2. **Consistência:** Use terminologia, formatação e estilo consistentes em toda a documentação.
+3. **Precisão:** Garanta que todas as informações estejam tecnicamente corretas e atualizadas.
+4. **Acessibilidade:** Projete a documentação para que possa ser usada por todos. Concentre-se na estrutura semântica, no texto do link claro e nas alternativas de imagem.
+5. **Público global:** Escreva em formato standa
 
-## II. Voice and tone
+Terceiro Inglês dos EUA. Evite gírias, expressões idiomáticas e referências culturais. 6. **Prescritivo:** Oriente o leitor recomendando ações e caminhos específicos, especialmente para tarefas complexas.
 
-- **Professional yet friendly:** Maintain a helpful, knowledgeable, and conversational tone without being frivolous.
-- **Direct:** Get straight to the point. Keep paragraphs short and focused.
-- **Second person:** Address the reader as "you."
-- **Present tense:** Use the present tense to describe functionality (e.g., "The API returns a JSON object.").
-- **Avoid:** Jargon, slang, marketing hype, and overly casual language.
+##II. Voz e tom
 
-## III. Language and grammar
+- **Profissional, mas amigável:** Mantenha um tom prestativo, experiente e coloquial sem ser frívolo.
+- **Direto:** Vá direto ao ponto. Mantenha os parágrafos curtos e focados.
+- **Segunda pessoa:** Dirija-se ao leitor como "você".
+- **Presente:** Use o presente para descrever a funcionalidade (por exemplo, "A API retorna um objeto JSON.").
+- **Evite:** Jargões, gírias, propaganda de marketing e linguagem excessivamente casual.
 
-- **Active voice:** Prefer active voice over passive voice.
-  - _Example:_ "The system sends a notification." (Not: "A notification is sent by the system.")
-- **Contractions:** Use common contractions (e.g., "don't," "it's") to maintain a natural tone.
-- **Simple vocabulary:** Use common words. Define technical terms when necessary.
-- **Conciseness:** Keep sentences short and focused, but don't omit helpful information.
-- **"Please":** Avoid using the word "please."
+##III. Linguagem e gramática
 
-## IV. Procedures and steps
+- **Voz ativa:** Prefira a voz ativa à voz passiva.
+  - _Exemplo:_ "O sistema envia uma notificação." (Não: "Uma notificação é enviada pelo sistema.")
+- **Contrações:** Use contrações comuns (por exemplo, "não", "é") para manter um tom natural.
+- **Vocabulário simples:** Use palavras comuns. Defina termos técnicos quando necessário.
+- **Concisão:** Mantenha as frases curtas e focadas, mas não omita informações úteis.
+- **"Por favor":** Evite usar
 
-- Start each step with an imperative verb (e.g., "Connect to the database").
-- Number steps sequentially.
-- Introduce lists of steps with a complete sentence.
-- Put conditions before instructions, not after.
-- Provide clear context for where the action takes place (e.g., "In the administration console...").
-- Indicate optional steps clearly (e.g., "Optional: ...").
+g a palavra "por favor".
 
-## V. Formatting and punctuation
+## 4. Procedimentos e etapas
 
-- **Text wrap:** Wrap all text at 80 characters, with exceptions for long links or tables.
-- **Headings, titles, and bold text:** Use sentence case. Structure headings hierarchically.
-- **Lists:** Use numbered lists for sequential steps and bulleted lists for all other lists. Keep list items parallel in structure.
-- **Serial comma:** Use the serial comma (e.g., "one, two, and three").
-- **Punctuation:** Use standard American punctuation. Place periods inside quotation marks.
-- **Dates:** Use unambiguous date formatting (e.g., "January 22, 2026").
+- Comece cada etapa com um verbo imperativo (por exemplo, "Conectar-se ao banco de dados").
+- Numere as etapas sequencialmente.
+- Apresente listas de etapas com uma frase completa.
+- Coloque condições antes das instruções, não depois.
+- Forneça um contexto claro sobre onde a ação ocorre (por exemplo, "No console de administração...").
+- Indique claramente as etapas opcionais (por exemplo, "Opcional: ...").
 
-## VI. UI, code, and links
+## V. Formatação e pontuação
 
-- **UI elements:** Put UI elements in **bold**. Focus on the task when discussing interaction.
-- **Code:** Use `code font` for filenames, code snippets, commands, and API elements. Use code blocks for multi-line samples.
-- **Links:** Use descriptive link text that indicates what the link leads to. Avoid "click here."
+- **Quebra de texto:** Quebra todo o texto em 80 caracteres, com exceções para links longos ou tabelas.
+- **Títulos, títulos e texto em negrito:** Use maiúsculas e minúsculas. Estruture os títulos hierarquicamente.
+- **Listas:** use listas numeradas para etapas sequenciais e listas com marcadores para todas as outras listas. Mantenha os itens da lista paralelos em estrutura.
+- **Vírgula serial:** Use a vírgula serial (por exemplo, "um, dois e três").
+- **Pontuação:** Use a pontuação americana padrão. Coloque pe
 
-## VII. Word choice and terminology
+rios entre aspas.
 
-- **Consistent naming:** Use product and feature names consistently.
-- **Specific verbs:** Use precise verbs.
-- **Avoid:**
-  - Latin abbreviations (e.g., use "for example" instead of "e.g.").
-  - Placeholder names like "foo" and "bar" in examples; use meaningful names instead.
-  - Anthropomorphism (e.g., "The server thinks...").
-  - "Should": Be clear about requirements ("must") vs. recommendations ("we recommend").
+- **Datas:** Use uma formatação de data inequívoca (por exemplo, "22 de janeiro de 2026").
 
-## VIII. Files and media
+## VI. UI, código e links
 
-- **Filenames:** Use lowercase letters, separate words with hyphens (-), and use standard ASCII characters.
-- **Images:** Provide descriptive alt text for all images. Provide high-resolution or vector images when practical.
+- **Elementos da UI:** Coloque os elementos da UI em **negrito**. Concentre-se na tarefa ao discutir a interação.
+- **Código:** Use `fonte de código` para nomes de arquivos, trechos de código, comandos e elementos de API. Use blocos de código para amostras multilinhas.
+- **Links:** use um texto descritivo do link que indique aonde o link leva. Evite "clique aqui".
 
-## IX. Accessibility quick check
+## VII. Escolha de palavras e terminologia
 
-- Provide descriptive alt text for images.
-- Ensure link text makes sense out of context.
-- Use semantic HTML elements correctly (headings, lists, tables).
+- **Nomenclatura consistente:** Use nomes de produtos e recursos de forma consistente.
+- **Verbos específicos:** Use verbos precisos.
+- **Evite:**
+  - Abreviações latinas (por exemplo, use "por exemplo" em vez de "por exemplo").
+  - Nomes de espaços reservados como "foo" e "bar" nos exemplos; em vez disso, use nomes significativos.
+  - Antropomorfismo (ex.: “O servidor pensa...”).
+  - "Deveria": Seja claro sobre os requisitos ("deve") versus recomendações ("recomendamos").
+
+##VIII. Arquivos e mídia
+
+- **Nomes de arquivos:** Use letras minúsculas, separe as palavras com hífens (-) e use caracteres ASCII padrão.
+- **Imagens:** Forneça texto alternativo descritivo para todas as imagens. Forneça imagens vetoriais ou de alta resolução quando for prático.
+
+## IX. Verificação rápida de acessibilidade
+
+- Fornece texto alternativo descritivo para imagens.
+- Certifique-se de que o texto do link faça sentido fora do contexto.
+- Utilizar corretamente elementos HTML semânticos (títulos, listas, tabelas).

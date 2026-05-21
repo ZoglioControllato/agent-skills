@@ -1,6 +1,6 @@
-# D1 Patterns & Best Practices
+# Padrões e boas práticas D1
 
-## Pagination
+## Paginação
 
 ```typescript
 async function getUsers({ page, pageSize }: { page: number; pageSize: number }, env: Env) {
@@ -19,7 +19,7 @@ async function getUsers({ page, pageSize }: { page: number; pageSize: number }, 
 }
 ```
 
-## Conditional Queries
+##Consultas condicionais
 
 ```typescript
 async function searchUsers(filters: { name?: string; email?: string; active?: boolean }, env: Env) {
@@ -44,7 +44,7 @@ async function searchUsers(filters: { name?: string; email?: string; active?: bo
 }
 ```
 
-## Bulk Insert
+##Inserção em massa
 
 ```typescript
 async function bulkInsertUsers(users: Array<{ name: string; email: string }>, env: Env) {
@@ -54,7 +54,7 @@ async function bulkInsertUsers(users: Array<{ name: string; email: string }>, en
 }
 ```
 
-## Caching with KV
+##Cache com KV
 
 ```typescript
 async function getCachedUser(userId: number, env: { DB: D1Database; CACHE: KVNamespace }) {
@@ -67,28 +67,28 @@ async function getCachedUser(userId: number, env: { DB: D1Database; CACHE: KVNam
 }
 ```
 
-## Query Optimization
+##Otimização de consultas
 
 ```typescript
-// ✅ Use indexes in WHERE clauses
+// ✅ Índices no WHERE
 const users = await env.DB.prepare('SELECT * FROM users WHERE email = ?').bind(email).all()
 
-// ✅ Limit result sets
+// ✅ Limite resultados
 const recentPosts = await env.DB.prepare('SELECT * FROM posts ORDER BY created_at DESC LIMIT 100').all()
 
-// ✅ Use batch() for multiple independent queries
+// ✅ batch() para várias queries independentes
 const [user, posts, comments] = await env.DB.batch([
   env.DB.prepare('SELECT * FROM users WHERE id = ?').bind(userId),
   env.DB.prepare('SELECT * FROM posts WHERE user_id = ?').bind(userId),
   env.DB.prepare('SELECT * FROM comments WHERE user_id = ?').bind(userId),
 ])
 
-// ❌ Avoid N+1 queries
+// ❌ N+1
 for (const post of posts) {
-  const author = await env.DB.prepare('SELECT * FROM users WHERE id = ?').bind(post.user_id).first() // Bad: multiple round trips
+  const author = await env.DB.prepare('SELECT * FROM users WHERE id = ?').bind(post.user_id).first() // Ruim
 }
 
-// ✅ Use JOINs instead
+// ✅ JOINs
 const postsWithAuthors = await env.DB.prepare(
   `
   SELECT posts.*, users.name as author_name
@@ -98,10 +98,10 @@ const postsWithAuthors = await env.DB.prepare(
 ).all()
 ```
 
-## Multi-Tenant SaaS
+##SaaS multilocatário
 
 ```typescript
-// Each tenant gets own database
+// Cada tenant com banco próprio
 export default {
   async fetch(request: Request, env: { [key: `TENANT_${string}`]: D1Database }) {
     const tenantId = request.headers.get('X-Tenant-ID')
@@ -111,7 +111,7 @@ export default {
 }
 ```
 
-## Session Storage
+##Armazenamento de sessão
 
 ```typescript
 async function createSession(userId: number, token: string, env: Env) {
@@ -130,7 +130,7 @@ async function validateSession(token: string, env: Env) {
 }
 ```
 
-## Analytics/Events
+##Analytics/eventos
 
 ```typescript
 async function logEvent(event: { type: string; userId?: number; metadata: object }, env: Env) {
@@ -148,7 +148,7 @@ async function getEventStats(startDate: string, endDate: string, env: Env) {
 }
 ```
 
-## Read Replication Pattern (Paid Plans)
+## Replica de leitura padrão (pagos)
 
 ```typescript
 interface Env {
@@ -159,7 +159,6 @@ interface Env {
 export default {
   async fetch(request: Request, env: Env) {
     if (request.method === 'GET') {
-      // Reads: use replica for lower latency
       const users = await env.DB_REPLICA.prepare('SELECT * FROM users WHERE active = 1').all()
       return Response.json(users.results)
     }
@@ -168,7 +167,6 @@ export default {
       const { name, email } = await request.json()
       const result = await env.DB.prepare('INSERT INTO users (name, email) VALUES (?, ?)').bind(name, email).run()
 
-      // Read-after-write: use primary for consistency (replication lag <100ms-2s)
       const user = await env.DB.prepare('SELECT * FROM users WHERE id = ?').bind(result.meta.last_row_id).first()
       return Response.json(user, { status: 201 })
     }
@@ -176,27 +174,25 @@ export default {
 }
 ```
 
-**Use replicas for**: Analytics dashboards, search results, public queries (eventual consistency OK)  
-**Use primary for**: Read-after-write, financial transactions, authentication (consistency required)
+**Réplicas**: dashboards analíticos, busca, consultas públicas (consistência eventual OK)  
+**Primário**: leitura após escrita, finanças, autenticação (consistência obrigatória)
 
-## Sessions API Pattern (Paid Plans)
+## API de Sessões Padrão (pagos)
 
 ```typescript
-// Migration with long-running session (up to 15 min)
 async function runMigration(env: Env) {
-  const session = env.DB.withSession({ timeout: 600 }) // 10 min
+  const session = env.DB.withSession({ timeout: 600 })
   try {
     await session.prepare('CREATE INDEX idx_users_email ON users(email)').run()
     await session.prepare('CREATE INDEX idx_posts_user ON posts(user_id)').run()
     await session.prepare('ANALYZE').run()
   } finally {
-    session.close() // Always close to prevent leaks
+    session.close()
   }
 }
 
-// Bulk transformation with batching
 async function transformLargeDataset(env: Env) {
-  const session = env.DB.withSession({ timeout: 900 }) // 15 min max
+  const session = env.DB.withSession({ timeout: 900 })
   try {
     const BATCH_SIZE = 1000
     let offset = 0
@@ -215,12 +211,12 @@ async function transformLargeDataset(env: Env) {
 }
 ```
 
-## Time Travel & Backups
+##Viagem no tempo e backups
 
 ```bash
-wrangler d1 time-travel restore <db-name> --timestamp="2024-01-15T14:30:00Z"  # Point-in-time
-wrangler d1 time-travel info <db-name>  # List restore points (7 days free, 30 days paid)
-wrangler d1 export <db-name> --remote --output=./backup.sql  # Full export
-wrangler d1 export <db-name> --remote --no-schema --output=./data.sql  # Data only
-wrangler d1 execute <db-name> --remote --file=./backup.sql  # Import
+wrangler d1 time-travel restore <db-name> --timestamp="2024-01-15T14:30:00Z"
+wrangler d1 time-travel info <db-name>
+wrangler d1 export <db-name> --remote --output=./backup.sql
+wrangler d1 export <db-name> --remote --no-schema --output=./data.sql
+wrangler d1 execute <db-name> --remote --file=./backup.sql
 ```

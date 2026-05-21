@@ -1,25 +1,29 @@
 ---
-title: Conditional Module Loading
+title: Carregamento condicional de módulos
 impact: HIGH
-impactDescription: loads large data only when needed
+impactDescription: carrega dados grandes só quando necessário
 tags: bundle, conditional-loading, lazy-loading
 ---
 
-## Conditional Module Loading
+## Carregamento condicional de módulos
 
-Load large data or modules only when a feature is activated.
+Carregue dados ou módulos grandes apenas quando um recurso for ativado.
 
-**Example (lazy-load animation frames):**
+**Exemplo (lazy load de quadros de animação):**
 
 ```tsx
-function AnimationPlayer({ enabled, setEnabled }: { enabled: boolean; setEnabled: React.Dispatch<React.SetStateAction<boolean>> }) {
+function AnimationPlayer({
+  enabled,
+  setEnabled,
+}: {
+  enabled: boolean
+  setEnabled: React.Dispatch<React.SetStateAction<boolean>>
+}) {
   const [frames, setFrames] = useState<Frame[] | null>(null)
 
   useEffect(() => {
     if (enabled && !frames && typeof window !== 'undefined') {
-      import('./animation-frames.js')
-        .then(mod => setFrames(mod.frames))
-        .catch(() => setEnabled(false))
+      import('./animation-frames.js').then((mod) => setFrames(mod.frames)).catch(() => setEnabled(false))
     }
   }, [enabled, frames, setEnabled])
 
@@ -28,4 +32,4 @@ function AnimationPlayer({ enabled, setEnabled }: { enabled: boolean; setEnabled
 }
 ```
 
-The `typeof window !== 'undefined'` check prevents bundling this module for SSR, optimizing server bundle size and build speed.
+A seleção `typeof window !== 'undefined'` evita empacotar este módulo para SSR, otimizando o pacote do servidor e a velocidade de construção.

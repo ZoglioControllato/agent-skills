@@ -31,52 +31,52 @@ const app = await client.spectrum.apps.create({
 })
 ```
 
-**Origin config:**
+**Configuração de origem:**
 
-- **nginx**: `listen 22 proxy_protocol;`
-- **HAProxy**: `bind :22 accept-proxy`
+- **nginx**: `ouvir 22 proxy_protocol;`
+- **HAProxy**: `bind:22 aceitar-proxy`
 
-### TLS Errors
+### Erros TLS
 
-**Problem:** TLS handshake failures, 525 errors  
-**Cause:** TLS mode mismatch
+**Problema:** falhas de handshake TLS, erros 525
+**Causa:** incompatibilidade de modo TLS
 
-| Error              | TLS Mode        | Problem            | Solution                        |
-| ------------------ | --------------- | ------------------ | ------------------------------- |
-| Connection refused | `full`/`strict` | Origin not TLS     | Use `tls: "off"` or enable TLS  |
-| 525 cert invalid   | `strict`        | Self-signed cert   | Use `tls: "full"` or valid cert |
-| Handshake timeout  | `flexible`      | Origin expects TLS | Use `tls: "full"`               |
+| Erro                          | Modo TLS             | Problema                 | Solução                                 |
+| ----------------------------- | -------------------- | ------------------------ | --------------------------------------- |
+| Conexão recusada              | `completo`/`estrito` | Origem não TLS           | Use `tls: "off"` ou habilite TLS        |
+| Certificado 525 inválido      | `estrito`            | Certificado autoassinado | Use `tls: "full"` ou certificado válido |
+| Tempo limite do aperto de mão | `flexível`           | Origin espera TLS        | Use `tls: "completo"`                   |
 
-**Debug:**
+**Depurar:**
 
 ```bash
 openssl s_client -connect app.example.com:443 -showcerts
 ```
 
-### SMTP Reverse DNS
+### DNS reverso SMTP
 
-**Problem:** Email servers reject SMTP via Spectrum  
-**Cause:** Spectrum IPs lack PTR (reverse DNS) records  
-**Impact:** Many mail servers require valid rDNS for anti-spam
+**Problema:** Servidores de e-mail rejeitam SMTP via Spectrum
+**Causa:** Os IPs do Spectrum não possuem registros PTR (DNS reverso)
+**Impacto:** muitos servidores de e-mail exigem rDNS válido para antispam
 
-**Solution:**
+**Solução:**
 
-- Outbound SMTP: NOT recommended through Spectrum
-- Inbound SMTP: Use Cloudflare Email Routing
-- Internal relay: Whitelist Spectrum IPs on destination
+- SMTP de saída: NÃO recomendado através do Spectrum
+- SMTP de entrada: use o roteamento de e-mail Cloudflare
+- Retransmissão interna: lista branca de IPs do espectro no destino
 
-### Proxy Protocol Compatibility
+### Compatibilidade do protocolo proxy
 
-**Problem:** Connection works but app behaves incorrectly  
-**Cause:** Origin doesn't support Proxy Protocol
+**Problema:** A conexão funciona, mas o aplicativo se comporta incorretamente
+**Causa:** Origin não suporta protocolo proxy
 
-**Solution:**
+**Solução:**
 
-1. Verify origin supports version (v1: widely supported, v2: HAProxy 1.5+/nginx 1.11+)
-2. Test with `proxy_protocol: 'off'` first
-3. Configure origin to parse headers
+1. Verifique a versão de suporte de origem (v1: amplamente compatível, v2: HAProxy 1.5+/nginx 1.11+)
+2. Teste com `proxy_protocol: 'off'` primeiro
+3. Configure a origem para analisar cabeçalhos
 
-**nginx TCP:**
+**TCP nginx:**
 
 ```nginx
 stream {

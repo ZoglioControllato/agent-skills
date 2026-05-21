@@ -1,21 +1,21 @@
 ---
-title: Early Return from Functions
+title: Retorno antecipado em funções
 impact: LOW-MEDIUM
-impactDescription: avoids unnecessary computation
+impactDescription: evita despesas desnecessárias
 tags: javascript, functions, optimization, early-return
 ---
 
-## Early Return from Functions
+## Retorno antecipado em funções
 
-Return early when result is determined to skip unnecessary processing.
+Retorne cedo quando o resultado já estiver definido para reduzir o processamento necessário.
 
-**Incorrect (processes all items even after finding answer):**
+**Incorreto (processa todos os itens mesmo após uma resposta):**
 
 ```typescript
 function validateUsers(users: User[]) {
   let hasError = false
   let errorMessage = ''
-  
+
   for (const user of users) {
     if (!user.email) {
       hasError = true
@@ -27,12 +27,12 @@ function validateUsers(users: User[]) {
     }
     // Continues checking all users even after error found
   }
-  
+
   return hasError ? { valid: false, error: errorMessage } : { valid: true }
 }
 ```
 
-**Correct (returns immediately on first error):**
+**Correto (retorna imediatamente no primeiro erro):**
 
 ```typescript
 function validateUsers(users: User[]) {

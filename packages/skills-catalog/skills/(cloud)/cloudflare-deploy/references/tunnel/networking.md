@@ -1,26 +1,26 @@
-# Tunnel Networking
+# Rede Tunnel
 
-## Connectivity Requirements
+## Requisitos de conectividade
 
-### Outbound Ports
+### Portas de saída
 
-Cloudflared requires outbound access on:
+O `cloudflared` precisa de saída para:
 
-| Port | Protocol | Purpose                        | Required |
-| ---- | -------- | ------------------------------ | -------- |
-| 7844 | TCP/UDP  | Primary tunnel protocol (QUIC) | Yes      |
-| 443  | TCP      | Fallback (HTTP/2)              | Yes      |
+| Porta | Protocolo | Finalidade                 | Obrigatório |
+| ----- | --------- | -------------------------- | ----------- |
+| 7844  | TCP/UDP   | Protocolo principal (QUIC) | Sim         |
+| 443   | TCP       | Fallback (HTTP/2)          | Sim         |
 
-**Network path:**
+**Caminho de rede:**
 
 ```
 cloudflared → edge.argotunnel.com:7844 (preferred)
 cloudflared → region.argotunnel.com:443 (fallback)
 ```
 
-### Firewall Rules
+### Regras de firewall
 
-#### Minimal (Production)
+#### Mínimo (produção)
 
 ```bash
 # Outbound only
@@ -28,7 +28,7 @@ ALLOW tcp/udp 7844 to *.argotunnel.com
 ALLOW tcp 443 to *.argotunnel.com
 ```
 
-#### Full (Recommended)
+#### Completo (recomendado)
 
 ```bash
 # Tunnel connectivity
@@ -43,9 +43,9 @@ ALLOW tcp 443 to github.com
 ALLOW tcp 443 to objects.githubusercontent.com
 ```
 
-### IP Ranges
+### Faixas de IP
 
-Cloudflare Anycast IPs (tunnel endpoints):
+IPs anycast Cloudflare (endpoints do tunnel):
 
 ```
 # IPv4
@@ -56,11 +56,11 @@ Cloudflare Anycast IPs (tunnel endpoints):
 2606:4700::/32
 ```
 
-**Note:** Use DNS resolution for `*.argotunnel.com` rather than hardcoding IPs. Cloudflare may add edge locations.
+**Nota:** prefira resolver DNS para `*.argotunnel.com` em vez de fixar IPs. A Cloudflare pode adicionar edges.
 
-## Pre-Flight Check
+## Pré-voo
 
-Test connectivity before deploying:
+Teste conectividade antes do deploy:
 
 ```bash
 # Test DNS resolution
@@ -77,41 +77,41 @@ cloudflared tunnel --loglevel debug run my-tunnel
 # Look for "Registered tunnel connection"
 ```
 
-### Common Connectivity Errors
+### Erros comuns de conectividade
 
-| Error                       | Cause             | Solution                              |
-| --------------------------- | ----------------- | ------------------------------------- |
-| "no such host"              | DNS blocked       | Allow port 53 UDP/TCP                 |
-| "context deadline exceeded" | Port 7844 blocked | Allow UDP/TCP 7844                    |
-| "TLS handshake timeout"     | Port 443 blocked  | Allow TCP 443, disable SSL inspection |
+| Erro                        | Causa                | Solução                                      |
+| --------------------------- | -------------------- | -------------------------------------------- |
+| "no such host"              | DNS bloqueado        | Permita porta 53 UDP/TCP                     |
+| "context deadline exceeded" | Porta 7844 bloqueada | UDP/TCP 7844                                 |
+| "TLS handshake timeout"     | Porta 443 bloqueada  | TCP 443; desative inspeção SSL se necessário |
 
-## Protocol Selection
+## Escolha de protocolo
 
-Cloudflared automatically selects protocol:
+O `cloudflared` escolhe automaticamente:
 
-| Protocol | Port     | Priority        | Use Case                      |
-| -------- | -------- | --------------- | ----------------------------- |
-| QUIC     | 7844 UDP | 1st (preferred) | Low latency, best performance |
-| HTTP/2   | 443 TCP  | 2nd (fallback)  | QUIC blocked by firewall      |
+| Protocolo | Porta    | Prioridade     | Uso                               |
+| --------- | -------- | -------------- | --------------------------------- |
+| QUIC      | 7844 UDP | 1ª (preferido) | Baixa latência, melhor desempenho |
+| HTTP/2    | 443 TCP  | 2ª (fallback)  | QUIC bloqueado pelo firewall      |
 
-**Force HTTP/2 fallback:**
+**Forçar fallback HTTP/2:**
 
 ```bash
 cloudflared tunnel --protocol http2 run my-tunnel
 ```
 
-**Verify active protocol:**
+**Verificar protocolo ativo:**
 
 ```bash
 cloudflared tunnel info my-tunnel
 # Shows "connections" with protocol type
 ```
 
-## Private Network Routing
+## Roteamento de rede privada
 
-### WARP Client Requirements
+### Requisitos do cliente WARP
 
-Users accessing private IPs via WARP need:
+Usuários acessando IPs privados via WARP precisam:
 
 ```bash
 # Outbound (WARP client)
@@ -120,9 +120,9 @@ ALLOW udp 2408 to 162.159.*.* (WireGuard)
 ALLOW tcp 443 to *.cloudflareclient.com
 ```
 
-### Split Tunnel Configuration
+### Split tunnel
 
-Route only private networks through tunnel:
+Encaminhe só redes privadas pelo tunnel:
 
 ```yaml
 # warp-routing config
@@ -137,11 +137,11 @@ cloudflared tunnel route ip add 172.16.0.0/12 my-tunnel
 cloudflared tunnel route ip add 192.168.0.0/16 my-tunnel
 ```
 
-WARP users can access these IPs without VPN.
+Usuários WARP acessam esses IPs sem VPN clássica.
 
-## Network Diagnostics
+## Diagnóstico de rede
 
-### Connection Diagnostics
+### Diagnóstico de conexão
 
 ```bash
 # Check edge selection and connection health
@@ -155,20 +155,21 @@ curl localhost:9090/metrics | grep cloudflared_tunnel
 curl -w "time_total: %{time_total}\n" -o /dev/null https://myapp.example.com
 ```
 
-## Corporate Network Considerations
+## Rede corporativa
 
-Cloudflared honors proxy environment variables (`HTTP_PROXY`, `HTTPS_PROXY`, `NO_PROXY`).
+O `cloudflared` respeita `HTTP_PROXY`, `HTTPS_PROXY`, `NO_PROXY`.
 
-If corporate proxy intercepts TLS, add corporate root CA to system trust store.
+Se o proxy corporativo intercepta TLS, adicione a CA raiz da empresa ao trust store do sistema.
 
-## Bandwidth and Rate Limits
+## Banda e limites
 
-| Limit                  | Value           | Notes                     |
-| ---------------------- | --------------- | ------------------------- |
-| Request size           | 100 MB          | Single HTTP request       |
-| Upload speed           | No hard limit   | Governed by network/plan  |
-| Concurrent connections | 1000 per tunnel | Across all replicas       |
-| Requests per second    | No limit        | Subject to DDoS detection |
+| Limite                  | Valor             | Notas                      |
+| ----------------------- | ----------------- | -------------------------- |
+| Tamanho da requisição   | 100 MB            | Uma requisição HTTP        |
+| Velocidade de upload    | Sem limite rígido | Depende de rede/plano      |
+| Conexões concorrentes   | 1000 por tunnel   | Entre todas as réplicas    |
+| Requisições por segundo | Sem limite fixo   | Sujeito a detecção de DDoS |
 
-**Large file transfers:**
-Use R2 or Workers with chunked uploads instead of streaming through tunnel.
+**Arquivos grandes:** prefira R2 ou Workers com upload em chunks em vez de streaming pesado pelo tunnel.
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

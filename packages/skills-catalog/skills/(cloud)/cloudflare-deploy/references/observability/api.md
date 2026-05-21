@@ -1,10 +1,10 @@
-## API Reference
+## Referência de API
 
-### GraphQL Analytics API
+### API de análise GraphQL
 
-**Endpoint**: `https://api.cloudflare.com/client/v4/graphql`
+**Ponto final**: `https://api.cloudflare.com/client/v4/graphql`
 
-**Query Workers Metrics**:
+**Métricas dos trabalhadores de consulta**:
 
 ```graphql
 query {
@@ -31,13 +31,13 @@ query {
 }
 ```
 
-### Analytics Engine SQL API
+### API SQL do mecanismo de análise
 
-**Endpoint**: `https://api.cloudflare.com/client/v4/accounts/{account_id}/analytics_engine/sql`
+**Ponto final**: `https://api.cloudflare.com/client/v4/accounts/{account_id}/analytics_engine/sql`
 
-**Authentication**: `Authorization: Bearer <API_TOKEN>` (Account Analytics Read permission)
+**Autenticação**: `Autorização: Portador <API_TOKEN>` (permissão de leitura do Analytics da conta)
 
-**Common Queries**:
+**Consultas comuns**:
 
 ```sql
 -- List all datasets
@@ -76,9 +76,9 @@ GROUP BY error_type
 ORDER BY occurrences DESC;
 ```
 
-### Console Logging API
+### API de registro do console
 
-**Methods**:
+**Métodos**:
 
 ```typescript
 // Standard methods (all appear in Workers Logs)
@@ -98,7 +98,7 @@ console.log({
 })
 ```
 
-**Log Levels**: All console methods produce logs; use structured fields for filtering:
+**Níveis de log**: todos os métodos do console produzem logs; use campos estruturados para filtragem:
 
 ```typescript
 console.log({
@@ -108,7 +108,7 @@ console.log({
 })
 ```
 
-### Analytics Engine Binding Types
+### Tipos de vinculação do mecanismo de análise
 
 ```typescript
 interface AnalyticsEngineDataset {
@@ -127,14 +127,14 @@ interface AnalyticsEngineDataPoint {
 }
 ```
 
-**Field Limits**:
+**Limites de campo**:
 
-- Max 20 indexes
-- Max 20 blobs
-- Max 20 doubles
-- Max 25 `writeDataPoint` calls per request
+- Máximo de 20 índices
+- Máximo de 20 bolhas
+- Máximo de 20 duplas
+- Máximo de 25 chamadas `writeDataPoint` por solicitação
 
-### Tail Consumer Event Type
+### Tipo de evento do consumidor final
 
 ```typescript
 interface TraceItem {

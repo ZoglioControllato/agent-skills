@@ -20,27 +20,26 @@ interface ForwardableEmailMessage {
 }
 ```
 
-### Properties
+### Propriedades
 
-| Property  | Type           | Description                                         |
-| --------- | -------------- | --------------------------------------------------- |
-| `from`    | string         | Envelope sender (SMTP MAIL FROM) - use for security |
-| `to`      | string         | Envelope recipient (SMTP RCPT TO)                   |
-| `headers` | Headers        | Message headers (Subject, Message-ID, etc.)         |
-| `raw`     | ReadableStream | Raw MIME message (**single-use**, buffer first)     |
-| `rawSize` | number         | Message size in bytes                               |
+| Propriedade     | Tipo          | Descrição                                                   |
+| --------------- | ------------- | ----------------------------------------------------------- |
+| `de`            | corda         | Remetente do envelope (SMTP MAIL FROM) - uso para segurança |
+| `para`          | corda         | Destinatário do envelope (SMTP RCPT TO)                     |
+| `cabeçalhos`    | Cabeçalhos    | Cabeçalhos das mensagens (Assunto, ID da mensagem, etc.)    |
+| `cru`           | Fluxo legível | Mensagem MIME bruta (**uso único**, buffer primeiro)        |
+| `tamanho bruto` | número        | Tamanho da mensagem em bytes                                |
 
-### Methods
+### Métodos
 
-#### setReject(reason: string): void
+#### setReject(motivo: string): void
 
-Reject with permanent SMTP 5xx error. Email not delivered, sender may receive bounce.
-
-```typescript
+Rejeite com erro SMTP 5xx permanente. E-mail não entregue, o remetente pode receber devolução.```typescript
 if (blockList.includes(message.from)) {
-  message.setReject('Sender blocked')
+message.setReject('Sender blocked')
 }
-```
+
+````
 
 #### forward(rcptTo: string, headers?: Headers): Promise<void>
 
@@ -53,7 +52,7 @@ await message.forward('inbox@example.com')
 const h = new Headers()
 h.set('X-Processed-By', 'worker')
 await message.forward('inbox@example.com', h)
-```
+````
 
 #### reply(message: EmailMessage): Promise<void>
 

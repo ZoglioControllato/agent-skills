@@ -1,107 +1,110 @@
-# UX Writing
+# Escrita UX
 
-## The Button Label Problem
+## O problema do rótulo do botão
 
-**Never use "OK", "Submit", or "Yes/No".** These are lazy and ambiguous. Use specific verb + object patterns:
+**Nunca use "OK", "Enviar" ou "Sim/Não".** Estes são preguiçosos e ambíguos. Use padrões específicos de verbo + objeto:
 
-| Bad | Good | Why |
-|-----|------|-----|
-| OK | Save changes | Says what will happen |
-| Submit | Create account | Outcome-focused |
-| Yes | Delete message | Confirms the action |
-| Cancel | Keep editing | Clarifies what "cancel" means |
-| Click here | Download PDF | Describes the destination |
+| Ruim        | Bom               | Por que                              |
+| ----------- | ----------------- | ------------------------------------ |
+| OK          | Salvar alterações | Diz o que vai acontecer              |
+| Enviar      | Criar conta       | Focado em resultados                 |
+| Sim         | Excluir mensagem  | Confirma a ação                      |
+| Cancelar    | Continue editando | Esclarece o que significa “cancelar” |
+| Clique aqui | Baixar PDF        | Descreve o destino                   |
 
-**For destructive actions**, name the destruction:
-- "Delete" not "Remove" (delete is permanent, remove implies recoverable)
-- "Delete 5 items" not "Delete selected" (show the count)
+**Para ações destrutivas**, nomeie a destruição:
 
-## Error Messages: The Formula
+- "Excluir" e não "Remover" (a exclusão é permanente, a remoção implica recuperável)
+- "Excluir 5 itens" e não "Excluir selecionados" (mostra a contagem)
 
-Every error message should answer: (1) What happened? (2) Why? (3) How to fix it? Example: "Email address isn't valid. Please include an @ symbol." not "Invalid input".
+## Mensagens de erro: a fórmula
 
-### Error Message Templates
+Toda mensagem de erro deve responder: (1) O que aconteceu? (2) Por quê? (3) Como consertar isso? Exemplo: "O endereço de e-mail não é válido. Inclua um símbolo @." não "Entrada inválida".
 
-| Situation | Template |
-|-----------|----------|
-| **Format error** | "[Field] needs to be [format]. Example: [example]" |
-| **Missing required** | "Please enter [what's missing]" |
-| **Permission denied** | "You don't have access to [thing]. [What to do instead]" |
-| **Network error** | "We couldn't reach [thing]. Check your connection and [action]." |
-| **Server error** | "Something went wrong on our end. We're looking into it. [Alternative action]" |
+### Modelos de mensagens de erro
 
-### Don't Blame the User
+| Situação              | Modelo                                                                     |
+| --------------------- | -------------------------------------------------------------------------- |
+| **Erro de formato**   | "[Campo] precisa ser [formato]. Exemplo: [exemplo]"                        |
+| **Não é obrigatório** | "Por favor, insira [o que está faltando]"                                  |
+| **Permissão negada**  | "Você não tem acesso a [coisa]. [O que fazer em vez disso]"                |
+| **Erro de rede**      | "Não foi possível alcançar [coisa]. Verifique sua conexão e [ação]."       |
+| **Erro de servidor**  | "Algo deu errado do nosso lado. Estamos investigando isso. [Alternativa ac |
 
-Reframe errors: "Please enter a date in MM/DD/YYYY format" not "You entered an invalid date".
+ção]" |
 
-## Empty States Are Opportunities
+### Não culpe o usuário
 
-Empty states are onboarding moments: (1) Acknowledge briefly, (2) Explain the value of filling it, (3) Provide a clear action. "No projects yet. Create your first one to get started." not just "No items".
+Erros de reformulação: "Insira uma data no formato MM/DD/AAAA" e não "Você inseriu uma data inválida".
 
-## Voice vs Tone
+## Estados vazios são oportunidades
 
-**Voice** is your brand's personality—consistent everywhere.
-**Tone** adapts to the moment.
+Os estados vazios são momentos de integração: (1) Reconheça brevemente, (2) Explique o valor de preenchê-los, (3) Forneça uma ação clara. "Nenhum projeto ainda. Crie o seu primeiro para começar." não apenas "Sem itens".
 
-| Moment | Tone Shift |
-|--------|------------|
-| Success | Celebratory, brief: "Done! Your changes are live." |
-| Error | Empathetic, helpful: "That didn't work. Here's what to try..." |
-| Loading | Reassuring: "Saving your work..." |
-| Destructive confirm | Serious, clear: "Delete this project? This can't be undone." |
+## Voz vs Tom
 
-**Never use humor for errors.** Users are already frustrated. Be helpful, not cute.
+**Voz** é a personalidade da sua marca, consistente em todos os lugares.
+**Tom** se adapta ao momento.
 
-## Writing for Accessibility
+| Momento                | Mudança de tom                                                        |
+| ---------------------- | --------------------------------------------------------------------- |
+| Sucesso                | Comemorativo, breve: "Concluído! Suas alterações estão ativas."       |
+| Erro                   | Empático, prestativo: "Isso não funcionou. Aqui está o que tentar..." |
+| Carregando             | Tranquilizador: "Salvando seu trabalho..."                            |
+| Confirmação destrutiva | Sério, claro: "Excluir este projeto? Isso não pode ser desfeito."     |
 
-**Link text** must have standalone meaning—"View pricing plans" not "Click here". **Alt text** describes information, not the image—"Revenue increased 40% in Q4" not "Chart". Use `alt=""` for decorative images. **Icon buttons** need `aria-label` for screen reader context.
+**Nunca use humor para erros.** Os usuários já estão frustrados. Seja útil, não fofo.
 
-## Writing for Translation
+## Escrevendo para acessibilidade
 
-### Plan for Expansion
+**O texto do link** deve ter um significado independente: "Ver planos de preços" e não "Clique aqui". **Texto alternativo** descreve informações, não a imagem: "A receita aumentou 40% no quarto trimestre" e não "Gráfico". Use `alt=""` para imagens decorativas. **Botões de ícone** precisam de `aria-label` para contexto de leitor de tela.
 
-German text is ~30% longer than English. Allocate space:
+## Escrevendo para Tradução
 
-| Language | Expansion |
-|----------|-----------|
-| German | +30% |
-| French | +20% |
-| Finnish | +30-40% |
-| Chinese | -30% (fewer chars, but same width) |
+### Plano de Expansão
 
-### Translation-Friendly Patterns
+O texto em alemão é cerca de 30% mais longo que o inglês. Alocar espaço:
 
-Keep numbers separate ("New messages: 3" not "You have 3 new messages"). Use full sentences as single strings (word order varies by language). Avoid abbreviations ("5 minutes ago" not "5 mins ago"). Give translators context about where strings appear.
+| Idioma    | Expansão                                   |
+| --------- | ------------------------------------------ |
+| Alemão    | +30%                                       |
+| Francês   | +20%                                       |
+| Finlandês | +30-40%                                    |
+| Chinês    | -30% (menos caracteres, mas mesma largura) |
 
-## Consistency: The Terminology Problem
+### Padrões de fácil tradução
 
-Pick one term and stick with it:
+Mantenha os números separados (“Novas mensagens: 3” e não “Você tem 3 novas mensagens”). Use frases completas como sequências únicas (a ordem das palavras varia de acordo com o idioma). Evite abreviações (“5 minutos atrás” e não “5 minutos atrás”). Dê aos tradutores contexto sobre onde as strings aparecem.
 
-| Inconsistent | Consistent |
-|--------------|------------|
-| Delete / Remove / Trash | Delete |
-| Settings / Preferences / Options | Settings |
-| Sign in / Log in / Enter | Sign in |
-| Create / Add / New | Create |
+## Consistência: o problema da terminologia
 
-Build a terminology glossary and enforce it. Variety creates confusion.
+Escolha um termo e fique com ele:
 
-## Avoid Redundant Copy
+| Inconsistente                     | Consistente   |
+| --------------------------------- | ------------- |
+| Excluir/Remover/Lixeira           | Excluir       |
+| Configurações/Preferências/Opções | Configurações |
+| Entrar / Entrar / Entrar          | Entrar        |
+| Criar/Adicionar/Novo              | Criar         |
 
-If the heading explains it, the intro is redundant. If the button is clear, don't explain it again. Say it once, say it well.
+Crie um glossário terminológico e aplique-o. A variedade cria confusão.
 
-## Loading States
+## Evite cópias redundantes
 
-Be specific: "Saving your draft..." not "Loading...". For long waits, set expectations ("This usually takes 30 seconds") or show progress.
+Se o título explica isso, a introdução é redundante. Se o botão estiver claro, não explique novamente. Diga uma vez, diga bem.
 
-## Confirmation Dialogs: Use Sparingly
+## Carregando Estados
 
-Most confirmation dialogs are design failures—consider undo instead. When you must confirm: name the action, explain consequences, use specific button labels ("Delete project" / "Keep project", not "Yes" / "No").
+Seja específico: "Salvando seu rascunho..." e não "Carregando...". Para esperas longas, defina expectativas (“Isso geralmente leva 30 segundos”) ou mostre o progresso.
 
-## Form Instructions
+## Diálogos de confirmação: use com moderação
 
-Show format with placeholders, not instructions. For non-obvious fields, explain why you're asking.
+A maioria das caixas de diálogo de confirmação são falhas de design; em vez disso, considere desfazer. Quando você deve confirmar: nomeie a ação, explique as consequências, use rótulos de botões específicos ("Excluir projeto"/"Manter projeto", não "Sim"/"Não").
+
+## Instruções do formulário
+
+Mostre o formato com espaços reservados, não com instruções. Para campos não óbvios, explique por que você está perguntando.
 
 ---
 
-**Avoid**: Jargon without explanation. Blaming users ("You made an error" → "This field is required"). Vague errors ("Something went wrong"). Varying terminology for variety. Humor for errors.
+**Evitar**: Jargão sem explicação. Culpar os usuários ("Você cometeu um erro" → "Este campo é obrigatório"). Erros vagos (“Algo deu errado”). Terminologia variável para variedade. Humor para erros.

@@ -1,17 +1,17 @@
-# Terraform Troubleshooting & Best Practices
+# Terraform: resolução de problemas e boas práticas
 
-Common issues, security considerations, and best practices.
+Problemas comuns, segurança e boas práticas.
 
-## State Drift Issues
+## Problemas de drift de state
 
-Some resources have known state drift. Add lifecycle blocks to prevent perpetual diffs:
+Alguns recursos têm drift de state conhecido. Adicione blocos `lifecycle` para evitar diffs perpétuos:
 
-| Resource                    | Drift Attributes                      | Workaround                                             |
-| --------------------------- | ------------------------------------- | ------------------------------------------------------ |
-| `cloudflare_pages_project`  | `deployment_configs.*`                | `ignore_changes = [deployment_configs]`                |
-| `cloudflare_workers_script` | secrets returned as REDACTED          | `ignore_changes = [secret_text_binding]`               |
-| `cloudflare_load_balancer`  | `adaptive_routing`, `random_steering` | `ignore_changes = [adaptive_routing, random_steering]` |
-| `cloudflare_workers_kv`     | special chars in keys (< 5.16.0)      | Upgrade to 5.16.0+                                     |
+| Recurso                     | Atributos com drift                        | Contorno                                               |
+| --------------------------- | ------------------------------------------ | ------------------------------------------------------ |
+| `cloudflare_pages_project`  | `deployment_configs.*`                     | `ignore_changes = [deployment_configs]`                |
+| `cloudflare_workers_script` | secrets retornam como REDACTED             | `ignore_changes = [secret_text_binding]`               |
+| `cloudflare_load_balancer`  | `adaptive_routing`, `random_steering`      | `ignore_changes = [adaptive_routing, random_steering]` |
+| `cloudflare_workers_kv`     | caracteres especiais nas chaves (< 5.16.0) | Atualize para 5.16.0+                                  |
 
 ```hcl
 # Example: Ignore secret drift
@@ -27,29 +27,29 @@ resource "cloudflare_workers_script" "api" {
 }
 ```
 
-## v5 Breaking Changes
+## Breaking changes do v5
 
-Provider v5 is current (auto-generated from OpenAPI). v4→v5 has breaking changes:
+O provider v5 é o atual (gerado a partir de OpenAPI). De v4 para v5 há breaking changes:
 
-**Resource Renames:**
+**Renomeação de recursos:**
 
-| v4 Resource                | v5 Resource                 | Notes                |
-| -------------------------- | --------------------------- | -------------------- |
-| `cloudflare_record`        | `cloudflare_dns_record`     |                      |
-| `cloudflare_worker_script` | `cloudflare_workers_script` | Note: plural         |
-| `cloudflare_worker_*`      | `cloudflare_workers_*`      | All worker resources |
-| `cloudflare_access_*`      | `cloudflare_zero_trust_*`   | Access → Zero Trust  |
+| Recurso v4                 | Recurso v5                  | Observações         |
+| -------------------------- | --------------------------- | ------------------- |
+| `cloudflare_record`        | `cloudflare_dns_record`     |                     |
+| `cloudflare_worker_script` | `cloudflare_workers_script` | Atenção: plural     |
+| `cloudflare_worker_*`      | `cloudflare_workers_*`      | Todos os workers    |
+| `cloudflare_access_*`      | `cloudflare_zero_trust_*`   | Access → Zero Trust |
 
-**Attribute Changes:**
+**Mudanças de atributo:**
 
-| v4 Attribute    | v5 Attribute | Resources            |
-| --------------- | ------------ | -------------------- |
-| `zone`          | `name`       | zone                 |
-| `account_id`    | `account.id` | zone (object syntax) |
-| `key`           | `key_name`   | KV                   |
-| `location_hint` | `location`   | R2                   |
+| Atributo v4     | Atributo v5  | Recursos              |
+| --------------- | ------------ | --------------------- |
+| `zone`          | `name`       | zone                  |
+| `account_id`    | `account.id` | zone (sintaxe objeto) |
+| `key`           | `key_name`   | KV                    |
+| `location_hint` | `location`   | R2                    |
 
-**State Migration:**
+**Migração de state:**
 
 ```bash
 # Rename resources in state after v5 upgrade
@@ -57,13 +57,13 @@ terraform state mv cloudflare_record.example cloudflare_dns_record.example
 terraform state mv cloudflare_worker_script.api cloudflare_workers_script.api
 ```
 
-## Resource-Specific Gotchas
+## Armadilhas por recurso
 
-### R2 Location Case Sensitivity
+### Localização R2 e maiúsculas
 
-**Problem:** Terraform creates R2 bucket but fails on subsequent applies  
-**Cause:** Location must be UPPERCASE  
-**Solution:** Use `WNAM`, `ENAM`, `WEUR`, `EEUR`, `APAC` (not `wnam`, `enam`, etc.)
+**Problema:** Terraform cria o bucket R2 mas falha em applies seguintes  
+**Causa:** a localização deve estar em MAIÚSCULAS  
+**Solução:** use `WNAM`, `ENAM`, `WEUR`, `EEUR`, `APAC` (não `wnam`, `enam`, etc.)
 
 ```hcl
 resource "cloudflare_r2_bucket" "assets" {
@@ -73,78 +73,80 @@ resource "cloudflare_r2_bucket" "assets" {
 }
 ```
 
-### KV Special Characters (< 5.16.0)
+### Caracteres especiais no KV (< 5.16.0)
 
-**Problem:** Keys with `+`, `#`, `%` cause encoding issues  
-**Cause:** URL encoding bug in provider < 5.16.0  
-**Solution:** Upgrade to 5.16.0+ or avoid special chars in keys
+**Problema:** chaves com `+`, `#`, `%` causam problemas de encoding  
+**Causa:** bug de URL encoding no provider < 5.16.0  
+**Solução:** atualize para 5.16.0+ ou evite caracteres especiais nas chaves
 
-### D1 Migrations
+### Migrações D1
 
-**Problem:** Terraform creates database but schema is empty  
-**Cause:** Terraform only creates D1 resource, not schema  
-**Solution:** Run migrations via wrangler after Terraform apply
+**Problema:** Terraform cria o banco mas o schema está vazio  
+**Causa:** Terraform só cria o recurso D1, não o schema  
+**Solução:** rode migrações via wrangler após o apply do Terraform
 
 ```bash
 # After terraform apply
 wrangler d1 migrations apply <db-name>
 ```
 
-### Worker Script Size Limit
+### Limite de tamanho do Worker
 
-**Problem:** Worker deployment fails with "script too large"  
-**Cause:** Worker script + dependencies exceed 10 MB limit  
-**Solution:** Use code splitting, external dependencies, or minification
+**Problema:** deploy do Worker falha com "script too large"  
+**Causa:** script + dependências excedem o limite de 10 MB  
+**Solução:** code splitting, dependências externas ou minificação
 
-### Pages Project Drift
+### Drift em Pages
 
-**Problem:** Pages project shows perpetual diff on `deployment_configs`  
-**Cause:** Cloudflare API adds default values not in Terraform state  
-**Solution:** Add lifecycle ignore block (see State Drift table above)
+**Problema:** projeto Pages mostra diff perpétuo em `deployment_configs`  
+**Causa:** a API adiciona valores padrão que não estão no state  
+**Solução:** adicione `lifecycle` ignore (veja tabela de drift acima)
 
-## Common Errors
+## Erros comuns
 
 ### "Error: couldn't find resource"
 
-**Cause:** Resource was deleted outside Terraform  
-**Solution:** Import resource back into state with `terraform import cloudflare_zone.example <zone-id>` or remove from state with `terraform state rm cloudflare_zone.example`
+**Causa:** recurso removido fora do Terraform  
+**Solução:** importe de volta com `terraform import cloudflare_zone.example <zone-id>` ou remova do state com `terraform state rm cloudflare_zone.example`
 
 ### "409 Conflict on worker deployment"
 
-**Cause:** Worker being deployed by both Terraform and wrangler simultaneously  
-**Solution:** Choose one deployment method; if using Terraform, remove wrangler deployments
+**Causa:** Worker implantado ao mesmo tempo pelo Terraform e pelo wrangler  
+**Solução:** escolha um método; com Terraform, remova deploys do wrangler
 
 ### "DNS record already exists"
 
-**Cause:** Existing DNS record not imported into Terraform state  
-**Solution:** Find record ID in Cloudflare dashboard and import with `terraform import cloudflare_dns_record.example <zone-id>/<record-id>`
+**Causa:** registro DNS existente não importado no state  
+**Solução:** obtenha o ID no dashboard e importe com `terraform import cloudflare_dns_record.example <zone-id>/<record-id>`
 
 ### "Invalid provider configuration"
 
-**Cause:** API token missing, invalid, or lacking required permissions  
-**Solution:** Set `CLOUDFLARE_API_TOKEN` environment variable or check token permissions in dashboard
+**Causa:** token de API ausente, inválido ou sem permissões  
+**Solução:** defina `CLOUDFLARE_API_TOKEN` ou verifique permissões no dashboard
 
 ### "State locking errors"
 
-**Cause:** Multiple concurrent Terraform runs or stale lock from crashed process  
-**Solution:** Remove stale lock with `terraform force-unlock <lock-id>` (use with caution)
+**Causa:** vários `terraform` simultâneos ou lock antigo de processo encerrado  
+**Solução:** remova lock com `terraform force-unlock <lock-id>` (use com cuidado)
 
-## Limits
+## Limites
 
-| Resource              | Limit              | Notes                                    |
-| --------------------- | ------------------ | ---------------------------------------- |
-| API token rate limit  | Varies by plan     | Use `api_client_logging = true` to debug |
-| Worker script size    | 10 MB              | Includes all dependencies                |
-| KV keys per namespace | Unlimited          | Pay per operation                        |
-| R2 storage            | Unlimited          | Pay per GB                               |
-| D1 databases          | 50,000 per account | Free tier: 10                            |
-| Pages projects        | 500 per account    | 100 for free accounts                    |
-| DNS records           | 3,500 per zone     | Free plan                                |
+| Recurso                 | Limite           | Observações                                  |
+| ----------------------- | ---------------- | -------------------------------------------- |
+| Rate limit token API    | Varia por plano  | Use `api_client_logging = true` para depurar |
+| Tamanho do script       | 10 MB            | Inclui dependências                          |
+| Chaves KV por namespace | Ilimitado        | Paga por operação                            |
+| Armazenamento R2        | Ilimitado        | Paga por GB                                  |
+| Bancos D1               | 50.000 por conta | Grátis: 10                                   |
+| Projetos Pages          | 500 por conta    | Grátis: 100                                  |
+| Registros DNS           | 3.500 por zona   | Plano gratuito                               |
 
-## See Also
+## Ver também
 
-- [README](./README.md) - Provider setup
-- [Configuration](./configuration.md) - Resources
-- [API](./api.md) - Data sources
-- [Patterns](./patterns.md) - Use cases
-- Provider docs: https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs
+- [README](./README.md) — Configuração do provider
+- [Configuration](./configuration.md) — Recursos
+- [API](./api.md) — Data sources
+- [Patterns](./patterns.md) — Casos de uso
+- Documentação do provider: https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

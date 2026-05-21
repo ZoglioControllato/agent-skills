@@ -1,4 +1,4 @@
-# Resource Configuration
+# Configuração de recursos
 
 ## Workers (cloudflare.WorkerScript)
 
@@ -46,7 +46,7 @@ const kv = new cloudflare.WorkersKvNamespace('my-kv', {
   title: 'my-kv-namespace',
 })
 
-// Write values
+// Escrever valores
 const kvValue = new cloudflare.WorkersKvValue('config', {
   accountId: accountId,
   namespaceId: kv.id,
@@ -55,7 +55,7 @@ const kvValue = new cloudflare.WorkersKvValue('config', {
 })
 ```
 
-## R2 Buckets (cloudflare.R2Bucket)
+## Buckets R2 (cloudflare.R2Bucket)
 
 ```typescript
 const bucket = new cloudflare.R2Bucket('my-bucket', {
@@ -65,12 +65,12 @@ const bucket = new cloudflare.R2Bucket('my-bucket', {
 })
 ```
 
-## D1 Databases (cloudflare.D1Database)
+## Bancos D1 (cloudflare.D1Database)
 
 ```typescript
 const db = new cloudflare.D1Database('my-db', { accountId, name: 'my-database' })
 
-// Migrations via wrangler
+// Migrações via wrangler
 import * as command from '@pulumi/command'
 const migration = new command.local.Command(
   'd1-migration',
@@ -81,12 +81,12 @@ const migration = new command.local.Command(
 )
 ```
 
-## Queues (cloudflare.Queue)
+## Filas (cloudflare.Queue)
 
 ```typescript
 const queue = new cloudflare.Queue('my-queue', { accountId, name: 'my-queue' })
 
-// Producer
+// Produtor
 const producer = new cloudflare.WorkerScript('producer', {
   accountId,
   name: 'producer',
@@ -94,7 +94,7 @@ const producer = new cloudflare.WorkerScript('producer', {
   queueBindings: [{ name: 'MY_QUEUE', queue: queue.id }],
 })
 
-// Consumer
+// Consumidor
 const consumer = new cloudflare.WorkerScript('consumer', {
   accountId,
   name: 'consumer',
@@ -103,7 +103,7 @@ const consumer = new cloudflare.WorkerScript('consumer', {
 })
 ```
 
-## Pages Projects (cloudflare.PagesProject)
+## Projetos Pages (cloudflare.PagesProject)
 
 ```typescript
 const pages = new cloudflare.PagesProject('my-site', {
@@ -125,7 +125,7 @@ const pages = new cloudflare.PagesProject('my-site', {
 })
 ```
 
-## DNS Records (cloudflare.DnsRecord)
+## Registros DNS (cloudflare.DnsRecord)
 
 ```typescript
 const zone = cloudflare.getZone({ name: 'example.com' })
@@ -139,17 +139,17 @@ const record = new cloudflare.DnsRecord('www', {
 })
 ```
 
-## Workers Domains/Routes
+## Domínios e rotas de Workers
 
 ```typescript
-// Route (pattern-based)
+// Rota (baseada em padrão)
 const route = new cloudflare.WorkerRoute('my-route', {
   zoneId: zoneId,
   pattern: 'example.com/api/*',
   scriptName: worker.name,
 })
 
-// Domain (dedicated subdomain)
+// Domínio (subdomínio dedicado)
 const domain = new cloudflare.WorkersDomain('my-domain', {
   accountId: accountId,
   hostname: 'api.example.com',
@@ -158,9 +158,9 @@ const domain = new cloudflare.WorkersDomain('my-domain', {
 })
 ```
 
-## Assets Configuration (v6.x)
+## Configuração de assets (v6.x)
 
-Serve static assets from Workers:
+Servir arquivos estáticos a partir de Workers:
 
 ```typescript
 const worker = new cloudflare.WorkerScript('app', {
@@ -168,46 +168,48 @@ const worker = new cloudflare.WorkerScript('app', {
   name: 'my-app',
   content: code,
   assets: {
-    path: './public', // Local directory
-    // Assets uploaded and served from Workers
+    path: './public', // diretório local
+    // assets enviados e servidos pelos Workers
   },
 })
 ```
 
-## v6.x Versioned Deployments (Advanced)
+## Deploys versionados v6.x (avançado)
 
-For gradual rollouts, use 3-resource pattern:
+Para lançamentos graduais, use o padrão de 3 recursos:
 
 ```typescript
-// 1. Worker (container for versions)
+// 1. Worker (contêiner de versões)
 const worker = new cloudflare.Worker('api', {
   accountId: accountId,
   name: 'api-worker',
 })
 
-// 2. Version (immutable code + config)
+// 2. Version (código + config imutáveis)
 const version = new cloudflare.WorkerVersion('v1', {
   accountId: accountId,
   workerId: worker.id,
   content: fs.readFileSync('./dist/worker.js', 'utf8'),
   compatibilityDate: '2025-01-01',
   compatibilityFlags: ['nodejs_compat'],
-  // Note: Bindings configured at deployment level
+  // Obs.: bindings no nível do deployment
 })
 
-// 3. Deployment (version + bindings + traffic split)
+// 3. Deployment (versão + bindings + divisão de tráfego)
 const deployment = new cloudflare.WorkersDeployment('prod', {
   accountId: accountId,
   workerId: worker.id,
   versionId: version.id,
-  // Bindings applied to deployment
+  // bindings aplicados ao deployment
   kvNamespaceBindings: [{ name: 'MY_KV', namespaceId: kv.id }],
 })
 ```
 
-**When to use:** Blue-green deployments, canary releases, gradual rollouts  
-**When NOT to use:** Simple single-version deployments (use WorkerScript)
+**Quando usar:** deploys blue-green, canary, lançamentos graduais  
+**Quando não usar:** deploy simples com uma versão (use WorkerScript)
 
 ---
 
-See: [README.md](./README.md), [api.md](./api.md), [patterns.md](./patterns.md), [gotchas.md](./gotchas.md)
+Ver: [README.md](./README.md), [api.md](./api.md), [patterns.md](./patterns.md), [gotchas.md](./gotchas.md)
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

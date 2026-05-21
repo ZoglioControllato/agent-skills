@@ -1,56 +1,56 @@
-# Render Blueprint Specification
+# Especificação do projeto de renderização
 
-Complete reference for render.yaml Blueprint files. Blueprints define your infrastructure as code for reproducible deployments on Render.
+Referência completa para arquivos render.yaml Blueprint. Os blueprints definem sua infraestrutura como código para implantações reproduzíveis no Render.
 
-## Overview
+## Visão geral
 
-A Blueprint is a YAML file (typically `render.yaml`) placed in your repository root that describes:
+Um Blueprint é um arquivo YAML (normalmente `render.yaml`) colocado na raiz do seu repositório que descreve:
 
-- Services (web, worker, cron, static, private)
-- Databases (PostgreSQL, Redis)
-- Environment variables and secrets
-- Scaling and resource configuration
-- Project organization
+- Serviços (web, trabalhador, cron, estático, privado)
+- Bancos de dados (PostgreSQL, Redis)
+- Variáveis ​​e segredos de ambiente
+- Dimensionamento e configuração de recursos
+- Organização do projeto
 
-## Root-Level Structure
+## Estrutura em nível raiz```yaml
 
-```yaml
 # Top-level fields
+
 services: [] # Array of service definitions
 databases: [] # Array of PostgreSQL databases
 envVarGroups: [] # Reusable environment variable groups (optional)
 projects: [] # Project organization (optional)
 ungrouped: [] # Resources outside projects (optional)
 previews: # Preview environment configuration (optional)
-  generation: auto_preview | manual | none
-```
+generation: auto_preview | manual | none
 
-## Service Types
+````
+## Tipos de serviço
 
-### Web Services (`type: web`)
+### Serviços Web (`tipo: web`)
 
-HTTP services, APIs, and web applications. Publicly accessible via HTTPS.
+Serviços HTTP, APIs e aplicativos da web. Acessível publicamente via HTTPS.
 
-**Required fields:**
+**Campos obrigatórios:**
 
-- `name`: Unique service identifier
-- `type`: Must be `web`
-- `runtime`: Language/environment (see Runtimes section)
-- `buildCommand`: Command to build the application
-- `startCommand`: Command to start the server
+- `nome`: identificador exclusivo do serviço
+- `type`: Deve ser `web`
+- `runtime`: Idioma/ambiente (veja a seção Runtimes)
+- `buildCommand`: Comando para construir a aplicação
+- `startCommand`: Comando para iniciar o servidor
 
-**Common optional fields:**
+**Campos opcionais comuns:**
 
-- `plan`: Instance type (default: `free`)
-- `region`: Deployment region (default: `oregon`)
-- `branch`: Git branch to deploy (default: `main`)
-- `autoDeploy`: Auto-deploy on push (default: `true`)
-- `envVars`: Environment variables array
-- `healthCheckPath`: Health check endpoint (default: `/`)
-- `numInstances`: Number of instances (manual scaling)
-- `scaling`: Autoscaling configuration
+- `plan`: tipo de instância (padrão: `free`)
+- `region`: região de implantação (padrão: `oregon`)
+- `branch`: branch Git a ser implantado (padrão: `main`)
+- `autoDeploy`: Implantação automática em push (padrão: `true`)
+- `envVars`: array de variáveis de ambiente
+- `healthCheckPath`: endpoint de verificação de integridade (padrão: `/`)
+- `numInstances`: Número de instâncias (escalonamento manual)
+- `scaling`: configuração de escalonamento automático
 
-**Example:**
+**Exemplo:**
 
 ```yaml
 services:
@@ -67,27 +67,27 @@ services:
         value: production
       - key: PORT
         value: 10000
-```
+````
 
-### Worker Services (`type: worker`)
+### Serviços de trabalho (`type: trabalhador`)
 
-Background job processors, queue consumers. Not publicly accessible.
+Processadores de trabalhos em segundo plano, consumidores de filas. Não acessível publicamente.
 
-**Required fields:**
+**Campos obrigatórios:**
 
-- `name`: Unique service identifier
-- `type`: Must be `worker`
-- `runtime`: Language/environment
-- `buildCommand`: Command to build
-- `startCommand`: Command to start worker process
+- `nome`: identificador exclusivo do serviço
+- `type`: Deve ser `worker`
+- `runtime`: Idioma/ambiente
+- `buildCommand`: Comando para construir
+- `startCommand`: Comando para iniciar o processo de trabalho
 
-**Key differences from web services:**
+**Principais diferenças em relação aos serviços Web:**
 
-- No public URL
-- No health checks
-- No port binding required
+- Sem URL público
+- Sem exames de saúde
+- Não é necessária ligação de porta
 
-**Example:**
+**Exemplo:**
 
 ```yaml
 services:
@@ -104,28 +104,28 @@ services:
           property: connectionString
 ```
 
-### Cron Jobs (`type: cron`)
+### Cron Jobs (`tipo: cron`)
 
-Scheduled tasks that run on a cron schedule.
+Tarefas agendadas que são executadas em um agendamento cron.
 
-**Required fields:**
+**Campos obrigatórios:**
 
-- `name`: Unique service identifier
-- `type`: Must be `cron`
-- `runtime`: Language/environment
-- `schedule`: Cron expression
-- `buildCommand`: Command to build
-- `startCommand`: Command to execute on schedule
+- `nome`: identificador exclusivo do serviço
+- `type`: Deve ser `cron`
+- `runtime`: Idioma/ambiente
+- `schedule`: expressão Cron
+- `buildCommand`: Comando para construir
+- `startCommand`: Comando para executar dentro do cronograma
 
-**Schedule format:** Standard cron syntax (minute hour day month weekday)
+**Formato de programação:** Sintaxe cron padrão (minuto hora dia mês dia da semana)
 
-**Examples:**
+**Exemplos:**
 
-- `0 0 * * *` - Daily at midnight UTC
-- `*/15 * * * *` - Every 15 minutes
-- `0 9 * * 1` - Every Monday at 9 AM UTC
+- `0 0 * * *` - Diariamente à meia-noite UTC
+- `*/15 * * * *` - A cada 15 minutos
+- `0 9 * * 1` - Todas as segundas-feiras às 9h UTC
 
-**Example:**
+**Exemplo:**
 
 ```yaml
 services:
@@ -142,25 +142,25 @@ services:
           property: connectionString
 ```
 
-### Static Sites (`type: static` or `type: web` with `runtime: static`)
+### Sites Estáticos (`type: static` ou `type: web` com `runtime: static`)
 
-Serve static HTML/CSS/JS files via CDN.
+Sirva arquivos HTML/CSS/JS estáticos via CDN.
 
-**Required fields:**
+**Campos obrigatórios:**
 
-- `name`: Unique service identifier
-- `type`: `web`
-- `runtime`: `static`
-- `buildCommand`: Command to build static assets
-- `staticPublishPath`: Path to built files (e.g., `./build`, `./dist`)
+- `nome`: identificador exclusivo do serviço
+- `tipo`: `web`
+- `tempo de execução`: `estático`
+- `buildCommand`: Comando para construir ativos estáticos
+- `staticPublishPath`: Caminho para arquivos compilados (por exemplo, `./build`, `./dist`)
 
-**Optional configuration:**
+**Configuração opcional:**
 
-- `routes`: Routing rules for SPAs
-- `headers`: Custom HTTP headers
-- `buildFilter`: Path filters for build triggers
+- `rotas`: Regras de roteamento para SPAs
+- `headers`: cabeçalhos HTTP personalizados
+- `buildFilter`: filtros de caminho para gatilhos de construção
 
-**Example:**
+**Exemplo:**
 
 ```yaml
 services:
@@ -179,25 +179,25 @@ services:
         value: public, max-age=31536000, immutable
 ```
 
-### Private Services (`type: pserv`)
+### Serviços Privados (`type: pserv`)
 
-Internal services accessible only within your Render account.
+Serviços internos acessíveis apenas em sua conta Render.
 
-**Required fields:**
+**Campos obrigatórios:**
 
-- `name`: Unique service identifier
-- `type`: Must be `pserv`
-- `runtime`: Language/environment
-- `buildCommand`: Command to build
-- `startCommand`: Command to start
+- `nome`: identificador exclusivo do serviço
+- `type`: Deve ser `pserv`
+- `runtime`: Idioma/ambiente
+- `buildCommand`: Comando para construir
+- `startCommand`: Comando para iniciar
 
-**Use cases:**
+**Casos de uso:**
 
-- Internal APIs
-- Database proxies
-- Microservices not exposed to internet
+- APIs internas
+- Proxies de banco de dados
+- Microsserviços não expostos à internet
 
-**Example:**
+**Exemplo:**
 
 ```yaml
 services:
@@ -209,55 +209,55 @@ services:
     startCommand: ./bin/app
 ```
 
-## Runtimes
+## Tempos de execução
 
-### Native Runtimes
+### Tempos de execução nativos
 
-**Node.js (`runtime: node`):**
+**Node.js (`tempo de execução: nó`):**
 
-- Versions: 14, 16, 18, 20, 21
-- Default version: 20
-- Specify version in `package.json` engines field
+- Versões: 14, 16, 18, 20, 21
+- Versão padrão: 20
+- Especifique a versão no campo de mecanismos `package.json`
 
-**Python (`runtime: python`):**
+**Python (`tempo de execução: python`):**
 
-- Versions: 3.8, 3.9, 3.10, 3.11, 3.12
-- Default version: 3.11
-- Specify version in `runtime.txt` or `Pipfile`
+- Versões: 3.8, 3.9, 3.10, 3.11, 3.12
+- Versão padrão: 3.11
+- Especifique a versão em `runtime.txt` ou `Pipfile`
 
-**Go (`runtime: go`):**
+**Vá (`tempo de execução: vá`):**
 
-- Versions: 1.20, 1.21, 1.22, 1.23
-- Uses go modules
-- Version from `go.mod`
+- Versões: 1.20, 1.21, 1.22, 1.23
+- Usa módulos go
+- Versão de `go.mod`
 
-**Ruby (`runtime: ruby`):**
+**Ruby (`tempo de execução: ruby`):**
 
-- Versions: 3.0, 3.1, 3.2, 3.3
-- Uses Bundler
-- Version from `.ruby-version` or `Gemfile`
+- Versões: 3.0, 3.1, 3.2, 3.3
+- Usa empacotador
+- Versão de `.ruby-version` ou `Gemfile`
 
-**Rust (`runtime: rust`):**
+**Ferrugem (`tempo de execução: ferrugem`):**
 
-- Latest stable version
-- Uses Cargo
+- Última versão estável
+- Usa Carga
 
-**Elixir (`runtime: elixir`):**
+**Elixir (`tempo de execução: elixir`):**
 
-- Latest stable version
-- Uses Mix
+- Última versão estável
+- Usa mistura
 
-### Docker Runtime
+### Tempo de execução do Docker
 
-**Docker (`runtime: docker`):**
-Build from a Dockerfile in your repository.
+**Docker (`tempo de execução: docker`):**
+Crie a partir de um Dockerfile em seu repositório.
 
-**Additional fields:**
+**Campos adicionais:**
 
-- `dockerfilePath`: Path to Dockerfile (default: `./Dockerfile`)
-- `dockerContext`: Build context directory (default: `.`)
+- `dockerfilePath`: Caminho para Dockerfile (padrão: `./Dockerfile`)
+- `dockerContext`: Construa o diretório de contexto (padrão: `.`)
 
-**Example:**
+**Exemplo:**
 
 ```yaml
 services:
@@ -269,15 +269,15 @@ services:
     plan: free
 ```
 
-**Image (`runtime: image`):**
-Deploy pre-built Docker images from a registry.
+**Imagem (`tempo de execução: imagem`):**
+Implante imagens Docker pré-construídas de um registro.
 
-**Additional fields:**
+**Campos adicionais:**
 
-- `image`: Image URL (e.g., `registry.com/image:tag`)
-- `registryCredential`: Credentials for private registries
+- `image`: URL da imagem (por exemplo, `registry.com/image:tag`)
+- `registryCredential`: Credenciais para registros privados
 
-**Example:**
+**Exemplo:**
 
 ```yaml
 services:
@@ -288,31 +288,31 @@ services:
     plan: free
 ```
 
-## Service Plans
+## Planos de serviço
 
-Available instance types:
+Tipos de instância disponíveis:
 
-| Plan       | RAM    | CPU | Price             |
-| ---------- | ------ | --- | ----------------- |
-| `free`     | 512 MB | 0.5 | Free (750 hrs/mo) |
-| `starter`  | 512 MB | 0.5 | $7/month          |
-| `standard` | 2 GB   | 1   | $25/month         |
-| `pro`      | 4 GB   | 2   | $85/month         |
-| `pro_plus` | 8 GB   | 4   | $175/month        |
+| Plano       | memória RAM | CPU | Preço                  |
+| ----------- | ----------- | --- | ---------------------- |
+| `grátis`    | 512 MB      | 0,5 | Grátis (750 horas/mês) |
+| `iniciante` | 512 MB      | 0,5 | US$ 7/mês              |
+| `padrão`    | 2 GB        | 1   | US$ 25/mês             |
+| `pró`       | 4 GB        | 2   | $ 85/mês               |
+| `pro_plus`  | 8 GB        | 4   | $ 175/mês              |
 
-**Always default to `plan: free` unless user specifies otherwise.**
+**Sempre o padrão é `plan: free`, a menos que o usuário especifique o contrário.**
 
-## Regions
+## Regiões
 
-Available deployment regions:
+Regiões de implantação disponíveis:
 
-- `oregon` (US West) - Default
-- `ohio` (US East)
-- `virginia` (US East)
-- `frankfurt` (EU)
-- `singapore` (Asia)
+- `oregon` (Oeste dos EUA) - Padrão
+- `ohio` (Leste dos EUA)
+- `virginia` (Leste dos EUA)
+- `Frankfurt` (UE)
+- `singapura` (Ásia)
 
-**Example:**
+**Exemplo:**
 
 ```yaml
 services:
@@ -322,57 +322,52 @@ services:
     region: frankfurt
 ```
 
-## Environment Variables
+## Variáveis de ambiente
 
-Three patterns for defining environment variables:
+Três padrões para definir variáveis de ambiente:
 
-### 1. Hardcoded Values
+### 1. Valores codificados
 
-For non-sensitive configuration:
-
-```yaml
+Para configuração não sensível:```yaml
 envVars:
-  - key: NODE_ENV
-    value: production
-  - key: API_URL
-    value: https://api.example.com
-  - key: LOG_LEVEL
-    value: info
-```
 
-### 2. Generated Secrets
+- key: NODE_ENV
+  value: production
+- key: API_URL
+  value: https://api.example.com
+- key: LOG_LEVEL
+  value: info
 
-Render generates a base64-encoded 256-bit random value:
+````
+### 2. Segredos gerados
 
-```yaml
+Render gera um valor aleatório de 256 bits codificado em base64:```yaml
 envVars:
   - key: SESSION_SECRET
     generateValue: true
   - key: ENCRYPTION_KEY
     generateValue: true
-```
+````
 
-### 3. User-Provided Secrets
+### 3. Segredos fornecidos pelo usuário
 
-Prompt user for values during Blueprint creation:
-
-```yaml
+Solicitar valores ao usuário durante a criação do Blueprint:```yaml
 envVars:
-  - key: STRIPE_SECRET_KEY
-    sync: false
-  - key: JWT_SECRET
-    sync: false
-  - key: API_KEY
-    sync: false
-```
 
-**The `sync: false` flag means "user will fill this in the Dashboard".**
+- key: STRIPE_SECRET_KEY
+  sync: false
+- key: JWT_SECRET
+  sync: false
+- key: API_KEY
+  sync: false
 
-### 4. Database References
+````
 
-Link to database connection strings:
+**O sinalizador `sync: false` significa "o usuário preencherá isso no Dashboard".**
 
-```yaml
+### 4. Referências de banco de dados
+
+Link para strings de conexão do banco de dados:```yaml
 envVars:
   - key: DATABASE_URL
     fromDatabase:
@@ -382,36 +377,33 @@ envVars:
     fromDatabase:
       name: redis
       property: connectionString
-```
+````
 
-**Available properties:**
+**Imóveis disponíveis:**
 
-- `connectionString`: Full connection URL
-- `host`: Database host
-- `port`: Database port
-- `user`: Database username
-- `password`: Database password
-- `database`: Database name
-- `hostport`: Combined `host:port`
+- `connectionString`: URL de conexão completa
+- `host`: host do banco de dados
+- `porta`: porta do banco de dados
+- `user`: nome de usuário do banco de dados
+- `senha`: senha do banco de dados
+- `banco de dados`: nome do banco de dados
+- `hostport`: `host:port` combinado
 
-### 5. Service References
+### 5. Referências de serviço
 
-Link to other services:
-
-```yaml
+Link para outros serviços:```yaml
 envVars:
-  - key: API_URL
-    fromService:
-      name: api-server
-      type: web
-      property: host
-```
 
-### 6. Environment Variable Groups
+- key: API_URL
+  fromService:
+  name: api-server
+  type: web
+  property: host
 
-Reusable groups shared across services:
+````
+### 6. Grupos de variáveis de ambiente
 
-```yaml
+Grupos reutilizáveis compartilhados entre serviços:```yaml
 envVarGroups:
   - name: shared-config
     envVars:
@@ -428,39 +420,39 @@ services:
       - fromGroup: shared-config
       - key: PORT
         value: 10000
-```
+````
 
-## Databases
+## Bancos de dados
 
-### PostgreSQL
-
-```yaml
+###PostgreSQL```yaml
 databases:
-  - name: postgres
-    databaseName: myapp_prod
-    user: myapp_user
-    plan: free
-    postgresMajorVersion: '15'
-    ipAllowList: []
-```
 
-**Plans:**
+- name: postgres
+  databaseName: myapp_prod
+  user: myapp_user
+  plan: free
+  postgresMajorVersion: '15'
+  ipAllowList: []
 
-- `free`: 1 GB storage, 97 MB RAM, 0.1 CPU
-- `basic-256mb`, `basic-512mb`, `basic-1gb`, `basic-4gb`
+````
+
+**Planos:**
+
+- `grátis`: 1 GB de armazenamento, 97 MB de RAM, 0,1 CPU
+- `básico-256mb`, `básico-512mb`, `básico-1gb`, `básico-4gb`
 - `pro-4gb`, `pro-8gb`, `pro-16gb`, etc.
-- `accelerated-4gb`, `accelerated-8gb`, etc. (SSD-backed)
+- `accelerated-4gb`, `accelerated-8gb`, etc. (suportado por SSD)
 
-**Key fields:**
+**Campos-chave:**
 
-- `name`: Identifier for references
-- `databaseName`: Actual PostgreSQL database name
-- `user`: Database username
-- `postgresMajorVersion`: PostgreSQL version (11-16)
-- `ipAllowList`: Array of CIDR blocks (empty = internal only)
-- `diskSizeGB`: Storage size (paid plans only)
+- `name`: Identificador para referências
+- `databaseName`: nome real do banco de dados PostgreSQL
+- `user`: nome de usuário do banco de dados
+- `postgresMajorVersion`: versão do PostgreSQL (11-16)
+- `ipAllowList`: Array de blocos CIDR (vazio = somente interno)
+- `diskSizeGB`: Tamanho de armazenamento (somente planos pagos)
 
-**High Availability (paid plans):**
+**Alta disponibilidade (planos pagos):**
 
 ```yaml
 databases:
@@ -468,9 +460,9 @@ databases:
     databaseName: myapp_prod
     plan: pro-4gb
     highAvailabilityEnabled: true
-```
+````
 
-**Read Replicas (paid plans):**
+**Leia réplicas (planos pagos):**
 
 ```yaml
 databases:
@@ -484,108 +476,100 @@ databases:
         region: frankfurt
 ```
 
-### Redis (Key-Value Store)
+### Redis (armazenamento de valor-chave)```yaml
 
-```yaml
 databases:
-  - name: redis
-    plan: free
-    maxmemoryPolicy: allkeys-lru
-    ipAllowList: []
-```
 
-**Plans:** Same as PostgreSQL
+- name: redis
+  plan: free
+  maxmemoryPolicy: allkeys-lru
+  ipAllowList: []
 
-**maxmemoryPolicy options:**
+````
 
-- `allkeys-lru`: Evict least recently used keys
-- `volatile-lru`: Evict LRU keys with TTL
-- `allkeys-random`: Evict random keys
-- `volatile-random`: Evict random keys with TTL
-- `volatile-ttl`: Evict keys with soonest TTL
-- `noeviction`: Return errors when memory full
+**Planos:** Igual ao PostgreSQL
 
-## Scaling
+**opções de maxmemoryPolicy:**
 
-### Manual Scaling
+- `allkeys-lru`: Remove as chaves usadas menos recentemente
+- `volatile-lru`: Remove chaves LRU com TTL
+- `allkeys-random`: Remove chaves aleatórias
+- `volatile-random`: Remove chaves aleatórias com TTL
+- `volatile-ttl`: Despeja chaves com o TTL mais rápido
+- `noeviction`: Retorna erros quando a memória está cheia
 
-Fixed number of instances:
+## Dimensionamento
 
-```yaml
+### Dimensionamento manual
+
+Número fixo de instâncias:```yaml
 services:
   - type: web
     name: my-app
     runtime: node
     plan: standard
     numInstances: 3
-```
+````
 
-### Autoscaling
+### Escalonamento automático
 
-Dynamic scaling based on CPU/memory (Professional workspace required):
-
-```yaml
+Dimensionamento dinâmico baseado em CPU/memória (é necessário espaço de trabalho profissional):```yaml
 services:
-  - type: web
-    name: my-app
-    runtime: node
-    plan: standard
-    scaling:
-      minInstances: 1
-      maxInstances: 5
-      targetCPUPercent: 60
-      targetMemoryPercent: 70
-```
 
-**Notes:**
+- type: web
+  name: my-app
+  runtime: node
+  plan: standard
+  scaling:
+  minInstances: 1
+  maxInstances: 5
+  targetCPUPercent: 60
+  targetMemoryPercent: 70
 
-- Autoscaling disabled in preview environments
-- Preview environments run `minInstances` count
-- Requires Professional or higher workspace
+````
 
-## Health Checks
+**Notas:**
 
-Configure health check endpoints:
+- Escalonamento automático desativado em ambientes de visualização
+- Ambientes de visualização executam a contagem de `minInstances`
+- Requer espaço de trabalho profissional ou superior
 
-```yaml
+## Verificações de integridade
+
+Configure pontos de extremidade de verificação de integridade:```yaml
 services:
   - type: web
     name: my-app
     runtime: node
     healthCheckPath: /health
-```
+````
 
-**Default:** `/` (root path)
+**Padrão:** `/` (caminho raiz)
 
-**Recommended:** Add a dedicated `/health` endpoint that returns `200 OK`.
+**Recomendado:** Adicione um endpoint `/health` dedicado que retorne `200 OK`.
 
-## Build Filters
+## Construir filtros
 
-Control when builds are triggered based on changed files:
-
-```yaml
+Controle quando as compilações são acionadas com base nos arquivos alterados:```yaml
 services:
-  - type: web
-    name: frontend
-    runtime: static
-    buildFilter:
-      paths:
-        - frontend/**
-      ignoredPaths:
-        - frontend/README.md
-        - frontend/**/*.test.js
-```
 
-**Behavior:**
+- type: web
+  name: frontend
+  runtime: static
+  buildFilter:
+  paths: - frontend/**
+  ignoredPaths: - frontend/README.md - frontend/**/\*.test.js
 
-- If `paths` specified: Build only when files in those paths change
-- If `ignoredPaths` specified: Don't build when only ignored files change
+````
 
-## Projects and Environments
+**Comportamento:**
 
-Organize services into projects with multiple environments:
+- Se `paths` for especificado: Construa somente quando os arquivos nesses caminhos forem alterados
+- Se `ignoredPaths` for especificado: não compilar quando apenas arquivos ignorados forem alterados
 
-```yaml
+## Projetos e Ambientes
+
+Organize os serviços em projetos com vários ambientes:```yaml
 projects:
   - name: my-application
     environments:
@@ -616,33 +600,30 @@ projects:
         databases:
           - name: staging-postgres
             plan: free
-```
+````
 
-**Environment features:**
+**Características do ambiente:**
 
-- `networking.isolation`: Enable network isolation between environments
-- `permissions.protection`: Require approval for environment changes
+- `networking.isolation`: Habilita o isolamento de rede entre ambientes
+- `permissions.protection`: Requer aprovação para alterações no ambiente
 
-## Preview Environments
+## Visualizar ambientes
 
-Configure automatic preview environments for pull requests:
-
-```yaml
+Configure ambientes de visualização automática para solicitações pull:```yaml
 previews:
-  generation: auto_preview # auto_preview | manual | none
-```
+generation: auto_preview # auto_preview | manual | none
 
-**Options:**
+````
 
-- `auto_preview`: Create preview environment for each PR automatically
-- `manual`: User manually triggers preview creation
-- `none`: Disable preview environments
+**Opções:**
 
-## Complete Example
+- `auto_preview`: Crie um ambiente de visualização para cada PR automaticamente
+- `manual`: o usuário aciona manualmente a criação da visualização
+- `none`: Desativa ambientes de visualização
 
-Full-featured Blueprint with multiple services and databases:
+## Exemplo completo
 
-```yaml
+Blueprint completo com vários serviços e bancos de dados:```yaml
 services:
   # Web service
   - type: web
@@ -718,39 +699,41 @@ databases:
     plan: free
     maxmemoryPolicy: allkeys-lru
     ipAllowList: []
-```
+````
 
-## Validation
+## Validação
 
-Validate your Blueprint before deploying (when CLI command is available):
-
-```bash
+Valide seu Blueprint antes de implantar (quando o comando CLI estiver disponível):```bash
 render blueprint validate
+
 ```
 
-**Common validation errors:**
+**Erros comuns de validação:**
 
-- Missing required fields
-- Invalid runtime values
-- Incorrect environment variable references
-- Invalid cron expressions
-- Invalid YAML syntax
+- Campos obrigatórios ausentes
+- Valores de tempo de execução inválidos
+- Referências incorretas de variáveis de ambiente
+- Expressões cron inválidas
+- Sintaxe YAML inválida
 
-## Best Practices
+## Melhores práticas
 
-1. **Always use `plan: free` by default** - Let users upgrade if needed
-2. **Mark all secrets with `sync: false`** - Never hardcode sensitive values
-3. **Use `fromDatabase` for database URLs** - Automatic internal connection strings
-4. **Add health check endpoints** - Faster deployment detection
-5. **Use non-interactive build commands** - Prevents build hangs
-6. **Bind to `0.0.0.0:$PORT`** - Required for web services
-7. **Use environment variable groups** - Share config across services
-8. **Enable autoDeploy: true** - Deploy automatically on push
-9. **Set appropriate regions** - Choose closest to your users
-10. **Use build filters** - Optimize build triggers in monorepos
+1. **Sempre use `plan: free` por padrão** - Permita que os usuários atualizem se necessário
+2. **Marque todos os segredos com `sync: false`** - Nunca codifique valores confidenciais
+3. **Use `fromDatabase` para URLs de banco de dados** - Cadeias de conexão internas automáticas
+4. **Adicionar endpoints de verificação de integridade** – Detecção de implantação mais rápida
+5. **Use comandos de compilação não interativos** - Evita travamentos de compilação
+6. **Vincular a `0.0.0.0:$PORT`** - Obrigatório para serviços web
+7. **Use variável de ambiente
 
-## Additional Resources
+grupos** - Compartilhe configurações entre serviços
+8. **Ativar autoDeploy: true** - Implantar automaticamente no push
+9. **Defina as regiões apropriadas** - Escolha as mais próximas dos seus usuários
+10. **Use filtros de compilação** - Otimize gatilhos de compilação em monorepos
 
-- Official Blueprint Specification: https://render.com/docs/blueprint-spec
-- Render CLI Documentation: https://render.com/docs/cli
-- Environment Variables Guide: https://render.com/docs/environment-variables
+## Recursos Adicionais
+
+- Especificação oficial do Blueprint: https://render.com/docs/blueprint-spec
+- Documentação CLI de renderização: https://render.com/docs/cli
+- Guia de variáveis de ambiente: https://render.com/docs/environment-variables
+```

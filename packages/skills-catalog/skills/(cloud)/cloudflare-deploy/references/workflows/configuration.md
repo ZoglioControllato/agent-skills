@@ -1,6 +1,6 @@
-# Workflow Configuration
+# Configuração do fluxo de trabalho
 
-## wrangler.jsonc Setup
+## Configuração do wrangler.jsonc
 
 ```jsonc
 {
@@ -24,7 +24,7 @@
 }
 ```
 
-## Step Configuration
+##Etapa Configuração
 
 ```typescript
 // Basic step
@@ -49,7 +49,7 @@ await step.do(
 )
 ```
 
-### Parallel Steps
+### Etapas Paralelas
 
 ```typescript
 const [user, settings] = await Promise.all([
@@ -58,7 +58,7 @@ const [user, settings] = await Promise.all([
 ])
 ```
 
-### Conditional Steps
+### Etapas condicionais
 
 ```typescript
 const config = await step.do('fetch config', async () => this.env.KV.get('flags', { type: 'json' }))
@@ -74,7 +74,7 @@ if (Date.now() > deadline) {
 }
 ```
 
-### Dynamic Steps (Loops)
+### Etapas Dinâmicas (Loops)
 
 ```typescript
 const files = await step.do('list files', async () => this.env.BUCKET.list())
@@ -87,23 +87,20 @@ for (const file of files.objects) {
 }
 ```
 
-## Multiple Workflows
+##Vários fluxos de trabalho
 
-```jsonc
+````jsonc
 {
   "workflows": [
     { "name": "user-onboarding", "binding": "USER_ONBOARDING", "class_name": "UserOnboarding" },
     { "name": "data-processing", "binding": "DATA_PROCESSING", "class_name": "DataProcessing" },
   ],
 }
-```
+```Cada classe estende `WorkflowEntrypoint` com seu próprio tipo `Params`.
 
-Each class extends `WorkflowEntrypoint` with its own `Params` type.
+## Ligações entre scripts
 
-## Cross-Script Bindings
-
-Worker A defines workflow. Worker B calls it by adding `script_name`:
-
+O trabalhador A define o fluxo de trabalho. O trabalhador B chama isso adicionando `script_name`:
 ```jsonc
 // Worker B (caller)
 {
@@ -115,11 +112,11 @@ Worker A defines workflow. Worker B calls it by adding `script_name`:
     },
   ],
 }
-```
+````
 
-## Bindings
+##Ligações
 
-Workflows access Cloudflare bindings via `this.env`:
+Os fluxos de trabalho acessam as vinculações do Cloudflare por meio de `this.env`:
 
 ```typescript
 type Env = {
@@ -139,11 +136,11 @@ await step.do('use bindings', async () => {
 })
 ```
 
-## Pages Functions Binding
+##Vinculação de funções de páginas
 
-Pages Functions can trigger Workflows via service bindings:
+As funções de páginas podem acionar fluxos de trabalho por meio de ligações de serviço:
 
-```typescript
+````typescript
 // functions/_middleware.ts
 export const onRequest: PagesFunction<Env> = async ({ env, request }) => {
   const instance = await env.MY_WORKFLOW.create({
@@ -151,8 +148,7 @@ export const onRequest: PagesFunction<Env> = async ({ env, request }) => {
   })
   return new Response(`Started ${instance.id}`)
 }
-```
+```Configure em wrangler.jsonc em `service_bindings`.
 
-Configure in wrangler.jsonc under `service_bindings`.
-
-See: [api.md](./api.md), [patterns.md](./patterns.md)
+Consulte: [api.md](./api.md), [patterns.md](./patterns.md)
+````

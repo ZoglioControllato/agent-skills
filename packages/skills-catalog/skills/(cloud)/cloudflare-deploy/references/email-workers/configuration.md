@@ -1,4 +1,4 @@
-# Email Workers Configuration
+# Configuração de trabalhadores de e-mail
 
 ## wrangler.jsonc
 
@@ -19,7 +19,7 @@
 }
 ```
 
-## TypeScript Types
+##Tipos TypeScript
 
 ```typescript
 interface Env {
@@ -34,17 +34,14 @@ export default {
 }
 ```
 
-## Dependencies
+##Dependências
 
-```bash
+````bash
 npm install postal-mime mimetext
 npm install -D @cloudflare/workers-types wrangler typescript
-```
-
-Use postal-mime v2.x, mimetext v3.x.
+```Use postal-mime v2.x, mimetext v3.x.
 
 ## tsconfig.json
-
 ```json
 {
   "compilerOptions": {
@@ -56,49 +53,46 @@ Use postal-mime v2.x, mimetext v3.x.
     "strict": true
   }
 }
-```
+````
 
-## Local Development
+##Desenvolvimento Local
 
-```bash
+````bash
 npx wrangler dev
 
 # Test receiving
 curl --request POST 'http://localhost:8787/cdn-cgi/handler/email' \
   --url-query 'from=sender@example.com' --url-query 'to=recipient@example.com' \
   --header 'Content-Type: text/plain' --data-raw 'Subject: Test\n\nHello'
-```
+```Os e-mails enviados são gravados em arquivos `.eml` locais.
 
-Sent emails write to local `.eml` files.
+## Lista de verificação de implantação
 
-## Deployment Checklist
-
-- [ ] Enable Email Routing in dashboard
-- [ ] Verify destination addresses
-- [ ] Configure DMARC/SPF/DKIM for sending
-- [ ] Create KV/R2 resources if needed
-- [ ] Update wrangler.jsonc with production IDs
-
+- [] Habilitar roteamento de e-mail no painel
+- [] Verifique os endereços de destino
+- [] Configurar DMARC/SPF/DKIM para envio
+- [] Crie recursos KV/R2 se necessário
+- [] Atualizar wrangler.jsonc com IDs de produção
 ```bash
 npx wrangler deploy
 npx wrangler deployments list
-```
+````
 
-## Dashboard Setup
+##Configuração do painel
 
-1. **Email Routing:** Domain → Email → Enable Email Routing
-2. **Verify addresses:** Email → Destination addresses → Add & verify
-3. **Bind Worker:** Email → Email Workers → Create route → Select pattern & Worker
-4. **DMARC:** Add TXT `_dmarc.domain.com`: `v=DMARC1; p=quarantine;`
+1. **Roteamento de e-mail:** Domínio → E-mail → Ativar roteamento de e-mail
+2. **Verificar endereços:** E-mail → Endereços de destino → Adicionar e verificar
+3. **Bind Worker:** Email → Email Workers → Criar rota → Selecionar padrão e Worker
+4. **DMARC:** Adicione TXT `_dmarc.domain.com`: `v=DMARC1; p=quarentena;`
 
-## Secrets
+## Segredos
 
 ```bash
 npx wrangler secret put API_KEY
 # Access: env.API_KEY
 ```
 
-## Monitoring
+##Monitoramento
 
 ```bash
 npx wrangler tail
@@ -106,10 +100,10 @@ npx wrangler tail --status error
 npx wrangler tail --format json
 ```
 
-## Troubleshooting
+##Solução de problemas
 
-| Error                 | Fix                                  |
-| --------------------- | ------------------------------------ |
-| "Binding not found"   | Check `send_email` name matches code |
-| "Invalid destination" | Verify in Email Routing dashboard    |
-| Type errors           | Install `@cloudflare/workers-types`  |
+| Erro                        | Correção                                               |
+| --------------------------- | ------------------------------------------------------ |
+| "Vinculação não encontrada" | Verifique se o nome `send_email` corresponde ao código |
+| "Destino inválido"          | Verifique no painel de roteamento de e-mail            |
+| Erros de tipo               | Instale `@cloudflare/workers-types`                    |

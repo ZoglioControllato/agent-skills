@@ -1,14 +1,14 @@
-# App Development Reference
+# Referência de desenvolvimento de aplicativos
 
-Expert guidance for building custom Shopify apps using Shopify CLI, modern frameworks, and best practices.
+Orientação especializada para criar aplicativos personalizados da Shopify usando a CLI da Shopify, estruturas modernas e práticas recomendadas.
 
-## Core Capabilities
+## Capacidades principais
 
-### 1. Shopify CLI Setup
+### 1. Configuração CLI do Shopify
 
-Install and configure Shopify CLI for app development.
+Instale e configure Shopify CLI para desenvolvimento de aplicativos.
 
-**Install Shopify CLI:**
+**Instale a CLI do Shopify:**
 
 ```bash
 # Using npm
@@ -22,7 +22,7 @@ brew install shopify-cli
 shopify version
 ```
 
-**Create New App:**
+**Criar novo aplicativo:**
 
 ```bash
 # Create app with Node.js/React
@@ -43,9 +43,9 @@ my-app/
 └── README.md
 ```
 
-**Note:** As of Hydrogen 2025.5.0+, Shopify templates default to React Router 7 instead of Remix.
+**Observação:** A partir do Hydrogen 2025.5.0+, os modelos do Shopify são padronizados para React Router 7 em vez de Remix.
 
-**App Configuration (shopify.app.toml):**
+**Configuração do aplicativo (shopify.app.toml):**
 
 ```toml
 # This file stores app configuration
@@ -73,9 +73,9 @@ topics = ["products/create", "products/update"]
 uri = "/webhooks"
 ```
 
-### 2. Development Workflow
+### 2. Fluxo de trabalho de desenvolvimento
 
-**Start Development Server:**
+**Iniciar servidor de desenvolvimento:**
 
 ```bash
 # Start dev server with tunnelling
@@ -87,7 +87,7 @@ shopify app dev
 # - App installed in development store
 ```
 
-**Deploy App:**
+**Implantar aplicativo:**
 
 ```bash
 # Deploy to production
@@ -96,7 +96,7 @@ shopify app deploy
 # Generate app version and deploy extensions
 ```
 
-**Environment Variables (.env):**
+**Variáveis ​​de ambiente (.env):**
 
 ```bash
 SHOPIFY_API_KEY=your_api_key
@@ -107,25 +107,19 @@ SHOPIFY_APP_URL=https://your-app.com
 DATABASE_URL=postgresql://...
 ```
 
-### 3. App Architecture (React Router 7)
+### 3. Arquitetura do aplicativo (React Router 7)
 
-Modern Shopify app using React Router 7 framework.
+Aplicativo Shopify moderno usando a estrutura React Router 7.
 
-**app/routes/app._index.jsx (Home Page):**
+**app/routes/app.\_index.jsx (página inicial):**
 
 ```javascript
-import { useLoaderData } from "react-router";
-import { authenticate } from "../shopify.server";
-import {
-  Page,
-  Layout,
-  Card,
-  DataTable,
-  Button,
-} from "@shopify/polaris";
+import { useLoaderData } from 'react-router'
+import { authenticate } from '../shopify.server'
+import { Page, Layout, Card, DataTable, Button } from '@shopify/polaris'
 
 export async function loader({ request }) {
-  const { admin, session } = await authenticate.admin(request);
+  const { admin, session } = await authenticate.admin(request)
 
   // Fetch products using GraphQL
   const response = await admin.graphql(`
@@ -141,24 +135,20 @@ export async function loader({ request }) {
         }
       }
     }
-  `);
+  `)
 
-  const { data } = await response.json();
+  const { data } = await response.json()
 
   return {
-    products: data.products.edges.map(e => e.node),
+    products: data.products.edges.map((e) => e.node),
     shop: session.shop,
-  };
+  }
 }
 
 export default function Index() {
-  const { products, shop } = useLoaderData();
+  const { products, shop } = useLoaderData()
 
-  const rows = products.map((product) => [
-    product.title,
-    product.handle,
-    product.status,
-  ]);
+  const rows = products.map((product) => [product.title, product.handle, product.status])
 
   return (
     <Page title="Products">
@@ -166,39 +156,32 @@ export default function Index() {
         <Layout.Section>
           <Card>
             <DataTable
-              columnContentTypes={["text", "text", "text"]}
-              headings={["Title", "Handle", "Status"]}
+              columnContentTypes={['text', 'text', 'text']}
+              headings={['Title', 'Handle', 'Status']}
               rows={rows}
             />
           </Card>
         </Layout.Section>
       </Layout>
     </Page>
-  );
+  )
 }
 ```
 
-**app/routes/app.product.$id.jsx (Product Detail):**
+**app/routes/app.product.$id.jsx (Detalhes do produto):**
 
 ```javascript
-import { data } from "react-router";
-import { useLoaderData, useSubmit } from "react-router";
-import { authenticate } from "../shopify.server";
-import {
-  Page,
-  Layout,
-  Card,
-  Form,
-  FormLayout,
-  TextField,
-  Button,
-} from "@shopify/polaris";
-import { useState } from "react";
+import { data } from 'react-router'
+import { useLoaderData, useSubmit } from 'react-router'
+import { authenticate } from '../shopify.server'
+import { Page, Layout, Card, Form, FormLayout, TextField, Button } from '@shopify/polaris'
+import { useState } from 'react'
 
 export async function loader({ request, params }) {
-  const { admin } = await authenticate.admin(request);
+  const { admin } = await authenticate.admin(request)
 
-  const response = await admin.graphql(`
+  const response = await admin.graphql(
+    `
     query GetProduct($id: ID!) {
       product(id: $id) {
         id
@@ -208,23 +191,26 @@ export async function loader({ request, params }) {
         vendor
       }
     }
-  `, {
-    variables: { id: `gid://shopify/Product/${params.id}` },
-  });
+  `,
+    {
+      variables: { id: `gid://shopify/Product/${params.id}` },
+    },
+  )
 
-  const { data: responseData } = await response.json();
+  const { data: responseData } = await response.json()
 
-  return data({ product: responseData.product });
+  return data({ product: responseData.product })
 }
 
 export async function action({ request, params }) {
-  const { admin } = await authenticate.admin(request);
+  const { admin } = await authenticate.admin(request)
 
-  const formData = await request.formData();
-  const title = formData.get("title");
-  const description = formData.get("description");
+  const formData = await request.formData()
+  const title = formData.get('title')
+  const description = formData.get('description')
 
-  const response = await admin.graphql(`
+  const response = await admin.graphql(
+    `
     mutation UpdateProduct($input: ProductInput!) {
       productUpdate(input: $input) {
         product {
@@ -237,52 +223,49 @@ export async function action({ request, params }) {
         }
       }
     }
-  `, {
-    variables: {
-      input: {
-        id: `gid://shopify/Product/${params.id}`,
-        title,
-        description,
+  `,
+    {
+      variables: {
+        input: {
+          id: `gid://shopify/Product/${params.id}`,
+          title,
+          description,
+        },
       },
     },
-  });
+  )
 
-  const { data: responseData } = await response.json();
+  const { data: responseData } = await response.json()
 
   if (responseData.productUpdate.userErrors.length > 0) {
-    return data({ errors: responseData.productUpdate.userErrors }, { status: 400 });
+    return data({ errors: responseData.productUpdate.userErrors }, { status: 400 })
   }
 
-  return data({ success: true });
+  return data({ success: true })
 }
 
 export default function ProductDetail() {
-  const { product } = useLoaderData();
-  const submit = useSubmit();
+  const { product } = useLoaderData()
+  const submit = useSubmit()
 
-  const [title, setTitle] = useState(product.title);
-  const [description, setDescription] = useState(product.description);
+  const [title, setTitle] = useState(product.title)
+  const [description, setDescription] = useState(product.description)
 
   const handleSubmit = () => {
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("description", description);
+    const formData = new FormData()
+    formData.append('title', title)
+    formData.append('description', description)
 
-    submit(formData, { method: "post" });
-  };
+    submit(formData, { method: 'post' })
+  }
 
   return (
-    <Page title="Edit Product" backAction={{ url: "/app" }}>
+    <Page title="Edit Product" backAction={{ url: '/app' }}>
       <Layout>
         <Layout.Section>
           <Card>
             <FormLayout>
-              <TextField
-                label="Title"
-                value={title}
-                onChange={setTitle}
-                autoComplete="off"
-              />
+              <TextField label="Title" value={title} onChange={setTitle} autoComplete="off" />
               <TextField
                 label="Description"
                 value={description}
@@ -298,26 +281,26 @@ export default function ProductDetail() {
         </Layout.Section>
       </Layout>
     </Page>
-  );
+  )
 }
 ```
 
-### 4. App Extensions
+### 4. Extensões de aplicativos
 
-Extend Shopify functionality with various extension types.
+Amplie a funcionalidade do Shopify com vários tipos de extensão.
 
-**Admin Action Extension:**
+**Extensão de ação administrativa:**
 
-Create button in admin product page:
-
-```bash
+Botão Criar na página administrativa do produto:```bash
 shopify app generate extension
 
 # Choose: Admin action
-# Name: Export Product
-```
 
-**extensions/export-product/src/index.jsx:**
+# Name: Export Product
+
+````
+
+**extensões/produto de exportação/src/index.jsx:**
 
 ```javascript
 import { extend, AdminAction } from "@shopify/admin-ui-extensions";
@@ -345,20 +328,20 @@ extend("Admin::Product::SubscriptionAction", (root, { data }) => {
 
   root.append(button);
 });
-```
+````
 
-**Theme App Extension:**
+**Extensão de aplicativo de tema:**
 
-Add app block to themes:
-
-```bash
+Adicione bloco de aplicativos aos temas:```bash
 shopify app generate extension
 
 # Choose: Theme app extension
-# Name: Product Reviews
-```
 
-**extensions/product-reviews/blocks/reviews.liquid:**
+# Name: Product Reviews
+
+````
+
+**extensões/revisões de produtos/blocos/revisões.liquid:**
 
 ```liquid
 {% schema %}
@@ -428,57 +411,57 @@ shopify app generate extension
     margin-bottom: 0.5rem;
   }
 {% endstylesheet %}
-```
+````
 
-### 5. Webhooks in Apps
+### 5. Webhooks em aplicativos
 
-Handle Shopify events in your app.
+Gerencie eventos do Shopify em seu aplicativo.
 
 **app/routes/webhooks.jsx:**
 
 ```javascript
-import { authenticate } from "../shopify.server";
-import db from "../db.server";
+import { authenticate } from '../shopify.server'
+import db from '../db.server'
 
 export async function action({ request }) {
-  const { topic, shop, session, admin, payload } = await authenticate.webhook(request);
+  const { topic, shop, session, admin, payload } = await authenticate.webhook(request)
 
-  console.log(`Webhook received: ${topic} from ${shop}`);
+  console.log(`Webhook received: ${topic} from ${shop}`)
 
   switch (topic) {
-    case "APP_UNINSTALLED":
+    case 'APP_UNINSTALLED':
       // Clean up app data
-      await db.session.deleteMany({ where: { shop } });
-      break;
+      await db.session.deleteMany({ where: { shop } })
+      break
 
-    case "PRODUCTS_CREATE":
+    case 'PRODUCTS_CREATE':
       // Handle new product
-      console.log("New product created:", payload.id, payload.title);
-      await handleProductCreated(payload);
-      break;
+      console.log('New product created:', payload.id, payload.title)
+      await handleProductCreated(payload)
+      break
 
-    case "PRODUCTS_UPDATE":
+    case 'PRODUCTS_UPDATE':
       // Handle product update
-      console.log("Product updated:", payload.id);
-      await handleProductUpdated(payload);
-      break;
+      console.log('Product updated:', payload.id)
+      await handleProductUpdated(payload)
+      break
 
-    case "ORDERS_CREATE":
+    case 'ORDERS_CREATE':
       // Handle new order
-      console.log("New order:", payload.id, payload.email);
-      await handleOrderCreated(payload);
-      break;
+      console.log('New order:', payload.id, payload.email)
+      await handleOrderCreated(payload)
+      break
 
-    case "CUSTOMERS_CREATE":
+    case 'CUSTOMERS_CREATE':
       // Handle new customer
-      await handleCustomerCreated(payload);
-      break;
+      await handleCustomerCreated(payload)
+      break
 
     default:
-      console.log("Unhandled webhook topic:", topic);
+      console.log('Unhandled webhook topic:', topic)
   }
 
-  return new Response("OK", { status: 200 });
+  return new Response('OK', { status: 200 })
 }
 
 async function handleProductCreated(product) {
@@ -489,32 +472,27 @@ async function handleProductCreated(product) {
       title: product.title,
       handle: product.handle,
     },
-  });
+  })
 }
 
 async function handleOrderCreated(order) {
   // Send email notification, update inventory, etc.
-  console.log(`Order ${order.id} received for ${order.email}`);
+  console.log(`Order ${order.id} received for ${order.email}`)
 }
 ```
 
-**Register Webhooks (app/shopify.server.js):**
+**Registre Webhooks (app/shopify.server.js):**
 
 ```javascript
-import "@shopify/shopify-app-remix/adapters/node";
-import {
-  ApiVersion,
-  AppDistribution,
-  shopifyApp,
-  DeliveryMethod,
-} from "@shopify/shopify-app-remix/server";
+import '@shopify/shopify-app-remix/adapters/node'
+import { ApiVersion, AppDistribution, shopifyApp, DeliveryMethod } from '@shopify/shopify-app-remix/server'
 
 const shopify = shopifyApp({
   apiKey: process.env.SHOPIFY_API_KEY,
   apiSecretKey: process.env.SHOPIFY_API_SECRET,
-  scopes: process.env.SCOPES?.split(","),
+  scopes: process.env.SCOPES?.split(','),
   appUrl: process.env.SHOPIFY_APP_URL,
-  authPathPrefix: "/auth",
+  authPathPrefix: '/auth',
   sessionStorage: new SQLiteSessionStorage(),
   distribution: AppDistribution.AppStore,
   apiVersion: ApiVersion.January26,
@@ -522,32 +500,32 @@ const shopify = shopifyApp({
   webhooks: {
     APP_UNINSTALLED: {
       deliveryMethod: DeliveryMethod.Http,
-      callbackUrl: "/webhooks",
+      callbackUrl: '/webhooks',
     },
     PRODUCTS_CREATE: {
       deliveryMethod: DeliveryMethod.Http,
-      callbackUrl: "/webhooks",
+      callbackUrl: '/webhooks',
     },
     PRODUCTS_UPDATE: {
       deliveryMethod: DeliveryMethod.Http,
-      callbackUrl: "/webhooks",
+      callbackUrl: '/webhooks',
     },
     ORDERS_CREATE: {
       deliveryMethod: DeliveryMethod.Http,
-      callbackUrl: "/webhooks",
+      callbackUrl: '/webhooks',
     },
   },
-});
+})
 
-export default shopify;
-export const authenticate = shopify.authenticate;
+export default shopify
+export const authenticate = shopify.authenticate
 ```
 
-### 6. App Proxy
+### 6. Proxy de aplicativo
 
-Create custom storefront routes that access your app.
+Crie rotas personalizadas de vitrine que acessam seu aplicativo.
 
-**Setup in Partner Dashboard:**
+**Configuração no Painel do Parceiro:**
 
 ```
 Subpath prefix: apps
@@ -555,53 +533,53 @@ Subpath: reviews
 Proxy URL: https://your-app.com/api/proxy
 ```
 
-**Result:**
+**Resultado:**
 
 ```
 https://store.com/apps/reviews → proxies to → https://your-app.com/api/proxy
 ```
 
-**Handle Proxy Requests (app/routes/api.proxy.jsx):**
+**Tratar de solicitações de proxy (app/routes/api.proxy.jsx):**
 
 ```javascript
-import { data } from "react-router";
+import { data } from 'react-router'
 
 export async function loader({ request }) {
-  const url = new URL(request.url);
+  const url = new URL(request.url)
 
   // Verify proxy request
-  const signature = url.searchParams.get("signature");
-  const shop = url.searchParams.get("shop");
+  const signature = url.searchParams.get('signature')
+  const shop = url.searchParams.get('shop')
 
   if (!verifyProxySignature(signature, request)) {
-    return data({ error: "Invalid signature" }, { status: 401 });
+    return data({ error: 'Invalid signature' }, { status: 401 })
   }
 
   // Handle different paths
-  const path = url.searchParams.get("path_prefix");
+  const path = url.searchParams.get('path_prefix')
 
-  if (path === "/apps/reviews/product") {
-    const productId = url.searchParams.get("product_id");
-    const reviews = await getProductReviews(productId);
+  if (path === '/apps/reviews/product') {
+    const productId = url.searchParams.get('product_id')
+    const reviews = await getProductReviews(productId)
 
-    return data({ reviews });
+    return data({ reviews })
   }
 
-  return data({ message: "App Proxy" });
+  return data({ message: 'App Proxy' })
 }
 
 function verifyProxySignature(signature, request) {
   // Verify HMAC signature
   // Implementation depends on your setup
-  return true;
+  return true
 }
 ```
 
-### 7. Polaris UI Components
+### 7. Componentes da interface do usuário Polaris
 
-Use Shopify's design system for consistent admin UI.
+Use o sistema de design da Shopify para uma interface de administração consistente.
 
-**Common Components:**
+**Componentes comuns:**
 
 ```javascript
 import {
@@ -618,39 +596,31 @@ import {
   Modal,
   Toast,
   Frame,
-} from "@shopify/polaris";
+} from '@shopify/polaris'
 
 export default function MyPage() {
   return (
     <Page
       title="Settings"
-      primaryAction={{ content: "Save", onAction: handleSave }}
-      secondaryActions={[{ content: "Cancel", onAction: handleCancel }]}
+      primaryAction={{ content: 'Save', onAction: handleSave }}
+      secondaryActions={[{ content: 'Cancel', onAction: handleCancel }]}
     >
       <Layout>
         <Layout.Section>
           <Card title="General Settings" sectioned>
-            <TextField
-              label="App Name"
-              value={name}
-              onChange={setName}
-            />
+            <TextField label="App Name" value={name} onChange={setName} />
 
             <Select
               label="Status"
               options={[
-                { label: "Active", value: "active" },
-                { label: "Draft", value: "draft" },
+                { label: 'Active', value: 'active' },
+                { label: 'Draft', value: 'draft' },
               ]}
               value={status}
               onChange={setStatus}
             />
 
-            <Checkbox
-              label="Enable notifications"
-              checked={notifications}
-              onChange={setNotifications}
-            />
+            <Checkbox label="Enable notifications" checked={notifications} onChange={setNotifications} />
           </Card>
         </Layout.Section>
 
@@ -661,15 +631,14 @@ export default function MyPage() {
         </Layout.Section>
       </Layout>
     </Page>
-  );
+  )
 }
 ```
 
-### Polaris Web Components (Preview)
+### Componentes Web Polaris (visualização)
 
-Shopify is migrating from Polaris React to framework-agnostic Web Components:
+Shopify está migrando do Polaris React para componentes da Web independentes de estrutura:```html
 
-```html
 <!-- Web Component syntax (replacing React components) -->
 <ui-page title="Settings">
   <ui-layout>
@@ -687,30 +656,28 @@ Shopify is migrating from Polaris React to framework-agnostic Web Components:
 </ui-page>
 ```
 
-**Migration status:** Polaris React remains fully supported. Web Components are in preview for new projects. Existing apps do not need to migrate immediately.
+**Status da migração:** Polaris React permanece totalmente compatível. Os componentes da Web estão em versão prévia para novos projetos. Os aplicativos existentes não precisam ser migrados imediatamente.
 
-### 8. Shopify Dev MCP Server
+### 8. Servidor Shopify Dev MCP
 
-The `@anthropic/shopify-dev-mcp` server provides AI-assisted Shopify development:
-
-```json
+O servidor `@anthropic/shopify-dev-mcp` fornece desenvolvimento Shopify assistido por IA:```json
 {
-  "mcpServers": {
-    "shopify-dev": {
-      "command": "npx",
-      "args": ["@anthropic/shopify-dev-mcp"]
-    }
-  }
+"mcpServers": {
+"shopify-dev": {
+"command": "npx",
+"args": ["@anthropic/shopify-dev-mcp"]
 }
-```
+}
+}
 
-Provides tools for querying Shopify documentation, generating GraphQL queries, and scaffolding app components.
+````
+Fornece ferramentas para consultar a documentação do Shopify, gerar consultas GraphQL e estruturar componentes de aplicativos.
 
-### 9. Deployment
+### 9. Implantação
 
-Deploy Shopify apps to production.
+Implante aplicativos do Shopify em produção.
 
-**Deploy to Cloudflare Workers:**
+**Implantar em trabalhadores da Cloudflare:**
 
 **wrangler.toml:**
 
@@ -725,9 +692,9 @@ SHOPIFY_API_KEY = "your_api_key"
 [[kv_namespaces]]
 binding = "SESSIONS"
 id = "your_kv_namespace_id"
-```
+````
 
-**Deploy:**
+**Implantar:**
 
 ```bash
 # Build app
@@ -737,7 +704,7 @@ npm run build
 wrangler deploy
 ```
 
-**Environment Secrets:**
+**Segredos do Meio Ambiente:**
 
 ```bash
 # Add secrets
@@ -745,15 +712,16 @@ wrangler secret put SHOPIFY_API_SECRET
 wrangler secret put DATABASE_URL
 ```
 
-## Best Practices
+## Melhores práticas
 
-1. **Use Shopify CLI** for app scaffolding and development
-2. **Implement proper OAuth** with HMAC verification
-3. **Handle webhook events** for real-time updates
-4. **Use Polaris** for consistent admin UI
-5. **Test in development store** before production
-6. **Implement error handling** for all API calls
-7. **Store session data securely** (encrypted database)
-8. **Follow Shopify app requirements** for listing
-9. **Implement app billing** for monetisation
-10. **Use app extensions** to enhance merchant experience
+1. **Use Shopify CLI** para estrutura e desenvolvimento de aplicativos
+2. **Implemente OAuth adequado** com verificação HMAC
+3. **Trate de eventos de webhook** para atualizações em tempo real
+4. **Use Polaris** para uma interface de administração consistente
+5. **Teste na loja de desenvolvimento** antes da produção
+6. **Implementar tratamento de erros** para todas as chamadas de API
+7. **Armazene dados da sessão com segurança** (banco de dados criptografado)
+8. **Siga os requisitos do aplicativo Shopify** para listagem
+9. **Implementar faturamento de aplicativos** para segunda-feira
+
+etização 10. **Use extensões de aplicativo** para aprimorar a experiência do comerciante

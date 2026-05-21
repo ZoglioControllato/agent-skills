@@ -1,32 +1,29 @@
-# Expo Router
+# Roteador Expo
 
-Patterns for Expo Router 4+ (SDK 53+) with file-based routing, native navigators, and typed routes.
+Padrões para Expo Router 4+ (SDK 53+) com roteamento baseado em arquivo, navegadores nativos e rotas digitadas.
 
-## Project Structure
+## Estrutura do Projeto```
 
-```
 app/
-├── _layout.tsx           # Root layout (Stack)
-├── index.tsx             # Home (/)
-├── +not-found.tsx        # 404 page
-├── (tabs)/               # Tab group
-│   ├── _layout.tsx       # Tab bar config (NativeTabs)
-│   ├── index.tsx         # First tab
-│   └── profile.tsx       # Profile tab
-├── (auth)/               # Auth group (no tabs)
-│   ├── _layout.tsx
-│   ├── login.tsx
-│   └── register.tsx
+├── \_layout.tsx # Root layout (Stack)
+├── index.tsx # Home (/)
+├── +not-found.tsx # 404 page
+├── (tabs)/ # Tab group
+│ ├── \_layout.tsx # Tab bar config (NativeTabs)
+│ ├── index.tsx # First tab
+│ └── profile.tsx # Profile tab
+├── (auth)/ # Auth group (no tabs)
+│ ├── \_layout.tsx
+│ ├── login.tsx
+│ └── register.tsx
 ├── settings/
-│   ├── _layout.tsx       # Nested stack
-│   ├── index.tsx         # Settings main
-│   └── notifications.tsx
-└── details/[id].tsx      # Dynamic route
-```
+│ ├── \_layout.tsx # Nested stack
+│ ├── index.tsx # Settings main
+│ └── notifications.tsx
+└── details/[id].tsx # Dynamic route
 
-## Root Layout
-
-```tsx
+````
+## Layout raiz```tsx
 // app/_layout.tsx
 import { Stack } from 'expo-router'
 import { ThemeProvider, DarkTheme, DefaultTheme } from '@react-navigation/native'
@@ -45,37 +42,34 @@ export default function RootLayout() {
     </ThemeProvider>
   )
 }
-```
+````
 
-## Native Tabs (SDK 53+)
+## Guias nativas (SDK 53+)```tsx
 
-```tsx
-// app/(tabs)/_layout.tsx
+// app/(tabs)/\_layout.tsx
 import { NativeTabs, Label } from 'expo-router/unstable-native-tabs'
 
 export default function TabLayout() {
-  return (
-    <NativeTabs minimizeBehavior="onScrollDown">
-      <NativeTabs.Trigger name="index">
-        <Label>Home</Label>
-        <NativeTabs.Trigger.Icon sf="house.fill" md="home" />
-      </NativeTabs.Trigger>
-      <NativeTabs.Trigger name="profile">
-        <Label>Profile</Label>
-        <NativeTabs.Trigger.Icon sf="person.fill" md="person" />
-      </NativeTabs.Trigger>
-    </NativeTabs>
-  )
+return (
+<NativeTabs minimizeBehavior="onScrollDown">
+<NativeTabs.Trigger name="index">
+<Label>Home</Label>
+<NativeTabs.Trigger.Icon sf="house.fill" md="home" />
+</NativeTabs.Trigger>
+<NativeTabs.Trigger name="profile">
+<Label>Profile</Label>
+<NativeTabs.Trigger.Icon sf="person.fill" md="person" />
+</NativeTabs.Trigger>
+</NativeTabs>
+)
 }
-```
 
-On iOS, native tabs automatically enable `contentInsetAdjustmentBehavior` on the first ScrollView at the root of each tab screen.
+````
+No iOS, as guias nativas ativam automaticamente `contentInsetAdjustmentBehavior` no primeiro ScrollView na raiz de cada tela da guia.
 
-## JS Tabs (Fallback)
+## Guias JS (substituto)
 
-If you need more customization than NativeTabs provides:
-
-```tsx
+Se você precisar de mais personalização do que o NativeTabs oferece:```tsx
 // app/(tabs)/_layout.tsx
 import { Tabs } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
@@ -93,11 +87,10 @@ export default function TabLayout() {
     </Tabs>
   )
 }
-```
+````
 
-## Navigation
+## Navegação```tsx
 
-```tsx
 import { router, useLocalSearchParams, Link } from 'expo-router'
 
 // Programmatic
@@ -109,11 +102,12 @@ router.dismissAll()
 
 // With params
 router.push({
-  pathname: '/details/[id]',
-  params: { id: '123', title: 'Item' },
+pathname: '/details/[id]',
+params: { id: '123', title: 'Item' },
 })
 
 // Link component (with prefetch for faster navigation)
+
 <Link href="/profile" prefetch asChild>
   <Pressable>
     <Text>Go to Profile</Text>
@@ -122,14 +116,12 @@ router.push({
 
 // Reading params
 function DetailsScreen() {
-  const { id, title } = useLocalSearchParams<{ id: string; title?: string }>()
-  return <Text>Details for {id}</Text>
+const { id, title } = useLocalSearchParams<{ id: string; title?: string }>()
+return <Text>Details for {id}</Text>
 }
-```
 
-## Protected Routes
-
-```tsx
+````
+## Rotas Protegidas```tsx
 // app/(auth)/_layout.tsx
 import { Redirect, Stack } from 'expo-router'
 import { useAuth } from '@/hooks/useAuth'
@@ -152,24 +144,21 @@ export default function TabLayout() {
 
   return <NativeTabs>...</NativeTabs>
 }
-```
+````
 
-## Native Form Sheets
+## Folhas de formulário nativas```tsx
 
-```tsx
-// app/_layout.tsx
+// app/\_layout.tsx
 <Stack.Screen
-  name="details/[id]"
-  options={{
+name="details/[id]"
+options={{
     presentation: 'formSheet',
     sheetAllowedDetents: 'fitToContents',
   }}
 />
-```
 
-## Deep Linking
-
-```json
+````
+## Links profundos```json
 // app.json
 {
   "expo": {
@@ -188,48 +177,47 @@ export default function TabLayout() {
     ]
   }
 }
-```
+````
 
-Dynamic routes handle deep links automatically: `myapp://details/123` → `app/details/[id].tsx`
+Rotas dinâmicas lidam com links diretos automaticamente: `myapp://details/123` → `app/details/[id].tsx`
 
-## Async Routes (Bundle Splitting)
+## Rotas assíncronas (divisão de pacotes)
 
-Enable async routes for production bundle splitting:
-
-```json
+Habilite rotas assíncronas para divisão de pacotes de produção:```json
 // app.json
 {
-  "expo": {
-    "plugins": [
-      [
-        "expo-router",
-        {
-          "asyncRoutes": {
-            "web": true,
-            "default": "development"
-          }
-        }
-      ]
-    ]
-  }
+"expo": {
+"plugins": [
+[
+"expo-router",
+{
+"asyncRoutes": {
+"web": true,
+"default": "development"
 }
+}
+]
+]
+}
+}
+
 ```
+## Referência rápida
 
-## Quick Reference
-
-| Component      | Purpose                        |
+| Componente | Finalidade |
 | -------------- | ------------------------------ |
-| `<Stack>`      | Native stack navigator         |
-| `<Tabs>`       | JS tab navigator               |
-| `<NativeTabs>` | Native tab navigator (SDK 53+) |
-| `<Drawer>`     | Drawer navigator               |
-| `<Link>`       | Declarative navigation         |
-| `<Redirect>`   | Route redirect                 |
+| `<Pilha>` | Navegador de pilha nativo |
+| `<Guias>` | Navegador de guias JS |
+| `<NativeTabs>` | Navegador de guias nativo (SDK 53+) |
+| `<Gaveta>` | Navegador de gaveta |
+| `<Link>` | Navegação declarativa |
+| `<Redirecionar>` | Redirecionamento de rota |
 
-| router method  | Behavior             |
+| método roteador | Comportamento |
 | -------------- | -------------------- |
-| `push()`       | Add to stack         |
-| `replace()`    | Replace current      |
-| `back()`       | Go back              |
-| `dismissAll()` | Dismiss all modals   |
-| `canGoBack()`  | Check if can go back |
+| `push()` | Adicionar à pilha |
+| `substituir()` | Substituir atual |
+| `voltar()` | Volte |
+| `dismissAll()` | Dispensar todos os modais |
+| `canGoBack()` | Verifique se pode voltar |
+```

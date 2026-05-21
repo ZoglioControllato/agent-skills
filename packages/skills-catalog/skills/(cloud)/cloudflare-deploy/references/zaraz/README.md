@@ -1,98 +1,94 @@
-# Cloudflare Zaraz
+#Cloudflare Zaraz
 
-Expert guidance for Cloudflare Zaraz - server-side tag manager for loading third-party tools at the edge.
+Orientação especializada para Cloudflare Zaraz – gerenciador de tags do lado do servidor para carregar ferramentas de terceiros na borda.
 
-## What is Zaraz?
+## O que é Zaraz?
 
-Zaraz offloads third-party scripts (analytics, ads, chat, marketing) to Cloudflare's edge, improving site speed, privacy, and security. Zero client-side performance impact.
+Zaraz transfere scripts de terceiros (análises, anúncios, chat, marketing) para a borda da Cloudflare, melhorando a velocidade, a privacidade e a segurança do site. Impacto zero no desempenho do lado do cliente.
 
-**Core Concepts:**
+**Conceitos Básicos:**
 
-- **Server-side execution** - Scripts run on Cloudflare, not user's browser
-- **Single HTTP request** - All tools loaded via one endpoint
-- **Privacy-first** - Control data sent to third parties
-- **No client-side JS overhead** - Minimal browser impact
+- **Execução no lado do servidor** - Os scripts são executados no Cloudflare, não no navegador do usuário
+- **Solicitação HTTP única** - Todas as ferramentas carregadas por meio de um endpoint
+- **Privacidade em primeiro lugar** - Controle os dados enviados a terceiros
+- **Sem sobrecarga de JS do lado do cliente** - Impacto mínimo no navegador
 
-## Quick Start
+## Início rápido
 
-1. Navigate to domain > Zaraz in Cloudflare dashboard
-2. Click "Start setup"
-3. Add tools (Google Analytics, Facebook Pixel, etc.)
-4. Configure triggers (when tools fire)
-5. Add tracking code to your site:
-
-```javascript
-// Track page view
-zaraz.track('page_view')
+1. Navegue até domínio > Zaraz no painel Cloudflare
+2. Clique em "Iniciar configuração"
+3. Adicione ferramentas (Google Analytics, Facebook Pixel, etc.)
+4. Configure gatilhos (quando as ferramentas disparam)
+5. Adicione o código de rastreamento ao seu site:```javascript
+   // Track page view
+   zaraz.track('page_view')
 
 // Track custom event
 zaraz.track('button_click', { button_id: 'cta' })
 
 // Set user properties
 zaraz.set('userId', 'user_123')
-```
 
-## When to Use Zaraz
+````
+## Quando usar Zaraz
 
-**Use Zaraz when:**
+**Use Zaraz quando:**
 
-- Adding multiple third-party tools (analytics, ads, marketing)
-- Site performance is critical (no client-side JS overhead)
-- Privacy compliance required (GDPR, CCPA)
-- Non-technical teams need to manage tools
+- Adicionar várias ferramentas de terceiros (análises, anúncios, marketing)
+- O desempenho do site é crítico (sem sobrecarga de JS do lado do cliente)
+- Conformidade com a privacidade necessária (GDPR, CCPA)
+- Equipes não técnicas precisam gerenciar ferramentas
 
-**Use Workers directly when:**
+**Use Workers diretamente quando:**
 
-- Building custom server-side tracking logic
-- Need full control over data processing
-- Integrating with complex backend systems
-- Zaraz's tool library doesn't meet needs
+- Criação de lógica de rastreamento personalizada no lado do servidor
+- Precisa de controle total sobre o processamento de dados
+- Integração com sistemas backend complexos
+- A biblioteca de ferramentas do Zaraz não atende às necessidades
 
-## In This Reference
+## Nesta referência
 
-| File                                   | Purpose                                | When to Read                     |
+| Arquivo | Finalidade | Quando ler |
 | -------------------------------------- | -------------------------------------- | -------------------------------- |
-| [api.md](./api.md)                     | Web API, zaraz object, consent methods | Implementing tracking calls      |
-| [configuration.md](./configuration.md) | Dashboard setup, triggers, tools       | Initial setup, adding tools      |
-| [patterns.md](./patterns.md)           | SPA, e-commerce, Worker integration    | Best practices, common scenarios |
-| [gotchas.md](./gotchas.md)             | Troubleshooting, limits, pitfalls      | Debugging issues                 |
+| [api.md](./api.md) | API Web, objeto zaraz, métodos de consentimento | Implementando chamadas de rastreamento |
+| [configuração.md](./configuration.md) | Configuração do painel, gatilhos, ferramentas | Configuração inicial, adição de ferramentas |
+| [padrões.md](./padrões.md) | SPA, e-commerce, Integração de trabalhadores | Melhores práticas, cenários comuns |
+| [gotchas.md](./gotchas.md) | Solução de problemas, limites, armadilhas | Problemas de depuração |
 
-## Reading Order by Task
+## Ordem de leitura por tarefa
 
-| Task                  | Files to Read                             |
+| Tarefa | Arquivos para ler |
 | --------------------- | ----------------------------------------- |
-| Add analytics to site | README → configuration.md                 |
-| Track custom events   | README → api.md                           |
-| Debug tracking issues | gotchas.md                                |
-| SPA tracking          | api.md → patterns.md (SPA section)        |
-| E-commerce tracking   | api.md#ecommerce → patterns.md#ecommerce  |
-| Worker integration    | patterns.md#worker-integration            |
-| GDPR compliance       | api.md#consent → configuration.md#consent |
+| Adicionar análises ao site | LEIA-ME → configuração.md |
+| Acompanhe eventos personalizados | LEIA-ME → api.md |
+| Problemas de rastreamento de depuração | pegadinhas.md |
+| Rastreamento de SPA | api.md → padrões.md (seção SPA) |
+| Acompanhamento de comércio eletrônico | api.md#ecommerce → padrões.md#ecommerce |
+| Integração dos trabalhadores | padrões.md#worker-integração |
+| Conformidade com o GDPR | api.md#consent → configuração.md#consent |
 
-## Decision Tree
+## Árvore de decisão```
+O que você precisa?
 
-```
-What do you need?
-
-├─ Track events in browser → api.md
-│   ├─ Page views, clicks → zaraz.track()
-│   ├─ User properties → zaraz.set()
-│   └─ E-commerce → zaraz.ecommerce()
+├─ Rastreie eventos no navegador → api.md
+│ ├─ Visualizações de página, cliques → zaraz.track()
+│ ├─ Propriedades do usuário → zaraz.set()
+│ └─ Comércio eletrônico → zaraz.ecommerce()
 │
-├─ Configure Zaraz → configuration.md
-│   ├─ Add GA4/Facebook → tools setup
-│   ├─ When tools fire → triggers
-│   └─ GDPR consent → consent purposes
+├─ Configurar Zaraz → configuração.md
+│ ├─ Adicionar GA4/Facebook → configuração de ferramentas
+│ ├─ Quando as ferramentas disparam → aciona
+│ └─ Consentimento do GDPR → finalidades de consentimento
 │
-├─ Integrate with Workers → patterns.md#worker-integration
-│   ├─ Enrich context → Context Enrichers
-│   └─ Inject tracking → HTML rewriting
+├─ Integrar com trabalhadores → padrões.md#worker-integration
+│ ├─ Enriquecer contexto → Enriquecedores de contexto
+│ └─ Rastreamento de injeção → Reescrita de HTML
 │
-└─ Debug issues → gotchas.md
-    ├─ Events not firing → troubleshooting
-    ├─ Consent issues → consent debugging
-    └─ Performance → debugging tools
-```
+└─ Problemas de depuração → gotchas.md
+├─ Eventos não disparados → solução de problemas
+├─ Problemas de consentimento → depuração de consentimento
+└─ Desempenho → ferramentas de depuração
+````
 
 ## Key Features
 

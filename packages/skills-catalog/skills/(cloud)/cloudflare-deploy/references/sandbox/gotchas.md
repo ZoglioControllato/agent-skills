@@ -38,50 +38,49 @@ async function execWithRetry(sandbox, cmd) {
 }
 ```
 
-### "Connection refused: container port not found"
+### "Conexão recusada: porta do contêiner não encontrada"
 
-**Cause:** Missing `EXPOSE` directive in Dockerfile
-**Solution:** Add `EXPOSE <port>` to Dockerfile (only needed for `wrangler dev`, production auto-exposes)
+**Causa:** Diretiva `EXPOSE` ausente no Dockerfile
+**Solução:** Adicione `EXPOSE <port>` ao Dockerfile (necessário apenas para `wrangler dev`, exposições automáticas de produção)
 
-### "Preview URLs not working"
+### "URLs de visualização não funcionam"
 
-**Cause:** Custom domain not configured, wildcard DNS missing, `normalizeId` not set, or `proxyToSandbox()` not called
-**Solution:** Check:
+**Causa:** Domínio personalizado não configurado, DNS curinga ausente, `normalizeId` não definido ou `proxyToSandbox()` não chamado
+**Solução:** Verifique:
 
-1. Custom domain configured? (not `.workers.dev`)
-2. Wildcard DNS set up? (`*.domain.com → worker.domain.com`)
-3. `normalizeId: true` in getSandbox?
-4. `proxyToSandbox()` called first in fetch?
+1. Domínio personalizado configurado? (não `.workers.dev`)
+2. DNS curinga configurado? (`*.domínio.com → trabalhador.domínio.com`)
+3. `normalizeId: true` no getSandbox?
+4. `proxyToSandbox()` chamado primeiro na busca?
 
-### "Slow first request"
+### "Primeira solicitação lenta"
 
-**Cause:** Cold start (container provisioning)
-**Solution:**
+**Causa:** inicialização a frio (provisionamento de contêiner)
+**Solução:**
 
-- Use `sleepAfter` instead of creating new sandboxes
-- Pre-warm with cron triggers
-- Set `keepAlive: true` for critical sandboxes
+- Use `sleepAfter` em vez de criar novos sandboxes
+- Pré-aquecimento com gatilhos cron
+- Defina `keepAlive: true` para sandboxes críticas
 
-### "File not persisting"
+### "Arquivo não persiste"
 
-**Cause:** Files in `/tmp` or other ephemeral paths
-**Solution:** Use `/workspace` for persistent files
+**Causa:** Arquivos em `/tmp` ou outros caminhos efêmeros
+**Solução:** Use `/workspace` para arquivos persistentes
 
-### "Bucket mounting doesn't work locally"
+### "A montagem do balde não funciona localmente"
 
-**Cause:** Bucket mounting requires FUSE, not available in `wrangler dev`
-**Solution:** Test bucket mounting in production only. Use mock data locally.
+**Causa:** A montagem do balde requer FUSE, não disponível no `wrangler dev`
+**Solução:** Teste a montagem da caçamba somente na produção. Use dados simulados localmente.
 
-### "Different normalizeId = different sandbox"
+### "NormalizeId diferente = sandbox diferente"
 
-**Cause:** Changing `normalizeId` option changes Durable Object ID
-**Solution:** Set `normalizeId` consistently. `normalizeId: true` lowercases the ID.
-
-```typescript
+**Causa:** A alteração da opção `normalizeId` altera o ID do objeto durável
+**Solução:** Defina `normalizeId` consistentemente. `normalizeId: true` coloca o ID em letras minúsculas.```typescript
 // These create DIFFERENT sandboxes:
 getSandbox(env.Sandbox, 'MyApp') // DO ID: hash('MyApp')
 getSandbox(env.Sandbox, 'MyApp', { normalizeId: true }) // DO ID: hash('myapp')
-```
+
+````
 
 ### "Code context variables disappeared"
 
@@ -98,7 +97,7 @@ const sandbox = getSandbox(env.Sandbox, `user-${Date.now()}`)
 
 // ✅ GOOD: Reuse per user
 const sandbox = getSandbox(env.Sandbox, `user-${userId}`)
-```
+````
 
 ### Sleep & Traffic Config
 

@@ -1,4 +1,4 @@
-# Configuration
+# Configuração
 
 ## wrangler.jsonc
 
@@ -30,12 +30,12 @@
 }
 ```
 
-## Build Config
+## Configuração de build
 
-**Git deployment**: Dashboard → Project → Settings → Build settings  
-Set build command, output dir, env vars. Framework auto-detection configures automatically.
+**Deploy Git**: Dashboard → Project → Settings → Build settings  
+Defina comando de build, diretório de saída, variáveis de ambiente. Auto-detecção de framework configura o restante.
 
-## Environment Variables
+## Variáveis de ambiente
 
 ### Local (.dev.vars)
 
@@ -45,7 +45,7 @@ SECRET_KEY="local-secret-key"
 API_TOKEN="dev-token-123"
 ```
 
-### Production
+### Produção
 
 ```bash
 echo "secret-value" | npx wrangler pages secret put SECRET_KEY --project-name=my-project
@@ -53,13 +53,13 @@ npx wrangler pages secret list --project-name=my-project
 npx wrangler pages secret delete SECRET_KEY --project-name=my-project
 ```
 
-Access: `env.SECRET_KEY`
+Acesso: `env.SECRET_KEY`
 
-## Static Config Files
+## Arquivos estáticos de configuração
 
 ### \_redirects
 
-Place in build output (e.g., `dist/_redirects`):
+Coloque na saída do build (ex.: `dist/_redirects`):
 
 ```txt
 /old-page /new-page 301          # 301 redirect
@@ -68,8 +68,8 @@ Place in build output (e.g., `dist/_redirects`):
 /api/* /api-v2/:splat 200        # Proxy (no redirect)
 ```
 
-**Limits**: 2,100 total (2,000 static + 100 dynamic), 1,000 char/line  
-**Note**: Functions take precedence
+**Limites**: 2.100 total (2.000 estáticos + 100 dinâmicos), 1.000 caracteres/linha  
+**Nota**: Functions têm precedência
 
 ### \_headers
 
@@ -85,12 +85,12 @@ Place in build output (e.g., `dist/_redirects`):
   Cache-Control: public, max-age=31536000, immutable
 ```
 
-**Limits**: 100 rules, 2,000 char/line  
-**Note**: Only static assets; Functions set headers in Response
+**Limites**: 100 regras, 2.000 caracteres/linha  
+**Nota**: só assets estáticos; Functions definem headers no Response
 
 ### \_routes.json
 
-Controls which requests invoke Functions (auto-generated for most frameworks):
+Controla quais requisições invocam Functions (gerado automaticamente na maioria dos frameworks):
 
 ```json
 {
@@ -100,7 +100,7 @@ Controls which requests invoke Functions (auto-generated for most frameworks):
 }
 ```
 
-**Purpose**: Functions are metered; static requests are free. `exclude` takes precedence. Max 100 rules, 100 char/rule.
+**Finalidade**: Functions são medidas; requisições estáticas são gratuitas. `exclude` tem precedência. Máx. 100 regras, 100 caracteres/regra.
 
 ## TypeScript
 
@@ -108,11 +108,11 @@ Controls which requests invoke Functions (auto-generated for most frameworks):
 npx wrangler types --path='./functions/types.d.ts'
 ```
 
-Point `types` in `functions/tsconfig.json` to generated file.
+Aponte `types` em `functions/tsconfig.json` para o arquivo gerado.
 
 ## Smart Placement
 
-Automatically optimizes function execution location based on request patterns.
+Otimiza automaticamente onde a função executa com base nos padrões de requisição.
 
 ```jsonc
 {
@@ -122,28 +122,28 @@ Automatically optimizes function execution location based on request patterns.
 }
 ```
 
-**How it works**: System analyzes traffic over hours/days and places function execution closer to:
+**Como funciona**: o sistema analisa tráfego por horas/dias e posiciona execução mais perto de:
 
-- User clusters (e.g., regional traffic)
-- Data sources (e.g., D1 database primary location)
+- Agrupamentos de usuários (ex.: tráfego regional)
+- Fontes de dados (ex.: local do primário D1)
 
-**Benefits**:
+**Benefícios**:
 
-- Lower latency for read-heavy apps with centralized databases
-- Better performance for apps with regional traffic patterns
+- Menor latência para apps leitura-intensiva com banco centralizado
+- Melhor desempenho com tráfego regional
 
 **Trade-offs**:
 
-- Initial learning period: First requests may be slower while system optimizes
-- Optimization time: Performance improves over 24-48 hours
+- Período inicial de aprendizado: primeiras requisições podem ser mais lentas
+- Tempo de otimização: desempenho melhora em 24–48 horas
 
-**When to enable**: Global apps with D1/Durable Objects in specific regions, or apps with concentrated geographic traffic.
+**Quando habilitar**: apps globais com D1/Durable Objects em regiões específicas, ou tráfego geograficamente concentrado.
 
-**When to skip**: Evenly distributed global traffic with no data locality constraints.
+**Quando pular**: tráfego global uniforme sem localidade de dados.
 
-## Remote Bindings (Local Dev)
+## Bindings remotos (dev local)
 
-Connect local dev server to production bindings instead of local mocks:
+Conecte o dev server local aos bindings de produção em vez de mocks:
 
 ```bash
 # All bindings remote
@@ -153,21 +153,21 @@ npx wrangler pages dev ./dist --remote
 npx wrangler pages dev ./dist --remote --kv=KV --d1=DB
 ```
 
-**Use cases**:
+**Casos de uso**:
 
-- Test against production data (read-only operations)
-- Debug binding-specific behavior
-- Validate changes before deployment
+- Testar contra dados de produção (operações somente leitura)
+- Depurar comportamento específico de bindings
+- Validar mudanças antes do deploy
 
-**⚠️ Warning**:
+**Aviso**:
 
-- Writes affect **real production data**
-- Use only for read-heavy debugging or with non-production accounts
-- Consider creating separate preview environments instead
+- **Writes afetam dados reais de produção**
+- Use só para debug leitura-intensiva ou contas não produtivas
+- Prefira ambientes preview separados
 
-**Requirements**: Must be logged in (`npx wrangler login`) with access to bindings.
+**Requisitos**: login (`npx wrangler login`) com acesso aos bindings.
 
-## Local Dev
+## Dev local
 
 ```bash
 # Basic
@@ -186,27 +186,27 @@ npx wrangler pages dev ./dist --persist-to=./.wrangler/state/v3
 npx wrangler pages dev -- npm run dev
 ```
 
-## Limits (as of Jan 2026)
+## Limites (jan. 2026)
 
-| Resource               | Free                            | Paid                         |
-| ---------------------- | ------------------------------- | ---------------------------- |
-| **Functions Requests** | 100k/day                        | Unlimited (metered)          |
-| **Function CPU Time**  | 10ms/req                        | 30ms/req (Workers Paid)      |
-| **Function Memory**    | 128MB                           | 128MB                        |
-| **Script Size**        | 1MB compressed                  | 10MB compressed              |
-| **Deployments**        | 500/month                       | 5,000/month                  |
-| **Files per Deploy**   | 20,000                          | 20,000                       |
-| **File Size**          | 25MB                            | 25MB                         |
-| **Build Time**         | 20min                           | 20min                        |
-| **Redirects**          | 2,100 (2k static + 100 dynamic) | Same                         |
-| **Header Rules**       | 100                             | 100                          |
-| **Route Rules**        | 100                             | 100                          |
-| **Subrequests**        | 50/request                      | 1,000/request (Workers Paid) |
+| Recurso                   | Grátis                               | Pago                            |
+| ------------------------- | ------------------------------------ | ------------------------------- |
+| **Requisições Functions** | 100k/dia                             | Ilimitado (medido)              |
+| **CPU da Function**       | 10ms/req                             | 30ms/req (Workers Paid)         |
+| **Memória da Function**   | 128MB                                | 128MB                           |
+| **Tamanho do script**     | 1MB comprimido                       | 10MB comprimido                 |
+| **Deployments**           | 500/mês                              | 5.000/mês                       |
+| **Arquivos por deploy**   | 20.000                               | 20.000                          |
+| **Tamanho do arquivo**    | 25MB                                 | 25MB                            |
+| **Tempo de build**        | 20min                                | 20min                           |
+| **Redirects**             | 2.100 (2k estáticos + 100 dinâmicos) | Igual                           |
+| **Regras de header**      | 100                                  | 100                             |
+| **Regras de rota**        | 100                                  | 100                             |
+| **Subrequisições**        | 50/requisição                        | 1.000/requisição (Workers Paid) |
 
-**Notes**:
+**Notas**:
 
-- Functions use Workers runtime; Workers Paid plan increases limits
-- Free plan sufficient for most projects
-- Static requests always free (not counted toward limits)
+- Functions usam runtime Workers; Workers Paid aumenta limites
+- Plano grátis costuma bastar
+- Requisições estáticas são sempre gratuitas
 
-[Full limits](https://developers.cloudflare.com/pages/platform/limits/)
+[Limites completos](https://developers.cloudflare.com/pages/platform/limits/)

@@ -1,91 +1,88 @@
-# Quick Mode
+# Modo Rápido
 
-**Goal:** Execute small, ad-hoc tasks with the same quality principles but without full pipeline ceremony.
+**Objetivo:** Executar tarefas pequenas e ad hoc com os mesmos princípios de qualidade, mas sem cerimônia completa de pipeline.
 
-**Trigger:** "Quick fix", "Quick task", "Small change", "Bug fix", "Just do X"
+**Acionador:** "Correção rápida", "Tarefa rápida", "Pequena alteração", "Correção de bug", "Basta fazer X"
 
-## When to Use
+## Quando usar
 
-| Use quick mode             | Use full pipeline                   |
-| -------------------------- | ----------------------------------- |
-| Bug fixes with known cause | New features with multiple stories  |
-| Config changes             | Architectural changes               |
-| Small UI tweaks            | Features requiring design decisions |
-| Adding a field/column      | Multi-component features            |
-| One-off scripts            | Anything with unclear scope         |
-| Dependency updates         | Features requiring user stories     |
+| Use o modo rápido                        | Usar pipeline completo                 |
+| ---------------------------------------- | -------------------------------------- |
+| Correções de bugs com causa conhecida    | Novos recursos com múltiplas histórias |
+| Mudanças de configuração                 | Mudanças arquitetônicas                |
+| Pequenos ajustes na interface do usuário | Recursos que exigem decisões de design |
+| Adicionando um campo/coluna              | Recursos multicomponentes              |
+| Roteiros únicos                          | Qualquer coisa                         |
 
-**Rule of thumb:** If you can describe it in one sentence AND it touches ≤3 files, it's a quick task.
+com escopo pouco claro |
+| Atualizações de dependências | Recursos que exigem histórias de usuários |
 
-## Process
+**Regra prática:** Se você puder descrevê-lo em uma frase E ele abrange ≤3 arquivos, é uma tarefa rápida.
 
-### 1. Describe the Task
+## Processo
 
-User provides a clear, one-sentence description. If vague, ask for specifics:
+### 1. Descreva a tarefa
 
-- ❌ "Fix the login" → Ask: "What's broken? What should happen instead?"
-- ✅ "Fix: login button returns 401 because token refresh skips expired check"
+O usuário fornece uma descrição clara de uma frase. Se for vago, peça detalhes:
 
-### 2. Pre-Implementation Check
+- ❌ "Consertar o login" → Pergunte: "O que está quebrado? O que deveria acontecer em vez disso?"
+- ✅ "Correção: o botão de login retorna 401 porque a atualização do token ignora a verificação expirada"
 
-Before writing code, state:
+### 2. Verificação pré-implementação
 
-```
+Antes de escrever o código, indique:```
 Quick Task: [description]
 Files: [list ONLY files to touch]
 Approach: [one sentence]
 Verify: [how to prove it works]
-```
 
-Get user approval before proceeding. If the pre-implementation check reveals the task is bigger than expected (>3 files, unclear dependencies, design decisions needed), recommend the full pipeline instead.
+````
+Obtenha a aprovação do usuário antes de continuar. Se a verificação de pré-implementação revelar que a tarefa é maior do que o esperado (>3 arquivos, dependências pouco claras, decisões de design necessárias), recomende o pipeline completo.
 
-### 3. Implement
+### 3. Implementar
 
-Follow [coding-principles.md](coding-principles.md):
+Siga [coding-principles.md](coding-principles.md):
 
-- Simplest code that works
-- Touch ONLY listed files
-- No scope creep — fix the thing, nothing else
+- Código mais simples que funciona
+- Toque SOMENTE nos arquivos listados
+- Sem aumento de escopo - conserte a coisa, nada mais
 
-### 4. Verify
+### 4. Verifique
 
-Run verification from step 2. Mark done only after verification passes.
+Execute a verificação a partir da etapa 2. Marque como concluído somente após a verificação ser aprovada.
 
-### 5. Commit
+### 5. Comprometa-se
 
-Atomic commit following [Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/):
-
-```
+Confirmação atômica seguindo [Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/):```
 <type>(<scope>): <description>
-```
+````
 
-Use imperative mood, lowercase, no period. See [implement.md](implement.md) for full types table.
+Use modo imperativo, letras minúsculas, sem ponto final. Consulte [implement.md](implement.md) para obter a tabela completa de tipos.
 
-Examples:
+Exemplos:
 
-- `fix(auth): prevent 401 on token refresh`
-- `feat(settings): add dark mode toggle`
-- `chore(deps): update eslint to v9`
+- `fix(auth): evita 401 na atualização do token`
+- `feat (configurações): adicionar alternância do modo escuro`
+- `chore (deps): atualize eslint para v9`
 
-### 6. Track
+### 6. Rastrear
 
-Update `.specs/project/STATE.md` with quick task record (see state-management.md Quick Tasks section).
+Atualize `.specs/project/STATE.md` com registro de tarefa rápida (consulte a seção Tarefas rápidas de state-management.md).
 
 ---
 
-## Structure
+## Estrutura
 
-Quick tasks live separately from planned features:
-
-```
+As tarefas rápidas são separadas dos recursos planejados:```
 .specs/
 └── quick/
-    └── NNN-slug/
-        ├── TASK.md       # Description + verification
-        └── SUMMARY.md    # What was done + commit
-```
+└── NNN-slug/
+├── TASK.md # Description + verification
+└── SUMMARY.md # What was done + commit
 
-**TASK.md template:**
+````
+
+**Modelo TAREFA.md:**
 
 ```markdown
 # Quick Task NNN: [Title]
@@ -110,23 +107,23 @@ Quick tasks live separately from planned features:
 ## Commit
 
 `[hash]` — [commit message]
-```
+````
 
 ---
 
-## Guardrails
+## Guarda-corpos
 
-- **Max 3 files** — If more, use full pipeline
-- **Max 1 hour** — If longer, scope is wrong
-- **No design decisions** — If you're choosing between approaches, use full pipeline
-- **No new dependencies** — Adding packages needs full pipeline review
-- **Track everything** — Even quick tasks get commits and STATE.md entries
+- **Máximo de 3 arquivos** — Se mais, use o pipeline completo
+- **Máximo de 1 hora** — Se for mais longo, o escopo está errado
+- **Sem decisões de design** — Se você estiver escolhendo entre abordagens, use o pipeline completo
+- **Sem novas dependências** — A adição de pacotes requer uma revisão completa do pipeline
+- **Acompanhe tudo** — Até mesmo tarefas rápidas recebem commits e entradas STATE.md
 
 ---
 
-## Tips
+## Dicas
 
-- **Quick ≠ sloppy** — Same coding principles apply, just less ceremony
-- **When in doubt, go full** — Better to over-plan than to ship broken code
-- **Quick tasks compound** — If you're doing 5+ quick tasks for the same area, it's a feature that needs planning
-- **Verify before marking done** — The whole point is quality, even for small tasks
+- **Rápido ≠ desleixado** — Os mesmos princípios de codificação se aplicam, apenas com menos cerimônia
+- **Em caso de dúvida, vá em frente** — É melhor planejar demais do que enviar código quebrado
+- **Composto de tarefas rápidas** — Se você estiver realizando mais de 5 tarefas rápidas para a mesma área, é um recurso que precisa de planejamento
+- **Verifique antes de marcar como concluído** — O ponto principal é a qualidade, mesmo para pequenas tarefas

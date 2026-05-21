@@ -1,15 +1,15 @@
 # Hyperdrive
 
-Accelerates database queries from Workers via connection pooling, edge setup, query caching.
+Acelera consultas ao banco a partir de Workers com pool de conexões, negociação na borda e cache de consultas.
 
-## Key Features
+## Recursos principais
 
-- **Connection Pooling**: Persistent connections eliminate TCP/TLS/auth handshakes (~7 round-trips)
-- **Edge Setup**: Connection negotiation at edge, pooling near origin
-- **Query Caching**: Auto-cache non-mutating queries (default 60s TTL)
-- **Support**: PostgreSQL, MySQL + compatibles (CockroachDB, Timescale, PlanetScale, Neon, Supabase)
+- **Pool de conexões**: conexões persistentes eliminam handshakes TCP/TLS/autenticação (~7 idas e voltas)
+- **Negociação na borda**: conexão negociada na edge, pooling perto da origem
+- **Cache de consultas**: cache automático de consultas não mutáveis (TTL padrão 60s)
+- **Suporte**: PostgreSQL, MySQL e compatíveis (CockroachDB, Timescale, PlanetScale, Neon, Supabase)
 
-## Architecture
+## Arquitetura
 
 ```
 Worker → Edge (setup) → Pool (near DB) → Origin
@@ -17,7 +17,7 @@ Worker → Edge (setup) → Pool (near DB) → Origin
          Cache
 ```
 
-## Quick Start
+## Início rápido
 
 ```bash
 # Create config
@@ -47,38 +47,40 @@ export default {
 }
 ```
 
-## When to Use
+## Quando usar
 
-✅ Global access to single-region DBs, high read ratios, popular queries, connection-heavy loads
-❌ Write-heavy, real-time data (<1s), single-region apps close to DB
+✅ Acesso global a bancos de região única, alta proporção de leituras, consultas populares, carga com muitas conexões  
+❌ Muito escrita, dados em tempo real (menos de 1 s), apps de região única perto do banco
 
-**💡 Pair with Smart Placement** for Workers making multiple queries - executes near DB to minimize latency.
+**💡 Combine com Smart Placement** para Workers que fazem várias consultas — executa perto do banco para reduzir latência.
 
-## Driver Choice
+## Escolha de driver
 
-| Driver               | Use When                                         | Notes                                       |
-| -------------------- | ------------------------------------------------ | ------------------------------------------- |
-| **pg** (recommended) | General use, TypeScript, ecosystem compatibility | Stable, widely used, works with most ORMs   |
-| **postgres.js**      | Advanced features, template literals, streaming  | Lighter than pg, `prepare: true` is default |
-| **mysql2**           | MySQL/MariaDB/PlanetScale                        | MySQL only, less mature support             |
+| Driver               | Use quando                                            | Notas                                                 |
+| -------------------- | ----------------------------------------------------- | ----------------------------------------------------- |
+| **pg** (recomendado) | Uso geral, TypeScript, compatibilidade do ecossistema | Estável, muito usado, funciona com a maioria dos ORMs |
+| **postgres.js**      | Recursos avançados, template literals, streaming      | Mais leve que pg, `prepare: true` é o padrão          |
+| **mysql2**           | MySQL/MariaDB/PlanetScale                             | Só MySQL, suporte menos maduro                        |
 
-## Reading Order
+## Ordem de leitura
 
-| New to Hyperdrive                         | Implementing                              | Troubleshooting                 |
+| Novo no Hyperdrive                        | Implementando                             | Solução de problemas            |
 | ----------------------------------------- | ----------------------------------------- | ------------------------------- |
-| 1. README (this)                          | 1. [configuration.md](./configuration.md) | 1. [gotchas.md](./gotchas.md)   |
+| 1. README (este)                          | 1. [configuration.md](./configuration.md) | 1. [gotchas.md](./gotchas.md)   |
 | 2. [configuration.md](./configuration.md) | 2. [api.md](./api.md)                     | 2. [patterns.md](./patterns.md) |
 | 3. [api.md](./api.md)                     | 3. [patterns.md](./patterns.md)           | 3. [api.md](./api.md)           |
 
-## In This Reference
+## Nesta referência
 
-- [configuration.md](./configuration.md) - Setup, wrangler config, Smart Placement
-- [api.md](./api.md) - Binding APIs, query patterns, driver usage
-- [patterns.md](./patterns.md) - Use cases, ORMs, multi-query optimization
-- [gotchas.md](./gotchas.md) - Limits, troubleshooting, connection management
+- [configuration.md](./configuration.md) — Configuração, wrangler, Smart Placement
+- [api.md](./api.md) — APIs do binding, padrões de consulta, uso de drivers
+- [patterns.md](./patterns.md) — Casos de uso, ORMs, otimização com várias consultas
+- [gotchas.md](./gotchas.md) — Limites, solução de problemas, gestão de conexões
 
-## See Also
+## Ver também
 
-- [smart-placement](../smart-placement/) - Optimize multi-query Workers near databases
-- [d1](../d1/) - Serverless SQLite alternative for edge-native apps
-- [workers](../workers/) - Worker runtime with database bindings
+- [smart-placement](../smart-placement/) — Otimizar Workers com várias consultas perto dos bancos
+- [d1](../d1/) — Alternativa SQLite serverless para apps nativas da edge
+- [workers](../workers/) — Runtime Worker com bindings de banco
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

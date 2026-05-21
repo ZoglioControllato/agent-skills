@@ -47,79 +47,78 @@ interface Env {
 }
 ```
 
-## Common Errors
+## Erros Comuns
 
-### "Asset not found"
+### "Ativo não encontrado"
 
-**Cause:** Asset not in assets directory, wrong path, or assets not deployed  
-**Solution:** Verify asset exists, check path case-sensitivity, redeploy if needed
+**Causa:** O recurso não está no diretório de recursos, caminho errado ou recursos não implantados
+**Solução:** verifique se o ativo existe, verifique a distinção entre maiúsculas e minúsculas do caminho e reimplante se necessário
 
-### "Worker not invoked for asset"
+### "Worker não invocado para ativo"
 
-**Cause:** Asset served directly, `run_worker_first` not configured  
-**Solution:** Configure `run_worker_first` patterns to include asset routes (see configuration.md:66-106)
+**Causa:** Ativo veiculado diretamente, `run_worker_first` não configurado
+**Solução:** Configure padrões `run_worker_first` para incluir rotas de ativos (consulte configuration.md:66-106)
 
-### "429 Too Many Requests on free tier"
+### "429 Muitas solicitações no nível gratuito"
 
-**Cause:** `run_worker_first` patterns invoke Worker for many requests, hitting free tier limits (100k req/day)  
-**Solution:** Use more selective patterns with negative exclusions, or upgrade to paid plan
+**Causa:** os padrões `run_worker_first` invocam o Worker para muitas solicitações, atingindo os limites do nível gratuito (100 mil solicitações/dia)
+**Solução:** use padrões mais seletivos com exclusões negativas ou faça upgrade para um plano pago
 
-### "Smart Placement increases latency"
+### "O posicionamento inteligente aumenta a latência"
 
-**Cause:** `run_worker_first=true` + Smart Placement routes all requests through single smart-placed location  
-**Solution:** Use selective patterns (array syntax) or disable Smart Placement for asset-heavy apps
+**Causa:** `run_worker_first=true` + O posicionamento inteligente roteia todas as solicitações por meio de um único local de posicionamento inteligente
+**Solução:** use padrões seletivos (sintaxe de matriz) ou desative o posicionamento inteligente para aplicativos com muitos recursos
 
-### "CF-Cache-Status header unreliable"
+### "Cabeçalho CF-Cache-Status não confiável"
 
-**Cause:** Header is probabilistically added for privacy reasons  
-**Solution:** Don't rely on `CF-Cache-Status` for critical routing logic. Use other signals (ETag, age).
+**Causa:** O cabeçalho foi adicionado probabilisticamente por motivos de privacidade
+**Solução:** Não confie no `CF-Cache-Status` para lógica de roteamento crítica. Use outros sinais (ETag, idade).
 
-### "JWT expired during deployment"
+### "JWT expirou durante a implantação"
 
-**Cause:** Large asset deployments exceed JWT token lifetime  
-**Solution:** Update to Wrangler 4.34.0+ (automatic token refresh), or reduce asset count
+**Causa:** Grandes implantações de ativos excedem a vida útil do token JWT
+**Solução:** Atualize para o Wrangler 4.34.0+ (atualização automática de token) ou reduza a contagem de ativos
 
-### "Cannot use 'assets' with 'site'"
+### "Não é possível usar 'ativos' com 'site'"
 
-**Cause:** Legacy `site` config conflicts with new `assets` config  
-**Solution:** Migrate from `site` to `assets` (see configuration.md). Remove `site` key from wrangler.jsonc.
+**Causa:** A configuração herdada do `site` entra em conflito com a nova configuração do `assets`
+**Solução:** Migre de `site` para `assets` (veja configuration.md). Remova a chave `site` de wrangler.jsonc.
 
-### "Assets not updating after deployment"
+### "Ativos não são atualizados após a implantação"
 
-**Cause:** Browser or CDN cache serving old assets  
-**Solution:**
+**Causa:** cache do navegador ou CDN que atende ativos antigos
+**Solução:**
 
-- Hard refresh browser (Cmd+Shift+R / Ctrl+F5)
-- Use cache-busting (hashed filenames)
-- Verify deployment completed: `wrangler tail`
+- Navegador de atualização total (Cmd+Shift+R / Ctrl+F5)
+- Use bloqueio de cache (nomes de arquivos com hash)
+- Verifique a implantação concluída: `wrangler tail`
 
-## Limits
+## Limites
 
-| Resource/Limit     | Free      | Paid        | Notes                                     |
-| ------------------ | --------- | ----------- | ----------------------------------------- |
-| Max asset size     | 25 MiB    | 25 MiB      | Per file                                  |
-| Total assets       | 20,000    | **100,000** | Requires Wrangler 4.34.0+ (Sep 2025)      |
-| Worker invocations | 100k/day  | 10M/month   | Optimize with `run_worker_first` patterns |
-| Asset storage      | Unlimited | Unlimited   | Included                                  |
+| Recurso/Limite              | Grátis    | Pago           | Notas                                      |
+| --------------------------- | --------- | -------------- | ------------------------------------------ |
+| Tamanho máximo do ativo     | 25 MiB    | 25 MiB         | Por arquivo                                |
+| Ativos totais               | 20.000    | **100.000**    | Requer Wrangler 4.34.0+ (setembro de 2025) |
+| Invocações de trabalhadores | 100k/dia  | 10 milhões/mês | Otimize com padrões `run_worker_first`     |
+| Armazenamento de ativos     | Ilimitado | Ilimitado      | Incluído                                   |
 
-### Version Requirements
+### Requisitos de versão
 
-| Feature                 | Minimum Wrangler Version                 |
-| ----------------------- | ---------------------------------------- |
-| 100k file limit (paid)  | 4.34.0                                   |
-| Vite plugin             | 4.0.0 + @cloudflare/vite-plugin 1.0.0    |
-| Navigation optimization | 4.0.0 + compatibility_date: "2025-04-01" |
+| Recurso                           | Versão mínima do Wrangler                  |
+| --------------------------------- | ------------------------------------------ |
+| Limite de 100 mil arquivos (pago) | 4.34.0                                     |
+| Plug-in Vite                      | 4.0.0 + @cloudflare/vite-plugin 1.0.0      |
+| Otimização de navegação           | 4.0.0 + data_compatibilidade: "01/04/2025" |
 
-## Performance Tips
+## Dicas de desempenho
 
-### 1. Use Hashed Filenames
+### 1. Use nomes de arquivos com hash
 
-Enable long-term caching with content-hashed filenames:
-
-```
+Habilite o cache de longo prazo com nomes de arquivos com hash de conteúdo:```
 app.a3b2c1d4.js
 styles.e5f6g7h8.css
-```
+
+````
 
 Most bundlers (Vite, Webpack, Parcel) do this automatically.
 
@@ -134,7 +133,7 @@ Serve assets directly when possible:
     "run_worker_first": ["/api/*", "/auth/*"],
   },
 }
-```
+````
 
 ### 3. Leverage Browser Cache
 

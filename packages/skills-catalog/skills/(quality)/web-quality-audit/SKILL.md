@@ -1,191 +1,191 @@
 ---
 name: web-quality-audit
-description: Comprehensive web quality audit covering performance, accessibility, SEO, and best practices in a single review. Use when asked to "audit my site", "review web quality", "run lighthouse audit", "check page quality", or "optimize my website" across multiple areas at once. Orchestrates specialized skills for depth. Do NOT use for single-area audits — prefer core-web-vitals, web-accessibility, seo, or web-best-practices for focused work.
+description: Auditoria abrangente de qualidade web cobrindo performance, acessibilidade, SEO e boas práticas numa única revisão. Use quando pedirem "auditar meu site", "revisar qualidade web", "rodar lighthouse", "checar qualidade da página" ou "otimizar meu site" em várias frentes de uma vez. Orquestra skills especializadas para aprofundar. NÃO use para auditoria só em uma área — prefira core-web-vitals, web-accessibility, seo ou web-best-practices para trabalho focado.
 license: MIT
 metadata:
   author: web-quality-skills
   version: '1.0'
 ---
 
-# Web quality audit
+# Auditoria de qualidade web
 
-Comprehensive quality review based on Google Lighthouse audits. Covers Performance, Accessibility, SEO, and Best Practices across 150+ checks.
+Revisão de qualidade abrangente baseada em auditorias Google Lighthouse. Cobre Performance, Acessibilidade, SEO e Boas práticas em mais de 150 verificações.
 
-## How it works
+## Como funciona
 
-1. Analyze the provided code/project for quality issues
-2. Categorize findings by severity (Critical, High, Medium, Low)
-3. Provide specific, actionable recommendations
-4. Include code examples for fixes
+1. Analise o código/projeto fornecido em busca de problemas de qualidade
+2. Classifique achados por severidade (Crítico, Alto, Médio, Baixo)
+3. Forneça recomendações acionáveis e específicas
+4. Inclua exemplos de código para correções
 
-## Audit categories
+## Categorias da auditoria
 
-### Performance (40% of typical issues)
+### Performance (~40% dos achados típicos)
 
-**Core Web Vitals** — Must pass for good page experience:
+**Core Web Vitals** — devem passar para boa experiência de página:
 
-- **LCP (Largest Contentful Paint) < 2.5s.** The largest visible element must render quickly. Optimize images, fonts, and server response time.
-- **INP (Interaction to Next Paint) < 200ms.** User interactions must feel instant. Reduce JavaScript execution time and break up long tasks.
-- **CLS (Cumulative Layout Shift) < 0.1.** Content must not jump around. Set explicit dimensions on images, embeds, and ads.
+- **LCP (Largest Contentful Paint) < 2,5s.** O maior elemento visível deve renderizar rápido. Otimize imagens, fontes e tempo de resposta do servidor.
+- **INP (Interaction to Next Paint) < 200ms.** Interações devem parecer instantâneas. Reduza execução de JavaScript e quebre tarefas longas.
+- **CLS (Cumulative Layout Shift) < 0,1.** O conteúdo não deve “pular”. Defina dimensões explícitas em imagens, embeds e anúncios.
 
-**Resource Optimization:**
+**Otimização de recursos:**
 
-- **Compress images.** Use WebP/AVIF with fallbacks. Serve correctly sized images via `srcset`.
-- **Minimize JavaScript.** Remove unused code. Use code splitting. Defer non-critical scripts.
-- **Optimize CSS.** Extract critical CSS. Remove unused styles. Avoid `@import`.
-- **Efficient fonts.** Use `font-display: swap`. Preload critical fonts. Subset to needed characters.
+- **Comprimir imagens.** WebP/AVIF com fallback. Tamanhos corretos via `srcset`.
+- **Minimizar JavaScript.** Remova código morto. Code splitting. Adie scripts não críticos.
+- **Otimizar CSS.** Extraia CSS crítico. Remova estilos não usados. Evite `@import`.
+- **Fontes eficientes.** `font-display: swap`. Preload de fontes críticas. Subconjunto de caracteres.
 
-**Loading Strategy:**
+**Estratégia de carregamento:**
 
-- **Preconnect to origins.** Add `<link rel="preconnect">` for third-party domains.
-- **Preload critical assets.** LCP images, fonts, and above-fold CSS.
-- **Lazy load below-fold content.** Images, iframes, and heavy components.
-- **Cache effectively.** Long cache TTLs for static assets. Immutable caching for hashed files.
+- **Preconnect** a origens. `<link rel="preconnect">` para domínios terceiros.
+- **Preload** de ativos críticos. Imagens LCP, fontes, CSS above-the-fold.
+- **Lazy load** abaixo da dobra. Imagens, iframes, componentes pesados.
+- **Cache** eficiente. TTL longo para estáticos. Imutável para arquivos com hash.
 
-### Accessibility (30% of typical issues)
+### Acessibilidade (~30% dos achados típicos)
 
-**Perceivable:**
+**Perceptível:**
 
-- **Text alternatives.** Every `<img>` has meaningful `alt` text. Decorative images use `alt=""`.
-- **Color contrast.** Minimum 4.5:1 for normal text, 3:1 for large text (WCAG AA).
-- **Don't rely on color alone.** Use icons, patterns, or text alongside color indicators.
-- **Captions and transcripts.** Video has captions. Audio has transcripts.
+- **Texto alternativo.** Toda `<img>` com `alt` significativo. Decorativas com `alt=""`.
+- **Contraste de cor.** Mínimo 4,5:1 texto normal, 3:1 texto grande (WCAG AA).
+- **Não depender só de cor.** Ícones, padrões ou texto junto com indicadores de cor.
+- **Legendas e transcrições.** Vídeo com legendas. Áudio com transcrição.
 
-**Operable:**
+**Operável:**
 
-- **Keyboard accessible.** All functionality available via keyboard. No keyboard traps.
-- **Focus visible.** Clear focus indicators on all interactive elements.
-- **Skip links.** Provide "Skip to main content" for keyboard users.
-- **Sufficient time.** Users can extend time limits. No auto-advancing content without controls.
+- **Teclado.** Toda funcionalidade via teclado. Sem armadilhas de foco.
+- **Foco visível.** Indicadores claros em elementos interativos.
+- **Links de pular.** “Pular para o conteúdo principal” para usuários de teclado.
+- **Tempo suficiente.** Usuário pode estender limites. Sem avanço automático sem controle.
 
-**Understandable:**
+**Compreensível:**
 
-- **Page language.** Set `lang` attribute on `<html>`.
-- **Consistent navigation.** Same navigation structure across pages.
-- **Error identification.** Form errors clearly described and associated with fields.
-- **Labels and instructions.** All form inputs have associated labels.
+- **Idioma da página.** Atributo `lang` em `<html>`.
+- **Navegação consistente.** Mesma estrutura entre páginas.
+- **Identificação de erros.** Erros de formulário claros e associados aos campos.
+- **Rótulos e instruções.** Todo input com rótulo associado.
 
-**Robust:**
+**Robusto:**
 
-- **Valid HTML.** No duplicate IDs. Properly nested elements.
-- **ARIA used correctly.** Prefer native elements. ARIA roles match behavior.
-- **Name, role, value.** Interactive elements have accessible names and correct roles.
+- **HTML válido.** Sem IDs duplicados. Aninhamento correto.
+- **ARIA correta.** Prefira elementos nativos. Papéis coerentes com o comportamento.
+- **Nome, papel, valor.** Elementos interativos com nomes acessíveis e papéis corretos.
 
-### SEO (15% of typical issues)
+### SEO (~15% dos achados típicos)
 
-**Crawlability:**
+**Rastreabilidade:**
 
-- **Valid robots.txt.** Doesn't block important resources.
-- **XML sitemap.** Lists all important pages. Submitted to Search Console.
-- **Canonical URLs.** Prevent duplicate content issues.
-- **No noindex on important pages.** Check meta robots and headers.
+- **robots.txt válido.** Não bloqueie recursos importantes.
+- **Sitemap XML.** Lista páginas importantes. Enviado ao Search Console.
+- **URLs canônicas.** Evita duplicação.
+- **Sem noindex** em páginas importantes. Verifique meta robots e headers.
 
-**On-Page SEO:**
+**SEO on-page:**
 
-- **Unique title tags.** 50-60 characters. Primary keyword included.
-- **Meta descriptions.** 150-160 characters. Compelling and unique.
-- **Heading hierarchy.** Single `<h1>`. Logical heading structure.
-- **Descriptive link text.** Not "click here" or "read more".
+- **Títulos únicos.** 50–60 caracteres. Palavra-chave principal.
+- **Meta descriptions.** 150–160 caracteres. Convicentes e únicas.
+- **Hierarquia de headings.** Um `<h1>`. Estrutura lógica.
+- **Texto de link descritivo.** Evite só “clique aqui” ou “leia mais”.
 
-**Technical SEO:**
+**SEO técnico:**
 
-- **Mobile-friendly.** Responsive design. Tap targets ≥ 48px.
-- **HTTPS.** Secure connection required.
-- **Fast loading.** Performance directly impacts ranking.
-- **Structured data.** JSON-LD for rich snippets (Article, Product, FAQ, etc.).
+- **Mobile-friendly.** Design responsivo. Alvos de toque ≥ 48px.
+- **HTTPS.** Conexão segura.
+- **Carregamento rápido.** Performance impacta ranqueamento.
+- **Dados estruturados.** JSON-LD para rich results (Article, Product, FAQ, etc.).
 
-### Best practices (15% of typical issues)
+### Boas práticas (~15% dos achados típicos)
 
-**Security:**
+**Segurança:**
 
-- **HTTPS everywhere.** No mixed content. HSTS enabled.
-- **No vulnerable libraries.** Keep dependencies updated.
-- **CSP headers.** Content Security Policy to prevent XSS.
-- **No exposed source maps.** In production builds.
+- **HTTPS em tudo.** Sem mixed content. HSTS quando apropriado.
+- **Sem bibliotecas vulneráveis.** Dependências atualizadas.
+- **Headers CSP.** Content Security Policy contra XSS.
+- **Sem source maps expostos** em builds de produção.
 
-**Modern Standards:**
+**Padrões modernos:**
 
-- **No deprecated APIs.** Replace `document.write`, synchronous XHR, etc.
-- **Valid doctype.** Use `<!DOCTYPE html>`.
-- **Charset declared.** `<meta charset="UTF-8">` as first element in `<head>`.
-- **No browser errors.** Clean console. No CORS issues.
+- **Sem APIs obsoletas.** Substitua `document.write`, XHR síncrono, etc.
+- **Doctype válido.** `<!DOCTYPE html>`.
+- **Charset declarado.** `<meta charset="UTF-8">` como primeiro elemento em `<head>`.
+- **Sem erros de console.** Console limpo. Sem problemas CORS óbvios.
 
-**UX Patterns:**
+**Padrões de UX:**
 
-- **No intrusive interstitials.** Especially on mobile.
-- **Clear permission requests.** Only ask when needed, with context.
-- **No misleading buttons.** Buttons do what they say.
+- **Sem intersticiais intrusivos.** Especialmente no mobile.
+- **Pedidos de permissão claros.** Só quando necessário, com contexto.
+- **Botões honestos.** O rótulo corresponde à ação.
 
-## Severity levels
+## Níveis de severidade
 
-| Level        | Description                                   | Action              |
-| ------------ | --------------------------------------------- | ------------------- |
-| **Critical** | Security vulnerabilities, complete failures   | Fix immediately     |
-| **High**     | Core Web Vitals failures, major a11y barriers | Fix before launch   |
-| **Medium**   | Performance opportunities, SEO improvements   | Fix within sprint   |
-| **Low**      | Minor optimizations, code quality             | Fix when convenient |
+| Nível       | Descrição                                    | Ação                      |
+| ----------- | -------------------------------------------- | ------------------------- |
+| **Crítico** | Vulnerabilidades de segurança, falhas totais | Corrigir já               |
+| **Alto**    | Falhas de Core Web Vitals, barreiras a11y    | Corrigir antes do go-live |
+| **Médio**   | Oportunidades de performance, melhorias SEO  | Corrigir na sprint        |
+| **Baixo**   | Otimizações menores, qualidade de código     | Quando conveniente        |
 
-## Audit output format
+## Formato de saída da auditoria
 
-When performing an audit, structure findings as:
+Ao auditar, estruture assim:
 
 ```markdown
-## Audit results
+## Resultados da auditoria
 
-### Critical issues (X found)
+### Issues críticas (X encontradas)
 
-- **[Category]** Issue description. File: `path/to/file.js:123`
-  - **Impact:** Why this matters
-  - **Fix:** Specific code change or recommendation
+- **[Categoria]** Descrição. Arquivo: `path/to/file.js:123`
+  - **Impacto:** Por que importa
+  - **Correção:** Mudança de código ou recomendação específica
 
-### High priority (X found)
+### Alta prioridade (X encontradas)
 
 ...
 
-### Summary
+### Resumo
 
-- Performance: X issues (Y critical)
-- Accessibility: X issues (Y critical)
+- Performance: X issues (Y críticas)
+- Acessibilidade: X issues (Y críticas)
 - SEO: X issues
-- Best Practices: X issues
+- Boas práticas: X issues
 
-### Recommended priority
+### Priorização sugerida
 
-1. First fix this because...
-2. Then address...
-3. Finally optimize...
+1. Primeiro corrigir isto porque...
+2. Depois tratar...
+3. Por fim otimizar...
 ```
 
-## Quick checklist
+## Checklist rápido
 
-### Before every deploy
+### Antes de cada deploy
 
-- [ ] Core Web Vitals passing
-- [ ] No accessibility errors (axe/Lighthouse)
-- [ ] No console errors
-- [ ] HTTPS working
-- [ ] Meta tags present
+- [ ] Core Web Vitals ok
+- [ ] Sem erros de acessibilidade (axe/Lighthouse)
+- [ ] Sem erros de console
+- [ ] HTTPS ok
+- [ ] Meta tags presentes
 
-### Weekly review
+### Revisão semanal
 
-- [ ] Check Search Console for issues
-- [ ] Review Core Web Vitals trends
-- [ ] Update dependencies
-- [ ] Test with screen reader
+- [ ] Search Console por issues
+- [ ] Tendências de Core Web Vitals
+- [ ] Atualizar dependências
+- [ ] Testar com leitor de tela
 
-### Monthly deep dive
+### Aprofundamento mensal
 
-- [ ] Full Lighthouse audit
-- [ ] Performance profiling
-- [ ] Accessibility audit with real users
-- [ ] SEO keyword review
+- [ ] Auditoria Lighthouse completa
+- [ ] Profiling de performance
+- [ ] Auditoria a11y com usuários reais
+- [ ] Revisão de palavras-chave SEO
 
-## References
+## Referências
 
-For detailed guidelines on specific areas:
+Para diretrizes detalhadas por área:
 
-- [Performance Optimization](../performance/SKILL.md)
+- [Otimização de performance](../performance/SKILL.md)
 - [Core Web Vitals](../core-web-vitals/SKILL.md)
-- [Accessibility](../accessibility/SKILL.md)
+- [Acessibilidade](../accessibility/SKILL.md)
 - [SEO](../seo/SKILL.md)
-- [Best Practices](../best-practices/SKILL.md)
+- [Boas práticas](../best-practices/SKILL.md)

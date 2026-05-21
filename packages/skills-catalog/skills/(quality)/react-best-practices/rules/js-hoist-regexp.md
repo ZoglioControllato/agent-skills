@@ -1,15 +1,15 @@
 ---
-title: Hoist RegExp Creation
+title: Eleve a criação de RegExp
 impact: LOW-MEDIUM
-impactDescription: avoids recreation
+impactDescription: evita recreação
 tags: javascript, regexp, optimization, memoization
 ---
 
-## Hoist RegExp Creation
+## Eleve a criação de RegExp
 
-Don't create RegExp inside render. Hoist to module scope or memoize with `useMemo()`.
+Não grite `RegExp` dentro da renderização. Eleve para o escopo do módulo ou use `useMemo()`.
 
-**Incorrect (new RegExp every render):**
+**Incorreto (novo RegExp para cada renderização):**
 
 ```tsx
 function Highlighter({ text, query }: Props) {
@@ -19,7 +19,7 @@ function Highlighter({ text, query }: Props) {
 }
 ```
 
-**Correct (memoize or hoist):**
+**Correto (memoize ou onze):**
 
 ```tsx
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -34,12 +34,13 @@ function Highlighter({ text, query }: Props) {
 }
 ```
 
-**Warning (global regex has mutable state):**
+**Aviso (regex global tem estado mutável):**
 
-Global regex (`/g`) has mutable `lastIndex` state:
-
-```typescript
+Regex global (`/g`) tem estado mutável `lastIndex`:```typescript
 const regex = /foo/g
-regex.test('foo')  // true, lastIndex = 3
-regex.test('foo')  // false, lastIndex = 0
+regex.test('foo') // true, lastIndex = 3
+regex.test('foo') // false, lastIndex = 0
+
+```
+
 ```

@@ -34,39 +34,39 @@ SELECT * FROM logs.http_requests;
 SELECT user_id, timestamp, status FROM logs.http_requests;
 ```
 
-**Limitations:** No column aliases, expressions, or nested column access
+**Limitações:** Sem aliases de coluna, expressões ou acesso a colunas aninhadas
 
-## WHERE Clause
+## Cláusula WHERE
 
-### Operators
+### Operadores
 
-| Operator                        | Example                                                               |
-| ------------------------------- | --------------------------------------------------------------------- |
-| `=`, `!=`, `<`, `<=`, `>`, `>=` | `status = 200`                                                        |
-| `LIKE`                          | `user_agent LIKE '%Chrome%'`                                          |
-| `BETWEEN`                       | `timestamp BETWEEN '2025-01-01T00:00:00Z' AND '2025-01-31T23:59:59Z'` |
-| `IS NULL`, `IS NOT NULL`        | `email IS NOT NULL`                                                   |
-| `AND`, `OR`                     | `status = 200 AND method = 'GET'`                                     |
+| Operador                        | Exemplo                                                                        |
+| ------------------------------- | ------------------------------------------------------------------------------ |
+| `=`, `!=`, `<`, `<=`, `>`, `>=` | `status = 200`                                                                 |
+| `CURTO`                         | `user_agent LIKE '%Chrome%'`                                                   |
+| `ENTRE`                         | `carimbo de data e hora ENTRE '2025-01-01T00:00:00Z' E '2025-01-31T23:59:59Z'` |
+| `É NULO`, `NÃO É NULO`          | `e-mail NÃO É NULO`                                                            |
+| `E`, `OU`                       | `status = 200 AND método = 'GET'`                                              |
 
-Use parentheses for precedence: `(status = 404 OR status = 500) AND method = 'POST'`
+Use parênteses para precedência: `(status = 404 OR status = 500) AND method = 'POST'`
 
-## Aggregation Functions
+## Funções de agregação
 
-| Function                     | Description           |
-| ---------------------------- | --------------------- |
-| `COUNT(*)`                   | Count all rows        |
-| `COUNT(column)`              | Count non-null values |
-| `COUNT(DISTINCT column)`     | Count unique values   |
-| `SUM(column)`, `AVG(column)` | Numeric aggregations  |
-| `MIN(column)`, `MAX(column)` | Min/max values        |
+| Função                        | Descrição                |
+| ----------------------------- | ------------------------ | ------ |
+| `CONTAR(*)`                   | Contar todas as linhas   |
+| `CONTAR(coluna)`              | Contar valores não nulos |
+| `COUNT(coluna DISTINCT)`      | Contar valores únicos    |
+| `SOMA(coluna)`, `AVG(coluna)` | Agregações numéricas     |
+| `MIN(coluna)`, `MAX(coluna)`  | Valores mínimo/máximo    | ```sql |
 
-```sql
 -- Multiple aggregations with GROUP BY
-SELECT region, COUNT(*), SUM(amount), AVG(amount)
+SELECT region, COUNT(\*), SUM(amount), AVG(amount)
 FROM sales.transactions
 WHERE sale_date >= '2024-01-01'
 GROUP BY region;
-```
+
+````
 
 ## HAVING Clause
 
@@ -77,7 +77,7 @@ SELECT category, SUM(amount)
 FROM sales.transactions
 GROUP BY category
 HAVING SUM(amount) > 10000;
-```
+````
 
 ## ORDER BY Clause
 
@@ -105,41 +105,40 @@ ORDER BY SUM(amount) DESC;
 SELECT * FROM logs.requests LIMIT 100;
 ```
 
-| Setting | Value  |
-| ------- | ------ |
-| Min     | 1      |
-| Max     | 10,000 |
-| Default | 500    |
+| Configuração | Valor  |
+| ------------ | ------ |
+| Mínimo       | 1      |
+| Máx.         | 10.000 |
+| Padrão       | 500    |
 
-**Always use LIMIT** to enable early termination optimization.
+**Sempre use LIMIT** para permitir a otimização de rescisão antecipada.
 
-## Data Types
+## Tipos de dados
 
-| Type        | SQL Literal     | Example                  |
-| ----------- | --------------- | ------------------------ |
-| `integer`   | Unquoted number | `42`, `-10`              |
-| `float`     | Decimal number  | `3.14`, `-0.5`           |
-| `string`    | Single quotes   | `'hello'`, `'GET'`       |
-| `boolean`   | Keyword         | `true`, `false`          |
-| `timestamp` | RFC3339 string  | `'2025-01-01T00:00:00Z'` |
-| `date`      | ISO 8601 date   | `'2025-01-01'`           |
+| Tipo                     | Literais SQL      | Exemplo                  |
+| ------------------------ | ----------------- | ------------------------ |
+| `inteiro`                | Número não citado | `42`, `-10`              |
+| `flutuar`                | Número decimal    | `3,14`, `-0,5`           |
+| `string`                 | Aspas simples     | `'olá'`, `'GET'`         |
+| `booleano`               | Palavra-chave     | `verdadeiro`, `falso`    |
+| `carimbo de data e hora` | Sequência RFC3339 | `'2025-01-01T00:00:00Z'` |
+| `data`                   | Data ISO 8601     | `'2025-01-01'`           |
 
-### Type Safety
+### Digite Segurança
 
-- Quote strings with single quotes: `'value'`
-- Timestamps must be RFC3339: `'2025-01-01T00:00:00Z'` (include timezone)
-- Dates must be ISO 8601: `'2025-01-01'` (YYYY-MM-DD)
-- No implicit conversions
-
-```sql
--- ✅ Correct
-WHERE status = 200 AND method = 'GET' AND timestamp > '2025-01-01T00:00:00Z'
+- Citar strings com aspas simples: `'value'`
+- Os carimbos de data e hora devem ser RFC3339: `'2025-01-01T00:00:00Z'` (incluir fuso horário)
+- As datas devem ser ISO 8601: `'2025-01-01'` (AAAA-MM-DD)
+- Sem conversões implícitas```sql
+  -- ✅ Correct
+  WHERE status = 200 AND method = 'GET' AND timestamp > '2025-01-01T00:00:00Z'
 
 -- ❌ Wrong
-WHERE status = '200'              -- string instead of integer
-WHERE timestamp > '2025-01-01'    -- missing time/timezone
-WHERE method = GET                -- unquoted string
-```
+WHERE status = '200' -- string instead of integer
+WHERE timestamp > '2025-01-01' -- missing time/timezone
+WHERE method = GET -- unquoted string
+
+````
 
 ## Query Result Format
 
@@ -150,10 +149,10 @@ JSON array of objects:
   { "user_id": "user_123", "timestamp": "2025-01-15T10:30:00Z", "status": 200 },
   { "user_id": "user_456", "timestamp": "2025-01-15T10:31:00Z", "status": 404 }
 ]
-```
+````
 
-## See Also
+## Veja também
 
-- [patterns.md](patterns.md) - Query examples and use cases
-- [gotchas.md](gotchas.md) - SQL limitations and error handling
-- [configuration.md](configuration.md) - Setup and authentication
+- [patterns.md](patterns.md) - Exemplos de consulta e casos de uso
+- [gotchas.md](gotchas.md) - Limitações SQL e tratamento de erros
+- [configuration.md](configuration.md) - Configuração e autenticação

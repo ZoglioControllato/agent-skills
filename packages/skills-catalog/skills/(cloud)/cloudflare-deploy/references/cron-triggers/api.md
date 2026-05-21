@@ -40,50 +40,50 @@ export default {
 }
 ```
 
-**When to use noRetry():**
+**Quando usar noRetry():**
 
-- External API failures outside your control (avoid hammering failed services)
-- Rate limit errors (retry would fail again immediately)
-- Duplicate execution detected (idempotency check failed)
-- Non-critical operations where skip is acceptable (analytics, caching)
-- Validation errors that won't resolve on retry
+- Falhas externas de API fora do seu controle (evite martelar serviços com falha)
+- Erros de limite de taxa (a nova tentativa falharia novamente imediatamente)
+- Execução duplicada detectada (falha na verificação de idempotência)
+- Operações não críticas onde ignorar é aceitável (análise, cache)
+- Erros de validação que não serão resolvidos na nova tentativa
 
-## Handler Parameters
+## Parâmetros do manipulador
 
-**`controller: ScheduledController`**
+**`controlador: ScheduledController`**
 
-- Access cron expression and scheduled time
+- Acesse a expressão cron e o horário agendado
 
 **`env: Env`**
 
-- All bindings: KV, R2, D1, secrets, service bindings
+- Todas as ligações: KV, R2, D1, segredos, ligações de serviço
 
 **`ctx: ExecutionContext`**
 
-- `ctx.waitUntil(promise)` - Extend execution for async tasks (logging, cleanup, external APIs)
-- First `waitUntil` failure recorded in Cron Events
+- `ctx.waitUntil(promise)` - Estende a execução para tarefas assíncronas (registro, limpeza, APIs externas)
+- Primeira falha `waitUntil` registrada em eventos Cron
 
-## Multiple Schedules
+## Vários agendamentos```typescript
 
-```typescript
 export default {
-  async scheduled(controller, env, ctx) {
-    switch (controller.cron) {
-      case '*/3 * * * *':
-        ctx.waitUntil(updateRecentData(env))
-        break
-      case '0 * * * *':
-        ctx.waitUntil(processHourlyAggregation(env))
-        break
-      case '0 2 * * *':
-        ctx.waitUntil(performDailyMaintenance(env))
-        break
-      default:
-        console.warn(`Unhandled: ${controller.cron}`)
-    }
-  },
+async scheduled(controller, env, ctx) {
+switch (controller.cron) {
+case '_/3 _ \* \* _':
+ctx.waitUntil(updateRecentData(env))
+break
+case '0 _ \* \* _':
+ctx.waitUntil(processHourlyAggregation(env))
+break
+case '0 2 _ \* \*':
+ctx.waitUntil(performDailyMaintenance(env))
+break
+default:
+console.warn(`Unhandled: ${controller.cron}`)
 }
-```
+},
+}
+
+````
 
 ## ctx.waitUntil Usage
 
@@ -96,7 +96,7 @@ export default {
     ctx.waitUntil(Promise.all([logToAnalytics(data), cleanupOldRecords(env.DB), notifyWebhook(env.WEBHOOK_URL, data)]))
   },
 }
-```
+````
 
 ## Workflow Integration
 
@@ -136,14 +136,14 @@ curl "http://localhost:8787/__scheduled?cron=*/5+*+*+*+*"
 curl "http://localhost:8787/__scheduled?cron=0+2+*+*+*&scheduledTime=1704067200000"
 ```
 
-**Query parameters:**
+**Parâmetros de consulta:**
 
-- `cron` - Required. URL-encoded cron expression (use `+` for spaces)
-- `scheduledTime` - Optional. Unix timestamp in milliseconds (defaults to current time)
+- `cron` - Obrigatório. Expressão cron codificada em URL (use `+` para espaços)
+- `scheduledTime` - Opcional. Carimbo de data e hora Unix em milissegundos (o padrão é a hora atual)
 
-**Production security:** The `/__scheduled` endpoint is available in production and can be triggered by anyone. Block it or implement authentication - see [gotchas.md](./gotchas.md#security-concerns)
+**Segurança de produção:** O endpoint `/__scheduled` está disponível em produção e pode ser acionado por qualquer pessoa. Bloqueie-o ou implemente a autenticação - consulte [gotchas.md](./gotchas.md#security-concerns)
 
-**Unit testing (Vitest):**
+**Teste unitário (Vitest):**
 
 ```typescript
 // test/scheduled.test.ts

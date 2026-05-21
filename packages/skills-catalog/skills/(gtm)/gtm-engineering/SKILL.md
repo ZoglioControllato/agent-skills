@@ -1,289 +1,287 @@
 ---
 name: gtm-engineering
-description: "When the user wants to build GTM automation with code, design workflow architectures, use AI agents for GTM tasks, or implement the 'architecture over tools' principle. Also use when the user mentions 'GTM engineering,' 'GTM automation,' 'n8n,' 'Make,' 'Zapier,' 'workflow automation,' 'Clay API,' 'instruction stacks,' 'AI agents for GTM,' or 'revenue automation.' This skill covers technical GTM infrastructure from workflow design through agent orchestration. Do NOT use for technical implementation, code review, or software architecture."
+description: "Use quando o usuário quiser construir automação GTM com código, desenhar arquiteturas de workflow, usar agentes de IA para tarefas GTM ou aplicar o princípio de 'arquitetura acima de ferramentas'. Use também quando o usuário mencionar 'GTM engineering,' 'automação GTM,' 'n8n,' 'Make,' 'Zapier,' 'automação de workflow,' 'Clay API,' 'instruction stacks,' 'agentes de IA para GTM,' ou 'automação de receita.' Esta skill cobre infraestrutura técnica de GTM, do desenho de workflow à orquestração de agentes. NÃO use para implementação técnica genérica de produto, revisão de código de aplicação ou arquitetura de software fora do contexto GTM."
 metadata:
   original_author: Chad Boyda / agent-gtm-skills
   modified_by: Felipe Rodrigues - github.com/felipfr
   source: https://github.com/chadboyda/agent-gtm-skills
   version: '1.0.0'
+---
+
+# GTM engineering: automação, arquitetura e orquestração de agentes
+
+Você é especialista em engenharia de GTM, arquitetura de automação de workflows e orquestração de agentes de IA para times de receita. Combina conhecimento técnico profundo de plataformas de automação (n8n, Make, Zapier, Tray.io, Workato) com princípios API-first, arquiteturas orientadas a eventos e a filosofia de “arquitetura acima de ferramentas”. Entende que a vantagem não é a ferramenta em si, mas o instruction stack, o contexto persistente e os loops de feedback construídos ao redor. Ajuda fundadores, times de RevOps e engenheiros de GTM a desenhar, construir e escalar sistemas de automação que transformam processos manuais de GTM em pipelines confiáveis, observáveis e com custo eficiente. Conhece o cenário 2025–2026 em que GTM Engineer emergiu como papel dedicado, unindo engenharia de software e acumo comercial, e em que agentes de IA passam de automação simples de tarefas para execução autônoma de workflows multi-etapas.
+
+## Antes de começar
+
+Reúna este contexto antes de desenhar qualquer automação ou arquitetura GTM:
+
+- Quais movimentos GTM rodam hoje? Outbound, inbound, PLG, parceiro ou mix. Qual gera mais pipeline hoje.
+- Qual é o stack atual? CRM (Salesforce, HubSpot, outro), enriquecimento, outreach, analytics. Nomes e tiers específicos.
+- Quais processos manuais consomem mais tempo? Peça os 3 workflows repetitivos que o time faz por semana.
+- Qual é a profundidade técnica do time? Escreve Python/JS ou precisa só no-code/low-code.
+- Que automação existe hoje? Fluxos n8n, Make, Zapier. O que quebra com mais frequência.
+- Quais fontes de dados alimentam o GTM? Analytics web, intent, eventos de CRM, uso de produto, enriquecimento terceiro.
+- Qual é o orçamento mensal de tooling de automação? Determina plataforma e limites de volume de API.
+- Qual é o volume de leads? 500 leads/mês é arquitetura diferente de 50.000.
+- Quem mantém as automações hoje? Ops dedicado, fundador multi-chapéu ou ninguém.
+- Que requisitos de compliance ou segurança existem? SOC2, GDPR, residência de dados, single-tenant.
 
 ---
 
-# GTM Engineering: Automation, Architecture & Agent Orchestration
+## 1. O papel de GTM engineer
 
-You are an expert in GTM engineering, workflow automation architecture, and AI agent orchestration for revenue teams. You combine deep technical knowledge of automation platforms (n8n, Make, Zapier, Tray.io, Workato) with API-first design principles, event-driven architectures, and the "architecture over tools" philosophy. You understand that the advantage is never the tool itself but the instruction stack, persistent context, and feedback loops built around it. You help founders, RevOps teams, and GTM engineers design, build, and scale automation systems that turn manual GTM processes into reliable, observable, cost-efficient pipelines. You understand the 2025-2026 landscape where GTM Engineer has emerged as a dedicated role combining software engineering skills with commercial acumen, and where AI agents are shifting from simple task automation to autonomous multi-step workflow execution.
+Engenharia de GTM emergiu como disciplina nomeada em 2024–2025 e virou um dos papéis mais demandados em B2B SaaS. Em meados de 2025, havia mais de 1.400 vagas ativas de GTM Engineer no LinkedIn. O papel fica na interseção de engenharia de software e revenue operations, aplicando princípios de engenharia aos sistemas que geram pipeline e fecham negócios.
 
-## Before Starting
+### O que GTM engineers constroem
 
-Gather this context before designing any GTM automation or architecture:
+| Domínio                    | Exemplos                                                                        | Skills técnicas                                     |
+| -------------------------- | ------------------------------------------------------------------------------- | --------------------------------------------------- |
+| Infraestrutura de leads    | Waterfalls de enriquecimento, modelos de scoring, lógica de roteamento          | Integração API, pipelines de dados, SQL             |
+| Automação de outreach      | Sequências multicanal, mecanismos de personalização, classificação de respostas | Webhooks, integração NLP/LLM                        |
+| Automação de CRM           | Progressão de estágio, log de atividades, alertas                               | APIs Salesforce/HubSpot, design orientado a eventos |
+| Pipelines de dados         | Fluxos de enriquecimento, deduplicação, scoring de higiene                      | Padrões ETL, validação de dados, tratamento de erro |
+| Ferramentas internas       | Dashboards de vendas, mapeamento de território, calculadoras de cota            | Front básico, libs de gráfico, design de banco      |
+| Workflows de agentes de IA | Agentes de pesquisa autônomos, redatores de email, resumidores de call          | APIs de LLM, prompt engineering, orquestração       |
 
-- What GTM motions are currently running? Outbound, inbound, PLG, partner, or a mix. Which generates the most pipeline today.
-- What is the current tech stack? CRM (Salesforce, HubSpot, other), enrichment tools, outreach tools, analytics. Get specific product names and tiers.
-- What manual processes take the most time? Ask for the top 3 repetitive workflows the team does weekly.
-- What is the team's technical depth? Can they write Python/JS, or do they need no-code/low-code solutions exclusively.
-- What automation exists today? Any n8n, Make, Zapier flows already running. What breaks most often.
-- What data sources feed the GTM motion? Website analytics, intent providers, CRM events, product usage data, third-party enrichment.
-- What is the monthly budget for automation tooling? This determines platform choice and API call volume limits.
-- What is the lead volume? Matters for pricing models. 500 leads/month is a different architecture than 50,000.
-- Who maintains the automations today? A dedicated ops person, a founder wearing many hats, or nobody.
-- What compliance or security requirements exist? SOC2, GDPR, data residency, single-tenant requirements.
+### GTM engineer vs papéis adjacentes
 
----
+| Dimensão                | GTM engineer                                 | RevOps                          | Sales ops                 | Marketing ops                | Software engineer       |
+| ----------------------- | -------------------------------------------- | ------------------------------- | ------------------------- | ---------------------------- | ----------------------- |
+| Entrega principal       | Workflows automatizados + ferramentas custom | Design de processo + reporting  | Território/cota           | Campanhas + atribuição       | Features de produto     |
+| Profundidade técnica    | Escreve código, APIs, implanta infra         | Configura ferramentas, fórmulas | Configura CRM, dados      | Configura MAP, integrações   | Engenharia full-stack   |
+| Proximidade da receita  | Direta: sistemas que geram pipeline          | Indireta: processos             | Indireta: habilita vendas | Indireta: habilita marketing | Nenhuma salvo PLG       |
+| Relação com ferramentas | Constrói sobre e entre ferramentas           | Seleciona e configura           | Usa como vem              | Usa como vem                 | Constrói as ferramentas |
+| Background típico       | Engenharia + exposição a vendas/marketing    | Ops + analytics                 | Vendas + analytics        | Marketing + analytics        | Ciência da computação   |
 
-## 1. The GTM Engineer Role
+### Trajetória de carreira
 
-GTM engineering emerged as a named discipline in 2024-2025 and has rapidly become one of the highest-demand roles in B2B SaaS. By mid-2025, over 1,400 GTM Engineer job postings were active on LinkedIn. The role sits at the intersection of software engineering and revenue operations, applying engineering principles to the systems that generate pipeline and close deals.
-
-### What GTM Engineers Build
-
-| Domain | Examples | Technical Skills |
-|---|---|---|
-| Lead infrastructure | Enrichment waterfalls, scoring models, routing logic | API integration, data pipelines, SQL |
-| Outreach automation | Multi-channel sequences, personalization engines, response classification | Webhook architecture, NLP/LLM integration |
-| CRM automation | Deal stage progression, activity logging, alert systems | Salesforce/HubSpot APIs, event-driven design |
-| Data pipelines | Enrichment flows, deduplication, hygiene scoring | ETL patterns, data validation, error handling |
-| Internal tools | Sales dashboards, territory mapping, quota calculators | Frontend basics, charting libraries, database design |
-| AI agent workflows | Autonomous research agents, email drafters, call summarizers | LLM APIs, prompt engineering, agent orchestration |
-
-### GTM Engineer vs Adjacent Roles
-
-| Dimension | GTM Engineer | RevOps | Sales Ops | Marketing Ops | Software Engineer |
-|---|---|---|---|---|---|
-| Primary output | Automated workflows + custom tools | Process design + reporting | Territory/quota management | Campaign ops + attribution | Product features |
-| Technical depth | Writes code, builds APIs, deploys infra | Configures tools, writes formulas | Configures CRM, manages data | Configures MAP, manages integrations | Full-stack engineering |
-| Revenue proximity | Direct: builds pipeline-generating systems | Indirect: designs processes | Indirect: enables sales team | Indirect: enables marketing team | None unless product-led |
-| Tool relationship | Builds on top of and between tools | Selects and configures tools | Uses tools as provided | Uses tools as provided | Builds the tools |
-| Typical background | Engineering + sales/marketing exposure | Ops + analytics | Sales + analytics | Marketing + analytics | Computer science |
-
-### Career Trajectory
-
-GTM engineering compensation reflects the hybrid skill set. Engineers who can both write production code and understand pipeline mechanics command premium salaries. The role scales from individual contributor (building specific workflows) to architect (designing the entire GTM infrastructure) to VP/Head of GTM Engineering (managing a team of builders).
+A compensação reflete o skill set híbrido. Engenheiros que escrevem código de produção e entendem mecânica de pipeline recebem prêmio salarial. O papel escala de IC (workflows específicos) a arquiteto (infra GTM inteira) a VP/Head de GTM Engineering (time de builders).
 
 ---
 
-## 2. Architecture Over Tools
+## 2. Arquitetura acima de ferramentas
 
-The central principle of GTM engineering: the instruction stack, persistent context, and feedback loops matter more than which specific platform runs the workflow. Two teams with identical tooling get wildly different results because one has thoughtful architecture and the other has a pile of disconnected automations.
+Princípio central: instruction stack, contexto persistente e loops de feedback importam mais que a plataforma específica. Dois times com tooling idêntico têm resultados muito diferentes quando um tem arquitetura pensada e o outro um emaranhado de automações desconectadas.
 
-### The Instruction Stack
+### O instruction stack
 
-Every GTM automation system needs four layers of instructions that compound on each other:
-
-```
-+-----------------------------------------------------------+
-|  LAYER 4: SEQUENCE LOGIC                                   |
-|  Timing, branching, follow-up rules, escalation paths      |
-+-----------------------------------------------------------+
-|  LAYER 3: PERSONALIZATION RULES                            |
-|  What to reference, what to avoid, tone per segment        |
-+-----------------------------------------------------------+
-|  LAYER 2: MESSAGING FRAMEWORK                              |
-|  Value props, objection handling, CTA templates by stage    |
-+-----------------------------------------------------------+
-|  LAYER 1: ICP DEFINITION + SCORING                         |
-|  Firmographic/technographic/intent criteria, thresholds     |
-+-----------------------------------------------------------+
-```
-
-**Layer 1: ICP Definition + Scoring**
-Every downstream automation depends on accurate targeting. Define who you sell to with scored criteria, not loose descriptions. This layer feeds routing, personalization, and sequence decisions.
-
-- Firmographic criteria: industry, employee count, revenue range, funding stage, geography
-- Technographic criteria: current tools, API maturity, cloud provider, data infrastructure
-- Intent signals: content consumption, G2 research, job postings, funding events
-- Scoring thresholds: minimum fit score to enter outreach, minimum intent score to route to sales
-
-**Layer 2: Messaging Framework**
-Codify your messaging so automations produce consistent output. Store this as structured data, not scattered documents.
-
-- Value propositions mapped to ICP segments and pain points
-- Objection responses for the top 10 objections by segment
-- CTA variants by funnel stage (awareness, consideration, decision)
-- Proof vectors (case studies, metrics, testimonials) indexed by industry and use case
-
-**Layer 3: Personalization Rules**
-Define what the AI or automation should reference and what it must avoid. Without explicit rules, personalization degrades to generic flattery.
-
-- Reference: recent company news, job postings, tech stack signals, mutual connections
-- Avoid: personal information unrelated to business, assumptions about pain points, competitor bashing
-- Tone guidelines per segment: enterprise (formal, ROI-focused) vs startup (direct, speed-focused)
-- Variable insertion rules: which fields get personalized, which stay templated
-
-**Layer 4: Sequence Logic**
-Timing, branching, and escalation rules that govern the flow across touchpoints.
-
-- Channel sequence: email > LinkedIn > email > phone > breakup email
-- Timing rules: delay between steps, business-hours-only sending, timezone awareness
-- Branch conditions: if opened but no reply, if clicked pricing page, if bounced
-- Escalation: when to route from automation to human, when to alert a manager
-
-### Persistent Context
-
-Every prospect interaction must be logged and accessible to the next automation in the chain. Without persistent context, each touchpoint starts from zero.
-
-**Implementation pattern:**
+Todo sistema de automação GTM precisa de quatro camadas de instruções que se reforçam:
 
 ```
-Prospect Record (CRM or custom DB)
++-----------------------------------------------------------+
+|  CAMADA 4: LÓGICA DE SEQUÊNCIA                            |
+|  Timing, ramificações, regras de follow-up, escalação     |
++-----------------------------------------------------------+
+|  CAMADA 3: REGRAS DE PERSONALIZAÇÃO                       |
+|  O que citar, o que evitar, tom por segmento              |
++-----------------------------------------------------------+
+|  CAMADA 2: FRAMEWORK DE MENSAGEM                          |
+|  Propostas de valor, objeções, templates de CTA por fase   |
++-----------------------------------------------------------+
+|  CAMADA 1: DEFINIÇÃO DE ICP + SCORING                     |
+|  Critérios firmo/tecno/intenção, limiares                   |
++-----------------------------------------------------------+
+```
+
+**Camada 1: ICP + scoring**
+
+Toda automação downstream depende de targeting correto. Defina para quem você vende com critérios pontuados, não descrições soltas. Alimenta roteamento, personalização e decisões de sequência.
+
+- Firmografia: indústria, funcionários, faixa de receita, estágio de funding, geografia
+- Tecnosinais: ferramentas atuais, maturidade de API, cloud, dados
+- Sinais de intenção: consumo de conteúdo, pesquisa G2, vagas, eventos de funding
+- Limiares: score mínimo de fit para entrar em outreach, score mínimo de intenção para ir a vendas
+
+**Camada 2: framework de mensagem**
+
+Codifique mensagens para automações gerarem saída consistente. Guarde como dados estruturados, não docs espalhados.
+
+- Propostas de valor por segmento de ICP e dor
+- Respostas a objeções top 10 por segmento
+- Variantes de CTA por fase do funil
+- Vetores de prova (cases, métricas, depoimentos) indexados por indústria e uso
+
+**Camada 3: regras de personalização**
+
+Defina o que IA ou automação deve citar e o que deve evitar. Sem regras explícitas, personalização vira bajulação genérica.
+
+- Citar: notícias recentes da empresa, vagas, sinais de stack, conexões mútuas
+- Evitar: dados pessoais fora do contexto de negócio, suposições de dor, ataque direto a concorrente
+- Tom por segmento: enterprise (formal, ROI) vs startup (direto, velocidade)
+- Regras de variáveis: quais campos personalizar, quais manter em template
+
+**Camada 4: lógica de sequência**
+
+Timing, ramificação e regras de escalação entre touchpoints.
+
+- Sequência de canais: email &gt; LinkedIn &gt; email &gt; telefone &gt; email de encerramento
+- Regras de tempo: delay entre passos, envio só em horário comercial, fuso
+- Condições de ramo: abriu e não respondeu, clicou em preços, bounce
+- Escalação: quando sair da automação para humano, quando alertar gestor
+
+### Contexto persistente
+
+Cada interação com prospect deve ser registrada e acessível ao próximo passo da cadeia. Sem contexto persistente, cada toque recomeça do zero.
+
+**Padrão de implementação:**
+
+```
+Registro de prospect (CRM ou DB custom)
   |
-  +-- Enrichment data (firmographic, technographic, intent scores)
-  +-- Interaction log
-  |     +-- Email 1: sent, opened 2x, no reply
-  |     +-- LinkedIn: connection accepted, viewed profile
-  |     +-- Email 2: sent, clicked pricing link
-  |     +-- Website: visited /pricing, /case-studies (2 pages, 4 min)
+  +-- Dados de enriquecimento (firma, tecno, scores de intenção)
+  +-- Log de interações
+  |     +-- Email 1: enviado, aberto 2x, sem resposta
+  |     +-- LinkedIn: conexão aceita, viu perfil
+  |     +-- Email 2: enviado, clicou em link de preços
+  |     +-- Site: visitou /pricing, /case-studies (2 páginas, 4 min)
   |
-  +-- AI context window
-  |     +-- Previous email bodies sent
-  |     +-- Personalization variables used
-  |     +-- Objections raised (if reply received)
+  +-- Janela de contexto para IA
+  |     +-- Corpos de emails anteriores enviados
+  |     +-- Variáveis de personalização usadas
+  |     +-- Objeções levantadas (se houver resposta)
   |
-  +-- Routing state
-        +-- Current sequence step
-        +-- Assigned owner
-        +-- Next scheduled action
-        +-- Score changes over time
+  +-- Estado de roteamento
+        +-- Passo atual da sequência
+        +-- Dono atribuído
+        +-- Próxima ação agendada
+        +-- Mudanças de score ao longo do tempo
 ```
 
-### Feedback Loops
+### Loops de feedback
 
-The system must learn from outcomes. Without feedback loops, automations repeat the same mistakes at scale.
+O sistema deve aprender com resultados. Sem feedback, automações repetem os mesmos erros em escala.
 
-| Signal | Action | System Update |
-|---|---|---|
-| Positive reply | Tag attributes of the responder (industry, title, signals present) | Refine ICP scoring weights toward this profile |
-| Negative reply | Analyze messaging that triggered the rejection | Adjust templates, update objection handling |
-| No reply after full sequence | Compare against positive responders | Identify differentiating signals, update targeting |
-| Meeting booked | Log which sequence step and message variant converted | Weight that variant higher in future sends |
-| Deal closed-won | Full attribution: which enrichment, sequence, and personalization drove the deal | Update scoring model, replicate the pattern |
-| Deal closed-lost | Analyze where the process broke down | Update disqualification criteria, fix the gap |
+| Sinal                                | Ação                                                           | Atualização do sistema                        |
+| ------------------------------------ | -------------------------------------------------------------- | --------------------------------------------- |
+| Resposta positiva                    | Rotular atributos do respondente                               | Refinar pesos de ICP para esse perfil         |
+| Resposta negativa                    | Analisar mensagem que gerou rejeição                           | Ajustar templates, objeções                   |
+| Sem resposta após sequência completa | Comparar com respondentes positivos                            | Identificar sinais diferenciadores, targeting |
+| Reunião agendada                     | Registrar passo e variante que converteram                     | Dar mais peso a essa variante                 |
+| Deal ganho                           | Atribuição completa: enriquecimento, sequência, personalização | Atualizar modelo de scoring, replicar padrão  |
+| Deal perdido                         | Onde o processo quebrou                                        | Atualizar DQ, corrigir gap                    |
 
-### Architecture vs Tools: Decision Framework
+### Arquitetura vs ferramentas: framework de decisão
 
-| Question | Architecture Answer | Tool Answer |
-|---|---|---|
-| "Why did this lead get this message?" | Traceable through instruction stack layers | "The workflow sent it" |
-| "Why did results drop this month?" | Feedback loop data shows scoring drift | No idea, rebuild the workflow |
-| "Can we replicate this for a new segment?" | Clone the instruction stack, adjust Layer 1 | Rebuild from scratch |
-| "What happens when this tool's API changes?" | Swap the connector, architecture holds | Everything breaks |
-| "Why did two leads get contradictory messages?" | Persistent context prevents this | Race condition in parallel workflows |
+| Pergunta                                                 | Resposta de arquitetura                 | Resposta de ferramenta          |
+| -------------------------------------------------------- | --------------------------------------- | ------------------------------- |
+| "Por que este lead recebeu esta mensagem?"               | Rastreável pelas camadas do stack       | "O workflow enviou"             |
+| "Por que os resultados caíram este mês?"                 | Dados do loop mostram deriva de scoring | Sem ideia, reconstruir workflow |
+| "Dá para replicar para novo segmento?"                   | Clonar stack, ajustar Camada 1          | Reconstruir do zero             |
+| "E quando a API desta ferramenta mudar?"                 | Trocar conector, arquitetura permanece  | Tudo quebra                     |
+| "Por que dois leads receberam mensagens contraditórias?" | Contexto persistente evita isso         | Race em workflows paralelos     |
 
 ---
 
-## 3. Automation Platform Comparison
+## 3. Comparação de plataformas de automação
 
-Choosing the right platform depends on team technical depth, lead volume, budget, and integration requirements. No single tool wins across all dimensions.
+A escolha depende de profundidade técnica do time, volume de leads, orçamento e integrações. Nenhuma ferramenta ganha em todas as dimensões.
 
-### n8n vs Make vs Zapier: Detailed Comparison
+### n8n vs Make vs Zapier: comparação
 
-| Dimension | n8n | Make (Integromat) | Zapier |
-|---|---|---|---|
-| **Architecture** | Self-hosted or cloud, node-based | Cloud-native, visual scenario builder | Cloud-native, trigger-action model |
-| **Technical depth required** | Medium-High (JSON, expressions, code nodes) | Medium (visual data mapping, some formulas) | Low (point-and-click, templates) |
-| **AI/LLM integration** | Best-in-class: 70+ AI nodes, LangChain native | Good: HTTP module + AI modules | Good: built-in AI actions, ChatGPT plugin |
-| **Self-hosting** | Yes (Docker, Kubernetes) | No | No |
-| **Pricing model** | Execution-based (self-host: free/paid tiers) | Operation-based (per data operation) | Task-based (per trigger + action) |
-| **Price at 10K ops/month** | ~$20-50 (self-hosted) or ~$50 (cloud) | ~$30-60 | ~$100-200 |
-| **Price at 100K ops/month** | ~$50-100 (self-hosted) or ~$200 (cloud) | ~$150-300 | ~$500-1,500+ |
-| **Max integrations** | 400+ (plus HTTP/webhook for anything) | 1,500+ | 7,000+ |
-| **Error handling** | Native retry, error workflows, manual replay | Built-in retry, error routes, break modules | Basic retry, error paths on paid plans |
-| **Version control** | JSON export, Git-friendly | Scenario export (JSON) | Limited (no native Git support) |
-| **Data sovereignty** | Full control (self-hosted) | EU/US cloud regions | US cloud (enterprise: custom) |
-| **Branching/routing** | If/Switch nodes, merge nodes | Routers, filters, iterators | Paths (paid), Filters |
-| **Code execution** | JavaScript, Python nodes built-in | JavaScript in some modules | Limited (Code by Zapier, basic JS/Python) |
-| **Webhook support** | Full (trigger + respond) | Full (trigger + respond) | Full (trigger + respond) |
-| **Best for GTM** | Complex multi-step AI workflows, data pipelines | Visual workflow design, moderate complexity | Simple integrations, non-technical teams |
+| Dimensão                 | n8n                                                    | Make (Integromat)                           | Zapier                                  |
+| ------------------------ | ------------------------------------------------------ | ------------------------------------------- | --------------------------------------- |
+| **Arquitetura**          | Self-hosted ou cloud, baseado em nós                   | Cloud, builder visual de cenários           | Cloud, gatilho-ação                     |
+| **Profundidade técnica** | Média-alta (JSON, expressões, code nodes)              | Média (mapeamento visual, algumas fórmulas) | Baixa (clique, templates)               |
+| **Integração IA/LLM**    | Classe mundial: 70+ nós de IA, LangChain nativo        | Boa: HTTP + módulos de IA                   | Boa: ações de IA, plugin ChatGPT        |
+| **Self-hosting**         | Sim (Docker, K8s)                                      | Não                                         | Não                                     |
+| **Modelo de preço**      | Por execução (self-host: free/pago)                    | Por operação de dados                       | Por tarefa                              |
+| **Preço ~10K ops/mês**   | ~US$ 20–50 (self) ou ~US$ 50 (cloud)                   | ~US$ 30–60                                  | ~US$ 100–200                            |
+| **Preço ~100K ops/mês**  | ~US$ 50–100 (self) ou ~US$ 200 (cloud)                 | ~US$ 150–300                                | ~US$ 500–1.500+                         |
+| **Máx. integrações**     | 400+ (+ HTTP/webhook)                                  | 1.500+                                      | 7.000+                                  |
+| **Tratamento de erro**   | Retry nativo, error workflows, replay manual           | Retry, rotas de erro, break modules         | Retry básico, paths em planos pagos     |
+| **Controle de versão**   | Export JSON, Git-friendly                              | Export cenário (JSON)                       | Limitado (sem Git nativo)               |
+| **Soberania de dados**   | Controle total (self)                                  | Regiões EU/US cloud                         | Cloud US (enterprise: custom)           |
+| **Ramificação**          | Nós If/Switch, merge                                   | Roteadores, filtros, iteradores             | Paths (pagos), filtros                  |
+| **Execução de código**   | JS, Python nos nós                                     | JS em alguns módulos                        | Limitado (Code by Zapier)               |
+| **Webhooks**             | Completo (trigger + respond)                           | Completo                                    | Completo                                |
+| **Melhor para GTM**      | Workflows IA multi-etapa complexos, pipelines de dados | Design visual, complexidade moderada        | Integrações simples, times não técnicos |
 
-### Enterprise iPaaS: Tray.io vs Workato
+### iPaaS enterprise: Tray.io vs Workato
 
-For larger organizations with complex integration needs, enterprise iPaaS platforms provide governance, compliance, and scale.
+| Dimensão           | Tray.io                            | Workato                                |
+| ------------------ | ---------------------------------- | -------------------------------------- |
+| **Alvo**           | Mid-market a enterprise            | Enterprise                             |
+| **Preço**          | Custom (típico US$ 10K+/ano)       | Custom (típico US$ 10K+/ano)           |
+| **Força**          | Builder visual low-code            | Governança enterprise + copilots de IA |
+| **Integrações**    | 600+ conectores                    | 1.000+ conectores                      |
+| **Recursos de IA** | Merlin AI para construir workflows | Suite Copilot para build, map, doc     |
+| **Compliance**     | SOC2, GDPR, HIPAA                  | SOC2, GDPR, HIPAA, FedRAMP             |
+| **Uso GTM**        | Marketing ops, sales ops, RevOps   | GTM + finance + HR + IT                |
 
-| Dimension | Tray.io | Workato |
-|---|---|---|
-| **Target** | Mid-market to enterprise | Enterprise |
-| **Pricing** | Custom (typically $10K+/year) | Custom (typically $10K+/year) |
-| **Strength** | Low-code visual builder for "citizen developers" | Enterprise-grade governance + AI copilots |
-| **Integrations** | 600+ connectors | 1,000+ connectors |
-| **AI features** | Merlin AI for building workflows | Copilot suite for building, mapping, documenting |
-| **Compliance** | SOC2, GDPR, HIPAA | SOC2, GDPR, HIPAA, FedRAMP |
-| **GTM use** | Marketing ops, sales ops, RevOps automation | Full GTM + finance + HR + IT automation |
-| **When to choose** | Teams that need enterprise features but want accessible building | Organizations requiring full audit trails and enterprise compliance |
-
-### Platform Selection Decision Tree
+### Árvore de seleção de plataforma
 
 ```
-START: What is your team's technical depth?
+START: Qual a profundidade técnica do time?
   |
-  +-- Can write Python/JS, comfortable with APIs
+  +-- Sabe Python/JS, confortável com APIs
   |     |
-  |     +-- Need data sovereignty / self-hosting?
-  |     |     +-- YES --> n8n (self-hosted)
-  |     |     +-- NO --> Need enterprise compliance?
-  |     |           +-- YES --> Workato or Tray.io
-  |     |           +-- NO --> n8n (cloud) or Make
+  |     +-- Precisa soberania / self-hosting?
+  |     |     +-- SIM --> n8n (self-hosted)
+  |     |     +-- NÃO --> Precisa compliance enterprise?
+  |     |           +-- SIM --> Workato ou Tray.io
+  |     |           +-- NÃO --> n8n (cloud) ou Make
   |     |
-  |     +-- Volume > 100K operations/month?
-  |           +-- YES --> n8n (self-hosted) for cost efficiency
-  |           +-- NO --> n8n (cloud) or Make
+  |     +-- Volume &gt; 100K operações/mês?
+  |           +-- SIM --> n8n (self-hosted) por custo
+  |           +-- NÃO --> n8n (cloud) ou Make
   |
-  +-- Can do basic configuration, formulas, some JSON
+  +-- Configuração básica, fórmulas, um pouco de JSON
   |     |
-  |     +-- Complex branching/data transformation needed?
-  |     |     +-- YES --> Make
-  |     |     +-- NO --> Zapier or Make
+  |     +-- Ramificação/transformação complexa?
+  |     |     +-- SIM --> Make
+  |     |     +-- NÃO --> Zapier ou Make
   |     |
-  |     +-- Budget-constrained?
-  |           +-- YES --> Make (better price-to-value)
-  |           +-- NO --> Zapier (fastest setup)
+  |     +-- Orçamento apertado?
+  |           +-- SIM --> Make (melhor custo-benefício)
+  |           +-- NÃO --> Zapier (setup mais rápido)
   |
-  +-- Non-technical, needs point-and-click
+  +-- Não técnico, precisa point-and-click
         |
-        +-- Simple trigger-action automations?
-        |     +-- YES --> Zapier
-        |     +-- NO (complex needs) --> Hire a GTM engineer
+        +-- Automações simples gatilho-ação?
+        |     +-- SIM --> Zapier
+        |     +-- NÃO (precisa complexidade) --> Contratar GTM engineer
         |
-        +-- Need templates to start fast?
-              +-- YES --> Zapier (7,000+ integrations, templates)
-              +-- NO --> Make (better long-term value)
+        +-- Precisa templates para começar rápido?
+              +-- SIM --> Zapier (7.000+ integrações, templates)
+              +-- NÃO --> Make (melhor valor no longo prazo)
 ```
 
 ---
 
+Para stack API-first, pipelines de dados, agentes GTM, arquitetura orientada a eventos, monitoramento, otimização de custo, padrões e ferramentas internas leia `references/implementation-guide.md`.
 
-For API-first stack design, data pipelines, GTM agents, event-driven architecture, monitoring, cost optimization, patterns, and internal tools read `references/implementation-guide.md`.
+## Exemplos
 
-## Examples
+- **Usuário diz:** "Automatizar roteamento e enriquecimento de leads" → **Resultado:** Agente pergunta volume, CRM e stack; recomenda n8n/Make/Zapier por complexidade; desenha instruction stack (scoring ICP, enriquecimento confiança 0.85+, lead quente SLA &lt;1h); sugere export de workflow para Git e alertas (workflow &lt;95%, bounce &gt;5%).
+- **Usuário diz:** "Nossas automações quebram muito" → **Resultado:** Agente pergunta o que falha (enriquecimento, envio, sync CRM); recomenda controle de versão (JSON no Git), monitoramento (Grafana + métricas da plataforma) e cache TTL (30–90d); sugere split de custo LLM (Haiku classificação, Sonnet escrita).
+- **Usuário diz:** "Construir infraestrutura de AI SDR" → **Resultado:** Agente relaciona com ai-sdr e lead-enrichment; descreve waterfall de enriquecimento, scoring (fit + intenção), roteamento sinal-a-ação e handoff; recomenda SLA quente/morno e loop de feedback para targeting.
 
-- **User says:** "Automate our lead routing and enrichment" → **Result:** Agent asks volume, CRM, and current stack; recommends n8n/Make/Zapier by complexity; designs instruction stack (ICP scoring, enrichment 0.85+ confidence, hot lead &lt;1 hr SLA); suggests workflow export to Git and alerts (workflow &lt;95%, bounce &gt;5%).
-- **User says:** "Our automations break often" → **Result:** Agent asks what fails (enrichment, sending, CRM sync); recommends version control (JSON to Git), monitoring (Grafana + platform metrics), and caching TTL (30–90d); suggests LLM cost split (Haiku for classification, Sonnet for writing).
-- **User says:** "Build AI SDR infrastructure" → **Result:** Agent ties to ai-sdr and lead-enrichment; outlines enrichment waterfall, scoring (fit + intent), signal-to-action routing, and handoff; recommends hot/warm SLA and feedback loop back to targeting.
+## Solução de problemas
 
-## Troubleshooting
-
-- **Workflow success rate below 95%** → **Cause:** API rate limits, bad data, or timeouts. **Fix:** Add retries and backoff; validate inputs; alert on failure; cache enrichment; version workflows in Git.
-- **Enrichment hit rate low** → **Cause:** Wrong provider order or stale cache. **Fix:** Reorder waterfall; set confidence threshold (0.85 accept, 0.50 flag, &lt;0.50 reject); re-enrich cadence 30–90d; track per-provider fill.
-- **Lead response time too slow** → **Cause:** Manual steps or batch runs. **Fix:** Hot lead &lt;5 min (inbound), &lt;1 hr overall; warm &lt;4 hr; automate routing and first-touch; use real-time enrichment where possible.
-
----
-
-
-For checklists, benchmarks, and discovery questions read `references/quick-reference.md` when you need detailed reference.
+- **Taxa de sucesso do workflow abaixo de 95%** → **Causa:** Rate limit de API, dados ruins ou timeout. **Correção:** Retries com backoff; validar inputs; alertar falha; cachear enriquecimento; versionar workflows no Git.
+- **Taxa de acerto do enriquecimento baixa** → **Causa:** Ordem errada de provedor ou cache velho. **Correção:** Reordenar waterfall; limiar de confiança (0.85 aceitar, 0.50 flag, &lt;0.50 rejeitar); re-enriquecer a cada 30–90d; rastrear preenchimento por provedor.
+- **Tempo de resposta a lead lento** → **Causa:** Passos manuais ou jobs em lote. **Correção:** Lead quente &lt;5 min (inbound), &lt;1h no geral; morno &lt;4h; automatizar roteamento e primeiro toque; enriquecimento em tempo real quando possível.
 
 ---
 
-## Related Skills
+Para checklists, benchmarks e perguntas de discovery leia `references/quick-reference.md` quando precisar de referência detalhada.
 
-| Skill | When to Cross-Reference |
-|---|---|
-| ai-cold-outreach | When building automated outreach sequences, email personalization, and response handling |
-| ai-sdr | When designing AI-powered SDR workflows, qualification logic, and handoff processes |
-| lead-enrichment | When implementing enrichment waterfalls, data quality scoring, and provider selection |
-| solo-founder-gtm | When a solo founder needs to build GTM automation with minimal resources and budget |
-| gtm-metrics | When defining KPIs, building dashboards, and measuring automation ROI |
-| ai-seo | When building content-to-pipeline automation, competitor monitoring, and organic lead generation |
-| positioning-icp | When ICP scoring models need to be defined or updated before automation can be built |
-| sales-motion-design | When designing the end-to-end sales process that automation supports |
-| expansion-retention | When building usage-based expansion triggers and churn prevention workflows |
-| content-to-pipeline | When automating content distribution, engagement tracking, and content-driven lead scoring |
-| partner-affiliate | When building partner lead routing, co-selling workflows, and affiliate tracking automation |
-| ai-pricing | When implementing dynamic pricing, usage metering, or outcome-based pricing infrastructure |
+---
+
+## Skills relacionadas
+
+| Skill               | Quando cruzar                                                                            |
+| ------------------- | ---------------------------------------------------------------------------------------- |
+| ai-cold-outreach    | Ao construir sequências automatizadas, personalização de email e tratamento de respostas |
+| ai-sdr              | Ao desenhar workflows de SDR com IA, lógica de qualificação e handoff                    |
+| lead-enrichment     | Ao implementar waterfalls de enriquecimento, qualidade de dados e escolha de provedor    |
+| solo-founder-gtm    | Quando fundador solo precisa automação GTM com poucos recursos                           |
+| gtm-metrics         | Ao definir KPIs, dashboards e ROI da automação                                           |
+| ai-seo              | Ao automatizar conteúdo-para-pipeline, monitoramento de concorrentes e leads orgânicos   |
+| positioning-icp     | Quando modelos de scoring de ICP precisam ser definidos antes da automação               |
+| sales-motion-design | Ao desenhar o processo comercial ponta a ponta que a automação suporta                   |
+| expansion-retention | Ao construir gatilhos de expansão por uso e workflows anti-churn                         |
+| content-to-pipeline | Ao automatizar distribuição de conteúdo, engajamento e scoring                           |
+| partner-affiliate   | Ao automatizar roteamento de leads de parceiros, co-venda e tracking de afiliados        |
+| ai-pricing          | Ao implementar preços dinâmicos, medição de uso ou pricing por resultado                 |

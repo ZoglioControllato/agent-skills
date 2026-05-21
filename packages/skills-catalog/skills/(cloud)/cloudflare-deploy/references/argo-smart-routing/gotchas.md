@@ -1,56 +1,57 @@
-## Best Practices Summary
+## Resumo das melhores práticas
 
-**Smart Shield Note:** Argo Smart Routing evolving into Smart Shield. Best practices below remain applicable; monitor Cloudflare changelog for Smart Shield updates.
+**Nota sobre Smart Shield:** Argo Smart Routing evoluindo para Smart Shield. As melhores práticas abaixo permanecem aplicáveis; monitore o changelog da Cloudflare para atualizações do Smart Shield.
 
-1. **Always check editability** before attempting to enable/disable Argo
-2. **Set up billing notifications** to avoid unexpected costs
-3. **Combine with Tiered Cache** for maximum performance benefit
-4. **Use in production only** - disable for dev/staging to control costs
-5. **Monitor analytics** - require 500+ requests in 48h for detailed metrics
-6. **Handle errors gracefully** - check for billing, permissions, zone compatibility
-7. **Test configuration changes** in staging before production
-8. **Use TypeScript SDK** for type safety and better developer experience
-9. **Implement retry logic** for API calls in production systems
-10. **Document zone-specific settings** for team visibility
+1. **Sempre verifique a capacidade de edição** antes de tentar ativar/desativar o Argo
+2. **Configure notificações de faturamento** para evitar custos inesperados
+3. **Combine com Tiered Cache** para obter o máximo benefício de desempenho
+4. **Use apenas em produção** - desative para desenvolvimento/preparação para controlar custos
+5. **Monitore análises** – requer mais de 500 solicitações em 48 horas para obter métricas detalhadas
+6. **Trate de erros normalmente** - verifique faturamento, permissões e compatibilidade de zona
+7. **Testar alterações na configuração** na preparação antes da produção
+8. **Use TypeScript SDK** para segurança de tipo e melhor experiência do desenvolvedor
+9. **Implementar lógica de repetição** para chamadas de API em sistemas de produção
+10. **Configurações específicas da zona de documentos** para visibilidade da equipe
 
-## Common Errors
+## Erros Comuns
 
-### "Argo unavailable"
+### "Argo indisponível"
 
-**Problem:** API returns error "Argo Smart Routing is unavailable for this zone"
+**Problema:** API retorna erro "Argo Smart Routing não está disponível para esta zona"
 
-**Cause:** Zone not eligible or billing not set up
+**Causa:** Zona não qualificada ou faturamento não configurado
 
-**Solution:**
+**Solução:**
 
-1. Verify zone has Enterprise or higher plan
-2. Check billing is configured in Account → Billing
-3. Ensure payment method is valid and current
-4. Contact Cloudflare support if eligibility unclear
+1. Verifique se a zona possui plano Enterprise ou superior
+2. Verifique se o faturamento está configurado em Conta → Faturamento
+3. Certifique-se de que o método de pagamento seja válido e atual
+4. Entre em contato com o suporte da Cloudflare se a elegibilidade não estiver clara
 
-### "Cannot enable/disable"
+### "Não é possível ativar/desativar"
 
-**Problem:** API call succeeds but status remains unchanged, or `editable: false` in GET response
+**Problema:** a chamada de API foi bem-sucedida, mas o status permanece inalterado ou `editável: falso` na resposta GET
 
-**Cause:** Insufficient permissions or zone restrictions
+**Causa:** Permissões ou restrições de zona insuficientes
 
-**Solution:**
+**Solução:**
 
-1. Check API token has `Zone:Argo Smart Routing:Edit` permission
-2. Verify `editable: true` in GET response before attempting PATCH
-3. If `editable: false`, check:
-   - Billing configured for account
-   - Zone plan includes Argo (Enterprise+)
-   - No active zone holds or suspensions
-   - API token has correct scopes
+1. Verifique se o token da API tem permissão `Zone:Argo Smart Routing:Edit`
+2. Verifique `editable: true` na resposta GET antes de tentar PATCH
+3. Se `editável: false`, verifique:
 
-### `editable: false` Error
+- Faturamento configurado para conta
+- Plano de zona inclui Argo (Enterprise+)
+- Nenhuma zona ativa ou suspensões
+- O token da API tem escopos corretos
 
-**Problem:** GET request returns `"editable": false`, preventing enable/disable
+### `editável: false` Erro
 
-**Cause:** Zone-level restrictions from billing, plan, or permissions
+**Problema:** A solicitação GET retorna `"editável": false`, impedindo ativar/desativar
 
-**Solution Pattern:**
+**Causa:** restrições em nível de zona de faturamento, plano ou permissões
+
+**Padrão de solução:**
 
 ```typescript
 const status = await client.argo.smartRouting.get({ zone_id: zoneId })

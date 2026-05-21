@@ -1,98 +1,98 @@
-# D1 Gotchas & Troubleshooting
+# D1: gotchas e troubleshooting
 
-## Common Errors
+## Erros comuns
 
 ### "SQL Injection Vulnerability"
 
-**Cause:** Using string interpolation instead of prepared statements with bind()  
-**Solution:** ALWAYS use prepared statements: `env.DB.prepare('SELECT * FROM users WHERE id = ?').bind(userId).all()` instead of string interpolation which allows attackers to inject malicious SQL
+**Causa:** interpolação de string em vez de prepared statements com bind()  
+**Solução:** SEMPRE use prepared statements: `env.DB.prepare('SELECT * FROM users WHERE id = ?').bind(userId).all()` — nunca interpole strings que permitam SQL malicioso
 
 ### "no such table"
 
-**Cause:** Table doesn't exist because migrations haven't been run, or using wrong database binding  
-**Solution:** Run migrations using `wrangler d1 migrations apply <db-name> --remote` and verify binding name in wrangler.jsonc matches code
+**Causa:** tabela não existe (migrations não rodadas) ou binding errado  
+**Solução:** `wrangler d1 migrations apply <db-name> --remote` e confira o nome do binding no wrangler.jsonc
 
 ### "UNIQUE constraint failed"
 
-**Cause:** Attempting to insert duplicate value in column with UNIQUE constraint  
-**Solution:** Catch error and return 409 Conflict status code
+**Causa:** insert duplicado em coluna UNIQUE  
+**Solução:** capture o erro e retorne HTTP 409 Conflict
 
 ### "Query Timeout (30s exceeded)"
 
-**Cause:** Query execution exceeds 30 second timeout limit  
-**Solution:** Break into smaller queries, add indexes to speed up queries, or reduce dataset size
+**Causa:** query > 30 s  
+**Solução:** divida em queries menores, índices, reduza dataset
 
 ### "N+1 Query Problem"
 
-**Cause:** Making multiple individual queries in a loop instead of single optimized query  
-**Solution:** Use JOIN to fetch related data in single query or use `batch()` method for multiple queries
+**Causa:** várias queries em loop em vez de uma otimizada  
+**Solução:** JOIN ou método `batch()`
 
 ### "Missing Indexes"
 
-**Cause:** Queries performing full table scans without indexes  
-**Solution:** Use `EXPLAIN QUERY PLAN` to check if index is used, then create index with `CREATE INDEX idx_users_email ON users(email)`
+**Causa:** full table scan  
+**Solução:** `EXPLAIN QUERY PLAN` e `CREATE INDEX idx_users_email ON users(email)`
 
 ### "Boolean Type Issues"
 
-**Cause:** SQLite uses INTEGER (0/1) not native boolean type  
-**Solution:** Bind 1 or 0 instead of true/false when working with boolean values
+**Causa:** SQLite usa INTEGER (0/1), não boolean nativo  
+**Solução:** bind 1 ou 0 em vez de true/false quando necessário
 
 ### "Date/Time Type Issues"
 
-**Cause:** SQLite doesn't have native DATE/TIME types  
-**Solution:** Use TEXT (ISO 8601 format) or INTEGER (unix timestamp) for date/time values
+**Causa:** SQLite sem tipos DATE/TIME nativos  
+**Solução:** TEXT ISO8601 ou INTEGER (unix timestamp)
 
-## Plan Tier Limits
+## Limites por plano
 
-| Limit               | Free Tier        | Paid Plans               | Notes                                      |
-| ------------------- | ---------------- | ------------------------ | ------------------------------------------ |
-| Database size       | 500 MB           | 10 GB                    | Design for multiple DBs per tenant on paid |
-| Row size            | 1 MB             | 1 MB                     | Store large files in R2, not D1            |
-| Query timeout       | 30s              | 30s (900s with sessions) | Use sessions API for migrations            |
-| Batch size          | 1,000 statements | 10,000 statements        | Split large batches accordingly            |
-| Time Travel         | 7 days           | 30 days                  | Point-in-time recovery window              |
-| Read replicas       | ❌ Not available | ✅ Available             | Paid add-on for lower latency              |
-| Sessions API        | ❌ Not available | ✅ Up to 15 min          | For migrations and heavy operations        |
-| Concurrent requests | 10,000/min       | Higher                   | Contact support for custom limits          |
+| Limite               | Free       | Pagos                   | Observações                       |
+| -------------------- | ---------- | ----------------------- | --------------------------------- |
+| Tamanho DB           | 500 MB     | 10 GB                   | Vários DBs por tenant no pago     |
+| Tamanho da linha     | 1 MB       | 1 MB                    | Arquivos grandes no R2, não no D1 |
+| Timeout de query     | 30s        | 30s (900s com sessions) | Sessions para migrations          |
+| Batch                | 1.000      | 10.000                  | Divida batches grandes            |
+| Time Travel          | 7 dias     | 30 dias                 | Janela PITR                       |
+| Réplicas             | ❌         | ✅                      | Add-on pago                       |
+| Sessions API         | ❌         | Até 15 min              | Migrations e ops pesadas          |
+| Requisições concorr. | 10.000/min | Maior                   | Limites custom: suporte           |
 
-## Production Gotchas
+## Gotchas em produção
 
 ### "Batch size exceeded"
 
-**Cause:** Attempting to send >1,000 statements on free tier or >10,000 on paid  
-**Solution:** Chunk batches: `for (let i = 0; i < stmts.length; i += MAX_BATCH) await env.DB.batch(stmts.slice(i, i + MAX_BATCH))`
+**Causa:** >1.000 no free ou >10.000 no pago  
+**Solução:** chunk: `for (let i = 0; i < stmts.length; i += MAX_BATCH) await env.DB.batch(stmts.slice(i, i + MAX_BATCH))`
 
 ### "Session not closed / resource leak"
 
-**Cause:** Forgot to call `session.close()` after using sessions API  
-**Solution:** Always use try/finally block: `try { await session.prepare(...) } finally { session.close() }`
+**Causa:** não chamou `session.close()`  
+**Solução:** try/finally: `try { await session.prepare(...) } finally { session.close() }`
 
 ### "Replication lag causing stale reads"
 
-**Cause:** Reading from replica immediately after write - replication lag can be 100ms-2s  
-**Solution:** Use primary for read-after-write: `await env.DB.prepare(...)` not `env.DB_REPLICA`
+**Causa:** leitura na réplica logo após write (lag 100ms–2s)  
+**Solução:** read-after-write no primário: `env.DB`, não `env.DB_REPLICA`
 
 ### "Migration applied to local but not remote"
 
-**Cause:** Forgot `--remote` flag when applying migrations  
-**Solution:** Always run `wrangler d1 migrations apply <db-name> --remote` for production
+**Causa:** faltou `--remote`  
+**Solução:** `wrangler d1 migrations apply <db-name> --remote` em produção
 
 ### "Foreign key constraint failed"
 
-**Cause:** Inserting row with FK to non-existent parent, or deleting parent before children  
-**Solution:** Enable FK enforcement: `PRAGMA foreign_keys = ON;` and use ON DELETE CASCADE in schema
+**Causa:** FK para pai inexistente ou delete na ordem errada  
+**Solução:** `PRAGMA foreign_keys = ON;` e `ON DELETE CASCADE` no schema
 
 ### "BLOB data corrupted on export"
 
-**Cause:** D1 export may not handle BLOB correctly  
-**Solution:** Store binary files in R2, only store R2 URLs/keys in D1
+**Causa:** export D1 e BLOB  
+**Solução:** binários no R1; no D1 só URLs/keys do R2
 
 ### "Database size approaching limit"
 
-**Cause:** Storing too much data in single database  
-**Solution:** Horizontal scale-out: create per-tenant/per-user databases, archive old data, or upgrade to paid plan
+**Causa:** dados demais num único banco  
+**Solução:** scale-out por tenant, arquivo, upgrade de plano
 
 ### "Local dev vs production behavior differs"
 
-**Cause:** Local uses SQLite file, production uses distributed D1 - different performance/limits  
-**Solution:** Always test migrations on remote with `--remote` flag before production rollout
+**Causa:** local = SQLite file; prod = D1 distribuído  
+**Solução:** teste migrations com `--remote` antes do rollout

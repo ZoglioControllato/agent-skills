@@ -1,42 +1,33 @@
 ---
-title: Animate SVG Wrapper Instead of SVG Element
+title: Anime o wrapper do SVG em vez do elemento SVG
 impact: LOW
-impactDescription: enables hardware acceleration
+impactDescription: habilitação de aceleração por hardware
 tags: rendering, svg, css, animation, performance
 ---
 
-## Animate SVG Wrapper Instead of SVG Element
+## Anime o wrapper do SVG em vez do elemento SVG
 
-Many browsers don't have hardware acceleration for CSS3 animations on SVG elements. Wrap SVG in a `<div>` and animate the wrapper instead.
+Muitos navegadores não aceleram por animações de hardware CSS3 em elementos SVG. Envolva o SVG em um `<div>` e anime o wrapper.
 
-**Incorrect (animating SVG directly - no hardware acceleration):**
+**Incorreto (anima o SVG diretamente — sem atualização por hardware):**
 
 ```tsx
 function LoadingSpinner() {
   return (
-    <svg 
-      className="animate-spin"
-      width="24" 
-      height="24" 
-      viewBox="0 0 24 24"
-    >
+    <svg className="animate-spin" width="24" height="24" viewBox="0 0 24 24">
       <circle cx="12" cy="12" r="10" stroke="currentColor" />
     </svg>
   )
 }
 ```
 
-**Correct (animating wrapper div - hardware accelerated):**
+**Correto (animação ou div wrapper — acelerado por hardware):**
 
 ```tsx
 function LoadingSpinner() {
   return (
     <div className="animate-spin">
-      <svg 
-        width="24" 
-        height="24" 
-        viewBox="0 0 24 24"
-      >
+      <svg width="24" height="24" viewBox="0 0 24 24">
         <circle cx="12" cy="12" r="10" stroke="currentColor" />
       </svg>
     </div>
@@ -44,4 +35,4 @@ function LoadingSpinner() {
 }
 ```
 
-This applies to all CSS transforms and transitions (`transform`, `opacity`, `translate`, `scale`, `rotate`). The wrapper div allows browsers to use GPU acceleration for smoother animations.
+Vale para todas as transformações e transições CSS (`transform`, `opacity`, `translate`, `scale`, `rotate`). O div wrapper permite ao navegador usar GPU para animações mais suaves.

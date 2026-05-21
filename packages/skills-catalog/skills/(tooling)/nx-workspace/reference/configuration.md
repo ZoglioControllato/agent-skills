@@ -1,87 +1,83 @@
-# Nx Configuration Reference
+# Referência de configuração Nx
 
-Complete configuration templates and options for Nx workspaces.
+Modelos e opções de configuração completos para espaços de trabalho Nx.
 
-## nx.json Configuration
+##Configuração nx.json
 
-Full nx.json template with all common options:
-
-```json
+Modelo nx.json completo com todas as opções comuns:```json
 {
-  "$schema": "./node_modules/nx/schemas/nx-schema.json",
-  "npmScope": "myorg",
-  "affected": {
-    "defaultBase": "main"
-  },
-  "tasksRunnerOptions": {
-    "default": {
-      "runner": "nx/tasks-runners/default",
-      "options": {
-        "cacheableOperations": [
-          "build",
-          "lint",
-          "test",
-          "e2e",
-          "build-storybook"
-        ],
-        "parallel": 3
-      }
-    }
-  },
-  "targetDefaults": {
-    "build": {
-      "dependsOn": ["^build"],
-      "inputs": ["production", "^production"],
-      "cache": true
-    },
-    "test": {
-      "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"],
-      "cache": true
-    },
-    "lint": {
-      "inputs": ["default", "{workspaceRoot}/.eslintrc.json"],
-      "cache": true
-    },
-    "e2e": {
-      "inputs": ["default", "^production"],
-      "cache": true
-    }
-  },
-  "namedInputs": {
-    "default": ["{projectRoot}/**/*", "sharedGlobals"],
-    "production": [
-      "default",
-      "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
-      "!{projectRoot}/tsconfig.spec.json",
-      "!{projectRoot}/jest.config.[jt]s",
-      "!{projectRoot}/.eslintrc.json"
-    ],
-    "sharedGlobals": [
-      "{workspaceRoot}/babel.config.json",
-      "{workspaceRoot}/tsconfig.base.json"
-    ]
-  },
-  "generators": {
-    "@nx/react": {
-      "application": {
-        "style": "css",
-        "linter": "eslint",
-        "bundler": "webpack"
-      },
-      "library": {
-        "style": "css",
-        "linter": "eslint"
-      }
-    }
-  }
+"$schema": "./node_modules/nx/schemas/nx-schema.json",
+"npmScope": "myorg",
+"affected": {
+"defaultBase": "main"
+},
+"tasksRunnerOptions": {
+"default": {
+"runner": "nx/tasks-runners/default",
+"options": {
+"cacheableOperations": [
+"build",
+"lint",
+"test",
+"e2e",
+"build-storybook"
+],
+"parallel": 3
 }
-```
+}
+},
+"targetDefaults": {
+"build": {
+"dependsOn": ["^build"],
+"inputs": ["production", "^production"],
+"cache": true
+},
+"test": {
+"inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"],
+"cache": true
+},
+"lint": {
+"inputs": ["default", "{workspaceRoot}/.eslintrc.json"],
+"cache": true
+},
+"e2e": {
+"inputs": ["default", "^production"],
+"cache": true
+}
+},
+"namedInputs": {
+"default": ["{projectRoot}/**/*", "sharedGlobals"],
+"production": [
+"default",
+"!{projectRoot}/\*_/?(_.)+(spec|test).[jt]s?(x)?(.snap)",
+"!{projectRoot}/tsconfig.spec.json",
+"!{projectRoot}/jest.config.[jt]s",
+"!{projectRoot}/.eslintrc.json"
+],
+"sharedGlobals": [
+"{workspaceRoot}/babel.config.json",
+"{workspaceRoot}/tsconfig.base.json"
+]
+},
+"generators": {
+"@nx/react": {
+"application": {
+"style": "css",
+"linter": "eslint",
+"bundler": "webpack"
+},
+"library": {
+"style": "css",
+"linter": "eslint"
+}
+}
+}
+}
 
-## Project Configuration
+````
+## Configuração do Projeto
 
-Full project.json template:
-
-```json
+Modelo project.json completo:```json
 {
   "name": "web",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
@@ -140,82 +136,78 @@ Full project.json template:
     }
   }
 }
-```
+````
 
-## Module Boundary Rules
+## Regras de limite do módulo
 
-Complete .eslintrc.json configuration with module boundaries:
-
-```json
+Configuração completa de .eslintrc.json com limites de módulo:```json
 {
-  "root": true,
-  "ignorePatterns": ["**/*"],
-  "plugins": ["@nx"],
-  "overrides": [
-    {
-      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
-      "rules": {
-        "@nx/enforce-module-boundaries": [
-          "error",
-          {
-            "enforceBuildableLibDependency": true,
-            "allow": [],
-            "depConstraints": [
-              {
-                "sourceTag": "type:app",
-                "onlyDependOnLibsWithTags": [
-                  "type:feature",
-                  "type:ui",
-                  "type:data-access",
-                  "type:util"
-                ]
-              },
-              {
-                "sourceTag": "type:feature",
-                "onlyDependOnLibsWithTags": [
-                  "type:ui",
-                  "type:data-access",
-                  "type:util"
-                ]
-              },
-              {
-                "sourceTag": "type:ui",
-                "onlyDependOnLibsWithTags": ["type:ui", "type:util"]
-              },
-              {
-                "sourceTag": "type:data-access",
-                "onlyDependOnLibsWithTags": ["type:data-access", "type:util"]
-              },
-              {
-                "sourceTag": "type:util",
-                "onlyDependOnLibsWithTags": ["type:util"]
-              },
-              {
-                "sourceTag": "scope:web",
-                "onlyDependOnLibsWithTags": ["scope:web", "scope:shared"]
-              },
-              {
-                "sourceTag": "scope:api",
-                "onlyDependOnLibsWithTags": ["scope:api", "scope:shared"]
-              },
-              {
-                "sourceTag": "scope:shared",
-                "onlyDependOnLibsWithTags": ["scope:shared"]
-              }
-            ]
-          }
-        ]
-      }
-    }
-  ]
+"root": true,
+"ignorePatterns": ["**/*"],
+"plugins": ["@nx"],
+"overrides": [
+{
+"files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+"rules": {
+"@nx/enforce-module-boundaries": [
+"error",
+{
+"enforceBuildableLibDependency": true,
+"allow": [],
+"depConstraints": [
+{
+"sourceTag": "type:app",
+"onlyDependOnLibsWithTags": [
+"type:feature",
+"type:ui",
+"type:data-access",
+"type:util"
+]
+},
+{
+"sourceTag": "type:feature",
+"onlyDependOnLibsWithTags": [
+"type:ui",
+"type:data-access",
+"type:util"
+]
+},
+{
+"sourceTag": "type:ui",
+"onlyDependOnLibsWithTags": ["type:ui", "type:util"]
+},
+{
+"sourceTag": "type:data-access",
+"onlyDependOnLibsWithTags": ["type:data-access", "type:util"]
+},
+{
+"sourceTag": "type:util",
+"onlyDependOnLibsWithTags": ["type:util"]
+},
+{
+"sourceTag": "scope:web",
+"onlyDependOnLibsWithTags": ["scope:web", "scope:shared"]
+},
+{
+"sourceTag": "scope:api",
+"onlyDependOnLibsWithTags": ["scope:api", "scope:shared"]
+},
+{
+"sourceTag": "scope:shared",
+"onlyDependOnLibsWithTags": ["scope:shared"]
 }
-```
+]
+}
+]
+}
+}
+]
+}
 
-## Remote Caching
+````
+## Cache remoto
 
-### Nx Cloud Setup
-
-```json
+### Configuração da nuvem Nx```json
 {
   "tasksRunnerOptions": {
     "default": {
@@ -230,29 +222,26 @@ Complete .eslintrc.json configuration with module boundaries:
   },
   "nxCloudAccessToken": "your-nx-cloud-token"
 }
-```
+````
 
-### Self-Hosted Cache with S3
+### Cache auto-hospedado com S3```json
 
-```json
 {
-  "tasksRunnerOptions": {
-    "default": {
-      "runner": "@nx-aws-cache/nx-aws-cache",
-      "options": {
-        "cacheableOperations": ["build", "lint", "test"],
-        "awsRegion": "us-east-1",
-        "awsBucket": "my-nx-cache-bucket",
-        "awsProfile": "default"
-      }
-    }
-  }
+"tasksRunnerOptions": {
+"default": {
+"runner": "@nx-aws-cache/nx-aws-cache",
+"options": {
+"cacheableOperations": ["build", "lint", "test"],
+"awsRegion": "us-east-1",
+"awsBucket": "my-nx-cache-bucket",
+"awsProfile": "default"
 }
-```
+}
+}
+}
 
-## Custom Generator Example
-
-```typescript
+````
+## Exemplo de gerador personalizado```typescript
 // tools/generators/feature-lib/index.ts
 import {
   Tree,
@@ -311,4 +300,4 @@ export default async function featureLibraryGenerator(
 
   await formatFiles(tree);
 }
-```
+````

@@ -1,23 +1,20 @@
-# .notebook/ Specification
+# .notebook/Especificação
 
-Read this file when you need to create or update notes during the
-Debrief phase, or when you need to understand the notebook format
-during Briefing.
+Leia este arquivo quando precisar criar ou atualizar notas durante o
+Fase de interrogatório, ou quando você precisa entender o formato do caderno
+durante o briefing.
 
-## Structure
+## Estrutura```
 
-```
 .notebook/
-├── INDEX.md          # Always read first. Compact index of all notes.
-├── auth-flow.md      # Individual note files — flat by default.
+├── INDEX.md # Always read first. Compact index of all notes.
+├── auth-flow.md # Individual note files — flat by default.
 ├── error-handling.md
 └── checkout-race.md
-```
 
-Notes start flat in the root of `.notebook/`. When volume exceeds
-~15 notes, organize into subdirectories by category:
-
-```
+````
+As notas começam planas na raiz de `.notebook/`. Quando o volume excede
+~15 notas, organizadas em subdiretórios por categoria:```
 .notebook/
 ├── INDEX.md
 ├── flows/
@@ -29,25 +26,25 @@ Notes start flat in the root of `.notebook/`. When volume exceeds
 │   └── checkout-race.md
 └── domain/
     └── coupon-types.md
-```
+````
 
-Categories:
+Categorias:
 
-- **flows** — How things work. Integrations, sequences, data paths.
-- **patterns** — How things are done here. Conventions, recurring structures.
-- **gotchas** — Traps. Bugs, quirks, counterintuitive behavior.
-- **domain** — Business concepts. Terminology, rules, logic not obvious in code.
+- **fluxos** — Como as coisas funcionam. Integrações, sequências, caminhos de dados.
+- **padrões** — Como as coisas são feitas aqui. Convenções, estruturas recorrentes.
+- **pegadinhas** — Armadilhas. Bugs, peculiaridades, comportamento contra-intuitivo.
+- **domínio** — Conceitos de negócios. Terminologia, regras e lógica não são óbvias no código.
 
-These categories are guidelines, not rigid rules. If a note fits
-multiple categories, pick the primary one. If none fits, put it in root.
+Estas categorias são diretrizes e não regras rígidas. Se uma nota se encaixa
+várias categorias, escolha a principal. Se nenhum couber, coloque-o na raiz.
 
-## INDEX.md Format
+## Formato INDEX.md
 
-The index must be compact. One line per note. The AI reads this every
-session, so every byte counts.
+O índice deve ser compacto. Uma linha por nota. A IA lê isso todo
+sessão, então cada byte conta.```markdown
 
-```markdown
 # .notebook
+
 > Project intelligence — read before every mission
 
 Last updated: 2026-02-22
@@ -56,116 +53,116 @@ Last updated: 2026-02-22
 - [error-handling](error-handling.md) — Error boundaries + custom hook | pattern | react, errors
 - [checkout-race](checkout-race.md) — Race condition on cart update | gotcha | checkout, cart
 - [coupon-types](coupon-types.md) — Percentage vs fixed vs BOGO rules | domain | coupons, pricing
-```
 
-Format per line:
-
-```
+````
+Formato por linha:```
 - [slug](path) — summary (max ~80 chars) | category | tags
-```
+````
 
-Rules for INDEX.md:
+Regras para INDEX.md:
 
-- Keep summaries short and scannable.
-- Tags are lowercase, comma-separated. Use them for quick grep.
-- Update `Last updated` whenever the index changes.
-- If using subdirectories, paths include the folder: `flows/auth-flow.md`.
-- Sort by most recently updated, not alphabetically.
+- Mantenha os resumos curtos e digitalizáveis.
+- As tags são minúsculas e separadas por vírgula. Use-os para um grep rápido.
+- Atualize `Última atualização` sempre que o índice for alterado.
+- Se estiver usando subdiretórios, os caminhos incluem a pasta: `flows/auth-flow.md`.
+- Classifique pelas atualizações mais recentes, não em ordem alfabética.
 
-## Individual Note Format
+## Formato de nota individual
 
-Notes are telegraphic. Think field notes, not documentation.
+As notas são telegráficas. Pense em notas de campo, não em documentação.```markdown
 
-```markdown
 # Auth Flow
+
 > OAuth2 with refresh token rotation
 
 Entry: `src/middleware/auth.ts:authMiddleware()` (L12)
 Flow: middleware → `services/auth/jwt.ts:verify()` → `services/user/find.ts:findById()`
 
 Refresh: `services/auth/refresh.ts:rotateToken()`
+
 - Single-use tokens — consumed on refresh, new pair issued
 - Stored in Redis with TTL (see `lib/redis.ts:sessionStore`)
 
 OAuth providers: `config/oauth.ts` — Google, GitHub
+
 - Each provider maps to `services/auth/oauth/[provider].ts`
 
 Session: Redis-backed via `lib/redis.ts` (L45-62)
 
 Updated: 2026-02-22
-```
 
-### Format principles
+````
+### Princípios de formato
 
-1. **Pointers, not copies.** Always reference as:
-   - `file/path.ts:functionName()` for functions
-   - `file/path.ts` (L10-25) for specific line ranges
-   - `file/path.ts:ClassName.method()` for class methods
-   Never paste code blocks into notes. Code changes; pointers
-   can be re-checked. Pasted code becomes stale lies.
+1. **Ponteiros, não cópias.** Sempre faça referência como:
+   - `file/path.ts:functionName()` para funções
+   - `file/path.ts` (L10-25) para intervalos de linhas específicos
+   - `file/path.ts:ClassName.method()` para métodos de classe
+   Nunca cole blocos de código em notas. Mudanças de código; ponteiros
+   pode ser verificado novamente. O código colado torna-se mentiras obsoletas.
 
-2. **One concept per note.** If it needs scrolling, split it.
-   A note about auth flow should not also cover session management
-   unless they're inseparable.
+2. **Um conceito por nota.** Se precisar de rolagem, divida-o.
+   Uma observação sobre o fluxo de autenticação não deve abranger também o gerenciamento de sessões
+   a menos que sejam inseparáveis.
 
-3. **Minimal prose.** Use fragments, arrows, dashes. Not sentences.
-   "middleware → verify JWT → load user → attach to req" is better
-   than "The middleware first verifies the JWT token, then loads
-   the user from the database, and finally attaches it to the
-   request object."
+3. **Prosa mínima.** Use fragmentos, setas, travessões. Não são sentenças.
+   "middleware → verificar JWT → carregar usuário → anexar ao req" é melhor
+   do que "O middleware primeiro verifica o token JWT e depois carrega
+   o usuário do banco de dados e, finalmente, anexa-o ao
+   objeto de solicitação."
 
-4. **Always include Entry point.** Every note should have a clear
-   starting point so the reader knows where to begin exploring.
+4. **Sempre inclua o ponto de entrada.** Cada nota deve ter um texto claro
+   ponto de partida para que o leitor saiba por onde começar a explorar.
 
-5. **Always include Updated date.** So the reader knows how fresh
-   the information is.
+5. **Sempre inclua a data de atualização.** Para que o leitor saiba o quão recente
+   a informação é.
 
-6. **No opinions, only observations.** "Uses Redux for state" not
-   "Uses Redux instead of a better solution." If something is
-   genuinely problematic, state the observable impact:
-   "Redux store has 47 top-level keys — finding relevant state
-   requires searching across 12 reducers."
+6. **Sem opiniões, apenas observações.** "Usa Redux para estado" não
+   "Usa Redux em vez de uma solução melhor." Se algo estiver
+   genuinamente problemático, indique o impacto observável:
+   "A loja Redux tem 47 chaves de nível superior - encontrando estados relevantes
+   requer pesquisa em 12 redutores."
 
-## Creating the .notebook/ for the First Time
+## Criando o .notebook/ pela primeira vez
 
-When `.notebook/` doesn't exist yet:
+Quando `.notebook/` ainda não existe:
 
-1. Create the directory.
-2. Create INDEX.md with the header only:
+1. Crie o diretório.
+2. Crie INDEX.md apenas com o cabeçalho:
 
-   ```markdown
-   # .notebook
-   > Project intelligence — read before every mission
+```redução
+   #.notebook
+   > Inteligência do projeto — leia antes de cada missão
 
-   Last updated: [today]
-   ```
+   Última atualização: [hoje]
+````
 
-3. Do NOT do a full project analysis. Notes are created organically
-   as you work. The first notes will come from your first mission's
-   Debrief.
+3. NÃO faça uma análise completa do projeto. As notas são criadas organicamente
+   enquanto você trabalha. As primeiras notas virão da sua primeira missão
+   Questionário.
 
-## Updating Notes
+## Atualizando Notas
 
-When updating an existing note:
+Ao atualizar uma nota existente:
 
-1. Read the current content.
-2. Add, modify, or remove information based on what you discovered.
-3. Update the `Updated` date at the bottom.
-4. If the summary in INDEX.md changed, update it too.
+1. Leia o conteúdo atual.
+2. Adicione, modifique ou remova informações com base no que você descobriu.
+3. Atualize a data `Atualizado` na parte inferior.
+4. Se o resumo em INDEX.md mudou, atualize-o também.
 
-When information becomes invalid (e.g., a flow changed because of
-your work), update the note immediately — stale notes are worse
-than no notes.
+Quando a informação se torna inválida (por exemplo, um fluxo alterado devido a
+seu trabalho), atualize a nota imediatamente – notas obsoletas são piores
+do que nenhuma nota.
 
-## Token Budget
+## Orçamento de token
 
-The entire `.notebook/` system is designed for progressive disclosure:
+Todo o sistema `.notebook/` foi projetado para divulgação progressiva:
 
-- **INDEX.md** is read every session (~5-50 lines). Cost: minimal.
-- **Individual notes** are read only when relevant to the current
-  mission. The AI decides which to open based on INDEX.md tags.
-- **Total cost per session:** INDEX.md + 0-3 relevant notes.
+- **INDEX.md** é lido em todas as sessões (cerca de 5 a 50 linhas). Custo: mínimo.
+- **Notas individuais** são lidas somente quando relevantes para o atual
+  missão. A IA decide qual abrir com base nas tags INDEX.md.
+- **Custo total por sessão:** INDEX.md + 0-3 notas relevantes.
 
-If INDEX.md grows beyond 50 entries, consider archiving old notes
-into an `archive/` subdirectory and removing them from the active
-index. Archived notes are still searchable but not loaded by default.
+Se INDEX.md ultrapassar 50 entradas, considere arquivar notas antigas
+em um subdiretório `archive/` e removendo-os do ativo
+índice. As notas arquivadas ainda podem ser pesquisadas, mas não são carregadas por padrão.

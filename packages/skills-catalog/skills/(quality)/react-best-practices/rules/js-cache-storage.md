@@ -1,15 +1,15 @@
 ---
-title: Cache Storage API Calls
+title: Faça cache de chamadas na API de armazenamento
 impact: LOW-MEDIUM
-impactDescription: reduces expensive I/O
+impactDescription: reduz custos de E/S
 tags: javascript, localStorage, storage, caching, performance
 ---
 
-## Cache Storage API Calls
+## Faça cache de chamadas na API de armazenamento
 
-`localStorage`, `sessionStorage`, and `document.cookie` are synchronous and expensive. Cache reads in memory.
+`localStorage`, `sessionStorage` e `document.cookie` são síncronos e custosos. Armazene leituras em memória.
 
-**Incorrect (reads storage on every call):**
+**Incorreto (levar o armazenamento a cada chamada):**
 
 ```typescript
 function getTheme() {
@@ -18,7 +18,7 @@ function getTheme() {
 // Called 10 times = 10 storage reads
 ```
 
-**Correct (Map cache):**
+**Correto (cache com Mapa):**
 
 ```typescript
 const storageCache = new Map<string, string | null>()
@@ -32,39 +32,38 @@ function getLocalStorage(key: string) {
 
 function setLocalStorage(key: string, value: string) {
   localStorage.setItem(key, value)
-  storageCache.set(key, value)  // keep cache in sync
+  storageCache.set(key, value) // keep cache in sync
 }
 ```
 
-Use a Map (not a hook) so it works everywhere: utilities, event handlers, not just React components.
+Use um `Map` (não um gancho) para funcionar em qualquer lugar: importadores, manipuladores de eventos, não apenas em componentes React.
 
-**Cookie caching:**
+**Cache de cookies:**
 
 ```typescript
 let cookieCache: Record<string, string> | null = null
 
 function getCookie(name: string) {
   if (!cookieCache) {
-    cookieCache = Object.fromEntries(
-      document.cookie.split('; ').map(c => c.split('='))
-    )
+    cookieCache = Object.fromEntries(document.cookie.split('; ').map((c) => c.split('=')))
   }
   return cookieCache[name]
 }
 ```
 
-**Important (invalidate on external changes):**
+**Importante (invalidar quando houver mudança externa):**
 
-If storage can change externally (another tab, server-set cookies), invalidate cache:
-
-```typescript
+Se o armazenamento puder ser alterado por fora (outra aba, cookies definidos no servidor), invalide o cache:```typescript
 window.addEventListener('storage', (e) => {
-  if (e.key) storageCache.delete(e.key)
+if (e.key) storageCache.delete(e.key)
 })
 
 document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'visible') {
-    storageCache.clear()
-  }
+if (document.visibilityState === 'visible') {
+storageCache.clear()
+}
 })
+
+```
+
 ```

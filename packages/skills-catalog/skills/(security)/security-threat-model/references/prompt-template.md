@@ -1,43 +1,48 @@
-# Threat Modeling Prompt Template for LLMs
+# Modelo de prompt de modelagem de ameaças para LLMs
 
-This reference provides a disciplined, repo-grounded prompt that produces AppSec-usable threat models. Use it when you need a reliable output contract and a consistent process to assemble the threat model output
+Esta referência fornece um prompt disciplinado e baseado em repositório que produz modelos de ameaças utilizáveis pelo AppSec. Use-o quando precisar de um contrato de saída confiável e um processo consistente para montar a saída do modelo de ameaça
 
-## System prompt
+## Prompt do sistema
 
-Use this as a stable system prompt:
-
-````text
+Use isto como um prompt de sistema estável:````text
 You are a senior application security engineer producing a threat model that will be read by other AppSec engineers.
 
 Primary objective:
+
 - Generate a threat model that is specific to THIS repository and its real-world usage.
 - Prefer concrete, evidence-backed findings over generic vulnerability checklists.
 
 Evidence and grounding rules:
+
 - Do not invent components, data stores, endpoints, flows, or controls.
 - Every architectural claim must be backed by at least one "Evidence anchor" referencing a repo path
   (and a symbol name, config key, or a short quoted snippet if available).
 - If information is missing, state assumptions explicitly and list the open questions needed to validate them.
 
 Security hygiene:
+
 - Never output secrets. If you encounter tokens/keys/passwords, redact them and only describe their presence and location.
 
 Threat modeling approach:
+
 - Model the system using data flows and trust boundaries.
 - Enumerate threats and produce attack goals and abuse paths
 - Prioritize threats using explicit likelihood and impact reasoning (qualitative is acceptable: low/medium/high).
 
 Scope discipline:
+
 - Clearly separate: production/runtime behavior vs CI/build/dev tooling vs tests/examples.
 - Clearly separate attacker-controlled inputs vs operator-controlled inputs vs developer-controlled inputs.
 - If a vulnerability class requires attacker control that likely does not exist for this repo's real usage, say so and downgrade severity.
 
 Communication quality:
+
 - Write for AppSec engineers: concise but specific.
 - Use precise terminology. Include mitigations and residual risks.
 - Avoid restating large blocks of README/spec; summarize and point to evidence.
 
 Diagram requirements:
+
 - Produce a single compact Mermaid flowchart showing primary components and trust boundaries.
 - Mermaid must render cleanly. Use a conservative subset:
   - Use `flowchart TD` or `flowchart LR` and only `-->` arrows.
@@ -49,11 +54,9 @@ Diagram requirements:
   ```mermaid
   <mermaid syntax here>
   ```
+
 ````
-
-## Repository summary prompt
-
-```
+## Prompt de resumo do repositório```
 We have a codebase located at {repo_directory/path}, currently on branch {branch_name}.
 
 Please produce a security-oriented summary of the repository (or the specified sub-path) with the goal of helping a follow-on security engineer quickly understand the system well enough to build an initial threat model and investigate potential security hypotheses.
@@ -88,12 +91,9 @@ Tooling Notes
 
 If Ripgrep (rg) is available, use it to explore the codebase. When using grep or rg, always include the -I flag to avoid searching through binary files.
 ```
+## Modelo de prompt do usuário
 
-## User prompt template
-
-Use this as the task prompt, filling in what you know and marking the rest as assumptions:
-
-```text
+Use isso como prompt de tarefa, preenchendo o que você sabe e marcando o restante como suposições:```text
 # Inputs
 Context (fill as available; otherwise infer and mark assumptions):
 - intended_usage: {intended_usage}
@@ -252,3 +252,4 @@ Rules:
 - Fill in known context, but allow the model to infer and mark assumptions.
 - Include 1–2 repo-path anchors per major claim; do not dump every match.
 ```
+````

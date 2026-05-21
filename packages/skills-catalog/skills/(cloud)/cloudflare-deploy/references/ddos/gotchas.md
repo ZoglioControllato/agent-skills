@@ -1,111 +1,110 @@
-# DDoS Gotchas
+# pegadinhas DDoS
 
-## Common Errors
+## Erros Comuns
 
-### "False positives blocking legitimate traffic"
+### "Falsos positivos bloqueando tráfego legítimo"
 
-**Cause**: Sensitivity too high, wrong action, or missing exceptions  
-**Solution**:
+**Causa**: Sensibilidade muito alta, ação errada ou exceções ausentes
+**Solução**:
 
-1. Lower sensitivity for specific rule/category
-2. Use `log` action first to validate (Enterprise Advanced)
-3. Add exception with custom expression (e.g., allowlist IPs)
-4. Query flagged requests via GraphQL Analytics API to identify patterns
+1. Menor sensibilidade para regra/categoria específica
+2. Use a ação `log` primeiro para validar (Enterprise Advanced)
+3. Adicione exceção com expressão personalizada (por exemplo, IPs da lista de permissões)
+4. Consulte solicitações sinalizadas por meio da API GraphQL Analytics para identificar padrões
 
-### "Attacks getting through"
+### "Ataques passando"
 
-**Cause**: Sensitivity too low or wrong action  
-**Solution**: Increase to `default` sensitivity and use `block` action:
-
-```typescript
+**Causa**: Sensibilidade muito baixa ou ação errada
+**Solução**: Aumente para a sensibilidade `default` e use a ação `block`:```typescript
 const config = {
-  rules: [
-    {
-      expression: 'true',
-      action: 'execute',
-      action_parameters: { id: managedRulesetId, overrides: { sensitivity_level: 'default', action: 'block' } },
-    },
-  ],
+rules: [
+{
+expression: 'true',
+action: 'execute',
+action_parameters: { id: managedRulesetId, overrides: { sensitivity_level: 'default', action: 'block' } },
+},
+],
 }
+
 ```
+### "Regras adaptativas não funcionam"
 
-### "Adaptive rules not working"
+**Causa**: histórico de tráfego insuficiente (precisa de 7 dias)
+**Solução**: aguarde o estabelecimento da linha de base e verifique o status da regra adaptativa no painel
 
-**Cause**: Insufficient traffic history (needs 7 days)  
-**Solution**: Wait for baseline to establish, check dashboard for adaptive rule status
+### "Substituição de zona ignorada"
 
-### "Zone override ignored"
+**Causa**: as substituições de conta entram em conflito com as substituições de zona
+**Solução**: configurar no nível da zona OU remover substituições de zona para usar no nível da conta
 
-**Cause**: Account overrides conflict with zone overrides  
-**Solution**: Configure at zone level OR remove zone overrides to use account-level
+### "Ação de registro não disponível"
 
-### "Log action not available"
+**Causa**: não está no plano Enterprise Advanced DDoS
+**Solução**: use `owned_challenge` com baixa sensibilidade para testes
 
-**Cause**: Not on Enterprise Advanced DDoS plan  
-**Solution**: Use `managed_challenge` with low sensitivity for testing
+### "Limite de regra excedido"
 
-### "Rule limit exceeded"
+**Causa**: muitas regras de substituição (Free/Pro/Business: 1, Enterprise Advanced: 10)
+**Solução**: Combine condições em uma única expressão usando `and`/`or`
 
-**Cause**: Too many override rules (Free/Pro/Business: 1, Enterprise Advanced: 10)  
-**Solution**: Combine conditions in single expression using `and`/`or`
+### "Não é possível substituir a regra"
 
-### "Cannot override rule"
+**Causa**: a regra é somente leitura
+**Solução**: verifique a resposta da API para indicador somente leitura, use regra diferente
 
-**Cause**: Rule is read-only  
-**Solution**: Check API response for read-only indicator, use different rule
+### "Não é possível desativar a proteção DDoS"
 
-### "Cannot disable DDoS protection"
+**Causa**: os conjuntos de regras gerenciados por DDoS não podem ser totalmente desativados (proteção sempre ativa)
+**Solução**: Defina `sensitivity_level: "eoff"` para mitigação mínima
 
-**Cause**: DDoS managed rulesets cannot be fully disabled (always-on protection)  
-**Solution**: Set `sensitivity_level: "eoff"` for minimal mitigation
+### "Expressão não permitida"
 
-### "Expression not allowed"
+**Causa**: as expressões personalizadas exigem o plano Enterprise Advanced
+**Solução**: use `expression: "true"` para todo o tráfego ou plano de atualização
 
-**Cause**: Custom expressions require Enterprise Advanced plan  
-**Solution**: Use `expression: "true"` for all traffic, or upgrade plan
+### "Conjunto de regras gerenciado não encontrado"
 
-### "Managed ruleset not found"
+**Causa**: a zona/conta não tem um conjunto de regras gerenciado por DDoS ou fase incorreta
+**Solução**: Verifique se o conjunto de regras existe via `client.rulesets.list()`, verifique o nome da fase (`ddos_l7` ou `ddos_l4`)
 
-**Cause**: Zone/account doesn't have DDoS managed ruleset, or incorrect phase  
-**Solution**: Verify ruleset exists via `client.rulesets.list()`, check phase name (`ddos_l7` or `ddos_l4`)
+## Códigos de erro de API
 
-## API Error Codes
-
-| Error Code | Message                   | Cause                            | Solution                                            |
+| Código de erro | Mensagem | Causa | Solução |
 | ---------- | ------------------------- | -------------------------------- | --------------------------------------------------- |
-| 10000      | Authentication error      | Invalid/missing API token        | Check token has DDoS permissions                    |
-| 81000      | Ruleset validation failed | Invalid rule structure           | Verify `action_parameters.id` is managed ruleset ID |
-| 81020      | Expression not allowed    | Custom expressions on wrong plan | Use `"true"` or upgrade to Enterprise Advanced      |
-| 81021      | Rule limit exceeded       | Too many override rules          | Reduce rules or upgrade (Enterprise Advanced: 10)   |
-| 81022      | Invalid sensitivity level | Wrong sensitivity value          | Use: `default`, `medium`, `low`, `eoff`             |
-| 81023      | Invalid action            | Wrong action for plan            | Enterprise Advanced only: `log` action              |
+| 10.000 | Erro de autenticação | Token de API inválido/ausente | Verifique se o token tem permissões DDoS |
+| 81000 | Falha na validação do conjunto de regras | Estrutura de regras inválida | Verifique se `action_parameters.id` é o ID do conjunto de regras gerenciado |
+| 81020 | Expressão não permitida | Expressões personalizadas no plano errado | Use `"true"` ou atualize para Enterprise Advanced |
+| 81021 | Limite de regras excedido | Muitas regras de substituição | Reduza regras ou atualize (Enterprise Advanced: 10) |
+| 81022 | Nível de sensibilidade inválido | Valor de sensibilidade errado | Use: `default`, `medium`, `low`, `eoff` |
+| 81023 | Ação inválida | Ação errada para o plano | Somente Enterprise Advanced: ação `log` |
 
-## Limits
+## Limites
 
-| Resource/Limit           | Free/Pro/Business | Enterprise | Enterprise Advanced |
+| Recurso/Limite | Grátis/Pro/Negócios | Empresa | Empresa Avançada |
 | ------------------------ | ----------------- | ---------- | ------------------- |
-| Override rules per zone  | 1                 | 1          | 10                  |
-| Custom expressions       | ✗                 | ✗          | ✓                   |
-| Log action               | ✗                 | ✗          | ✓                   |
-| Adaptive DDoS            | ✗                 | ✓          | ✓                   |
-| Traffic history required | -                 | 7 days     | 7 days              |
+| Substituir regras por zona | 1 | 1 | 10 |
+| Expressões personalizadas | ✗ | ✗ | ✓ |
+| Ação de registro | ✗ | ✗ | ✓ |
+| DDoS adaptativo | ✗ | ✓ | ✓ |
+| Histórico de tráfego necessário | - | 7 dias | 7 dias |
 
-## Tuning Strategy
+## Estratégia de ajuste
 
-1. Start with `log` action + `medium` sensitivity
-2. Monitor for 24-48 hours
-3. Identify false positives, add exceptions
-4. Gradually increase to `default` sensitivity
-5. Change action from `log` → `managed_challenge` → `block`
-6. Document all adjustments
+1. Comece com ação `log` + sensibilidade `média`
+2. Monitore por 24 a 48 horas
+3. Identifique falsos positivos, adicione exceções
+4. Aumente gradualmente para a sensibilidade `padrão`
+5. Altere a ação de `log` → `driven_challenge` → `block`
+6. Documente todos os ajustes
 
-## Best Practices
+## Melhores práticas
 
-- Test during low-traffic periods
-- Use zone-level for per-site tuning
-- Reference IP lists for easier management
-- Set appropriate alert thresholds (avoid noise)
-- Combine with WAF for layered defense
-- Avoid over-tuning (keep config simple)
+- Teste durante períodos de baixo tráfego
+- Use nível de zona para ajuste por site
+- Listas de IP de referência para facilitar o gerenciamento
+- Definir limites de alerta apropriados (evitar ruído)
+- Combine com WAF para defesa em camadas
+- Evite ajustes excessivos (mantenha a configuração simples)
 
-See [patterns.md](./patterns.md) for progressive rollout examples.
+Consulte [patterns.md](./patterns.md) para obter exemplos de implementação progressiva.
+```

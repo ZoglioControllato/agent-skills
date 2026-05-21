@@ -1,10 +1,10 @@
-# Web Analytics Patterns
+# Padrões de análise da web
 
-## Core Web Vitals Debugging
+## Depuração do Core Web Vitals
 
-Dashboard → Core Web Vitals → Click metric → Debug View shows top 5 problematic elements.
+Painel → Core Web Vitals → Métrica de clique → Visualização de depuração mostra os 5 principais elementos problemáticos.
 
-### LCP Fixes
+### Correções de LCP
 
 ```html
 <!-- Priority hints -->
@@ -12,7 +12,7 @@ Dashboard → Core Web Vitals → Click metric → Debug View shows top 5 proble
 <link rel="preload" as="image" href="/hero.jpg" fetchpriority="high" />
 ```
 
-### CLS Fixes
+### Correções CLS
 
 ```css
 /* Reserve space */
@@ -25,9 +25,9 @@ img {
 } /* Explicit dimensions */
 ```
 
-### INP Fixes
+### Correções INP
 
-```typescript
+````typescript
 // Debounce expensive operations
 const handleInput = debounce(search, 300)
 
@@ -37,16 +37,13 @@ await new Promise((r) => setTimeout(r, 0))
 await task2()
 
 // Move to Web Worker for heavy computation
-```
-
-| Metric | Good   | Poor   |
+```| Métrica | Bom | Pobre |
 | ------ | ------ | ------ |
-| LCP    | ≤2.5s  | >4s    |
-| INP    | ≤200ms | >500ms |
-| CLS    | ≤0.1   | >0.25  |
+| PCL | ≤2,5s | >4s |
+| INP | ≤200ms | >500ms |
+| CLS | ≤0,1 | >0,25 |
 
-## GDPR Consent
-
+## Consentimento do GDPR
 ```typescript
 // Load beacon only after consent
 const consent = localStorage.getItem('analytics-consent')
@@ -56,43 +53,37 @@ if (consent === 'accepted') {
   script.setAttribute('data-cf-beacon', '{"token": "TOKEN", "spa": true}')
   document.body.appendChild(script)
 }
-```
+```Alternativa: Dashboard → "Ativar, excluindo dados de visitantes na UE"
 
-Alternative: Dashboard → "Enable, excluding visitor data in the EU"
-
-## SPA Navigation
-
+## Navegação SPA
 ```html
 <!-- REQUIRED for React/Vue/etc routing -->
 <script data-cf-beacon='{"token": "TOKEN", "spa": true}' ...></script>
-```
+```Sem `spa: true`: apenas o carregamento de página inicial rastreado.
 
-Without `spa: true`: only initial pageload tracked.
-
-## Staging/Production Separation
-
+## Separação de preparação/produção
 ```typescript
 // Use env-specific tokens
 const token = process.env.NEXT_PUBLIC_CF_ANALYTICS_TOKEN
 // .env.production: production token
 // .env.staging: staging token (or empty to disable)
-```
+````
 
-## Bot Filtering
+##Filtragem de bots
 
-Dashboard → Filters → "Exclude Bot Traffic"
+Painel → Filtros → “Excluir tráfego de bot”
 
-Filters: Search crawlers, monitoring services, known bots.  
-Not filtered: Headless browsers (Playwright/Puppeteer).
+Filtros: rastreadores de pesquisa, serviços de monitoramento, bots conhecidos.  
+Não filtrado: Navegadores sem cabeça (Dramaturgo/Puppeteer).
 
-## Ad-Blocker Impact
+## Impacto do bloqueador de anúncios
 
-~25-40% of users may block `cloudflareinsights.com`. No official workaround.
-Dashboard shows minimum baseline; use server logs for complete picture.
+Cerca de 25-40% dos usuários podem bloquear `cloudflareinsights.com`. Nenhuma solução alternativa oficial.
+O painel mostra a linha de base mínima; use os logs do servidor para obter uma imagem completa.
 
-## Limitations
+## Limitações
 
-- No UTM parameter tracking
-- No webhooks/alerts/API
-- No custom beacon domains
-- Max 10 non-proxied sites
+- Sem rastreamento de parâmetros UTM
+- Sem webhooks/alertas/API
+- Nenhum domínio de beacon personalizado
+- Máximo de 10 sites sem proxy

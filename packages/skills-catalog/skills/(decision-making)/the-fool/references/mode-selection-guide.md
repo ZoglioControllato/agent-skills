@@ -1,113 +1,125 @@
-# Mode Selection Guide
+# Guia de seleção de modo
 
-How to recommend the right reasoning mode when the user selects "You choose" or when auto-recommending.
+Como recomendar o modo de raciocínio correto quando o usuário seleciona "Você escolhe" ou ao recomendar automaticamente.
 
-## Signal-to-Mode Mapping
+## Mapeamento de sinal para modo
 
-Analyze the user's language and context to identify which mode fits best.
+Analise a linguagem e o contexto do usuário para identificar qual modo se adapta melhor.
 
-| User Signal | Recommended Mode | Rationale |
-|-------------|-----------------|-----------|
-| "Is this the right approach?" | Socratic Questioning | Exploring assumptions, not yet committed |
-| "I'm about to commit to X" | Dialectic Synthesis | Needs strongest counter-argument before committing |
-| "What could go wrong?" | Pre-mortem Analysis | Explicitly asking about failure modes |
-| "Is this secure/safe?" | Red Team | Security and adversarial framing |
-| "The data shows that..." | Evidence Audit | Claims based on evidence need falsification |
-| "Everyone agrees that..." | Socratic Questioning | Consensus signals unexamined assumptions |
-| "We chose X over Y" | Dialectic Synthesis | Trade-off decision benefits from strongest counter |
-| "This will definitely work" | Pre-mortem Analysis | Overconfidence signals need for failure imagination |
-| "No one would ever..." | Red Team | Assumptions about adversary behavior |
-| "Studies show..." | Evidence Audit | Cited evidence needs quality assessment |
-| "I have a gut feeling..." | Evidence Audit | Intuition needs evidence grounding |
-| "We've always done it this way" | Socratic Questioning | Historical pattern assumed optimal |
-| "The vendor says..." | Evidence Audit | Interested party evidence needs scrutiny |
+| Sinal do usuário                       | Modo recomendado         | Justificativa                                                     |
+| -------------------------------------- | ------------------------ | ----------------------------------------------------------------- |
+| “Esta é a abordagem correta?”          | Questionamento Socrático | Explorando pressupostos, ainda não confirmados                    |
+| “Estou prestes a me comprometer com X” | Síntese Dialética        | Precisa de um contra-argumento mais forte antes de se comprometer |
+| "O que poderia dar errado?"            | Análise pré-mortem       | Perguntar explicitamente sobre modos de falha                     |
+| "Isso é seguro/seguro?"                | Equipe Vermelha          | Segurança e adversário                                            |
 
-## Decision Type Mapping
+enquadramento |
+| "Os dados mostram que..." | Auditoria de Evidências | Alegações baseadas em provas necessitam de falsificação |
+| "Todos concordam que..." | Questionamento Socrático | Consenso sinaliza suposições não examinadas |
+| “Escolhemos X em vez de Y” | Síntese Dialética | A decisão de trade-off beneficia do contra-ataque mais forte |
+| "Isso definitivamente vai funcionar" | Análise pré-mortem | Excesso de confiança sinaliza necessidade de imaginação fracassada |
+| "Ninguém jamais..." | Equipe Vermelha | Suponha
 
-| Decision Type | Primary Mode | Secondary Mode |
-|---------------|-------------|----------------|
-| Technology choice | Dialectic Synthesis | Pre-mortem Analysis |
-| Architecture decision | Pre-mortem Analysis | Red Team |
-| Business strategy | Dialectic Synthesis | Evidence Audit |
-| Security design | Red Team | Pre-mortem Analysis |
-| Data-driven conclusion | Evidence Audit | Socratic Questioning |
-| Process/workflow design | Pre-mortem Analysis | Socratic Questioning |
-| Hiring/team decision | Socratic Questioning | Dialectic Synthesis |
-| Vendor selection | Evidence Audit | Pre-mortem Analysis |
-| Trade-off resolution | Dialectic Synthesis | Socratic Questioning |
-| Risk assessment | Red Team | Pre-mortem Analysis |
-| Investment/budget decision | Evidence Audit | Dialectic Synthesis |
-| Product direction | Socratic Questioning | Dialectic Synthesis |
+questões sobre o comportamento do adversário |
+| "Estudos mostram..." | Auditoria de Evidências | As evidências citadas precisam de avaliação de qualidade |
+| "Tenho um pressentimento..." | Auditoria de Evidências | A intuição precisa de fundamentação em evidências |
+| “Sempre fizemos assim” | Questionamento Socrático | Padrão histórico assumido como ótimo |
+| "O vendedor diz..." | Auditoria de Evidências | Evidências das partes interessadas precisam de escrutínio |
 
-## Domain Mapping
+## Mapeamento de tipo de decisão
 
-| Domain | Default Mode | Why |
-|--------|-------------|-----|
-| Security | Red Team | Adversarial thinking is native to the domain |
-| Infrastructure | Pre-mortem Analysis | Failure modes are the primary concern |
-| Data/Analytics | Evidence Audit | Claims require evidence scrutiny |
-| Product/UX | Socratic Questioning | Assumptions about users need surfacing |
-| Business | Dialectic Synthesis | Strategy benefits from strongest counter |
-| Architecture | Pre-mortem Analysis | Systems fail at integration points |
-| Legal/Compliance | Evidence Audit | Claims must withstand scrutiny |
-| AI/ML | Red Team | Adversarial robustness is critical |
-| People/Org | Socratic Questioning | Hidden assumptions about behavior |
+| Tipo de decisão                       | Modo Primário           | Modo Secundário          |
+| ------------------------------------- | ----------------------- | ------------------------ |
+| Escolha de tecnologia                 | Síntese Dialética       | Análise pré-mortem       |
+| Decisão de arquitetura                | Análise pré-mortem      | Equipe Vermelha          |
+| Estratégia empresarial                | Síntese Dialética       | Auditoria de Evidências  |
+| Projeto de segurança                  | Equipe Vermelha         | Análise pré-mortem       |
+| Conclusão baseada em dados            | Auditoria de Evidências | Questionamento Socrático |
+| Desenho de processo/fluxo de trabalho | Análise pré-mortem      |
 
-## Multi-Mode Sequencing
+é | Questionamento Socrático |
+| Decisão de contratação/equipe | Questionamento Socrático | Síntese Dialética |
+| Seleção de fornecedor | Auditoria de Evidências | Análise pré-mortem |
+| Resolução de trade-off | Síntese Dialética | Questionamento Socrático |
+| Avaliação de risco | Equipe Vermelha | Análise pré-mortem |
+| Decisão de investimento/orçamento | Auditoria de Evidências | Síntese Dialética |
+| Direção do produto | Questionamento Socrático | Síntese Dialética |
 
-Some situations benefit from running 2 modes in sequence.
+## Mapeamento de domínio
 
-### Recommended Sequences
+| Domínio        | Modo padrão              | Por que                                                |
+| -------------- | ------------------------ | ------------------------------------------------------ |
+| Segurança      | Equipe Vermelha          | O pensamento adversário é nativo do domínio            |
+| Infraestrutura | Análise pré-mortem       | Os modos de falha são a principal preocupação          |
+| Dados/Análises | Auditoria de Evidências  | As reivindicações exigem exame minucioso de evidências |
+| Produto/UX     | Questionamento Socrático | Suposições sobre os usuários precisam ser reveladas    |
+| Negócios       | Síntese Dialética        | A estratégia beneficia do contra-ataque mais forte     |
 
-| Sequence | When to Use |
-|----------|-------------|
-| Socratic → Dialectic | User has an untested idea. Surface assumptions first, then argue the counter. |
-| Pre-mortem → Red Team | High-stakes system launch. Find internal failures, then external attacks. |
-| Evidence Audit → Socratic | Data-driven proposal. Audit the evidence, then question the interpretation. |
-| Dialectic → Pre-mortem | Strategic decision. Argue the counter, then stress-test the surviving position. |
-| Socratic → Evidence Audit | Proposal with many "obvious" claims. Surface assumptions, then grade the evidence. |
+| Arqui
 
-### When to Suggest Multi-Mode
+arquitetura | Análise pré-mortem | Sistemas falham em pontos de integração |
+| Jurídico/Conformidade | Auditoria de Evidências | As reivindicações devem resistir ao escrutínio |
+| IA/ML | Equipe Vermelha | A robustez adversária é crítica |
+| Pessoas/Organização | Questionamento Socrático | Suposições ocultas sobre comportamento |
 
-Recommend a second pass when:
+## Sequenciamento multimodo
 
-- The first mode reveals a category of risk the user hadn't considered
-- The thesis survives the first challenge largely intact (it may need harder testing)
-- The domain spans two mapping categories (e.g., a security architecture decision)
-- The user's confidence increased after the first pass — a different mode may reveal new angles
+Algumas situações se beneficiam da execução de 2 modos em sequência.
 
-### When NOT to Suggest Multi-Mode
+### Sequências recomendadas
 
-- The user's question is narrow and specific
-- The first mode already surfaced actionable changes
-- The user signals they want to move on
-- The synthesis already reached HIGH confidence with clear next steps
+| Sequência                           | Quando usar                                                                                          |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Socrático → Dialética               | O usuário tem uma ideia não testada. Suposições superficiais primeiro, depois argumente o contrário. |
+| Pré-mortem → Equipe Vermelha        | Lançamento de sistema de alto risco. Encontre falhas internas e depois ataques externos.             |
+| Auditoria de Evidências → Socrática | Proposta baseada em dados. Audite as evidências e questione a interpretação.                         |
+| Dialética → Pré-morte               | Decisão estratégica. Discuta o contra-ataque e depois estresse                                       |
 
-## Auto-Recommendation Format
+t a posição de sobrevivência. |
+| Socrático → Auditoria de Evidências | Proposta com muitas afirmações "óbvias". Supere as suposições e, em seguida, classifique as evidências. |
 
-When presenting the recommendation, use this structure:
+### Quando sugerir multimodo
 
-```
+Recomende uma segunda passagem quando:
+
+- O primeiro modo revela uma categoria de risco que o usuário não considerou
+- A tese sobrevive ao primeiro desafio praticamente intacta (pode precisar de testes mais difíceis)
+- O domínio abrange duas categorias de mapeamento (por exemplo, uma decisão de arquitetura de segurança)
+- A confiança do usuário aumentou após a primeira passagem — um modo diferente pode revelar novos ângulos
+
+### Quando NÃO sugerir multimodo
+
+- A pergunta do usuário é restrita e específica
+- O primeiro modo já trouxe mudanças acionáveis
+- O usuário sinaliza que deseja seguir em frente
+- A síntese já alcançou confiança ALTA com próximos passos claros
+
+## Formato de recomendação automática
+
+Ao apresentar a recomendação, utilize esta estrutura:```
 Based on [specific context signal], I recommend **[Mode Name]** because [1-sentence rationale].
 
 [If a secondary mode is relevant:]
 After that, a follow-up with **[Secondary Mode]** would [1-sentence benefit].
+
 ```
+Em seguida, confirme com `AskUserQuestion`:
 
-Then confirm with `AskUserQuestion`:
+- Opção 1: modo recomendado (com rótulo "(Recomendado)")
+- Opção 2: modo secundário, se aplicável
+- Opção 3: "Deixe-me escolher" — retornar à seleção do modo completo
 
-- Option 1: Recommended mode (with "(Recommended)" label)
-- Option 2: Secondary mode if applicable
-- Option 3: "Let me pick" — return to the full mode selection
+## Casos extremos
 
-## Edge Cases
-
-| Situation | Default Mode | Rationale |
+| Situação | Modo padrão | Justificativa |
 |-----------|-------------|-----------|
-| Vague context | Socratic Questioning | It surfaces what matters through questions |
-| Multiple concerns | Pre-mortem Analysis | It covers breadth naturally through failure narratives |
-| User is emotional/frustrated | Dialectic Synthesis | Steel manning validates their position before challenging |
-| Technical vs business split | Match the mode to which side the user emphasizes | Follow the energy, address the unspoken second |
-| User wants to challenge code/PR | Socratic Questioning | Read the code first, then probe assumptions behind design choices |
-| User presents a completed decision | Evidence Audit | Auditing evidence is less confrontational for past decisions |
-| Multi-stakeholder decision | Dialectic Synthesis | Different stakeholders embody the thesis and antithesis naturally |
+| Contexto vago | Questionamento Socrático | Revela o que importa por meio de perguntas |
+| Múltiplas preocupações | Análise pré-mortem | Abrange naturalmente a amplitude através de narrativas de fracasso |
+| O usuário está emocionado/frustrado | Síntese Dialética | Steel Manning valida sua posição antes de desafiar |
+| Divisão técnica versus negócios | Combine o modo de que lado estamos
+
+er enfatiza | Siga a energia, aborde o segundo não dito |
+| Usuário quer desafiar código/PR | Questionamento Socrático | Leia o código primeiro e depois investigue as suposições por trás das escolhas de design |
+| Usuário apresenta decisão concluída | Auditoria de Evidências | As evidências de auditoria são menos conflituosas para decisões anteriores |
+| Decisão multilateral | Síntese Dialética | Diferentes partes interessadas incorporam naturalmente a tese e a antítese |
+```

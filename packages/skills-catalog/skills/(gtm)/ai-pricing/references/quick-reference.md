@@ -1,34 +1,35 @@
-# Quick Reference & Questions to Ask
+# Referência rápida e perguntas a serem feitas
 
-## Quick Reference
+## Referência rápida
 
-| Decision | Framework | Key Metric |
-|---|---|---|
-| Which charge metric? | Consumption / Workflow / Outcome decision tree | Value measurability |
-| Which product archetype? | Copilot / Agent / Service matrix | Degree of human involvement |
-| Hybrid or pure model? | Pure if simple; hybrid if multiple value vectors | Revenue predictability vs. expansion |
-| BYOK or managed? | BYOK decision framework (6 factors) | Customer type + margin goal |
-| How many tiers? | Three (Starter, Pro, Enterprise) | Conversion rate per tier |
-| Where to set price? | 1/3 to 1/10 of human equivalent cost | Willingness to pay vs. competitive set |
-| How to improve margins? | Margin improvement stack (7 levers) | Gross margin trend, CPT |
-| How to migrate pricing? | 6-phase migration playbook | Revenue retention during migration |
-| How to comp sales? | GTM motion map by pricing model | Rep quota attainment, NRR |
-| When to add BYOK? | When enterprise buyers demand it + you can maintain margin | Platform ARR, BYOK adoption % |
+| Decisão                    | Estrutura                                                | Métrica principal                       |
+| -------------------------- | -------------------------------------------------------- | --------------------------------------- |
+| Qual métrica de cobrança?  | Árvore de decisão de consumo/fluxo de trabalho/resultado | Mensurabilidade de valor                |
+| Qual arquétipo de produto? | Copiloto / Agente / Matriz de atendimento                | Grau de envolvimento humano             |
+| Modelo híbrido ou puro?    | Puro se simples; híbrido se vários vetores de valores    | Previsibilidade de receita vs. expansão |
+| BYOK ou gerenciado?        | Quadro de decisão BYOK (6 fatores)                       | Tipo de cliente + meta de margem        |
 
-## Questions to Ask
+| H
 
-1. What does the human equivalent of your AI product cost the buyer today? (This anchors your price ceiling)
-2. What is your average cost per task/request at current volume? (Determines margin floor)
-3. Can the customer measure a clear outcome from your product, or is the value diffuse?
-4. What percentage of your revenue comes from your top 10% of customers? (Signals expansion opportunity)
-5. Do your customers have existing contracts with LLM providers? (BYOK indicator)
-6. What is your current gross margin, and what is your 12-month margin target?
-7. How does your buyer currently budget for this spend? (Seat budget, IT budget, department budget, project budget)
-8. What is your current churn rate, and does it correlate with pricing tier or usage level?
-9. Are competitors moving to outcome or usage pricing? How are their customers reacting?
-10. Do you have the billing infrastructure to support usage-based or outcome-based pricing?
-11. What is the simplest charge metric your buyer would understand on an invoice?
-12. How much pricing flexibility do existing contracts give you at renewal?
-13. What data do you have on willingness-to-pay from customer conversations or win/loss analysis?
-14. Is your sales team equipped to sell on value/outcomes, or are they trained on per-seat quotas?
-15. What is your model cost breakdown by task type, and which tasks have the highest margin?
+quantas camadas? | Três (Starter, Pro, Enterprise) | Taxa de conversão por nível |
+| Onde definir o preço? | 1/3 a 1/10 do custo humano equivalente | Disposição a pagar vs. conjunto competitivo |
+| Como melhorar as margens? | Pilha de melhoria de margem (7 alavancas) | Tendência da margem bruta, CPT |
+| Como migrar preços? | Manual de migração em 6 fases | Retenção de receitas durante a migração |
+| Como compensar as vendas? | Mapa de movimento GTM por modelo de preços | Alcance da cota de representantes, NR
+
+R |
+| Quando adicionar BYOK? | Quando os compradores empresariais exigem + você pode manter a margem | Plataforma ARR, adoção de BYOK % |
+
+## Perguntas a serem feitas
+
+1. Quanto custa hoje ao comprador o equivalente humano do seu produto de IA? (Isso ancora seu preço máximo)
+2. Qual é o seu custo médio por tarefa/solicitação no volume atual? (Determina o piso da margem)
+3. O cliente consegue medir um resultado claro do seu produto ou o valor é difuso?
+4. Qual porcentagem de sua receita vem dos 10% principais clientes? (Oportunidade de expansão de sinais)
+5. Seus clientes têm contratos existentes com LLM pro
+
+vídeos? (Indicador BYOK) 6. Qual é a sua margem bruta atual e qual é a sua meta de margem para 12 meses? 7. Qual é o orçamento atual do seu comprador para esses gastos? (Orçamento de vagas, orçamento de TI, orçamento de departamento, orçamento de projeto) 8. Qual é a sua taxa de rotatividade atual e ela se correlaciona com o nível de preços ou nível de uso? 9. Os concorrentes estão migrando para preços de resultados ou de uso? Como seus clientes estão reagindo? 10. Você tem infraestrutura de faturamento para atender
+
+preços baseados no uso da porta ou nos resultados? 11. Qual é a métrica de cobrança mais simples que seu comprador entenderia em uma fatura? 12. Quanta flexibilidade de preços os contratos existentes oferecem na renovação? 13. Quais dados você possui sobre a disposição a pagar provenientes de conversas com clientes ou análises de ganhos/perdas? 14. Sua equipe de vendas está preparada para vender com base em valor/resultados ou é treinada em cotas por assento? 15. Qual é o detalhamento do custo do seu modelo por tipo de tarefa,
+
+e quais tarefas têm a margem mais alta?

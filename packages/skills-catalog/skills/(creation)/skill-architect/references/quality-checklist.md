@@ -1,70 +1,72 @@
-# Quality Checklist
+# Lista de verificação de qualidade
 
-Use this checklist at the end of the Validate phase to ensure the skill
-meets all quality criteria before delivery.
+Use esta lista de verificação no final da fase de Validação para garantir que a habilidade
+atende a todos os critérios de qualidade antes da entrega.
 
 ---
 
-## Structural Checks (Pass/Fail)
+## Verificações estruturais (aprovado/reprovado)
 
-These are hard requirements. Any failure must be fixed.
+Esses são requisitos difíceis. Qualquer falha deve ser corrigida.
 
-- [ ] SKILL.md exists with exact casing
-- [ ] YAML frontmatter has opening and closing `---` delimiters
-- [ ] `name` field is present and kebab-case
-- [ ] `name` matches the folder name
-- [ ] `description` field is present
-- [ ] `description` is under 1024 characters
-- [ ] `description` contains no XML angle brackets (< >)
-- [ ] `name` does not contain "claude" or "anthropic"
-- [ ] No README.md inside the skill folder
-- [ ] Folder name is kebab-case (no spaces, no capitals, no underscores)
+- [] SKILL.md existe com maiúsculas e minúsculas exatas
+- [] O frontmatter YAML possui delimitadores `---` de abertura e fechamento
+- [ ] campo `name` está presente e kebab-case
+- [ ] `name` corresponde ao nome da pasta
+- [ ] campo `descrição` está presente
+- [ ] `descrição` tem menos de 1024 caracteres
+- [ ] `description` não contém colchetes angulares XML (< >)
+- [ ] `name` não contém "claude" ou "antrópico"
+- [] Não README.md dentro da pasta de habilidades
+- [] O nome da pasta é kebab-c
 
-## Description Quality (Score 1-5)
+ase (sem espaços, sem letras maiúsculas, sem sublinhados)
 
-Rate each and target 4+ on all:
+## Descrição Qualidade (pontuação 1-5)
 
-- [ ] **Specificity (1-5):** Does it describe a concrete capability?
-- [ ] **Trigger clarity (1-5):** Would the agent know when to load this?
-- [ ] **User language (1-5):** Does it use phrases a user would actually say?
-- [ ] **Scope boundaries (1-5):** Is it clear what this skill does NOT do?
-- [ ] **Pushiness (1-5):** Is it assertive enough to avoid undertriggering?
+Avalie cada um e segmente 4+ em todos:
 
-## Instruction Quality (Score 1-5)
+- [ ] **Especificidade (1-5):** Descreve uma capacidade concreta?
+- [ ] **Clareza do gatilho (1-5):** O agente saberia quando carregar isso?
+- [ ] **Idioma do usuário (1-5):** Ele usa frases que um usuário realmente diria?
+- [ ] **Limites do escopo (1-5):** Está claro o que esta habilidade NÃO faz?
+- [ ] **Agressividade (1-5):** É assertivo o suficiente para evitar o undertriggering?
 
-- [ ] **Actionability (1-5):** Can the agent follow every step without ambiguity?
-- [ ] **Specificity (1-5):** Are instructions concrete (not "validate properly")?
-- [ ] **Examples (1-5):** Are there realistic input/output examples?
-- [ ] **Error handling (1-5):** Are common failures addressed?
-- [ ] **Progressive disclosure (1-5):** Is SKILL.md focused, with details in refs?
-- [ ] **Composability (1-5):** Does it play well with other skills?
+## Qualidade da instrução (pontuação 1-5)
 
-## Trigger Testing
+- [ ] **Acionabilidade (1-5):** O agente consegue seguir cada passo sem ambiguidade?
+- [ ] **Especificidade (1-5):** As instruções são concretas (não "validam corretamente")?
+- [ ] **Exemplos (1-5):** Existem exemplos realistas de entrada/saída?
+- [ ] **Tratamento de erros (1-5):** As falhas comuns são abordadas?
+- [ ] **Divulgação progressiva (1-5):** O SKILL.md é focado, com detalhes nas referências?
+- [ ] **Combinabilidade (1-5):** Funciona bem com outras habilidades?
 
-### Should trigger (test 3-5 phrases)
+## Teste de gatilho
 
-1. [ ] "[Obvious request]" → triggers? Y/N
-2. [ ] "[Paraphrased request]" → triggers? Y/N
-3. [ ] "[Informal request]" → triggers? Y/N
+### Deve ser acionado (teste de 3 a 5 frases)
 
-### Should NOT trigger (test 3-5 phrases)
+1. [] "[Solicitação óbvia]" → gatilhos? S/N
+2. [] "[Solicitação parafraseada]" → gatilhos? S/N
+3. [] "[Solicitação informal]" → gatilhos? S/N
 
-1. [ ] "[Unrelated task]" → stays silent? Y/N
-2. [ ] "[Similar but different scope]" → stays silent? Y/N
-3. [ ] "[Generic question]" → stays silent? Y/N
+### NÃO deve ser acionado (teste de 3 a 5 frases)
 
-## Performance Targets
+1. [ ] "[Tarefa não relacionada]" → permanece em silêncio? S/N
+2. [ ] "[Escopo semelhante, mas diferente]" → permanece em silêncio? S/N
+3. [ ] "[Pergunta genérica]" → permanece em silêncio? S/N
 
-Aspirational benchmarks (adapt to your skill):
+## Metas de desempenho
 
-- [ ] Triggers on ≥90% of relevant queries
-- [ ] Completes workflow without user correction
-- [ ] Consistent results across separate sessions
-- [ ] No failed tool/API calls per workflow
-- [ ] Users don't need to prompt the agent about next steps
+Benchmarks aspiracionais (adaptar-se à sua habilidade):
 
-## Final Sign-Off
+- [] Aciona em ≥90% das consultas relevantes
+- [] Conclui o fluxo de trabalho sem correção do usuário
+- [] Resultados consistentes em sessões separadas
+- [] Nenhuma chamada de ferramenta/API com falha por fluxo de trabalho
+- [] Os usuários não precisam avisar o agente sobre as próximas etapas
 
-- [ ] User has reviewed the skill
-- [ ] Test phrases produce expected behavior
-- [ ] Skill is packaged and ready for upload
+## Aprovação final
+
+- [] O usuário revisou a habilidade
+- [] Frases de teste produzem o comportamento esperado
+- [] A habilidade está empacotada e pronta para upload

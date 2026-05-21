@@ -1,123 +1,95 @@
 # React Best Practices
 
-A structured repository for creating and maintaining React Best Practices optimized for agents and LLMs.
+Repositório estruturado para criar e manter boas práticas em React voltadas para agentes e LLMs — localização em português brasileiro pelo ecossistema **Controllato Club**.
 
-## Structure
+## Estrutura
 
-- `rules/` - Individual rule files (one per rule)
-  - `_sections.md` - Section metadata (titles, impacts, descriptions)
-  - `_template.md` - Template for creating new rules
-  - `area-description.md` - Individual rule files
-- `src/` - Build scripts and utilities
-- `metadata.json` - Document metadata (version, organization, abstract)
-- __`AGENTS.md`__ - Compiled output (generated)
-- __`test-cases.json`__ - Test cases for LLM evaluation (generated)
+- `rules/` — Arquivo individual por regra
+  - `_sections.md` — Metadados das seções (títulos, impactos, descrições)
+  - `_template.md` — Modelo para novas regras
+  - `area-description.md` — Arquivos de regra
+- `src/` — Scripts de build e utilitários
+- `metadata.json` — Metadados do documento (versão, organização, resumo)
+- __`AGENTS.md`__ — Saída compilada (gerada)
+- __`test-cases.json`__ — Casos de teste para avaliação por LLM (gerado)
 
-## Getting Started
+## Primeiros passos
 
-1. Install dependencies:
+1. Instalar dependências:
    ```bash
    pnpm install
    ```
 
-2. Build AGENTS.md from rules:
+2. Gerar `AGENTS.md` a partir das regras:
    ```bash
    pnpm build
    ```
 
-3. Validate rule files:
+3. Validar os arquivos de regra:
    ```bash
    pnpm validate
    ```
 
-4. Extract test cases:
+4. Extrair casos de teste:
    ```bash
    pnpm extract-tests
    ```
 
-## Creating a New Rule
+## Criar uma nova regra
 
-1. Copy `rules/_template.md` to `rules/area-description.md`
-2. Choose the appropriate area prefix:
-   - `async-` for Eliminating Waterfalls (Section 1)
-   - `bundle-` for Bundle Size Optimization (Section 2)
-   - `server-` for Server-Side Performance (Section 3)
-   - `client-` for Client-Side Data Fetching (Section 4)
-   - `rerender-` for Re-render Optimization (Section 5)
-   - `rendering-` for Rendering Performance (Section 6)
-   - `js-` for JavaScript Performance (Section 7)
-   - `advanced-` for Advanced Patterns (Section 8)
-3. Fill in the frontmatter and content
-4. Ensure you have clear examples with explanations
-5. Run `pnpm build` to regenerate AGENTS.md and test-cases.json
+1. Copiar `rules/_template.md` para `rules/area-description.md`.
+2. Escolher o prefixo de área:
+   - `async-` — Eliminar cascatas (seção 1)
+   - `bundle-` — Otimização de bundle (seção 2)
+   - `server-` — Performance no servidor (seção 3)
+   - `client-` — Busca de dados no cliente (seção 4)
+   - `rerender-` — Otimização de re-render (seção 5)
+   - `rendering-` — Performance de renderização (seção 6)
+   - `js-` — Performance em JavaScript (seção 7)
+   - `advanced-` — Padrões avançados (seção 8)
+3. Preencher o frontmatter e o corpo da regra.
+4. Incluir exemplos claros (ruim vs. bom) com breve justificativa.
+5. Executar `pnpm build` para regenerar `AGENTS.md` e `test-cases.json`.
 
-## Rule File Structure
+## Modelo do arquivo de regra
 
-Each rule file should follow this structure:
+Use sempre `rules/_template.md` como ponto de partida: há frontmatter YAML (`title`, `impact`, `impactDescription`, `tags`), título `##` alinhado ao `title`, parágrafo introdutório, blocos **Incorreto** / **Correto** com cercas de código, e `Referência:` ao final quando fizer sentido.
 
-```markdown
----
-title: Rule Title Here
-impact: MEDIUM
-impactDescription: Optional description
-tags: tag1, tag2, tag3
----
+## Convenção de nomes
 
-## Rule Title Here
+- Arquivos com `_` são especiais (excluídos do build quando aplicável).
+- Regras: `area-description.md` (por exemplo `async-parallel.md`).
+- A seção é inferida pelo prefixo do nome do arquivo.
+- As regras são ordenadas por título dentro de cada seção.
+- IDs como 1.1, 1.2 são atribuídos no build quando houver compilador configurado.
 
-Brief explanation of the rule and why it matters.
+## Níveis de impacto (`impact`)
 
-**Incorrect (description of what's wrong):**
+Valores canônicos (inglês) usados nos arquivos de regra:
 
-```typescript
-// Bad code example
-```
-
-**Correct (description of what's right):**
-
-```typescript
-// Good code example
-```
-
-Optional explanatory text after examples.
-
-Reference: [Link](https://example.com)
-
-## File Naming Convention
-
-- Files starting with `_` are special (excluded from build)
-- Rule files: `area-description.md` (e.g., `async-parallel.md`)
-- Section is automatically inferred from filename prefix
-- Rules are sorted alphabetically by title within each section
-- IDs (e.g., 1.1, 1.2) are auto-generated during build
-
-## Impact Levels
-
-- `CRITICAL` - Highest priority, major performance gains
-- `HIGH` - Significant performance improvements
-- `MEDIUM-HIGH` - Moderate-high gains
-- `MEDIUM` - Moderate performance improvements
-- `LOW-MEDIUM` - Low-medium gains
-- `LOW` - Incremental improvements
+- `CRITICAL` — maior prioridade, ganhos muito grandes
+- `HIGH` — ganhos significativos
+- `MEDIUM-HIGH` — ganhos entre moderado e alto
+- `MEDIUM` — ganhos moderados
+- `LOW-MEDIUM` — ganhos entre baixo e moderado
+- `LOW` — melhorias incrementais
 
 ## Scripts
 
-- `pnpm build` - Compile rules into AGENTS.md
-- `pnpm validate` - Validate all rule files
-- `pnpm extract-tests` - Extract test cases for LLM evaluation
-- `pnpm dev` - Build and validate
+- `pnpm build` — Compila regras em `AGENTS.md` (quando o pacote/build estiver disponível neste subtree).
+- `pnpm validate` — Valida todos os arquivos de regra.
+- `pnpm extract-tests` — Extrai casos de teste para avaliação por LLM.
+- `pnpm dev` — Build e validação.
 
-## Contributing
+## Contribuir
 
-When adding or modifying rules:
+1. Prefixo correto conforme a seção.
+2. Seguir `_template.md` e metadados de `_sections.md`.
+3. Exemplos “ruim / bom” com explicações curtas.
+4. Tags coerentes.
+5. Rodar build/validate onde existir no projeto.
+6. A ordenação alfabética por título costuma dispensar gestão manual de numeração.
 
-1. Use the correct filename prefix for your section
-2. Follow the `_template.md` structure
-3. Include clear bad/good examples with explanations
-4. Add appropriate tags
-5. Run `pnpm build` to regenerate AGENTS.md and test-cases.json
-6. Rules are automatically sorted by title - no need to manage numbers!
+## Créditos
 
-## Acknowledgments
-
-Originally created by [@shuding](https://x.com/shuding) at [Vercel](https://vercel.com).
+Original criado por [@shuding](https://x.com/shuding) na [Vercel](https://vercel.com). Localização mantida pela comunidade **Controllato Club**.

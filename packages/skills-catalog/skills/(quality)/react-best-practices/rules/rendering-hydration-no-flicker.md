@@ -1,37 +1,33 @@
 ---
-title: Prevent Hydration Mismatch Without Flickering
+title: Evite incompatibilidade de hidratação sem cintilação
 impact: MEDIUM
-impactDescription: avoids visual flicker and hydration errors
+impactDescription: evita cintilação visual e erros de hidratação
 tags: rendering, ssr, hydration, localStorage, flicker
 ---
 
-## Prevent Hydration Mismatch Without Flickering
+## Evite incompatibilidade de hidratação sem cintilação
 
-When rendering content that depends on client-side storage (localStorage, cookies), avoid both SSR breakage and post-hydration flickering by injecting a synchronous script that updates the DOM before React hydrates.
+Ao renderizar conteúdo que depende de armazenamento no cliente (localStorage, cookies), evite tanto quebras o SSR quanto flicker após a hidratação injetando um script síncrono que atualiza o DOM antes do React hidratar.
 
-**Incorrect (breaks SSR):**
+**Incorreto (quebra SSR):**
 
 ```tsx
 function ThemeWrapper({ children }: { children: ReactNode }) {
   // localStorage is not available on server - throws error
   const theme = localStorage.getItem('theme') || 'light'
-  
-  return (
-    <div className={theme}>
-      {children}
-    </div>
-  )
+
+  return <div className={theme}>{children}</div>
 }
 ```
 
-Server-side rendering will fail because `localStorage` is undefined.
+O SSR falha porque `localStorage` é indefinido.
 
-**Incorrect (visual flickering):**
+**Incorreto (cintilação visual):**
 
 ```tsx
 function ThemeWrapper({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState('light')
-  
+
   useEffect(() => {
     // Runs after hydration - causes visible flash
     const stored = localStorage.getItem('theme')
@@ -39,26 +35,20 @@ function ThemeWrapper({ children }: { children: ReactNode }) {
       setTheme(stored)
     }
   }, [])
-  
-  return (
-    <div className={theme}>
-      {children}
-    </div>
-  )
+
+  return <div className={theme}>{children}</div>
 }
 ```
 
-Component first renders with default value (`light`), then updates after hydration, causing a visible flash of incorrect content.
+O componente renderiza primeiro com o valor padrão (`light`) e atualiza após a hidratação, causando flash visível de conteúdo incorreto.
 
-**Correct (no flicker, no hydration mismatch):**
+**Correto (sem flicker, sem incompatibilidade de hidratação):**
 
 ```tsx
 function ThemeWrapper({ children }: { children: ReactNode }) {
   return (
     <>
-      <div id="theme-wrapper">
-        {children}
-      </div>
+      <div id="theme-wrapper">{children}</div>
       <script
         dangerouslySetInnerHTML={{
           __html: `
@@ -77,6 +67,6 @@ function ThemeWrapper({ children }: { children: ReactNode }) {
 }
 ```
 
-The inline script executes synchronously before showing the element, ensuring the DOM already has the correct value. No flickering, no hydration mismatch.
+O script inline executa de forma síncrona antes de exibir o elemento, garantindo que o DOM já tenha o valor certo. Sem cintilação e sem incompatibilidade de hidratação.
 
-This pattern is especially useful for theme toggles, user preferences, authentication states, and any client-only data that should render immediately without flashing default values.
+O padrão é útil para temas, preferências, estado de autenticação e qualquer dado só do cliente que deva aparecer na hora sem flash do valor padrão.

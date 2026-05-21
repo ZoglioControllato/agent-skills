@@ -1,78 +1,78 @@
 ---
 name: modular-decomposition
-description: Runs a sequenced monolith-to-modular pipeline that sizes and inventories components, finds shared domain duplication, addresses flattening and hierarchy issues, analyzes coupling, then groups components into candidate domain-aligned units, with optional embedded DDD strategic analysis for bounded contexts. Use when asking how to split a monolith, size components before extraction, find duplicated domain logic, clean up module hierarchy, measure coupling between modules, or group components into services. Do NOT use for phased extraction roadmaps or prioritization without the prior analysis steps (use decomposition-planning-roadmap after this pipeline), end-to-end legacy migration strategy writeups (use legacy-migration-planner), pure infrastructure capacity sizing, or when you only need DDD without the structural pipeline (install domain-analysis standalone).
+description: Executa pipeline sequenciado monólito→modular que dimensiona e inventaria componentes, encontra duplicação compartilhada de domínio, trata achatamento e hierarquia, analisa acoplamento e agrupa componentes em unidades-alinhadas ao domínio, com DDD estratégico embutido opcional para contextos limitados. Use quando perguntar como dividir um monólito, dimensionar componentes antes de extrair, achar lógica de domínio duplicada, limpar hierarquia de módulos, medir acoplamento entre módulos ou agrupar componentes em serviços. Aciona em análise estrutural completa (Patterns 1–5) antes de extração de serviços. NÃO use para roadmaps faseados de extração ou priorização sem os passos de análise anteriores (use decomposition-planning-roadmap depois deste pipeline), documentos ponta-a-ponta de migração legada (use legacy-migration-planner), dimensionamento de capacidade de infraestrutura nem quando só precisa de DDD sem o pipeline estrutural (instale domain-analysis isoladamente).
 ---
 
 # Modular Decomposition
 
-This skill runs the **Patterns 1–5** analysis pipeline before service extraction. Each pattern is plain markdown under `references/`; load the file for that step and execute it against the user’s codebase.
+Esta skill executa o **pipeline Patterns 1–5** antes da extração de serviços. Cada pattern é markdown simples sob `references/`; carregue o arquivo da etapa e execute-o contra o codebase do usuário.
 
-## How to Use
+## Como usar
 
-### Quick start (what users can say)
+### Quick start (o que usuários podem dizer)
 
-- **Full pipeline:** “Run modular decomposition Patterns 1 through 5 on this repo,” “Analyze this monolith for splitting—inventory, coupling, and domain grouping.”
-- **Single early step:** “Identify and size components here,” “Find duplicated domain logic across modules,” “Analyze coupling between our packages.”
-- **With DDD lens:** “Group components into domains and check bounded contexts,” “Use DDD strategic design on this codebase before we group services.”
+- **Pipeline completo:** “Rodar Patterns 1 a 5 de modular decomposition neste repo”, “Analise este monólito para split — inventário, acoplamento e agrupamento de domínio.”
+- **Etapa inicial isolada:** “Identifique e dimensione componentes aqui”, “Ache lógica de domínio duplicada entre módulos”, “Analise acoplamento entre nossos pacotes.”
+- **Com lente DDD:** “Agrupe componentes em domínios e revise contextos limitados”, “Use design estratégico DDD neste codebase antes de agrupar serviços.”
 
-If the user only wants **extraction order, phases, or migration roadmap** after analysis exists, use **decomposition-planning-roadmap** instead. If they need a **full legacy migration plan** (strangler fig, research, multi-stack), use **legacy-migration-planner** as well or instead of this skill when that is the primary ask.
+Se o usuário só quiser **ordem de extração, fases ou roadmap de migração** depois da análise, use **decomposition-planning-roadmap**. Se precisar de um **plano completo de migração legada** (strangler fig, pesquisa, multi-stack), use **legacy-migration-planner** também ou no lugar desta skill quando esse for o foco principal.
 
-### How the agent should run it
+### Como o agente deve rodar
 
-1. **Scope:** Confirm the task is structural analysis (inventory → coupling → grouping), not roadmap authoring. If unclear, ask once whether they want the full ordered pipeline or a subset.
-2. **Order:** Run patterns **1 → 2 → 3 → 4 → 5** in that order. Do not skip a step unless the user explicitly limits scope; if they do, state which patterns were skipped and how that limits later conclusions.
-3. **Load references:** For each pattern, open the matching `references/pattern-NN-*.md` file and follow its instructions. Use the optional `*-quick-reference.md` for the same number when a short checklist is enough.
-4. **Carry context forward:** Reuse outputs from earlier patterns in later ones (e.g. component inventory from Pattern 1 informs coupling in 4 and grouping in 5). Reference concrete paths, modules, or tables from previous steps.
-5. **Domain language (Pattern 5):** If subdomains or bounded contexts need grounding beyond structure, read `references/domain-analysis.md` **before or alongside** Pattern 5. Optionally open `references/domain-analysis-quick-reference.md` or `references/domain-analysis-examples.md` for condensed rules or illustrations.
-6. **Deliver:** Produce clear, actionable findings per pattern or one consolidated report—always tied to evidence from the repository (files, dependencies, metrics), not generic advice.
+1. **Escopo:** Confirme que a tarefa é análise estrutural (inventário → acoplamento → agrupamento), não redação de roadmap. Se estiver pouco claro, pergunte uma vez se quer o pipeline ordenado completo ou um subconjunto.
+2. **Ordem:** Execute os patterns **1 → 2 → 3 → 4 → 5** nessa ordem. Não pule uma etapa salvo pedido explícito do usuário; se pularem, indique quais patterns foram omitidos e como isso limita conclusões posteriores.
+3. **Referencias:** Para cada pattern, abra o `references/pattern-NN-*.md` correspondente e siga as instruções. Use o opcional `*-quick-reference.md` do mesmo número quando um checklist curto bastar.
+4. **Continue contexto:** Reuse resultados dos patterns anteriores nos seguintes (ex.: inventário do Pattern 1 informa acoplamento no 4 e agrupamento no 5). Cite paths, módulos ou tabelas concretos dos passos anteriores.
+5. **Linguagem de domínio (Pattern 5):** Se subdomínios ou contextos limitados precisarem de fundamentação além da estrutura, leia `references/domain-analysis.md` **antes ou junto** com o Pattern 5. Opcionalmente abra `references/domain-analysis-quick-reference.md` ou `references/domain-analysis-examples.md` para regras compactas ou ilustrações.
+6. **Entrega:** Produza achados claros e acionáveis por pattern ou um relatório consolidado — sempre ligado a evidências do repositório (arquivos, dependências, métricas), não conselhos genéricos.
 
-### Usage examples
+### Exemplos de uso
 
-**Example 1 — Full pipeline**
-
-```
-User: "We're going to split this monolith—run the full decomposition analysis (Patterns 1–5)."
-
-Agent: Execute patterns 1→5 in order, loading each references/pattern-NN-*.md, preserving outputs between steps, then summarize cross-cutting recommendations.
-```
-
-**Example 2 — Coupling after inventory**
+**Exemplo 1 — Pipeline completo**
 
 ```
-User: "We already have a rough module list—focus on coupling (Pattern 4) and then domain grouping (Pattern 5)."
+Usuário: "Vamos dividir este monólito — rode a análise completa de decomposição (Patterns 1–5)."
 
-Agent: If no prior inventory exists in the thread, either run Pattern 1 briefly or derive an explicit module list from the repo before 4 and 5. State any assumptions.
+Agente: Executa patterns 1→5 em ordem, carregando cada references/pattern-NN-*.md, preservando saídas entre etapas, depois resume recomendações transversais.
 ```
 
-**Example 3 — DDD before grouping**
+**Exemplo 2 — Acoplamento depois do inventário**
 
 ```
-User: "Map bounded contexts and language, then group components into domains."
+Usuário: "Já temos lista grosseira de módulos — foque em acoplamento (Pattern 4) e depois agrupamento de domínio (Pattern 5)."
 
-Agent: Read references/domain-analysis.md (and optional quick reference/examples) in parallel with or immediately before Pattern 5; align Pattern 5 groupings with linguistic boundaries where evidence supports it.
+Agente: Se não houver inventário anterior no thread, rode o Pattern 1 brevemente ou derive lista explícita de módulos do repo antes de 4 e 5. Declare suposições.
 ```
 
-## Prerequisites
+**Exemplo 3 — DDD antes do agrupamento**
 
-- Complete **Pattern N** before starting Pattern N+1 unless the user explicitly narrows scope. Later patterns depend on earlier results (for example, inventory and structure inform coupling and grouping).
-- If business vocabulary, subdomains, or bounded contexts are uncertain, use `references/domain-analysis.md` **before or alongside Pattern 5** (see Bounded contexts below).
+```
+Usuário: "Mapeie contextos limitados e linguagem; depois agrupe componentes em domínios."
 
-## Ordered workflow (Patterns 1–5)
+Agente: Leia references/domain-analysis.md (e opcionalmente quick reference/exemplos) em paralelo ou imediatamente antes do Pattern 5; alinhe agrupamentos do Pattern 5 a limites linguísticos onde a evidência apoia.
+```
 
-| Step | Pattern                            | Primary reference                                                                                          |
-| ---- | ---------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| 1    | Identify and size components       | `references/pattern-01-identify-and-size.md` (optional: `pattern-01-identify-and-size-quick-reference.md`) |
-| 2    | Common domain detection            | `references/pattern-02-common-domain.md` (optional: `pattern-02-common-domain-quick-reference.md`)         |
-| 3    | Flattening / hierarchy             | `references/pattern-03-flattening.md` (optional: `pattern-03-flattening-quick-reference.md`)               |
-| 4    | Coupling analysis                  | `references/pattern-04-coupling.md`                                                                        |
-| 5    | Domain identification and grouping | `references/pattern-05-domain-grouping.md` (optional: `pattern-05-domain-grouping-quick-reference.md`)     |
+## Pré-requisitos
 
-## Pattern 6 — planning and extraction
+- Complete **Pattern N** antes de iniciar Pattern N+1 salvo quando o usuário restringir o escopo. Patterns posteriores dependem dos resultados dos anteriores (por exemplo, inventário e estrutura informam acoplamento e agrupamento).
+- Se vocabulário de negócio, subdomínios ou contextos limitados estiverem incertos, use `references/domain-analysis.md` **antes ou junto com o Pattern 5** (ver Contextos limitados abaixo).
 
-**Pattern 6** (_create domain services / extraction_) is not duplicated here. After Pattern 5, switch to **decomposition-planning-roadmap** for phased extraction order, milestones, and migration-style planning. For full legacy migration strategy (strangler-fig, cross-stack rewrites, research-heavy plans), optionally use **legacy-migration-planner** in addition.
+## Workflow ordenado (Patterns 1–5)
 
-## Bounded contexts and DDD strategic design
+| Etapa | Pattern                                | Referência principal                                                                                       |
+| ----- | -------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| 1     | Identificar e dimensionar componentes  | `references/pattern-01-identify-and-size.md` (opcional: `pattern-01-identify-and-size-quick-reference.md`) |
+| 2     | Detecção de domínio comum              | `references/pattern-02-common-domain.md` (opcional: `pattern-02-common-domain-quick-reference.md`)         |
+| 3     | Achatamento / hierarquia               | `references/pattern-03-flattening.md` (opcional: `pattern-03-flattening-quick-reference.md`)               |
+| 4     | Análise de acoplamento                 | `references/pattern-04-coupling.md`                                                                        |
+| 5     | Identificação de domínio e agrupamento | `references/pattern-05-domain-grouping.md` (opcional: `pattern-05-domain-grouping-quick-reference.md`)     |
 
-- **Patterns 1–4** focus on **structural** inventory, duplication, hierarchy, and **coupling** between parts of the codebase.
-- **Pattern 5** produces **candidate** groupings aligned with **solution-space** boundaries (which components belong together as services).
-- **Strategic DDD** (subdomains, bounded contexts, ubiquitous language) is covered in `references/domain-analysis.md`, with optional `domain-analysis-quick-reference.md` and `domain-analysis-examples.md`. Use it when you need to validate or refine boundaries against business language, not only folder structure.
+## Pattern 6 — planejamento e extração
+
+**Pattern 6** (_criar serviços de domínio / extração_) não está duplicado aqui. Após o Pattern 5, mude para **decomposition-planning-roadmap** para ordem de extração faseada, marcos e planejamento no estilo migração. Para estratégia completa de migração legada (strangler fig, reescritas cross-stack, planos pesados em pesquisa), opcionalmente use **legacy-migration-planner** além disto.
+
+## Contextos limitados e DDD estratégico
+
+- **Patterns 1–4** focam inventário estrutural, duplicação, hierarquia e **acoplamento** entre partes do codebase.
+- **Pattern 5** produz agrupamentos **candidatos** alinhados a limites em **solution space** (quais componentes formam um serviço).
+- **DDD estratégico** (subdomínios, contextos limitados, linguagem onipresente) está em `references/domain-analysis.md`, com opcional `domain-analysis-quick-reference.md` e `domain-analysis-examples.md`. Use quando precisar validar ou refinar limites com linguagem de negócio, não só estrutura de pastas.

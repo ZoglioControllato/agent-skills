@@ -1,175 +1,174 @@
-# CNI Gotchas & Troubleshooting
+# Dicas e solução de problemas da CNI
 
-## Common Errors
+## Erros Comuns
 
-### "Status: Pending"
+### "Status: Pendente"
 
-**Cause:** Cross-connect not installed, RX/TX fibers reversed, wrong fiber type, or low light levels
-**Solution:**
+**Causa:** Conexão cruzada não instalada, fibras RX/TX invertidas, tipo de fibra incorreto ou níveis de luz baixos
+**Solução:**
 
-1. Verify cross-connect installed
-2. Check fiber at patch panel
-3. Swap RX/TX fibers
-4. Check light with optical power meter (target > -20 dBm)
-5. Contact account team
+1. Verifique a conexão cruzada instalada
+2. Verifique a fibra no patch panel
+3. Trocar fibras RX/TX
+4. Verifique a luz com medidor de potência óptica (alvo> -20 dBm)
+5. Entre em contato com a equipe da conta
 
-### "Status: Unhealthy"
+### "Status: Insalubre"
 
-**Cause:** Physical issue, low light (<-20 dBm), optic mismatch, or dirty connectors
-**Solution:**
+**Causa:** Problema físico, pouca luz (<-20 dBm), incompatibilidade óptica ou conectores sujos
+**Solução:**
 
-1. Check physical connections
-2. Clean fiber connectors
-3. Verify optic types (10GBASE-LR/100GBASE-LR4)
-4. Test with known-good optics
-5. Check patch panel
-6. Contact account team
+1. Verifique as conexões físicas
+2. Limpe os conectores de fibra
+3. Verifique os tipos ópticos (10GBASE-LR/100GBASE-LR4)
+4. Teste com óptica em boas condições
+5. Verifique o painel de patch
+6. Entre em contato com a equipe da conta
 
-### "BGP Session Down"
+### "Sessão BGP inativa"
 
-**Cause:** Wrong IP addressing, wrong ASN, password mismatch, or firewall blocking TCP/179
-**Solution:**
+**Causa:** Endereçamento IP incorreto, ASN incorreto, incompatibilidade de senha ou firewall bloqueando TCP/179
+**Solução:**
 
-1. Verify IPs match CNI object
-2. Confirm ASN correct
-3. Check BGP password
-4. Verify no firewall on TCP/179
-5. Check BGP logs
-6. Review BGP timers
+1. Verifique se os IPs correspondem ao objeto CNI
+2. Confirme o ASN correto
+3. Verifique a senha do BGP
+4. Verifique se não há firewall no TCP/179
+5. Verifique os registros do BGP
+6. Revise os temporizadores BGP
 
-### "Low Throughput"
+### "Baixo rendimento"
 
-**Cause:** MTU mismatch, fragmentation, single GRE tunnel (v1), or routing inefficiency
-**Solution:**
+**Causa:** incompatibilidade de MTU, fragmentação, túnel GRE único (v1) ou ineficiência de roteamento
+**Solução:**
 
-1. Check MTU (1500↓/1476↑ for v1, 1500 both for v2)
-2. Test various packet sizes
-3. Add more GRE tunnels (v1)
-4. Consider upgrading to v2
-5. Review routing tables
-6. Use LACP for bundling (v1)
+1. Verifique MTU (1500↓/1476↑ para v1, 1500 ambos para v2)
+2. Teste vários tamanhos de pacotes
+3. Adicione mais túneis GRE (v1)
+4. Considere atualizar para v2
+5. Revise as tabelas de roteamento
+6. Use LACP para agrupamento (v1)
 
-## API Errors
+## Erros de API
 
-### 400 Bad Request: "slot_id already occupied"
+### 400 Solicitação incorreta: "slot_id já ocupado"
 
-**Cause:** Another interconnect already uses this slot  
-**Solution:** Use `occupied=false` filter when listing slots:
-
-```typescript
+**Causa:** Outra interconexão já usa esse slot
+**Solução:** Use o filtro `occupied=false` ao listar slots:```typescript
 await client.networkInterconnects.slots.list({
-  account_id: id,
-  occupied: false,
-  facility: 'EWR1',
+account_id: id,
+occupied: false,
+facility: 'EWR1',
 })
+
 ```
+### 400 Solicitação incorreta: "código de instalação inválido"
 
-### 400 Bad Request: "invalid facility code"
-
-**Cause:** Typo or unsupported facility  
+**Causa:** Erro de digitação ou recurso não suportado
 **Solution:** Check [locations PDF](https://developers.cloudflare.com/network-interconnect/static/cni-locations-2026-01.pdf) for valid codes
 
-### 403 Forbidden: "Enterprise plan required"
+ ### 403 Proibido: "Plano empresarial necessário"
 
-**Cause:** Account not enterprise-level  
-**Solution:** Contact account team to upgrade
+**Causa:** a conta não é de nível empresarial
+**Solução:** entre em contato com a equipe da conta para fazer upgrade
 
 ### 422 Unprocessable: "validate_only request failed"
 
-**Cause:** Dry-run validation found issues (wrong slot, invalid config)  
-**Solution:** Review error message details, fix config before real creation
+ **Cause:** Dry-run validation found issues (wrong slot, invalid config)
+ **Solution:** Review error message details, fix config before real creation
 
-### Rate Limiting
+ ### Limitação de taxa
 
-**Limit:** 1200 requests/5min per token  
+**Limite:** 1.200 solicitações/5min por token
 **Solution:** Implement exponential backoff, cache slot listings
 
-## Cloud-Specific Issues
+ ## Problemas específicos da nuvem
 
-### AWS Direct Connect: "VLAN not matching"
+### AWS Direct Connect: "VLAN não correspondente"
 
-**Cause:** VLAN ID from AWS LOA doesn't match CNI config  
-**Solution:**
+**Cause:** VLAN ID from AWS LOA doesn't match CNI config
+ **Solução:**
 
-1. Get VLAN from AWS Console after ordering
-2. Send exact VLAN to CF account team
-3. Verify match in CNI object config
+1. Obtenha VLAN do Console AWS após fazer o pedido
+2. Envie a VLAN exata para a equipe da conta CF
+3. Verifique a correspondência na configuração do objeto CNI
 
-### AWS: "Connection stuck in Pending"
+### AWS: “Conexão travada em pendente”
 
-**Cause:** LOA not provided to CF or AWS connection not accepted  
-**Solution:**
+**Cause:** LOA not provided to CF or AWS connection not accepted
+ **Solução:**
 
-1. Verify AWS connection status is "Available"
-2. Confirm LOA sent to CF account team
-3. Wait for CF team acceptance (can take days)
+1. Verifique se o status da conexão AWS é “Disponível”
+2. Confirme a LOA enviada à equipe de conta CF
+3. Aguarde a aceitação da equipe CF (pode levar dias)
 
-### GCP: "BGP routes not propagating"
+### GCP: "Rotas BGP não propagadas"
 
-**Cause:** BGP routes from GCP Cloud Router **ignored by design**  
-**Solution:** Use [static routes](https://developers.cloudflare.com/magic-wan/configuration/manually/how-to/configure-routes/#configure-static-routes) in Magic WAN instead
+**Causa:** rotas BGP do GCP Cloud Router **ignoradas por design**
+**Solução:** use [rotas estáticas](https://developers.cloudflare.com/magic-wan/configuration/manually/how-to/configure-routes/#configure-static-routes) no Magic WAN
 
-### GCP: "Cannot query VLAN attachment status via API"
+### GCP: "Não é possível consultar o status do anexo da VLAN via API"
 
-**Cause:** GCP Cloud Interconnect Dashboard-only (no API yet)  
-**Solution:** Check status in CF Dashboard or GCP Console
+**Causa:** Somente painel do GCP Cloud Interconnect (ainda sem API)
+**Solução:** verifique o status no painel CF ou no console GCP
 
-## Partner Interconnect Issues
+## Problemas de interconexão com parceiros
 
-### Equinix: "Virtual circuit not appearing"
+### Equinix: “Circuito virtual não aparece”
 
-**Cause:** CF hasn't accepted Equinix connection request  
-**Solution:**
+**Causa:** CF não aceitou a solicitação de conexão da Equinix
+**Solução:**
 
-1. Verify VC created in Equinix Fabric Portal
-2. Contact CF account team to accept
-3. Allow 2-3 business days
+1. Verifique o VC criado no Equinix Fabric Portal
+2. Entre em contato com a equipe da conta CF para aceitar
+3. Aguarde de 2 a 3 dias úteis
 
-### Console Connect/Megaport: "API creation fails"
+### Console Connect/Megaport: "Falha na criação da API"
 
-**Cause:** Partner interconnects require partner portal + CF approval  
-**Solution:** Cannot fully automate. Order in partner portal, notify CF account team.
+**Causa:** As interconexões de parceiros exigem portal do parceiro + aprovação do CF
+**Solução:** Não é possível automatizar totalmente. Faça o pedido no portal do parceiro e notifique a equipe da conta CF.
 
-## Anti-Patterns
+## Antipadrões
 
-| Anti-Pattern                           | Why Bad                              | Solution                             |
+| Antipadrão | Por que é ruim | Solução |
 | -------------------------------------- | ------------------------------------ | ------------------------------------ |
-| Single interconnect for production     | No SLA, single point of failure      | Use ≥2 with device diversity         |
-| No backup Internet                     | CNI fails = total outage             | Always maintain alternate path       |
-| Polling status every second            | Rate limits, wastes API calls        | Poll every 30-60s max                |
-| Using v1 for Magic WAN v2 workloads    | GRE overhead, complexity             | Use v2 for simplified routing        |
-| Assuming BGP session = traffic flowing | BGP up ≠ routes installed            | Verify routing tables + test traffic |
-| Not enabling maintenance alerts        | Surprise downtime during maintenance | Enable notifications immediately     |
-| Hardcoding VLAN in automation          | VLAN assigned by CF (v1)             | Get VLAN from CNI object response    |
-| Using Direct without colocation        | Can't access cross-connect           | Use Partner or Cloud interconnect    |
+| Interconexão única para produção | Sem SLA, ponto único de falha | Use ≥2 com diversidade de dispositivos |
+| Sem backup da Internet | CNI falha = interrupção total | Sempre mantenha caminho alternativo |
+| Status da votação a cada segundo | Limites de taxa, desperdício de chamadas de API | Pesquisa a cada 30-60 anos no máximo |
+| Usando v1 para cargas de trabalho Magic WAN v2 | Sobrecarga GRE, complexidade | Use v2 para roteamento simplificado |
+| Assumindo sessão BGP = fluxo de tráfego | BGP ativo ≠ rotas instaladas | Verifique as tabelas de roteamento + teste o tráfego |
+| Não habilitando alertas de manutenção | Tempo de inatividade surpresa durante a manutenção | Habilite notificações imediatamente |
+| VLAN codificada em automação | VLAN atribuída por CF (v1) | Obtenha VLAN da resposta do objeto CNI |
+| Usando Direct sem colocation | Não é possível acessar a conexão cruzada | Use interconexão de parceiro ou nuvem |
 
-## What's Not Queryable via API
+## O que não pode ser consultado via API
 
-**Cannot retrieve:**
+**Não é possível recuperar:**
 
-- BGP session state (use Dashboard or BGP logs)
-- Light levels (contact account team)
-- Historical metrics (uptime, traffic)
-- Bandwidth utilization per interconnect
-- Maintenance window schedules (notifications only)
-- Fiber path details
-- Cross-connect installation status
+- Estado da sessão BGP (use dashboard ou logs BGP)
+- Níveis leves (entre em contato com a equipe da conta)
+- Métricas históricas (tempo de atividade, tráfego)
+- Utilização de largura de banda por interconexão
+- Programações de janelas de manutenção (apenas notificações)
+- Detalhes do caminho da fibra
+- Status de instalação de conexão cruzada
 
-**Workarounds:**
+**Soluções alternativas:**
 
-- External monitoring for BGP state
-- Log aggregation for historical data
-- Notifications for maintenance windows
+- Monitoramento externo para estado BGP
+- Agregação de log para dados históricos
+- Notificações para janelas de manutenção
 
-## Limits
+## Limites
 
-| Resource/Limit        | Value         | Notes                               |
+| Recurso/Limite | Valor | Notas |
 | --------------------- | ------------- | ----------------------------------- |
-| Max optical distance  | 10km          | Physical limit                      |
-| MTU (v1)              | 1500↓ / 1476↑ | Asymmetric                          |
-| MTU (v2)              | 1500 both     | Symmetric                           |
-| GRE tunnel throughput | 1 Gbps        | Per tunnel (v1)                     |
-| Recovery time         | Days          | No formal SLA                       |
-| Light level minimum   | -20 dBm       | Target threshold                    |
-| API rate limit        | 1200 req/5min | Per token                           |
-| Health check delay    | 6 hours       | New maintenance alert subscriptions |
+| Distância óptica máxima | 10km | Limite físico |
+| MTU (v1) | 1500↓/1476↑ | Assimétrico |
+| MTU (v2) | 1500 ambos | Simétrico |
+| Taxa de transferência do túnel GRE | 1Gb/s | Por túnel (v1) |
+| Tempo de recuperação | Dias | Nenhum SLA formal |
+| Nível de luz mínimo | -20dBm | Limite-alvo |
+| Limite de taxa API | 1200 req/5min | Por token |
+| Atraso no exame de saúde | 6 horas | Novas assinaturas de alerta de manutenção |
+```

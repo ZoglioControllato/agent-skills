@@ -1,6 +1,6 @@
-# Workers AI Patterns
+# Padrões de IA de trabalhadores
 
-## RAG (Retrieval-Augmented Generation)
+## RAG (geração aumentada de recuperação)
 
 ```typescript
 // 1. Embed query
@@ -24,7 +24,7 @@ const response = await env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
 })
 ```
 
-## Streaming (SSE)
+##Transmissão (SSE)
 
 ```typescript
 const stream = await env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
@@ -48,7 +48,7 @@ return new Response(readable, {
 })
 ```
 
-## Error Handling & Retry
+##Tratamento de erros e nova tentativa
 
 ```typescript
 async function runWithRetry(env, model, input, maxRetries = 3) {
@@ -66,7 +66,7 @@ async function runWithRetry(env, model, input, maxRetries = 3) {
 }
 ```
 
-## Model Fallback
+##Modelo substituto
 
 ```typescript
 try {
@@ -76,7 +76,7 @@ try {
 }
 ```
 
-## Prompt Patterns
+##Padrões de prompt
 
 ```typescript
 // System prompts
@@ -95,7 +95,7 @@ messages: [
 ]
 ```
 
-## Parallel Execution
+##Execução Paralela
 
 ```typescript
 const [sentiment, summary, embedding] = await Promise.all([
@@ -105,14 +105,14 @@ const [sentiment, summary, embedding] = await Promise.all([
 ])
 ```
 
-## Cost Optimization
+##Otimização de custos
 
-| Task     | Model                                  | Neurons |
-| -------- | -------------------------------------- | ------- |
-| Classify | `@cf/mistral/mistral-7b-instruct-v0.1` | ~50     |
-| Chat     | `@cf/meta/llama-3.1-8b-instruct`       | ~200    |
-| Complex  | `@cf/meta/llama-3.1-70b-instruct`      | ~2000   |
-| Embed    | `@cf/baai/bge-base-en-v1.5`            | ~10     |
+| Tarefa      | Modelo                                 | Neurônios |
+| ----------- | -------------------------------------- | --------- |
+| Classificar | `@cf/mistral/mistral-7b-instruct-v0.1` | ~50       |
+| Bate-papo   | `@cf/meta/llama-3.1-8b-instruct`       | ~200      |
+| Complexo    | `@cf/meta/llama-3.1-70b-instruct`      | ~2000     |
+| Incorporar  | `@cf/baai/bge-base-en-v1.5`            | ~10       |
 
 ```typescript
 // Batch embeddings

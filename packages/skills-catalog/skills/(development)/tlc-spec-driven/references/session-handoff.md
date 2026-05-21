@@ -1,16 +1,16 @@
-# Session Handoff
+# Transferência de sessão
 
-## Pause Work
+## Pausar trabalho
 
-**Trigger:** "Pause work", "End session", "Create handoff"
+**Acionador:** "Pausar trabalho", "Terminar sessão", "Criar transferência"
 
-**Purpose:** Checkpoint current state for resumption.
+**Objetivo:** Verificar o estado atual para retomada.
 
-**Output:** `.specs/HANDOFF.md` (overwrites previous)
+**Saída:** `.specs/HANDOFF.md` (substitui o anterior)
 
-**Size target:** ~500 tokens
+**Tamanho alvo:** ~500 tokens
 
-**Structure:**
+**Estrutura:**
 
 ```markdown
 # Handoff
@@ -45,27 +45,27 @@
 - Related decisions: [STATE.md references if applicable]
 ```
 
-**Instructions:**
+**Instruções:**
 
-- Focus on actionable information for resumption
-- Include specific file/line references where relevant
-- Note uncommitted changes explicitly
-- Reference related STATE.md entries if applicable
+- Foco em informações acionáveis para retomada
+- Incluir referências de arquivo/linha específicas quando relevante
+- Observe explicitamente as alterações não confirmadas
+- Referência de entradas STATE.md relacionadas, se aplicável
 
-## Resume Work
+## Retomar trabalho
 
-**Trigger:** "Resume work", "Continue", "Load handoff"
+**Acionador:** "Retomar trabalho", "Continuar", "Transferir carga"
 
-**Process:**
+**Processo:**
 
-1. Load HANDOFF.md
-2. Load STATE.md for context
-3. Summarize current position
-4. Propose next action
+1. Carregue HANDOFF.md
+2. Carregue STATE.md para contexto
+3. Resuma a posição atual
+4. Proponha a próxima ação
 
-**Response pattern:**
+**Padrão de resposta:**
 
-- "Resuming [feature] at [task]"
-- "Completed: [summary]"
-- "Next: [immediate action]"
-- "Continue with [specific step]?"
+- "Retomando [recurso] em [tarefa]"
+- "Concluído: [resumo]"
+- "Próximo: [ação imediata]"
+- "Continuar com [etapa específica]?"

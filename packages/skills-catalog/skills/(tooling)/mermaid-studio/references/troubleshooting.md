@@ -1,43 +1,42 @@
-# Troubleshooting — Common Errors and Fixes
+# Solução de problemas – Erros e correções comuns
 
-Load this file when validation fails or diagrams don't render correctly.
+Carregue este arquivo quando a validação falhar ou os diagramas não forem renderizados corretamente.
 
-## Syntax Errors
+## Erros de sintaxe
 
-### 1. Unexpected token / Parse error
+### 1. Token inesperado/erro de análise
 
-**Symptom:** `Parse error on line N: ...`
+**Sintoma:** `Erro de análise na linha N: ...`
 
-**Common causes and fixes:**
+**Causas comuns e soluções:**
 
-| Cause                   | Bad              | Good                    |
-| ----------------------- | ---------------- | ----------------------- |
-| Special chars in labels | `A[User's Data]` | `A["User's Data"]`      |
-| Unmatched brackets      | `A[Open label`   | `A[Open label]`         |
-| Missing arrow           | `A B`            | `A --> B`               |
-| Wrong arrow direction   | `A >>- B`        | `A ->> B`               |
-| Keyword as node ID      | `end --> start`  | `endNode --> startNode` |
-| Curly braces in comment | `%% {config}`    | `%% config here`        |
+| Causa                           | Ruim                  | Bom                     |
+| ------------------------------- | --------------------- | ----------------------- |
+| Caracteres especiais em rótulos | `A[Dados do usuário]` | `A["Dados do usuário"]` |
+| Colchetes incomparáveis ​​      | `A[Rótulo aberto`     | `A[Rótulo aberto]`      |
+| Flecha faltando                 | `A B`                 | `A --> B`               |
+| Direção errada da seta          | `A >>- B`             | `A ->> B`               |
 
-### 2. Reserved Words as Node IDs
+| Palavra-chave como
 
-These words CANNOT be used as bare node IDs:
+ID do nó | `fim --> início` | `endNode --> startNode` |
+| Chaves no comentário | `%% {config}` | `%% configure aqui` |
+
+### 2. Palavras reservadas como IDs de nó
+
+Estas palavras NÃO PODEM ser usadas como IDs de nó simples:
 
 `end`, `graph`, `subgraph`, `flowchart`, `classDiagram`, `sequenceDiagram`, `stateDiagram`, `erDiagram`, `gantt`, `pie`, `click`, `style`, `class`, `linkStyle`, `default`, `direction`
 
-**Fix:** Append a suffix or use different names:
-
-```
+**Correção:** Anexe um sufixo ou use nomes diferentes:```
 %% Bad
 end --> start
 
 %% Good
 endState --> startState
-```
 
-### 3. Quotes and Escaping
-
-```
+````
+### 3. Citações e Escape```
 %% Bad — unescaped quotes
 A["She said "hello""]
 
@@ -50,11 +49,10 @@ A[C:\Users\path]
 
 %% Good — use forward slash or quote the label
 A["C:\Users\path"]
-```
+````
 
-### 4. Empty Labels or Missing Content
+### 4. Etiquetas vazias ou conteúdo ausente```
 
-```
 %% Bad — empty node
 A[] --> B
 
@@ -67,31 +65,32 @@ end
 
 %% Good
 subgraph Group
-    A[Content]
+A[Content]
 end
-```
-
-## Rendering Issues
-
-### 5. Diagram Renders but Layout is Wrong
-
-**Symptom:** Nodes overlap, arrows cross unnecessarily
-
-**Fixes:**
-
-- Change direction: `TD` ↔ `LR`
-- Add invisible links for spacing: `A ~~~ B`
-- Use subgraphs to group related nodes
-- Reduce node count (split into multiple diagrams)
-- Try `layout: elk` in frontmatter (if supported)
-
-### 6. Labels Cut Off or Truncated
-
-**Symptom:** Long text gets clipped
-
-**Fixes:**
 
 ```
+## Problemas de renderização
+
+### 5. O diagrama é renderizado, mas o layout está errado
+
+**Sintoma:** Nós se sobrepõem, setas se cruzam desnecessariamente
+
+**Correções:**
+
+- Mudar direção: `TD` ↔ `LR`
+- Adicione links invisíveis para espaçamento: `A ~~~ B`
+- Use subgráficos para agrupar nós relacionados
+- Reduzir a contagem de nós (dividir em vários diagramas)
+- Experimente `layout: elk` no frontmatter (se suportado)
+
+### 6. Etiquetas cortadas ou truncadas
+
+**Sintoma:** Texto longo fica cortado
+
+**Correções:**
+
+```
+
 %% Use line breaks
 A["Order Processing<br/>Service"]
 
@@ -100,60 +99,61 @@ A["Order Svc"]
 
 %% For sequence diagrams, use aliases
 participant OrderSvc as Order Processing Service
-```
-
-### 7. Subgraph Won't Render
-
-**Symptom:** Subgraph shows as flat, no boundary
-
-**Fixes:**
 
 ```
+### 7. O subgráfico não será renderizado
+
+**Sintoma:** O subgráfico aparece como plano, sem limite
+
+**Correções:**
+
+```
+
 %% Bad — subgraph must have content
 subgraph Empty
 end
 
 %% Good — needs at least one node
 subgraph Group["Service Layer"]
-    A[Service A]
+A[Service A]
 end
 
 %% Bad — nested subgraph direction before content
 subgraph Parent
-    direction LR
+direction LR
 end
 
 %% Good — direction followed by nodes
 subgraph Parent
-    direction LR
-    A --> B
+direction LR
+A --> B
 end
-```
 
-### 8. Theme Not Applied
+````
+### 8. Tema não aplicado
 
-**Symptom:** Diagram renders with default colors
+**Sintoma:** O diagrama é renderizado com cores padrão
 
-**Causes:**
+**Causas:**
 
-- beautiful-mermaid themes only work with that engine
-- Frontmatter must be at the very start of the file
-- `%%{init}` directive must be on line 1
-- Some renderers ignore theme config
+- temas de linda sereia só funcionam com esse mecanismo
+- Frontmatter deve estar no início do arquivo
+- A diretiva `%%{init}` deve estar na linha 1
+- Alguns renderizadores ignoram a configuração do tema
 
-**Fix:** Verify which engine is being used. For mmdc, use `--theme` flag. For beautiful-mermaid, use `--theme` parameter.
+**Correção:** Verifique qual mecanismo está sendo usado. Para mmdc, use o sinalizador `--theme`. Para linda sereia, use o parâmetro `--theme`.
 
-### 9. SVG Output is Blank or Tiny
+### 9. A saída SVG está em branco ou minúscula
 
-**Symptom:** File is generated but empty or 0x0 pixels
+**Sintoma:** O arquivo é gerado, mas está vazio ou tem 0x0 pixels
 
-**Causes:**
+**Causas:**
 
-- Puppeteer/Chrome not installed (mmdc)
-- File encoding issue (BOM marker)
-- Syntax error that fails silently
+- Puppeteer/Chrome não instalado (mmdc)
+- Problema de codificação de arquivo (marcador BOM)
+- Erro de sintaxe que falha silenciosamente
 
-**Fixes:**
+**Correções:**
 
 ```bash
 # Re-run setup
@@ -165,26 +165,26 @@ file diagram.mmd
 
 # Validate first
 node $SKILL_DIR/scripts/validate.mjs diagram.mmd
-```
+````
 
-### 10. mmdc Command Not Found
+### 10. Comando mmdc não encontrado```bash
 
-```bash
 # Check if installed
+
 npx mmdc --version
 
 # If not, install
+
 npm install -g @mermaid-js/mermaid-cli
 
 # Or use npx (no global install)
+
 npx -y @mermaid-js/mermaid-cli -i input.mmd -o output.svg
-```
 
-### 11. Puppeteer/Chrome Issues
+`````
+### 11. Problemas do titereiro/Chrome
 
-**Symptom:** `Error: Could not find Chrome`
-
-```bash
+**Sintoma:** `Erro: não foi possível encontrar o Chrome````bash
 # Install Chromium for puppeteer
 npx puppeteer browsers install chrome
 
@@ -194,15 +194,13 @@ export PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 # Or use puppeteer config
 echo '{"args": ["--no-sandbox"]}' > puppeteer-config.json
 npx mmdc -i input.mmd -o output.svg -p puppeteer-config.json
-```
+`````
 
-## Diagram-Specific Issues
+## Problemas específicos do diagrama
 
-### 12. Sequence Diagram — Activation Mismatch
+### 12. Diagrama de sequência - Incompatibilidade de ativação
 
-**Symptom:** `Activation error` or misaligned boxes
-
-```
+**Sintoma:** `Erro de ativação` ou caixas desalinhadas```
 %% Bad — activate without deactivate
 A->>+B: Request
 B->>C: Forward
@@ -210,11 +208,9 @@ B->>C: Forward
 %% Good — always pair +/-
 A->>+B: Request
 B-->>-A: Response
-```
 
-### 13. ERD — Relationship Syntax Error
-
-```
+````
+### 13. ERD – Erro de sintaxe de relacionamento```
 %% Bad — wrong cardinality syntax
 USER --o{ ORDER
 
@@ -226,11 +222,10 @@ USER ||--o{ ORDER
 
 %% Good — relationship label is required
 USER ||--o{ ORDER : "places"
-```
+````
 
-### 14. C4 — Element Not Rendering
+### 14. C4 - Elemento não renderizado```
 
-```
 %% Bad — missing quotes around parameters
 Container(api, API, NestJS, Backend service)
 
@@ -239,18 +234,16 @@ Container(api, "API", "NestJS", "Backend service")
 
 %% Bad — wrong boundary nesting
 Container_Boundary(app, "App") {
-    System(sys, "External")  %% System inside Container boundary
+System(sys, "External") %% System inside Container boundary
 }
 
 %% Good — use appropriate element types for context
 Container_Boundary(app, "App") {
-    Component(cmp, "Internal Component", "Tech", "Desc")
+Component(cmp, "Internal Component", "Tech", "Desc")
 }
-```
 
-### 15. Gantt — Dates Not Parsing
-
-```
+````
+### 15. Gantt – Datas não analisadas```
 %% Bad — wrong format
 dateFormat DD-MM-YYYY
 
@@ -260,25 +253,21 @@ dateFormat YYYY-MM-DD
 dateFormat DD/MM/YYYY
 %% or
 dateFormat X  (Unix timestamp)
-```
+````
 
-### 16. Flowchart — Circular Reference Warning
+### 16. Fluxograma - Aviso de referência circular
 
-**Symptom:** Infinite loop in rendering
-
-```
+**Sintoma:** Loop infinito na renderização```
 %% Problematic — direct circular
 A --> B --> A
 
 %% Still valid but may cause layout issues. Fix by adding direction:
 flowchart LR
-    A --> B
-    B --> A  %% Renders as two arrows between A and B
-```
+A --> B
+B --> A %% Renders as two arrows between A and B
 
-### 17. State Diagram — Composite State Errors
-
-```
+````
+### 17. Diagrama de Estado – Erros de Estado Composto```
 %% Bad — missing initial state in composite
 state Active {
     Running --> Paused
@@ -289,27 +278,27 @@ state Active {
     [*] --> Running
     Running --> Paused
 }
-```
+````
 
-### 18. Architecture-beta — Not Rendering
+### 18. Arquitetura beta – não renderizada
 
-**Symptom:** Raw text displayed instead of diagram
+**Sintoma:** Texto bruto exibido em vez de diagrama
 
-**Cause:** `architecture-beta` requires Mermaid v11+
+**Causa:** `architecture-beta` requer Mermaid v11+
 
-**Fixes:**
+**Correções:**
 
-- Verify Mermaid version: `npx mmdc --version` (needs 11+)
-- Use C4 or flowchart as fallback (see aws-architecture.md)
-- Update mermaid-cli: `npm install -g @mermaid-js/mermaid-cli@latest`
+- Verifique a versão do Mermaid: `npx mmdc --version` (precisa de 11+)
+- Use C4 ou fluxograma como substituto (consulte aws-architecture.md)
+- Atualize sereia-cli: `npm install -g @mermaid-js/mermaid-cli@latest`
 
-### 19. Architecture-beta — Icons Not Showing
+### 19. Arquitetura-beta – Ícones não exibidos
 
-**Symptom:** Icons show as generic boxes or are missing
+**Sintoma:** Os ícones aparecem como caixas genéricas ou estão ausentes
 
-**Cause:** `logos:aws-*` icons require icon pack registration at render time
+**Causa:** ícones `logos:aws-*` exigem registro do pacote de ícones no momento da renderização
 
-**Fixes:**
+**Correções:**
 
 ```bash
 # Use the --icons flag to register icon packs
@@ -320,23 +309,23 @@ node $SKILL_DIR/scripts/render.mjs --input diagram.mmd --output diagram.svg --ic
 # With:    service api(server)[API Gateway]
 ```
 
-Built-in icons that work everywhere: `cloud`, `database`, `disk`, `server`, `internet`
+Ícones integrados que funcionam em qualquer lugar: `nuvem`, `banco de dados`, `disco`, `servidor`, `internet`
 
-### 20. Architecture-beta — Massive Distances Between Arrows/Nodes
+### 20. Arquitetura-beta — Grandes distâncias entre setas/nós
 
-**Symptom:** Nodes are spaced extremely far apart, making arrows incredibly long and crossing other nodes messily.
+**Sintoma:** Os nós estão extremamente espaçados, tornando as setas incrivelmente longas e cruzando outros nós de maneira confusa.
 
-**Cause:** The architecture-beta renderer has no edge routing algorithms and places nodes in rigid, escalating grids. This breaks diagrams with > 8 nodes.
+**Causa:** O renderizador da arquitetura beta não possui algoritmos de roteamento de borda e coloca os nós em grades rígidas e escalonadas. Isso quebra diagramas com > 8 nós.
 
-**Fix:** DO NOT use `architecture-beta` for complex systems. Convert the diagram to a properly styled `C4Container` diagram immediately. C4's layout engine spaces elements perfectly.
+**Correção:** NÃO use `architecture-beta` para sistemas complexos. Converta o diagrama em um diagrama `C4Container` com estilo adequado imediatamente. O mecanismo de layout do C4 espaça os elementos perfeitamente.
 
-### 20. C4 — Lines Too Dark / Overlapping Elements
+### 20. C4 — Linhas muito escuras/elementos sobrepostos
 
-**Symptom:** Black lines create visual clutter, labels overlap with elements
+**Sintoma:** linhas pretas criam confusão visual, rótulos se sobrepõem a elementos
 
-**Cause:** Missing `UpdateRelStyle` and `UpdateLayoutConfig` directives
+**Causa:** Diretivas `UpdateRelStyle` e `UpdateLayoutConfig` ausentes
 
-**Fixes:**
+**Correções:**
 
 ```
 %% Add to the END of every C4 diagram, after all Rel() definitions
@@ -350,67 +339,59 @@ UpdateRelStyle(from, to, $textColor="#475569", $lineColor="#94a3b8", $offsetY="-
 UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
 ```
 
-### 21. General — Diagram Lines Too Dark/Harsh
+### 21. Geral - Linhas do diagrama muito escuras/ásperas
 
-**Symptom:** Diagram looks cluttered even with few nodes
+**Sintoma:** o diagrama parece confuso mesmo com poucos nós
 
-**Cause:** Default Mermaid theme uses black (#000000) lines
+**Causa:** O tema Sereia padrão usa linhas pretas (#000000)
 
-**Fix:** Add init directive with soft line color:
-
-```
+**Correção:** Adicionada diretiva init com cor de linha suave:```
 %%{init: {'theme': 'base', 'themeVariables': {
-  'lineColor': '#94a3b8'
+'lineColor': '#94a3b8'
 }}}%%
-```
 
-### 22. General — Init Directive Not Applying
+````
+### 22. Geral — Diretiva Init não aplicável
 
-**Symptom:** Colors don't change despite adding `%%{init}` directive
+**Sintoma:** As cores não mudam apesar da adição da diretiva `%%{init}`
 
-**Cause:** The directive must be on the very first line (no blank lines before it)
+**Causa:** A diretiva deve estar na primeira linha (sem linhas em branco antes dela)
 
-**Fix:** Ensure `%%{init}` is the absolute first non-comment line:
-
-```
+**Correção:** Certifique-se de que `%%{init}` seja a primeira linha sem comentários:```
 %%{init: {'theme': 'base', 'themeVariables': {...}}}%%
 flowchart LR
     A --> B
-```
+````
 
-NOT:
-
-```
+NÃO:```
 flowchart LR
-%%{init: {'theme': 'base', 'themeVariables': {...}}}%%  %% THIS WILL NOT WORK
-    A --> B
-```
+%%{init: {'theme': 'base', 'themeVariables': {...}}}%% %% THIS WILL NOT WORK
+A --> B
 
-## Validation Script Errors
+````
+## Erros de script de validação
 
-### 23. validate.mjs Reports False Positives
+### 23. validar.mjs relata falsos positivos
 
-If the validator rejects valid syntax, it might be using an older Mermaid parser version. Try:
-
-```bash
+Se o validador rejeitar a sintaxe válida, ele poderá estar usando uma versão mais antiga do analisador Mermaid. Tentar:```bash
 # Update the validation script's dependency
 cd $SKILL_DIR && npm update mermaid
 
 # Or skip validation and render directly (rendering validates implicitly)
 node $SKILL_DIR/scripts/render.mjs --input diagram.mmd --output test.svg
-```
+````
 
-### 24. Batch Script Hangs
+### 24. O script em lote trava
 
-**Symptom:** batch.mjs processes some files then stops
+**Sintoma:** batch.mjs processa alguns arquivos e depois para
 
-**Causes:**
+**Causas:**
 
-- Too many workers for available memory
-- One diagram has infinite loop syntax
-- Puppeteer timeout on complex diagrams
+- Muitos trabalhadores para memória disponível
+- Um diagrama possui sintaxe de loop infinito
+- Tempo limite do titereiro em diagramas complexos
 
-**Fixes:**
+**Correções:**
 
 ```bash
 # Reduce workers
@@ -422,58 +403,57 @@ node $SKILL_DIR/scripts/batch.mjs --timeout 60000
 # Process problematic files individually to isolate the issue
 ```
 
-## Performance Tips
+## Dicas de desempenho
 
-1. **Simple diagrams first** — start with fewer nodes, add incrementally
-2. **Split large diagrams** — over 15 nodes hurts readability and rendering
-3. **Use SVG over PNG** — SVG renders faster and scales infinitely
-4. **ASCII for CI/CD** — no Puppeteer needed, fast and portable
-5. **Batch in parallel** — use `--workers 4` for multiple files
-6. **Cache renders** — only re-render when .mmd source changes
+1. **Diagramas simples primeiro** — comece com menos nós, adicione de forma incremental
+2. **Dividir diagramas grandes** — mais de 15 nós prejudicam a legibilidade e a renderização
+3. **Use SVG em vez de PNG** — SVG é renderizado mais rápido e dimensionado infinitamente
+4. **ASCII para CI/CD** — não é necessário Puppeteer, rápido e portátil
+5. **Lote em paralelo** — use `--workers 4` para vários arquivos
+6. **Renderizações em cache** — renderizar novamente somente quando a origem do .mmd for alterada
 
-## Rendering Quality Issues
+## Problemas de qualidade de renderização
 
-### 25. Fonts Render as Times New Roman / Serif
+### 25. Fontes renderizadas como Times New Roman / Serif
 
-**Symptom:** Text in the rendered PNG/SVG appears in an ugly serif font instead of the expected sans-serif font.
+**Sintoma:** O texto no PNG/SVG renderizado aparece em uma fonte com serifa feia em vez da fonte sem serifa esperada.
 
-**Cause:** The `%%{init}%%` directive uses `fontFamily: 'system-ui'` or `fontFamily: 'Segoe UI'` or other desktop-only fonts. These fonts are NOT available in headless Chromium (which `mmdc` uses internally), so the browser falls back to a serif font.
+**Causa:** A diretiva `%%{init}%%` usa `fontFamily: 'system-ui'` ou `fontFamily: 'Segoe UI'` ou outras fontes somente para desktop. Essas fontes NÃO estão disponíveis no Chromium headless (que `mmdc` usa internamente), então o navegador volta para uma fonte serifada.
 
-**Fix:** Do NOT set `fontFamily` at all (Mermaid's default `trebuchet ms, verdana, arial, sans-serif` works perfectly), or use only universally available fonts:
-
-```
+**Correção:** NÃO defina `fontFamily` (o padrão `trebuchet ms, verdana, arial, sans-serif` do Mermaid funciona perfeitamente) ou use apenas fontes universalmente disponíveis:```
 %% BAD — these fonts don't exist in headless Chromium
 %%{init: {'theme': 'base', 'themeVariables': {
-  'fontFamily': 'system-ui, -apple-system, sans-serif'
+'fontFamily': 'system-ui, -apple-system, sans-serif'
 }}}%%
 
 %% GOOD — use Mermaid defaults (don't set fontFamily at all)
 %%{init: {'theme': 'base', 'themeVariables': {
-  'primaryColor': '#4f46e5', 'lineColor': '#94a3b8'
+'primaryColor': '#4f46e5', 'lineColor': '#94a3b8'
 }}}%%
 
 %% GOOD — if you must set a font, use web-safe ones
 %%{init: {'theme': 'base', 'themeVariables': {
-  'fontFamily': 'trebuchet ms, verdana, arial, sans-serif'
+'fontFamily': 'trebuchet ms, verdana, arial, sans-serif'
 }}}%%
+
 ```
+### 26. Tema/Diretiva Init ignorada durante a renderização
 
-### 26. Theme / Init Directive Ignored When Rendering
+**Sintoma:** Você definiu `%%{init: {'theme': 'dark', ...}}%%` em seu arquivo `.mmd`, mas o diagrama é renderizado com o tema claro padrão.
 
-**Symptom:** You set `%%{init: {'theme': 'dark', ...}}%%` in your `.mmd` file but the diagram renders with the default light theme.
+**Causa:** O script de renderização passa um arquivo de configuração com `{"theme": "default"}` via `mmdc -c`, que estava substituindo a diretiva init no diagrama.
 
-**Cause:** The render script passes a config file with `{"theme": "default"}` via `mmdc -c`, which was overriding the init directive in the diagram.
+**Correção:** Este bug foi corrigido no script de renderização — ele agora detecta `%%{init` no arquivo de entrada e NÃO passa um tema no arquivo de configuração, permitindo que a diretiva init tenha precedência total. Se você ainda tiver esse problema, verifique:
 
-**Fix:** This bug has been fixed in the render script — it now detects `%%{init` in the input file and does NOT pass a theme in the config file, allowing the init directive to take full precedence. If you still experience this issue, verify:
+1. A diretiva `%%{init}%%` está na primeira linha do arquivo `.mmd` (sem linhas em branco antes dela)
+2. Você NÃO está passando `--theme` para o script de renderização ao usar diretivas init
+3. A versão do script de renderização inclui a correção de detecção `hasInitDirective`
 
-1. The `%%{init}%%` directive is on the very first line of the `.mmd` file (no blank lines before it)
-2. You are NOT passing `--theme` to the render script when using init directives
-3. The render script version includes the `hasInitDirective` detection fix
+### 27. O script de renderização falha silenciosamente com `mmdc=no`
 
-### 27. Render Script Fails Silently with `mmdc=no`
+**Sintoma:** O script de renderização reporta `Engines: mmdc=no` mesmo que `mmdc` esteja instalado em `.deps/node_modules/.bin/`.
 
-**Symptom:** The render script reports `Engines: mmdc=no` even though `mmdc` is installed in `.deps/node_modules/.bin/`.
+**Causa:** O caminho do diretório da habilidade contém caracteres especiais (como parênteses em `(tooling)`) que interrompem a execução do shell em `execSync()`. O shell interpreta `(` como sintaxe de subshell e falha.
 
-**Cause:** The skill's directory path contains special characters (like parentheses in `(tooling)`) that break shell execution in `execSync()`. The shell interprets `(` as subshell syntax and fails.
-
-**Fix:** This bug has been fixed in the render script — all paths are now wrapped with `shellQuote()` which uses single quotes to protect against special characters. If you still experience this issue, verify that the `shellQuote()` function exists in `render.mjs` and is used for all path arguments in `execSync()` calls.
+**Correção:** Este bug foi corrigido no script de renderização — todos os caminhos agora são agrupados com `shellQuote()` que usa aspas simples para proteção contra caracteres especiais. Se você ainda tiver esse problema, verifique se a função `shellQuote()` existe em `render.mjs` e é usada para todos os argumentos de caminho em chamadas `execSync()`.
+```

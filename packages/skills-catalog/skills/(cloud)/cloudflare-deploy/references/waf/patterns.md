@@ -1,6 +1,6 @@
-# Common Patterns
+# Padrões comuns
 
-## Deploy Managed Rulesets
+## Implantar rulesets gerenciados
 
 ```typescript
 // Deploy Cloudflare Managed Ruleset (default)
@@ -25,7 +25,7 @@ await client.rulesets.create({
 })
 ```
 
-## Override Managed Ruleset
+## Sobrescrever ruleset gerenciado
 
 ```typescript
 await client.rulesets.create({
@@ -55,7 +55,7 @@ await client.rulesets.create({
 })
 ```
 
-## Custom Rules
+## Regras customizadas
 
 ```typescript
 await client.rulesets.create({
@@ -77,7 +77,7 @@ await client.rulesets.create({
 })
 ```
 
-## Rate Limiting
+## Rate limiting
 
 ```typescript
 await client.rulesets.create({
@@ -131,7 +131,7 @@ await client.rulesets.create({
 })
 ```
 
-## Skip Rules
+## Regras skip
 
 ```typescript
 await client.rulesets.create({
@@ -159,9 +159,9 @@ await client.rulesets.create({
 })
 ```
 
-## Complete Setup Example
+## Exemplo completo
 
-Combine all three phases for comprehensive protection:
+Combine as três fases:
 
 ```typescript
 const client = new Cloudflare({ apiToken: process.env.CF_API_TOKEN })
@@ -225,3 +225,5 @@ await client.rulesets.create({
   ],
 })
 ```
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

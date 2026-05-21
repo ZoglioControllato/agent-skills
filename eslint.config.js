@@ -13,6 +13,8 @@ export default defineConfig([
     'dist/**',
     'node_modules/**',
     '**/*.js',
+    'tools/**/*.mjs',
+    'packages/skills-catalog/**/scripts/**/*.mjs',
     '**/*.d.ts',
     '.nx/**',
     '**/.*/**',

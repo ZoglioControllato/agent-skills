@@ -1,26 +1,26 @@
 ---
 name: component-common-domain-detection
-description: Finds duplicate business logic spread across multiple components and suggests consolidation. Use when asking "where is this logic duplicated?", "find common code between services", "what can be consolidated?", "detect shared domain logic", or analyzing component overlap before refactoring. Do NOT use for code-level duplication detection (use linters) or dependency analysis (use coupling-analysis).
+description: Encontra lógica de negócio duplicada entre componentes e sugere consolidação. Use quando perguntar "onde essa lógica está duplicada?", "código em comum entre serviços", "o que dá para consolidar?" ou ao detectar domínio compartilhado antes de refatorar. Aciona em sobreposição funcional entre componentes e consolidação de domínio. NÃO use para duplicação em nível de código (linters/fmt) nem análise de dependências (use coupling-analysis).
 ---
 
-# Common Domain Component Detection
+# Detecção de componentes em domínio comum
 
-This skill identifies common domain functionality that is duplicated across multiple components and suggests consolidation opportunities to reduce duplication and improve maintainability.
+Esta skill identifica funcionalidade de domínio duplicada entre componentes e aponta oportunidades de consolidação para reduzir duplicação e melhorar manutenibilidade.
 
-## How to Use
+## Como usar
 
-### Quick Start
+### Quick start
 
-Request analysis of your codebase:
+Peça análise ao codebase:
 
 - **"Find common domain functionality across components"**
 - **"Identify duplicate domain logic that should be consolidated"**
 - **"Detect shared classes used across multiple components"**
 - **"Analyze consolidation opportunities for common components"**
 
-### Usage Examples
+### Exemplos de uso
 
-**Example 1: Find Common Functionality**
+**Exemplo 1: encontrar funcionalidade comum**
 
 ```
 User: "Find common domain functionality across components"
@@ -33,7 +33,7 @@ The skill will:
 5. Suggest consolidation opportunities
 ```
 
-**Example 2: Detect Duplicate Notification Logic**
+**Exemplo 2: notificações duplicadas**
 
 ```
 User: "Are there multiple notification components that should be consolidated?"
@@ -45,7 +45,7 @@ The skill will:
 4. Recommend consolidation approach
 ```
 
-**Example 3: Analyze Shared Classes**
+**Exemplo 3: classes compartilhadas**
 
 ```
 User: "Find classes that are shared across multiple components"
@@ -57,95 +57,62 @@ The skill will:
 4. Assess impact on coupling
 ```
 
-### Step-by-Step Process
+### Processo passo a passo
 
-1. **Scan Components**: Identify components with common namespace patterns
-2. **Detect Shared Code**: Find classes/files used across components
-3. **Analyze Functionality**: Determine if functionality is truly common
-4. **Assess Coupling**: Calculate coupling impact before consolidation
-5. **Recommend Actions**: Suggest consolidation or shared library approach
+1. **Escaneamento**: ache patterns de namespace repetidos entre componentes
+2. **Código compartilhado**: arquivos/classes usados por mais de um componente
+3. **Funcionalidade**: confirme se é de fato dominante comum
+4. **Acoplamento**: impacto antes/depois de consolidar
+5. **Recomendações**: serviço compartilhado, biblioteca ou merge
 
-## When to Use
+## Quando usar
 
-Apply this skill when:
+- Depois de identificar e dimensionar componentes (Pattern 1)
+- Antes de achatar hierarquia (Pattern 3)
+- Ao reduzir duplicação conscientemente
+- Ao mapear lógica compartilhada de domínio
+- Preparando consolidação de componentes
+- Procurando candidatos a serviços/libs compartilhados
 
-- After identifying and sizing components (Pattern 1)
-- Before flattening components (Pattern 3)
-- When planning to reduce code duplication
-- Analyzing shared domain logic across the codebase
-- Preparing for component consolidation
-- Identifying candidates for shared services or libraries
+## Conceitos centrais
 
-## Core Concepts
+### Funcionalidade de domínio vs infraestrutura
 
-### Domain vs Infrastructure Functionality
+**Domínio** (candidatos a consolidação):
 
-**Domain Functionality** (candidates for consolidation):
+- Processamento que reflete negócio (notification, validation, auditing, formatting)
+- Comum a **alguns** fluxos, não a todos
+- Ex.: ticket auditing, dados de cliente
 
-- Business processing logic (notification, validation, auditing, formatting)
-- Common to **some** processes, not all
-- Examples: Customer notification, ticket auditing, data validation
+**Infraestrutura** (fora desta skill):
 
-**Infrastructure Functionality** (usually not consolidated here):
+- Aspectos operacionais (logging, métricas, segurança)
+- Comuns a **todos** os fluxos
+- Ex.: conexões de BD globais quando são cross-cutting técnico
 
-- Operational concerns (logging, metrics, security)
-- Common to **all** processes
-- Examples: Logging, authentication, database connections
+### Patterns típicos
 
-### Common Domain Patterns
+1. **Namespaces**: mesmo leaf (`*.notification`, `*.audit`…)
 
-Common domain functionality often appears as:
+2. **Classes compartilhadas**: um tipo importado por N componentes
 
-1. **Namespace Patterns**: Components ending in same leaf node
-   - `*.notification`, `*.audit`, `*.validation`, `*.formatting`
-   - Example: `TicketNotification`, `BillingNotification`, `SurveyNotification`
+3. **Comportamentos parecidos**: funções paralelas por contexto diferente
 
-2. **Shared Classes**: Same class used across multiple components
-   - Example: `SMTPConnection` used by 5 different components
-   - Example: `AuditLogger` used by multiple domain components
+### Abordagens
 
-3. **Similar Functionality**: Different components doing similar things
-   - Example: Multiple components sending emails with slight variations
-   - Example: Multiple components writing audit logs
+- **Serviço compartilhado**: lógica muda rápido, escala própria ou deploy independente faz sentido
+- **Biblioteca**: comportamento relativamente estável; dependência de build aceita
+- **Fusão**: funcionalidades muito correlatas e impacto de acoplamento controlado
 
-### Consolidation Approaches
+## Processo de análise
 
-**Shared Service**:
+### Fase 1: Patterns por leaf de namespace
 
-- Common functionality becomes a separate service
-- Other components call this service
-- Good for: Frequently changing logic, complex operations
+1. **Extrair leaves** dos namespaces dos componentes
+2. **Agrupar** por mesmo leaf
+3. **Filtrar** ruídos de infra (`.util`, `.helper`… onde fizer sentido)
 
-**Shared Library**:
-
-- Common code packaged as library (JAR, DLL, npm package)
-- Components import and use the library
-- Good for: Stable functionality, simple utilities
-
-**Component Consolidation**:
-
-- Merge multiple components into one
-- Good for: Highly related functionality, low coupling impact
-
-## Analysis Process
-
-### Phase 1: Identify Common Namespace Patterns
-
-Scan component namespaces for common leaf node names:
-
-1. **Extract leaf nodes** from all component namespaces
-   - Example: `services/billing/notification` → `notification`
-   - Example: `services/ticket/notification` → `notification`
-
-2. **Group by common leaf nodes**
-   - Find components with same leaf node name
-   - Example: All components ending in `.notification`
-
-3. **Filter out infrastructure patterns**
-   - Exclude: `.util`, `.helper`, `.common` (usually infrastructure)
-   - Focus on: `.notification`, `.audit`, `.validation`, `.formatting`
-
-**Example Output**:
+**Exemplo**:
 
 ```markdown
 ## Common Namespace Patterns Found
@@ -163,23 +130,23 @@ Scan component namespaces for common leaf node names:
 - services/survey/audit
 ```
 
-### Phase 2: Detect Shared Classes
+### Fase 2: Detectar classes compartilhadas
 
-Find classes/files used across multiple components:
+Classes/arquivos usados por vários componentes:
 
-1. **Scan imports/dependencies** in each component
-   - Track which classes are imported from where
-   - Note classes used by multiple components
+1. **Imports/dependencies** por componente
+   - Para onde cada import aponta
+   - Classes usadas por mais de um dono de componente
 
-2. **Identify shared classes**
-   - Classes imported by 2+ components
-   - Exclude infrastructure classes (Logger, Config, etc.)
+2. **Quem é shared**
+   - Importada por ≥2 componentes
+   - Exclua utilitários de infra triviais quando forem apenas cross-cutting global (Logger padronizado etc.)
 
-3. **Classify as domain vs infrastructure**
-   - Domain: Business logic classes (SMTPConnection, AuditLogger)
-   - Infrastructure: Technical utilities (Logger, DatabaseConnection)
+3. **Classifique domínio vs infraestrutura**
+   - Domínio: SMTPConnection, AuditLogger se forem modelo de negócio compartilhado
+   - Infraestrutura: utilitários técnicos omnipresentes
 
-**Example Output**:
+**Saída de exemplo**:
 
 ```markdown
 ## Shared Classes Found
@@ -196,26 +163,26 @@ Find classes/files used across multiple components:
 - `Config` - Used by all components (infrastructure)
 ```
 
-### Phase 3: Analyze Functionality Similarity
+### Fase 3: Similaridade de funcionalidade
 
-For each group of common components:
+Para cada grupo de componentes aparentemente iguais:
 
-1. **Examine functionality**
-   - Read source code of each component
-   - Identify what each component does
-   - Note similarities and differences
+1. **Examinar o que fazem**
+   - Ler código
+   - Listar comportamentos efetivos
+   - Simetrias vs diferenças
 
-2. **Assess consolidation feasibility**
-   - Are differences minor (configurable)?
-   - Can differences be abstracted?
-   - Is functionality truly the same?
+2. **Viabilidade de consolidação**
+   - Diferenças são só configuração?
+   - Dá para parametrizar/abstractizar?
+   - É realmente a mesma regra?
 
-3. **Calculate coupling impact**
-   - Count incoming dependencies (afferent coupling) before consolidation
-   - Estimate incoming dependencies after consolidation
-   - Compare total coupling levels
+3. **Impacto em acoplamento**
+   - Contar deps **entrantes** (CA — afferent coupling) antes
+   - Estimar deps depois
+   - Comparar totais aceitável ou não
 
-**Example Analysis**:
+**Exemplo de análise**:
 
 ```markdown
 ## Functionality Analysis
@@ -235,24 +202,22 @@ For each group of common components:
 - Can be abstracted with templates/context
 ```
 
-### Phase 4: Assess Coupling Impact
+### Fase 4: Avaliar impacto de acoplamento
 
-Before recommending consolidation, analyze coupling:
+Antes de recomendar fusão/consolidação:
 
-1. **Calculate current coupling**
-   - Count components using each notification component
-   - Sum total incoming dependencies
+1. **Acoplamento atual**
+   - Consumidores diretos/indiretos
+   - Soma deps entrantes onde fizer sentido
 
-2. **Estimate consolidated coupling**
-   - Count components that would use consolidated component
-   - Compare to current total
+2. **Acoplamento após consolidação**
+   - Consumidores do novo bloco único
 
-3. **Evaluate coupling increase**
-   - Is consolidated component too coupled?
-   - Does it create a bottleneck?
-   - Is coupling increase acceptable?
+3. **Risco centralização**
+   - CA salta tanto que vira bottleneck?
+   - Trade-off vale a pena?
 
-**Example Coupling Analysis**:
+**Exemplo**:
 
 ```markdown
 ## Coupling Impact Analysis
@@ -272,33 +237,17 @@ Before recommending consolidation, analyze coupling:
 **Verdict**: ✅ No coupling increase, safe to consolidate
 ```
 
-### Phase 5: Recommend Consolidation Approach
+### Fase 5: Recomendar abordagem
 
-Based on analysis, recommend approach:
+Com base na análise:
 
-**Shared Service** (if):
+**Serviço compartilhado**, se lógica muda rápido, é complexo, escala só ou há necessidade forte de ciclo próprio\
+**Biblioteca**, se comportamento relativamente estável e dependência offline ok\
+**Fusão de componentes**, se forte coesão de negócio e impacto lateral controlado em CA
 
-- Functionality changes frequently
-- Complex operations
-- Needs independent scaling
-- Multiple deployment units will use it
+## Formato da saída
 
-**Shared Library** (if):
-
-- Stable functionality
-- Simple utilities
-- Compile-time dependency acceptable
-- No need for independent deployment
-
-**Component Consolidation** (if):
-
-- Highly related functionality
-- Low coupling impact
-- Same deployment unit acceptable
-
-## Output Format
-
-### Common Domain Components Report
+### Relatório de domínios comuns
 
 ```markdown
 ## Common Domain Components Found
@@ -332,7 +281,7 @@ Based on analysis, recommend approach:
 - Benefits: Reduced duplication, easier maintenance
 ```
 
-### Consolidation Opportunities Table
+### Tabela de oportunidades
 
 ```markdown
 ## Consolidation Opportunities
@@ -344,7 +293,7 @@ Based on analysis, recommend approach:
 | Validation           | 2 components | 3          | 3        | ✅ High     | Consolidate to shared library |
 ```
 
-### Detailed Consolidation Plan
+### Plano detalhado de consolidação
 
 ```markdown
 ## Consolidation Plan
@@ -381,48 +330,48 @@ Based on analysis, recommend approach:
 - Benefits: Reduced duplication
 ```
 
-## Analysis Checklist
+## Checklist de análise
 
-**Common Pattern Detection**:
+**Detecção de pattern comum**:
 
-- [ ] Scanned all component namespaces for common leaf nodes
-- [ ] Identified components with same ending names
-- [ ] Filtered out infrastructure patterns
-- [ ] Grouped similar components
+- [ ] Varreu namespaces em busca de leaves comuns
+- [ ] Agrupou suffixos/nomes repetidos
+- [ ] Removeu ruído de infraestrutura onde aplicável
+- [ ] Agrupou componentes similares funcionalmente
 
-**Shared Class Detection**:
+**Classes compartilhadas**:
 
-- [ ] Scanned imports/dependencies in each component
-- [ ] Identified classes used by multiple components
-- [ ] Classified as domain vs infrastructure
-- [ ] Documented shared class usage
+- [ ] Passou imports/deps de cada componente
+- [ ] Listou classes multi-uso
+- [ ] Classificou domínio vs infra
+- [ ] Documentou quem usa cada shared
 
-**Functionality Analysis**:
+**Funcionalidade**:
 
-- [ ] Examined source code of common components
-- [ ] Identified similarities and differences
-- [ ] Assessed consolidation feasibility
-- [ ] Determined if differences can be abstracted
+- [ ] Leu código dos agrupamentos
+- [ ] Listou similaridades/diferenças
+- [ ] Avaliou viabilidade de consolidação
+- [ ] Checou se diferenças viram parâmetros/abstração
 
-**Coupling Assessment**:
+**Acoplamento**:
 
-- [ ] Calculated current coupling (CA) for each component
-- [ ] Estimated consolidated coupling
-- [ ] Compared total coupling levels
-- [ ] Evaluated if coupling increase is acceptable
+- [ ] Calculou CA antes
+- [ ] Estimou CA depois
+- [ ] Comparou totais
+- [ ] Julgou aumento aceitável ou não
 
-**Recommendations**:
+**Recomendações**:
 
-- [ ] Suggested consolidation approach (service/library/merge)
-- [ ] Prioritized recommendations by impact
-- [ ] Created consolidation plan with steps
-- [ ] Estimated expected benefits and risks
+- [ ] Propôs serviço/biblioteca/fusão
+- [ ] Priorizou por impacto/risco
+- [ ] Plano de passos tangível
+- [ ] Benefícios e riscos estimados
 
-## Implementation Notes
+## Notas de implementação
 
-### For Node.js/Express Applications
+### Node.js/Express
 
-Common patterns to look for:
+Patterns comuns a observar:
 
 ```
 services/
@@ -440,9 +389,9 @@ services/
 - Look for classes imported from other components
 - Example: `const SMTPConnection = require('../shared/SMTPConnection')`
 
-### For Java Applications
+### Aplicações Java
 
-Common patterns:
+Patterns comuns:
 
 ```
 com.company.billing.audit     ← Common pattern
@@ -456,7 +405,7 @@ com.company.survey.audit      ← Common pattern
 - Look for classes in common packages
 - Example: `import com.company.shared.AuditLogger`
 
-### Detection Strategies
+### Estratégias de detecção
 
 **Namespace Pattern Detection**:
 
@@ -498,11 +447,11 @@ function findSharedClasses(components) {
 }
 ```
 
-## Fitness Functions
+## Fitness functions
 
-After identifying common components, create automated checks:
+Depois da consolidação candidata, automatize checagens:
 
-### Common Namespace Pattern Detection
+### Detecção por namespace
 
 ```javascript
 // Alert if new components with common patterns are created
@@ -526,7 +475,7 @@ function checkCommonPatterns(components, exclusionList = []) {
 }
 ```
 
-### Shared Class Usage Alert
+### Alerta de uso de classe compartilhada
 
 ```javascript
 // Alert if class is used by multiple components
@@ -551,29 +500,29 @@ function checkSharedClasses(components, exclusionList = []) {
 }
 ```
 
-## Best Practices
+## Boas práticas
 
-### Do's ✅
+### Faça ✅
 
-- Distinguish domain from infrastructure functionality
-- Analyze coupling impact before consolidating
-- Consider both shared service and shared library approaches
-- Look for namespace patterns AND shared classes
-- Verify functionality is truly similar before consolidating
-- Calculate coupling metrics (CA) before and after
+- Distinção clara domínio vs infra antes de fundir
+- Sempre numere impacto em acoplamento antes
+- Compare serviço compartilhado vs pacote
+- Olhe namespace **e** classe compartilhada
+- Só consolide se o comportamento for realmente relacionado
+- CA antes/depois documentado
 
-### Don'ts ❌
+### Evite ❌
 
-- Don't consolidate infrastructure functionality (handled separately)
-- Don't consolidate without analyzing coupling impact
-- Don't assume all common patterns should be consolidated
-- Don't ignore differences in functionality
-- Don't consolidate if coupling increase is too high
-- Don't mix domain and infrastructure in same analysis
+- Não trate toda utilidade global como candidate de domínio aqui
+- Não ignore salto de CA pós-fusão
+- Não assuma que todo pattern duplicado vale pena
+- Não esqueça diferenças semânticas sutis
+- Não crie super-módulo só para “DRY cego”
+- Não misture análise técnica infra com regra de negócio num mesmo bucket sem critério
 
-## Common Patterns to Look For
+## Patterns típicos a buscar
 
-### High Consolidation Candidates
+### Forte candidatos a consolidação
 
 - **Notification**: `*.notification`, `*.notify`, `*.email`
 - **Audit**: `*.audit`, `*.auditing`, `*.log`
@@ -581,26 +530,26 @@ function checkSharedClasses(components, exclusionList = []) {
 - **Formatting**: `*.format`, `*.formatter`, `*.formatting`
 - **Reporting**: `*.report`, `*.reporting` (if similar functionality)
 
-### Low Consolidation Candidates
+### Baixa chance / cuidados
 
 - **Infrastructure**: `*.util`, `*.helper`, `*.common` (usually infrastructure)
 - **Different contexts**: Same name, different business meaning
 - **High coupling risk**: Consolidation would create bottleneck
 
-## Next Steps
+## Próximos passos
 
-After identifying common domain components:
+Depois dos achados aqui:
 
-1. **Apply Flatten Components Pattern** - Remove orphaned classes
-2. **Apply Determine Component Dependencies Pattern** - Analyze coupling
-3. **Create Component Domains** - Group components into domains
-4. **Plan Consolidation** - Execute consolidation recommendations
+1. **Flatten components** — limpar orphans
+2. **Determine deps** — acoplamento detalhado
+3. **Domínios** — agrupar componentes logicamente
+4. **Planejar fusão/execução** — roadmap operacional na sequência adequada de skills
 
-## Notes
+## Notas finais
 
-- Common domain functionality is different from infrastructure functionality
-- Consolidation reduces duplication but may increase coupling
-- Always analyze coupling impact before consolidating
-- Shared services vs shared libraries have different trade-offs
-- Some duplication is acceptable if it reduces coupling
-- Not all common patterns should be consolidated
+- Domínio comum não é igual infraestrutura compartilhada
+- Consolidação reduz duplicação mas pode aumentar CA
+- Sempre projete coupling antes da mudança
+- Serviço vs biblioteca têm custos diferentes de release
+- Alguma duplicação consciente reduzindo acoplamento pode ser válida
+- Nem todo similarity exige fusão única — contexto decide

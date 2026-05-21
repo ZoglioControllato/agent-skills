@@ -1,86 +1,86 @@
-# AI Search Gotchas
+# Armadilhas do AI Search
 
-## Type Safety
+## Type safety
 
-**Timestamp precision:** Use seconds (10-digit), not milliseconds.
+**Precisão de timestamp:** use segundos (10 dígitos), não milissegundos.
 
 ```typescript
-const nowInSeconds = Math.floor(Date.now() / 1000) // Correct
+const nowInSeconds = Math.floor(Date.now() / 1000) // Correto
 ```
 
-**Folder prefix matching:** Use `gte` for "starts with" on paths.
+**Prefixo de pasta:** use `gte` para "começa com" em caminhos.
 
 ```typescript
-filters: { column: "folder", operator: "gte", value: "docs/api/" } // Matches nested
+filters: { column: "folder", operator: "gte", value: "docs/api/" } // Casa aninhados
 ```
 
-## Filter Limitations
+## Limitações de filtro
 
-| Limit                | Value                  |
-| -------------------- | ---------------------- |
-| Max nesting depth    | 2 levels               |
-| Filters per compound | 10                     |
-| `or` operator        | Same column, `eq` only |
+| Limite                           | Valor                 |
+| -------------------------------- | --------------------- |
+| Profundidade máx. de aninhamento | 2 níveis              |
+| Filtros por composto             | 10                    |
+| Operador `or`                    | Mesma coluna, só `eq` |
 
-**OR restriction example:**
+**Exemplo da restrição OR:**
 
 ```typescript
-// ✅ Valid: same column, eq only
+// ✅ Válido: mesma coluna, só eq
 { operator: "or", filters: [
   { column: "folder", operator: "eq", value: "docs/" },
   { column: "folder", operator: "eq", value: "guides/" }
 ]}
 ```
 
-## Indexing Issues
+## Problemas de indexação
 
-| Problem           | Cause                      | Solution                                           |
-| ----------------- | -------------------------- | -------------------------------------------------- |
-| File not indexed  | Unsupported format or >4MB | Check format (.md/.txt/.html/.pdf/.doc/.csv/.json) |
-| Index out of sync | 6-hour index cycle         | Wait or use "Force Sync" (30s rate limit)          |
-| Empty results     | Index incomplete           | Check dashboard for indexing status                |
+| Problema             | Causa                          | Solução                                                 |
+| -------------------- | ------------------------------ | ------------------------------------------------------- |
+| Arquivo não indexado | Formato não suportado ou >4 MB | Verificar formato (.md/.txt/.html/.pdf/.doc/.csv/.json) |
+| Índice defasado      | Ciclo de 6 h                   | Aguardar ou usar "Force Sync" (limite 30 s)             |
+| Resultados vazios    | Índice incompleto              | Ver status no dashboard                                 |
 
-## Auth Errors
+## Erros de autenticação
 
-| Error                      | Cause                 | Fix                                                 |
-| -------------------------- | --------------------- | --------------------------------------------------- |
-| `AutoRAGUnauthorizedError` | Invalid/missing token | Create Service API token with AI Search permissions |
-| `AutoRAGNotFoundError`     | Wrong instance name   | Verify exact name from dashboard                    |
+| Erro                       | Causa                    | Correção                                         |
+| -------------------------- | ------------------------ | ------------------------------------------------ |
+| `AutoRAGUnauthorizedError` | Token inválido/ausente   | Criar Service API token com permissões AI Search |
+| `AutoRAGNotFoundError`     | Nome de instância errado | Confirmar nome exato no dashboard                |
 
-## Performance
+## Desempenho
 
-**Slow responses (>3s):**
+**Respostas lentas (>3 s):**
 
 ```typescript
-// Add score threshold + limit results
+// Limiar de score + limitar resultados
 ranking_options: { score_threshold: 0.5 },
 max_num_results: 10
 ```
 
-**Empty results debug:**
+**Depuração de resultados vazios:**
 
-1. Remove filters, test basic query
-2. Lower `score_threshold` to 0.1
-3. Check index is populated
+1. Remova filtros, teste consulta básica
+2. Reduza `score_threshold` para 0,1
+3. Verifique se o índice está populado
 
-## Limits
+## Limites
 
-| Resource              | Limit   |
-| --------------------- | ------- |
-| Instances per account | 10      |
-| Files per instance    | 100,000 |
-| Max file size         | 4 MB    |
-| Index frequency       | 6 hours |
+| Recurso                 | Limite  |
+| ----------------------- | ------- |
+| Instâncias por conta    | 10      |
+| Arquivos por instância  | 100.000 |
+| Tamanho máx. do arquivo | 4 MB    |
+| Frequência de indexação | 6 horas |
 
-## Anti-Patterns
+## Anti-padrões
 
-**Use env vars for instance names:**
+**Use variáveis de ambiente para nomes de instância:**
 
 ```typescript
 const answer = await env.AI.autorag(env.AI_SEARCH_INSTANCE).aiSearch({...});
 ```
 
-**Handle specific error types:**
+**Trate tipos de erro específicos:**
 
 ```typescript
 if (error instanceof AutoRAGNotFoundError) {

@@ -130,44 +130,43 @@ Tail Workers use same binding syntax as regular Workers:
 wrangler tail my-producer-worker
 ```
 
-**This is different from Tail Workers:**
+**Isso é diferente dos Trabalhadores de Cauda:**
 
-- `wrangler tail` streams logs to your terminal
-- Tail Workers are Workers that process events programmatically
+- `wrangler tail` transmite logs para o seu terminal
+- Tail Workers são Workers que processam eventos programaticamente
 
-## Deployment Checklist
+## Lista de verificação de implantação
 
-- [ ] Tail Worker has `tail()` handler
-- [ ] Tail Worker deployed before producer
-- [ ] Producer's `wrangler.jsonc` has correct `tail_consumers`
-- [ ] Environment variables configured
-- [ ] Tested with staging environment
-- [ ] Monitoring configured for Tail Worker itself
+- [] Tail Worker tem manipulador `tail ()`
+- [] Tail Worker implantado antes do produtor
+- [] `wrangler.jsonc` do produtor tem `tail_consumers` correto
+- [] Variáveis de ambiente configuradas
+- [] Testado com ambiente de teste
+- [ ] Monitoramento configurado para o próprio Tail Worker
 
-## Limits
+## Limites
 
-| Limit                           | Value                           | Notes                                        |
-| ------------------------------- | ------------------------------- | -------------------------------------------- |
-| Max tail consumers per producer | 10                              | Each receives all events independently       |
-| Events batch size               | Up to 100 events per invocation | Larger batches split across invocations      |
-| Tail Worker CPU time            | Same as regular Workers         | 10ms (free), 30ms (paid), 50ms (paid bundle) |
-| Pricing tier                    | Workers Paid or Enterprise      | Not available on free plan                   |
-| Request body size               | 100 MB max                      | When sending to external endpoints           |
-| Event retention                 | None                            | Events not retried if tail handler fails     |
+| Limite                                     | Valor                               | Notas                                                 |
+| ------------------------------------------ | ----------------------------------- | ----------------------------------------------------- |
+| Máximo de consumidores finais por produtor | 10                                  | Cada um recebe todos os eventos de forma independente |
+| Tamanho do lote de eventos                 | Até 100 eventos por invocação       | Lotes maiores divididos entre invocações              |
+| Tempo de CPU do Tail Worker                | Igual aos trabalhadores regulares   | 10ms (grátis), 30ms (pago), 50ms (pacote pago)        |
+| Nível de preços                            | Trabalhadores Pagos ou Empresariais | Não disponível no plano gratuito                      |
+| Solicitar tamanho do corpo                 | 100 MB no máximo                    | Ao enviar para endpoints externos                     |
+| Retenção de eventos                        | Nenhum                              | Eventos não repetidos se o manipulador final falhar   |
 
-## Workers for Platforms
+## Trabalhadores para plataformas
 
-For dynamic dispatch Workers, both dispatch and user Worker events sent to tail consumer:
-
-```jsonc
+Para Workers de despacho dinâmico, os eventos de Worker de despacho e de usuário são enviados ao consumidor final:```jsonc
 {
-  "name": "dispatch-worker",
-  "tail_consumers": [
-    {
-      "service": "platform-tail-worker",
-    },
-  ],
+"name": "dispatch-worker",
+"tail_consumers": [
+{
+"service": "platform-tail-worker",
+},
+],
 }
+
 ```
 
 Tail Worker receives TWO `TraceItem` elements per request:
@@ -176,3 +175,4 @@ Tail Worker receives TWO `TraceItem` elements per request:
 2. User Worker event
 
 See [patterns.md](patterns.md) for handling.
+```

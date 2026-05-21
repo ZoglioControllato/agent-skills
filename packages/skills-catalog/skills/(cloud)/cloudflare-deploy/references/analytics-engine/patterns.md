@@ -47,37 +47,40 @@ env.ANALYTICS.writeDataPoint({
 // SELECT blob1, quantile(0.95)(double1) AS p95_ms FROM perf GROUP BY blob1
 ```
 
-## Anti-Patterns
+## Antipadrões
 
-| ❌ Wrong                              | ✅ Correct                             |
-| ------------------------------------- | -------------------------------------- |
-| `await writeDataPoint()`              | `writeDataPoint()` (fire-and-forget)   |
-| `indexes: [method]` (low cardinality) | `blobs: [method]`, `indexes: [userId]` |
-| `blobs: [JSON.stringify(obj)]`        | Store ID in blob, full object in D1/KV |
-| Write every request at 10M/min        | Pre-aggregate per second               |
-| Query from Worker                     | Query from external service/API        |
+| ❌ Errado                                 | ✅ Correto                                     |
+| ----------------------------------------- | ---------------------------------------------- |
+| `aguarde writeDataPoint()`                | `writeDataPoint()` (disparar e esquecer)       |
+| `índices: [método]` (baixa cardinalidade) | `blobs: [método]`, `índices: [userId]`         |
+| `blobs: [JSON.stringify(obj)]`            | Armazenar ID em blob, objeto completo em D1/KV |
+| Escreva todas as solicitações a 10M/min   | Pré-agregado por segundo                       |
+| Consulta do Trabalhador                   | Consulta de serviço/API externo                |
 
-## Best Practices
+## Melhores práticas
 
-1. **Design schema upfront** - Document blob/double/index assignments
-2. **Always include count metric** - `doubles: [latency, 1]` for AVG calculations
-3. **Use enums for blobs** - Consistent values like `Status.SUCCESS`
-4. **Handle sampling** - Use ratios (avg_latency = SUM(latency)/SUM(count))
-5. **Test queries early** - Validate schema before heavy writes
+1. **Projete o esquema antecipadamente** - Atribuições de blob/duplo/índice de documento
+2. **Sempre inclua a métrica de contagem** - `doubles: [latency, 1]` para cálculos do AVG
+3. **Use enums para blobs** - Valores consistentes como `Status.SUCCESS`
+4. **Tratar amostragem** - Use proporções (avg_latency = SUM(latency)/SUM(count))
+5. **Teste consultas antecipadamente** - Valide o esquema antes de gravações pesadas
 
-## Schema Template
+## Modelo de esquema```typescript
 
-```typescript
-/**
- * Dataset: my_metrics
- *
- * Blobs:
- *   blob1: endpoint, blob2: method, blob3: status
- *
- * Doubles:
- *   double1: latency_ms, double2: count (always 1)
- *
- * Indexes:
- *   index1: customer_id (high cardinality)
- */
+/\*\*
+
+- Dataset: my_metrics
+-
+- Blobs:
+- blob1: endpoint, blob2: method, blob3: status
+-
+- Doubles:
+- double1: latency_ms, double2: count (always 1)
+-
+- Indexes:
+- index1: customer_id (high cardinality)
+  \*/
+
+```
+
 ```

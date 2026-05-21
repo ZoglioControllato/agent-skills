@@ -1,66 +1,66 @@
-# Cloudflare Realtime SFU Reference
+# Referência SFU em tempo real da Cloudflare
 
-Expert guidance for building real-time audio/video/data applications using Cloudflare Realtime SFU (Selective Forwarding Unit).
+Orientação especializada para criar aplicativos de áudio/vídeo/dados em tempo real usando Cloudflare Realtime SFU (Selective Forwarding Unit).
 
-## Reading Order
+## Ordem de leitura
 
-| Task                        | Files                          | ~Tokens |
-| --------------------------- | ------------------------------ | ------- |
-| New project                 | README → configuration         | ~1200   |
-| Implement publish/subscribe | README → api                   | ~1600   |
-| Add PartyTracks             | patterns (PartyTracks section) | ~800    |
-| Build presence system       | patterns (DO section)          | ~800    |
-| Debug connection issues     | gotchas                        | ~700    |
-| Scale to millions           | patterns (Cascading section)   | ~600    |
-| Add simulcast               | patterns (Advanced section)    | ~500    |
-| Configure TURN              | configuration (TURN section)   | ~400    |
+| Tarefa                            | Arquivos                    | ~Tokens |
+| --------------------------------- | --------------------------- | ------- |
+| Novo projeto                      | LEIA-ME → configuração      | ~1200   |
+| Implementar publicação/assinatura | LEIA-ME → API               | ~1600   |
+| Adicionar PartyTracks             | padrões (seção PartyTracks) | ~800    |
+| Construir sistema de presença     | padrões (seção DO)          | ~800    |
+| Depurar problemas de conexão      | pegadinhas                  | ~700    |
+| Escalar para milhões              | padrões (seção em cascata)  | ~600    |
+| Adicionar transmissão simultânea  | padrões (seção Avançado)    | ~500    |
+| Configurar o TURN                 | configuração (seção TURN)   | ~400    |
 
-## In This Reference
+## Nesta referência
 
-- **[configuration.md](configuration.md)** - Setup, deployment, environment variables, Wrangler config
-- **[api.md](api.md)** - Sessions, tracks, endpoints, request/response patterns
-- **[patterns.md](patterns.md)** - Architecture patterns, use cases, integration examples
-- **[gotchas.md](gotchas.md)** - Common issues, debugging, performance, security
+- **[configuration.md](configuration.md)** - Configuração, implantação, variáveis de ambiente, configuração do Wrangler
+- **[api.md](api.md)** - Sessões, trilhas, endpoints, padrões de solicitação/resposta
+- **[patterns.md](patterns.md)** - Padrões de arquitetura, casos de uso, exemplos de integração
+- **[gotchas.md](gotchas.md)** - Problemas comuns, depuração, desempenho, segurança
 
-## Quick Start
+## Início rápido
 
-Cloudflare Realtime SFU: WebRTC infrastructure on global network (310+ cities). Anycast routing, no regional constraints, pub/sub model.
+Cloudflare Realtime SFU: infraestrutura WebRTC em rede global (mais de 310 cidades). Roteamento Anycast, sem restrições regionais, modelo pub/sub.
 
-**Core concepts:**
+**Conceitos principais:**
 
-- **Sessions:** WebRTC PeerConnection to Cloudflare edge
-- **Tracks:** Audio/video/data channels you publish or subscribe to
-- **No rooms:** Build presence layer yourself via track sharing (see patterns.md)
+- **Sessões:** WebRTC PeerConnection com Cloudflare Edge
+- **Faixas:** Canais de áudio/vídeo/dados que você publica ou assina
+- **Sem salas:** Crie você mesmo uma camada de presença por meio do compartilhamento de trilhas (consulte padrões.md)
 
-**Mental model:** Your client establishes one WebRTC session, publishes tracks (audio/video), shares track IDs via your backend, others subscribe to your tracks using track IDs + your session ID.
+**Modelo mental:** Seu cliente estabelece uma sessão WebRTC, publica faixas (áudio/vídeo), compartilha IDs de faixa por meio de seu back-end, outros assinam suas faixas usando IDs de faixa + seu ID de sessão.
 
-## Choose Your Approach
+## Escolha sua abordagem
 
-| Approach        | When to Use                                  | Complexity                                     |
-| --------------- | -------------------------------------------- | ---------------------------------------------- |
-| **PartyTracks** | Production apps with device switching, React | Low - Observable-based, handles reconnections  |
-| **Raw API**     | Custom requirements, non-browser, learning   | Medium - Full control, manual WebRTC lifecycle |
-| **RealtimeKit** | End-to-end SDK with UI components            | Lowest - Managed state, React hooks            |
+| Abordagem             | Quando usar                                              | Complexidade                                        |
+| --------------------- | -------------------------------------------------------- | --------------------------------------------------- |
+| **PartyTracks**       | Aplicativos de produção com troca de dispositivos, React | Baixo - Baseado em observáveis, lida com reconexões |
+| **API bruta**         | Requisitos personalizados, sem navegador, aprendizagem   | Médio - Controle total, ciclo de vida WebRTC manual |
+| **Kit em tempo real** | SDK ponta a ponta com componentes de UI                  | Mais baixo - Estado gerenciado, ganchos React       |
 
-**Recommendation:** Start with PartyTracks for most production applications. See patterns.md for PartyTracks examples.
+**Recomendação:** Comece com PartyTracks para a maioria das aplicações de produção. Veja padrões.md para exemplos de PartyTracks.
 
-## SFU vs RealtimeKit
+##SFU vs RealtimeKit
 
-- **Realtime SFU:** WebRTC infrastructure (this reference). Build your own signaling, presence, UI.
-- **RealtimeKit:** SDK layer on top of SFU. Includes React hooks, state management, UI components. Part of Cloudflare AI platform.
+- **SFU em tempo real:** Infraestrutura WebRTC (esta referência). Crie sua própria sinalização, presença e UI.
+- **RealtimeKit:** Camada SDK sobre SFU. Inclui ganchos React, gerenciamento de estado, componentes de UI. Parte da plataforma Cloudflare AI.
 
-Use SFU directly when you need custom signaling or non-React framework. Use RealtimeKit for faster development with React.
+Use SFU diretamente quando precisar de sinalização personalizada ou estrutura não React. Use o RealtimeKit para um desenvolvimento mais rápido com React.
 
-## Setup
+## Configuração
 
-Dashboard: https://dash.cloudflare.com/?to=/:account/calls
+Painel: https://dash.cloudflare.com/?to=/:account/calls
 
-Get `CALLS_APP_ID` and `CALLS_APP_SECRET` from dashboard, then see configuration.md for deployment.
+Obtenha `CALLS_APP_ID` e `CALLS_APP_SECRET` do painel e consulte configuration.md para implantação.
 
-## See Also
+## Veja também
 
 - [Orange Meets Demo](https://demo.orange.cloudflare.dev/)
-- [Orange Source](https://github.com/cloudflare/orange)
-- [Calls Examples](https://github.com/cloudflare/calls-examples)
-- [API Reference](https://developers.cloudflare.com/api/resources/calls/)
-- [RealtimeKit Docs](https://developers.cloudflare.com/workers-ai/realtimekit/)
+- [Fonte Laranja](https://github.com/cloudflare/orange)
+- [Exemplos de chamadas](https://github.com/cloudflare/calls-examples)
+- [Referência da API](https://developers.cloudflare.com/api/resources/calls/)
+- [Documentos do RealtimeKit](https://developers.cloudflare.com/workers-ai/realtimekit/)

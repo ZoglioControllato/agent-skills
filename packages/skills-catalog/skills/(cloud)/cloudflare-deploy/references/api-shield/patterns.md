@@ -1,6 +1,6 @@
-# Patterns & Use Cases
+# Padrões e casos de uso
 
-## Protect API with Schema + JWT
+## Proteger API com esquema + JWT
 
 ```bash
 # 1. Upload OpenAPI schema
@@ -22,7 +22,7 @@ PUT /zones/{zone_id}/api_gateway/settings/schema_validation
 {"validation_default_mitigation_action": "block"}
 ```
 
-## Progressive Rollout
+##Lançamento progressivo
 
 ```
 1. Log mode: Observe false positives
@@ -38,11 +38,11 @@ PUT /zones/{zone_id}/api_gateway/settings/schema_validation
    - Handle fallthrough with custom rule
 ```
 
-## BOLA Detection
+##Detecção BOLA
 
-### Enumeration Detection
+### Detecção de enumeração
 
-Detects sequential resource access (e.g., `/users/1`, `/users/2`, `/users/3`).
+Detecta acesso sequencial a recursos (por exemplo, `/users/1`, `/users/2`, `/users/3`).
 
 ```javascript
 // Block BOLA enumeration attempts
@@ -50,9 +50,9 @@ Detects sequential resource access (e.g., `/users/1`, `/users/2`, `/users/3`).
 // Action: Block or Challenge
 ```
 
-### Parameter Pollution
+### Poluição de Parâmetros
 
-Detects duplicate/excessive parameters in requests.
+Detecta parâmetros duplicados/excessivos em solicitações.
 
 ```javascript
 // Block parameter pollution
@@ -60,7 +60,7 @@ Detects duplicate/excessive parameters in requests.
 // Action: Block
 ```
 
-### Combined BOLA Protection
+### Proteção BOLA Combinada
 
 ```javascript
 // Comprehensive BOLA rule
@@ -69,9 +69,9 @@ and http.host eq "api.example.com"
 // Action: Block
 ```
 
-## Authentication Posture
+##Postura de autenticação
 
-### Detect Missing Auth
+### Detectar autenticação ausente
 
 ```javascript
 // Log endpoints lacking authentication
@@ -79,7 +79,7 @@ and http.host eq "api.example.com"
 // Action: Log (for audit)
 ```
 
-### Detect Mixed Auth
+### Detectar autenticação mista
 
 ```javascript
 // Alert on inconsistent auth patterns
@@ -87,7 +87,7 @@ and http.host eq "api.example.com"
 // Action: Log (review required)
 ```
 
-## Fallthrough Detection (Shadow APIs)
+##Detecção de Fallthrough (APIs Shadow)
 
 ```javascript
 // WAF Custom Rule
@@ -95,7 +95,7 @@ and http.host eq "api.example.com"
 // Action: Log (discover unknown) or Block (strict)
 ```
 
-## Rate Limiting by User
+##Limitação de taxa por usuário
 
 ```javascript
 // Rate Limiting Rule (modern syntax)
@@ -106,7 +106,7 @@ and http.host eq "api.example.com"
 // Counting expression: lookup_json_string(http.request.jwt.payload["{config_id}"][0], "sub")
 ```
 
-## Volumetric Abuse Response
+##Resposta ao abuso volumétrico
 
 ```javascript
 // Detect abnormal traffic spikes
@@ -119,7 +119,7 @@ and http.host eq "api.example.com"
 // Action: JS Challenge
 ```
 
-## GraphQL Protection
+##Proteção GraphQL
 
 ```javascript
 // Block oversized queries
@@ -133,53 +133,53 @@ and http.host eq "api.example.com"
 // Action: Block
 ```
 
-## Architecture Patterns
+##Padrões de Arquitetura
 
-**Public API:** Discovery + Schema Validation 2.0 + JWT + Rate Limiting + Bot Management  
-**Partner API:** mTLS + Schema Validation + Sequence Mitigation  
-**Internal API:** Discovery + Schema Learning + Auth Posture
+**API pública:** Descoberta + Validação de esquema 2.0 + JWT + Limitação de taxa + Gerenciamento de bot  
+**API do parceiro:** mTLS + validação de esquema + mitigação de sequência  
+**API interna:** Descoberta + Aprendizado de esquema + Postura de autenticação
 
-## OWASP API Security Top 10 Mapping (2026)
+## Mapeamento dos 10 principais seguranças da API OWASP (2026)
 
-| OWASP Issue                                 | API Shield Solutions                                                                          |
-| ------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| API1:2023 Broken Object Level Authorization | **BOLA Detection** (enumeration + pollution), Sequence mitigation, Schema, JWT, Rate Limiting |
-| API2:2023 Broken Authentication             | **Auth Posture**, mTLS, JWT validation, Bot Management                                        |
-| API3:2023 Broken Object Property Auth       | Schema validation, JWT validation                                                             |
-| API4:2023 Unrestricted Resource Access      | Rate Limiting, **Volumetric Abuse Detection**, **GraphQL Protection**, Bot Management         |
-| API5:2023 Broken Function Level Auth        | Schema validation, JWT validation, Auth Posture                                               |
-| API6:2023 Unrestricted Business Flows       | Sequence mitigation, Bot Management                                                           |
-| API7:2023 SSRF                              | Schema validation, WAF managed rules                                                          |
-| API8:2023 Security Misconfiguration         | **Schema Validation 2.0**, Auth Posture, WAF rules                                            |
-| API9:2023 Improper Inventory Management     | **API Discovery**, Schema learning, Auth Posture                                              |
-| API10:2023 Unsafe API Consumption           | JWT validation, Schema validation, WAF managed                                                |
+| Problema OWASP                                           | Soluções de escudo API                                                                             |
+| -------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| API1:2023 Autorização em nível de objeto quebrado        | **Detecção BOLA** (enumeração + poluição), mitigação de sequência, esquema, JWT, limitação de taxa |
+| API2:2023 Autenticação quebrada                          | **Postura de autenticação**, mTLS, validação JWT, gerenciamento de bots                            |
+| API3:2023 Autenticação de propriedade de objeto quebrado | Validação de esquema, validação JWT                                                                |
+| API4:2023 Acesso irrestrito a recursos                   | Limitação de taxa, **Detecção volumétrica de abuso**, **Proteção GraphQL**, Gerenciamento de bots  |
+| API5:2023 Autenticação de nível de função quebrada       | Validação de esquema, validação JWT, postura de autenticação                                       |
+| API6:2023 Fluxos de negócios irrestritos                 | Mitigação de sequência, gerenciamento de bots                                                      |
+| API7:2023 SSRF                                           | Validação de esquema, regras gerenciadas pelo WAF                                                  |
+| API8:2023 Configuração incorreta de segurança            | **Validação de esquema 2.0**, postura de autenticação, regras WAF                                  |
+| API9:2023 Gerenciamento inadequado de estoque            | **Descoberta de API**, aprendizado de esquema, postura de autenticação                             |
+| API10:2023 Consumo inseguro de API                       | Validação JWT, validação de esquema, gerenciamento de WAF                                          |
 
-## Monitoring
+## Monitoramento
 
-**Security Events:** `Security > Events` → Filter: Action = block, Service = API Shield  
-**Firewall Analytics:** `Analytics > Security` → Filter by `cf.api_gateway.*` fields  
-**Logpush fields:** APIGatewayAuthIDPresent, APIGatewayRequestViolatesSchema, APIGatewayFallthroughDetected, JWTValidationResult
+**Eventos de segurança:** `Segurança > Eventos` → Filtro: Ação = bloco, Serviço = API Shield  
+**Firewall Analytics:** `Analytics > Segurança` → Filtrar por campos `cf.api_gateway.*`  
+**Campos Logpush:** APIGatewayAuthIDPresent, APIGatewayRequestViolatesSchema, APIGatewayFallthroughDetected, JWTValidationResult
 
-## Availability (2026)
+## Disponibilidade (2026)
 
-| Feature                    | Availability      | Notes                |
-| -------------------------- | ----------------- | -------------------- |
-| mTLS (CF-managed CA)       | All plans         | Self-service         |
-| Endpoint Management        | All plans         | Limited operations   |
-| Schema Validation 2.0      | All plans         | Limited operations   |
-| API Discovery              | Enterprise        | 10K+ ops             |
-| JWT Validation             | Enterprise add-on | Full validation      |
-| BOLA Detection             | Enterprise add-on | Requires session IDs |
-| Auth Posture               | Enterprise add-on | Security audit       |
-| Volumetric Abuse Detection | Enterprise add-on | Traffic analysis     |
-| GraphQL Protection         | Enterprise add-on | Query limits         |
-| Sequence Mitigation        | Enterprise (beta) | Contact team         |
-| Full Suite                 | Enterprise add-on | All features         |
+| Recurso                       | Disponibilidade         | Notas                    |
+| ----------------------------- | ----------------------- | ------------------------ |
+| mTLS (CA gerenciada por CF)   | Todos os planos         | Autoatendimento          |
+| Gerenciamento de terminais    | Todos os planos         | Operações limitadas      |
+| Validação de Esquema 2.0      | Todos os planos         | Operações limitadas      |
+| Descoberta de API             | Empresa                 | Mais de 10 mil operações |
+| Validação JWT                 | Complemento empresarial | Validação completa       |
+| Detecção BOLA                 | Complemento empresarial | Requer IDs de sessão     |
+| Postura de autenticação       | Complemento empresarial | Auditoria de segurança   |
+| Detecção volumétrica de abuso | Complemento empresarial | Análise de tráfego       |
+| Proteção GraphQL              | Complemento empresarial | Limites de consulta      |
+| Mitigação de sequência        | Empresa (beta)          | Equipe de contato        |
+| Suíte Completa                | Complemento empresarial | Todos os recursos        |
 
-**Enterprise limits:** 10K operations (contact for higher). Preview access available for non-contract evaluation.
+**Limites empresariais:** 10 mil operações (entre em contato para maiores). Acesso de visualização disponível para avaliação fora do contrato.
 
-## See Also
+## Veja também
 
-- [configuration.md](configuration.md) - Setup all features before creating rules
-- [api.md](api.md) - Firewall field reference and API endpoints
-- [gotchas.md](gotchas.md) - Common issues and limits
+- [configuration.md](configuration.md) - Configure todos os recursos antes de criar regras
+- [api.md](api.md) - Referência de campo de firewall e endpoints de API
+- [gotchas.md](gotchas.md) - Problemas comuns e limites

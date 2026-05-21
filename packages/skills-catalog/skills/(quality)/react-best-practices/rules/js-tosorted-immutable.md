@@ -1,15 +1,15 @@
 ---
-title: Use toSorted() Instead of sort() for Immutability
+title: Use toSorted() em vez de sort() para imutabilidade
 impact: MEDIUM-HIGH
-impactDescription: prevents mutation bugs in React state
+impactDescription: evita bugs de mutação no estado React
 tags: javascript, arrays, immutability, react, state, mutation
 ---
 
-## Use toSorted() Instead of sort() for Immutability
+## Use toSorted() em vez de sort() para imutabilidade
 
-`.sort()` mutates the array in place, which can cause bugs with React state and props. Use `.toSorted()` to create a new sorted array without mutation.
+`.sort()` muda ou array não existe, o que pode causar bugs de estado e props no React. Use `.toSorted()` para criar um novo array ordenado sem mutação.
 
-**Incorrect (mutates original array):**
+**Incorreto (muta o array original):**
 
 ```typescript
 function UserList({ users }: { users: User[] }) {
@@ -22,7 +22,7 @@ function UserList({ users }: { users: User[] }) {
 }
 ```
 
-**Correct (creates new array):**
+**Correto (criou um array novo):**
 
 ```typescript
 function UserList({ users }: { users: User[] }) {
@@ -35,23 +35,23 @@ function UserList({ users }: { users: User[] }) {
 }
 ```
 
-**Why this matters in React:**
+**Por que isso é importante no React:**
 
-1. Props/state mutations break React's immutability model - React expects props and state to be treated as read-only
-2. Causes stale closure bugs - Mutating arrays inside closures (callbacks, effects) can lead to unexpected behavior
+1. Mutação de props/estado quebra o modelo de imutabilidade — o React espera que props e estado sejam tratados como somente leitura
+2. Causa bugs de encerramento obsoleto — alterar arrays dentro de encerramentos (callbacks, efeitos) pode gerar comportamento inesperado
 
-**Browser support (fallback for older browsers):**
+**Suporte em navegadores (fallback para ambientes antigos):**
 
-`.toSorted()` is available in all modern browsers (Chrome 110+, Safari 16+, Firefox 115+, Node.js 20+). For older environments, use spread operator:
-
-```typescript
+`.toSorted()` está disponível em navegadores modernos (Chrome 110+, Safari 16+, Firefox 115+, Node.js 20+). Em ambientes mais antigos, use spread:```typescript
 // Fallback for older browsers
 const sorted = [...items].sort((a, b) => a.value - b.value)
+
 ```
 
-**Other immutable array methods:**
+**Outros métodos imutáveis de array:**
 
-- `.toSorted()` - immutable sort
-- `.toReversed()` - immutable reverse
-- `.toSpliced()` - immutable splice
-- `.with()` - immutable element replacement
+- `.toSorted()` — ordenação imutável
+- `.toReversed()` — versão imutável
+- `.toSpliced()` — emenda imutável
+- `.with()` — substituição imutável de elemento
+```

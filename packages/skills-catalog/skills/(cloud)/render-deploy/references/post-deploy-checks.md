@@ -1,36 +1,33 @@
-# Post-deploy checks
+# Verificações pós-implantação
 
-Use this after any deploy or service creation. Keep it short; stop when a check fails.
+Use isto após qualquer implantação ou criação de serviço. Seja breve; pare quando uma verificação falhar.
 
-## 1) Confirm deploy status
+## 1) Confirme o status de implantação```
 
-```
 list_deploys(serviceId: "<service-id>", limit: 1)
-```
 
-- Expect `status: "live"`.
-- If status is failed, inspect build/runtime logs immediately.
+````
+- Espere `status: "ao vivo"`.
+- Se o status falhar, inspecione os logs de compilação/tempo de execução imediatamente.
 
-## 2) Verify service health
+## 2) Verifique a integridade do serviço
 
-- Hit the health endpoint (preferred) or `/` and confirm a 200 response.
-- If there is no health endpoint, add one and redeploy.
+- Acesse o endpoint de integridade (preferencial) ou `/` e confirme uma resposta 200.
+- Se não houver nenhum ponto final de funcionamento, adicione um e reimplante.
 
-## 3) Scan recent error logs
-
-```
+## 3) Verifique os registros de erros recentes```
 list_logs(resource: ["<service-id>"], level: ["error"], limit: 50)
-```
+````
 
-- If you see a clear error signature, jump to the matching fix in
-  [troubleshooting-basics.md](troubleshooting-basics.md) or
-  [error-patterns.md](error-patterns.md).
+- Se você vir uma assinatura de erro clara, vá para a correção correspondente em
+  [troubleshooting-basics.md](troubleshooting-basics.md) ou
+  [padrões de erro.md](padrões de erro.md).
 
-## 4) Verify env vars and port binding
+## 4) Verifique env vars e ligação de porta
 
-- Confirm all required env vars are set (especially secrets marked `sync: false`).
-- Ensure the app binds to `0.0.0.0:$PORT` (not localhost).
+- Confirme se todos os env vars necessários estão definidos (especialmente os segredos marcados como `sync: false`).
+- Certifique-se de que o aplicativo esteja vinculado a `0.0.0.0:$PORT` (não localhost).
 
-## 5) Redeploy only after fixing the first failure
+## 5) Reimplante somente após corrigir a primeira falha
 
-- Avoid repeated deploys without changes; fix one issue at a time.
+- Evite implantações repetidas sem alterações; corrigir um problema de cada vez.

@@ -1,10 +1,10 @@
-# Stream Live Streaming API
+# API Stream — streaming ao vivo
 
-Live input creation, status checking, simulcast, and WebRTC streaming.
+Criação de entradas ao vivo, status, simulcast e streaming WebRTC.
 
-## Create Live Input
+## Criar entrada ao vivo
 
-### Using Cloudflare SDK
+### Com o SDK Cloudflare
 
 ```typescript
 import Cloudflare from 'cloudflare'
@@ -20,7 +20,7 @@ const liveInput = await client.stream.liveInputs.create({
 // Returns: { uid, rtmps, srt, webRTC }
 ```
 
-### Raw fetch API
+### API fetch direta
 
 ```typescript
 async function createLiveInput(accountId: string, apiToken: string) {
@@ -42,7 +42,7 @@ async function createLiveInput(accountId: string, apiToken: string) {
 }
 ```
 
-## Check Live Status
+## Consultar status ao vivo
 
 ```typescript
 async function getLiveStatus(accountId: string, liveInputId: string, apiToken: string) {
@@ -59,9 +59,9 @@ async function getLiveStatus(accountId: string, liveInputId: string, apiToken: s
 }
 ```
 
-## Simulcast (Live Outputs)
+## Simulcast (saídas ao vivo)
 
-### Create Output
+### Criar saída
 
 ```typescript
 async function createLiveOutput(
@@ -83,7 +83,7 @@ async function createLiveOutput(
 }
 ```
 
-### Example: Simulcast to YouTube + Twitch
+### Exemplo: simulcast YouTube + Twitch
 
 ```typescript
 const liveInput = await createLiveInput(accountId, apiToken)
@@ -95,9 +95,9 @@ await createLiveOutput(accountId, liveInput.uid, apiToken, 'rtmp://a.rtmp.youtub
 await createLiveOutput(accountId, liveInput.uid, apiToken, 'rtmp://live.twitch.tv/app', 'your-twitch-stream-key')
 ```
 
-## WebRTC Streaming (WHIP/WHEP)
+## Streaming WebRTC (WHIP/WHEP)
 
-### Browser to Stream (WHIP)
+### Navegador → Stream (WHIP)
 
 ```typescript
 async function startWebRTCBroadcast(liveInputId: string) {
@@ -123,7 +123,7 @@ async function startWebRTCBroadcast(liveInputId: string) {
 }
 ```
 
-### Stream to Browser (WHEP)
+### Stream → navegador (WHEP)
 
 ```typescript
 async function playWebRTCStream(videoId: string) {
@@ -148,13 +148,13 @@ async function playWebRTCStream(videoId: string) {
 }
 ```
 
-## Recording Settings
+## Configuração de gravação
 
-| Mode             | Behavior                                     |
-| ---------------- | -------------------------------------------- |
-| `automatic`      | Record all live streams                      |
-| `off`            | No recording                                 |
-| `timeoutSeconds` | Stop recording after N seconds of inactivity |
+| Modo             | Comportamento                               |
+| ---------------- | ------------------------------------------- |
+| `automatic`      | Grava todos os streams ao vivo              |
+| `off`            | Sem gravação                                |
+| `timeoutSeconds` | Para gravação após N segundos sem atividade |
 
 ```typescript
 const recordingConfig = {
@@ -165,14 +165,16 @@ const recordingConfig = {
 }
 ```
 
-## In This Reference
+## Nesta referência
 
-- [README.md](./README.md) - Overview and quick start
-- [api.md](./api.md) - On-demand video APIs
-- [configuration.md](./configuration.md) - Setup and config
-- [patterns.md](./patterns.md) - Full-stack flows, best practices
-- [gotchas.md](./gotchas.md) - Error codes, troubleshooting
+- [README.md](./README.md) — visão geral e início rápido
+- [api.md](./api.md) — vídeo sob demanda
+- [configuration.md](./configuration.md) — setup
+- [patterns.md](./patterns.md) — fluxos e boas práticas
+- [gotchas.md](./gotchas.md) — erros e limites
 
-## See Also
+## Ver também
 
-- [workers](../workers/) - Deploy live APIs in Workers
+- [workers](../workers/) — expor APIs ao vivo em Workers
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

@@ -1,30 +1,31 @@
-# AWS Architecture Diagrams — Complete Reference
+# Diagramas de arquitetura AWS – referência completa
 
-Load this file when the user requests cloud architecture diagrams, AWS infrastructure visualization, or `architecture-beta` diagrams.
+Carregue este arquivo quando o usuário solicitar diagramas de arquitetura de nuvem, visualização de infraestrutura AWS ou diagramas `arquitetura-beta`.
 
-## Overview
+## Visão geral
 
-Mermaid's `architecture-beta` diagram type enables cloud architecture visualization with icons representing services. Combined with Iconify icon packs, it produces professional infrastructure diagrams with real AWS service icons.
+O tipo de diagrama `arquitetura-beta` do Mermaid permite a visualização da arquitetura em nuvem com ícones que representam serviços. Combinado com pacotes de ícones Iconify, produz diagramas de infraestrutura profissionais com ícones reais de serviços AWS.
 
-**CRITICAL LIMITATION — The "Arrow Distance" Bug:**
-Because `architecture-beta` is built on a rigid grid system without edge routing algorithms, diagrams with more than 6-8 nodes or complex crossing relationships will suffer from **massive, unreadable distances** between nodes and arrows crossing over boxes.
+**LIMITAÇÃO CRÍTICA — O bug da "distância da seta":**
+Como a `arquitetura-beta` é construída em um sistema de grade rígido sem algoritmos de roteamento de borda, diagramas com mais de 6 a 8 nós ou relacionamentos de cruzamento complexos sofrerão com **distâncias enormes e ilegíveis** entre nós e setas cruzando caixas.
 
-**The Golden Rule for AWS Diagrams:**
+**A regra de ouro para diagramas AWS:**
 
-- **Simple (< 8 nodes, linear flow):** Use `architecture-beta` with `--icons logos`.
-- **Complex (> 8 nodes, microservices, multiple tiers):** You MUST use **Option A: C4 Container Diagram**. C4 uses the `dagre` layout engine which perfectly spaces nodes and routes arrows beautifully.
+- **Simples (< 8 nós, fluxo linear):** Use `architecture-beta` com `--icons logos`.
+- **Complexo (> 8 nós, microsserviços, múltiplas camadas):** Você DEVE usar **Opção A: Diagrama de Contêiner C4**. C4 usa o mecanismo de layout `dagre` que espaça perfeitamente os nós e roteia as setas lindamente.
 
-**Important — Icon Rendering:**
+**Importante — Renderização de ícones:**
 
-- `architecture-beta` requires Mermaid v11+
-- Icons from Iconify packs (`logos:aws-*`) require icon pack registration at render time — they do NOT work in static markdown renderers (GitHub, GitLab)
-- When rendering with the render script, use `--icons logos` to auto-register icon packs
-- For environments without icon pack support, the built-in icons (`cloud`, `database`, `disk`, `server`, `internet`) work everywhere as a fallback
-- For universal compatibility, consider using C4 diagrams with descriptive labels as an alternative
+- `architecture-beta` requer Mermaid v11+
+- Ícones de pacotes Iconify (`logos:aws-*`) requerem registro de pacote de ícones no momento da renderização - eles NÃO funcionam em renderizadores de markdown estáticos (GitHub, GitLab)
+- Ao renderizar com o script de renderização, use `--icons logos` para registrar automaticamente os pacotes de ícones
+- Para ambientes sem suporte a pacotes de ícones, os ícones integrados (`nuvem`, `banco de dados`, `disco`, `servidor`, `internet`) funcionam em qualquer lugar como um substituto
+- Para universais
 
-## Basic Syntax
+compatibilidade, considere usar diagramas C4 com rótulos descritivos como alternativa
 
-```mermaid
+## Sintaxe Básica```mermaid
+
 architecture-beta
 
     group groupId(icon)[Label]
@@ -32,140 +33,145 @@ architecture-beta
     service serviceId(icon)[Label] in groupId
 
     serviceA:R --> L:serviceB
-```
 
-### Building Blocks
+````
+### Blocos de Construção
 
-| Element          | Syntax                               | Purpose                                |
+| Elemento | Sintaxe | Finalidade |
 | ---------------- | ------------------------------------ | -------------------------------------- |
-| Group            | `group id(icon)[Label]`              | Visual boundary (VPC, region, account) |
-| Service          | `service id(icon)[Label]`            | Individual service node                |
-| Service in group | `service id(icon)[Label] in groupId` | Service inside a group                 |
-| Edge             | `serviceA:Side --> Side:serviceB`    | Connection with direction              |
+| Grupo | `id do grupo(ícone)[Rótulo]` | Limite visual (VPC, região, conta) |
+| Serviço | `ID do serviço(ícone)[Rótulo]` | Nó de serviço individual |
+| Atendimento em grupo | `ID do serviço (ícone)[Rótulo]
 
-### Edge Sides
+no grupoId` | Serviço dentro de um grupo |
+| Borda | `serviçoA:Lado --> Lado:serviçoB` | Conexão com direção |
 
-Edges connect from/to specific sides of services:
+### Lados da borda
 
-- `L` — Left
-- `R` — Right
-- `T` — Top
-- `B` — Bottom
+As bordas conectam-se de/para lados específicos dos serviços:
 
-```
+- `L` - Esquerda
+- `R` - Certo
+- `T` - Superior
+- `B` - Inferior```
 api:R --> L:lambda        %% api's right connects to lambda's left
 lambda:B --> T:db          %% lambda's bottom connects to db's top
-```
+````
 
-### Edge Types
+### Tipos de borda```
 
-```
-serviceA:R --> L:serviceB     %% Solid arrow (default)
-serviceA:R -- L:serviceB      %% Solid line (no arrow)
-```
+serviceA:R --> L:serviceB %% Solid arrow (default)
+serviceA:R -- L:serviceB %% Solid line (no arrow)
 
-## Icon Options
+````
+## Opções de ícones
 
-### Option 1: Iconify Icons (Best Visual Quality)
+### Opção 1: Ícones Iconify (melhor qualidade visual)
 
-Mermaid supports 200,000+ icons from iconify.design via `registerIconPacks()`. The `logos` pack provides the best AWS icons. To render with these icons, use `--icons logos` with the render script.
+Mermaid suporta mais de 200.000 ícones de iconify.design via `registerIconPacks()`. O pacote `logos` fornece os melhores ícones da AWS. Para renderizar com esses ícones, use `--icons logos` com o script de renderização.
 
-**Format:** `logos:aws-{service-name}`
+**Formato:** `logos:aws-{nome do serviço}`
 
-### Option 2: Built-in Icons (Universal Compatibility)
+### Opção 2: Ícones integrados (compatibilidade universal)
 
-Available everywhere without any registration. Use these when targeting markdown renderers or when icon packs aren't available:
-`cloud`, `database`, `disk`, `internet`, `server`
+Disponível em qualquer lugar sem qualquer registro. Use-os ao direcionar renderizadores de markdown ou quando os pacotes de ícones não estiverem disponíveis:
+`nuvem`, `banco de dados`, `disco`, `internet`, `servidor`
 
-## AWS Service Icons Catalog (Iconify `logos` Pack)
+## Catálogo de ícones de serviços da AWS (pacote `logos` Iconify)
 
-### Compute
+### Computação
 
-| Service    | Icon name (logos)             | Built-in fallback |
+| Serviço | Nome do ícone (logotipos) | Reserva integrada |
 | ---------- | ----------------------------- | ----------------- |
-| Lambda     | `logos:aws-lambda`            | `server`          |
-| EC2        | `logos:aws-ec2`               | `server`          |
-| ECS        | `logos:aws-ecs`               | `server`          |
-| Fargate    | `logos:aws-fargate`           | `server`          |
-| Elastic BK | `logos:aws-elastic-beanstalk` | `server`          |
+| Lambda | `logos:aws-lambda` | `servidor` |
+| EC2 | `logotipos:aws-ec2` | `servidor` |
+| ECS | `logos:aws-ecs` | `servidor` |
+| Fargate | `logos:aws-fargate` | `servidor` |
+| Elástico BK | `logos:aws-elastic-beanstalk` | `
 
-### Storage
+servidor` |
 
-| Service | Icon name (logos)   | Built-in fallback |
+### Armazenamento
+
+| Serviço | Nome do ícone (logotipos) | Reserva integrada |
 | ------- | ------------------- | ----------------- |
-| S3      | `logos:aws-s3`      | `disk`            |
-| EBS     | `logos:aws-ebs`     | `disk`            |
-| EFS     | `logos:aws-efs`     | `disk`            |
-| Glacier | `logos:aws-glacier` | `disk`            |
+| S3 | `logotipos:aws-s3` | `disco` |
+| EBS | `logos:aws-ebs` | `disco` |
+| EFS | `logos:aws-efs` | `disco` |
+| Geleira | `logos:aws-glaciar` | `disco` |
 
-### Database
+### Banco de dados
 
-| Service     | Icon name (logos)       | Built-in fallback |
+| Serviço | Nome do ícone (logotipos) | Reserva integrada |
 | ----------- | ----------------------- | ----------------- |
-| RDS         | `logos:aws-rds`         | `database`        |
-| DynamoDB    | `logos:aws-dynamodb`    | `database`        |
-| ElastiCache | `logos:aws-elasticache` | `database`        |
-| Aurora      | `logos:aws-aurora`      | `database`        |
-| Redshift    | `logos:aws-redshift`    | `database`        |
-| DocumentDB  | `logos:aws-documentdb`  | `database`        |
+| RDS | `logotipos:aws-rds` | `banco de dados` |
+| DynamoDB | `logos:aws-dynamodb` | `banco de dados` |
+| ElastiCache | `logos:aws-elasticache` | `banco de dados` |
+| Aurora | `logos:aws-aurora` | `banco de dados` |
+| Desvio para o vermelho | `logos:aws-redshift` | `banco de dados` |
+| DocumentDB |
 
-### Networking
+`logos:aws-documentdb` | `banco de dados` |
 
-| Service     | Icon name (logos)                  | Built-in fallback |
+### Rede
+
+| Serviço | Nome do ícone (logotipos) | Reserva integrada |
 | ----------- | ---------------------------------- | ----------------- |
-| API Gateway | `logos:aws-api-gateway`            | `server`          |
-| CloudFront  | `logos:aws-cloudfront`             | `internet`        |
-| Route 53    | `logos:aws-route53`                | `internet`        |
-| ELB/ALB     | `logos:aws-elastic-load-balancing` | `server`          |
-| VPC         | `logos:aws-vpc`                    | `cloud`           |
+| Gateway de API | `logos:aws-api-gateway` | `servidor` |
+| CloudFront | `logos:aws-cloudfront` | `internet` |
+| Rota 53 | `logos:aws-route53` | `internet` |
+| ELB/ALB | `logos:aws-elastic-load-balancing` | `servidor` |
+| VPC
 
-### Messaging
+| `logos:aws-vpc` | `nuvem` |
 
-| Service     | Icon name (logos)       | Built-in fallback |
+### Mensagens
+
+| Serviço | Nome do ícone (logotipos) | Reserva integrada |
 | ----------- | ----------------------- | ----------------- |
-| SQS         | `logos:aws-sqs`         | `server`          |
-| SNS         | `logos:aws-sns`         | `server`          |
-| EventBridge | `logos:aws-eventbridge` | `server`          |
-| Kinesis     | `logos:aws-kinesis`     | `server`          |
+| SQS | `logos:aws-sqs` | `servidor` |
+| SNS | `logos:aws-sns` | `servidor` |
+| EventBridge | `logos:aws-eventbridge` | `servidor` |
+| Kinesis | `logos:aws-kinesis` | `servidor` |
 
-### Integration & Orchestration
+### Integração e Orquestração
 
-| Service        | Icon name (logos)          | Built-in fallback |
+| Serviço | Nome do ícone (logotipos) | Reserva integrada |
 | -------------- | -------------------------- | ----------------- |
-| Step Functions | `logos:aws-step-functions` | `server`          |
-| AppSync        | `logos:aws-app-sync`       | `server`          |
+| Funções de etapas | `logos:aws-step-functions` | `servidor` |
+| AppSync | `logos:aws-app-sync` | `servidor` |
 
-### Monitoring & Security
+### Monitoramento e Segurança
 
-| Service    | Icon name (logos)      | Built-in fallback |
+| Serviço | Nome do ícone (logotipos) | Reserva integrada |
 | ---------- | ---------------------- | ----------------- |
-| CloudWatch | `logos:aws-cloudwatch` | `server`          |
-| IAM        | `logos:aws-iam`        | `server`          |
-| Cognito    | `logos:aws-cognito`    | `server`          |
-| WAF        | `logos:aws-waf`        | `server`          |
+| CloudWatch | `logos:aws-cloudwatch` | `servidor` |
+| EU SOU | `logos:aws-iam` | `servidor` |
+| Cognito | `logos:aws-cognito` | `servidor` |
+| WAF | `logos:aws-waf` | `servidor` |
 
-### DevOps & CI/CD
+### DevOps e CI/CD
 
-| Service      | Icon name (logos)        | Built-in fallback |
+| Serviço | Nome do ícone (logotipos) | Reserva integrada |
 | ------------ | ------------------------ | ----------------- |
-| CodePipeline | `logos:aws-codepipeline` | `server`          |
-| CodeBuild    | `logos:aws-codebuild`    | `server`          |
-| CodeDeploy   | `logos:aws-codedeploy`   | `server`          |
-| ECR          | `logos:aws-ecr`          | `server`          |
+| CodePipeline | `logos:aws-codepipeline` | `servidor` |
+| CódigoBuild | `logos:aws-codebuild` | `servidor` |
+| Implementação de código | `logos:aws-codedeploy` | `servidor` |
+| ECR | `logos:aws-ecr` | `servidor` |
 
-### ML/AI
+### ML/IA
 
-| Service   | Icon name (logos)     | Built-in fallback |
+| Serviço | Nome do ícone (logotipos) | Reserva integrada |
 | --------- | --------------------- | ----------------- |
-| SageMaker | `logos:aws-sagemaker` | `server`          |
+| SageMaker | `logos:aws-sagemaker` | `servidor` |
 
-**Note:** Not all AWS services have icons in the `logos` pack. If a specific icon is not available, use the closest category-appropriate built-in icon as fallback. You can verify icon availability at https://icon-sets.iconify.design/?q=aws.
+**Observação:** Nem todos os serviços da AWS possuem ícones no pacote `logos`. Se um ícone específico não estiver disponível, use o ícone integrado apropriado à categoria mais próximo como substituto. Você pode verificar a disponibilidade dos ícones em https://icon-sets.iconify.design/?q=aws.
 
-## Architecture Patterns
+## Padrões de Arquitetura
 
-### Pattern 1: Three-Tier Web Application
+### Padrão 1: aplicativo da Web de três camadas
 
-**With Iconify Icons (best quality — requires `--icons logos`):**
+**Com ícones Iconify (melhor qualidade — requer `--icons logos`):**
 
 ```mermaid
 architecture-beta
@@ -184,9 +190,9 @@ architecture-beta
     alb:R --> L:ecs
     ecs:R --> L:rds
     ecs:B --> T:cache
-```
+````
 
-**With Built-in Icons (universal compatibility):**
+**Com ícones integrados (compatibilidade universal):**
 
 ```mermaid
 architecture-beta
@@ -207,12 +213,11 @@ architecture-beta
     ecs:B --> T:cache
 ```
 
-### Pattern 2: Serverless API
+### Padrão 2: API sem servidor```mermaid
 
-```mermaid
 architecture-beta
-    group api(cloud)[API Layer]
-    group storage(cloud)[Storage]
+group api(cloud)[API Layer]
+group storage(cloud)[Storage]
 
     service gw(logos:aws-api-gateway)[API Gateway] in api
     service auth(logos:aws-cognito)[Cognito] in api
@@ -224,11 +229,9 @@ architecture-beta
     gw:B --> T:auth
     fn:R --> L:dynamo
     fn:B --> T:s3
-```
 
-### Pattern 3: Data Pipeline
-
-```mermaid
+````
+### Padrão 3: pipeline de dados```mermaid
 architecture-beta
     group sources(cloud)[Data Sources]
     group pipeline(cloud)[Pipeline]
@@ -248,16 +251,15 @@ architecture-beta
     stepFn:R --> L:s3processed
     s3processed:R --> L:athena
     athena:R --> L:quicksight
-```
+````
 
-### Pattern 4: CI/CD Pipeline
+### Padrão 4: Pipeline CI/CD```mermaid
 
-```mermaid
 architecture-beta
-    group source(cloud)[Source]
-    group build(cloud)[Build & Test]
-    group deploy(cloud)[Deploy]
-    group runtime(cloud)[Runtime]
+group source(cloud)[Source]
+group build(cloud)[Build & Test]
+group deploy(cloud)[Deploy]
+group runtime(cloud)[Runtime]
 
     service repo(logos:aws-codecommit)[CodeCommit] in source
     service pipeline(logos:aws-codepipeline)[CodePipeline] in build
@@ -273,42 +275,36 @@ architecture-beta
     ecr:R --> L:codedeploy
     codedeploy:R --> L:ecs
     ecs:B --> T:cw
-```
 
-## Rendering with Icon Packs
+````
+## Renderização com pacotes de ícones
 
-### Using the Render Script
+### Usando o script de renderização
 
-To render architecture-beta diagrams with proper AWS icons:
-
-```bash
+Para renderizar diagramas de arquitetura beta com ícones AWS adequados:```bash
 node $SKILL_DIR/scripts/render.mjs \
   --input diagram.mmd \
   --output diagram.svg \
   --format svg \
   --icons logos
-```
+````
 
-The `--icons logos` flag tells the render script to register the Iconify `logos` pack which includes all `logos:aws-*` icons. The render script uses a Puppeteer-based pipeline for icon-enabled rendering.
+O sinalizador `--icons logos` diz ao script de renderização para registrar o pacote `logos` do Iconify que inclui todos os ícones `logos:aws-*`. O script de renderização usa um pipeline baseado em Puppeteer para renderização habilitada para ícones.
 
-### Multiple Icon Packs
+### Vários pacotes de ícones
 
-You can register multiple packs:
-
-```bash
+Você pode registrar vários pacotes:```bash
 node $SKILL_DIR/scripts/render.mjs \
-  --input diagram.mmd \
-  --output diagram.svg \
-  --icons logos,fa
-```
+ --input diagram.mmd \
+ --output diagram.svg \
+ --icons logos,fa
 
-Available packs: `logos` (AWS + tech logos), `fa` (Font Awesome icons).
+````
+Pacotes disponíveis: `logos` (logotipos AWS + tecnologia), `fa` (ícones Font Awesome).
 
-### How Icon Registration Works
+### Como funciona o registro de ícones
 
-The render script generates an HTML page with Mermaid loaded, registers icon packs via `mermaid.registerIconPacks()`, renders the diagram, and captures the SVG output. This is equivalent to:
-
-```javascript
+O script de renderização gera uma página HTML com o Mermaid carregado, registra pacotes de ícones via `mermaid.registerIconPacks()`, renderiza o diagrama e captura a saída SVG. Isso é equivalente a:```javascript
 import mermaid from 'mermaid'
 
 mermaid.registerIconPacks([
@@ -317,19 +313,17 @@ mermaid.registerIconPacks([
     loader: () => fetch('https://unpkg.com/@iconify-json/logos/icons.json').then((res) => res.json()),
   },
 ])
-```
+````
 
-## Fallback Strategy
+## Estratégia de reserva
 
-When `architecture-beta` is not supported by the rendering environment OR icons don't render, use these alternatives:
+Quando `architecture-beta` não é compatível com o ambiente de renderização OU os ícones não são renderizados, use estas alternativas:
 
-### Option A: C4 Container Diagram (Best Alternative)
+### Opção A: Diagrama de Contêiner C4 (Melhor Alternativa)
 
-C4 diagrams work everywhere and convey the same information:
-
-```mermaid
+Os diagramas C4 funcionam em qualquer lugar e transmitem as mesmas informações:```mermaid
 C4Container
-    title AWS Architecture — Serverless API
+title AWS Architecture — Serverless API
 
     Container(gw, "API Gateway", "AWS", "REST API endpoint")
     Container(auth, "Cognito", "AWS", "Authentication")
@@ -348,11 +342,9 @@ C4Container
     UpdateRelStyle(fn, s3, $textColor="#475569", $lineColor="#94a3b8")
 
     UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
-```
 
-### Option B: Flowchart with AWS Labels and Professional Styling
-
-```mermaid
+````
+### Opção B: Fluxograma com rótulos AWS e estilo profissional```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {
   'primaryColor': '#FF9900', 'primaryTextColor': '#232F3E',
   'primaryBorderColor': '#c47600', 'lineColor': '#94a3b8',
@@ -380,16 +372,16 @@ flowchart LR
     ALB --> Svc1 & Svc2
     Svc1 & Svc2 --> RDS
     Svc1 --> S3
-```
+````
 
-## Best Practices
+## Melhores práticas
 
-1. **Group by boundary** — VPC, subnet, region, account
-2. **Left-to-right flow** — request path should read naturally
-3. **Limit to 12 services max** — split complex architectures into multiple focused diagrams
-4. **Show only one concern per diagram** — networking, compute, data, separately
-5. **Include external systems** — show what connects from outside
-6. **Security boundaries** — show public vs private subnets
-7. **Use Iconify icons when rendering** — `logos:aws-*` for best visual quality
-8. **Use built-in icons for docs** — `cloud`, `database`, `disk`, `server`, `internet` for markdown compatibility
-9. **Always provide both versions** — one with Iconify icons for rendered output, one with built-in for inline markdown
+1. **Agrupar por limite** — VPC, sub-rede, região, conta
+2. **Fluxo da esquerda para a direita** — o caminho da solicitação deve ser lido naturalmente
+3. **Limite a 12 serviços no máximo** — divida arquiteturas complexas em vários diagramas focados
+4. **Mostre apenas uma preocupação por diagrama** — rede, computação, dados, separadamente
+5. **Inclua sistemas externos** — mostre o que se conecta de fora
+6. **Limites de segurança** — mostre sub-redes públicas versus privadas
+7. \*\* Use ícones Iconify quando ren
+
+dering** — `logos:aws-*` para melhor qualidade visual 8. **Use ícones integrados para documentos** — `cloud`, `database`, `disk`, `server`, `internet` para compatibilidade de markdown 9. **Sempre forneça ambas as versões\*\* - uma com ícones Iconify para saída renderizada, outra com integração para redução in-line

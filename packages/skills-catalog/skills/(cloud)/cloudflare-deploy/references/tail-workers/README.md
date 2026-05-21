@@ -1,74 +1,71 @@
-# Cloudflare Tail Workers
+# Trabalhadores de cauda da Cloudflare
 
-Specialized Workers that consume execution events from producer Workers for logging, debugging, analytics, and observability.
+Workers especializados que consomem eventos de execução de Workers produtores para registro, depuração, análise e observabilidade.
 
-## When to Use This Reference
+## Quando usar esta referência
 
-- Implementing observability/logging for Cloudflare Workers
-- Processing Worker execution events, logs, exceptions
-- Building custom analytics or error tracking
-- Configuring real-time event streaming
-- Working with tail handlers or tail consumers
+- Implementação de observabilidade/registro para Cloudflare Workers
+- Processamento de eventos de execução de Worker, logs, exceções
+- Criação de análises personalizadas ou rastreamento de erros
+- Configurar streaming de eventos em tempo real
+- Trabalhar com manipuladores de cauda ou consumidores de cauda
 
-## Core Concepts
+## Conceitos Básicos
 
-### What Are Tail Workers?
+### O que são trabalhadores de cauda?
 
-Tail Workers automatically process events from producer Workers (the Workers being monitored). They receive:
+Os Tail Workers processam automaticamente eventos dos Workers produtores (os Workers sendo monitorados). Eles recebem:
 
-- HTTP request/response info
-- Console logs (`console.log/error/warn/debug`)
-- Uncaught exceptions
-- Execution outcomes (`ok`, `exception`, `exceededCpu`, etc.)
-- Diagnostic channel events
+- Informações de solicitação/resposta HTTP
+- Logs do console (`console.log/error/warn/debug`)
+- Exceções não detectadas
+- Resultados de execução (`ok`, `exception`, `exceededCpu`, etc.)
+- Eventos de canal de diagnóstico
 
-**Key characteristics:**
+**Características principais:**
 
-- Invoked AFTER producer finishes executing
-- Capture entire request lifecycle including Service Bindings and Dynamic Dispatch sub-requests
-- Billed by CPU time, not request count
-- Available on Workers Paid and Enterprise tiers
+- Invocado APÓS o produtor terminar a execução
+- Capture todo o ciclo de vida da solicitação, incluindo vinculações de serviço e subsolicitações de envio dinâmico
+- Faturado por tempo de CPU, não por contagem de solicitações
+- Disponível nos níveis Workers Paid e Enterprise
 
-### Alternative: OpenTelemetry Export
+### Alternativa: Exportação OpenTelemetry
 
-**Before using Tail Workers, consider OpenTelemetry:**
+**Antes de usar Tail Workers, considere OpenTelemetry:**
 
-For batch exports to observability tools (Sentry, Grafana, Honeycomb):
+Para exportações em lote para ferramentas de observabilidade (Sentry, Grafana, Honeycomb):
 
-- OTEL export sends logs/traces in batches (more efficient)
-- Built-in integrations with popular platforms
-- Lower overhead than Tail Workers
-- **Use Tail Workers only for custom real-time processing**
+- A exportação OTEL envia logs/rastreamentos em lotes (mais eficiente)
+- Integrações integradas com plataformas populares
+- Menor sobrecarga do que os trabalhadores de cauda
+- **Use Tail Workers apenas para processamento personalizado em tempo real**
 
-## Decision Tree
+## Árvore de decisão```
 
-```
-Need observability for Workers?
-├─ Batch export to known tools (Sentry/Grafana/Honeycomb)?
-│  └─ Use OpenTelemetry export (not Tail Workers)
-├─ Custom real-time processing needed?
-│  ├─ Aggregated metrics?
-│  │  └─ Use Tail Worker + Analytics Engine
-│  ├─ Error tracking?
-│  │  └─ Use Tail Worker + external service
-│  ├─ Custom logging/debugging?
-│  │  └─ Use Tail Worker + KV/HTTP endpoint
-│  └─ Complex event processing?
-│     └─ Use Tail Worker + Durable Objects
-└─ Quick debugging?
-   └─ Use `wrangler tail` (different from Tail Workers)
-```
+Precisa de observabilidade para trabalhadores?
+├─ Exportação em lote para ferramentas conhecidas (Sentry/Grafana/Honeycomb)?
+│ └─ Use exportação OpenTelemetry (não Tail Workers)
+├─ É necessário processamento personalizado em tempo real?
+│ ├─ Métricas agregadas?
+│ │ └─ Usar Tail Worker + Mecanismo de análise
+│ ├─ Rastreamento de erros?
+│ │ └─ Usar Tail Worker + serviço externo
+│ ├─ Registro/depuração personalizada?
+│ │ └─ Usar Tail Worker + endpoint KV/HTTP
+│ └─ Processamento de eventos complexos?
+│ └─ Use Tail Worker + Objetos Duráveis
+└─ Depuração rápida?
+└─ Use `wrangler tail` (diferente de Tail Workers)
 
-## Reading Order
+````
+## Ordem de leitura
 
-1. **[configuration.md](configuration.md)** - Set up Tail Workers
-2. **[api.md](api.md)** - Handler signature, types, redaction
-3. **[patterns.md](patterns.md)** - Common use cases and integrations
-4. **[gotchas.md](gotchas.md)** - Pitfalls and debugging tips
+1. **[configuration.md](configuration.md)** - Configurar trabalhadores finais
+2. **[api.md](api.md)** - Assinatura do manipulador, tipos, redação
+3. **[patterns.md](patterns.md)** - Casos de uso e integrações comuns
+4. **[gotchas.md](gotchas.md)** - Armadilhas e dicas de depuração
 
-## Quick Example
-
-```typescript
+## Exemplo rápido```typescript
 export default {
   async tail(events, env, ctx) {
     // Process events from producer Worker
@@ -81,12 +78,12 @@ export default {
     )
   },
 }
-```
+````
 
-## Related Skills
+## Habilidades Relacionadas
 
-- **observability** - General Workers observability patterns, OTEL export
-- **analytics-engine** - Aggregated metrics storage for tail event data
-- **durable-objects** - Stateful event processing, batching tail events
-- **logpush** - Alternative for batch log export (non-real-time)
-- **workers-for-platforms** - Dynamic dispatch with tail consumers
+- **observabilidade** - Padrões de observabilidade dos Trabalhadores Gerais, exportação OTEL
+- **analytics-engine** - Armazenamento de métricas agregadas para dados de eventos finais
+- **durable-objects** - Processamento de eventos com estado, agrupamento de eventos finais
+- **logpush** - Alternativa para exportação de log em lote (não em tempo real)
+- **trabalhadores para plataformas** - Despacho dinâmico com consumidores finais

@@ -1,35 +1,35 @@
 ---
 name: seo
-description: Optimize for search engine visibility and ranking. Use when asked to "improve SEO", "optimize for search", "fix meta tags", "add structured data", "sitemap optimization", or "search engine optimization". Do NOT use for accessibility (use web-accessibility), performance (use core-web-vitals), or comprehensive site audits covering multiple areas (use web-quality-audit).
+description: Otimiza visibilidade e ranking em mecanismos de busca. Use quando pedirem "melhore o SEO", "otimize para busca", "corrija meta tags", "dados estruturados", "sitemap" ou "search engine optimization". NÃO use para acessibilidade (use web-accessibility), performance (use core-web-vitals) ou auditorias amplas (use web-quality-audit).
 license: MIT
 metadata:
   author: web-quality-skills
   version: '1.0'
 ---
 
-# SEO optimization
+# Otimização SEO
 
-Search engine optimization based on Lighthouse SEO audits and Google Search guidelines. Focus on technical SEO, on-page optimization, and structured data.
+Otimização de mecanismos de pesquisa com base nas auditorias Lighthouse SEO e nas diretrizes da Pesquisa Google. Concentre-se em SEO técnico, otimização on-page e dados estruturados.
 
-## SEO fundamentals
+## Fundamentos de SEO
 
-Search ranking factors (approximate influence):
+Fatores de classificação de pesquisa (influência aproximada):
 
-| Factor                            | Influence | This Skill                                         |
-| --------------------------------- | --------- | -------------------------------------------------- |
-| Content quality & relevance       | ~40%      | Partial (structure)                                |
-| Backlinks & authority             | ~25%      | ✗                                                  |
-| Technical SEO                     | ~15%      | ✓                                                  |
-| Page experience (Core Web Vitals) | ~10%      | See [Core Web Vitals](../core-web-vitals/SKILL.md) |
-| On-page SEO                       | ~10%      | ✓                                                  |
+| Fator                                   | Influência | Esta habilidade                                         |
+| --------------------------------------- | ---------- | ------------------------------------------------------- |
+| Qualidade e relevância do conteúdo      | ~40%       | Parcial (estrutura)                                     |
+| Backlinks e autoridade                  | ~25%       | ✗                                                       |
+| SEO técnico                             | ~15%       | ✓                                                       |
+| Experiência de página (Core Web Vitals) | ~10%       | Consulte [Core Web Vitals](../core-web-vitals/SKILL.md) |
+| SEO na página                           | ~10%       | ✓                                                       |
 
 ---
 
-## Technical SEO
+## SEO Técnico
 
-### Crawlability
+### Rastreabilidade
 
-**robots.txt:**
+**robôs.txt:**
 
 ```text
 # /robots.txt
@@ -47,7 +47,7 @@ Disallow: /private/
 Sitemap: https://example.com/sitemap.xml
 ```
 
-**Meta robots:**
+**Meta-robôs:**
 
 ```html
 <!-- Default: indexable, followable -->
@@ -63,7 +63,7 @@ Sitemap: https://example.com/sitemap.xml
 <meta name="robots" content="max-snippet:150, max-image-preview:large" />
 ```
 
-**Canonical URLs:**
+**URLs canônicos:**
 
 ```html
 <!-- Prevent duplicate content issues -->
@@ -77,9 +77,10 @@ Sitemap: https://example.com/sitemap.xml
 <!-- Or use rel="prev" / rel="next" for explicit pagination -->
 ```
 
-### XML sitemap
+### Mapa do site XML
 
 ```xml
+
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
@@ -97,17 +98,18 @@ Sitemap: https://example.com/sitemap.xml
 </urlset>
 ```
 
-**Sitemap best practices:**
+**Mapa do site Boas práticas:**
 
-- Maximum 50,000 URLs or 50MB per sitemap
-- Use sitemap index for larger sites
-- Include only canonical, indexable URLs
-- Update `lastmod` when content changes
-- Submit to Google Search Console
+- Máximo de 50.000 URLs ou 50 MB por sitemap
+- Use o índice do mapa do site para sites maiores
+- Incluir apenas URLs canônicos e indexáveis
+- Atualize `lastmod` quando o conteúdo mudar
+- Enviar para o Google Search Console
 
-### URL structure
+### Estrutura de URL
 
 ```
+
 ✅ Good URLs:
 https://example.com/products/blue-widget
 https://example.com/blog/how-to-use-widgets
@@ -117,16 +119,16 @@ https://example.com/p?id=12345
 https://example.com/products/item/category/subcategory/blue-widget-2024-sale-discount
 ```
 
-**URL guidelines:**
+**Diretrizes de URL:**
 
-- Use hyphens, not underscores
-- Lowercase only
-- Keep short (< 75 characters)
-- Include target keywords naturally
-- Avoid parameters when possible
-- Use HTTPS always
+- Use hífens, não sublinhados
+- Somente letras minúsculas
+- Seja breve (<75 caracteres)
+- Incluir palavras-chave alvo naturalmente
+- Evite parâmetros quando possível
+- Use HTTPS sempre
 
-### HTTPS & security
+### HTTPS e segurança
 
 ```html
 <!-- Ensure all resources use HTTPS -->
@@ -136,7 +138,7 @@ https://example.com/products/item/category/subcategory/blue-widget-2024-sale-dis
 <img src="http://example.com/image.jpg" />
 ```
 
-**Security headers for SEO trust signals:**
+**Cabeçalhos de segurança para sinais de confiança de SEO:**
 
 ```
 Strict-Transport-Security: max-age=31536000; includeSubDomains
@@ -146,9 +148,9 @@ X-Frame-Options: DENY
 
 ---
 
-## On-page SEO
+## SEO na página
 
-### Title tags
+### Tags de título
 
 ```html
 <!-- ❌ Missing or generic -->
@@ -159,15 +161,15 @@ X-Frame-Options: DENY
 <title>Blue Widgets for Sale | Premium Quality | Example Store</title>
 ```
 
-**Title tag guidelines:**
+**Diretrizes para tags de título:**
 
-- 50-60 characters (Google truncates ~60)
-- Primary keyword near the beginning
-- Unique for every page
-- Brand name at end (unless homepage)
-- Action-oriented when appropriate
+- 50-60 caracteres (o Google trunca aproximadamente 60)
+- Palavra-chave primária perto do início
+- Único para cada página
+- Nome da marca no final (exceto na página inicial)
+- Orientado para a ação quando apropriado
 
-### Meta descriptions
+### Meta descrições
 
 ```html
 <!-- ❌ Missing or duplicate -->
@@ -180,15 +182,15 @@ X-Frame-Options: DENY
 />
 ```
 
-**Meta description guidelines:**
+**Diretrizes para meta descrição:**
 
-- 150-160 characters
-- Include primary keyword naturally
-- Compelling call-to-action
-- Unique for every page
-- Matches page content
+- 150-160 caracteres
+- Incluir palavra-chave primária naturalmente
+- Chamada para ação atraente
+- Único para cada página
+- Corresponde ao conteúdo da página
 
-### Heading structure
+### Estrutura do título
 
 ```html
 <!-- ❌ Poor structure -->
@@ -205,14 +207,14 @@ X-Frame-Options: DENY
 <h2>Pricing</h2>
 ```
 
-**Heading guidelines:**
+**Diretrizes de título:**
 
-- Single `<h1>` per page (the main topic)
-- Logical hierarchy (don't skip levels)
-- Include keywords naturally
-- Descriptive, not generic
+- Único `<h1>` por página (o tópico principal)
+- Hierarquia lógica (não pule níveis)
+- Incluir palavras-chave naturalmente
+- Descritivo, não genérico
 
-### Image SEO
+### SEO de imagem
 
 ```html
 <!-- ❌ Poor image SEO -->
@@ -228,15 +230,15 @@ X-Frame-Options: DENY
 />
 ```
 
-**Image guidelines:**
+**Diretrizes de imagem:**
 
-- Descriptive filenames with keywords
-- Alt text describes the image content
-- Compressed and properly sized
-- WebP/AVIF with fallbacks
-- Lazy load below-fold images
+- Nomes de arquivos descritivos com palavras-chave
+- O texto alternativo descreve o conteúdo da imagem
+- Compactado e dimensionado adequadamente
+- WebP/AVIF com substitutos
+- Carregamento lento de imagens abaixo da dobra
 
-### Internal linking
+### Link interno
 
 ```html
 <!-- ❌ Non-descriptive -->
@@ -248,19 +250,19 @@ X-Frame-Options: DENY
 <a href="/guides/widget-maintenance">Learn how to maintain your widgets</a>
 ```
 
-**Linking guidelines:**
+**Diretrizes de vinculação:**
 
-- Descriptive anchor text with keywords
-- Link to relevant internal pages
-- Reasonable number of links per page
-- Fix broken links promptly
-- Use breadcrumbs for hierarchy
+- Texto âncora descritivo com palavras-chave
+- Link para páginas internas relevantes
+- Número razoável de links por página
+- Corrija links quebrados imediatamente
+- Use breadcrumbs para hierarquia
 
 ---
 
-## Structured data (JSON-LD)
+## Dados estruturados (JSON-LD)
 
-### Organization
+### Organização
 
 ```html
 <script type="application/ld+json">
@@ -280,7 +282,7 @@ X-Frame-Options: DENY
 </script>
 ```
 
-### Article
+### Artigo
 
 ```html
 <script type="application/ld+json">
@@ -309,7 +311,7 @@ X-Frame-Options: DENY
 </script>
 ```
 
-### Product
+### Produto
 
 ```html
 <script type="application/ld+json">
@@ -339,7 +341,7 @@ X-Frame-Options: DENY
 </script>
 ```
 
-### FAQ
+### PERGUNTAS FREQUENTES
 
 ```html
 <script type="application/ld+json">
@@ -368,7 +370,7 @@ X-Frame-Options: DENY
 </script>
 ```
 
-### Breadcrumbs
+### Pão ralado
 
 ```html
 <script type="application/ld+json">
@@ -399,18 +401,18 @@ X-Frame-Options: DENY
 </script>
 ```
 
-### Validation
+### Validação
 
-Test structured data at:
+Teste dados estruturados em:
 
-- [Google Rich Results Test](https://search.google.com/test/rich-results)
-- [Schema.org Validator](https://validator.schema.org/)
+- [Teste de pesquisa aprimorada do Google](https://search.google.com/test/rich-results)
+- [Validador Schema.org](https://validator.schema.org/)
 
 ---
 
-## Mobile SEO
+## SEO móvel
 
-### Responsive design
+### Design responsivo
 
 ```html
 <!-- ❌ Not mobile-friendly -->
@@ -420,7 +422,7 @@ Test structured data at:
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 ```
 
-### Tap targets
+### Toque nos alvos
 
 ```css
 /* ❌ Too small for mobile */
@@ -438,7 +440,7 @@ Test structured data at:
 }
 ```
 
-### Font sizes
+### Tamanhos de fonte
 
 ```css
 /* ❌ Too small on mobile */
@@ -455,9 +457,9 @@ body {
 
 ---
 
-## International SEO
+## SEO internacional
 
-### Hreflang tags
+### Tags Hreflang
 
 ```html
 <!-- For multi-language sites -->
@@ -467,7 +469,7 @@ body {
 <link rel="alternate" hreflang="x-default" href="https://example.com/page" />
 ```
 
-### Language declaration
+### Declaração de idioma
 
 ```html
 <html lang="en">
@@ -478,55 +480,55 @@ body {
 
 ---
 
-## SEO audit checklist
+## Lista de verificação de auditoria de SEO
 
-### Critical
+### Crítico
 
-- [ ] HTTPS enabled
-- [ ] robots.txt allows crawling
-- [ ] No `noindex` on important pages
-- [ ] Title tags present and unique
-- [ ] Single `<h1>` per page
+- [] HTTPS ativado
+- [] robots.txt permite rastreamento
+- [] Não há `noindex` em páginas importantes
+- [] Tags de título presentes e exclusivas
+- [] Único `<h1>` por página
 
-### High priority
+### Alta prioridade
 
-- [ ] Meta descriptions present
-- [ ] Sitemap submitted
-- [ ] Canonical URLs set
-- [ ] Mobile-responsive
-- [ ] Core Web Vitals passing
+- [] Meta descrições presentes
+- [] Mapa do site enviado
+- [] URLs canônicos definidos
+- [] responsivo a dispositivos móveis
+- [] aprovação do Core Web Vitals
 
-### Medium priority
+### Prioridade média
 
-- [ ] Structured data implemented
-- [ ] Internal linking strategy
-- [ ] Image alt text
-- [ ] Descriptive URLs
-- [ ] Breadcrumb navigation
+- [] Dados estruturados implementados
+- [] Estratégia de vinculação interna
+- [] Texto alternativo da imagem
+- [] URLs descritivos
+- [] Navegação estrutural
 
-### Ongoing
+### Em andamento
 
-- [ ] Fix crawl errors in Search Console
-- [ ] Update sitemap when content changes
-- [ ] Monitor ranking changes
-- [ ] Check for broken links
-- [ ] Review Search Console insights
+- [] Corrigir erros de rastreamento no Search Console
+- [] Atualizar o mapa do site quando o conteúdo for alterado
+- [] Monitorar mudanças de classificação
+- [] Verifique se há links quebrados
+- [] Revise os insights do Search Console
 
 ---
 
-## Tools
+## Ferramentas
 
-| Tool                      | Use                           |
-| ------------------------- | ----------------------------- |
-| Google Search Console     | Monitor indexing, fix issues  |
-| Google PageSpeed Insights | Performance + Core Web Vitals |
-| Rich Results Test         | Validate structured data      |
-| Lighthouse                | Full SEO audit                |
-| Screaming Frog            | Crawl analysis                |
+| Ferramenta                         | Usar                                    |
+| ---------------------------------- | --------------------------------------- |
+| Console de pesquisa do Google      | Monitore a indexação, corrija problemas |
+| Informações do Google PageSpeed ​​ | Desempenho + Core Web Vitals            |
+| Teste de pesquisa aprimorada       | Validar dados estruturados              |
+| Farol                              | Auditoria completa de SEO               |
+| Sapo gritando                      | Análise de rastreamento                 |
 
-## References
+## Referências
 
-- [Google Search Central](https://developers.google.com/search)
+- [Central de Pesquisa Google](https://developers.google.com/search)
 - [Schema.org](https://schema.org/)
 - [Core Web Vitals](../core-web-vitals/SKILL.md)
-- [Web Quality Audit](../web-quality-audit/SKILL.md)
+- [Auditoria de qualidade da Web](../web-quality-audit/SKILL.md)

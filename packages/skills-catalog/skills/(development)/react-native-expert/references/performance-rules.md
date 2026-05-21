@@ -1,104 +1,97 @@
-# Performance Rules
+# Regras de desempenho
 
-Comprehensive performance rules for React Native applications, prioritized by impact. Each rule includes incorrect and correct code examples.
+Regras de desempenho abrangentes para aplicativos React Native, priorizadas por impacto. Cada regra inclui exemplos de código incorretos e corretos.
 
-**React Compiler note:** When using React Compiler (React 19+), manual `memo()`, `useCallback()`, and `useMemo()` are handled automatically. However, object reference stability still matters for virtualized lists.
-
----
-
-## Table of Contents
-
-1. [Core Rendering (CRITICAL)](#1-core-rendering)
-2. [List Performance (HIGH)](#2-list-performance)
-3. [Animation (HIGH)](#3-animation)
-4. [Scroll Performance (HIGH)](#4-scroll-performance)
-5. [Navigation (HIGH)](#5-navigation)
-6. [React State (MEDIUM)](#6-react-state)
-7. [State Architecture (MEDIUM)](#7-state-architecture)
-8. [React Compiler (MEDIUM)](#8-react-compiler)
-9. [User Interface (MEDIUM)](#9-user-interface)
-10. [Design System (MEDIUM)](#10-design-system)
-11. [Monorepo (LOW)](#11-monorepo)
-12. [Configuration (LOW)](#12-configuration)
+**Nota do React Compiler:** Ao usar o React Compiler (React 19+), manuais `memo()`, `useCallback()` e `useMemo()` são tratados automaticamente. No entanto, a estabilidade de referência de objetos ainda é importante para listas virtualizadas.
 
 ---
 
-## 1. Core Rendering
+## Índice
 
-**Impact: CRITICAL — violations cause runtime crashes.**
+1. [Renderização de núcleo (CRÍTICO)](Renderização de núcleo nº 1)
+2. [Desempenho da lista (ALTO)](#2-desempenho da lista)
+3. [Animação (ALTA)](#3-animação)
+4. [Desempenho de rolagem (ALTO)](#4-desempenho de rolagem)
+5. [Navegação (ALTA)](#5-navegação)
+6. [Estado de reação (MÉDIO)](#6-estado de reação)
+7. [Arquitetura de Estado (MÉDIO)](#7-arquitetura de estado)
+8. [Compilador React (MÉDIO)](#8-compilador react)
+9. [Interface do usuário (MÉDIO)](#9-interface do usuário)
+10. [Sistema de Design (MÉDIO)]
 
-### 1.1 Never Use && with Potentially Falsy Values
+(#10-sistema de design) 11. [Monorepo (BAIXO)](#11-monorepo) 12. [Configuração (BAIXA)](#12-configuração)
 
-React Native crashes if `0` or `""` is rendered outside `<Text>`.
+---
 
-```tsx
+## 1. Renderização principal
+
+**Impacto: CRÍTICO — violações causam falhas no tempo de execução.**
+
+### 1.1 Nunca use && com valores potencialmente falsos
+
+O React Native trava se `0` ou `""` for renderizado fora de `<Text>`.```tsx
 // CRASH: if count is 0
 {
-  count && <Text>{count} items</Text>
+count && <Text>{count} items</Text>
 }
 
 // SAFE: ternary
 {
-  count ? <Text>{count} items</Text> : null
+count ? <Text>{count} items</Text> : null
 }
 
 // SAFE: boolean coercion
 {
-  !!count && <Text>{count} items</Text>
+!!count && <Text>{count} items</Text>
 }
 
 // BEST: early return
 if (!name) return null
-```
 
-**Lint:** Enable `react/jsx-no-leaked-render` from eslint-plugin-react.
+````
 
-### 1.2 Wrap Strings in Text Components
+**Lint:** Habilite `react/jsx-no-leaked-render` em eslint-plugin-react.
 
-Strings must be inside `<Text>`. Direct children of `<View>` crash.
+### 1.2 Quebrar strings em componentes de texto
 
-```tsx
+As strings devem estar dentro de `<Text>`. Filhos diretos da falha `<View>`.```tsx
 // CRASH
 <View>Hello, {name}!</View>
 
 // CORRECT
 <View><Text>Hello, {name}!</Text></View>
-```
+````
 
 ---
 
-## 2. List Performance
+## 2. Desempenho da lista
 
-**Impact: HIGH — affects scroll smoothness and memory.**
+**Impacto: ALTO — afeta a suavidade da rolagem e a memória.**
 
-### 2.1 Always Use a Virtualizer
+### 2.1 Sempre use um virtualizador
 
-Use LegendList (preferred) or FlashList. Never use ScrollView with `.map()`.
-
-```tsx
+Use LegendList (preferencial) ou FlashList. Nunca use ScrollView com `.map()`.```tsx
 // WRONG: renders all items upfront
 ;<ScrollView>
-  {items.map((item) => (
-    <ItemCard key={item.id} item={item} />
-  ))}
+{items.map((item) => (
+<ItemCard key={item.id} item={item} />
+))}
 </ScrollView>
 
 // CORRECT: only renders visible items
 import { LegendList } from '@legendapp/list'
 
 ;<LegendList
-  data={items}
-  renderItem={({ item }) => <ItemCard item={item} />}
-  keyExtractor={(item) => item.id}
-  estimatedItemSize={80}
+data={items}
+renderItem={({ item }) => <ItemCard item={item} />}
+keyExtractor={(item) => item.id}
+estimatedItemSize={80}
 />
-```
 
-### 2.2 Keep List Items Lightweight
+````
+### 2.2 Mantenha os itens da lista leves
 
-No queries, no expensive computations, no Context access inside list items. Pass pre-computed primitives.
-
-```tsx
+Sem consultas, sem cálculos caros, sem acesso ao contexto dentro dos itens da lista. Passe primitivas pré-computadas.```tsx
 // WRONG: heavy list item
 function ProductRow({ id }: { id: string }) {
   const { data } = useQuery(['product', id], () => fetchProduct(id))
@@ -116,20 +109,16 @@ function ProductRow({ name, price, imageUrl }: Props) {
     </View>
   )
 }
-```
+````
 
-Use Zustand selectors instead of Context when you need shared state in list items:
-
-```tsx
+Use seletores Zustand em vez de Contexto quando precisar de estado compartilhado em itens de lista:```tsx
 // Zustand selector: only re-renders when this specific value changes
 const inCart = useCartStore((s) => s.items.has(id))
-```
 
-### 2.3 Avoid Inline Objects in renderItem
+````
+### 2.3 Evite objetos embutidos em renderItem
 
-Inline objects create new references on every render, breaking memoization. Pass the item directly or pass primitives.
-
-```tsx
+Objetos embutidos criam novas referências em cada renderização, quebrando a memorização. Passe o item diretamente ou passe primitivos.```tsx
 // WRONG: new object every render
 <UserRow user={{ id: item.id, name: item.name }} />
 <UserRow style={{ backgroundColor: item.isActive ? 'green' : 'gray' }} />
@@ -137,17 +126,15 @@ Inline objects create new references on every render, breaking memoization. Pass
 // CORRECT: pass item directly or primitives
 <UserRow user={item} />
 <UserRow id={item.id} name={item.name} isActive={item.isActive} />
-```
+````
 
-### 2.4 Maintain Stable Object References
+### 2.4 Manter referências de objetos estáveis
 
-Don't `.map()` or `.filter()` data before passing to virtualized lists. Transform inside items using Zustand selectors.
-
-```tsx
+Não faça `.map()` ou `.filter()` dados antes de passar para listas virtualizadas. Transforme itens internos usando seletores Zustand.```tsx
 // WRONG: creates new references on every keystroke
 const domains = tlds.map(tld => ({
   domain: `${keyword}.${tld.name}`,
-  tld: tld.name,
+tld: tld.name,
 }))
 <LegendList data={domains} ... />
 
@@ -155,48 +142,42 @@ const domains = tlds.map(tld => ({
 <LegendList data={tlds} renderItem={({ item }) => <DomainItem tld={item} />} />
 
 function DomainItem({ tld }: { tld: Tld }) {
-  const domain = useKeywordStore(s => s.keyword + '.' + tld.name)
-  return <Text>{domain}</Text>
+const domain = useKeywordStore(s => s.keyword + '.' + tld.name)
+return <Text>{domain}</Text>
 }
-```
 
-### 2.5 Pass Primitives for Memoization
+````
+### 2.5 Pass Primitivos para Memoização
 
-Primitive props (strings, numbers, booleans) enable shallow comparison in `memo()`.
-
-```tsx
+Adereços primitivos (strings, números, booleanos) permitem comparações superficiais em `memo()`.```tsx
 // LESS OPTIMAL: object prop requires reference comparison
 <UserRow user={item} />
 
 // OPTIMAL: primitive props enable shallow comparison
 <UserRow id={item.id} name={item.name} email={item.email} />
-```
+````
 
-### 2.6 Hoist Callbacks to List Root
+### 2.6 Elevar retornos de chamada para a raiz da lista
 
-Create a single callback instance at the list root. Items call it with an identifier.
-
-```tsx
+Crie uma única instância de retorno de chamada na raiz da lista. Os itens o chamam com um identificador.```tsx
 // WRONG: new callback per render
 renderItem={({ item }) => {
-  const onPress = () => handlePress(item.id)
-  return <Item item={item} onPress={onPress} />
+const onPress = () => handlePress(item.id)
+return <Item item={item} onPress={onPress} />
 }}
 
 // CORRECT: pass ID, handle in child
 <Item id={item.id} name={item.name} />
 
 const Item = memo(function Item({ id, name }: Props) {
-  const handlePress = useCallback(() => { /* use id */ }, [id])
-  return <Pressable onPress={handlePress}><Text>{name}</Text></Pressable>
+const handlePress = useCallback(() => { /_ use id _/ }, [id])
+return <Pressable onPress={handlePress}><Text>{name}</Text></Pressable>
 })
-```
 
-### 2.7 Use Item Types for Heterogeneous Lists
+````
+### 2.7 Use tipos de itens para listas heterogêneas
 
-Use `getItemType` for lists with different item layouts to enable efficient recycling.
-
-```tsx
+Use `getItemType` para listas com diferentes layouts de itens para permitir uma reciclagem eficiente.```tsx
 type FeedItem =
   | { id: string; type: 'header'; title: string }
   | { id: string; type: 'message'; text: string }
@@ -229,32 +210,28 @@ type FeedItem =
   }}
   recycleItems
 />
-```
+````
 
-### 2.8 Use Compressed Images in Lists
+### 2.8 Use imagens compactadas em listas
 
-Request appropriately-sized images. Use 2x display size for retina.
-
-```tsx
+Solicite imagens de tamanho adequado. Use tamanho de exibição 2x para retina.```tsx
 // WRONG: 4000x3000 image for a 100x100 thumbnail
 <Image source={{ uri: product.imageUrl }} style={{ width: 100, height: 100 }} />
 
 // CORRECT: request 200x200 (2x retina)
 const thumbnailUrl = `${product.imageUrl}?w=200&h=200&fit=cover`
 <Image source={{ uri: thumbnailUrl }} contentFit="cover" style={{ width: 100, height: 100 }} />
-```
 
+````
 ---
 
-## 3. Animation
+## 3. Animação
 
-**Impact: HIGH — affects frame rate and smoothness.**
+**Impacto: ALTO — afeta a taxa de quadros e a suavidade.**
 
-### 3.1 Animate Transform and Opacity Only
+### 3.1 Animar apenas transformação e opacidade
 
-Never animate layout properties (`width`, `height`, `top`, `left`, `margin`, `padding`). They trigger layout recalculation on every frame.
-
-```tsx
+Nunca anime propriedades de layout (`width`, `height`, `top`, `left`, `margin`, `padding`). Eles acionam o recálculo do layout em cada quadro.```tsx
 // WRONG: animates height
 useAnimatedStyle(() => ({
   height: withTiming(expanded ? 200 : 0),
@@ -265,30 +242,26 @@ useAnimatedStyle(() => ({
   transform: [{ scaleY: withTiming(expanded ? 1 : 0) }],
   opacity: withTiming(expanded ? 1 : 0),
 }))
-```
+````
 
-### 3.2 Use useDerivedValue for Computed Animations
+### 3.2 Use useDerivedValue para animações computadas
 
-Use `useDerivedValue` for deriving one shared value from another. Reserve `useAnimatedReaction` for side effects only.
-
-```tsx
+Use `useDerivedValue` para derivar um valor compartilhado de outro. Reserve `useAnimatedReaction` apenas para efeitos colaterais.```tsx
 // WRONG: useAnimatedReaction for derivation
 useAnimatedReaction(
-  () => progress.get(),
-  (current) => {
-    opacity.set(1 - current)
-  },
+() => progress.get(),
+(current) => {
+opacity.set(1 - current)
+},
 )
 
 // CORRECT: useDerivedValue
 const opacity = useDerivedValue(() => 1 - progress.get())
-```
 
-### 3.3 Use GestureDetector for Animated Press States
+````
+### 3.3 Use GestureDetector para estados de imprensa animados
 
-GestureDetector callbacks run on the UI thread. Pressable callbacks run on the JS thread.
-
-```tsx
+Os retornos de chamada do GestureDetector são executados no thread da UI. Retornos de chamada pressionáveis ​​são executados no thread JS.```tsx
 // CORRECT: UI thread press animation
 const pressed = useSharedValue(0)
 
@@ -304,19 +277,17 @@ const animatedStyle = useAnimatedStyle(() => ({
 <GestureDetector gesture={tap}>
   <Animated.View style={animatedStyle}>{children}</Animated.View>
 </GestureDetector>
-```
+````
 
 ---
 
-## 4. Scroll Performance
+## 4. Desempenho de rolagem
 
-**Impact: HIGH — prevents render thrashing.**
+**Impacto: ALTO — evita desgaste na renderização.**
 
-### 4.1 Never Track Scroll Position in useState
+### 4.1 Nunca rastreie a posição de rolagem em useState
 
-Use Reanimated shared value or a ref instead.
-
-```tsx
+Use o valor compartilhado reanimado ou uma referência.```tsx
 // WRONG: re-renders on every frame
 const [scrollY, setScrollY] = useState(0)
 const onScroll = e => setScrollY(e.nativeEvent.contentOffset.y)
@@ -324,32 +295,30 @@ const onScroll = e => setScrollY(e.nativeEvent.contentOffset.y)
 // CORRECT: Reanimated (for animations)
 const scrollY = useSharedValue(0)
 const onScroll = useAnimatedScrollHandler({
-  onScroll: e => { scrollY.value = e.contentOffset.y },
+onScroll: e => { scrollY.value = e.contentOffset.y },
 })
 <Animated.ScrollView onScroll={onScroll} scrollEventThrottle={16} />
 
 // CORRECT: ref (for non-reactive tracking)
 const scrollY = useRef(0)
 const onScroll = e => { scrollY.current = e.nativeEvent.contentOffset.y }
-```
 
+````
 ---
 
-## 5. Navigation
+## 5. Navegação
 
-**Impact: HIGH — affects transitions, gestures, and platform feel.**
+**Impacto: ALTO — afeta transições, gestos e sensação de plataforma.**
 
-### 5.1 Use Native Navigators
+### 5.1 Use navegadores nativos
 
-- **Stacks:** `@react-navigation/native-stack` or Expo Router `<Stack>` (native by default)
-- **Tabs:** `react-native-bottom-tabs` or Expo Router `<NativeTabs>`
-- **Never:** `@react-navigation/stack` (JS-based) or `@react-navigation/bottom-tabs`
+- **Pilhas:** `@react-navigation/native-stack` ou Expo Router `<Stack>` (nativo por padrão)
+- **Guias:** `react-native-bottom-tabs` ou Expo Router `<NativeTabs>`
+- **Nunca:** `@react-navigation/stack` (baseado em JS) ou `@react-navigation/bottom-tabs`
 
-### 5.2 Use Native Headers
+### 5.2 Use cabeçalhos nativos
 
-Prefer native header options over custom header components—they support iOS large titles, search bars, blur effects, and proper safe area handling.
-
-```tsx
+Prefira opções de cabeçalho nativo em vez de componentes de cabeçalho personalizados - eles suportam títulos grandes do iOS, barras de pesquisa, efeitos de desfoque e manuseio adequado de áreas seguras.```tsx
 // WRONG: custom header
 options={{ header: () => <CustomHeader title="Profile" /> }}
 
@@ -359,59 +328,52 @@ options={{
   headerLargeTitleEnabled: true,
   headerSearchBarOptions: { placeholder: 'Search' },
 }}
-```
+````
 
 ---
 
-## 6. React State
+## 6. Estado de reação
 
-**Impact: MEDIUM — prevents stale closures and unnecessary re-renders.**
+**Impacto: MÉDIO — evita fechamentos obsoletos e novas renderizações desnecessárias.**
 
-### 6.1 Minimize State, Derive Values
+### 6.1 Minimizar estado, derivar valores```tsx
 
-```tsx
 // WRONG: redundant state
 const [total, setTotal] = useState(0)
 useEffect(() => setTotal(items.reduce((s, i) => s + i.price, 0)), [items])
 
 // CORRECT: derived during render
 const total = items.reduce((s, i) => s + i.price, 0)
-```
 
-### 6.2 Use Fallback Pattern for Reactive Defaults
-
-```tsx
+````
+### 6.2 Usar padrão substituto para padrões reativos```tsx
 // WRONG: loses reactivity when defaultEnabled changes
 const [enabled, setEnabled] = useState(defaultEnabled)
 
 // CORRECT: undefined = user hasn't chosen yet
 const [_enabled, setEnabled] = useState<boolean | undefined>(undefined)
 const enabled = _enabled ?? defaultEnabled
-```
+````
 
-### 6.3 Use Dispatch Updaters
+### 6.3 Usar atualizadores de despacho
 
-When next state depends on current state:
-
-```tsx
+Quando o próximo estado depende do estado atual:```tsx
 // WRONG: may be stale
 setCount(count + 1)
 
 // CORRECT: always latest value
 setCount((prev) => prev + 1)
-```
 
+````
 ---
 
-## 7. State Architecture
+## 7. Arquitetura do Estado
 
-**Impact: MEDIUM — single source of truth.**
+**Impacto: MÉDIO — fonte única de verdade.**
 
-### 7.1 State Must Represent Ground Truth
+### 7.1 O estado deve representar a verdade fundamental
 
-Store the state (`pressed`, `isOpen`), derive the visual (`scale`, `opacity`):
-
-```tsx
+Armazene o estado (`pressionado`, `isOpen`), derive o visual (`escala`, `opacidade`):```tsx
 // WRONG: storing visual output
 const scale = useSharedValue(1)
 tap.onBegin(() => scale.set(withTiming(0.95)))
@@ -423,56 +385,51 @@ tap.onBegin(() => pressed.set(withTiming(1)))
 const animatedStyle = useAnimatedStyle(() => ({
   transform: [{ scale: interpolate(pressed.get(), [0, 1], [1, 0.95]) }],
 }))
-```
+````
 
 ---
 
-## 8. React Compiler
+## 8. Compilador React
 
-**Impact: MEDIUM — compatibility patterns.**
+**Impacto: MÉDIO — padrões de compatibilidade.**
 
-### 8.1 Destructure Functions Early
+### 8.1 Desestruturar funções antecipadamente
 
-Destructured functions are stable references. Dotting into objects creates new references.
-
-```tsx
+Funções desestruturadas são referências estáveis. Pontilhar objetos cria novas referências.```tsx
 // WRONG: unstable references
 const router = useRouter()
 const handlePress = () => {
-  props.onSave()
-  router.push('/success')
+props.onSave()
+router.push('/success')
 }
 
 // CORRECT: stable references
 const { push } = useRouter()
 const { onSave } = props
 const handlePress = () => {
-  onSave()
-  push('/success')
+onSave()
+push('/success')
 }
-```
 
-### 8.2 Use .get() and .set() for Shared Values
+````
+### 8.2 Use .get() e .set() para valores compartilhados
 
-Required for React Compiler compatibility:
-
-```tsx
+Necessário para compatibilidade do React Compiler:```tsx
 // WRONG: opts out of compiler
 count.value = count.value + 1
 
 // CORRECT: compiler compatible
 count.set(count.get() + 1)
-```
+````
 
 ---
 
-## 9. User Interface
+## 9. Interface do usuário
 
-**Impact: MEDIUM — native look and feel.**
+**Impacto: MÉDIO — aparência nativa.**
 
-### 9.1 Modern Styling Patterns
+### 9.1 Padrões de estilo moderno```tsx
 
-```tsx
 // Use gap for spacing between children (not margin)
 <View style={{ gap: 8 }}><Text>A</Text><Text>B</Text></View>
 
@@ -484,13 +441,11 @@ count.set(count.get() + 1)
 
 // Use native gradients (not third-party libraries)
 { experimental_backgroundImage: 'linear-gradient(to bottom, #000, #fff)' }
-```
 
-### 9.2 Use expo-image
+````
+### 9.2 Use imagem expo
 
-Always use `expo-image` instead of React Native's `Image`:
-
-```tsx
+Sempre use `expo-image` em vez de `Image` do React Native:```tsx
 import { Image } from 'expo-image'
 
 ;<Image
@@ -500,11 +455,10 @@ import { Image } from 'expo-image'
   transition={200}
   cachePolicy="memory-disk"
 />
-```
+````
 
-### 9.3 Use Pressable (Never Touchable)
+### 9.3 Use pressionável (nunca tocável)```tsx
 
-```tsx
 // WRONG
 import { TouchableOpacity } from 'react-native'
 
@@ -512,11 +466,9 @@ import { TouchableOpacity } from 'react-native'
 import { Pressable } from 'react-native'
 // or for lists:
 import { Pressable } from 'react-native-gesture-handler'
-```
 
-### 9.4 Use Native Modals
-
-```tsx
+````
+### 9.4 Use modais nativos```tsx
 // WRONG: JS bottom sheet library
 <BottomSheet ref={sheetRef} snapPoints={['50%', '90%']}>
 
@@ -529,61 +481,54 @@ import { Pressable } from 'react-native-gesture-handler'
   presentation: 'formSheet',
   sheetAllowedDetents: 'fitToContents',
 }} />
-```
+````
 
-### 9.5 Use Native Menus (zeego)
+### 9.5 Use menus nativos (zeego)```tsx
 
-```tsx
-import * as DropdownMenu from 'zeego/dropdown-menu'
+import \* as DropdownMenu from 'zeego/dropdown-menu'
 
 ;<DropdownMenu.Root>
-  <DropdownMenu.Trigger>
-    <Pressable>
-      <Text>Options</Text>
-    </Pressable>
-  </DropdownMenu.Trigger>
-  <DropdownMenu.Content>
-    <DropdownMenu.Item key="edit" onSelect={() => console.log('edit')}>
-      <DropdownMenu.ItemTitle>Edit</DropdownMenu.ItemTitle>
-    </DropdownMenu.Item>
-  </DropdownMenu.Content>
+<DropdownMenu.Trigger>
+<Pressable>
+<Text>Options</Text>
+</Pressable>
+</DropdownMenu.Trigger>
+<DropdownMenu.Content>
+<DropdownMenu.Item key="edit" onSelect={() => console.log('edit')}>
+<DropdownMenu.ItemTitle>Edit</DropdownMenu.ItemTitle>
+</DropdownMenu.Item>
+</DropdownMenu.Content>
 </DropdownMenu.Root>
-```
 
-### 9.6 Safe Areas
+````
+### 9.6 Áreas Seguras
 
-Use `contentInsetAdjustmentBehavior="automatic"` on ScrollViews instead of wrapping in SafeAreaView:
-
-```tsx
+Use `contentInsetAdjustmentBehavior="automatic"` em ScrollViews em vez de agrupar em SafeAreaView:```tsx
 // CORRECT
 <ScrollView contentInsetAdjustmentBehavior="automatic">{children}</ScrollView>
-```
+````
 
-### 9.7 Measuring Views
+### 9.7 Medindo Visualizações
 
-Use `useLayoutEffect` with `getBoundingClientRect()` for synchronous measurement, plus `onLayout` for updates:
-
-```tsx
+Use `useLayoutEffect` com `getBoundingClientRect()` para medição síncrona, mais `onLayout` para atualizações:```tsx
 const ref = useRef<View>(null)
 const [size, setSize] = useState<Size | undefined>(undefined)
 
 useLayoutEffect(() => {
-  const rect = ref.current?.getBoundingClientRect()
-  if (rect) setSize({ width: rect.width, height: rect.height })
+const rect = ref.current?.getBoundingClientRect()
+if (rect) setSize({ width: rect.width, height: rect.height })
 }, [])
 
 const onLayout = (e: LayoutChangeEvent) => {
-  const { width, height } = e.nativeEvent.layout
-  setSize((prev) => {
-    if (prev?.width === width && prev?.height === height) return prev
-    return { width, height }
-  })
+const { width, height } = e.nativeEvent.layout
+setSize((prev) => {
+if (prev?.width === width && prev?.height === height) return prev
+return { width, height }
+})
 }
-```
 
-### 9.8 Use Galeria for Image Galleries
-
-```tsx
+````
+### 9.8 Use Galeria para galerias de imagens```tsx
 import { Galeria } from '@nandorojo/galeria'
 import { Image } from 'expo-image'
 
@@ -594,30 +539,28 @@ import { Image } from 'expo-image'
     </Galeria.Image>
   ))}
 </Galeria>
-```
+````
 
-### 9.9 Use contentInset for Dynamic Spacing
+### 9.9 Use contentInset para espaçamento dinâmico```tsx
 
-```tsx
 // WRONG: padding triggers layout recalculation
 <ScrollView contentContainerStyle={{ paddingBottom: offset }}>
 
 // CORRECT: contentInset adjusts scroll bounds only
 <ScrollView
-  contentInset={{ bottom: offset }}
-  scrollIndicatorInsets={{ bottom: offset }}
->
-```
+contentInset={{ bottom: offset }}
+scrollIndicatorInsets={{ bottom: offset }}
 
+>
+
+````
 ---
 
-## 10. Design System
+## 10. Sistema de Design
 
-**Impact: MEDIUM — maintainable component architecture.**
+**Impacto: MÉDIO — arquitetura de componentes de fácil manutenção.**
 
-### 10.1 Use Compound Components
-
-```tsx
+### 10.1 Usar componentes compostos```tsx
 // WRONG: polymorphic children
 <Button icon={<Icon />}>Save</Button>
 
@@ -626,48 +569,44 @@ import { Image } from 'expo-image'
   <ButtonIcon><SaveIcon /></ButtonIcon>
   <ButtonText>Save</ButtonText>
 </Button>
-```
+````
 
-### 10.2 Import from Design System Folder
+### 10.2 Importar da pasta Design System
 
-Re-export dependencies from a design system folder for easy refactoring:
-
-```tsx
+Exporte novamente as dependências de uma pasta do sistema de design para facilitar a refatoração:```tsx
 // WRONG: direct import
 import { View, Text } from 'react-native'
 
 // CORRECT: design system wrapper
 import { View } from '@/components/view'
 import { Text } from '@/components/text'
-```
 
+````
 ---
 
 ## 11. Monorepo
 
-**Impact: LOW — but critical when applicable.**
+**Impacto: BAIXO — mas crítico quando aplicável.**
 
-### 11.1 Native Dependencies in App Directory
+### 11.1 Dependências nativas no App Directory
 
-Autolinking only scans the app's `node_modules`. Native deps must be listed in the app's `package.json`, even if a shared package also uses them.
+A vinculação automática verifica apenas os `node_modules` do aplicativo. As dependências nativas devem ser listadas no `package.json` do aplicativo, mesmo que um pacote compartilhado também as utilize.
 
-### 11.2 Single Dependency Versions
+### 11.2 Versões de dependência única
 
-Use exact versions (`3.16.1` not `^3.0.0`) across all packages. Use syncpack or pnpm overrides to enforce.
+Use versões exatas (`3.16.1` e não `^3.0.0`) em todos os pacotes. Use substituições de syncpack ou pnpm para aplicar.
 
 ---
 
-## 12. Configuration
+## 12. Configuração
 
-**Impact: LOW — incremental improvements.**
+**Impacto: BAIXO — melhorias incrementais.**
 
-### 12.1 Load Fonts at Build Time
+### 12.1 Carregar fontes em tempo de construção
 
-Use `expo-font` config plugin instead of `useFonts`/`Font.loadAsync`. Fonts are available immediately at launch.
+Use o plugin de configuração `expo-font` em vez de `useFonts`/`Font.loadAsync`. As fontes estão disponíveis imediatamente no lançamento.
 
-### 12.2 Hoist Intl Formatters
-
-```tsx
+### 12.2 Formatadores Hoist Intl```tsx
 // WRONG: new formatter every render
 function Price({ amount }: { amount: number }) {
   const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' })
@@ -679,17 +618,17 @@ const currencyFmt = new Intl.NumberFormat('en-US', { style: 'currency', currency
 function Price({ amount }: { amount: number }) {
   return <Text>{currencyFmt.format(amount)}</Text>
 }
-```
+````
 
 ---
 
-## References
+## Referências
 
-1. [React Native](https://reactnative.dev)
+1. [Reagir Nativo](https://reactnative.dev)
 2. [Expo](https://docs.expo.dev)
-3. [Reanimated](https://docs.swmansion.com/react-native-reanimated)
-4. [Gesture Handler](https://docs.swmansion.com/react-native-gesture-handler)
+3. [Reanimado](https://docs.swmansion.com/react-native-reanimated)
+4. [Manipulador de gestos](https://docs.swmansion.com/react-native-gesture-handler)
 5. [LegendList](https://legendapp.com/open-source/legend-list)
 6. [Galeria](https://github.com/nandorojo/galeria)
 7. [Zeego](https://zeego.dev)
-8. [React Compiler](https://react.dev/learn/react-compiler)
+8. [Compilador React](https://react.dev/learn/react-compiler)

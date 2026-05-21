@@ -1,17 +1,17 @@
 ---
-title: Prefer Composing Children Over Render Props
+title: Prefira compor crianças em vez de acessórios de renderização
 impact: MEDIUM
-impactDescription: cleaner composition, better readability
+impactDescription: composição mais limpa, melhor legibilidade
 tags: composition, children, render-props
 ---
 
-## Prefer Children Over Render Props
+## Prefira crianças em vez de acessórios de renderização
 
-Use `children` for composition instead of `renderX` props. Children are more
-readable, compose naturally, and don't require understanding callback
-signatures.
+Use `children` para composição em vez de adereços `renderX`. As crianças são mais
+legível, compõe naturalmente e não requer compreensão de retorno de chamada
+assinaturas.
 
-**Incorrect (render props):**
+**Incorreto (adereços de renderização):**
 
 ```tsx
 function Composer({
@@ -48,7 +48,7 @@ return (
 )
 ```
 
-**Correct (compound components with children):**
+**Correto (componentes compostos com filhos):**
 
 ```tsx
 function ComposerFrame({ children }: { children: React.ReactNode }) {
@@ -56,7 +56,7 @@ function ComposerFrame({ children }: { children: React.ReactNode }) {
 }
 
 function ComposerFooter({ children }: { children: React.ReactNode }) {
-  return <footer className='flex'>{children}</footer>
+  return <footer className="flex">{children}</footer>
 }
 
 // Usage is flexible
@@ -73,15 +73,12 @@ return (
 )
 ```
 
-**When render props are appropriate:**
+**Quando os adereços de renderização são apropriados:**
 
 ```tsx
 // Render props work well when you need to pass data back
-<List
-  data={items}
-  renderItem={({ item, index }) => <Item item={item} index={index} />}
-/>
+<List data={items} renderItem={({ item, index }) => <Item item={item} index={index} />} />
 ```
 
-Use render props when the parent needs to provide data or state to the child.
-Use children when composing static structure.
+Use adereços de renderização quando o pai precisar fornecer dados ou estado ao filho.
+Use filhos ao compor uma estrutura estática.

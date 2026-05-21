@@ -51,38 +51,38 @@ useEffect(() => {
 }, [location]) // Include dependency
 ```
 
-## Performance
+## Desempenho
 
-**Slow page load:**
+**Carregamento lento da página:**
 
-- Audit tool count (50+ degrades performance)
-- Disable blocking triggers unless required
-- Reduce event payload size (<100KB)
+- Contagem de ferramentas de auditoria (mais de 50 prejudica o desempenho)
+- Desative os gatilhos de bloqueio, a menos que seja necessário
+- Reduza o tamanho da carga útil do evento (<100 KB)
 
-## Tool-Specific Issues
+## Problemas específicos da ferramenta
 
-| Tool       | Issue                      | Fix                                  |
-| ---------- | -------------------------- | ------------------------------------ |
-| GA4        | Events not in real-time    | Wait 5-10 min, use DebugView         |
-| Facebook   | Invalid Pixel ID           | Use numeric only (no `fbpx_` prefix) |
-| Google Ads | Conversions not attributed | Include `send_to: 'AW-XXX/LABEL'`    |
+| Ferramenta         | Edição                    | Correção                                  |
+| ------------------ | ------------------------- | ----------------------------------------- |
+| GA4                | Eventos não em tempo real | Aguarde 5 a 10 minutos, use DebugView     |
+| Facebook           | ID de pixel inválido      | Use apenas numérico (sem prefixo `fbpx_`) |
+| Anúncios do Google | Conversões não atribuídas | Inclui `send_to: 'AW-XXX/LABEL'`          |
 
-## Data Layer
+## Camada de dados
 
-- Properties persist per page only - set on each page load
-- Nested access: `{{client.__zarazTrack.user.plan}}`
+- As propriedades persistem apenas por página - definidas em cada carregamento de página
+- Acesso aninhado: `{{client.__zarazTrack.user.plan}}`
 
-## Limits
+## Limites
 
-| Resource         | Limit        |
-| ---------------- | ------------ |
-| Request size     | 100KB        |
-| Consent purposes | 20           |
-| API rate         | 1000 req/sec |
+| Recurso                      | Limite                |
+| ---------------------------- | --------------------- |
+| Tamanho da solicitação       | 100 KB                |
+| Finalidades do consentimento | 20                    |
+| Taxa API                     | 1000 necessidades/seg |
 
-## When NOT to Use Zaraz
+## Quando NÃO usar Zaraz
 
-- Server-to-server tracking (use Workers)
-- Real-time bidirectional communication
-- Binary data transmission
-- Authentication flows
+- Rastreamento servidor a servidor (use Workers)
+- Comunicação bidirecional em tempo real
+- Transmissão de dados binários
+- Fluxos de autenticação

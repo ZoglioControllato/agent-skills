@@ -1,31 +1,37 @@
-# Code Analysis Tools
+# Ferramentas de análise de código
 
-Use graceful degradation for code search and structural analysis.
+Use degradação graciosa para pesquisa de código e análise estrutural.
 
-## Tool Priority
+## Prioridade da ferramenta
 
-1. **ast-grep** (`sg`) - Structural pattern-based search
-2. **ripgrep** (`rg`) - Fast context-aware text search
-3. **grep** - Standard text search (always available)
+1. **ast-grep** (`sg`) - Pesquisa baseada em padrões estruturais
+2. **ripgrep** (`rg`) - Pesquisa rápida de texto com reconhecimento de contexto
+3. **grep** – Pesquisa de texto padrão (sempre disponível)
 
-## Detection
+## Detecção
 
-Check tool availability before use:
+Verifique a disponibilidade da ferramenta antes de usar:```bash
 
-```bash
 # Check for ast-grep
+
 if command -v sg >/dev/null 2>&1; then
-  # Use ast-grep for structural search
+
+# Use ast-grep for structural search
+
 elif command -v rg >/dev/null 2>&1; then
-  # Fall back to ripgrep
+
+# Fall back to ripgrep
+
 else
-  # Use standard grep as final fallback
+
+# Use standard grep as final fallback
+
 fi
-```
 
-## Usage Examples
+````
+## Exemplos de uso
 
-**Finding function definitions:**
+**Encontrando definições de função:**
 
 ```bash
 # ast-grep (best - structural)
@@ -36,9 +42,9 @@ rg '^function\s+\w+\(' --type-add 'source:*.[extension]' -t source
 
 # grep (last resort - basic)
 grep -r '^function ' --include="*.[extension]"
-```
+````
 
-**Finding imports/requires:**
+**Encontrar importações/requer:**
 
 ```bash
 # ast-grep
@@ -51,7 +57,7 @@ rg '^import .* from' --type-add 'source:*.[extension]' -t source
 grep -r '^import ' --include="*.[extension]"
 ```
 
-**Finding class/component definitions:**
+**Encontrando definições de classe/componente:**
 
 ```bash
 # ast-grep
@@ -64,35 +70,34 @@ rg '^(class|export class)\s+\w+' --type-add 'source:*.[extension]' -t source
 grep -r '^class ' --include="*.[extension]"
 ```
 
-## Search Scope
+## Escopo da pesquisa
 
-**Best practices:**
+**Práticas recomendadas:**
 
-- Limit to source file extensions relevant to project
-- Exclude directories: `node_modules`, `vendor`, `dist`, `build`, `.git`
-- Focus on source directories: `src`, `lib`, `app`
-- Use file type filters when available
+- Limite às extensões de arquivo de origem relevantes para o projeto
+- Excluir diretórios: `node_modules`, `vendor`, `dist`, `build`, `.git`
+- Concentre-se nos diretórios de origem: `src`, `lib`, `app`
+- Use filtros de tipo de arquivo quando disponíveis
 
-**Performance tips:**
+**Dicas de desempenho:**
 
-- Use specific patterns over broad searches
-- Limit directory depth with `--max-depth` (ripgrep/grep)
-- Cache results for repeated queries
+- Use padrões específicos em pesquisas amplas
+- Limite a profundidade do diretório com `--max-profundidade` (ripgrep/grep)
+- Resultados em cache para consultas repetidas
 
-## Fallback Notice
+## Aviso de substituição
 
-If ast-grep unavailable, display once per session:
-
-```
+Se ast-grep não estiver disponível, exiba uma vez por sessão:```
 ⚠️ ast-grep not detected. Install for more precise structural code analysis.
-   https://ast-grep.github.io/guide/quick-start.html
+https://ast-grep.github.io/guide/quick-start.html
+
 ```
+## Quando usar
 
-## When to Use
-
-- Finding usage patterns across codebase
-- Identifying code structure and organization
-- Locating function/class/component definitions
-- Analyzing import/dependency patterns
-- Refactoring impact analysis
-- Code navigation in unfamiliar codebases
+- Encontrar padrões de uso na base de código
+- Identificação da estrutura e organização do código
+- Localizando definições de função/classe/componente
+- Analisando padrões de importação/dependência
+- Refatoração de análise de impacto
+- Navegação de código em bases de código desconhecidas
+```

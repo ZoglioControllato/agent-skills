@@ -1,40 +1,40 @@
 ---
 name: security-ownership-map
-description: 'Analyze git repositories to build a security ownership topology (people-to-file), compute bus factor and sensitive-code ownership, and export CSV/JSON for graph databases and visualization. Use when the user explicitly wants a security-oriented ownership or bus-factor analysis grounded in git history (for example: orphaned sensitive code, security maintainers, CODEOWNERS reality checks for risk, sensitive hotspots, or ownership clusters). Do NOT use for general maintainer lists, non-security ownership questions, or threat modeling (use security-threat-model).'
+description: 'Analisa repositórios git para construir topologia de ownership orientada a segurança (pessoas↔arquivos), calcular bus factor e ownership de código sensível, e exportar CSV/JSON para grafos e visualização. Use quando o usuário quiser análise explícita de ownership ou bus factor ancorada em histórico git com viés de segurança (código sensível órfão, mantenedores de segurança, confronto CODEOWNERS↔risco, hotspots sensíveis ou clusters de ownership). NÃO use para listas gerais de mantenedores, ownership sem foco em segurança ou modelagem de ameaças (use security-threat-model).'
 metadata:
   author: github.com/openai/skills
   version: '1.0.0'
 ---
 
-# Security Ownership Map
+# Mapa de ownership de segurança
 
-## Overview
+## Visão geral
 
-Build a bipartite graph of people and files from git history, then compute ownership risk and export graph artifacts for Neo4j/Gephi. Also build a file co-change graph (Jaccard similarity on shared commits) to cluster files by how they move together while ignoring large, noisy commits.
+Monte um grafo bipartido de pessoas e arquivos a partir do histórico git, calcule risco de ownership e exporte artefatos para Neo4j/Gephi. Também há grafo de co-mudança de arquivos (similaridade de Jaccard em commits compartilhados) para agrupar arquivos que “andam juntos”, ignorando commits grandes e ruidosos.
 
-## Requirements
+## Requisitos
 
 - Python 3
-- `networkx` (required; community detection is enabled by default)
+- `networkx` (obrigatório; detecção de comunidades ativada por padrão)
 
-Install with:
+Instalação:
 
 ```bash
 pip install networkx
 ```
 
-## Workflow
+## Fluxo de trabalho
 
-1. Scope the repo and time window (optional `--since/--until`).
-2. Decide sensitivity rules (use defaults or provide a CSV config).
-3. Build the ownership map with `scripts/run_ownership_map.py` (co-change graph is on by default; use `--cochange-max-files` to ignore supernode commits).
-4. Communities are computed by default; graphml output is optional (`--graphml`).
-5. Query the outputs with `scripts/query_ownership.py` for bounded JSON slices.
-6. Persist and visualize (see `references/neo4j-import.md`).
+1. Defina escopo do repo e janela temporal (opcional `--since/--until`).
+2. Escolha regras de sensibilidade (padrões ou CSV de config).
+3. Gere o mapa com `scripts/run_ownership_map.py` (co-change ligado por padrão; `--cochange-max-files` ignora commits “supernó”).
+4. Comunidades calculadas por padrão; saída graphml opcional (`--graphml`).
+5. Consulte saídas com `scripts/query_ownership.py` para fatias JSON limitadas.
+6. Persistência e visualização: veja `references/neo4j-import.md`.
 
-By default, the co-change graph ignores common “glue” files (lockfiles, `.github/*`, editor config) so clusters reflect actual code movement instead of shared infra edits. Override with `--cochange-exclude` or `--no-default-cochange-excludes`. Dependabot commits are excluded by default; override with `--no-default-author-excludes` or add patterns via `--author-exclude-regex`.
+Por padrão o grafo de co-change ignora arquivos “cola” comuns (lockfiles, `.github/*`, config de editor) para clusters refletirem movimento de código, não só infra. Sobrescreva com `--cochange-exclude` ou `--no-default-cochange-excludes`. Commits Dependabot excluídos por padrão; use `--no-default-author-excludes` ou `--author-exclude-regex`.
 
-If you want to exclude Linux build glue like `Kbuild` from co-change clustering, pass:
+Para excluir cola de build Linux como `Kbuild` do clustering:
 
 ```bash
 python skills/skills/security-ownership-map/scripts/run_ownership_map.py \
@@ -43,9 +43,9 @@ python skills/skills/security-ownership-map/scripts/run_ownership_map.py \
   --cochange-exclude "**/Kbuild"
 ```
 
-## Quick start
+## Início rápido
 
-Run from the repo root:
+Na raiz do repositório:
 
 ```bash
 python skills/skills/security-ownership-map/scripts/run_ownership_map.py \
@@ -55,9 +55,9 @@ python skills/skills/security-ownership-map/scripts/run_ownership_map.py \
   --emit-commits
 ```
 
-Defaults: author identity, author date, and merge commits excluded. Use `--identity committer`, `--date-field committer`, or `--include-merges` if needed.
+Padrões: identidade de autor, data de autor e merges excluídos. Use `--identity committer`, `--date-field committer` ou `--include-merges` se precisar.
 
-Example (override co-change excludes):
+Exemplo (sobrescrever excludes de co-change):
 
 ```bash
 python skills/skills/security-ownership-map/scripts/run_ownership_map.py \
@@ -68,7 +68,7 @@ python skills/skills/security-ownership-map/scripts/run_ownership_map.py \
   --no-default-cochange-excludes
 ```
 
-Communities are computed by default. To disable:
+Comunidades por padrão. Para desligar:
 
 ```bash
 python skills/skills/security-ownership-map/scripts/run_ownership_map.py \
@@ -77,9 +77,9 @@ python skills/skills/security-ownership-map/scripts/run_ownership_map.py \
   --no-communities
 ```
 
-## Sensitivity rules
+## Regras de sensibilidade
 
-By default, the script flags common auth/crypto/secret paths. Override by providing a CSV file:
+Por padrão o script marca caminhos comuns de auth/crypto/segredos. Substitua com CSV:
 
 ```
 # pattern,tag,weight
@@ -88,29 +88,29 @@ By default, the script flags common auth/crypto/secret paths. Override by provid
 **/*.pem,secrets,1.0
 ```
 
-Use it with `--sensitive-config path/to/sensitive.csv`.
+Use com `--sensitive-config path/to/sensitive.csv`.
 
-## Output artifacts
+## Artefatos de saída
 
-`ownership-map-out/` contains:
+`ownership-map-out/` contém:
 
-- `people.csv` (nodes: people)
-- `files.csv` (nodes: files)
-- `edges.csv` (edges: touches)
-- `cochange_edges.csv` (file-to-file co-change edges with Jaccard weight; omitted with `--no-cochange`)
-- `summary.json` (security ownership findings)
-- `commits.jsonl` (optional, if `--emit-commits`)
-- `communities.json` (computed by default from co-change edges when available; includes `maintainers` per community; disable with `--no-communities`)
-- `cochange.graph.json` (NetworkX node-link JSON with `community_id` + `community_maintainers`; falls back to `ownership.graph.json` if no co-change edges)
-- `ownership.graphml` / `cochange.graphml` (optional, if `--graphml`)
+- `people.csv` (nós: pessoas)
+- `files.csv` (nós: arquivos)
+- `edges.csv` (arestas: toques)
+- `cochange_edges.csv` (co-mudança arquivo↔arquivo com peso Jaccard; omitido com `--no-cochange`)
+- `summary.json` (achados de ownership de segurança)
+- `commits.jsonl` (opcional, com `--emit-commits`)
+- `communities.json` (por padrão a partir de arestas de co-change; inclui `maintainers` por comunidade; desligue com `--no-communities`)
+- `cochange.graph.json` (JSON node-link NetworkX com `community_id` + `community_maintainers`; cai para `ownership.graph.json` sem arestas de co-change)
+- `ownership.graphml` / `cochange.graphml` (opcional, com `--graphml`)
 
-`people.csv` includes timezone detection based on author commit offsets: `primary_tz_offset`, `primary_tz_minutes`, and `timezone_offsets`.
+`people.csv` inclui detecção de timezone por offsets de commit: `primary_tz_offset`, `primary_tz_minutes`, `timezone_offsets`.
 
-## LLM query helper
+## Helper de consulta (LLM)
 
-Use `scripts/query_ownership.py` to return small, JSON-bounded slices without loading the full graph into context.
+Use `scripts/query_ownership.py` para fatias JSON pequenas sem carregar o grafo inteiro no contexto.
 
-Examples:
+Exemplos:
 
 ```bash
 python skills/skills/security-ownership-map/scripts/query_ownership.py --data-dir ownership-map-out people --limit 10
@@ -122,43 +122,43 @@ python skills/skills/security-ownership-map/scripts/query_ownership.py --data-di
 python skills/skills/security-ownership-map/scripts/query_ownership.py --data-dir ownership-map-out community --id 3
 ```
 
-Use `--community-top-owners 5` (default) to control how many maintainers are stored per community.
+`--community-top-owners 5` (padrão) controla quantos mantenedores guardar por comunidade.
 
-## Basic security queries
+## Consultas básicas de segurança
 
-Run these to answer common security ownership questions with bounded output:
+Respostas comuns com saída limitada:
 
 ```bash
-# Orphaned sensitive code (stale + low bus factor)
+# Código sensível órfão (stale + bus factor baixo)
 python skills/skills/security-ownership-map/scripts/query_ownership.py --data-dir ownership-map-out summary --section orphaned_sensitive_code
 
-# Hidden owners for sensitive tags
+# Donos “escondidos” para tags sensíveis
 python skills/skills/security-ownership-map/scripts/query_ownership.py --data-dir ownership-map-out summary --section hidden_owners
 
-# Sensitive hotspots with low bus factor
+# Hotspots sensíveis com bus factor baixo
 python skills/skills/security-ownership-map/scripts/query_ownership.py --data-dir ownership-map-out summary --section bus_factor_hotspots
 
-# Auth/crypto files with bus factor <= 1
+# Arquivos auth/crypto com bus factor <= 1
 python skills/skills/security-ownership-map/scripts/query_ownership.py --data-dir ownership-map-out files --tag auth --bus-factor-max 1
 python skills/skills/security-ownership-map/scripts/query_ownership.py --data-dir ownership-map-out files --tag crypto --bus-factor-max 1
 
-# Who is touching sensitive code the most
+# Quem mais toca código sensível
 python skills/skills/security-ownership-map/scripts/query_ownership.py --data-dir ownership-map-out people --sort sensitive_touches --limit 10
 
-# Co-change neighbors (cluster hints for ownership drift)
+# Vizinhos de co-change (dica de cluster para drift de ownership)
 python skills/skills/security-ownership-map/scripts/query_ownership.py --data-dir ownership-map-out cochange --file path/to/file --min-jaccard 0.05 --limit 20
 
-# Community maintainers (for a cluster)
+# Mantenedores da comunidade (cluster)
 python skills/skills/security-ownership-map/scripts/query_ownership.py --data-dir ownership-map-out community --id 3
 
-# Monthly maintainers for the community containing a file
+# Mantenedores mensais da comunidade que contém um arquivo
 python skills/skills/security-ownership-map/scripts/community_maintainers.py \
   --data-dir ownership-map-out \
   --file network/card.c \
   --since 2025-01-01 \
   --top 5
 
-# Quarterly buckets instead of monthly
+# Buckets trimestrais em vez de mensais
 python skills/skills/security-ownership-map/scripts/community_maintainers.py \
   --data-dir ownership-map-out \
   --file network/card.c \
@@ -167,19 +167,19 @@ python skills/skills/security-ownership-map/scripts/community_maintainers.py \
   --top 5
 ```
 
-Notes:
+Notas:
 
-- Touches default to one authored commit (not per-file). Use `--touch-mode file` to count per-file touches.
-- Use `--window-days 90` or `--weight recency --half-life-days 180` to smooth churn.
-- Filter bots with `--ignore-author-regex '(bot|dependabot)'`.
-- Use `--min-share 0.1` to show stable maintainers only.
-- Use `--bucket quarter` for calendar quarter groupings.
-- Use `--identity committer` or `--date-field committer` to switch from author attribution.
-- Use `--include-merges` to include merge commits (excluded by default).
+- Toques padrão: um commit autoral (não por arquivo). `--touch-mode file` para contar por arquivo.
+- `--window-days 90` ou `--weight recency --half-life-days 180` suavizam churn.
+- Filtre bots: `--ignore-author-regex '(bot|dependabot)'`.
+- `--min-share 0.1` só mantenedores estáveis.
+- `--bucket quarter` agrupa por trimestre civil.
+- `--identity committer` ou `--date-field committer` mudam atribuição.
+- `--include-merges` inclui merges (excluídos por padrão).
 
-### Summary format (default)
+### Formato do summary (padrão)
 
-Use this structure, add fields if needed:
+Estrutura base; acrescente campos se precisar:
 
 ```json
 {
@@ -199,12 +199,12 @@ Use this structure, add fields if needed:
 }
 ```
 
-## Graph persistence
+## Persistência do grafo
 
-Use `references/neo4j-import.md` when you need to load the CSVs into Neo4j. It includes constraints, import Cypher, and visualization tips.
+Use `references/neo4j-import.md` para carregar CSVs no Neo4j (constraints, Cypher de importação, dicas de visualização).
 
-## Notes
+## Notas
 
-- `bus_factor_hotspots` in `summary.json` lists sensitive files with low bus factor; `orphaned_sensitive_code` is the stale subset.
-- If `git log` is too large, narrow with `--since` or `--until`.
-- Compare `summary.json` against CODEOWNERS to highlight ownership drift.
+- `bus_factor_hotspots` em `summary.json` lista arquivos sensíveis com bus factor baixo; `orphaned_sensitive_code` é o subconjunto stale.
+- Se `git log` for grande, restrinja com `--since` ou `--until`.
+- Compare `summary.json` ao CODEOWNERS para destacar drift de ownership.

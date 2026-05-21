@@ -1,27 +1,20 @@
 ---
-title: Use Compound Components
+title: Use componentes compostos
 impact: HIGH
-impactDescription: enables flexible composition without prop drilling
+impactDescription: permite composição flexível sem perfuração de hélice
 tags: composition, compound-components, architecture
 ---
 
-## Use Compound Components
+## Use componentes compostos
 
-Structure complex components as compound components with a shared context. Each
-subcomponent accesses shared state via context, not props. Consumers compose the
-pieces they need.
+Estruture componentes complexos como componentes compostos com um contexto compartilhado. Cada
+O subcomponente acessa o estado compartilhado por meio de contexto, não de adereços. Os consumidores compõem o
+peças que eles precisam.
 
-**Incorrect (monolithic component with render props):**
+**Incorreto (componente monolítico com suportes de renderização):**
 
 ```tsx
-function Composer({
-  renderHeader,
-  renderFooter,
-  renderActions,
-  showAttachments,
-  showFormatting,
-  showEmojis,
-}: Props) {
+function Composer({ renderHeader, renderFooter, renderActions, showAttachments, showFormatting, showEmojis }: Props) {
   return (
     <form>
       {renderHeader?.()}
@@ -41,17 +34,13 @@ function Composer({
 }
 ```
 
-**Correct (compound components with shared context):**
+**Correto (componentes compostos com contexto compartilhado):**
 
 ```tsx
 const ComposerContext = createContext<ComposerContextValue | null>(null)
 
 function ComposerProvider({ children, state, actions, meta }: ProviderProps) {
-  return (
-    <ComposerContext value={{ state, actions, meta }}>
-      {children}
-    </ComposerContext>
-  )
+  return <ComposerContext value={{ state, actions, meta }}>{children}</ComposerContext>
 }
 
 function ComposerFrame({ children }: { children: React.ReactNode }) {
@@ -65,11 +54,7 @@ function ComposerInput() {
     meta: { inputRef },
   } = use(ComposerContext)
   return (
-    <TextInput
-      ref={inputRef}
-      value={state.input}
-      onChangeText={(text) => update((s) => ({ ...s, input: text }))}
-    />
+    <TextInput ref={inputRef} value={state.input} onChangeText={(text) => update((s) => ({ ...s, input: text }))} />
   )
 }
 
@@ -94,7 +79,7 @@ const Composer = {
 }
 ```
 
-**Usage:**
+**Uso:**
 
 ```tsx
 <Composer.Provider state={state} actions={actions} meta={meta}>
@@ -109,4 +94,4 @@ const Composer = {
 </Composer.Provider>
 ```
 
-Consumers explicitly compose exactly what they need. No hidden conditionals. And the state, actions and meta are dependency-injected by a parent provider, allowing multiple usages of the same component structure.
+Os consumidores compõem explicitamente exatamente o que precisam. Sem condicionais ocultas. E o estado, as ações e o meta são injetados com dependência por um provedor pai, permitindo vários usos da mesma estrutura de componentes.

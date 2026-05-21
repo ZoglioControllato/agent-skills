@@ -1,6 +1,6 @@
-# Configuration
+# Configuração
 
-## getSandbox Options
+## Opções getSandbox
 
 ```typescript
 const sandbox = getSandbox(env.Sandbox, 'sandbox-id', {
@@ -15,24 +15,24 @@ const sandbox = getSandbox(env.Sandbox, 'sandbox-id', {
 })
 ```
 
-**Sleep Config**:
+**Configuração de suspensão**:
 
-- `sleepAfter`: Duration string (e.g., '5m', '10m', '1h') - default: '10m'
-- `keepAlive: false`: Auto-sleep (default, cost-optimized)
-- `keepAlive: true`: Never sleep (higher cost, requires explicit `destroy()`)
-- Sleeping sandboxes wake automatically (cold start)
+- `sleepAfter`: String de duração (por exemplo, '5m', '10m', '1h') - padrão: '10m'
+- `keepAlive: false`: suspensão automática (padrão, com custo otimizado)
+- `keepAlive: true`: Nunca durma (custo mais alto, requer `destroy()` explícito)
+- Sandboxes adormecidas despertam automaticamente (inicialização a frio)
 
-## Instance Types
+## Tipos de instância
 
 wrangler.jsonc `instance_type`:
 
-- `lite`: 256MB RAM, 0.5 vCPU (default)
-- `standard`: 512MB RAM, 1 vCPU
-- `heavy`: 1GB RAM, 2 vCPU
+- `lite`: 256 MB de RAM, 0,5 vCPU (padrão)
+- `padrão`: 512 MB de RAM, 1 vCPU
+- `pesado`: 1 GB de RAM, 2 vCPU
 
-## Dockerfile Patterns
+## Padrões Dockerfile
 
-**Basic**:
+**Básico**:
 
 ```dockerfile
 FROM docker.io/cloudflare/sandbox:latest
@@ -40,7 +40,7 @@ RUN pip3 install --no-cache-dir pandas numpy
 EXPOSE 8080  # Required for wrangler dev
 ```
 
-**Scientific**:
+**Científico**:
 
 ```dockerfile
 FROM docker.io/cloudflare/sandbox:latest
@@ -56,9 +56,9 @@ FROM docker.io/cloudflare/sandbox:latest
 RUN npm install -g typescript ts-node
 ```
 
-**CRITICAL**: `EXPOSE` required for `wrangler dev` port access. Production auto-exposes all ports.
+**CRÍTICO**: `EXPOSE` necessário para acesso à porta `wrangler dev`. A produção expõe automaticamente todas as portas.
 
-## CLI Commands
+## Comandos CLI
 
 ```bash
 # Dev
@@ -69,7 +69,7 @@ wrangler containers list        # Check container status
 wrangler secret put KEY         # Set secret
 ```
 
-## Environment & Secrets
+##Meio Ambiente e Segredos
 
 **wrangler.jsonc**:
 
@@ -88,7 +88,7 @@ wrangler secret put KEY         # Set secret
 }
 ```
 
-**Usage**:
+**Uso**:
 
 ```typescript
 const token = env.GITHUB_TOKEN // From wrangler secret
@@ -97,16 +97,16 @@ await sandbox.exec('git clone ...', {
 })
 ```
 
-## Preview URL Setup
+##Visualizar configuração do URL
 
-**Prerequisites**:
+**Pré-requisitos**:
 
-- Custom domain with wildcard DNS: `*.yourdomain.com → worker.yourdomain.com`
-- `.workers.dev` domains NOT supported
-- `normalizeId: true` in getSandbox
-- `proxyToSandbox()` called first in fetch handler
+- Domínio personalizado com DNS curinga: `*.seudominio.com → trabalhador.seudominio.com`
+- Domínios `.workers.dev` NÃO suportados
+- `normalizeId: true` em getSandbox
+- `proxyToSandbox()` chamado primeiro no manipulador de busca
 
-## Cron Triggers (Pre-warming)
+## Cron Triggers (Pré-aquecimento)
 
 ```jsonc
 {
@@ -125,7 +125,7 @@ export default {
 }
 ```
 
-## Logging Configuration
+##Configuração de registro
 
 **wrangler.jsonc**:
 
@@ -138,11 +138,11 @@ export default {
 }
 ```
 
-**Dev**: `debug` + `pretty`. **Production**: `info`/`warn` + `json`.
+**Dev**: `debug` + `pretty`. **Produção**: `info`/`warn` + `json`.
 
-## Timeout Environment Overrides
+## Substituições de ambiente de tempo limite
 
-Override default timeouts via environment variables:
+Substitua os tempos limite padrão por meio de variáveis de ambiente:
 
 ```jsonc
 {

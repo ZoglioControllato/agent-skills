@@ -1,18 +1,18 @@
-# Configuration
+# Configuração
 
-## Environment Variables
+## Variáveis de ambiente
 
-### Set Variables
+### Definir variáveis
 
-| Platform    | Command                               |
-| ----------- | ------------------------------------- |
-| Linux/macOS | `export CLOUDFLARE_API_TOKEN='token'` |
-| PowerShell  | `$env:CLOUDFLARE_API_TOKEN = 'token'` |
-| Windows CMD | `set CLOUDFLARE_API_TOKEN=token`      |
+| Plataforma     | Comando                                 |
+| -------------- | --------------------------------------- |
+| Linux/macOS    | `exportar CLOUDFLARE_API_TOKEN='token'` |
+| PowerShell     | `$env:CLOUDFLARE_API_TOKEN = 'token'`   |
+| CMD do Windows | `definir CLOUDFLARE_API_TOKEN=token`    |
 
-**Security:** Never commit tokens. Use `.env` files (gitignored) or secret managers.
+**Segurança:** Nunca confirme tokens. Use arquivos `.env` (gitignored) ou gerenciadores secretos.
 
-### .env File Pattern
+### Padrão de arquivo .env
 
 ```bash
 # .env (add to .gitignore)
@@ -37,7 +37,7 @@ load_dotenv()
 client = Cloudflare(api_token=os.environ["CLOUDFLARE_API_TOKEN"])
 ```
 
-## SDK Configuration
+##Configuração do SDK
 
 ### TypeScript
 
@@ -81,23 +81,23 @@ client := cloudflare.NewClient(
 client.Zones.Get(ctx, "zone-id", option.WithMaxRetries(0))
 ```
 
-## Configuration Options
+##Opções de configuração
 
-| Option   | TypeScript     | Python        | Go                   | Default            |
-| -------- | -------------- | ------------- | -------------------- | ------------------ |
-| Timeout  | `timeout` (ms) | `timeout` (s) | `WithRequestTimeout` | 60s                |
-| Retries  | `maxRetries`   | `max_retries` | `WithMaxRetries`     | 2 (Go: 10)         |
-| Base URL | `baseURL`      | `base_url`    | `WithBaseURL`        | api.cloudflare.com |
+| Opção            | TypeScript          | Python            | Go                   | Padrão             |
+| ---------------- | ------------------- | ----------------- | -------------------- | ------------------ |
+| Tempo limite     | `tempo limite` (ms) | `tempo limite`(s) | `WithRequestTimeout` | anos 60            |
+| Novas tentativas | `maxRetries`        | `max_retries`     | `WithMaxRetries`     | 2 (Ir: 10)         |
+| URL base         | `baseURL`           | `url_base`        | `ComBaseURL`         | api.cloudflare.com |
 
-**Note:** Go SDK has higher default retries (10) than TypeScript/Python (2).
+**Observação:** Go SDK tem tentativas padrão mais altas (10) do que TypeScript/Python (2).
 
-## Timeout Configuration
+## Configuração de tempo limite
 
-**When to increase:**
+**Quando aumentar:**
 
-- Large zone transfers
-- Bulk DNS operations
-- Worker script uploads
+- Grandes transferências de zona
+- Operações DNS em massa
+- Uploads de script de trabalho
 
 ```typescript
 const client = new Cloudflare({
@@ -105,11 +105,11 @@ const client = new Cloudflare({
 })
 ```
 
-## Retry Configuration
+##Tentar novamente a configuração
 
-**When to increase:** Rate-limit-heavy workflows, flaky network
+**Quando aumentar:** Fluxos de trabalho com limites de taxa pesados, rede instável
 
-**When to decrease:** Fast-fail requirements, user-facing requests
+**Quando diminuir:** Requisitos de falha rápida, solicitações voltadas para o usuário
 
 ```typescript
 // Increase retries for batch operations
@@ -119,7 +119,7 @@ const client = new Cloudflare({ maxRetries: 10 })
 const fastClient = new Cloudflare({ maxRetries: 0 })
 ```
 
-## Wrangler CLI Integration
+##Integração CLI do Wrangler
 
 ```bash
 # Configure authentication
@@ -151,8 +151,8 @@ account_id = "your-account-id"
 # CLOUDFLARE_API_TOKEN
 ```
 
-## See Also
+##Veja também
 
-- [api.md](./api.md) - Client initialization, authentication
-- [gotchas.md](./gotchas.md) - Rate limits, timeout errors
-- [Wrangler Reference](../wrangler/) - CLI tool details
+- [api.md](./api.md) - Inicialização do cliente, autenticação
+- [gotchas.md](./gotchas.md) - Limites de taxa, erros de tempo limite
+- [Referência do Wrangler](../wrangler/) - Detalhes da ferramenta CLI

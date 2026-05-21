@@ -1,39 +1,39 @@
 # Cloudflare Workers KV
 
-Globally-distributed, eventually-consistent key-value store optimized for high read volume and low latency.
+Armazenamento chave-valor globalmente distribuído, eventualmente consistente, otimizado para alto volume de leituras e baixa latência.
 
-## Overview
+## Visão geral
 
-KV provides:
+O KV oferece:
 
-- Eventual consistency (60s global propagation)
-- Read-optimized performance
-- 25 MiB value limit per key
-- Auto-replication to Cloudflare edge
-- Metadata support (1024 bytes)
+- Consistência eventual (propagação global ~60s)
+- Desempenho orientado a leitura
+- Limite de 25 MiB por valor
+- Replicação automática para a edge Cloudflare
+- Metadados (1024 bytes)
 
-**Use cases:** Config storage, user sessions, feature flags, caching, A/B testing
+**Casos de uso:** configuração, sessões, feature flags, cache, testes A/B
 
-## When to Use KV
+## Quando usar KV
 
-| Need                        | Recommendation                           |
-| --------------------------- | ---------------------------------------- |
-| Strong consistency          | → [Durable Objects](../durable-objects/) |
-| SQL queries                 | → [D1](../d1/)                           |
-| Object storage (files)      | → [R2](../r2/)                           |
-| High read, low write volume | → KV ✅                                  |
-| Sub-10ms global reads       | → KV ✅                                  |
+| Necessidade                      | Recomendação                             |
+| -------------------------------- | ---------------------------------------- |
+| Consistência forte               | → [Durable Objects](../durable-objects/) |
+| Consultas SQL                    | → [D1](../d1/)                           |
+| Armazenamento de arquivos        | → [R2](../r2/)                           |
+| Muitas leituras, poucas escritas | → KV ✅                                  |
+| Leituras globais <10ms           | → KV ✅                                  |
 
-**Quick comparison:**
+**Comparação rápida:**
 
-| Feature      | KV            | D1              | Durable Objects |
-| ------------ | ------------- | --------------- | --------------- |
-| Consistency  | Eventual      | Strong          | Strong          |
-| Read latency | <10ms         | ~50ms           | <1ms            |
-| Write limit  | 1/s per key   | Unlimited       | Unlimited       |
-| Use case     | Config, cache | Relational data | Coordination    |
+| Recurso          | KV            | D1                | Durable Objects |
+| ---------------- | ------------- | ----------------- | --------------- |
+| Consistência     | Eventual      | Forte             | Forte           |
+| Latência leitura | <10ms         | ~50ms             | <1ms            |
+| Limite escrita   | 1/s por chave | Ilimitado         | Ilimitado       |
+| Caso de uso      | Config, cache | Dados relacionais | Coordenação     |
 
-## Quick Start
+## Início rápido
 
 ```bash
 wrangler kv namespace create MY_NAMESPACE
@@ -49,42 +49,42 @@ const value = await env.MY_KV.get('key')
 const json = await env.MY_KV.get<Config>('config', 'json')
 ```
 
-## Core Operations
+## Operações principais
 
-| Method                      | Purpose          | Returns                            |
-| --------------------------- | ---------------- | ---------------------------------- |
-| `get(key, type?)`           | Single read      | `string \| null`                   |
-| `get(keys, type?)`          | Bulk read (≤100) | `Map<string, T \| null>`           |
-| `put(key, value, options?)` | Write            | `Promise<void>`                    |
-| `delete(key)`               | Delete           | `Promise<void>`                    |
-| `list(options?)`            | List keys        | `{ keys, list_complete, cursor? }` |
-| `getWithMetadata(key)`      | Get + metadata   | `{ value, metadata }`              |
+| Método                      | Finalidade             | Retorno                            |
+| --------------------------- | ---------------------- | ---------------------------------- |
+| `get(key, type?)`           | Leitura única          | `string \| null`                   |
+| `get(keys, type?)`          | Leitura em lote (≤100) | `Map<string, T \| null>`           |
+| `put(key, value, options?)` | Escrita                | `Promise<void>`                    |
+| `delete(key)`               | Excluir                | `Promise<void>`                    |
+| `list(options?)`            | Listar chaves          | `{ keys, list_complete, cursor? }` |
+| `getWithMetadata(key)`      | Valor + metadata       | `{ value, metadata }`              |
 
-## Consistency Model
+## Modelo de consistência
 
-- **Write visibility:** Immediate in same location, ≤60s globally
-- **Read path:** Eventually consistent
-- **Write rate:** 1 write/second per key (429 on exceed)
+- **Visibilidade de escrita:** imediata na mesma localidade, ≤60s globalmente
+- **Caminho de leitura:** eventualmente consistente
+- **Taxa de escrita:** 1 escrita/s por chave (429 se exceder)
 
-## Reading Order
+## Ordem de leitura
 
-| Task               | Files to Read                                    |
-| ------------------ | ------------------------------------------------ |
-| Quick start        | README → configuration.md                        |
-| Implement feature  | README → api.md → patterns.md                    |
-| Debug issues       | gotchas.md → api.md                              |
-| Batch operations   | api.md (bulk section) → patterns.md              |
-| Performance tuning | gotchas.md (performance) → patterns.md (caching) |
+| Tarefa            | Arquivos                                       |
+| ----------------- | ---------------------------------------------- |
+| Início rápido     | README → configuration.md                      |
+| Implementar       | README → api.md → patterns.md                  |
+| Depurar           | gotchas.md → api.md                            |
+| Operações em lote | api.md (bulk) → patterns.md                    |
+| Ajuste fino       | gotchas.md (performance) → patterns.md (cache) |
 
-## In This Reference
+## Nesta referência
 
-- [configuration.md](./configuration.md) - wrangler.jsonc setup, namespace creation, TypeScript types
-- [api.md](./api.md) - KV methods, bulk operations, cacheTtl, content types
-- [patterns.md](./patterns.md) - Caching, sessions, rate limiting, A/B testing
-- [gotchas.md](./gotchas.md) - Eventual consistency, concurrent writes, value limits
+- [configuration.md](./configuration.md) — wrangler.jsonc, namespace, tipos TypeScript
+- [api.md](./api.md) — métodos KV, bulk, cacheTtl, tipos de conteúdo
+- [patterns.md](./patterns.md) — cache, sessões, rate limit, A/B
+- [gotchas.md](./gotchas.md) — consistência, escritas concorrentes, limites de valor
 
-## See Also
+## Ver também
 
-- [workers](../workers/) - Worker runtime for KV access
-- [d1](../d1/) - Use D1 for strong consistency needs
-- [durable-objects](../durable-objects/) - Strongly consistent alternative
+- [workers](../workers/) — runtime para acesso ao KV
+- [d1](../d1/) — consistência forte
+- [durable-objects](../durable-objects/) — alternativa fortemente consistente

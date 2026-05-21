@@ -1,60 +1,60 @@
-# React Composition Patterns
+# Padrões de composição de reação
 
-A structured repository for React composition patterns that scale. These
-patterns help avoid boolean prop proliferation by using compound components,
-lifting state, and composing internals.
+Um repositório estruturado para padrões de composição React escaláveis. Estes
+padrões ajudam a evitar a proliferação de props booleanos usando componentes compostos,
+levantando o estado e compondo os internos.
 
-## Structure
+## Estrutura
 
-- `rules/` - Individual rule files (one per rule)
-  - `_sections.md` - Section metadata (titles, impacts, descriptions)
-  - `_template.md` - Template for creating new rules
-  - `area-description.md` - Individual rule files
-- `metadata.json` - Document metadata (version, organization, abstract)
-- **`AGENTS.md`** - Compiled output (generated)
+- `rules/` - Arquivos de regras individuais (um por regra)
+  - `_sections.md` - Metadados da seção (títulos, impactos, descrições)
+  - `_template.md` - Modelo para criação de novas regras
+  - `area-description.md` - Arquivos de regras individuais
+- `metadata.json` - Metadados do documento (versão, organização, resumo)
+- **`AGENTS.md`** - Saída compilada (gerada)
 
-## Rules
+## Regras
 
-### Component Architecture (CRITICAL)
+### Arquitetura de Componentes (CRÍTICO)
 
-- `architecture-avoid-boolean-props.md` - Don't add boolean props to customize
-  behavior
-- `architecture-compound-components.md` - Structure as compound components with
-  shared context
+- `architecture-avoid-boolean-props.md` - Não adicione adereços booleanos para personalizar
+  comportamento
+- `architecture-compound-components.md` - Estrutura como componentes compostos com
+  contexto compartilhado
 
-### State Management (HIGH)
+### Gestão de Estado (ALTA)
 
-- `state-lift-state.md` - Lift state into provider components
-- `state-context-interface.md` - Define clear context interfaces
-  (state/actions/meta)
-- `state-decouple-implementation.md` - Decouple state management from UI
+- `state-lift-state.md` - Eleva o estado para os componentes do provedor
+- `state-context-interface.md` - Defina interfaces de contexto claras
+  (estado/ações/meta)
+- `state-decouple-implementation.md` - Desacopla o gerenciamento de estado da UI
 
-### Implementation Patterns (MEDIUM)
+### Padrões de implementação (MÉDIO)
 
-- `patterns-children-over-render-props.md` - Prefer children over renderX props
-- `patterns-explicit-variants.md` - Create explicit component variants
+- `patterns-children-over-render-props.md` - Prefira filhos em vez de adereços renderX
+- `patterns-explicit-variants.md` - Crie variantes de componentes explícitas
 
-## Core Principles
+## Princípios Fundamentais
 
-1. **Composition over configuration** — Instead of adding props, let consumers
-   compose
-2. **Lift your state** — State in providers, not trapped in components
-3. **Compose your internals** — Subcomponents access context, not props
-4. **Explicit variants** — Create ThreadComposer, EditComposer, not Composer
-   with isThread
+1. **Composição sobre configuração** — Em vez de adicionar acessórios, deixe os consumidores
+   compor
+2. **Eleve seu estado** — Estado em provedores, não preso em componentes
+3. **Componha seus componentes internos** — Os subcomponentes acessam o contexto, não os adereços
+4. **Variantes explícitas** — Crie ThreadComposer, EditComposer, não Composer
+   com isThread
 
-## Creating a New Rule
+## Criando uma nova regra
 
-1. Copy `rules/_template.md` to `rules/area-description.md`
-2. Choose the appropriate area prefix:
-   - `architecture-` for Component Architecture
-   - `state-` for State Management
-   - `patterns-` for Implementation Patterns
-3. Fill in the frontmatter and content
-4. Ensure you have clear examples with explanations
+1. Copie `rules/_template.md` para `rules/area-description.md`
+2. Escolha o prefixo de área apropriado:
+   - `architecture-` para arquitetura de componentes
+   - `state-` para gerenciamento de estado
+   - `patterns-` para padrões de implementação
+3. Preencha o frontmatter e o conteúdo
+4. Certifique-se de ter exemplos claros com explicações
 
-## Impact Levels
+## Níveis de impacto
 
-- `CRITICAL` - Foundational patterns, prevents unmaintainable code
-- `HIGH` - Significant maintainability improvements
-- `MEDIUM` - Good practices for cleaner code
+- `CRITICAL` - Padrões fundamentais, evita código insustentável
+- `HIGH` - Melhorias significativas de manutenção
+- `MEDIUM` - Boas práticas para código mais limpo

@@ -1,8 +1,8 @@
-# Patterns & Use Cases
+# Padrões e casos de uso
 
-## AI Chat w/Tools
+## Chat com IA e ferramentas
 
-**Server (AIChatAgent):**
+**Servidor (AIChatAgent):**
 
 ```ts
 import { AIChatAgent } from 'agents'
@@ -36,7 +36,7 @@ export class ChatAgent extends AIChatAgent<Env> {
 }
 ```
 
-**Client (React):**
+**Cliente (React):**
 
 ```tsx
 import { useAgent } from 'agents/react'
@@ -62,12 +62,12 @@ function ChatUI() {
 }
 ```
 
-## Human-in-the-Loop (Client Tools)
+## Human-in-the-loop (ferramentas no cliente)
 
-Server defines tool, client executes:
+O servidor define a ferramenta, o cliente executa:
 
 ```ts
-// Server
+// Servidor
 export class ChatAgent extends AIChatAgent<Env> {
   async onChatMessage(onFinish) {
     return this.streamText({
@@ -77,7 +77,7 @@ export class ChatAgent extends AIChatAgent<Env> {
         confirmAction: tool({
           description: 'Ask user to confirm',
           parameters: z.object({ action: z.string() }),
-          execute: 'client', // Client-side execution
+          execute: 'client', // Execução no cliente
         }),
       },
       onFinish,
@@ -85,7 +85,7 @@ export class ChatAgent extends AIChatAgent<Env> {
   }
 }
 
-// Client
+// Cliente
 const { messages } = useAgentChat({
   agent,
   onToolCall: async (toolCall) => {
@@ -96,13 +96,13 @@ const { messages } = useAgentChat({
 })
 ```
 
-## Task Queue & Scheduled Processing
+## Fila de tarefas e processamento agendado
 
 ```ts
 export class TaskAgent extends Agent<Env> {
   onStart() {
-    this.schedule('*/5 * * * *', 'processQueue', {}) // Every 5 min
-    this.schedule('0 0 * * *', 'dailyCleanup', {}) // Daily
+    this.schedule('*/5 * * * *', 'processQueue', {}) // A cada 5 min
+    this.schedule('0 0 * * *', 'dailyCleanup', {}) // Diário
   }
 
   async onRequest(req: Request) {
@@ -123,9 +123,9 @@ export class TaskAgent extends Agent<Env> {
 }
 ```
 
-## Manual WebSocket Chat
+## Chat WebSocket manual
 
-Custom protocols (non-AI):
+Protocolos customizados (não IA):
 
 ```ts
 export class ChatAgent extends Agent<Env> {
@@ -143,7 +143,7 @@ export class ChatAgent extends Agent<Env> {
 }
 ```
 
-## Email Processing w/AI
+## Processamento de e-mail com IA
 
 ```ts
 export class EmailAgent extends Agent<Env> {
@@ -162,7 +162,7 @@ export class EmailAgent extends Agent<Env> {
 }
 ```
 
-## Real-time Collaboration
+## Colaboração em tempo real
 
 ```ts
 export class GameAgent extends Agent<Env> {

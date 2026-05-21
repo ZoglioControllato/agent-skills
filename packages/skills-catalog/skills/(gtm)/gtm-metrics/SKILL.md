@@ -1,283 +1,282 @@
 ---
 name: gtm-metrics
-description: "When the user wants to define GTM metrics, build a metrics dashboard, measure pipeline efficiency, or track AI product performance. Also use when the user mentions 'GTM metrics,' 'revenue latency,' 'pipeline metrics,' 'TTFV,' 'time-to-first-value,' 'data health,' 'attribution,' 'conversion rate,' 'CAC,' 'LTV,' 'NRR,' 'GTM dashboard,' 'magic number,' 'pipeline velocity,' or 'funnel metrics.' This skill covers GTM measurement from metric selection through dashboard design, including AI-specific cost metrics, attribution models, and weekly review cadences. Do NOT use for technical implementation, code review, or software architecture."
+description: "Use quando o usuário quiser definir métricas de GTM, montar dashboards, medir eficiência de pipeline ou acompanhar desempenho de produtos de IA. Use também quando o usuário mencionar 'GTM metrics,' 'métricas GTM,' 'latência de receita,' 'pipeline metrics,' 'TTFV,' 'time-to-first-value,' 'data health,' 'atribuição,' 'conversion rate,' 'CAC,' 'LTV,' 'NRR,' 'GTM dashboard,' 'magic number,' 'pipeline velocity' ou 'funnel metrics.' Esta habilidade cobre medição em GTM desde a escolha de métricas até o design de dashboards, incluindo custos de IA, modelos de atribuição e cadências semanais de revisão. NÃO use para implementação técnica, revisão de código ou arquitetura de software."
 metadata:
   original_author: Chad Boyda / agent-gtm-skills
   modified_by: Felipe Rodrigues - github.com/felipfr
   source: https://github.com/chadboyda/agent-gtm-skills
   version: '1.0.0'
+---
+
+# Métricas de GTM, dashboards e medição para produtos de IA
+
+Você é especialista em medição em GTM, arquitetura de dashboards e analytics de desempenho para produtos nativos em IA. Conhece as diferenças entre métricas clássicas de SaaS e métricas de produto de IA, incluindo rastreamento de consumo por uso, custo da IA dentro da margem/contábil, e quando a cobrança é por resultado (outcome-based). Ajuda fundadores e líderes de receita a escolher métricas certas, construir dashboards úteis, desenhar atribuição e rodar cadências semanais que orientem decisões. Em 2025–2026, a mediana de crescimento B2B SaaS estabiliza em ~26%; o CAC sobe ~14%, chegando a ~$2,00 por dólar de novo ARR — por isso disciplina de medição separa crescimento eficiente de queima de caixa.
+
+## Antes de começar
+
+Reúna antes de propor framework, dashboard ou plano:
+
+- Motion de vendas atual? PLG, sales-led, agent-led ou híbrido.
+- Precificação? Por assento, uso, resultado ou híbrido.
+- ARR ou MRR atual? Define benchmarks.
+- CRM e ferramentas de dados? HubSpot, Salesforce, Attio, planilhas.
+- BI/analytics disponível? Metabase, Looker, Mode, Sheets.
+- Quantos reps/time GTM? Fundador solo vs ~50 mudam granularidade da métrica.
+- Jornada de comprador hoje: toques, ciclo médio, canais.
+- Cadência semanal já existe? O que revisão e por quem.
 
 ---
 
-# GTM Metrics, Dashboards & Measurement for AI Products
+## 1. Dashboard central de métricas GTM
 
-You are an expert in GTM measurement, dashboard architecture, and performance analytics for AI-native products. You understand the critical differences between traditional SaaS metrics and AI product metrics, including usage-based consumption tracking, AI cost-of-revenue dynamics, and outcome-based pricing measurement. You help founders and revenue leaders select the right metrics, build actionable dashboards, design attribution models, and run weekly review cadences that drive decisions. You know that the median B2B SaaS growth rate has settled to 26% in 2025-2026 while CAC has risen 14% to $2.00 per new ARR dollar, making measurement discipline the difference between efficient growth and cash burn.
+### Métricas de receita
 
-## Before Starting
+| Métrica             | Definição                         | Como calcular                      | Meta                                        |
+| ------------------- | --------------------------------- | ---------------------------------- | ------------------------------------------- |
+| ARR / MRR           | Receita recorrente                | Soma de assinatura ativa           | Benchmarks abaixo                           |
+| Net New ARR         | Novo menos churn                  | Novo ARR + Expansão − ARR churnado | Positivo todo trimestre                     |
+| Revenue Latency     | Dias do primeiro sinal ao fechado | Mediana first-touch até closed-won | <30d SMB, <90d mid-market, <180d enterprise |
+| Expansion Revenue % | Novo ARR de clientes atuais       | Expansão / Novo ARR total          | >40% em escala (~60% típico $50M+ ARR)      |
 
-Gather this context before building any metrics framework, dashboard, or measurement plan:
+### Métricas de eficiência
 
-- What is the current sales motion? PLG, sales-led, agent-led, or hybrid.
-- What is the pricing model? Per-seat, usage-based, outcome-based, or hybrid.
-- What is the current ARR or MRR? Stage determines which benchmarks apply.
-- What CRM and data tools are in use? HubSpot, Salesforce, Attio, or spreadsheets.
-- What analytics/BI tools are available? Metabase, Looker, Mode, or Google Sheets.
-- How many reps or GTM team members exist? Solo founder vs. team of 50 require different metric depth.
-- What does the buyer journey look like today? Touches, average sales cycle, primary channels.
-- Is there a weekly review cadence in place? If yes, what gets reviewed and by whom.
+| Métrica       | Como calcular                                      | Meta                                         |
+| ------------- | -------------------------------------------------- | -------------------------------------------- |
+| CAC           | Gasto S&M total / novos clientes                   | Varia por segmento                           |
+| CAC Payback   | CAC / (ARR por cliente × margem bruta)             | <8 meses (mediana ~8,6; top ~5–7)            |
+| Magic Number  | Novo ARR líquido (trim) / Gasto S&M (trim anteior) | >0,75 eficiente; >1,0 excelente; <0,5 alerta |
+| Razão LTV:CAC | (ARPA × margem × lifetime) / CAC                   | >3:1 saudável; >5:1 pode subinvestir         |
+| Burn Multiple | Net burn / net new ARR                             | <2x bom; <1x excelente; >3x preocupante      |
 
----
+### Métricas de pipeline
 
-## 1. Core GTM Metrics Dashboard
+| Métrica           | Como calcular                                            | Meta                     |
+| ----------------- | -------------------------------------------------------- | ------------------------ |
+| Pipeline Coverage | Valor pipeline / cota período                            | 3–4x sales-led; 2–3x PLG |
+| Pipeline Velocity | (Opps qualificadas × valor × taxa ganho) / duração ciclo | Sobe QoQ                 |
+| Pipeline por Rep  | Pipeline total / reps com quota                          | Trend, não só absoluto   |
+| Slippage Rate     | Deals saindo do período / em forecast                    | <15% semanal             |
 
-### Revenue Metrics
+### Métricas de retenção
 
-| Metric | Definition | How to Calculate | Target |
-|---|---|---|---|
-| ARR / MRR | Recurring revenue | Sum of active subscription revenue | Growth rate benchmarks below |
-| Net New ARR | New minus churned | New ARR + Expansion - Churned ARR | Positive every quarter |
-| Revenue Latency | Days from first signal to closed deal | Median days first-touch to closed-won | <30d SMB, <90d mid-market, <180d enterprise |
-| Expansion Revenue % | New ARR from existing customers | Expansion ARR / Total New ARR | >40% at scale ($50M+ ARR companies ~60%) |
+| Métrica    | Como calcular                                            | Meta                                 |
+| ---------- | -------------------------------------------------------- | ------------------------------------ |
+| NRR        | (MRR início + Expansão − Contração − Churn) / MRR início | ~>106% mediana; >120% topo           |
+| GRR        | (MRR início − Contração − Churn) / MRR início            | >90%; >94% em escala                 |
+| Logo churn | Clientes perdidos / clientes início                      | ~<2%/mês SMB; ~<1% médio mercado     |
+| TTFV       | Mediana signup → primeiro evento de valor                | <15 min self-serve; <1 dia sales-led |
 
-### Efficiency Metrics
+### Benchmarks de NRR por estágio ARR
 
-| Metric | How to Calculate | Target |
-|---|---|---|
-| CAC | Total S&M spend / New customers | Varies by segment |
-| CAC Payback | CAC / (ARR per customer * Gross Margin) | <8 months (median 8.6; top performers 5-7) |
-| Magic Number | Net New ARR (qtr) / S&M Spend (prior qtr) | >0.75 efficient, >1.0 excellent, <0.5 red flag |
-| LTV:CAC Ratio | (ARPA * Margin * Lifetime) / CAC | >3:1 healthy, >5:1 may be under-investing |
-| Burn Multiple | Net Burn / Net New ARR | <2x good, <1x excellent, >3x concerning |
+| Faixa ARR | NRR mediano | Quartil alto | Observações                              |
+| --------- | ----------- | ------------ | ---------------------------------------- |
+| $1–3M     | ~90%        | ~94%         | Focar em segmentos de alta retenção      |
+| $3–15M    | ~95%        | ~99%         | Expansão começa a aparecer               |
+| $15–30M   | ~100%       | 105%+        | Expansão deve compensar churn            |
+| $50–100M  | ~110%       | 120%+        | Expansão costuma ultrapassar novos logos |
+| $100M+    | ~115%       | 130%+        | Alta expectativa de expansão             |
 
-### Pipeline Metrics
+### Benchmarks de taxa de crescimento
 
-| Metric | How to Calculate | Target |
-|---|---|---|
-| Pipeline Coverage | Pipeline value / Period quota | 3-4x sales-led, 2-3x PLG |
-| Pipeline Velocity | (Qualified Opps * Deal Size * Win Rate) / Cycle Length | Increasing QoQ |
-| Pipeline per Rep | Total pipeline / Quota-carrying reps | Track trend, not absolute |
-| Slippage Rate | Deals moved out / Total deals in forecast | <15% weekly |
-
-### Retention Metrics
-
-| Metric | How to Calculate | Target |
-|---|---|---|
-| NRR | (Start MRR + Expansion - Contraction - Churn) / Start MRR | >106% median; >120% best-in-class |
-| GRR | (Start MRR - Contraction - Churn) / Start MRR | >90%; >94% at scale |
-| Logo Churn | Customers lost / Customers at start | <2% monthly SMB, <1% mid-market |
-| TTFV | Median time from signup to first value event | <15 min self-serve, <1 day sales-led |
-
-### NRR Benchmarks by Stage
-
-| ARR Band | Median NRR | Top Quartile | Notes |
-|---|---|---|---|
-| $1-3M | ~90% | 94% | Focus on finding high-retention segments |
-| $3-15M | ~95% | 99% | Expansion motions starting |
-| $15-30M | ~100% | 105%+ | Expansion should offset churn |
-| $50-100M | ~110% | 120%+ | Expansion revenue exceeds new logos |
-| $100M+ | ~115% | 130%+ | Aggressive expansion expected |
-
-### Growth Rate Benchmarks
-
-| ARR Band | Median Growth | Top Quartile |
-|---|---|---|
-| <$1M | 100%+ | 200%+ |
-| $1-5M | 80-100% | 150%+ |
-| $5-20M | 50-80% | 100%+ |
-| $20-50M | 30-50% | 70%+ |
-| $100M+ | 20-30% | 40%+ |
+| Faixa ARR | Crescimento mediano | Quartil alto |
+| --------- | ------------------- | ------------ |
+| <$1M      | 100%+               | 200%+        |
+| $1–5M     | 80–100%             | 150%+        |
+| $5–20M    | 50–80%              | 100%+        |
+| $20–50M   | 30–50%              | 70%+         |
+| $100M+    | 20–30%              | 40%+         |
 
 ---
 
-## 2. Funnel Metrics by GTM Motion
+## 2. Métricas de funil por motion GTM
 
-### PLG Funnel
+### Funil PLG
 
 ```
 Visitor --> Signup (3-5%) --> Activation (30-40%) --> Conversion (5-8%) --> Expansion (NRR 110-120%)
 ```
 
-PLG-specific metrics: PQL conversion rate, time-to-activation (<15 min target), feature adoption breadth (core features used in first 14 days), viral coefficient (>0.3 target).
+PLG específico: conversão de PQL, tempo até ativação (meta ~<15 min), amplitude de adoção das features núcleo (uso nos primeiros 14 dias), coeficiente viral (meta ~>0,3).
 
-### Sales-Led Funnel
+### Funil Sales-led
 
 ```
 Signal --> Outreach (3-5% reply) --> Meeting (50%) --> Demo (60%) --> Pilot (40%) --> Close (30%)
 ```
 
-Sales-led specific: ACV trend, sales cycle length (median days), win rate by segment, pipeline created per rep per month, quota attainment distribution.
+Sales-led específico: tendência ACV, duração do ciclo (dias medianos), win rate por segmento, pipeline gerado por rep/mês, distribuição de quota attainment.
 
-### Agent-Led Funnel (AI SDR)
+### Funil Agent-led (AI SDR)
 
 ```
 Signal --> AI Qualification (10-15%) --> Human Meeting (50%) --> Close (35%)
 ```
 
-Agent-led specific: cost per meeting booked, cost per qualified lead, AI outreach ROI (revenue from AI pipeline / AI cost), send-to-reply ratio, human-to-AI leverage ratio.
+Agent-led específico: custo por reunião marcada, custo por lead qualificado, ROI de outreach IA (receita do pipeline IA / custo IA), taxa envio-resposta e alavancagem humano-IA.
 
 ---
 
-## 3. AI Product-Specific Metrics
+## 3. Métricas específicas para produtos de IA
 
-AI products carry cost structures that traditional SaaS metrics miss. These supplementary metrics are essential for AI-native businesses.
+Produtos IA têm custos que SaaS tradicional mascara. São complementares essenciais.
 
-### AI Cost Metrics
+### Custos IA
 
-| Metric | How to Calculate | Target |
-|---|---|---|
-| AI Cost of Revenue | Inference + compute cost / Revenue | <20% of revenue |
-| Cost per AI Action | Total AI compute / Actions generated | Decreasing over time |
-| ROAI | AI-attributed revenue / (Inference + compute overhead) | >10x for high performers |
-| Gross Margin after AI | (Revenue - COGS - AI compute) / Revenue | >70% (vs. ~80% pure SaaS) |
+| Métrica               | Como calcular                                           | Meta                         |
+| --------------------- | ------------------------------------------------------- | ---------------------------- |
+| AI Cost of Revenue    | Custo inference + compute / receita                     | <20% da receita              |
+| Cost per AI Action    | Compute IA total / ações geradas                        | Queda ao longo do tempo      |
+| ROAI                  | Receita atribuída à IA / (inference + overhead compute) | >10x alto desempenho         |
+| Gross Margin after AI | (Receita − COGS − compute IA) / receita                 | >70% (~80% SaaS puro típico) |
 
-### Usage-Based Pricing Metrics
+### Pricing por uso
 
-42% of SaaS companies use consumption-based pricing in 2025 (up from 29% in 2023). When pricing is usage-based, supplement ARR metrics with:
+42% das empresas SaaS usam modelo por consumo em 2025 (vs 29% em 2023). Com pricing por uso, complemente métricas de ARR com:
 
-| Metric | Why It Matters |
-|---|---|
-| Committed vs. Consumed ARR | Gap indicates pricing misalignment or under-adoption |
-| Usage Growth Rate | Leading indicator of expansion revenue |
-| Overage Frequency | Signals pricing tier design quality |
-| Unit Economics per Consumption Unit | Revenue minus cost per unit; must be positive and improving |
-| NRR by Cohort (usage-based only) | Separates usage-driven expansion from seat expansion |
+| Métrica                            | Por que importa                           |
+| ---------------------------------- | ----------------------------------------- |
+| Committed vs. Consumed ARR         | Lacuna sinaliza preço torto ou subadoção  |
+| Usage Growth Rate                  | Indicador antecessor de expansão          |
+| Overage Frequency                  | Qualidade dos tiers                       |
+| Unit Economics por unidade consumo | Receita − custo/unit; deve subir positivo |
+| NRR por coorte só uso              | Separa expansão por uso vs assento        |
 
-### SaaS vs. AI Product Metrics Differences
+### SaaS clássico vs IA
 
-| SaaS Metric | AI Difference | Additional AI Metric |
-|---|---|---|
-| Gross margin (~80%) | AI inference lowers to 60-75% | Track AI cost of revenue separately |
-| DAU/MAU | Usage is task-driven, not session-driven | Task completion rate, actions per session |
-| Feature adoption | AI features are singular and deep | Outcome success rate per AI action |
-| Time-on-platform | Less time can mean more value | Time-saved-per-task |
-| Per-seat revenue | Consumption pricing varies by user | Revenue per consumption unit |
+| Métrica SaaS        | Diferença IA                     | Métrica extra IA                     |
+| ------------------- | -------------------------------- | ------------------------------------ |
+| Margem (~80%)       | Inference puxa p/ ~60–75%        | Custear IA como linha própria        |
+| DAU/MAU             | Uso centrado na tarefa           | Conclusões de task, ações por sessão |
+| Adoção de feature   | Poucas superfícies, profundidade | Sucesso por ação IA                  |
+| Tempo no produto    | Menos pode ser mais valor        | Tempo por tarefa poupado             |
+| Receita por assento | Uso dilui média usuário          | Receita/unidade consumo              |
 
 ---
 
-## 4. Data Health Scoring
+## 4. Pontuação de saúde dos dados
 
-Bad CRM data makes every other metric unreliable. Quantify data trustworthiness before trusting pipeline reports.
+CRM ruim desmente qualquer relatório de pipeline — quantifique antes de tomar decisão.
 
-### Data Health Score
+### Pontuação de saúde dos dados (data health score)
 
 ```
 Data Health Score = (Completeness * 0.35) + (Accuracy * 0.30) + (Recency * 0.20) + (Consistency * 0.15)
 ```
 
-| Component | Weight | What It Measures |
-|---|---|---|
-| Completeness | 35% | % of required fields populated per record |
-| Accuracy | 30% | % of data points verified against enrichment sources |
-| Recency | 20% | % of records updated within 90 days |
-| Consistency | 15% | % of records matching format standards |
+| Componente                 | Peso | O que mede                                |
+| -------------------------- | ---- | ----------------------------------------- |
+| Completude (completeness)  | 35%  | % campos obrigatórios preenchidos         |
+| Precisão (accuracy)        | 30%  | % pontos conferidos contra enriquecedores |
+| Atualidade (recency)       | 20%  | % registros atualizados em até 90 dias    |
+| Consistência (consistency) | 15%  | % com formato padronizado                 |
 
-### Health Score Targets
+### Metas
 
-| Score | Grade | Action |
-|---|---|---|
-| 90-100% | A | Maintain current enrichment cadence |
-| 80-89% | B | Schedule enrichment refresh for lowest-scoring segments |
-| 70-79% | C | Pipeline metrics may be unreliable; run enrichment sprint |
-| Below 70% | F | Stop trusting pipeline reports; full data cleanup required |
+| Pontuação  | Conceito | Ação                                               |
+| ---------- | -------- | -------------------------------------------------- |
+| 90–100%    | A        | Manter cadência de enriquecimento                  |
+| 80–89%     | B        | Atualização para segmentos com pior score          |
+| 70–79%     | C        | Métricas podem estar imprecisas; sprint enrichment |
+| Abaixo 70% | F        | Suspender fé no pipeline até limpeza completa      |
 
-B2B data decays at 2.1% monthly on average. Required enrichment refresh cadence: contact email/phone every 90 days, firmographics every 90 days, intent signals weekly or real-time, ICP scores recalculated on any underlying data refresh.
-
----
-
-## 5. Attribution Models
-
-Attribution answers "what caused the deal?" Getting it right determines where you invest next.
-
-### Model Comparison
-
-| Model | How It Works | Best For | Limitation |
-|---|---|---|---|
-| First-touch | 100% to first interaction | Top-of-funnel channel effectiveness | Ignores nurture and closing touches |
-| Last-touch | 100% to final interaction | Bottom-of-funnel conversion analysis | Ignores awareness investment |
-| Linear | Equal credit to all touchpoints | Simple fairness | Treats blog visit same as demo request |
-| U-shaped | 40% first, 40% last, 20% middle | B2B with clear awareness-to-conversion journey | Undervalues mid-funnel |
-| W-shaped | 30/30/30/10 (first/lead/opp/rest) | B2B with defined marketing-to-sales handoff | Requires clear CRM stage definitions |
-| Time-decay | Increasing credit toward conversion | Long sales cycles | Undervalues early brand investment |
-| AI-driven | ML determines credit dynamically | Orgs with 500+ conversions | Black box; requires data maturity |
-
-### Choosing by Company Stage
-
-| Stage | Model | Why |
-|---|---|---|
-| Pre-revenue / <$1M | First-touch | Know which channels generate any pipeline |
-| $1-5M | U-shaped | Credits awareness and conversion, most actionable |
-| $5-20M | W-shaped | Marketing-to-sales handoff stages worth measuring |
-| $20M+ | Time-decay or AI-driven | Enough data; long cycles justify recency weighting |
-| PLG (any stage) | Product-touch | Attribute to in-product actions, not just marketing |
-
-### Attribution Lookback Windows
-
-Set lookback to match your sales cycle: 90 days for SMB, 180 days for mid-market, 365 days for enterprise. Run parallel first-touch and multi-touch models for 2 quarters to calibrate. Review quarterly.
-
-### AI GTM Attribution Challenges
-
-| Challenge | Mitigation |
-|---|---|
-| AI SDR touches invisible to buyers | Tag AI-generated touches with source=AI-SDR in CRM |
-| Multi-channel AI sequences | Track channel and sequence membership, not just "AI outreach" |
-| Influence vs. creation confusion | Separate "source" from "influence" attribution |
-| Dark social (Slack, Discord, DMs) | Ask "how did you hear about us?" in demo forms |
+Dados B2B decaem ~2,1%/mês. Sugestões: refresh de telefone/email cada 90 dias; firmográficos 90 dias; intent semanal tempo real; ICP sempre que dados base mudarem.
 
 ---
 
-## 6. Dashboard Architecture
+## 5. Modelos de atribuição
 
-### Three-Tier Hierarchy
+Atribuir responde ao “por que esse deal apareceu?”. Correto aponta orçamento.
 
-**Tier 1: Board (5-7 metrics, monthly)** - ARR + Net New ARR waterfall, NRR, CAC Payback, Burn Multiple, Pipeline Coverage, Magic Number, Cash Runway.
+### Comparativo
 
-**Tier 2: Executive (10-12 metrics, weekly)** - Pipeline created, pipeline by stage, win rate by segment, deal size trend, sales cycle length, quota attainment by rep, NRR by cohort, CAC by channel, TTFV, data health score, slippage rate.
+| Modelo      | Funciona como                      | Bom para                            | Limite                  |
+| ----------- | ---------------------------------- | ----------------------------------- | ----------------------- |
+| First-touch | 100% p/ primeiro touch             | Canais topo do funil                | Ignora nurturing        |
+| Last-touch  | 100% último touch                  | Conversão funnel baixo              | Ignora awareness        |
+| Linear      | Credito igual a todos touches      | Fairness simples                    | Blog = demo igual       |
+| U-shaped    | 40/40/20 (início/meio/fim)         | Awareness→conversão clara           | Desvaloriza meio funnel |
+| W-shaped    | 30/30/30/10 primeiro/lead/opp/rest | Handoff martech-vendas bem definido | Exige estágios CRM      |
+| Time-decay  | Mais peso perto conversão          | Ciclos longos                       | Poupa brand top         |
+| AI-driven   | ML distribui peso dinamicamente    | 500+ conversões                     | Caixa-preta, maturação  |
 
-**Tier 3: Operator (15-25 metrics, daily)** - Activity (emails, calls, meetings booked), pipeline (new opps, stage movements), response (speed-to-lead, follow-up rate), conversion (stage-by-stage rates), quality (ICP fit distribution), AI ops (AI messages, AI reply rate, cost per meeting).
+### Por estágio
 
-### Tool Selection
+| Estágio      | Modelo                 | Motivo                                    |
+| ------------ | ---------------------- | ----------------------------------------- |
+| Pré ARR <$1M | First-touch            | Aprender quais canais geram qualquer pipe |
+| $1–5M        | U-shaped               | Balanceia conscientização × conversão     |
+| $5–20M       | W-shaped               | Mede intermediários antes do AE           |
+| $20M+        | Time-decay / IA-driven | Ciclo ≥ dados para peso temporal          |
+| PLG sempre   | Product-touch          | Atributa comportamento dentro do produto  |
 
-| Tool | Best For | Cost |
-|---|---|---|
-| HubSpot Dashboards | Teams already on HubSpot | Included |
-| Metabase | SQL-native, self-hosted | Free |
-| Looker | Enterprise-grade, governed | $$$ |
-| Mode | SQL + Python + viz | $$ |
-| Google Sheets | Solo founders, pre-revenue | Free |
+### Lookback
 
-### Dashboard Anti-Patterns
+Alinhar lookback ao ciclo médio (~90 dias SMB / 180 mid / 365 enterprise). Rode first-touch × multi paralelo dois trimestres e calibre. Audite quarterly.
 
-| Anti-Pattern | Fix |
-|---|---|
-| 50+ metrics on one screen | Limit to tier-appropriate count |
-| Vanity metrics without context | Every metric needs benchmark, target, or trend line |
-| Manual data entry | All metrics from system-of-record APIs |
-| No dashboard owner | Named owner + review schedule required |
-| Snapshot without trend | Always show trailing 4-week or 13-week trend |
+### Atribuir GTM quando há IA
+
+| Desafio                | Mitigação                                            |
+| ---------------------- | ---------------------------------------------------- |
+| Toques IA invisíveis   | Marcar CRM com source=AI-SDR                         |
+| Sequências multicanal  | Salvar canal + membership da cadência                |
+| Influência × criação   | Separar atribuição de origem × influência            |
+| Dark social (Slack/DM) | Campo obrigatório «como nos conheceu?» em forms demo |
 
 ---
 
-## 7. Leading vs. Lagging Indicators
+## 6. Arquitetura de dashboards
 
-Maintain a 60/40 balance: 60% leading indicators (what is about to happen) and 40% lagging indicators (what already happened).
+### Três tiers
 
-### Leading Indicators
+**Tier 1 — Board (~5–7 métricas, mensal)** ARR waterfall + novo ARR líquido, NRR, CAC payback, Burn multiple, Cobertura de pipeline, Magic Number, runway de caixa.
 
-| Indicator | Predicts | If Declining |
-|---|---|---|
-| Pipeline created this week | Revenue 1-2 quarters out | Increase top-of-funnel investment |
-| Meeting conversion rate | Win rate next quarter | Audit qualification and demo quality |
-| Speed-to-lead | Inbound conversion rate | Fix routing (<5 min target) |
-| Product activation rate | Free-to-paid conversion | Audit onboarding flow |
-| Sequence reply rate | Meeting volume next month | Refresh messaging and targeting |
-| Feature adoption depth | NRR next quarter | Proactive CS intervention |
-| Champion engagement frequency | Deal probability | Deal is at risk if champion goes quiet |
+**Tier 2 — Executivo (10–12, semanal)** Pipe criado, pipe por estágio, win por segmento, tendência tam deal, ciclo médio, quota attainment por rep, NRR por coorte, CAC canal, TTFV, data health score, slippage.
 
-### Lagging Indicators
+**Tier 3 — Operacional (15–25 métricas, diário)** — Atividade (e-mails, ligações, reuniões agendadas), pipeline (novas oportunidades e movimento de estágio), resposta (speed-to-lead e taxa de follow-up), conversão (taxas por estágio), qualidade (fit ICP), operações IA (mensagens IA, reply rate de IA, custo por reunião).
 
-Revenue, win rate, CAC/payback, NRR/GRR, LTV:CAC, burn multiple, quota attainment distribution. Review monthly or quarterly.
+### Escolha de ferramentas
 
-### The Leading-to-Lagging Chain
+| Ferramenta         | Melhor cenário         | Custo   |
+| ------------------ | ---------------------- | ------- |
+| HubSpot dashboards | Teams no HubSpot       | Incluso |
+| Metabase           | SQL + self-hosted      | Free    |
+| Looker             | Governança corporativa | $$$     |
+| Mode               | SQL + Python + viz     | $$      |
+| Google Sheets      | Fundador pré-ARR       | Free    |
+
+### Antipadrões de dashboard
+
+| Problema                       | Correção                             |
+| ------------------------------ | ------------------------------------ |
+| 50 métricas numa página        | Voltar ao count do tier certo        |
+| Métricas vaidade zero contexto | Todo número com benchmark/trend/meta |
+| Dados digitados manualmente    | Só dados fonte oficial via API       |
+| Dono indefinido                | Owner + revisão marcada semanalmente |
+| Só foto estática sem tendência | Sempre janelas 4 ou 13 semanas       |
+
+---
+
+## 7. Indicadores antecipatórios × defasados
+
+Mix alvo ~60/40: 60% antecipatórios (o que vai acontecer) e 40% defasados (o que já aconteceu).
+
+### Leading (antecipatórios)
+
+| Indicador                 | Antecede                        | Se cai                     |
+| ------------------------- | ------------------------------- | -------------------------- |
+| Pipeline criado na semana | Receita 1–2 trimestres à frente | Investir topo do funil     |
+| Conversão demo/reunião    | Win rate seguinte               | Revisar qualificação/demo  |
+| Speed-to-lead             | Conversões inbound              | Roteamento <5 min          |
+| Taxa ativação produto     | Free→pago                       | Revisão onboarding         |
+| Reply rate cadência       | Reuniões mês seguinte           | Refresh mensagens          |
+| Profundidade uso feature  | NRR próximo trimestre           | Customer success pró-ativo |
+| Engajamento do campeão    | Probabilidade do deal           | Risco alto se sumiu        |
+
+### Lagging / defasados
+
+Receita, taxa de vitória (win rate), CAC/payback, NRR e GRR, LTV:CAC, burn multiple, distribuições de attainment de quota — revisar mensal ou trimestralmente.
+
+### Cadeia
 
 ```
 Revenue (lagging)
@@ -293,135 +292,135 @@ Revenue (lagging)
 
 ---
 
-## 8. Weekly GTM Review Cadence
+## 8. Cadência semanal de revisão GTM
 
-### The Weekly Meeting (30-45 Minutes)
+### Reunião (30–45 min)
 
-The single most important GTM operating ritual. Every metric from system-of-record data. No hand-edited slides.
+Rito operacional número um: todos os números saem direto das fontes, sem slides manicurados manualmente.
 
-| Time | Section | Content |
-|---|---|---|
-| 0-5 min | Scorecard | Walk 5-7 metrics: green/yellow/red vs. targets |
-| 5-15 min | Pipeline | New pipeline, stage movements, slippage, forecast changes |
-| 15-20 min | Leading indicators | Inbound volume, outreach metrics, meeting conversion |
-| 20-25 min | Deals at risk | Stalled deals, blockers, help requests |
-| 25-35 min | Actions | 2-3 specific actions with owners and deadlines |
-| 35-45 min | Deep-dive | One strategic topic per week (rotating) |
+| Tempo     | Seção                            | Conteúdo                                                          |
+| --------- | -------------------------------- | ----------------------------------------------------------------- |
+| 0–5 min   | Scorecard                        | 5–7 métricas verde/amarelo/vermelho                               |
+| 5–15 min  | Pipeline                         | Novo pipe, mudanças de estágio, slippage e alterações de forecast |
+| 15–20 min | Indicadores na frente da receita | Volume inbound, outbound, conversões de reuniões                  |
+| 20–25 min | Deals em risco                   | Negócios travados, bloqueios e pedidos de ajuda                   |
+| 25–35 min | Ações                            | 2–3 ações específicas com dono/prazo                              |
+| 35–45 min | Deep-dive                        | Tema estratégico semanal rodízio                                  |
 
-### Weekly Scorecard
+### Scorecard semanal exemplo
 
-| Metric | This Week | Last Week | 4-Wk Avg | Target | Status | Owner |
-|---|---|---|---|---|---|---|
-| Pipeline created | $X | $X | $X | $X | G/Y/R | Name |
-| Meetings booked | X | X | X | X | | Name |
-| Win rate (30d) | X% | X% | X% | X% | | Name |
-| Cycle length | Xd | Xd | Xd | Xd | | Name |
-| Slippage rate | X% | X% | X% | <15% | | Name |
-| Speed-to-lead | Xm | Xm | Xm | <5m | | Name |
+| Métrica              | Esta semana | Semana ant. | Média 4 sem | Meta | Estado | Dono(a) |
+| -------------------- | ----------- | ----------- | ----------- | ---- | ------ | ------- |
+| Pipeline criado      | $X          | …           | …           | …    | V/A/V  | nome    |
+| Reuniões agendadas   | X           | …           | …           | …    |        |         |
+| Win rate rolante 30d | X%          | …           | …           | …    |        |         |
+| Duração do ciclo     | Xd          | …           | …           | …    |        |         |
+| Taxa de slip         | X%          | …           | …           | <15% |        |         |
+| Speed-to-lead        | Xm          | …           | …           | <5m  |        |         |
 
-### Monthly Deep-Dives
+### Deep-dives mensais
 
-NRR/retention analysis (cohort curves, churn reasons, expansion pipeline), CAC/efficiency review (CAC by channel, payback trend, Magic Number), data health audit (CRM completeness, enrichment gaps), competitive update (pricing, positioning, feature changes).
+Analisar NRR e retenção (curvas de coorte, motivos de churn, pipeline de expansão); eficiência e CAC (por canal, payback trend, Magic Number); auditoria de saúde de dados CRM e lacunas do enriquecimento; concorrentes em preço, posicionamento e features.
 
-### Quarterly Strategic Reviews
+### Revisões trimestrais
 
-ICP refresh (win/loss analysis, drift detection, scoring update), funnel benchmarking (stage conversions vs. industry), attribution model review (channel ROI, budget allocation), GTM motion evaluation (sales-led vs. PLG vs. agent performance).
+Renovar ICP (win/loss, drift scoring), benchmark das conversões por estágio do funil, revisar modelo de atribuição e ROI dos canais, avaliar motions sales-led versus PLG versus agent-led.
 
 ---
 
-## 9. PQL Scoring
+## 9. Scoring de PQL
 
-Product-Qualified Leads replace MQLs in product-led and hybrid motions. Score on product usage instead of content downloads.
+PQL substitui MQL onde há PLG híbrido — pontuar uso real do produto.
 
-### PQL Scoring Model
+### Equação mantida
 
 ```
 PQL Score = (Usage Signals * 0.50) + (Fit Signals * 0.30) + (Intent Signals * 0.20)
 ```
 
-| Score | Tier | Action |
-|---|---|---|
-| 80-100 | Hot | Route to AE, respond within 4 hours |
-| 60-79 | Warm | Sales-assist sequence (email + SDR) |
-| 40-59 | Nurture | In-app messaging + drip emails |
-| Below 40 | Self-serve | No sales touch; optimize product experience |
+| Pontuação    | Tier       | Próximo passo                          |
+| ------------ | ---------- | -------------------------------------- |
+| 80–100       | Hot        | Rotear AE <4 horas                     |
+| 60–79        | Warm       | Sequência sales-assist email SDR       |
+| 40–59        | Nurture    | In-app drip                            |
+| Abaixo de 40 | Self-serve | Sem contato comercial focar no produto |
 
-PQL-to-customer conversion: 5-15% (vs. 1-3% MQL-to-customer). Signal strength is higher because product usage requires effort that content downloads do not.
-
----
-
-## Examples
-
-- **User says:** "What metrics should we track for GTM?" → **Result:** Agent asks sales motion (PLG vs sales-led) and stage, then recommends a dashboard with 5–7 core metrics (e.g. CAC payback, Magic Number, pipeline coverage, NRR), plus TTFV and data health, and suggests weekly review cadence.
-- **User says:** "Our pipeline data is messy" → **Result:** Agent asks about CRM, source of truth, and attribution; recommends data health score target (>85%), identifies common gaps (lead source, stage dates), and suggests a 90-day cleanup plan with leading/lagging balance.
-- **User says:** "How do we compare to benchmarks?" → **Result:** Agent uses Quick Reference benchmarks (CAC payback, NRR, growth) and compares to user’s numbers; flags red areas and suggests 1–2 priorities.
-
-## Troubleshooting
-
-- **Metrics don’t match across tools** → **Cause:** Different definitions or attribution windows. **Fix:** Define one source of truth (e.g. CRM for pipeline, billing for revenue); align on lookback (90d SMB, 180d mid-market); document definitions in a single sheet.
-- **CAC payback getting worse** → **Cause:** CAC up and/or velocity down. **Fix:** Break down by channel and segment; compare to Magic Number; reduce spend in underperforming channels or improve conversion/velocity before adding spend.
-- **NRR below 100%** → **Cause:** Churn and/or downgrades outweigh expansion. **Fix:** Segment by cohort and segment; focus on expansion triggers (consumption, usage) and churn signals; use expansion-retention skill for playbooks.
+Típicos converts PQL cliente 5–15% contra 1–3% MQL.
 
 ---
 
-## Quick Reference
+## Exemplos
 
-| Concept | Key Number or Rule |
-|---|---|
-| CAC Payback benchmark | Median 8.6 months; top performers 5-7 |
-| Magic Number threshold | >0.75 efficient, >1.0 excellent, <0.5 red flag |
-| Pipeline coverage | 3-4x sales-led, 2-3x PLG |
-| NRR median (2025) | 106% across B2B SaaS |
-| NRR best-in-class | >120% (130%+ at $100M+ ARR) |
-| B2B SaaS median growth | 26% in 2025 |
-| CAC trend | Up 14% to $2.00 per new ARR dollar |
-| TTFV target | <15 min self-serve, <1 day sales-led |
-| Revenue latency | <30d SMB, <90d mid-market |
-| Data health target | >85%; below 70% is unreliable |
-| Data decay rate | 2.1% monthly |
-| Leading/lagging balance | 60% leading, 40% lagging |
-| Weekly review | 30-45 min, every week, no exceptions |
-| Attribution lookback | 90d SMB, 180d mid-market, 365d enterprise |
-| PQL conversion | 5-15% (vs. 1-3% MQL) |
-| Usage-based adoption | 42% of SaaS companies in 2025 |
-| AI gross margin target | >70% (vs. ~80% pure SaaS) |
-| Expansion at scale | >40% of new ARR from existing customers |
-| Slippage target | <15% weekly |
-| Speed-to-lead | <5 minutes |
+- **Usuário diz:** «Quais métricas de GTM devemos seguir?» → **Resultado:** Pergunta o motion de vendas (PLG vs sales-led), o estágio da empresa e recomenda dashboard com ~5–7 métricas centrais (ex.: CAC payback, Magic Number, cobertura de pipeline, NRR), mais TTFV e data health, e sugere cadência semanal fixa de revisão.
+- **Usuário diz:** «Nossos dados de pipeline são bagunça» → **Resultado:** Avalia CRM, sistema de registros e modelo de atribuição; propõe meta de data health (>85%); identifica lacunas típicas (lead source, datas de estágio) e roadmap de saneamento para ~90 dias com equilíbrio de indicadores antecipatórios/defasados.
+- **Usuário diz:** «Estamos bem vs benchmarks?» → **Resultado:** Usa a referência rápida (CAC payback, NRR, crescimento), compara aos números do usuário, aponta vermelhos e prioriza até duas iniciativas.
+
+## Solução de problemas
+
+- **Os números não batem entre ferramentas** → **Causa:** Definições distintas ou janelas de atribuição diferentes. **Correção:** Definir fonte oficial (ex.: CRM para pipeline faturamento para receita); alinhar lookback (SMB ~90d, médio ~180d enterprise ~365d); registrar definições num único lugar.
+- **CAC payback piorando** → **Causa:** CAC subindo ou velocidade caindo. **Correção:** Cortar canal/segmentos perdedores; comparar ao Magic Number; melhorar conversão/velocity antes de subir despesa marketing/vendas ativamente.
+- **NRR acima não passa dos 100%** → **Causa:** Churn ou contrações maior que expansão. **Correção:** Segmentar por coorte/segmentos; trabalhar triggers de uso/consumo; ver playbook **expansion-retention**.
 
 ---
 
-## Questions to Ask
+## Referência rápida
 
-1. What metrics does your team review weekly today, and who owns each one?
-2. What is your current pipeline coverage ratio, and do you trust the data behind it?
-3. How do you measure time-to-first-value for new customers?
-4. What is your CAC payback period, and is it trending up or down?
-5. What percentage of new ARR comes from expansion vs. new logos?
-6. How complete is your CRM data? Could you run a data health audit this week?
-7. What attribution model are you using, and when was it last reviewed?
-8. Do you have separate funnel metrics for each GTM motion?
-9. What is your current NRR, and how does it break down by segment?
-10. How do you score and prioritize PQLs vs. MQLs?
-11. What does your AI inference cost look like as a percentage of revenue?
-12. Do you track leading indicators separately from lagging indicators?
-13. What is your average speed-to-lead for inbound demo requests?
-14. When did you last benchmark funnel conversion rates against industry standards?
-15. Do you have a defined weekly GTM review cadence with a scorecard?
+| Conceito                                          | Referência rápida                                    |
+| ------------------------------------------------- | ---------------------------------------------------- |
+| Benchmark CAC payback                             | Mediana ~8,6 meses; topo ~5–7                        |
+| Limiar Magic Number                               | >0,75 eficiente; >1 excelente; <0,5 alerta           |
+| Cobertura de pipeline                             | ~3–4× sales-led; ~2–3× PLG                           |
+| Mediana NRR (2025)                                | ~106% no B2B SaaS                                    |
+| NRR best-in-class                                 | >120% (130%+ quando ARR grande)                      |
+| Crescimento mediano SaaS                          | ~26% (2025)                                          |
+| Trajetória típica CAC                             | Alta ~14% até ~ US$ 2 novo ARR gerado                |
+| Meta TTFV                                         | <15 min self-serve; <1 dia com assistência comercial |
+| Latência típica de receita                        | ~<30d SMB; mid ~<90d; enterprise ~<180d              |
+| Meta data health fiável                           | >85%; embaixo ~70% vira duvidoso                     |
+| Decaimento de dados B2B                           | ~2,1% ao mês em média                                |
+| Mix indicadores leading/lagging                   | ~60% / ~40%                                          |
+| Reunião semanal típica                            | 30–45 min, todas as semanas                          |
+| Lookbacks de atribuição típicos                   | SMB 90d · mid-market 180d · enterprise 365d          |
+| Conversão PQL                                     | ~5–15% (versus ~1–3% para MQL)                       |
+| adoção de pricing por consumo                     | 42% (~2025) típico                                   |
+| Margem bruta típica com IA                        | meta > ~70 % (pure SaaS clássico ~80 %)              |
+| Parte novo ARR vindo expansão já clientes grandes | típico >40%                                          |
+| Slippage semanal aceitável                        | menor que ~15                                        |
+| Speed-to-lead aceitável                           | objetivo menor que ~5 min                            |
 
 ---
 
-## Related Skills
+## Perguntas a fazer
 
-| Skill | When to Cross-Reference |
-|---|---|
-| ai-pricing | Measuring pricing model impact on revenue metrics; usage-based pricing instrumentation |
-| expansion-retention | NRR improvement plans, churn analysis, expansion playbooks |
-| sales-motion-design | Redesigning stages, qualification, or handoffs based on funnel data |
-| ai-cold-outreach | Outreach performance: reply rate, cost per meeting, AI SDR ROI |
-| solo-founder-gtm | Prioritizing 3-5 metrics before building a full dashboard |
-| gtm-engineering | Metric collection infrastructure, CRM automation, data pipelines |
-| ai-sdr | AI SDR performance measurement, agent-led funnel metrics |
-| lead-enrichment | Data health remediation, enrichment workflows |
-| positioning-icp | When attribution reveals positioning or ICP changes needed |
-| content-to-pipeline | Content attribution, connecting top-of-funnel to pipeline |
+1. Quais métricas o time revisa toda semana hoje e quem é responsável por cada uma?
+2. Qual a razão atual de cobertura de pipeline e você confia nos dados que a sustentam?
+3. Como vocês medem o tempo até o primeiro valor para novos clientes?
+4. Qual o payback atual do CAC e ele está melhor ou pior?
+5. Que percentual do novo ARR vem de expansão em relação a novos logos?
+6. O quão completo está o CRM? Dá para fazer esta semana uma auditoria de qualidade dos dados?
+7. Que modelo de atribuição estão usando e quando foi revisto pela última vez?
+8. Há métricas distintas de funil para cada tipo de motion GTM?
+9. Qual o NRR atual e como ele varia entre segmentos?
+10. Como priorizam PQLs em relação aos MQLs?
+11. Qual o peso atual do custo de inferência de IA na receita?
+12. Acompanham indicadores antecipatórios de forma separada dos defasados?
+13. Qual o speed-to-lead médio atual para demos inbound?
+14. Quando foi a última vez que benchmarkaram as conversões por estágio com o mercado?
+15. Existe uma cadência definida — com scorecard fixo — para a reunião semanal de GTM?
+
+---
+
+## Skills relacionadas
+
+| Skill               | Quando cruzar com esta habilidade                                              |
+| ------------------- | ------------------------------------------------------------------------------ |
+| ai-pricing          | Medir impacto do modelo/preço sobre métricas de receita; instrumentação de uso |
+| expansion-retention | Planos para NRR, análises de churn, playbooks de expansão                      |
+| sales-motion-design | Redesenhar estágios, qualificação e handoffs a partir dos dados do funil       |
+| ai-cold-outreach    | Desempenho de outbound: reply rate, custo por reunião, ROI de SDR com IA       |
+| solo-founder-gtm    | Priorizar 3–5 métricas antes de montar dashboards completos                    |
+| gtm-engineering     | Infra de coleta, automações no CRM, pipelines de dados                         |
+| ai-sdr              | Medição de agentes IA e métricas de funil agent-led                            |
+| lead-enrichment     | Remediação da qualidade dos dados e fluxos de enriquecimento                   |
+| positioning-icp     | Quando a atribuição indica drift de mensagem ou ICP                            |
+| content-to-pipeline | Atribuição de conteúdo e ligação do topo do funil ao pipeline                  |

@@ -1,8 +1,8 @@
-# Terraform Patterns & Use Cases
+# Padrões Terraform e casos de uso
 
-Architecture patterns, multi-environment setups, and real-world use cases.
+Padrões de arquitetura, ambientes múltiplos e casos reais.
 
-## Recommended Directory Structure
+## Estrutura de diretórios recomendada
 
 ```
 terraform/
@@ -21,9 +21,9 @@ terraform/
     └── main.tf
 ```
 
-**Note:** Cloudflare recommends avoiding modules for provider resources due to v5 auto-generation complexity. Prefer environment directories + shared state instead.
+**Obs.:** A Cloudflare recomenda evitar módulos para recursos do provider devido à complexidade da geração automática no v5. Prefira diretórios de ambiente + state compartilhado.
 
-## Multi-Environment Setup
+## Configuração multiambiente
 
 ```hcl
 # Directory: environments/{production,staging}/main.tf + modules/{zone,worker,pages}
@@ -36,7 +36,7 @@ module "api_worker" {
 }
 ```
 
-## R2 State Backend
+## Backend de state no R2
 
 ```hcl
 terraform {
@@ -54,7 +54,7 @@ terraform {
 }
 ```
 
-## Worker with All Bindings
+## Worker com todos os bindings
 
 ```hcl
 locals { worker_name = "full-stack-worker" }
@@ -72,14 +72,14 @@ resource "cloudflare_worker_script" "app" {
 }
 ```
 
-## Wrangler Integration
+## Integração com Wrangler
 
-**CRITICAL**: Wrangler and Terraform must NOT manage same resources.
+**CRÍTICO**: Wrangler e Terraform não devem gerenciar os mesmos recursos.
 
-**Terraform**: Zones, DNS, security rules, Access, load balancers, worker deployments (CI/CD), KV/R2/D1 resource creation  
-**Wrangler**: Local dev (`wrangler dev`), manual deploys, D1 migrations, KV bulk ops, log streaming (`wrangler tail`)
+**Terraform**: zonas, DNS, regras de segurança, Access, load balancers, deploys de Worker (CI/CD), criação de KV/R2/D1  
+**Wrangler**: dev local (`wrangler dev`), deploys manuais, migrações D1, operações em massa no KV, streaming de logs (`wrangler tail`)
 
-### CI/CD Pattern
+### Padrão CI/CD
 
 ```hcl
 # Terraform creates infrastructure
@@ -98,9 +98,9 @@ output "d1_database_id" { value = cloudflare_d1_database.app.id }
 - run: wrangler deploy
 ```
 
-## Use Cases
+## Casos de uso
 
-### Static Site + API Worker
+### Site estático + API Worker
 
 ```hcl
 resource "cloudflare_pages_project" "frontend" {
@@ -119,7 +119,7 @@ resource "cloudflare_worker_route" "api" {
 }
 ```
 
-### Multi-Region Load Balancing
+### Load balancing multi-região
 
 ```hcl
 resource "cloudflare_load_balancer_pool" "us" {
@@ -138,7 +138,7 @@ resource "cloudflare_load_balancer" "global" {
 }
 ```
 
-### Secure Admin with Access
+### Admin seguro com Access
 
 ```hcl
 resource "cloudflare_pages_project" "admin" { account_id = var.account_id; name = "admin"; production_branch = "main" }
@@ -152,7 +152,7 @@ resource "cloudflare_access_policy" "allow" {
 }
 ```
 
-### Reusable Module
+### Módulo reutilizável
 
 ```hcl
 # modules/cloudflare-zone/main.tf
@@ -166,9 +166,11 @@ output "zone_id" { value = cloudflare_zone.main.id }
 # Usage: module "prod" { source = "./modules/cloudflare-zone"; account_id = var.account_id; domain = "example.com" }
 ```
 
-## See Also
+## Ver também
 
-- [README](./README.md) - Provider setup
-- [Configuration Reference](./configuration.md) - All resource types
-- [API Reference](./api.md) - Data sources
-- [Troubleshooting](./gotchas.md) - Best practices, common issues
+- [README](./README.md) — Configuração do provider
+- [Configuration Reference](./configuration.md) — Tipos de recurso
+- [API Reference](./api.md) — Data sources
+- [Troubleshooting](./gotchas.md) — Boas práticas e problemas comuns
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

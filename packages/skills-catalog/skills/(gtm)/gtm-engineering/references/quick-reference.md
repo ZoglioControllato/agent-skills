@@ -1,47 +1,51 @@
-# Quick Reference & Questions to Ask
+# Referência rápida e perguntas a serem feitas
 
-## Quick Reference
+## Referência rápida
 
-| Concept | Key Number or Rule |
-|---|---|
-| Instruction stack layers | ICP scoring, Messaging framework, Personalization rules, Sequence logic |
-| Architecture principle | Instruction stacks + persistent context + feedback loops beat any single tool |
-| n8n sweet spot | Complex AI workflows, high volume, self-hosting, data sovereignty |
-| Make sweet spot | Visual workflow design, moderate complexity, budget-conscious teams |
-| Zapier sweet spot | Simple integrations, non-technical teams, fastest setup |
-| Enterprise iPaaS | Tray.io (mid-market), Workato (enterprise compliance) |
-| Enrichment waterfall threshold | 0.85+ confidence to accept, 0.50+ to accept with flag, below 0.50 reject |
-| Hot lead SLA | Respond in under 1 hour (ideally under 5 minutes for inbound) |
-| Warm lead SLA | Respond in under 4 hours |
-| Scoring formula (fit) | Firmographic 40% + Technographic 35% + Behavioral 25% |
-| Scoring formula (intent) | First-Party 40% + Third-Party 35% + Triggers 25% |
-| Workflow success rate alert | Alert if below 95% |
-| Enrichment hit rate alert | Alert if below 60% |
-| Email bounce rate alert | Alert if above 5% |
-| LLM cost optimization | Haiku for classification, Sonnet/Opus for writing |
-| Enrichment caching TTL | 30-90 days depending on data volatility |
-| Version control | Export workflows as JSON to Git after every change |
-| GTM Engineer job market | 1,400+ active postings on LinkedIn as of mid-2025 |
-| Agent adoption | 57% of organizations deploy agents for multi-stage workflows in 2026 |
+| Conceito                       | Número chave ou regra                                                                          |
+| ------------------------------ | ---------------------------------------------------------------------------------------------- |
+| Camadas da pilha de instruções | Pontuação ICP, Estrutura de mensagens, Regras de personalização, Lógica de sequência           |
+| Princípio da arquitetura       | Pilhas de instruções + contexto persistente + ciclos de feedback superam qualquer ferramenta   |
+| ponto ideal n8n                | Fluxos de trabalho complexos de IA, alto volume, auto-hospedagem, soberania de dados           |
+| Faça o ponto ideal             | Design visual de fluxo de trabalho, complexidade moderada, equipes preocupadas com o orçamento |
+
+| Ponto ideal de Zapier
+
+| Integrações simples, equipes não técnicas, configuração mais rápida |
+| iPaaS empresarial | Tray.io (mercado intermediário), Workato (conformidade empresarial) |
+| Limite de cascata de enriquecimento | 0,85+ confiança para aceitar, 0,50+ para aceitar com bandeira, abaixo de 0,50 rejeitar |
+| SLA de lead quente | Responda em menos de 1 hora (idealmente menos de 5 minutos para entrada) |
+| SLA de chumbo quente | Responda em menos de 4 horas |
+| Fórmula de pontuação (ajuste) | Firmográfico 40% + Tecnográfico 35% + Comportamental 2
+
+5% |
+| Fórmula de pontuação (intenção) | Primários 40% + Terceiros 35% + Acionadores 25% |
+| Alerta de taxa de sucesso do fluxo de trabalho | Alerta se estiver abaixo de 95% |
+| Alerta de taxa de acerto de enriquecimento | Alerta se estiver abaixo de 60% |
+| Alerta de taxa de rejeição de e-mail | Alerta se acima de 5% |
+| Otimização de custos LLM | Haiku para classificação, Soneto/Opus para escrita |
+| Cache de enriquecimento TTL | 30-90 dias dependendo da volatilidade dos dados |
+| Controle de versão | Exporte fluxos de trabalho como JSON para Git após cada ch
+
+anjo |
+| Mercado de trabalho Engenheiro GTM | Mais de 1.400 postagens ativas no LinkedIn em meados de 2025 |
+| Adoção de agente | 57% das organizações implantam agentes para fluxos de trabalho em vários estágios em 2026 |
 
 ---
 
-## Questions to Ask
+## Perguntas a serem feitas
 
-1. What are the top 3 manual processes your revenue team repeats every week?
-2. How many leads per month flow through your pipeline, and what is the current conversion rate at each stage?
-3. What is your current enrichment setup, and what is the hit rate (percentage of leads successfully enriched)?
-4. Who maintains your current automations, and how much of their time does it consume?
-5. What breaks most often in your current automation stack?
-6. Do you have a documented ICP scoring model, or is qualification based on rep judgment?
-7. What is your average lead response time for inbound demo requests?
-8. How do you currently track the cost per lead, per meeting, and per opportunity?
-9. What compliance or data residency requirements constrain your tool choices?
-10. Are there existing n8n, Make, or Zapier workflows running? How many, and what do they do?
-11. What CRM are you on (Salesforce, HubSpot, other), and what tier/plan?
-12. How do you handle enrichment data that becomes stale? Is there a re-enrichment cadence?
-13. What is the monthly budget allocated to automation tooling (including enrichment, outreach, and platform fees)?
-14. Does your team have engineers who can write Python or JavaScript, or do you need strictly no-code solutions?
-15. What does your feedback loop look like today? When a deal closes, does that data flow back into your targeting and scoring?
+1. Quais são os três principais processos manuais que sua equipe de receita repete todas as semanas?
+2. Quantos leads por mês passam pelo seu pipeline e qual é a taxa de conversão atual em cada estágio?
+3. Qual é a sua configuração atual de enriquecimento e qual é a taxa de acerto (porcentagem de leads enriquecidos com sucesso)?
+4. Quem mantém suas automações atuais e quanto tempo isso consome?
+5. O que quebra com mais frequência em sua pilha de automação atual?
+6.
+
+Você tem um modelo de pontuação de ICP documentado ou a qualificação é baseada no julgamento do representante? 7. Qual é o seu tempo médio de resposta de leads para solicitações de demonstração recebidas? 8. Como você monitora atualmente o custo por lead, por reunião e por oportunidade? 9. Quais requisitos de conformidade ou residência de dados restringem suas escolhas de ferramentas? 10. Existem fluxos de trabalho n8n, Make ou Zapier em execução? Quantos e o que eles fazem? 11. Em qual CRM você está (Salesforce,
+
+HubSpot, outro) e qual nível/plano? 12. Como você lida com dados de enriquecimento que ficam obsoletos? Existe uma cadência de reenriquecimento? 13. Qual é o orçamento mensal alocado para ferramentas de automação (incluindo enriquecimento, divulgação e taxas de plataforma)? 14. Sua equipe possui engenheiros que podem escrever Python ou JavaScript ou você precisa de soluções estritamente sem código? 15. Como é o seu ciclo de feedback hoje? Quando um negócio é fechado, esse fluxo de dados é ruim?
+
+Você se identifica com sua segmentação e pontuação?
 
 ---

@@ -1,8 +1,8 @@
-# API & Data Sources
+# API e data sources
 
-## Outputs and Exports
+## Outputs e exports
 
-Export resource identifiers:
+Exporte identificadores de recurso:
 
 ```typescript
 export const kvId = kv.id
@@ -11,9 +11,9 @@ export const workerUrl = worker.subdomain
 export const dbId = db.id
 ```
 
-## Resource Dependencies
+## Dependências entre recursos
 
-Implicit dependencies via outputs:
+Dependências implícitas via outputs:
 
 ```typescript
 const kv = new cloudflare.WorkersKvNamespace('kv', {
@@ -21,7 +21,7 @@ const kv = new cloudflare.WorkersKvNamespace('kv', {
   title: 'my-kv',
 })
 
-// Worker depends on KV (implicit via kv.id)
+// Worker depende do KV (implícito via kv.id)
 const worker = new cloudflare.WorkerScript('worker', {
   accountId: accountId,
   name: 'my-worker',
@@ -30,7 +30,7 @@ const worker = new cloudflare.WorkerScript('worker', {
 })
 ```
 
-Explicit dependencies:
+Dependências explícitas:
 
 ```typescript
 const migration = new command.local.Command(
@@ -50,10 +50,10 @@ const worker = new cloudflare.WorkerScript(
     d1DatabaseBindings: [{ name: 'DB', databaseId: db.id }],
   },
   { dependsOn: [migration] },
-) // Ensure migrations run first
+) // Garante migrações antes do Worker
 ```
 
-## Using Outputs with API Calls
+## Usando outputs com chamadas de API
 
 ```typescript
 const db = new cloudflare.D1Database('db', { accountId, name: 'my-db' })
@@ -68,9 +68,9 @@ db.id.apply(async (dbId) => {
 })
 ```
 
-## Custom Dynamic Providers
+## Providers dinâmicos customizados
 
-For resources not in provider:
+Para recursos fora do provider:
 
 ```typescript
 import * as pulumi from '@pulumi/pulumi'
@@ -112,19 +112,19 @@ const migration = new D1Migration(
 )
 ```
 
-## Data Sources
+## Data sources
 
-**Get Zone:**
+**Obter zona:**
 
 ```typescript
 const zone = cloudflare.getZone({ name: 'example.com' })
 const zoneId = zone.then((z) => z.id)
 ```
 
-**Get Accounts (via API):**
-Use Cloudflare API directly or custom dynamic resources.
+**Obter contas (via API):**
+Use a API da Cloudflare diretamente ou resources dinâmicos customizados.
 
-## Import Existing Resources
+## Importar recursos existentes
 
 ```bash
 # Import worker
@@ -143,13 +143,13 @@ pulumi import cloudflare:index/d1Database:D1Database my-db <account_id>/<databas
 pulumi import cloudflare:index/dnsRecord:DnsRecord my-record <zone_id>/<record_id>
 ```
 
-## Secrets Management
+## Gestão de segredos
 
 ```typescript
 import * as pulumi from '@pulumi/pulumi'
 
 const config = new pulumi.Config()
-const apiKey = config.requireSecret('apiKey') // Encrypted in state
+const apiKey = config.requireSecret('apiKey') // criptografado no state
 
 const worker = new cloudflare.WorkerScript('worker', {
   accountId: accountId,
@@ -159,15 +159,15 @@ const worker = new cloudflare.WorkerScript('worker', {
 })
 ```
 
-Store secrets:
+Armazene segredos:
 
 ```bash
 pulumi config set --secret apiKey "secret-value"
 ```
 
-## Transform Pattern
+## Padrão Transform
 
-Modify resource args before creation:
+Altere argumentos do resource antes da criação:
 
 ```typescript
 import { Transform } from '@pulumi/pulumi'
@@ -188,16 +188,16 @@ function createBucket(name: string, args: BucketArgs) {
 }
 ```
 
-## v6.x Worker Versioning Resources
+## Recursos de versionamento de Worker (v6.x)
 
-**Worker** - Container for versions:
+**Worker** — contêiner de versões:
 
 ```typescript
 const worker = new cloudflare.Worker('api', { accountId, name: 'api-worker' })
 export const workerId = worker.id
 ```
 
-**WorkerVersion** - Immutable code + config:
+**WorkerVersion** — código + config imutáveis:
 
 ```typescript
 const version = new cloudflare.WorkerVersion('v1', {
@@ -209,7 +209,7 @@ const version = new cloudflare.WorkerVersion('v1', {
 export const versionId = version.id
 ```
 
-**WorkersDeployment** - Active deployment with bindings:
+**WorkersDeployment** — deployment ativo com bindings:
 
 ```typescript
 const deployment = new cloudflare.WorkersDeployment('prod', {
@@ -220,8 +220,10 @@ const deployment = new cloudflare.WorkersDeployment('prod', {
 })
 ```
 
-**Use:** Advanced deployments (canary, blue-green). Most apps should use `WorkerScript` (auto-versioning).
+**Uso:** deploys avançados (canary, blue-green). A maioria dos apps deve usar `WorkerScript` (versionamento automático).
 
 ---
 
-See: [README.md](./README.md), [configuration.md](./configuration.md), [patterns.md](./patterns.md), [gotchas.md](./gotchas.md)
+Ver: [README.md](./README.md), [configuration.md](./configuration.md), [patterns.md](./patterns.md), [gotchas.md](./gotchas.md)
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

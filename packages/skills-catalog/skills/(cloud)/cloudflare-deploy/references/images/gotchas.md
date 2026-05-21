@@ -1,42 +1,42 @@
-# Gotchas & Best Practices
+# Dicas e boas práticas
 
-## Fit Modes
+## Modos de ajuste (fit)
 
-| Mode         | Best For                | Behavior                              |
-| ------------ | ----------------------- | ------------------------------------- |
-| `cover`      | Hero images, thumbnails | Fills space, crops excess             |
-| `contain`    | Product images, artwork | Preserves full image, may add padding |
-| `scale-down` | User uploads            | Never enlarges                        |
-| `crop`       | Precise crops           | Uses gravity                          |
-| `pad`        | Fixed aspect ratio      | Adds background                       |
+| Modo         | Melhor para         | Comportamento                        |
+| ------------ | ------------------- | ------------------------------------ |
+| `cover`      | Hero, miniaturas    | Preenche o espaço, corta o excesso   |
+| `contain`    | Produtos, arte      | Mantém a imagem inteira, pode padear |
+| `scale-down` | Uploads de usuários | Nunca aumenta                        |
+| `crop`       | Cortes precisos     | Usa gravidade                        |
+| `pad`        | Proporção fixa      | Adiciona fundo                       |
 
-## Format Selection
+## Escolha de formato
 
 ```typescript
 format: 'auto' // Recommended - negotiates best format
 ```
 
-**Support:** AVIF (Chrome 85+, Firefox 93+, Safari 16.4+), WebP (Chrome 23+, Firefox 65+, Safari 14+)
+**Suporte:** AVIF (Chrome 85+, Firefox 93+, Safari 16.4+), WebP (Chrome 23+, Firefox 65+, Safari 14+)
 
-## Quality Settings
+## Configurações de qualidade
 
-| Use Case     | Quality      |
-| ------------ | ------------ |
-| Thumbnails   | 75-80        |
-| Standard     | 85 (default) |
-| High-quality | 90-95        |
+| Caso de uso    | Qualidade   |
+| -------------- | ----------- |
+| Miniaturas     | 75-80       |
+| Padrão         | 85 (padrão) |
+| Alta qualidade | 90-95       |
 
-## Common Errors
+## Erros comuns
 
-### 5403: "Image transformation failed"
+### 5403: “Falha na transformação da imagem”
 
-- Verify `width`/`height` ≤ 12000
-- Check `quality` 1-100, `dpr` 1-3
-- Don't combine incompatible options
+- Verifique `width`/`height` ≤ 12000
+- Verifique `quality` 1-100, `dpr` 1-3
+- Não combine opções incompatíveis
 
-### 9413: "Rate limit exceeded"
+### 9413: “Limite de taxa excedido”
 
-Implement caching and exponential backoff:
+Implemente cache e espera exponencial:
 
 ```typescript
 for (let i = 0; i < 3; i++) {
@@ -45,38 +45,38 @@ for (let i = 0; i < 3; i++) {
 }
 ```
 
-### 5401: "Image too large"
+### 5401: “Imagem muito grande”
 
-Pre-process images before upload (max 100MB, 12000×12000px)
+Pré-processe antes do envio (máx. 100 MB, 12.000 × 12.000 px)
 
-### 5400: "Invalid image format"
+### 5400: “Formato de imagem inválido”
 
-Supported: JPEG, PNG, GIF, WebP, AVIF, SVG
+Suportados: JPEG, PNG, GIF, WebP, AVIF, SVG
 
-### 401/403: "Unauthorized"
+### 401/403: “Não autorizado”
 
-Verify API token has `Cloudflare Images → Edit` permission
+Verifique se o token da API tem permissão `Cloudflare Images → Edit`
 
-## Limits
+## Limites
 
-| Resource       | Limit         |
-| -------------- | ------------- |
-| Max input size | 100MB         |
-| Max dimensions | 12000×12000px |
-| Quality range  | 1-100         |
-| DPR range      | 1-3           |
-| API rate limit | ~1200 req/min |
+| Recurso                 | Limite             |
+| ----------------------- | ------------------ |
+| Tamanho máx. de entrada | 100 MB             |
+| Largura/altura máx.     | 12.000 × 12.000 px |
+| Faixa de qualidade      | 1-100              |
+| Faixa DPR               | 1-3                |
+| Limite de taxa da API   | ~1200 req/min      |
 
-## AVIF Gotchas
+## Armadilhas do AVIF
 
-- **Slower encoding**: First request may have higher latency
-- **Browser detection**:
+- **Codificação mais lenta:** a primeira requisição pode ter maior latência
+- **Detecção de navegador:**
 
 ```typescript
 const format = /image\/avif/.test(request.headers.get('Accept') || '') ? 'avif' : 'webp'
 ```
 
-## Anti-Patterns
+## Antipadrões
 
 ```typescript
 // ❌ No caching - transforms every request
@@ -92,7 +92,7 @@ transform({ width: 800, height: 600, fit: 'cover' })
 // ✅ Use Direct Creator Upload (patterns.md)
 ```
 
-## Debugging
+## Depuração
 
 ```typescript
 // Check response headers
@@ -104,3 +104,5 @@ console.log('Content-Type:', response.headers.get('Content-Type'))
 // Monitor logs
 // npx wrangler tail
 ```
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

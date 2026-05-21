@@ -1,6 +1,6 @@
-# API Reference
+# Referência de API
 
-## Client Initialization
+## Inicialização do cliente
 
 ### TypeScript
 
@@ -37,11 +37,11 @@ client := cloudflare.NewClient(
 )
 ```
 
-## Authentication
+##Autenticação
 
-### API Token (Recommended)
+### Token de API (recomendado)
 
-**Create token**: Dashboard → My Profile → API Tokens → Create Token
+**Criar token**: Painel → Meu perfil → Tokens de API → Criar token
 
 ```bash
 export CLOUDFLARE_API_TOKEN='your-token-here'
@@ -50,9 +50,9 @@ curl "https://api.cloudflare.com/client/v4/zones" \
   --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN"
 ```
 
-**Token scopes**: Always use minimal permissions (zone-specific, time-limited).
+**Escopos de token**: sempre use permissões mínimas (específicas da zona, com limite de tempo).
 
-### API Key (Legacy)
+### Chave de API (legada)
 
 ```bash
 curl "https://api.cloudflare.com/client/v4/zones" \
@@ -60,11 +60,11 @@ curl "https://api.cloudflare.com/client/v4/zones" \
   --header "X-Auth-Key: $CLOUDFLARE_API_KEY"
 ```
 
-**Not recommended:** Full account access, cannot scope permissions.
+**Não recomendado:** acesso total à conta, não é possível definir permissões.
 
-## Auto-Pagination
+## Paginação automática
 
-All SDKs support automatic pagination for list operations.
+Todos os SDKs oferecem suporte à paginação automática para operações de lista.
 
 ```typescript
 // TypeScript: for await...of
@@ -88,7 +88,7 @@ for iter.Next() {
 }
 ```
 
-## Error Handling
+##Tratamento de erros
 
 ```typescript
 try {
@@ -104,15 +104,15 @@ try {
 }
 ```
 
-**Common Error Types:**
+**Tipos de erros comuns:**
 
-- `AuthenticationError` (401) - Invalid token
-- `PermissionDeniedError` (403) - Insufficient scope
-- `NotFoundError` (404) - Resource not found
-- `RateLimitError` (429) - Rate limit exceeded
-- `InternalServerError` (≥500) - Cloudflare error
+- `AuthenticationError` (401) - Token inválido
+- `PermissionDeniedError` (403) - Escopo insuficiente
+- `NotFoundError` (404) - Recurso não encontrado
+- `RateLimitError` (429) - Limite de taxa excedido
+- `InternalServerError` (≥500) - Erro Cloudflare
 
-## Zone Management
+## Gerenciamento de zona
 
 ```typescript
 // List zones
@@ -148,7 +148,7 @@ zone, err := client.Zones.New(ctx, cloudflare.ZoneNewParams{
 })
 ```
 
-## DNS Management
+##Gerenciamento de DNS
 
 ```typescript
 // Create DNS record
@@ -198,8 +198,8 @@ client.dns.records.create(
 )
 ```
 
-## See Also
+##Veja também
 
-- [configuration.md](./configuration.md) - SDK configuration, environment variables
-- [patterns.md](./patterns.md) - Real-world patterns and workflows
-- [gotchas.md](./gotchas.md) - Rate limits, troubleshooting
+- [configuration.md](./configuration.md) - Configuração do SDK, variáveis de ambiente
+- [patterns.md](./patterns.md) - Padrões e fluxos de trabalho do mundo real
+- [gotchas.md](./gotchas.md) - Limites de taxa, solução de problemas

@@ -1,24 +1,21 @@
-# Configuration
+# Configuração
 
-## TypeScript Setup
+## Configuração do TypeScript
 
-**Generate types from wrangler.jsonc** (replaces deprecated `@cloudflare/workers-types`):
+**Gere tipos de wrangler.jsonc** (substitui o obsoleto `@cloudflare/workers-types`):
 
-```bash
+````bash
 npx wrangler types
-```
-
-Creates `worker-configuration.d.ts` with typed `Env` interface based on your bindings.
-
+```Cria `worker-configuration.d.ts` com interface `Env` digitada com base em suas ligações.
 ```typescript
 // functions/api.ts
 export const onRequest: PagesFunction<Env> = async (ctx) => {
   // ctx.env.KV, ctx.env.DB, etc. are fully typed
   return Response.json({ ok: true })
 }
-```
+````
 
-**Manual types** (if not using wrangler types):
+**Tipos manuais** (se não estiver usando tipos de wrangler):
 
 ```typescript
 interface Env {
@@ -31,7 +28,7 @@ export const onRequest: PagesFunction<Env> = async (ctx) => {
 }
 ```
 
-## wrangler.jsonc
+##wrangler.jsonc
 
 ```jsonc
 {
@@ -53,9 +50,9 @@ export const onRequest: PagesFunction<Env> = async (ctx) => {
 }
 ```
 
-## Environment Overrides
+##Substituições de ambiente
 
-Top-level → local dev, `env.preview` → preview, `env.production` → production
+Nível superior → desenvolvedor local, `env.preview` → visualização, `env.production` → produção
 
 ```jsonc
 {
@@ -66,45 +63,42 @@ Top-level → local dev, `env.preview` → preview, `env.production` → product
 }
 ```
 
-**Note:** If overriding `vars`, `kv_namespaces`, `d1_databases`, etc., ALL must be redefined (non-inheritable)
+**Nota:** Se substituir `vars`, `kv_namespaces`, `d1_databases`, etc., ALL deve ser redefinido (não herdável)
 
-## Local Secrets (.dev.vars)
+## Segredos locais (.dev.vars)
 
-**Local dev only** - NOT deployed:
+**Somente desenvolvedor local** - NÃO implantado:
 
-```bash
+````bash
 # .dev.vars (add to .gitignore)
 SECRET_KEY="my-secret-value"
-```
-
-Accessed via `ctx.env.SECRET_KEY`. Set production secrets:
-
+```Acessado via `ctx.env.SECRET_KEY`. Defina segredos de produção:
 ```bash
 echo "value" | npx wrangler pages secret put SECRET_KEY --project-name=my-app
-```
+````
 
-## Static Config Files
+##Arquivos de configuração estática
 
-**\_routes.json** - Custom routing:
+**\_routes.json** - Roteamento personalizado:
 
 ```json
 { "version": 1, "include": ["/api/*"], "exclude": ["/static/*"] }
 ```
 
-**\_headers** - Static headers:
+**\_headers** - Cabeçalhos estáticos:
 
 ```
 /static/*
   Cache-Control: public, max-age=31536000
 ```
 
-**\_redirects** - Redirects:
+**\_redirects** - Redirecionamentos:
 
 ```
 /old  /new  301
 ```
 
-## Local Dev & Deployment
+##Desenvolvimento e implantação local
 
 ```bash
 # Dev server
@@ -125,4 +119,4 @@ npx wrangler pages deploy ./dist --branch preview
 npx wrangler pages download config my-project
 ```
 
-**See also:** [api.md](./api.md) for binding usage examples
+**Veja também:** [api.md](./api.md) para exemplos de uso de vinculação

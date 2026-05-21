@@ -1,54 +1,58 @@
-# Quick Reference & Questions to Ask
+# Referência rápida e perguntas a serem feitas
 
-## Quick Reference
+## Referência rápida
 
-### Spend-to-Action Decision Tree
+### Árvore de decisão de gasto para ação```
+
+< $1K/month -> Pick ONE platform. Meta or TikTok. AI creative only.
+3-5 creatives. Manual testing. Kill at 48h.
+$1K-$5K -> Two platforms. AI + minimal human creative.
+10-15 active creatives. Phase testing.
+$5K-$15K -> Three platforms. Hybrid AI + human production.
+15-25 active creatives. Systematic testing matrix.
+$15K-$50K -> All relevant platforms. Full AI pipeline + human heroes.
+25-50 active creatives. Dynamic/Smart creative features.
+$50K+ -> Full stack. Dedicated creative strategist.
+50+ active creatives. Incrementality testing.
+Cross-platform unified attribution.
 
 ```
-< $1K/month   -> Pick ONE platform. Meta or TikTok. AI creative only.
-                 3-5 creatives. Manual testing. Kill at 48h.
-$1K-$5K       -> Two platforms. AI + minimal human creative.
-                 10-15 active creatives. Phase testing.
-$5K-$15K      -> Three platforms. Hybrid AI + human production.
-                 15-25 active creatives. Systematic testing matrix.
-$15K-$50K     -> All relevant platforms. Full AI pipeline + human heroes.
-                 25-50 active creatives. Dynamic/Smart creative features.
-$50K+         -> Full stack. Dedicated creative strategist.
-                 50+ active creatives. Incrementality testing.
-                 Cross-platform unified attribution.
-```
+### Lista de verificação de operações semanais
 
-### Weekly Operations Checklist
+- [] Revise as decisões de eliminação/escala em todos os criativos ativos (segunda-feira)
+- [] Atualizar scorecard de desempenho criativo (segunda-feira)
+- [] Resumo de 3 a 5 novos conceitos criativos de padrões vencedores (terça-feira)
+- [] Gerar ativos de IA para novos conceitos (quarta)
+- [ ] Revisar, refinar e montar novos anúncios (qui)
+- [] Lançar novos criativos em campanhas de teste (sexta)
+- [] Verifique sinais de fadiga criativa em todas as plataformas (diariamente)
+- [] Atualizar a alocação orçamentária entre vencedores/iterações/t
 
-- [ ] Review kill/scale decisions on all active creatives (Mon)
-- [ ] Update creative performance scorecard (Mon)
-- [ ] Brief 3-5 new creative concepts from winning patterns (Tue)
-- [ ] Generate AI assets for new concepts (Wed)
-- [ ] Review, refine, and assemble new ads (Thu)
-- [ ] Launch new creatives into test campaigns (Fri)
-- [ ] Check creative fatigue signals on all platforms (daily)
-- [ ] Update budget allocation across winners/iterations/tests (weekly)
+estimativas (semanalmente)
 
-### Key Formulas
+### Fórmulas-chave
 
-| Metric | Formula |
+| Métrica | Fórmula |
 |--------|---------|
-| ROAS | Revenue / Ad Spend |
-| CPA | Ad Spend / Conversions |
-| CPM | (Ad Spend / Impressions) x 1,000 |
-| CTR | Clicks / Impressions |
-| Hook rate | Views past 3s / Total impressions |
-| Hold rate | Views past 50% / Total views |
-| Creative hit rate | Winners / Total creatives tested |
-| Break-even ROAS | 1 / Profit margin (e.g., 50% margin = 2.0x) |
+| ROAS | Receita / Gasto com publicidade |
+| CPA | Gastos / conversões com publicidade |
+| CPM | (Gasto com publicidade/Impressões) x 1.000 |
+| CTR | Cliques/Impressões |
+| Taxa de gancho | Visualizações nos últimos 3s / Total de impressões |
+| Taxa de retenção | Visualizações além de 50% / Total de visualizações |
+| Taxa de acerto criativo | Vencedores / Total de criativos testados |
+| ROAS de equilíbrio | 1 / Margem de lucro (por exemplo, margem de 50% = 2,0x) |
 
-## Questions to Ask
+## Perguntas a serem feitas
 
-- What creative has worked best for you historically? What flopped?
-- Do you have brand guidelines that AI creative must follow?
-- How quickly do you need to see results (testing timeline)?
-- What is your target CPA or ROAS? How did you arrive at that number?
-- Do you have a landing page optimized for conversion, or does that need work too?
-- Are there legal or compliance constraints on your ad creative (health claims, financial disclaimers)?
-- What is your creative production capacity per week (internal + external)?
-- Have you tested AI-generated creative before? What was the reception?
+- Qual criativo funcionou melhor para você historicamente? O que fracassou?
+- Você tem diretrizes de marca que os criativos de IA devem seguir?
+- Com que rapidez você precisa ver os resultados (cronograma do teste)?
+- Qual é o seu CPA ou ROAS desejado? Como você chegou a esse número?
+- Você tem uma landing page otimizada para conversão ou isso também precisa de melhorias?
+- Existem restrições legais ou de conformidade no criativo do seu anúncio (alegações de saúde, isenções de responsabilidade financeira)?
+- C
+
+qual é a sua capacidade de produção criativa por semana (interna + externa)?
+- Você já testou criativos gerados por IA antes? Qual foi a recepção?
+```

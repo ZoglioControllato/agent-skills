@@ -1,28 +1,29 @@
-# Cloudflare Email Routing Skill Reference
+# Referência de habilidade de roteamento de e-mail da Cloudflare
 
-## Overview
+## Visão geral
 
-Cloudflare Email Routing enables custom email addresses for your domain that route to verified destination addresses. It's free, privacy-focused (no storage/access), and includes Email Workers for programmatic email processing.
+O Cloudflare Email Routing permite endereços de e-mail personalizados para o seu domínio que roteiam para endereços de destino verificados. É gratuito, focado na privacidade (sem armazenamento/acesso) e inclui Email Workers para processamento programático de e-mail.
 
-**Available to all Cloudflare customers using Cloudflare as authoritative nameserver.**
+**Disponível para todos os clientes da Cloudflare que usam a Cloudflare como servidor de nomes oficial.**
 
-## Quick Start
+## Início rápido```typescript
 
-```typescript
 // Basic email handler
 export default {
-  async email(message, env, ctx) {
-    // CRITICAL: Must consume stream before response
-    const parser = new PostalMime.default()
-    const email = await parser.parse(await message.raw.arrayBuffer())
+async email(message, env, ctx) {
+// CRITICAL: Must consume stream before response
+const parser = new PostalMime.default()
+const email = await parser.parse(await message.raw.arrayBuffer())
 
     // Process email
     console.log(`From: ${message.from}, Subject: ${email.subject}`)
 
     // Forward or reject
     await message.forward('verified@destination.com')
-  },
+
+},
 } satisfies ExportedHandler<Env>
+
 ```
 
 ## Reading Order
@@ -38,41 +39,40 @@ export default {
 ## Decision Tree
 
 ```
-Need to receive emails?
-├─ Simple forwarding only? → Dashboard rules (configuration.md)
-├─ Complex logic/filtering? → Email Workers (api.md + patterns.md)
-└─ Parse attachments/body? → postal-mime library (patterns.md § Parse Email)
 
-Need to send emails?
-├─ From Worker? → SendEmail binding (api.md § SendEmail)
-└─ From external app? → Use external SMTP/API service
+Precisa receber e-mails?
+├─ Apenas encaminhamento simples? → Regras do painel (configuration.md)
+├─ Lógica/filtragem complexa? → Trabalhadores de e-mail (api.md + padrões.md)
+└─ Analisar anexos/corpo? → biblioteca postal-mime (patterns.md § Analisar Email)
 
-Having issues?
-├─ Email not arriving? → gotchas.md § Mail Authentication
-├─ Worker crashing? → gotchas.md § Stream Consumption
-└─ Forward failing? → gotchas.md § Destination Verification
-```
+Precisa enviar e-mails?
+├─ Do Trabalhador? → Vinculação SendEmail (api.md § SendEmail)
+└─ De aplicativo externo? → Usar serviço SMTP/API externo
 
-## Key Concepts
+Está tendo problemas?
+├─ O e-mail não chega? → gotchas.md § Autenticação de correio
+├─ Trabalhador batendo? → gotchas.md § Consumo de fluxo
+└─ Falha no avanço? → gotchas.md § Verificação de destino
 
-**Routing Rules**: Pattern-based forwarding configured via Dashboard/API. Simple but limited.
+````
+## Conceitos-chave
 
-**Email Workers**: Custom TypeScript handlers with full email access. Handles complex logic, parsing, storage, rejection.
+**Regras de roteamento**: encaminhamento baseado em padrão configurado via Dashboard/API. Simples, mas limitado.
 
-**SendEmail Binding**: Outbound email API for Workers. Transactional email only (no marketing/bulk).
+**E-mail Workers**: manipuladores TypeScript personalizados com acesso total a e-mail. Lida com lógica complexa, análise, armazenamento e rejeição.
 
-**ForwardableEmailMessage**: Runtime interface for incoming emails. Provides headers, raw stream, forward/reject methods.
+**SendEmail Binding**: API de e-mail de saída para trabalhadores. Apenas e-mail transacional (sem marketing/em massa).
 
-## In This Reference
+**ForwardableEmailMessage**: Interface de tempo de execução para e-mails recebidos. Fornece cabeçalhos, fluxo bruto, métodos de encaminhamento/rejeição.
 
-- **[configuration.md](configuration.md)** - Setup, deployment, wrangler config
-- **[api.md](api.md)** - REST API + Worker runtime API + types
-- **[patterns.md](patterns.md)** - Common patterns with working examples
-- **[gotchas.md](gotchas.md)** - Critical pitfalls, troubleshooting, limits
+## Nesta referência
 
-## Architecture
+- **[configuration.md](configuration.md)** - Configuração, implantação, configuração do wrangler
+- **[api.md](api.md)** - API REST + API de tempo de execução do trabalhador + tipos
+- **[patterns.md](patterns.md)** - Padrões comuns com exemplos de trabalho
+- **[gotchas.md](gotchas.md)** - Armadilhas críticas, solução de problemas, limites
 
-```
+## Arquitetura```
 Internet → MX Records → Cloudflare Email Routing
                             ├─ Routing Rules (dashboard)
                             └─ Email Worker (your code)
@@ -80,7 +80,7 @@ Internet → MX Records → Cloudflare Email Routing
                                 ├─ Reject with reason
                                 ├─ Store in R2/KV/D1
                                 └─ Send outbound (SendEmail)
-```
+````
 
 ## See Also
 

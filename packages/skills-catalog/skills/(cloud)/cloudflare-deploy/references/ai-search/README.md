@@ -1,42 +1,42 @@
-# Cloudflare AI Search Reference
+# Referência Cloudflare AI Search
 
-Expert guidance for implementing Cloudflare AI Search (formerly AutoRAG), Cloudflare's managed semantic search and RAG service.
+Orientação para implementar o Cloudflare AI Search (anteriormente AutoRAG), o serviço gerenciado de busca semântica e RAG da Cloudflare.
 
-## Overview
+## Visão geral
 
-**AI Search** is a managed RAG (Retrieval-Augmented Generation) pipeline that combines:
+**AI Search** é um pipeline RAG (Geração Aumentada por Recuperação) gerenciado que combina:
 
-- Automatic semantic indexing of your content
-- Vector similarity search
-- Built-in LLM generation
+- Indexação semântica automática do conteúdo
+- Busca por similaridade vetorial
+- Geração com LLM integrada
 
-**Key value propositions:**
+**Principais propostas de valor:**
 
-- **Zero vector management** - No manual embedding, indexing, or storage
-- **Auto-indexing** - Content automatically re-indexed every 6 hours
-- **Built-in generation** - Optional AI response generation from retrieved context
-- **Multi-source** - Index from R2 buckets or website crawls
+- **Gestão zero de vetores** — sem embedding, indexação ou armazenamento manual
+- **Auto-indexação** — conteúdo reindexado automaticamente a cada 6 horas
+- **Geração integrada** — resposta opcional com IA a partir do contexto recuperado
+- **Múltiplas fontes** — indexe buckets R2 ou crawls de site
 
-**Data source options:**
+**Opções de fonte de dados:**
 
-- **R2 bucket** - Index files from Cloudflare R2 (supports MD, TXT, HTML, PDF, DOC, CSV, JSON)
-- **Website** - Crawl and index website content (requires Cloudflare-hosted domain)
+- **Bucket R2** — indexe arquivos no Cloudflare R2 (MD, TXT, HTML, PDF, DOC, CSV, JSON)
+- **Site** — rastreie e indexe conteúdo (exige domínio hospedado na Cloudflare)
 
-**Indexing lifecycle:**
+**Ciclo de indexação:**
 
-- Automatic 6-hour refresh cycle
-- Manual "Force Sync" available (30s rate limit)
-- Not designed for real-time updates
+- Atualização automática a cada 6 horas
+- "Force Sync" manual (limite de taxa de 30 s)
+- Não foi desenhado para atualizações em tempo real
 
-## Quick Start
+## Início rápido
 
-**1. Create AI Search instance in dashboard:**
+**1. Crie a instância de AI Search no dashboard:**
 
-- Go to Cloudflare Dashboard → AI Search → Create
-- Choose data source (R2 or website)
-- Configure instance name and settings
+- Cloudflare Dashboard → AI Search → Create
+- Escolha a fonte (R2 ou site)
+- Configure nome e opções
 
-**2. Configure Worker:**
+**2. Configure o Worker:**
 
 ```jsonc
 // wrangler.jsonc
@@ -47,7 +47,7 @@ Expert guidance for implementing Cloudflare AI Search (formerly AutoRAG), Cloudf
 }
 ```
 
-**3. Use in Worker:**
+**3. Use no Worker:**
 
 ```typescript
 export default {
@@ -62,84 +62,82 @@ export default {
 }
 ```
 
-## When to Use AI Search
+## Quando usar AI Search
 
 ### AI Search vs Vectorize
 
-| Factor           | AI Search                        | Vectorize                      |
-| ---------------- | -------------------------------- | ------------------------------ |
-| **Management**   | Fully managed                    | Manual embedding + indexing    |
-| **Use when**     | Want zero-ops RAG pipeline       | Need custom embeddings/control |
-| **Indexing**     | Automatic (6hr cycle)            | Manual via API                 |
-| **Generation**   | Built-in optional                | Bring your own LLM             |
-| **Data sources** | R2 or website                    | Manual insert                  |
-| **Best for**     | Docs, support, enterprise search | Custom ML pipelines, real-time |
+| Fator          | AI Search                       | Vectorize                           |
+| -------------- | ------------------------------- | ----------------------------------- |
+| **Gestão**     | Totalmente gerenciada           | Embedding e indexação manuais       |
+| **Use quando** | Pipeline RAG sem operações      | Embeddings ou controle customizados |
+| **Indexação**  | Automática (ciclo de 6 h)       | Manual via API                      |
+| **Geração**    | Opcional integrada              | Traga seu próprio LLM               |
+| **Fontes**     | R2 ou site                      | Inserção manual                     |
+| **Ideal para** | Docs, suporte, busca enterprise | Pipelines de ML custom, tempo real  |
 
-### AI Search vs Direct Workers AI
+### AI Search vs Workers AI direto
 
-| Factor       | AI Search                    | Workers AI (direct)          |
-| ------------ | ---------------------------- | ---------------------------- |
-| **Context**  | Automatic retrieval          | Manual context building      |
-| **Use when** | Need RAG (search + generate) | Simple generation tasks      |
-| **Indexing** | Built-in                     | Not applicable               |
-| **Best for** | Knowledge bases, docs        | Simple chat, transformations |
+| Fator          | AI Search                        | Workers AI (direto)          |
+| -------------- | -------------------------------- | ---------------------------- |
+| **Contexto**   | Recuperação automática           | Montagem manual de contexto  |
+| **Use quando** | Precisa de RAG (busca + geração) | Tarefas simples de geração   |
+| **Indexação**  | Integrada                        | Não se aplica                |
+| **Ideal para** | Bases de conhecimento, docs      | Chat simples, transformações |
 
 ### search() vs aiSearch()
 
-| Method       | Returns               | Use When                                |
-| ------------ | --------------------- | --------------------------------------- |
-| `search()`   | Search results only   | Building custom UI, need raw chunks     |
-| `aiSearch()` | AI response + results | Need ready-to-use answer (chatbot, Q&A) |
+| Método       | Retorna                     | Use quando                              |
+| ------------ | --------------------------- | --------------------------------------- |
+| `search()`   | Só resultados de busca      | UI customizada, precisa dos chunks crus |
+| `aiSearch()` | Resposta da IA + resultados | Resposta pronta (chatbot, Q&A)          |
 
-### Real-time Updates Consideration
+### Consideração sobre atualização em tempo real
 
-**AI Search is NOT ideal if:**
+**AI Search não é ideal se:**
 
-- Need real-time content updates (<6 hours)
-- Content changes multiple times per hour
-- Strict freshness requirements
+- Precisa de atualização em tempo real (< 6 horas)
+- O conteúdo muda várias vezes por hora
+- Exige frescor estrito
 
-**AI Search IS ideal if:**
+**AI Search é ideal se:**
 
-- Content relatively stable (docs, policies, knowledge bases)
-- 6-hour refresh acceptable
-- Prefer zero-ops over real-time
+- Conteúdo relativamente estável (docs, políticas, bases de conhecimento)
+- Atualização a cada 6 horas é aceitável
+- Prefere zero operações a tempo real
 
-## Platform Limits
+## Limites da plataforma
 
-| Limit                     | Value               |
-| ------------------------- | ------------------- |
-| Max instances per account | 10                  |
-| Max files per instance    | 100,000             |
-| Max file size             | 4 MB                |
-| Index frequency           | Every 6 hours       |
-| Force Sync rate limit     | Once per 30 seconds |
-| Filter nesting depth      | 2 levels            |
-| Filters per compound      | 10                  |
-| Score threshold range     | 0.0 - 1.0           |
+| Limite                                | Valor               |
+| ------------------------------------- | ------------------- |
+| Máx. instâncias por conta             | 10                  |
+| Máx. arquivos por instância           | 100.000             |
+| Tamanho máx. do arquivo               | 4 MB                |
+| Frequência de indexação               | A cada 6 horas      |
+| Limite do Force Sync                  | Uma vez a cada 30 s |
+| Profundidade de aninhamento de filtro | 2 níveis            |
+| Filtros por composto                  | 10                  |
+| Faixa do score threshold              | 0,0 - 1,0           |
 
-## Reading Order
+## Ordem de leitura
 
-Navigate these references based on your task:
+| Tarefa                       | Ler                           | Tempo est. |
+| ---------------------------- | ----------------------------- | ---------- |
+| **Entender AI Search**       | Só README                     | 5 min      |
+| **Implementar busca básica** | README → api.md               | 10 min     |
+| **Configurar fonte**         | README → configuration.md     | 10 min     |
+| **Padrões de produção**      | patterns.md                   | 15 min     |
+| **Depurar problemas**        | gotchas.md                    | 10 min     |
+| **Implementação completa**   | README → api.md → patterns.md | 30 min     |
 
-| Task                       | Read                          | Est. Time |
-| -------------------------- | ----------------------------- | --------- |
-| **Understand AI Search**   | README only                   | 5 min     |
-| **Implement basic search** | README → api.md               | 10 min    |
-| **Configure data source**  | README → configuration.md     | 10 min    |
-| **Production patterns**    | patterns.md                   | 15 min    |
-| **Debug issues**           | gotchas.md                    | 10 min    |
-| **Full implementation**    | README → api.md → patterns.md | 30 min    |
+## Nesta referência
 
-## In This Reference
+- **[api.md](api.md)** — Endpoints, métodos, interfaces TypeScript
+- **[configuration.md](configuration.md)** — Setup, fontes, wrangler
+- **[patterns.md](patterns.md)** — Padrões comuns, decisões, exemplos
+- **[gotchas.md](gotchas.md)** — Solução de problemas, armadilhas, limites
 
-- **[api.md](api.md)** - API endpoints, methods, TypeScript interfaces
-- **[configuration.md](configuration.md)** - Setup, data sources, wrangler config
-- **[patterns.md](patterns.md)** - Common patterns, decision guidance, code examples
-- **[gotchas.md](gotchas.md)** - Troubleshooting, code-level gotchas, limits
+## Ver também
 
-## See Also
-
-- [Cloudflare AI Search Docs](https://developers.cloudflare.com/ai-search/)
-- [Workers AI Docs](https://developers.cloudflare.com/workers-ai/)
-- [Vectorize Docs](https://developers.cloudflare.com/vectorize/)
+- [Documentação AI Search](https://developers.cloudflare.com/ai-search/)
+- [Workers AI](https://developers.cloudflare.com/workers-ai/)
+- [Vectorize](https://developers.cloudflare.com/vectorize/)

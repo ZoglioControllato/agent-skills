@@ -1,10 +1,10 @@
-# Configuration & Setup
+# Configuração e setup
 
-## Creating a Gateway
+## Criar um gateway
 
 ### Dashboard
 
-AI > AI Gateway > Create Gateway > Configure (auth, caching, rate limiting, logging)
+AI > AI Gateway > Create Gateway > Configure (auth, cache, rate limiting, logging)
 
 ### API
 
@@ -14,9 +14,9 @@ curl -X POST https://api.cloudflare.com/client/v4/accounts/{account_id}/ai-gatew
   -d '{"id":"my-gateway","cache_ttl":3600,"rate_limiting_interval":60,"rate_limiting_limit":100,"collect_logs":true}'
 ```
 
-**Naming:** lowercase alphanumeric + hyphens (e.g., `prod-api`, `dev-chat`)
+**Nomeação:** minúsculas, alfanumérico e hífens (ex.: `prod-api`, `dev-chat`)
 
-## Wrangler Integration
+## Integração com Wrangler
 
 ```toml
 [ai]
@@ -28,12 +28,12 @@ id = "my-gateway"
 
 ```bash
 wrangler secret put CF_API_TOKEN
-wrangler secret put OPENAI_API_KEY  # If not using BYOK
+wrangler secret put OPENAI_API_KEY  # Se não usar BYOK
 ```
 
-## Authentication
+## Autenticação
 
-### Gateway Auth (protects gateway access)
+### Auth do gateway (protege o acesso ao gateway)
 
 ```typescript
 const client = new OpenAI({
@@ -42,9 +42,9 @@ const client = new OpenAI({
 })
 ```
 
-### Provider Auth Options
+### Opções de auth do provedor
 
-**1. Unified Billing (keyless)** - pay through Cloudflare, no provider key:
+**1. Unified billing (sem chave)** — paga via Cloudflare, sem chave do provedor:
 
 ```typescript
 const client = new OpenAI({
@@ -53,11 +53,11 @@ const client = new OpenAI({
 })
 ```
 
-Supports: OpenAI, Anthropic, Google AI Studio
+Compatível com: OpenAI, Anthropic, Google AI Studio
 
-**2. BYOK** - store keys in dashboard (Provider Keys > Add), no key in code
+**2. BYOK** — chaves no dashboard (Provider Keys > Add), nada de chave no código
 
-**3. Request Headers** - pass provider key per request:
+**3. Headers da requisição** — chave do provedor em cada pedido:
 
 ```typescript
 const client = new OpenAI({
@@ -67,35 +67,35 @@ const client = new OpenAI({
 })
 ```
 
-## API Token Permissions
+## Permissões do token de API
 
-- **Gateway management:** AI Gateway - Read + Edit
-- **Gateway access:** AI Gateway - Read (minimum)
+- **Gerenciar gateway:** AI Gateway — Read + Edit
+- **Acesso ao gateway:** AI Gateway — Read (mínimo)
 
-## Gateway Management API
+## API de gerenciamento de gateways
 
 ```bash
-# List
+# Listar
 curl https://api.cloudflare.com/client/v4/accounts/{account_id}/ai-gateway/gateways \
   -H "Authorization: Bearer $CF_API_TOKEN"
 
-# Get
+# Obter
 curl .../gateways/{gateway_id}
 
-# Update
+# Atualizar
 curl -X PUT .../gateways/{gateway_id} \
   -d '{"cache_ttl":7200,"rate_limiting_limit":200}'
 
-# Delete
+# Excluir
 curl -X DELETE .../gateways/{gateway_id}
 ```
 
-## Getting IDs
+## Obtendo IDs
 
 - **Account ID:** Dashboard > Overview > Copy
-- **Gateway ID:** AI Gateway > Gateway name column
+- **Gateway ID:** AI Gateway > coluna do nome do gateway
 
-## Python Example
+## Exemplo em Python
 
 ```python
 from openai import OpenAI
@@ -108,10 +108,10 @@ client = OpenAI(
 )
 ```
 
-## Best Practices
+## Boas práticas
 
-1. **Always authenticate gateways in production**
-2. **Use BYOK or unified billing** - secrets out of code
-3. **Environment-specific gateways** - separate dev/staging/prod
-4. **Set rate limits** - prevent runaway costs
-5. **Enable logging** - track usage, debug issues
+1. **Sempre autentique gateways em produção**
+2. **Use BYOK ou billing unificado** — secrets fora do código
+3. **Gateways por ambiente** — dev/staging/prod separados
+4. **Defina rate limits** — evite custos descontrolados
+5. **Habilite logging** — acompanhe uso e depure problemas

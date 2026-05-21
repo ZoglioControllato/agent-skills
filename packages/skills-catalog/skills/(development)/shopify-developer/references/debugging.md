@@ -1,14 +1,15 @@
-# Debugging and Troubleshooting Reference
+# Referência de depuração e solução de problemas
 
-Expert guidance for debugging Shopify themes, apps, and API integrations with practical solutions to common issues.
+Orientação especializada para depuração de temas, aplicativos e integrações de API do Shopify com soluções práticas para problemas comuns.
 
-## Core Capabilities
+## Capacidades principais
 
-### 1. Liquid Debugging
+### 1. Depuração líquida
 
-Debug Liquid template errors and rendering issues.
+Depure erros de modelo Liquid e problemas de renderização.
 
-**Enable Theme Preview:**
+**Ativar visualização do tema:**
+
 ```
 1. Go to Online Store > Themes
 2. Click "Customise" on your theme
@@ -16,9 +17,10 @@ Debug Liquid template errors and rendering issues.
 4. Check Console for Liquid errors
 ```
 
-**Common Liquid Errors:**
+**Erros comuns de líquidos:**
 
-**Syntax Error:**
+**Erro de sintaxe:**
+
 ```liquid
 {# ❌ Error: Missing endif #}
 {% if product.available %}
@@ -31,7 +33,8 @@ Debug Liquid template errors and rendering issues.
 {% endif %}
 ```
 
-**Undefined Variable:**
+**Variável indefinida:**
+
 ```liquid
 {# ❌ Error: product undefined on collection page #}
 {{ product.title }}
@@ -44,7 +47,8 @@ Debug Liquid template errors and rendering issues.
 {% endif %}
 ```
 
-**Invalid Filter:**
+**Filtro inválido:**
+
 ```liquid
 {# ❌ Error: Unknown filter #}
 {{ product.price | format_money }}
@@ -53,7 +57,8 @@ Debug Liquid template errors and rendering issues.
 {{ product.price | money }}
 ```
 
-**Debug Output:**
+**Saída de depuração:**
+
 ```liquid
 {# Output variable as JSON #}
 {{ product | json }}
@@ -72,7 +77,8 @@ Debug Liquid template errors and rendering issues.
 <pre>{{ product | json }}</pre>
 ```
 
-**Console Logging from Liquid:**
+**Registro de console do Liquid:**
+
 ```liquid
 <script>
   console.log('Product ID:', {{ product.id }});
@@ -81,67 +87,71 @@ Debug Liquid template errors and rendering issues.
 </script>
 ```
 
-### 2. JavaScript Debugging
+### 2. Depuração de JavaScript
 
-Debug JavaScript errors in themes and apps.
+Depure erros de JavaScript em temas e aplicativos.
 
-**Browser Console:**
+**Console do navegador:**
+
 ```javascript
 // Log to console
-console.log('Debug:', variable);
-console.error('Error:', error);
-console.warn('Warning:', warning);
+console.log('Debug:', variable)
+console.error('Error:', error)
+console.warn('Warning:', warning)
 
 // Log object properties
-console.table(data);
+console.table(data)
 
 // Group related logs
-console.group('Cart Operations');
-console.log('Cart ID:', cartId);
-console.log('Items:', items);
-console.groupEnd();
+console.group('Cart Operations')
+console.log('Cart ID:', cartId)
+console.log('Items:', items)
+console.groupEnd()
 
 // Time operations
-console.time('API Call');
-await fetch('/api/data');
-console.timeEnd('API Call');
+console.time('API Call')
+await fetch('/api/data')
+console.timeEnd('API Call')
 
 // Stack trace
-console.trace('Execution path');
+console.trace('Execution path')
 ```
 
-**Breakpoints:**
+**Pontos de interrupção:**
+
 ```javascript
 // Programmatic breakpoint
-debugger;
+debugger
 
 // Set in browser DevTools:
 // Sources tab > Click line number
 ```
 
-**Error Handling:**
+**Tratamento de erros:**
+
 ```javascript
 // ❌ Unhandled error
-const data = await fetch('/api/data').then(r => r.json());
+const data = await fetch('/api/data').then((r) => r.json())
 
 // ✅ Proper error handling
 try {
-  const response = await fetch('/api/data');
+  const response = await fetch('/api/data')
 
   if (!response.ok) {
-    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    throw new Error(`HTTP ${response.status}: ${response.statusText}`)
   }
 
-  const data = await response.json();
-  console.log('Data:', data);
+  const data = await response.json()
+  console.log('Data:', data)
 } catch (error) {
-  console.error('Failed to fetch data:', error);
+  console.error('Failed to fetch data:', error)
   // Show user-friendly error message
-  alert('Failed to load data. Please try again.');
+  alert('Failed to load data. Please try again.')
 }
 ```
 
-**Network Debugging:**
+**Depuração de rede:**
+
 ```
 1. Open DevTools > Network tab
 2. Filter by XHR or Fetch
@@ -153,31 +163,32 @@ try {
    - Timing information
 ```
 
-### 3. API Error Debugging
+### 3. Depuração de erros de API
 
-Debug GraphQL and REST API errors.
+Depure erros do GraphQL e da API REST.
 
-**GraphQL Errors:**
+**Erros do GraphQL:**
 
-Error response format:
-```json
+Formato de resposta de erro:```json
 {
-  "errors": [
-    {
-      "message": "Field 'invalidField' doesn't exist on type 'Product'",
-      "locations": [{ "line": 3, "column": 5 }],
-      "path": ["product", "invalidField"],
-      "extensions": {
-        "code": "FIELD_NOT_FOUND",
-        "typeName": "Product"
-      }
-    }
-  ],
-  "data": null
+"errors": [
+{
+"message": "Field 'invalidField' doesn't exist on type 'Product'",
+"locations": [{ "line": 3, "column": 5 }],
+"path": ["product", "invalidField"],
+"extensions": {
+"code": "FIELD_NOT_FOUND",
+"typeName": "Product"
 }
-```
+}
+],
+"data": null
+}
 
-**Check for errors BEFORE accessing data:**
+````
+
+**Verifique se há erros ANTES de acessar os dados:**
+
 ```javascript
 const response = await fetch(graphqlEndpoint, {
   method: 'POST',
@@ -204,66 +215,74 @@ if (errors) {
 
 // Now safe to use data
 console.log('Products:', data.products);
-```
+````
 
-**Common GraphQL Errors:**
+**Erros comuns do GraphQL:**
 
-**Authentication Error:**
+**Erro de autenticação:**
+
 ```json
 {
-  "errors": [{
-    "message": "Access denied",
-    "extensions": { "code": "UNAUTHENTICATED" }
-  }]
+  "errors": [
+    {
+      "message": "Access denied",
+      "extensions": { "code": "UNAUTHENTICATED" }
+    }
+  ]
 }
 ```
 
-**Fix:** Check access token:
-```javascript
+**Correção:** Verifique o token de acesso:```javascript
 // Verify token is valid
-const token = 'shpat_...';
+const token = 'shpat\_...';
 
-// Check token format (should start with shpat_)
-if (!token.startsWith('shpat_')) {
-  console.error('Invalid token format');
+// Check token format (should start with shpat*)
+if (!token.startsWith('shpat*')) {
+console.error('Invalid token format');
 }
 
 // Verify in headers
 headers: {
-  'X-Shopify-Access-Token': token,  // ✅ Correct header
-  'Authorization': `Bearer ${token}`, // ❌ Wrong for Admin API
+'X-Shopify-Access-Token': token, // ✅ Correct header
+'Authorization': `Bearer ${token}`, // ❌ Wrong for Admin API
 }
-```
 
-**Field Not Found:**
+````
+
+**Campo não encontrado:**
+
 ```json
 {
   "errors": [{
     "message": "Field 'invalidField' doesn't exist on type 'Product'"
   }]
 }
-```
+````
 
-**Fix:** Check field name in API docs:
-```graphql
+**Correção:** Verifique o nome do campo nos documentos da API:```graphql
+
 # ❌ Wrong field name
+
 query {
-  product(id: "gid://shopify/Product/123") {
-    invalidField
-  }
+product(id: "gid://shopify/Product/123") {
+invalidField
+}
 }
 
 # ✅ Correct field name
-query {
-  product(id: "gid://shopify/Product/123") {
-    title
-    handle
-    status
-  }
-}
-```
 
-**Rate Limit Error:**
+query {
+product(id: "gid://shopify/Product/123") {
+title
+handle
+status
+}
+}
+
+````
+
+**Erro de limite de taxa:**
+
 ```javascript
 // Check rate limit header
 const response = await fetch(graphqlEndpoint, options);
@@ -275,18 +294,19 @@ if (response.status === 429) {
   const retryAfter = response.headers.get('Retry-After');
   console.log(`Rate limited. Retry after ${retryAfter} seconds`);
 }
-```
+````
 
-**REST API Errors:**
+**Erros da API REST:**
 
-**404 Not Found:**
+**404 não encontrado:**
+
 ```javascript
 const response = await fetch(`https://${shop}/admin/api/2026-01/products/999999.json`, {
   headers: { 'X-Shopify-Access-Token': token },
-});
+})
 
 if (response.status === 404) {
-  console.error('Product not found');
+  console.error('Product not found')
   // Check:
   // 1. Product ID is correct
   // 2. Product exists in store
@@ -294,7 +314,8 @@ if (response.status === 404) {
 }
 ```
 
-**422 Unprocessable Entity:**
+**422 Entidade Não Processável:**
+
 ```json
 {
   "errors": {
@@ -304,39 +325,39 @@ if (response.status === 404) {
 }
 ```
 
-**Fix:** Validate input:
-```javascript
+**Correção:** Validar entrada:```javascript
 const response = await fetch(endpoint, {
-  method: 'POST',
-  headers: {
-    'X-Shopify-Access-Token': token,
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({
-    product: {
-      title: '',  // ❌ Empty title
-      price: -10, // ❌ Negative price
-    },
-  }),
+method: 'POST',
+headers: {
+'X-Shopify-Access-Token': token,
+'Content-Type': 'application/json',
+},
+body: JSON.stringify({
+product: {
+title: '', // ❌ Empty title
+price: -10, // ❌ Negative price
+},
+}),
 });
 
 if (response.status === 422) {
-  const { errors } = await response.json();
-  console.error('Validation errors:', errors);
+const { errors } = await response.json();
+console.error('Validation errors:', errors);
 
-  // Fix data
-  const validProduct = {
-    title: 'Product Name',  // ✅ Valid title
-    price: 19.99,           // ✅ Valid price
-  };
+// Fix data
+const validProduct = {
+title: 'Product Name', // ✅ Valid title
+price: 19.99, // ✅ Valid price
+};
 }
-```
 
-### 4. Cart Debugging
+````
+### 4. Depuração do carrinho
 
-Debug cart and Ajax API issues.
+Problemas de carrinho de depuração e API Ajax.
 
-**Cart Not Updating:**
+**Carrinho não atualizando:**
+
 ```javascript
 // ❌ Common mistake: Wrong variant ID
 fetch('/cart/add.js', {
@@ -373,26 +394,28 @@ fetch('/cart/add.js', {
   .catch(error => {
     console.error('Failed to add to cart:', error);
   });
-```
+````
 
-**Get Current Cart:**
+**Obter carrinho atual:**
+
 ```javascript
 // Debug current cart state
 fetch('/cart.js')
-  .then(r => r.json())
-  .then(cart => {
-    console.log('Cart:', cart);
-    console.log('Item count:', cart.item_count);
-    console.log('Total:', cart.total_price);
-    console.log('Items:', cart.items);
+  .then((r) => r.json())
+  .then((cart) => {
+    console.log('Cart:', cart)
+    console.log('Item count:', cart.item_count)
+    console.log('Total:', cart.total_price)
+    console.log('Items:', cart.items)
 
-    cart.items.forEach(item => {
-      console.log('Item:', item.product_id, item.variant_id, item.quantity);
-    });
-  });
+    cart.items.forEach((item) => {
+      console.log('Item:', item.product_id, item.variant_id, item.quantity)
+    })
+  })
 ```
 
-**Cart AJAX Errors:**
+**Erros AJAX do carrinho:**
+
 ```javascript
 // Common error: Insufficient inventory
 {
@@ -411,11 +434,12 @@ if (variant.inventory_quantity < quantity) {
 }
 ```
 
-### 5. Theme Preview Debugging
+### 5. Depuração de visualização do tema
 
-Debug issues in the theme customiser.
+Depure problemas no personalizador de temas.
 
-**Theme Editor Console:**
+**Console do Editor de Tema:**
+
 ```
 1. Open theme customiser
 2. Open DevTools (F12)
@@ -426,7 +450,8 @@ Debug issues in the theme customiser.
    - Network failures
 ```
 
-**Section Not Rendering:**
+**Seção não renderizada:**
+
 ```liquid
 {# Check section schema #}
 {% schema %}
@@ -439,7 +464,8 @@ Debug issues in the theme customiser.
 {# ❌ Missing schema = won't show in customiser #}
 ```
 
-**Settings Not Updating:**
+**Configurações sem atualização:**
+
 ```liquid
 {# ❌ Wrong: Using hardcoded value #}
 <h1>Hardcoded Title</h1>
@@ -462,7 +488,8 @@ Debug issues in the theme customiser.
 {% endschema %}
 ```
 
-**Block Attributes Missing:**
+**Atributos do bloco ausentes:**
+
 ```liquid
 {# ❌ Missing shopify_attributes #}
 <div class="block">
@@ -475,23 +502,25 @@ Debug issues in the theme customiser.
 </div>
 ```
 
-### 6. Webhook Debugging
+### 6. Depuração de webhook
 
-Debug webhook delivery and processing.
+Depure a entrega e o processamento do webhook.
 
-**Webhook Not Received:**
+**Webhook não recebido:**
 
-Check in Shopify Admin:
-```
+Verifique no administrador do Shopify:```
+
 1. Settings > Notifications > Webhooks
 2. Click webhook
 3. Check "Recent deliveries"
 4. Look for delivery status:
    - ✅ Success (200 OK)
    - ❌ Failed (4xx/5xx errors)
-```
 
-**Verify Webhook HMAC:**
+````
+
+**Verifique o Webhook HMAC:**
+
 ```javascript
 import crypto from 'crypto';
 
@@ -523,31 +552,32 @@ app.post('/webhooks/orders', (req, res) => {
   // Respond quickly (< 5 seconds)
   res.status(200).send('OK');
 });
-```
+````
 
-**Webhook Timeout:**
+**Tempo limite do webhook:**
+
 ```javascript
 // ❌ Processing takes too long (> 5 seconds)
 app.post('/webhooks/orders', async (req, res) => {
-  await processOrder(req.body);  // Slow operation
-  res.send('OK');  // Response delayed
-});
+  await processOrder(req.body) // Slow operation
+  res.send('OK') // Response delayed
+})
 
 // ✅ Respond immediately, process async
 app.post('/webhooks/orders', async (req, res) => {
-  const order = req.body;
+  const order = req.body
 
   // Respond quickly
-  res.status(200).send('OK');
+  res.status(200).send('OK')
 
   // Process in background
-  processOrder(order).catch(console.error);
-});
+  processOrder(order).catch(console.error)
+})
 ```
 
-### 7. Common Error Messages
+### 7. Mensagens de erro comuns
 
-**Liquid Errors:**
+**Erros líquidos:**
 
 ```
 Error: Liquid syntax error: Unknown tag 'section'
@@ -565,7 +595,7 @@ Error: Exceeded maximum number of allowed iterations
 Fix: Infinite loop detected. Check loop conditions.
 ```
 
-**JavaScript Errors:**
+**Erros de JavaScript:**
 
 ```
 TypeError: Cannot read property 'forEach' of undefined
@@ -585,7 +615,7 @@ SyntaxError: Unexpected token <
 Fix: API returned HTML error page instead of JSON. Check API endpoint.
 ```
 
-**API Errors:**
+**Erros de API:**
 
 ```
 Access denied - check your access scopes
@@ -602,9 +632,10 @@ Field doesn't exist on type
 Fix: Check API version and field availability in docs.
 ```
 
-## Debugging Toolkit
+## Kit de ferramentas de depuração
 
-**Browser DevTools:**
+**Ferramentas de desenvolvimento do navegador:**
+
 ```
 - Console: View errors and logs
 - Network: Inspect API requests
@@ -613,7 +644,8 @@ Fix: Check API version and field availability in docs.
 - Performance: Profile page load
 ```
 
-**Shopify Tools:**
+**Ferramentas do Shopify:**
+
 ```
 - Theme Preview: Test changes before publishing
 - Theme Inspector: View section data
@@ -621,7 +653,8 @@ Fix: Check API version and field availability in docs.
 - Webhook Logs: Check delivery status
 ```
 
-**Useful Console Commands:**
+**Comandos úteis do console:**
+
 ```javascript
 // Get all form data
 new FormData(document.querySelector('form'))
@@ -639,15 +672,17 @@ console.log(window)
 getComputedStyle(element)
 ```
 
-## Best Practices
+## Melhores práticas
 
-1. **Always check for errors** before accessing data (API responses)
-2. **Use try-catch blocks** for all async operations
-3. **Log meaningful messages** with context
-4. **Verify HMAC** for all webhooks
-5. **Test in theme preview** before publishing
-6. **Monitor API rate limits** and implement backoff
-7. **Handle edge cases** (nil values, empty arrays)
-8. **Use browser DevTools** for network debugging
-9. **Check API version** compatibility
-10. **Validate input** before API calls
+1. **Sempre verifique se há erros** antes de acessar os dados (respostas da API)
+2. **Use blocos try-catch** para todas as operações assíncronas
+3. **Registre mensagens significativas** com contexto
+4. **Verifique o HMAC** para todos os webhooks
+5. **Teste a visualização do tema** antes de publicar
+6. **Monitore os limites de taxa da API** e implemente a espera
+7. **Tratar casos extremos** (valores nulos, matrizes vazias)
+8. **Use DevTools do navegador** para depuração de rede
+9. **Verifique a versão da API** compatibilidade
+10. \*\*V
+
+alidar entrada\*\* antes de chamadas de API

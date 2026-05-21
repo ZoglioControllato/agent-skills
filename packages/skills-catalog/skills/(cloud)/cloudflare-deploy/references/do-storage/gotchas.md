@@ -68,44 +68,40 @@ async safe() {
 }
 ```
 
-### allowConcurrency Option
+### opção permitirConcurrency
 
-Opt out of input gate for reads that don't need protection:
-
-```typescript
+Desative o portão de entrada para leituras que não precisam de proteção:```typescript
 // Allow concurrent reads (no consistency guarantee)
 const val = await this.ctx.storage.get('metrics', { allowConcurrency: true })
-```
 
-## Common Errors
+````
+## Erros Comuns
 
-### "Race Condition in Concurrent Calls"
+### "Condição de corrida em chamadas simultâneas"
 
-**Cause:** Multiple concurrent storage operations initiated from same event (e.g., `Promise.all()`) are not protected by input gate  
-**Solution:** Avoid concurrent storage operations within single event; input gate only serializes requests from different events, not operations within same event
+**Causa:** Várias operações de armazenamento simultâneas iniciadas a partir do mesmo evento (por exemplo, `Promise.all()`) não são protegidas pela porta de entrada
+**Solução:** evite operações de armazenamento simultâneas em um único evento; O portão de entrada serializa apenas solicitações de eventos diferentes, não operações dentro do mesmo evento
 
-### "Direct SQL Transaction Statements"
+### "Instruções de transação SQL direta"
 
-**Cause:** Using `BEGIN TRANSACTION` directly instead of transaction methods  
-**Solution:** Use `this.ctx.storage.transactionSync()` for sync operations or `this.ctx.storage.transaction()` for async operations
+**Causa:** Usando `BEGIN TRANSACTION` diretamente em vez de métodos de transação
+**Solução:** Use `this.ctx.storage.transactionSync()` para operações de sincronização ou `this.ctx.storage.transaction()` para operações assíncronas
 
-### "Async in transactionSync"
+### "Assíncrono em transactionSync"
 
-**Cause:** Using async operations inside `transactionSync()` callback  
-**Solution:** Use async `transaction()` method instead of `transactionSync()` when async operations needed
+**Causa:** Usando operações assíncronas dentro do retorno de chamada `transactionSync()`
+**Solução:** Use o método assíncrono `transaction()` em vez de `transactionSync()` quando operações assíncronas forem necessárias
 
-### "TypeScript Type Mismatch at Runtime"
+### "Incompatibilidade de tipo TypeScript em tempo de execução"
 
-**Cause:** Query doesn't return all fields specified in TypeScript type  
-**Solution:** Ensure SQL query selects all columns that match the TypeScript type definition
+**Causa:** A consulta não retorna todos os campos especificados no tipo TypeScript
+**Solução:** certifique-se de que a consulta SQL selecione todas as colunas que correspondem à definição de tipo TypeScript
 
-### "Silent Data Corruption with Large IDs"
+### "Corrupção silenciosa de dados com IDs grandes"
 
-**Cause:** JavaScript numbers have 53-bit precision; SQLite INTEGER is 64-bit  
-**Symptom:** IDs > 9007199254740991 (Number.MAX_SAFE_INTEGER) silently truncate/corrupt  
-**Solution:** Store large IDs as TEXT:
-
-```typescript
+**Causa:** os números JavaScript têm precisão de 53 bits; SQLite INTEGER é de 64 bits
+**Sintoma:** IDs > 9007199254740991 (Number.MAX_SAFE_INTEGER) truncados/corrompidos silenciosamente
+**Solução:** Armazene IDs grandes como TEXTO:```typescript
 // BAD: Snowflake/Twitter IDs will corrupt
 this.sql.exec('CREATE TABLE events(id INTEGER PRIMARY KEY)')
 this.sql.exec('INSERT INTO events VALUES (?)', 1234567890123456789n) // Corrupts!
@@ -113,41 +109,41 @@ this.sql.exec('INSERT INTO events VALUES (?)', 1234567890123456789n) // Corrupts
 // GOOD: Store as TEXT
 this.sql.exec('CREATE TABLE events(id TEXT PRIMARY KEY)')
 this.sql.exec('INSERT INTO events VALUES (?)', '1234567890123456789')
-```
+````
 
-### "Alarm Not Deleted with deleteAll()"
+### "Alarme não excluído com deleteAll()"
 
-**Cause:** `deleteAll()` doesn't delete alarms automatically  
-**Solution:** Call `deleteAlarm()` explicitly before `deleteAll()` to remove alarm
+**Causa:** `deleteAll()` não exclui alarmes automaticamente
+**Solução:** Chame `deleteAlarm()` explicitamente antes de `deleteAll()` para remover o alarme
 
-### "Slow Performance"
+### "Desempenho Lento"
 
-**Cause:** Using async KV API instead of sync API  
-**Solution:** Use sync KV API (`ctx.storage.kv`) for better performance with simple key-value operations
+**Causa:** Uso da API KV assíncrona em vez da API de sincronização
+**Solução:** use a API KV de sincronização (`ctx.storage.kv`) para obter melhor desempenho com operações simples de valor-chave
 
-### "High Billing from Storage Operations"
+### "Alto faturamento das operações de armazenamento"
 
-**Cause:** Excessive `rowsRead`/`rowsWritten` or unused objects not cleaned up  
-**Solution:** Monitor `rowsRead`/`rowsWritten` metrics and ensure unused objects call `deleteAll()`
+**Causa:** `rowsRead`/`rowsWritten` excessivos ou objetos não utilizados não limpos
+**Solução:** Monitore as métricas `rowsRead`/`rowsWritten` e garanta que objetos não utilizados chamem `deleteAll()`
 
-### "Durable Object Overloaded"
+### "Objeto durável sobrecarregado"
 
-**Cause:** Single DO exceeding ~1K req/sec soft limit  
-**Solution:** Shard across multiple DOs with random IDs or other distribution strategy
+**Causa:** DO único excedendo o limite flexível de aproximadamente 1K req/s
+**Solução:** Fragmentação em vários DOs com IDs aleatórios ou outra estratégia de distribuição
 
-## Limits
+## Limites
 
-| Limit                     | Value       | Notes                 |
-| ------------------------- | ----------- | --------------------- |
-| Max columns per table     | 100         | SQL limitation        |
-| Max string/BLOB per row   | 2 MB        | SQL limitation        |
-| Max row size              | 2 MB        | SQL limitation        |
-| Max SQL statement size    | 100 KB      | SQL limitation        |
-| Max SQL parameters        | 100         | SQL limitation        |
-| Max LIKE/GLOB pattern     | 50 B        | SQL limitation        |
-| SQLite storage per object | 10 GB       | SQLite-backed storage |
-| SQLite key+value size     | 2 MB        | SQLite-backed storage |
-| KV storage per object     | Unlimited   | KV-style storage      |
-| KV key size               | 2 KiB       | KV-style storage      |
-| KV value size             | 128 KiB     | KV-style storage      |
-| Request throughput        | ~1K req/sec | Soft limit per DO     |
+| Limite                                | Valor               | Notas                            |
+| ------------------------------------- | ------------------- | -------------------------------- |
+| Máximo de colunas por tabela          | 100                 | Limitação SQL                    |
+| Máximo de string/BLOB por linha       | 2 MB                | Limitação SQL                    |
+| Tamanho máximo da linha               | 2 MB                | Limitação SQL                    |
+| Tamanho máximo da instrução SQL       | 100 KB              | Limitação SQL                    |
+| Parâmetros SQL máximos                | 100                 | Limitação SQL                    |
+| Padrão máximo LIKE/GLOB               | 50 B                | Limitação SQL                    |
+| Armazenamento SQLite por objeto       | 10 GB               | Armazenamento apoiado por SQLite |
+| Tamanho da chave + valor do SQLite    | 2 MB                | Armazenamento apoiado por SQLite |
+| Armazenamento de KV por objeto        | Ilimitado           | Armazenamento estilo KV          |
+| Tamanho da chave KV                   | 2 KiB               | Armazenamento estilo KV          |
+| Tamanho do valor KV                   | 128 KiB             | Armazenamento estilo KV          |
+| Taxa de transferência de solicitações | ~1K necessidade/seg | Limite flexível por DO           |

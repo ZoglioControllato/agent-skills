@@ -1,69 +1,69 @@
-# Theme Development Reference
+# Referência de Desenvolvimento de Tema
 
-Expert guidance for Shopify theme development including file structure, Online Store 2.0 architecture, sections, snippets, and configuration.
+Orientação especializada para desenvolvimento de temas do Shopify, incluindo estrutura de arquivos, arquitetura da Loja Online 2.0, seções, snippets e configuração.
 
-## Core Capabilities
+## Capacidades principais
 
-### 1. Theme File Structure
+### 1. Estrutura do arquivo de tema
 
-Complete directory organisation for Shopify themes:
-
-```
+Organização de diretório completa para temas do Shopify:```
 theme/
-├── assets/                     {# Static resources #}
-│   ├── style.css              {# Main stylesheet #}
-│   ├── style.css.liquid       {# Dynamic CSS with Liquid #}
-│   ├── theme.js               {# Main JavaScript #}
-│   ├── theme.js.liquid        {# Dynamic JS with Liquid #}
-│   ├── logo.png               {# Images #}
-│   └── fonts/                 {# Custom fonts #}
+├── assets/ {# Static resources #}
+│ ├── style.css {# Main stylesheet #}
+│ ├── style.css.liquid {# Dynamic CSS with Liquid #}
+│ ├── theme.js {# Main JavaScript #}
+│ ├── theme.js.liquid {# Dynamic JS with Liquid #}
+│ ├── logo.png {# Images #}
+│ └── fonts/ {# Custom fonts #}
 │
-├── config/                     {# Configuration #}
-│   ├── settings_schema.json   {# Theme settings UI #}
-│   └── settings_data.json     {# Default values #}
+├── config/ {# Configuration #}
+│ ├── settings_schema.json {# Theme settings UI #}
+│ └── settings_data.json {# Default values #}
 │
-├── layout/                     {# Master templates #}
-│   ├── theme.liquid           {# Main wrapper #}
-│   ├── password.liquid        {# Password protection #}
-│   └── checkout.liquid        {# Checkout (Plus only) (deprecated - use Checkout Extensibility) #}
+├── layout/ {# Master templates #}
+│ ├── theme.liquid {# Main wrapper #}
+│ ├── password.liquid {# Password protection #}
+│ └── checkout.liquid {# Checkout (Plus only) (deprecated - use Checkout Extensibility) #}
 │
-├── locales/                    {# Translations #}
-│   ├── en.default.json        {# English #}
-│   └── fr.json                {# French #}
+├── locales/ {# Translations #}
+│ ├── en.default.json {# English #}
+│ └── fr.json {# French #}
 │
-├── sections/                   {# Reusable sections #}
-│   ├── header.liquid
-│   ├── hero-banner.liquid
-│   ├── product-card.liquid
-│   └── footer.liquid
+├── sections/ {# Reusable sections #}
+│ ├── header.liquid
+│ ├── hero-banner.liquid
+│ ├── product-card.liquid
+│ └── footer.liquid
 │
-├── snippets/                   {# Reusable partials #}
-│   ├── product-price.liquid
-│   ├── product-rating.liquid
-│   └── icon.liquid
+├── snippets/ {# Reusable partials #}
+│ ├── product-price.liquid
+│ ├── product-rating.liquid
+│ └── icon.liquid
 │
-└── templates/                  {# Page templates #}
-    ├── index.json              {# Homepage (JSON) #}
-    ├── product.json            {# Product page (JSON) #}
-    ├── collection.json         {# Collection page (JSON) #}
-    ├── product.liquid          {# Product (Liquid - legacy) #}
-    ├── cart.liquid
-    ├── search.liquid
-    ├── page.liquid
-    ├── 404.liquid
-    └── customers/
-        ├── account.liquid
-        ├── login.liquid
-        └── register.liquid
-```
+└── templates/ {# Page templates #}
+├── index.json {# Homepage (JSON) #}
+├── product.json {# Product page (JSON) #}
+├── collection.json {# Collection page (JSON) #}
+├── product.liquid {# Product (Liquid - legacy) #}
+├── cart.liquid
+├── search.liquid
+├── page.liquid
+├── 404.liquid
+└── customers/
+├── account.liquid
+├── login.liquid
+└── register.liquid
 
-**Horizon theme:** Shopify's newest reference theme (2025) - uses container queries, View Transitions API, and CSS custom properties. Replaces Dawn as the recommended starting point for new themes.
+````
 
-### 2. JSON Templates (Online Store 2.0)
+**Tema Horizon:** o mais novo tema de referência da Shopify (2025) - usa consultas de contêiner, API View Transitions e propriedades personalizadas CSS. Substitui Dawn como ponto de partida recomendado para novos temas.
 
-Modern template format using JSON configuration:
+### 2. Modelos JSON (Loja Online 2.0)
 
-**templates/index.json (Homepage):**
+Formato de modelo moderno usando configuração JSON:
+
+**templates/index.json (página inicial):**
+
 ```json
 {
   "sections": {
@@ -101,9 +101,10 @@ Modern template format using JSON configuration:
   },
   "order": ["hero", "featured"]
 }
-```
+````
 
-**templates/product.json:**
+**modelos/produto.json:**
+
 ```json
 {
   "sections": {
@@ -127,11 +128,12 @@ Modern template format using JSON configuration:
 }
 ```
 
-### 3. Section Architecture
+### 3. Arquitetura da Seção
 
-Sections are reusable content blocks with schema configuration:
+As seções são blocos de conteúdo reutilizáveis com configuração de esquema:
 
-**sections/hero-banner.liquid:**
+**seções/hero-banner.liquid:**
+
 ```liquid
 <div class="hero" style="background-color: {{ section.settings.background_color }}">
   {% if section.settings.image %}
@@ -237,11 +239,12 @@ Sections are reusable content blocks with schema configuration:
 {% endschema %}
 ```
 
-### 4. Sections with Blocks
+### 4. Seções com Blocos
 
-Sections can contain dynamic blocks for flexible layouts:
+As seções podem conter blocos dinâmicos para layouts flexíveis:
 
-**sections/featured-products.liquid:**
+**seções/produtos em destaque.líquido:**
+
 ```liquid
 <div class="featured-products" {{ section.shopify_attributes }}>
   <h2>{{ section.settings.title }}</h2>
@@ -371,11 +374,12 @@ Sections can contain dynamic blocks for flexible layouts:
 {% endschema %}
 ```
 
-### 5. Snippets
+### 5. Trechos
 
-Reusable template partials:
+Parciais de modelo reutilizáveis:
 
 **snippets/product-card.liquid:**
+
 ```liquid
 {% comment %}
   Usage: {% render 'product-card', product: product, show_vendor: true %}
@@ -414,7 +418,8 @@ Reusable template partials:
 </div>
 ```
 
-**snippets/product-price.liquid:**
+**snippets/preço do produto.líquido:**
+
 ```liquid
 {% comment %}
   Usage: {% render 'product-price', product: product %}
@@ -441,11 +446,12 @@ Reusable template partials:
 {% endif %}
 ```
 
-### 6. Settings Schema
+### 6. Esquema de configurações
 
-Complete theme customisation interface:
+Interface completa de personalização do tema:
 
 **config/settings_schema.json:**
+
 ```json
 [
   {
@@ -590,11 +596,12 @@ Complete theme customisation interface:
 ]
 ```
 
-### 7. Layout Files
+### 7. Arquivos de layout
 
-Master template wrappers:
+Wrappers de modelo mestre:
 
-**layout/theme.liquid:**
+**layout/tema.liquid:**
+
 ```liquid
 <!doctype html>
 <html lang="{{ request.locale.iso_code }}">
@@ -626,32 +633,28 @@ Master template wrappers:
 </html>
 ```
 
-## Settings Schema Input Types
+## Tipos de entrada do esquema de configurações
 
-All 28+ input types for theme customisation in `settings_schema.json` and section schemas.
+Todos os mais de 28 tipos de entrada para personalização de tema em `settings_schema.json` e esquemas de seção.
 
-### Text Inputs
+### Entradas de texto
 
-#### text
+#### texto
 
-Single-line text input:
-
-```json
+Entrada de texto de linha única:```json
 {
-  "type": "text",
-  "id": "store_name",
-  "label": "Store Name",
-  "default": "My Store",
-  "placeholder": "Enter store name",
-  "info": "This appears in the header"
+"type": "text",
+"id": "store_name",
+"label": "Store Name",
+"default": "My Store",
+"placeholder": "Enter store name",
+"info": "This appears in the header"
 }
-```
 
-#### textarea
+````
+#### área de texto
 
-Multi-line text input:
-
-```json
+Entrada de texto multilinha:```json
 {
   "type": "textarea",
   "id": "footer_text",
@@ -659,59 +662,51 @@ Multi-line text input:
   "default": "© 2025 My Store. All rights reserved.",
   "placeholder": "Enter footer text"
 }
-```
+````
 
-#### html
+####html
 
-HTML code editor:
-
-```json
+Editor de código HTML:```json
 {
-  "type": "html",
-  "id": "custom_html",
-  "label": "Custom HTML",
-  "default": "<p>Welcome to our store!</p>",
-  "info": "Add custom HTML code"
+"type": "html",
+"id": "custom_html",
+"label": "Custom HTML",
+"default": "<p>Welcome to our store!</p>",
+"info": "Add custom HTML code"
 }
-```
 
+````
 #### richtext
 
-WYSIWYG rich text editor:
-
-```json
+Editor de rich text WYSIWYG:```json
 {
   "type": "richtext",
   "id": "announcement_content",
   "label": "Announcement Bar Content",
   "default": "<p>Free shipping on orders over $50!</p>"
 }
-```
+````
 
-### Numeric Inputs
+### Entradas Numéricas
 
-#### number
+#### número
 
-Numeric input field:
-
-```json
+Campo de entrada numérico:```json
 {
-  "type": "number",
-  "id": "products_per_page",
-  "label": "Products Per Page",
-  "default": 12,
-  "min": 1,
-  "max": 100,
-  "step": 1,
-  "info": "Number of products to show per page"
+"type": "number",
+"id": "products_per_page",
+"label": "Products Per Page",
+"default": 12,
+"min": 1,
+"max": 100,
+"step": 1,
+"info": "Number of products to show per page"
 }
-```
 
-#### range
+````
+#### intervalo
 
-Slider input:
-
-```json
+Entrada do controle deslizante:```json
 {
   "type": "range",
   "id": "columns",
@@ -723,79 +718,72 @@ Slider input:
   "unit": "columns",
   "info": "Adjust the grid layout"
 }
-```
+````
 
-**Common units:**
+**Unidades comuns:**
+
 - `px` - Pixels
-- `%` - Percentage
-- `em` - Em units
-- `rem` - Root em units
-- Custom text (like "columns", "items")
+- `%` - Porcentagem
+- `em` - unidades Em
+- `rem` - Raiz em unidades
+- Texto personalizado (como "colunas", "itens")
 
-### Boolean Inputs
+### Entradas Booleanas
 
-#### checkbox
+#### caixa de seleção
 
-Toggle checkbox:
-
-```json
+Alternar caixa de seleção:```json
 {
-  "type": "checkbox",
-  "id": "show_search",
-  "label": "Show Search Bar",
-  "default": true,
-  "info": "Display search in header"
+"type": "checkbox",
+"id": "show_search",
+"label": "Show Search Bar",
+"default": true,
+"info": "Display search in header"
 }
-```
 
-#### boolean
+````
+#### booleano
 
-Boolean setting (same as checkbox):
-
-```json
+Configuração booleana (igual à caixa de seleção):```json
 {
   "type": "boolean",
   "id": "enable_feature",
   "label": "Enable Feature",
   "default": false
 }
-```
+````
 
-### Selection Inputs
+### Entradas de seleção
 
-#### select
+#### selecione
 
-Dropdown menu:
-
-```json
+Menu suspenso:```json
 {
-  "type": "select",
-  "id": "layout_style",
-  "label": "Layout Style",
-  "options": [
-    {
-      "value": "boxed",
-      "label": "Boxed"
-    },
-    {
-      "value": "full-width",
-      "label": "Full Width"
-    },
-    {
-      "value": "wide",
-      "label": "Wide"
-    }
-  ],
-  "default": "full-width",
-  "info": "Choose your layout style"
+"type": "select",
+"id": "layout_style",
+"label": "Layout Style",
+"options": [
+{
+"value": "boxed",
+"label": "Boxed"
+},
+{
+"value": "full-width",
+"label": "Full Width"
+},
+{
+"value": "wide",
+"label": "Wide"
 }
-```
+],
+"default": "full-width",
+"info": "Choose your layout style"
+}
 
-#### radio
+````
+#### rádio
 
-Radio button selection:
-
-```json
+Seleção do botão de opção:```json
 {
   "type": "radio",
   "id": "text_alignment",
@@ -807,61 +795,54 @@ Radio button selection:
   ],
   "default": "center"
 }
-```
+````
 
-### Colour Inputs
+### Entradas de cores
 
-#### color
+#### cor
 
-Colour picker:
-
-```json
+Seletor de cores:```json
 {
-  "type": "color",
-  "id": "primary_color",
-  "label": "Primary Colour",
-  "default": "#000000",
-  "info": "Main brand colour"
+"type": "color",
+"id": "primary_color",
+"label": "Primary Colour",
+"default": "#000000",
+"info": "Main brand colour"
 }
-```
 
-#### color_background
+````
+#### cor_fundo
 
-Colour with gradient support:
-
-```json
+Cor com suporte gradiente:```json
 {
   "type": "color_background",
   "id": "section_background",
   "label": "Section Background",
   "default": "linear-gradient(#ffffff, #000000)"
 }
-```
+````
 
-**Supports:**
-- Solid colours: `#ffffff`
-- Linear gradients: `linear-gradient(#fff, #000)`
-- Radial gradients
-- With opacity
+**Suporta:**
 
-### Media Inputs
+- Cores sólidas: `#ffffff`
+- Gradientes lineares: `gradiente linear(#fff, #000)`
+- Gradientes radiais
+- Com opacidade
 
-#### image_picker
+### Entradas de mídia
 
-Image upload and selection:
+#### selecionador de imagem
 
-```json
+Upload e seleção de imagens:```json
 {
-  "type": "image_picker",
-  "id": "logo",
-  "label": "Logo Image",
-  "info": "Recommended size: 300x100px"
+"type": "image_picker",
+"id": "logo",
+"label": "Logo Image",
+"info": "Recommended size: 300x100px"
 }
-```
 
-Access in Liquid:
-
-```liquid
+````
+Acesso em Líquido:```liquid
 {% if settings.logo %}
   <img src="{{ settings.logo | img_url: '300x' }}" alt="{{ shop.name }}">
 {% endif %}
@@ -870,27 +851,23 @@ Access in Liquid:
 {{ settings.logo.height }}
 {{ settings.logo.alt }}
 {{ settings.logo.src }}
-```
+````
 
-#### media
+#### mídia
 
-Image or video picker:
-
-```json
+Seletor de imagem ou vídeo:```json
 {
-  "type": "media",
-  "id": "hero_media",
-  "label": "Hero Media",
-  "accept": ["image", "video"],
-  "info": "Upload image or video"
+"type": "media",
+"id": "hero_media",
+"label": "Hero Media",
+"accept": ["image", "video"],
+"info": "Upload image or video"
 }
-```
 
+````
 #### video_url
 
-Video URL input (YouTube, Vimeo):
-
-```json
+Entrada de URL de vídeo (YouTube, Vimeo):```json
 {
   "type": "video_url",
   "id": "promo_video",
@@ -899,24 +876,20 @@ Video URL input (YouTube, Vimeo):
   "placeholder": "https://www.youtube.com/watch?v=...",
   "info": "YouTube or Vimeo URL"
 }
-```
+````
 
-Access in Liquid:
-
-```liquid
+Acesso em Líquido:```liquid
 {% if settings.promo_video %}
-  {{ settings.promo_video.type }}  {# youtube or vimeo #}
-  {{ settings.promo_video.id }}    {# Video ID #}
+{{ settings.promo_video.type }} {# youtube or vimeo #}
+{{ settings.promo_video.id }} {# Video ID #}
 {% endif %}
-```
 
-### Typography Inputs
+````
+### Entradas de tipografia
 
 #### font_picker
 
-Google Fonts selector:
-
-```json
+Seletor de fontes do Google:```json
 {
   "type": "font_picker",
   "id": "heading_font",
@@ -924,21 +897,21 @@ Google Fonts selector:
   "default": "helvetica_n7",
   "info": "Font for headings"
 }
-```
+````
 
-**Font format:** `family_weight`
-- `n4` - Normal 400
-- `n7` - Bold 700
-- `i4` - Italic 400
+**Formato da fonte:** `family_weight`
 
-Access in Liquid:
+- `n4` -Normal 400
+- `n7` - Negrito 700
+- `i4` - Itálico 400
 
-```liquid
+Acesso em Líquido:```liquid
 {{ settings.heading_font.family }}
 {{ settings.heading_font.weight }}
 {{ settings.heading_font.style }}
 
 {# CSS font face #}
+
 <style>
   {{ settings.heading_font | font_face }}
 
@@ -948,128 +921,106 @@ Access in Liquid:
     font-style: {{ settings.heading_font.style }};
   }
 </style>
-```
 
-### Resource Pickers
+````
+### Seletores de recursos
 
-#### product
+#### produto
 
-Product selector:
-
-```json
+Seletor de produtos:```json
 {
   "type": "product",
   "id": "featured_product",
   "label": "Featured Product",
   "info": "Select a product to feature"
 }
-```
+````
 
-Access in Liquid:
-
-```liquid
+Acesso em Líquido:```liquid
 {% assign product = all_products[settings.featured_product] %}
 {{ product.title }}
 {{ product.price | money }}
-```
 
-#### collection
+````
+#### coleção
 
-Collection selector:
-
-```json
+Seletor de coleção:```json
 {
   "type": "collection",
   "id": "featured_collection",
   "label": "Featured Collection",
   "info": "Select a collection to feature"
 }
-```
+````
 
-Access in Liquid:
-
-```liquid
+Acesso em Líquido:```liquid
 {% assign collection = collections[settings.featured_collection] %}
 {{ collection.title }}
 {% for product in collection.products limit: 4 %}
-  {{ product.title }}
+{{ product.title }}
 {% endfor %}
-```
 
-#### page
+````
+#### página
 
-Page selector:
-
-```json
+Seletor de página:```json
 {
   "type": "page",
   "id": "about_page",
   "label": "About Page",
   "info": "Link to about page"
 }
-```
+````
 
-Access in Liquid:
-
-```liquid
+Acesso em Líquido:```liquid
 {% assign page = pages[settings.about_page] %}
 <a href="{{ page.url }}">{{ page.title }}</a>
 {{ page.content }}
-```
 
-#### blog
+````
+####blog
 
-Blog selector:
-
-```json
+Seletor de blogs:```json
 {
   "type": "blog",
   "id": "main_blog",
   "label": "Main Blog",
   "info": "Select your primary blog"
 }
-```
+````
 
-Access in Liquid:
-
-```liquid
+Acesso em Líquido:```liquid
 {% assign blog = blogs[settings.main_blog] %}
 {{ blog.title }}
 {% for article in blog.articles limit: 3 %}
-  {{ article.title }}
+{{ article.title }}
 {% endfor %}
-```
 
-#### article
+````
+#### artigo
 
-Article (blog post) selector:
-
-```json
+Seletor de artigo (postagem no blog):```json
 {
   "type": "article",
   "id": "featured_article",
   "label": "Featured Article",
   "info": "Select an article to feature"
 }
-```
+````
 
 #### link_list
 
-Menu/navigation selector:
-
-```json
+Seletor de menu/navegação:```json
 {
-  "type": "link_list",
-  "id": "main_menu",
-  "label": "Main Navigation",
-  "default": "main-menu",
-  "info": "Select menu for header"
+"type": "link_list",
+"id": "main_menu",
+"label": "Main Navigation",
+"default": "main-menu",
+"info": "Select menu for header"
 }
-```
 
-Access in Liquid:
-
-```liquid
+````
+Acesso em Líquido:```liquid
 {% assign menu = linklists[settings.main_menu] %}
 {% for link in menu.links %}
   <a href="{{ link.url }}">{{ link.title }}</a>
@@ -1081,119 +1032,110 @@ Access in Liquid:
     {% endfor %}
   {% endif %}
 {% endfor %}
-```
+````
 
-### URL Inputs
+### Entradas de URL
 
-#### url
+####url
 
-URL input field:
-
-```json
+Campo de entrada de URL:```json
 {
-  "type": "url",
-  "id": "twitter_url",
-  "label": "Twitter URL",
-  "placeholder": "https://twitter.com/username",
-  "info": "Your Twitter profile URL"
+"type": "url",
+"id": "twitter_url",
+"label": "Twitter URL",
+"placeholder": "https://twitter.com/username",
+"info": "Your Twitter profile URL"
 }
-```
 
-### Date & Time Inputs
+````
+### Entradas de data e hora
 
-#### date
+#### data
 
-Date picker:
-
-```json
+Seletor de data:```json
 {
   "type": "date",
   "id": "sale_end_date",
   "label": "Sale End Date",
   "info": "When the sale ends"
 }
-```
+````
 
-Access in Liquid:
-
-```liquid
+Acesso em Líquido:```liquid
 {{ settings.sale_end_date | date: '%B %d, %Y' }}
-```
 
-### Organisation Elements
+````
+### Elementos da organização
 
-#### header
+#### cabeçalho
 
-Visual separator with heading:
-
-```json
+Separador visual com título:```json
 {
   "type": "header",
   "content": "Colour Scheme Settings",
   "info": "Configure your colour palette"
 }
-```
+````
 
-Not a setting, just a visual divider in the settings panel.
+Não é uma configuração, apenas uma divisória visual no painel de configurações.
 
-#### paragraph
+#### parágrafo
 
-Informational text block:
-
-```json
+Bloco de texto informativo:```json
 {
-  "type": "paragraph",
-  "content": "These settings control the appearance of your product cards. Make sure to preview changes on different screen sizes."
+"type": "paragraph",
+"content": "These settings control the appearance of your product cards. Make sure to preview changes on different screen sizes."
 }
-```
 
-### Advanced Inputs
+````
+### Entradas Avançadas
 
-#### liquid
+#### líquido
 
-Liquid code editor:
-
-```json
+Editor de código líquido:```json
 {
   "type": "liquid",
   "id": "custom_liquid",
   "label": "Custom Liquid Code",
   "info": "Add custom Liquid code"
 }
-```
+````
 
 #### inline_richtext
 
-Inline rich text (no `<p>` wrapper):
-
-```json
+Rich text embutido (sem wrapper `<p>`):```json
 {
-  "type": "inline_richtext",
-  "id": "banner_text",
-  "label": "Banner Text",
-  "default": "Welcome to <strong>our store</strong>!",
-  "info": "Text without paragraph wrapper"
+"type": "inline_richtext",
+"id": "banner_text",
+"label": "Banner Text",
+"default": "Welcome to <strong>our store</strong>!",
+"info": "Text without paragraph wrapper"
 }
+
 ```
+## Melhores práticas
 
-## Best Practices
+1. **Use modelos JSON** para compatibilidade com a Loja Online 2.0
+2. **Torne as seções dinâmicas** com blocos para flexibilidade do comerciante
+3. **Adicione `shopify_attributes`** aos contêineres de seção/bloco para o editor de tema
+4. **Forneça padrões sensatos** nas configurações do esquema
+5. **Use snippets** para componentes de IU repetidos
+6. **Adicione blocos `{% stylesheet %}` e `{% javascript %}`** nas seções para estilos com escopo definido
+7. **Incluir atributos de acessibilidade** (rótulos ARIA, alt
 
-1. **Use JSON templates** for Online Store 2.0 compatibility
-2. **Make sections dynamic** with blocks for merchant flexibility
-3. **Add `shopify_attributes`** to section/block containers for theme editor
-4. **Provide sensible defaults** in schema settings
-5. **Use snippets** for repeated UI components
-6. **Add `{% stylesheet %}` and `{% javascript %}`** blocks in sections for scoped styles
-7. **Include accessibility** attributes (ARIA labels, alt text)
-8. **Test in theme editor** to ensure live preview works
-9. **Document snippet parameters** with comments
-10. **Use semantic HTML** for better SEO
-11. **Group related settings** into logical sections
-12. **Provide clear labels and info text** for guidance
-13. **Use appropriate input types** for each setting
-14. **Add placeholder text** for URL and text inputs
-15. **Use headers and paragraphs** to organise complex sections
-16. **Limit range values** to reasonable min/max
-17. **Test in theme customiser** to ensure good UX
-18. **Document dependencies** between settings
-19. **Consider mobile experience** when choosing input types
+texto)
+8. **Teste no editor de temas** para garantir que a visualização ao vivo funcione
+9. **Parâmetros do snippet do documento** com comentários
+10. **Use HTML semântico** para melhorar o SEO
+11. **Configurações relacionadas ao grupo** em seções lógicas
+12. **Forneça rótulos claros e texto informativo** para orientação
+13. **Use tipos de entrada apropriados** para cada configuração
+14. **Adicione texto de espaço reservado** para URL e entradas de texto
+15. **Use cabeçalhos e parágrafos** para organizar seções complexas
+16. **Intervalo limite
+
+valores ** para mín/máx razoável
+17. **Teste no personalizador de tema** para garantir uma boa experiência do usuário
+18. **Documente dependências** entre configurações
+19. **Considere a experiência móvel** ao escolher os tipos de entrada
+```

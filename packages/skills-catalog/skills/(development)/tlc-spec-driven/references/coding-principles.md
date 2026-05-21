@@ -1,56 +1,56 @@
-# Coding Principles
+# Princípios de codificação
 
-Behavioral bias, not checklist. Read before every implementation.
-
----
-
-## Before Coding
-
-- State assumptions explicitly. If uncertain, ask.
-- Multiple interpretations exist? Present all—don't pick silently.
-- Simpler approach exists? Say so. Push back when warranted.
-- Something unclear? Stop. Name what's confusing. Ask.
-- User's approach seems wrong? Disagree honestly. Don't be sycophantic.
+Viés comportamental, não lista de verificação. Leia antes de cada implementação.
 
 ---
 
-## During Implementation
+## Antes da codificação
 
-### Simplicity
-
-- No features beyond what was asked
-- No abstractions for single-use code
-- No "flexibility" or "configurability" not requested
-- No error handling for impossible scenarios
-- 200 lines that could be 50? Rewrite it.
-
-### Surgical Changes
-
-- Don't "improve" adjacent code, comments, or formatting
-- Don't refactor things that aren't broken
-- Match existing style, even if you'd do differently
-- Unrelated dead code noticed? Mention it—don't delete it
-- Remove ONLY imports/variables/functions YOUR changes orphaned
-- Don't remove pre-existing dead code unless asked
-
-### Test Integrity
-
-- NEVER weaken an existing test assertion to make it pass
-- NEVER delete a test to reduce failure count
-- NEVER use the test framework's skip/disable/pending mechanism to bypass a failing test
-- NEVER modify tests written in the RED phase during GREEN phase
-- If a test is genuinely wrong, STOP and confirm with the user before changing it
-- Tests are the spec — implementation conforms to tests, not the other way around
-
-### Goal-Driven
-
-- Transform vague tasks into verifiable goals
-- Multi-step work? State brief plan with verify checkpoints
-- Every changed line must trace directly to user's request
+- Declare explicitamente as suposições. Se não tiver certeza, pergunte.
+- Existem múltiplas interpretações? Apresente tudo - não escolha silenciosamente.
+- Existe uma abordagem mais simples? Diga isso. Empurre para trás quando necessário.
+- Algo não está claro? Parar. Nomeie o que é confuso. Perguntar.
+- A abordagem do usuário parece errada? Discordo honestamente. Não seja bajulador.
 
 ---
 
-## After Each Change
+## Durante a implementação
 
-Ask: "Would senior engineer call this overcomplicated?"
-If yes → simplify before proceeding.
+### Simplicidade
+
+- Nenhum recurso além do que foi solicitado
+- Sem abstrações para código de uso único
+- Nenhuma "flexibilidade" ou "configuração" não solicitada
+- Sem tratamento de erros para cenários impossíveis
+- 200 linhas que poderiam ser 50? Reescreva.
+
+### Alterações Cirúrgicas
+
+- Não "melhore" código, comentários ou formatação adjacentes
+- Não refatore coisas que não estão quebradas
+- Combine o estilo existente, mesmo se você fizesse diferente
+- Código morto não relacionado notado? Mencione isso - não exclua
+- Remova SOMENTE importações/variáveis/funções SUAS alterações órfãs
+- Não remova código morto pré-existente, a menos que solicitado
+
+### Teste de integridade
+
+- NUNCA enfraqueça uma afirmação de teste existente para fazê-la passar
+- NUNCA exclua um teste para reduzir a contagem de falhas
+- NUNCA use o mecanismo de ignorar/desativar/pendente da estrutura de teste para ignorar um teste com falha
+- NUNCA modifique testes escritos na fase VERMELHA durante a fase VERDE
+- Se um teste estiver genuinamente errado, PARE e confirme com o usuário antes de alterá-lo
+- Os testes são as especificações - a implementação está em conformidade com os testes, e não o contrário
+
+### Orientado por metas
+
+- Transforme tarefas vagas em metas verificáveis
+- Trabalho em várias etapas? Apresentar um breve plano com pontos de verificação de verificação
+- Cada linha alterada deve ser rastreada diretamente para a solicitação do usuário
+
+---
+
+## Após cada alteração
+
+Pergunte: "O engenheiro sênior consideraria isso complicado demais?"
+Se sim → simplifique antes de prosseguir.

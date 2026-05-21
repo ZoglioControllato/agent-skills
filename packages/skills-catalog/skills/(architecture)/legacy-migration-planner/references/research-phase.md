@@ -1,85 +1,85 @@
-# Research Phase — Detailed Methodology
+# Fase de Pesquisa — Metodologia Detalhada
 
-This reference contains the step-by-step process for the RESEARCH phase. Every finding must cite `file:line` from the user's codebase or a verified external URL. If you cannot verify something, do not include it — ask the user instead.
+Esta referência contém o processo passo a passo para a fase de PESQUISA. Cada descoberta deve citar `file:line` da base de código do usuário ou de uma URL externa verificada. Se você não puder verificar algo, não inclua – pergunte ao usuário.
 
-## Step 1: Codebase Deep Analysis
+## Etapa 1: análise profunda da base de código
 
-### 1.1 — Project Structure Scan
+### 1.1 — Verificação da estrutura do projeto
 
-Read the root directory and map the top-level structure. Identify:
+Leia o diretório raiz e mapeie a estrutura de nível superior. Identificar:
 
-- **Entry points** — `main.ts`, `index.ts`, `app.py`, `manage.py`, `server.go`, etc. Cite each as `file:line`.
-- **Configuration files** — `package.json`, `requirements.txt`, `pyproject.toml`, `go.mod`, `Cargo.toml`, `pom.xml`, `docker-compose.yml`, `Makefile`, etc. These reveal the stack, versions, and scripts.
-- **Build and deploy config** — `Dockerfile`, CI/CD pipelines (`.github/workflows/`, `Jenkinsfile`, `.gitlab-ci.yml`), infrastructure as code (`terraform/`, `cdk/`, `cloudformation/`).
-- **Monorepo indicators** — `nx.json`, `lerna.json`, `turbo.json`, `pnpm-workspace.yaml`, workspace definitions in `package.json`.
+- **Pontos de entrada** — `main.ts`, `index.ts`, `app.py`, `manage.py`, `server.go`, etc. Cite cada um como `file:line`.
+- **Arquivos de configuração** — `package.json`, `requirements.txt`, `pyproject.toml`, `go.mod`, `Cargo.toml`, `pom.xml`, `docker-compose.yml`, `Makefile`, etc. Eles revelam a pilha, versões e scripts.
+- **Construir e implantar configuração** — `Dockerfile`, pipelines CI/CD (`.github/workflows/`, `Jenkinsfile`, `.gitlab-ci.yml`), infraestrutura como
 
-### 1.2 — Dependency Inventory
+código (`terraform/`, `cdk/`, `cloudformation/`).
 
-For each dependency file found:
+- **Indicadores Monorepo** — `nx.json`, `lerna.json`, `turbo.json`, `pnpm-workspace.yaml`, definições de espaço de trabalho em `package.json`.
 
-1. Read the file completely.
-2. List every dependency with its **pinned or range version**.
-3. Use web search to check: is this dependency still maintained? What is the latest version? Are there known security vulnerabilities?
-4. Flag deprecated, unmaintained, or end-of-life dependencies.
+### 1.2 — Inventário de Dependências
 
-Output format for `dependency-map.md`:
+Para cada arquivo de dependência encontrado:
 
-```markdown
+1. Leia o arquivo completamente.
+2. Liste cada dependência com sua **versão fixada ou de intervalo**.
+3. Use a pesquisa na web para verificar: esta dependência ainda é mantida? Qual é a versão mais recente? Existem vulnerabilidades de segurança conhecidas?
+4. Sinalize dependências obsoletas, não mantidas ou em fim de vida.
+
+Formato de saída para `dependency-map.md`:```markdown
+
 ## Dependencies — {file:line ref to dependency file}
 
-| Dependency | Current Version | Latest Version | Status | Notes |
-|------------|----------------|----------------|--------|-------|
-| express    | 4.17.1         | 4.21.2         | Active | Minor upgrade needed |
-| moment     | 2.29.1         | 2.30.1         | Deprecated | Replace with dayjs/date-fns |
-```
+| Dependency | Current Version | Latest Version | Status     | Notes                       |
+| ---------- | --------------- | -------------- | ---------- | --------------------------- |
+| express    | 4.17.1          | 4.21.2         | Active     | Minor upgrade needed        |
+| moment     | 2.29.1          | 2.30.1         | Deprecated | Replace with dayjs/date-fns |
 
-### 1.3 — Module Responsibility Mapping
+````
+### 1.3 — Mapeamento de responsabilidades do módulo
 
-For each directory/module in the codebase:
+Para cada diretório/módulo na base de código:
 
-1. Read the main files (entry point, index, barrel exports).
-2. Identify the module's **single responsibility** in one sentence.
-3. List its **internal imports** (which other modules does it depend on?).
-4. List its **exports** (what does it expose to other modules?).
-5. Identify **external service calls** (HTTP clients, database queries, message queues, gRPC, etc.).
+1. Leia os principais arquivos (ponto de entrada, índice, exportações de barril).
+2. Identifique a **responsabilidade única** do módulo em uma frase.
+3. Liste suas **importações internas** (de quais outros módulos ela depende?).
+4. Liste suas **exportações** (o que ele expõe a outros módulos?).
+5. Identifique **chamadas de serviço externo** (clientes HTTP, consultas de banco de dados, filas de mensagens, gRPC, etc.).
 
-Do NOT summarize or paraphrase code. Reference it: "Module `src/orders/` (see `src/orders/index.ts:1-45`) handles order creation and delegates payment to `src/payments/` (import at `src/orders/service.ts:3`)."
+NÃO resuma ou parafraseie o código. Faça referência a ele: "O módulo `src/orders/` (consulte `src/orders/index.ts:1-45`) lida com a criação de pedidos e delega o pagamento para `src/payments/` (importação em `src/orders/service.ts:3`)."
 
-### 1.4 — Database and Data Layer Analysis
+### 1.4 — Análise de banco de dados e camada de dados
 
-Identify all data persistence:
+Identifique toda a persistência de dados:
 
-- **Database connections** — Connection strings, ORM configurations, migration files.
-- **Schema definitions** — Models, entities, migration files. Map every table/collection and its relationships.
-- **Shared databases** — Multiple modules accessing the same tables is a critical coupling point. Flag every instance with `file:line`.
-- **Data flow** — Where is data written? Where is it read? Are there read replicas, caches, or derived stores?
+- **Conexões de banco de dados** — Strings de conexão, configurações ORM, arquivos de migração.
+- **Definições de esquema** — Modelos, entidades, arquivos de migração. Mapeie cada tabela/coleção e seus relacionamentos.
+- **Bancos de dados compartilhados** — Vários módulos acessando as mesmas tabelas são um ponto de acoplamento crítico. Sinalize cada instância com `file:line`.
+- **Fluxo de dados** — Onde os dados são gravados? Onde é lido? Existem réplicas de leitura, caches ou armazenamentos derivados?
 
-## Step 2: Domain / Bounded Context Mapping
+## Etapa 2: Mapeamento de domínio/contexto limitado
 
-Load `references/assessment-framework.md` for the scoring methodology.
+Carregue `references/assessment-framework.md` para a metodologia de pontuação.
 
-### 2.1 — Candidate Identification
+### 2.1 — Identificação do Candidato
 
-Based on the module mapping from Step 1, group modules into candidate bounded contexts. A bounded context is a group of modules that:
+Com base no mapeamento do módulo da Etapa 1, agrupe os módulos em contextos limitados candidatos. Um contexto limitado é um grupo de módulos que:
 
-- Share a common business domain (e.g., "Orders", "Payments", "User Management")
-- Have high internal cohesion (many imports between themselves)
-- Have low external coupling (few imports from other groups)
+- Compartilhe um domínio comercial comum (por exemplo, "Pedidos", "Pagamentos", "Gerenciamento de usuários")
+- Têm elevada coesão interna (muitas importações entre si)
+- Possuem baixo acoplamento externo (poucas importações de outros grupos)
 
-### 2.2 — Coupling Analysis
+### 2.2 — Análise de Acoplamento
 
-For each candidate domain, calculate:
+Para cada domínio candidato, calcule:
 
-- **Internal dependencies** — Number of imports between modules within this domain.
-- **External dependencies** — Number of imports from modules outside this domain.
-- **Shared database tables** — Tables accessed by this domain AND other domains.
-- **Coupling ratio** — `external_deps / (internal_deps + external_deps)`. Lower is better. Above 0.5 means the domain boundary is wrong.
+- **Dependências internas** — Número de importações entre módulos dentro deste domínio.
+- **Dependências externas** — Número de importações de módulos fora deste domínio.
+- **Tabelas de banco de dados compartilhadas** — Tabelas acessadas por este domínio E por outros domínios.
+- **Taxa de acoplamento** — `external_deps / (internal_deps + external_deps)`. Menor é melhor. Acima de 0,5 significa que o limite do domínio está errado.
 
-### 2.3 — Domain Candidate Report
+### 2.3 — Relatório de candidato a domínio
 
-Output format for `domain-candidates.md`:
-
-```markdown
+Formato de saída para `domain-candidates.md`:```markdown
 ## Domain: {Name}
 
 **Modules**: `src/orders/`, `src/order-items/`, `src/order-history/`
@@ -89,73 +89,70 @@ Output format for `domain-candidates.md`:
 **Shared tables**: `orders`, `order_items` (also accessed by `src/reports/` at `src/reports/monthly.ts:45`)
 **Coupling ratio**: 0.20 (good)
 **Migration complexity**: Medium — shared table access from reports needs facade.
-```
+````
 
-## Step 3: Stack Research
+## Etapa 3: pesquisa de pilha
 
-This step is MANDATORY. Never skip it. Never rely solely on training data.
+Esta etapa é OBRIGATÓRIA. Nunca pule isso. Nunca confie apenas em dados de treinamento.
 
-### 3.1 — Current Stack Research
+### 3.1 — Pesquisa de pilha atual
 
-For each technology identified in the dependency inventory:
+Para cada tecnologia identificada no inventário de dependências:
 
-1. **Web search** the technology name + "documentation" + current year.
-2. **Context7** (if available): resolve the library ID and query for migration guides, deprecation notices, and upgrade paths.
-3. Document: current version in use, latest stable version, LTS status, end-of-life dates, known migration paths.
+1. **Pesquisa na Web** o nome da tecnologia + "documentação" + ano atual.
+2. **Context7** (se disponível): resolva o ID da biblioteca e consulte guias de migração, avisos de suspensão de uso e caminhos de atualização.
+3. Documento: versão atual em uso, versão estável mais recente, status do LTS, datas de fim de vida útil, caminhos de migração conhecidos.
 
-### 3.2 — Target Stack Research (if applicable)
+### 3.2 — Target Stack Research (se aplicável)
 
-If the migration involves a new stack (e.g., Python to NestJS, jQuery to React):
+Se a migração envolver uma nova pilha (por exemplo, Python para NestJS, jQuery para React):
 
-1. **Web search** for official migration guides between the two stacks.
-2. **Context7**: query the target framework's documentation for getting started, architectural patterns, and best practices.
-3. **Web search** for community migration experiences (blog posts, conference talks, case studies).
-4. Document: target stack version recommendation (with justification), architectural differences, feature parity gaps, and learning curve considerations.
+1. **Pesquisa na Web** para guias oficiais de migração entre as duas pilhas.
+2. **Context7**: consulte a documentação da estrutura de destino para obter informações básicas, padrões de arquitetura e práticas recomendadas.
+3. **Pesquisa na Web** sobre experiências de migração comunitária (postagens em blogs, palestras em conferências, estudos de caso).
+4. Documento: recomendação da versão da pilha alvo (com justificativa), diferenças arquitetônicas, lacunas de paridade de recursos e considerações sobre a curva de aprendizado.
 
-### 3.3 — Compatibility Matrix
+### 3.3 — Matriz de Compatibilidade
 
-Output format for `stack-research.md`:
+Formato de saída para `stack-research.md`:```markdown
 
-```markdown
 ## Current Stack
 
-| Technology | Version in Use | Latest Stable | EOL Date | Source |
-|------------|---------------|---------------|----------|--------|
-| Node.js    | 16.x          | 22.x LTS     | 2023-09  | [nodejs.org/releases](url) |
+| Technology | Version in Use | Latest Stable | EOL Date | Source                     |
+| ---------- | -------------- | ------------- | -------- | -------------------------- |
+| Node.js    | 16.x           | 22.x LTS      | 2023-09  | [nodejs.org/releases](url) |
 
 ## Target Stack (if applicable)
 
-| Technology | Recommended Version | Justification | Source |
-|------------|-------------------|---------------|--------|
-| NestJS     | 10.x             | Latest stable, TS-first | [docs.nestjs.com](url) |
+| Technology | Recommended Version | Justification           | Source                 |
+| ---------- | ------------------- | ----------------------- | ---------------------- |
+| NestJS     | 10.x                | Latest stable, TS-first | [docs.nestjs.com](url) |
 
 ## Migration Guides Found
 
 - [Official NestJS migration from Express](url) — covers middleware, guards, pipes
 - [Community: Django to NestJS lessons learned](url) — data layer considerations
-```
 
-## Step 4: Risk and Dependency Mapping
+````
+## Etapa 4: Mapeamento de riscos e dependências
 
-Load `references/assessment-framework.md` for the risk matrix methodology.
+Carregue `references/assessment-framework.md` para a metodologia da matriz de risco.
 
-### 4.1 — Integration Point Catalog
+### 4.1 — Catálogo de Pontos de Integração
 
-For every external integration (APIs, databases, message queues, third-party services):
+Para cada integração externa (APIs, bancos de dados, filas de mensagens, serviços de terceiros):
 
-1. Identify the integration point with `file:line`.
-2. Document: protocol, authentication method, data format, error handling.
-3. Assess: can this integration be wrapped in a facade? Is there a contract/schema?
+1. Identifique o ponto de integração com `file:line`.
+2. Documento: protocolo, método de autenticação, formato de dados, tratamento de erros.
+3. Avalie: essa integração pode ser envolta em uma fachada? Existe um contrato/esquema?
 
-### 4.2 — Circular Dependency Detection
+### 4.2 — Detecção de Dependência Circular
 
-Trace import chains looking for cycles: A imports B, B imports C, C imports A. Each cycle is a critical blocker for domain extraction. Document every cycle with the full import chain and `file:line` references.
+Rastreie cadeias de importação em busca de ciclos: A importa B, B importa C, C importa A. Cada ciclo é um bloqueador crítico para extração de domínio. Documente cada ciclo com a cadeia de importação completa e referências `file:line`.
 
-### 4.3 — Risk Assessment
+### 4.3 — Avaliação de Risco
 
-For each identified risk, document in `risk-assessment.md`:
-
-```markdown
+Para cada risco identificado, documente em `risk-assessment.md`:```markdown
 ## Risk: {Description}
 
 **Impact**: Critical | High | Medium | Low
@@ -163,19 +160,22 @@ For each identified risk, document in `risk-assessment.md`:
 **Evidence**: {file:line or external reference}
 **Mitigation**: {Specific strategy}
 **Residual risk after mitigation**: {Assessment}
-```
+````
 
-## Research Completion Checklist
+## Lista de verificação de conclusão de pesquisa
 
-Before moving to PLAN phase, verify ALL of the following:
+Antes de passar para a fase PLANEJAR, verifique TODOS os itens a seguir:
 
-- [ ] Every module in the codebase has been read and mapped
-- [ ] Every dependency has been checked against current versions via web search
-- [ ] Bounded context candidates are identified with coupling ratios
-- [ ] Current stack is researched with verified, cited sources
-- [ ] Target stack (if applicable) is researched with verified, cited sources
-- [ ] All integration points are cataloged with `file:line` refs
-- [ ] Circular dependencies are identified
-- [ ] Risk assessment is complete with mitigations
-- [ ] All four research output files are written to `./migration-plan/research/`
-- [ ] No unverified claims exist in any output file
+- [] Cada módulo na base de código foi lido e mapeado
+- [] Todas as dependências foram verificadas em relação às versões atuais por meio de pesquisa na web
+- [] Candidatos de contexto limitado são identificados com taxas de acoplamento
+- [] A pilha atual é pesquisada com fontes verificadas e citadas
+- [] A pilha de destino (se aplicável) é pesquisada com fontes verificadas e citadas
+- [] Todos os pontos de integração são catalogados com referências `file:line`
+- [] Dependências circulares são ide
+
+notificado
+
+- [] A avaliação de risco está completa com mitigações
+- [] Todos os quatro arquivos de resultados de pesquisa são gravados em `./migration-plan/research/`
+- [] Não existem declarações não verificadas em nenhum arquivo de saída

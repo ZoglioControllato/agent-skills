@@ -1,91 +1,87 @@
-# Smart Placement Gotchas
+# Dicas de posicionamento inteligente
 
-## Common Errors
+## Erros Comuns
 
-### "INSUFFICIENT_INVOCATIONS"
+### "INSUFICIENT_INVOCATIONS"
 
-**Cause:** Not enough traffic for Smart Placement to analyze
-**Solution:**
+**Causa:** tráfego insuficiente para análise do Posicionamento inteligente
+**Solução:**
 
-- Ensure Worker receives consistent global traffic
-- Wait longer (analysis takes up to 15 minutes)
-- Send test traffic from multiple global locations
-- Check Worker has fetch event handler
+- Garantir que o Worker receba tráfego global consistente
+- Espere mais (a análise leva até 15 minutos)
+- Envie tráfego de teste de vários locais globais
+- Verifique se o Worker possui um manipulador de eventos de busca
 
-### "UNSUPPORTED_APPLICATION"
+### "APLICATIVO_INSUPPORTADO"
 
-**Cause:** Smart Placement made Worker slower rather than faster
-**Reasons:**
+**Causa:** o posicionamento inteligente tornou o Worker mais lento em vez de mais rápido
+**Motivos:**
 
-- Worker doesn't make backend calls (runs faster at edge)
-- Backend calls are cached (network latency to user more important)
-- Backend service has good global distribution
-- Worker serves static assets or Pages content
+- O trabalhador não faz chamadas de back-end (executa mais rápido na borda)
+- As chamadas de back-end são armazenadas em cache (a latência da rede para o usuário é mais importante)
+- O serviço backend tem boa distribuição global
+- Worker veicula ativos estáticos ou conteúdo de páginas
 
-**Solutions:**
+**Soluções:**
 
-- Disable Smart Placement: `{ "placement": { "mode": "off" } }`
-- Review whether Worker actually benefits from Smart Placement
-- Consider caching strategy to reduce backend calls
-- For Pages/Assets Workers, use separate backend Worker with Smart Placement
+- Desative o posicionamento inteligente: `{ "placement": { "mode": "off" } }`
+- Analise se o Worker realmente se beneficia do Smart Placement
+- Considere uma estratégia de cache para reduzir chamadas de back-end
+- Para trabalhadores de páginas/assets, use um trabalhador de back-end separado com posicionamento inteligente
 
-### "No request duration metrics"
+### "Nenhuma métrica de duração da solicitação"
 
-**Cause:** Smart Placement not enabled, insufficient time passed, insufficient traffic, or analysis incomplete
-**Solution:**
+**Causa:** Posicionamento inteligente não ativado, tempo decorrido insuficiente, tráfego insuficiente ou análise incompleta
+**Solução:**
 
-- Ensure Smart Placement enabled in config
-- Wait 15+ minutes after deployment
-- Verify Worker has sufficient traffic
-- Check `placement_status` is `SUCCESS`
+- Certifique-se de que o posicionamento inteligente esteja ativado na configuração
+- Aguarde mais de 15 minutos após a implantação
+- Verifique se o Worker tem tráfego suficiente
+- Verifique se `placement_status` é `SUCCESS`
 
-### "cf-placement header missing"
+### "cabeçalho de posicionamento cf ausente"
 
-**Cause:** Smart Placement not enabled, beta feature removed, or Worker not analyzed yet
-**Solution:** Verify Smart Placement enabled, wait for analysis (15min), check if beta feature still available
+**Causa:** Posicionamento inteligente não ativado, recurso beta removido ou Worker ainda não analisado
+**Solução:** verifique se o posicionamento inteligente está ativado, aguarde a análise (15 minutos), verifique se o recurso beta ainda está disponível
 
-## Pages/Assets + Smart Placement Performance Degradation
+## Páginas/recursos + degradação do desempenho do posicionamento inteligente
 
-**Problem:** Static assets load 2-5x slower when Smart Placement enabled with `run_worker_first = true`.
+**Problema:** Ativos estáticos carregam de 2 a 5 vezes mais devagar quando o Smart Placement é ativado com `run_worker_first = true`.
 
-**Cause:** Smart Placement routes ALL requests (including static assets like HTML, CSS, JS, images) to remote locations. Static content should ALWAYS be served from edge closest to user.
+**Causa:** o Smart Placement encaminha TODAS as solicitações (incluindo ativos estáticos como HTML, CSS, JS, imagens) para locais remotos. O conteúdo estático SEMPRE deve ser veiculado na borda mais próxima do usuário.
 
-**Solution:** Split into separate Workers OR disable Smart Placement:
-
-```jsonc
+**Solução:** divida em trabalhadores separados OU desative o Smart Placement:```jsonc
 // ❌ BAD - Assets routed away from user
 {
-  "name": "pages-app",
-  "placement": { "mode": "smart" },
-  "assets": { "run_worker_first": true }
+"name": "pages-app",
+"placement": { "mode": "smart" },
+"assets": { "run_worker_first": true }
 }
 
 // ✅ GOOD - Assets at edge, API optimized
 // frontend/wrangler.jsonc
 {
-  "name": "frontend",
-  "assets": { "run_worker_first": true }
-  // No placement field - stays at edge
+"name": "frontend",
+"assets": { "run_worker_first": true }
+// No placement field - stays at edge
 }
 
 // backend/wrangler.jsonc
 {
-  "name": "backend-api",
-  "placement": { "mode": "smart" }
+"name": "backend-api",
+"placement": { "mode": "smart" }
 }
-```
 
-This is one of the most common and impactful Smart Placement misconfigurations.
+````
+Esta é uma das configurações incorretas mais comuns e impactantes do Smart Placement.
 
-## Monolithic Full-Stack Worker
+## Trabalhador Monolítico Full Stack
 
-**Problem:** Frontend and backend logic in single Worker with Smart Placement enabled.
+**Problema:** Lógica de front-end e back-end em um único Worker com Smart Placement habilitado.
 
-**Cause:** Smart Placement optimizes for backend latency but increases user-facing response time.
+**Causa:** o posicionamento inteligente otimiza a latência de back-end, mas aumenta o tempo de resposta do usuário.
 
-**Solution:** Split into two Workers:
-
-```jsonc
+**Solução:** Dividir em dois Trabalhadores:```jsonc
 // frontend/wrangler.jsonc
 {
   "name": "frontend",
@@ -99,50 +95,49 @@ This is one of the most common and impactful Smart Placement misconfigurations.
   "placement": { "mode": "smart" },
   "d1_databases": [{ "binding": "DB", "database_id": "xxx" }]
 }
-```
+````
 
-## Local Development Confusion
+## Confusão de Desenvolvimento Local
 
-**Issue:** Smart Placement doesn't work in `wrangler dev`.
+**Problema:** O posicionamento inteligente não funciona no `wrangler dev`.
 
-**Explanation:** Smart Placement only activates in production deployments, not local development.
+**Explicação:** O Smart Placement é ativado apenas em implantações de produção, não em desenvolvimento local.
 
-**Solution:** Test Smart Placement in staging environment: `wrangler deploy --env staging`
+**Solução:** Teste o posicionamento inteligente no ambiente de teste: `wrangler deploy --env staging`
 
-## Baseline Traffic & Analysis Time
+## Tráfego de base e tempo de análise
 
-**Note:** Smart Placement routes 1% of requests WITHOUT optimization for comparison (expected).
+**Observação:** O Smart Placement roteia 1% das solicitações SEM otimização para comparação (esperado).
 
-**Analysis time:** Up to 15 minutes. During analysis, Worker runs at edge. Monitor `placement_status`.
+**Tempo de análise:** Até 15 minutos. Durante a análise, o Worker é executado no limite. Monitore `placement_status`.
 
-## RPC Methods Not Affected (Critical Limitation)
+## Métodos RPC não afetados (limitação crítica)
 
-**Problem:** Enabled Smart Placement on backend but RPC calls still slow.
+**Problema:** O posicionamento inteligente foi ativado no back-end, mas as chamadas RPC ainda estão lentas.
 
-**Cause:** Smart Placement ONLY affects `fetch` handlers. RPC methods (Service Bindings with `WorkerEntrypoint`) are NEVER affected.
+**Causa:** O posicionamento inteligente APENAS afeta os manipuladores `fetch`. Os métodos RPC (Service Bindings com `WorkerEntrypoint`) NUNCA são afetados.
 
-**Why:** RPC bypasses `fetch` handler - Smart Placement can only route `fetch` requests.
+**Por que:** RPC ignora o manipulador `fetch` - o Smart Placement só pode rotear solicitações `fetch`.
 
-**Solution:** Convert to fetch-based Service Bindings:
-
-```typescript
+**Solução:** converter para vinculações de serviço baseadas em busca:```typescript
 // ❌ RPC - Smart Placement has NO EFFECT
 export class BackendRPC extends WorkerEntrypoint {
-  async getData() {
-    // ALWAYS runs at edge
-    return await this.env.DATABASE.prepare('SELECT * FROM table').all()
-  }
+async getData() {
+// ALWAYS runs at edge
+return await this.env.DATABASE.prepare('SELECT \* FROM table').all()
+}
 }
 
 // ✅ Fetch - Smart Placement WORKS
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
-    // Runs close to DATABASE when Smart Placement enabled
-    const data = await env.DATABASE.prepare('SELECT * FROM table').all()
-    return Response.json(data)
-  },
+async fetch(request: Request, env: Env): Promise<Response> {
+// Runs close to DATABASE when Smart Placement enabled
+const data = await env.DATABASE.prepare('SELECT \* FROM table').all()
+return Response.json(data)
+},
 }
-```
+
+````
 
 ## Requirements
 
@@ -164,17 +159,17 @@ export default {
 ```jsonc
 { "placement": { "mode": "off" } } // Explicit disable
 // OR remove "placement" field entirely (same effect)
-```
+````
 
-Both behaviors identical - Worker runs at edge closest to user.
+Ambos os comportamentos são idênticos - o trabalhador é executado na borda mais próxima do usuário.
 
-## When NOT to Use Smart Placement
+## Quando NÃO usar o posicionamento inteligente
 
-- Workers serving only static content or cached responses
-- Workers without significant backend communication
-- Pure edge logic (auth checks, redirects, simple transformations)
-- Workers without fetch event handlers
-- Pages/Assets Workers with `run_worker_first = true`
-- Workers using RPC methods instead of fetch handlers
+- Trabalhadores que atendem apenas conteúdo estático ou respostas em cache
+- Trabalhadores sem comunicação de back-end significativa
+- Lógica de borda pura (verificações de autenticação, redirecionamentos, transformações simples)
+- Trabalhadores sem manipuladores de eventos fetch
+- Trabalhadores de páginas/assets com `run_worker_first = true`
+- Trabalhadores que usam métodos RPC em vez de manipuladores de busca
 
-These scenarios won't benefit and may perform worse with Smart Placement.
+Esses cenários não serão beneficiados e poderão ter pior desempenho com o posicionamento inteligente.

@@ -1,12 +1,12 @@
-# Troubleshooting & Best Practices
+# Resolução de problemas e boas práticas
 
-## Common Errors
+## Erros comuns
 
-### "No bundler/build step" - Pulumi uploads raw code
+### "No bundler/build step" — Pulumi envia código cru
 
-**Problem:** Worker fails with "Cannot use import statement outside a module"  
-**Cause:** Pulumi doesn't bundle Worker code - uploads exactly what you provide  
-**Solution:** Build Worker BEFORE Pulumi deploy
+**Problema:** Worker falha com "Cannot use import statement outside a module"  
+**Causa:** Pulumi não faz bundle do código do Worker — envia exatamente o que você passa  
+**Solução:** Faça o build do Worker ANTES do deploy Pulumi
 
 ```typescript
 // WRONG: Pulumi won't bundle this
@@ -29,11 +29,11 @@ const worker = new cloudflare.WorkerScript(
 )
 ```
 
-### "wrangler.toml not consumed" - Config drift
+### "wrangler.toml not consumed" — drift de config
 
-**Problem:** Local wrangler dev works, Pulumi deploy fails  
-**Cause:** Pulumi ignores wrangler.toml - must duplicate config  
-**Solution:** Generate wrangler.toml from Pulumi or keep synced manually
+**Problema:** `wrangler dev` local funciona, deploy Pulumi falha  
+**Causa:** Pulumi ignora wrangler.toml — é preciso duplicar config  
+**Solução:** Gere wrangler.toml a partir do Pulumi ou mantenha sincronizado manualmente
 
 ```typescript
 // Pattern: Export Pulumi config to wrangler.toml
@@ -52,25 +52,25 @@ EOF`,
 })
 ```
 
-### "False no-changes detection" - Content SHA unchanged
+### "False no-changes detection" — SHA de conteúdo inalterado
 
-**Problem:** Worker code updated, Pulumi says "no changes"  
-**Cause:** Content hash identical (whitespace/comment-only change)  
-**Solution:** Add build timestamp or version to force update
+**Problema:** Código do Worker atualizado, Pulumi diz "no changes"  
+**Causa:** Hash de conteúdo idêntico (mudança só em espaço/comentário)  
+**Solução:** Adicione timestamp de build ou versão para forçar update
 
 ```typescript
 const version = Date.now().toString()
 const worker = new cloudflare.WorkerScript('worker', {
   content: code,
-  plainTextBindings: [{ name: 'VERSION', text: version }], // Forces new deployment
+  plainTextBindings: [{ name: 'VERSION', text: version }], // força novo deploy
 })
 ```
 
 ### "D1 migrations don't run on pulumi up"
 
-**Problem:** Database schema not applied after D1 database created  
-**Cause:** Pulumi creates database but doesn't run migrations  
-**Solution:** Use Command resource with dependsOn
+**Problema:** Schema do banco não aplicado após criar D1  
+**Causa:** Pulumi cria o banco mas não roda migrações  
+**Solução:** Use recurso Command com dependsOn
 
 ```typescript
 const db = new cloudflare.D1Database('db', { accountId, name: 'mydb' })
@@ -84,7 +84,7 @@ const migration = new command.local.Command(
   { dependsOn: [db] },
 )
 
-// Worker depends on migrations
+// Worker depende das migrações
 const worker = new cloudflare.WorkerScript(
   'worker',
   {
@@ -96,9 +96,9 @@ const worker = new cloudflare.WorkerScript(
 
 ### "Missing required property 'accountId'"
 
-**Problem:** `Error: Missing required property 'accountId'`  
-**Cause:** Account ID not provided in resource configuration  
-**Solution:** Add to stack config
+**Problema:** `Error: Missing required property 'accountId'`  
+**Causa:** Account ID não fornecido na configuração do recurso  
+**Solução:** Adicione na config do stack
 
 ```yaml
 # Pulumi.<stack>.yaml
@@ -108,9 +108,9 @@ config:
 
 ### "Binding name mismatch"
 
-**Problem:** Worker fails with "env.MY_KV is undefined"  
-**Cause:** Binding name in Pulumi != name in Worker code  
-**Solution:** Match exactly (case-sensitive)
+**Problema:** Worker falha com "env.MY_KV is undefined"  
+**Causa:** Nome do binding no Pulumi ≠ nome no código do Worker  
+**Solução:** Deve coincidir exatamente (sensível a maiúsculas)
 
 ```typescript
 // Pulumi
@@ -126,15 +126,15 @@ export default {
 
 ### "API token permissions insufficient"
 
-**Problem:** `Error: authentication error (10000)`  
-**Cause:** Token lacks required permissions  
-**Solution:** Grant token permissions: Account.Workers Scripts:Edit, Account.Account Settings:Read
+**Problema:** `Error: authentication error (10000)`  
+**Causa:** Token sem permissões necessárias  
+**Solução:** Conceda permissões: Account.Workers Scripts:Edit, Account.Account Settings:Read
 
 ### "Resource not found after import"
 
-**Problem:** Imported resource shows as changed on next `pulumi up`  
-**Cause:** State mismatch between actual resource and Pulumi config  
-**Solution:** Check property names/types match exactly
+**Problema:** Recurso importado aparece como alterado no próximo `pulumi up`  
+**Causa:** State não bate com o recurso real e o código Pulumi  
+**Solução:** Verifique nomes/tipos de propriedades exatamente
 
 ```bash
 pulumi import cloudflare:index/workerScript:WorkerScript my-worker <account_id>/<worker_name>
@@ -143,19 +143,19 @@ pulumi preview # If shows changes, adjust Pulumi code to match actual resource
 
 ### "v6.x Worker versioning confusion"
 
-**Problem:** Worker deployed but not receiving traffic  
-**Cause:** v6.x requires Worker + WorkerVersion + WorkersDeployment (3 resources)  
-**Solution:** Use WorkerScript (auto-versioning) OR full versioning pattern
+**Problema:** Worker implantado mas não recebe tráfego  
+**Causa:** v6.x exige Worker + WorkerVersion + WorkersDeployment (3 recursos)  
+**Solução:** Use WorkerScript (versionamento automático) OU o padrão completo de versionamento
 
 ```typescript
-// SIMPLE: WorkerScript auto-versions (default behavior)
+// SIMPLES: WorkerScript versiona automaticamente (comportamento padrão)
 const worker = new cloudflare.WorkerScript('worker', {
   accountId,
   name: 'my-worker',
   content: code,
 })
 
-// ADVANCED: Manual versioning for gradual rollouts (v6.x)
+// AVANÇADO: versionamento manual para lançamentos graduais (v6.x)
 const worker = new cloudflare.Worker('worker', { accountId, name: 'my-worker' })
 const version = new cloudflare.WorkerVersion('v1', {
   accountId,
@@ -170,29 +170,29 @@ const deployment = new cloudflare.WorkersDeployment('prod', {
 })
 ```
 
-## Best Practices
+## Boas práticas
 
-1. **Always set compatibilityDate** - Locks Worker behavior, prevents breaking changes
-2. **Build before deploy** - Pulumi doesn't bundle; use Command resource or CI build step
-3. **Match binding names** - Case-sensitive, must match between Pulumi and Worker code
-4. **Use dependsOn for migrations** - Ensure D1 migrations run before Worker deploys
-5. **Version Worker content** - Add VERSION binding to force redeployment on content changes
-6. **Store secrets in stack config** - Use `pulumi config set --secret` for API keys
+1. **Defina sempre compatibilityDate** — fixa o comportamento do Worker e evita breaking changes
+2. **Build antes do deploy** — Pulumi não faz bundle; use Command ou etapa de build no CI
+3. **Nomes de binding alinhados** — sensíveis a maiúsculas; devem bater entre Pulumi e código
+4. **dependsOn para migrações** — garanta migrações D1 antes do deploy do Worker
+5. **Versione o conteúdo do Worker** — binding VERSION para forçar redeploy quando o conteúdo muda
+6. **Segredos na config do stack** — use `pulumi config set --secret` para chaves de API
 
-## Limits
+## Limites
 
-| Resource              | Limit                   | Notes                                         |
-| --------------------- | ----------------------- | --------------------------------------------- |
-| Worker script size    | 10 MB                   | Includes all dependencies, after compression  |
-| Worker CPU time       | 50ms (free), 30s (paid) | Per request                                   |
-| KV keys per namespace | Unlimited               | 1000 ops/sec write, 100k ops/sec read         |
-| R2 storage            | Unlimited               | Class A ops: 1M/mo free, Class B: 10M/mo free |
-| D1 databases          | 50,000 per account      | Free: 10 per account, 5 GB each               |
-| Queues                | 10,000 per account      | Free: 1M ops/day                              |
-| Pages projects        | 500 per account         | Free: 100 projects                            |
-| API requests          | Varies by plan          | ~1200 req/5min on free                        |
+| Recurso                 | Limite                    | Observações                                           |
+| ----------------------- | ------------------------- | ----------------------------------------------------- |
+| Tamanho do script       | 10 MB                     | Inclui dependências, após compressão                  |
+| Tempo de CPU do Worker  | 50ms (grátis), 30s (pago) | Por requisição                                        |
+| Chaves KV por namespace | Ilimitado                 | 1000 esc/s escrita, 100k esc/s leitura                |
+| Armazenamento R2        | Ilimitado                 | Ops classe A: 1M/mês grátis, classe B: 10M/mês grátis |
+| Bancos D1               | 50.000 por conta          | Grátis: 10 por conta, 5 GB cada                       |
+| Filas                   | 10.000 por conta          | Grátis: 1M ops/dia                                    |
+| Projetos Pages          | 500 por conta             | Grátis: 100 projetos                                  |
+| Requisições API         | Varia por plano           | ~1200 req/5min no grátis                              |
 
-## Resources
+## Recursos
 
 - **Pulumi Registry:** https://www.pulumi.com/registry/packages/cloudflare/
 - **API Docs:** https://www.pulumi.com/registry/packages/cloudflare/api-docs/
@@ -202,4 +202,6 @@ const deployment = new cloudflare.WorkersDeployment('prod', {
 
 ---
 
-See: [README.md](./README.md), [configuration.md](./configuration.md), [api.md](./api.md), [patterns.md](./patterns.md)
+Ver: [README.md](./README.md), [configuration.md](./configuration.md), [api.md](./api.md), [patterns.md](./patterns.md)
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

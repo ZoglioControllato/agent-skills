@@ -20,67 +20,65 @@
 script-src 'self' https://static.cloudflareinsights.com https://cloudflareinsights.com;
 ```
 
-### Hash-Based Routing Unsupported
+### Roteamento baseado em hash não suportado
 
-**Symptom:** `#/path` URLs not tracked  
-**Fix:** Migrate to History API (`BrowserRouter`, not `HashRouter`). No workaround for hash routing.
+**Sintoma:** URLs `#/path` não rastreados
+**Correção:** Migrar para a API History (`BrowserRouter`, não `HashRouter`). Nenhuma solução alternativa para roteamento de hash.
 
-### No Data Appearing
+### Nenhum dado aparecendo
 
-**Causes & Fixes:**
+**Causas e soluções:**
 
-1. **Delay** - Wait 5-15 minutes
-2. **Wrong token** - Verify matches dashboard exactly
-3. **Script blocked** - Check DevTools Network tab for beacon.min.js
-4. **Domain mismatch** - Dashboard site must match actual URL
+1. **Atraso** - Aguarde de 5 a 15 minutos
+2. **Token errado** - Verifique se o painel corresponde exatamente
+3. **Script bloqueado** - Verifique a guia Rede do DevTools para beacon.min.js
+4. **Incompatibilidade de domínio** – O site do painel deve corresponder ao URL real
 
-### Auto-Injection Fails
+### Falha na injeção automática
 
-**Cause:** `Cache-Control: no-transform` header  
-**Fix:** Remove `no-transform` or install beacon manually
+**Causa:** cabeçalho `Cache-Control: no-transform`
+**Correção:** Remova `no-transform` ou instale o beacon manualmente
 
-### Duplicate Pageviews
+### Visualizações de página duplicadas
 
-**Cause:** Multiple beacon scripts  
-**Fix:** Keep only one beacon per page
+**Causa:** Vários scripts de beacon
+**Correção:** Mantenha apenas um beacon por página
 
-## Configuration Issues
+## Problemas de configuração
 
-| Issue                 | Fix                                              |
-| --------------------- | ------------------------------------------------ |
-| 10-site limit reached | Delete old sites or proxy through CF (unlimited) |
-| Token not recognized  | Use exact alphanumeric token from dashboard      |
+| Edição                      | Correção                                                 |
+| --------------------------- | -------------------------------------------------------- |
+| Limite de 10 sites atingido | Excluir sites antigos ou proxy através do CF (ilimitado) |
+| Token não reconhecido       | Use o token alfanumérico exato do painel                 |
 
-## Framework-Specific
+## Específico da estrutura
 
-### Next.js Hydration Warning
+### Aviso de hidratação Next.js```tsx
 
-```tsx
 <script suppressHydrationWarning ... />
 ```
+### Janela Gatsby indefinida 
 
-### Gatsby Window Undefined
+Use `gatsby-browser.js` para carregar apenas o lado do cliente. 
 
-Use `gatsby-browser.js` to load client-side only.
+## Limites 
 
-## Limits
+| Recurso | Limite | 
+| ----------------- | --------------------- | 
+| Sites sem proxy | 10 | 
+| Sites proxy | Ilimitado | 
+| Retenção de dados | 6 meses | 
+| Atraso de ingestão | 5-10 minutos | 
+| Acesso à API | Nenhum (somente painel) | 
 
-| Resource          | Limit                 |
-| ----------------- | --------------------- |
-| Non-proxied sites | 10                    |
-| Proxied sites     | Unlimited             |
-| Data retention    | 6 months              |
-| Ingestion delay   | 5-10 min              |
-| API access        | None (dashboard only) |
+## Quando NÃO usar o Web Analytics 
 
-## When NOT to Use Web Analytics
+Use alternativas se precisar: 
 
-Use alternatives if you need:
+- Acompanhamento de eventos personalizado 
+- Dados em tempo real 
+- Rastreamento em nível de usuário 
+- Funis de conversão 
+- Exportação de dados/acesso API 
 
-- Custom event tracking
-- Real-time data
-- User-level tracking
-- Conversion funnels
-- Data export/API access
-
-**Web Analytics excels at:** Core Web Vitals, basic traffic, privacy compliance, free unlimited pageviews.
+**O Web Analytics é excelente em:** Core Web Vitals, tráfego básico, conformidade com a privacidade, visualizações de página ilimitadas e gratuitas.

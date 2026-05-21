@@ -19,12 +19,15 @@ export function getMatchQuality(score: number): MatchQuality {
   return 'weak'
 }
 
-/** Extracts the triggers from the description. */
+/** Extracts the triggers from the description (EN and PT patterns). */
 export function extractTriggers(description: string): string {
   const patterns = [
     /Triggers?\s+on\s+(.+?)(?:\.\s|$)/i,
+    /(?:Aciona|Dispara)\s+em\s+(.+?)(?:\.\s|$)/i,
     /Use\s+when\s+(?:asked\s+to\s+|the\s+user\s+(?:asks?|mentions?)\s+)?(.+?)(?:\.\s|$)/i,
+    /Use\s+quando\s+(?:(?:o\s+)?usu[aá]rio\s+(?:pede|diz|menciona)\s+|pedir\s+)?(.+?)(?:\.\s|$)/i,
     /Keywords?\s*[-–:]\s*(.+?)(?:\.\s|$)/i,
+    /Palavras-chave\s*[-–:]\s*(.+?)(?:\.\s|$)/i,
   ]
 
   const triggers: string[] = []

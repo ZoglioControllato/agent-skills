@@ -1,6 +1,6 @@
-# KV API Reference
+# Referência da API KV
 
-## Read Operations
+## Operações de leitura
 
 ```typescript
 // Single key (string)
@@ -50,7 +50,7 @@ const configs = await env.MY_KV.get<Config>(['config:app', 'config:feature'], 'j
 // Map<string, Config | null>
 ```
 
-## Write Operations
+## Operações de escrita
 
 ```typescript
 // Basic put
@@ -77,7 +77,7 @@ await env.MY_KV.put('temp', value, {
 })
 ```
 
-## Get with Metadata
+## getWithMetadata
 
 ```typescript
 // Single key
@@ -106,13 +106,13 @@ const result = await env.MY_KV.getWithMetadata<UserData>('user:123', 'json')
 // result: { value: UserData | null, metadata: any | null, cacheStatus?: string }
 ```
 
-## Delete Operations
+## Exclusão
 
 ```typescript
 await env.MY_KV.delete('key') // Always succeeds (even if key missing)
 ```
 
-## List Operations
+## Listagem
 
 ```typescript
 // List all
@@ -132,18 +132,18 @@ do {
 } while (!result.list_complete)
 ```
 
-## Performance Considerations
+## Considerações de performance
 
-### Type Selection
+### Escolha de tipo
 
-| Type          | Use Case                 | Performance              |
+| Tipo          | Caso de uso              | Performance              |
 | ------------- | ------------------------ | ------------------------ |
-| `stream`      | Large values (>1MB)      | Fastest - no buffering   |
-| `arrayBuffer` | Binary data              | Fast - single allocation |
-| `text`        | String values            | Medium                   |
-| `json`        | Objects (parse overhead) | Slowest - parsing cost   |
+| `stream`      | Valores grandes (>1MB)   | Mais rápido — sem buffer |
+| `arrayBuffer` | Dados binários           | Rápido — uma alocação    |
+| `text`        | Strings                  | Médio                    |
+| `json`        | Objetos (custo de parse) | Mais lento               |
 
-### Parallel Reads
+### Leituras paralelas
 
 ```typescript
 // Efficient parallel reads with Promise.all()
@@ -154,10 +154,10 @@ const [user, settings, cache] = await Promise.all([
 ])
 ```
 
-## Error Handling
+## Tratamento de erros
 
-- **Missing keys:** Return `null` (not an error)
-- **Rate limit (429):** Retry with exponential backoff (see gotchas.md)
-- **Response too large (413):** Values >25MB fail with 413 error
+- **Chaves ausentes:** retorna `null` (não é erro)
+- **Rate limit (429):** retry com backoff exponencial (veja gotchas.md)
+- **Resposta grande (413):** valores >25MB falham com 413
 
-See [gotchas.md](./gotchas.md) for detailed error patterns and solutions.
+Detalhes em [gotchas.md](./gotchas.md).

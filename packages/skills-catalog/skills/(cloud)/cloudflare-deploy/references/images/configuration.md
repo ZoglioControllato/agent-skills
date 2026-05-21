@@ -1,10 +1,10 @@
-# Configuration
+# Configuração
 
-## Wrangler Integration
+## Integração com Wrangler
 
-### Workers Binding Setup
+### Binding do Workers
 
-Add to `wrangler.toml`:
+Adicione ao `wrangler.toml`:
 
 ```toml
 name = "my-image-worker"
@@ -15,7 +15,7 @@ compatibility_date = "2024-01-01"
 binding = "IMAGES"
 ```
 
-Access in Worker:
+Uso no Worker:
 
 ```typescript
 interface Env {
@@ -29,9 +29,9 @@ export default {
 }
 ```
 
-### Upload via Script
+### Envio via script
 
-Wrangler doesn't have built-in Images commands, use REST API:
+O Wrangler não tem comandos de imagens integrados; use a API REST:
 
 ```typescript
 // scripts/upload-image.ts
@@ -60,9 +60,9 @@ async function uploadImage(filePath: string) {
 uploadImage('./photo.jpg')
 ```
 
-### Environment Variables
+### Variáveis de ambiente
 
-Store account hash for URL construction:
+Armazene o hash da conta para montar URLs:
 
 ```toml
 [vars]
@@ -70,24 +70,24 @@ IMAGES_ACCOUNT_HASH = "your-account-hash"
 ACCOUNT_ID = "your-account-id"
 ```
 
-Access in Worker:
+No Worker:
 
 ```typescript
 const imageUrl = `https://imagedelivery.net/${env.IMAGES_ACCOUNT_HASH}/${imageId}/public`
 ```
 
-## Variants Configuration
+## Configuração de variantes
 
-Variants are named presets for transformations.
+Variantes são predefinições nomeadas de transformações.
 
-### Create Variant (Dashboard)
+### Criar variante (painel)
 
-1. Navigate to Images → Variants
-2. Click "Create Variant"
-3. Set name (e.g., `thumbnail`)
+1. Acesse Images → Variants
+2. Clique em “Create variant”
+3. Defina o nome (ex.: `thumbnail`)
 4. Configure: `width=200,height=200,fit=cover`
 
-### Create Variant (API)
+### Criar variante (API)
 
 ```bash
 curl -X POST \
@@ -105,13 +105,13 @@ curl -X POST \
   }'
 ```
 
-### Use Variant
+### Usar variante
 
 ```
 https://imagedelivery.net/{account_hash}/{image_id}/thumbnail
 ```
 
-### Common Variant Presets
+### Predefinições comuns de variantes
 
 ```json
 {
@@ -141,13 +141,13 @@ https://imagedelivery.net/{account_hash}/{image_id}/thumbnail
 }
 ```
 
-## Authentication
+## Autenticação
 
-### API Token (Recommended)
+### Token de API (recomendado)
 
-Generate at: Dashboard → My Profile → API Tokens
+Crie em: Painel → My Profile → API Tokens
 
-Required permissions:
+Permissões necessárias:
 
 - Account → Cloudflare Images → Edit
 
@@ -156,7 +156,7 @@ curl -H "Authorization: Bearer {api_token}" \
   https://api.cloudflare.com/client/v4/accounts/{account_id}/images/v1
 ```
 
-### API Key (Legacy)
+### Chave de API (legado)
 
 ```bash
 curl -H "X-Auth-Email: {email}" \
@@ -164,9 +164,9 @@ curl -H "X-Auth-Email: {email}" \
   https://api.cloudflare.com/client/v4/accounts/{account_id}/images/v1
 ```
 
-## Signed URLs
+## URLs assinados
 
-For private images, enable signed URLs:
+Para imagens privadas, habilite URLs assinados:
 
 ```bash
 # Upload with signed URLs required
@@ -177,7 +177,7 @@ curl -X POST \
   -F requireSignedURLs=true
 ```
 
-Generate signed URL:
+Gere URL assinada:
 
 ```typescript
 import { createHmac } from 'crypto'
@@ -194,10 +194,12 @@ function signUrl(imageId: string, variant: string, expiry: number, key: string):
 const signedUrl = signUrl('image-id', 'public', Date.now() + 3600, env.SIGNING_KEY)
 ```
 
-## Local Development
+## Desenvolvimento local
 
 ```bash
 npx wrangler dev --remote
 ```
 
-Must use `--remote` for Images binding access.
+É necessário `--remote` para o binding de imagens.
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

@@ -1,15 +1,15 @@
 ---
-title: Store Event Handlers in Refs
+title: Armazene manipuladores de evento em refs
 impact: LOW
-impactDescription: stable subscriptions
+impactDescription: assinaturas originadas
 tags: advanced, hooks, refs, event-handlers, optimization
 ---
 
-## Store Event Handlers in Refs
+## Armazene manipuladores de evento em refs
 
-Store callbacks in refs when used in effects that shouldn't re-subscribe on callback changes.
+Armazene callbacks em refs quando são usados em efeitos que não devem ser reinscritos a cada mudança do callback.
 
-**Incorrect (re-subscribes on every render):**
+**Incorreto (reinscrever cada renderização):**
 
 ```tsx
 function useWindowEvent(event: string, handler: (e) => void) {
@@ -20,7 +20,7 @@ function useWindowEvent(event: string, handler: (e) => void) {
 }
 ```
 
-**Correct (stable subscription):**
+**Correto (assinatura estável):**
 
 ```tsx
 function useWindowEvent(event: string, handler: (e) => void) {
@@ -37,7 +37,7 @@ function useWindowEvent(event: string, handler: (e) => void) {
 }
 ```
 
-**Alternative: use `useEffectEvent` if you're on latest React:**
+**Alternativa: use `useEffectEvent` se estiver no React mais recente:**
 
 ```tsx
 import { useEffectEvent } from 'react'
@@ -52,4 +52,4 @@ function useWindowEvent(event: string, handler: (e) => void) {
 }
 ```
 
-`useEffectEvent` provides a cleaner API for the same pattern: it creates a stable function reference that always calls the latest version of the handler.
+`useEffectEvent` oferece uma API mais limpa para o mesmo padrão: cria uma referência de função estável que sempre chama a versão mais recente do manipulador.

@@ -1,11 +1,11 @@
-# Tunnel Gotchas
+# Armadilhas Tunnel
 
-## Common Errors
+## Erros comuns
 
 ### "Error 1016 (Origin DNS Error)"
 
-**Cause:** Tunnel not running or not connected
-**Solution:**
+**Causa:** tunnel parado ou desconectado  
+**Solução:**
 
 ```bash
 cloudflared tunnel info my-tunnel     # Check status
@@ -15,8 +15,8 @@ journalctl -u cloudflared -n 100      # Check logs
 
 ### "Self-signed certificate rejected"
 
-**Cause:** Origin using self-signed certificate
-**Solution:**
+**Causa:** origem com certificado autoassinado  
+**Solução:**
 
 ```yaml
 originRequest:
@@ -26,8 +26,8 @@ originRequest:
 
 ### "Connection timeout"
 
-**Cause:** Origin slow to respond or timeout settings too low
-**Solution:**
+**Causa:** origem lenta ou timeouts baixos  
+**Solução:**
 
 ```yaml
 originRequest:
@@ -38,8 +38,8 @@ originRequest:
 
 ### "Tunnel not starting"
 
-**Cause:** Invalid config, missing credentials, or tunnel doesn't exist
-**Solution:**
+**Causa:** config inválida, credenciais ausentes ou tunnel inexistente  
+**Solução:**
 
 ```bash
 cloudflared tunnel ingress validate  # Validate config
@@ -49,8 +49,8 @@ cloudflared tunnel list              # Verify tunnel exists
 
 ### "Connection already registered"
 
-**Cause:** Multiple replicas with same connector ID or stale connection
-**Solution:**
+**Causa:** várias réplicas com mesmo connector ID ou conexão obsoleta  
+**Solução:**
 
 ```bash
 # Check active connections
@@ -62,8 +62,8 @@ cloudflared tunnel run my-tunnel
 
 ### "Tunnel credentials rotated but connections fail"
 
-**Cause:** Old cloudflared processes using expired credentials
-**Solution:**
+**Causa:** processos antigos com credenciais expiradas  
+**Solução:**
 
 ```bash
 # Stop all cloudflared processes
@@ -76,64 +76,64 @@ ps aux | grep cloudflared
 cloudflared tunnel run my-tunnel
 ```
 
-## Limits
+## Limites
 
-| Resource/Limit         | Value                   | Notes                                     |
-| ---------------------- | ----------------------- | ----------------------------------------- |
-| Free tier              | Unlimited tunnels       | Unlimited traffic                         |
-| Tunnel replicas        | 1000 per tunnel         | Max concurrent                            |
-| Connection duration    | No hard limit           | Hours to days                             |
-| Long-lived connections | May drop during updates | WebSocket, SSH, UDP                       |
-| Replica registration   | ~5s TTL                 | Old replica dropped after 5s no heartbeat |
-| Token rotation grace   | 24 hours                | Old tokens work during grace period       |
+| Recurso / limite        | Valor                 | Notas                                        |
+| ----------------------- | --------------------- | -------------------------------------------- |
+| Plano free              | Tunnels ilimitados    | Tráfego ilimitado                            |
+| Réplicas do tunnel      | 1000 por tunnel       | Máx. concorrentes                            |
+| Duração da conexão      | Sem limite rígido     | Horas a dias                                 |
+| Conexões longevas       | Podem cair em updates | WebSocket, SSH, UDP                          |
+| Registro de réplica     | ~5s TTL               | Réplica antiga removida sem heartbeat        |
+| Janela de rotação token | 24 horas              | Tokens antigos funcionam no período de graça |
 
-## Best Practices
+## Boas práticas
 
-### Security
+### Segurança
 
-1. Use token-based tunnels (config source: cloudflare) for centralized control
-2. Enable Access policies for sensitive services
-3. Rotate tunnel credentials regularly
-4. After rotation: stop all old cloudflared processes within 24h grace period
-5. Verify TLS certs (`noTLSVerify: false`)
-6. Restrict `bastion` service type
+1. Prefira tunnels com token (fonte Cloudflare) para controle centralizado
+2. Habilite políticas Access para serviços sensíveis
+3. Rode credenciais do tunnel periodicamente
+4. Após rotação: pare processos antigos dentro de ~24h de graça
+5. Valide certificados TLS (`noTLSVerify: false` em produção quando possível)
+6. Restrinja tipo de serviço `bastion` quando aplicável
 
-### Performance
+### Desempenho
 
-1. Run multiple replicas for HA (2-4 typical, load balanced automatically)
-2. Replicas share same tunnel UUID, get unique connector IDs
-3. Place `cloudflared` close to origin (same network)
-4. Use HTTP/2 for gRPC (`http2Origin: true`)
-5. Tune keepalive for long-lived connections
-6. Monitor connection counts
+1. Várias réplicas para HA (2–4 típico), balanceadas automaticamente
+2. Réplicas compartilham o mesmo UUID do tunnel, IDs de connector distintos
+3. Coloque `cloudflared` perto da origem (mesma rede)
+4. Use HTTP/2 para gRPC (`http2Origin: true`)
+5. Ajuste keepalive para conexões longas
+6. Monitore contagem de conexões
 
-### Configuration
+### Configuração
 
-1. Use environment variables for secrets
-2. Version control config files
-3. Validate before deploying (`cloudflared tunnel ingress validate`)
-4. Test rules (`cloudflared tunnel ingress rule <URL>`)
-5. Document rule order (first match wins)
+1. Use variáveis de ambiente para secrets
+2. Versionamento de arquivos de config
+3. Valide antes do deploy (`cloudflared tunnel ingress validate`)
+4. Teste regras (`cloudflared tunnel ingress rule <URL>`)
+5. Documente ordem das regras (primeira vitória)
 
-### Operations
+### Operações
 
-1. Monitor tunnel health in dashboard (shows active replicas)
-2. Set up disconnect alerts (when replica count drops to 0)
-3. Graceful shutdown for config updates
-4. Update replicas in rolling fashion (update 1, wait, update next)
-5. Keep `cloudflared` updated (1 year support window)
-6. Use `--no-autoupdate` in prod; control updates manually
+1. Monitore saúde no painel (réplicas ativas)
+2. Alertas de desconexão quando réplicas → 0
+3. Encerramento gracioso para mudanças de config
+4. Atualize réplicas de forma rolante
+5. Mantenha `cloudflared` atual (janela de suporte ~1 ano)
+6. Em produção use `--no-autoupdate` e controle updates manualmente
 
-## Debug Mode
+## Modo debug
 
 ```bash
 cloudflared tunnel --loglevel debug run my-tunnel
 cloudflared tunnel ingress rule https://app.example.com
 ```
 
-## Migration Strategies
+## Estratégias de migração
 
-### From Ngrok
+### De Ngrok
 
 ```yaml
 # Ngrok: ngrok http 8000
@@ -144,7 +144,7 @@ ingress:
   - service: http_status:404
 ```
 
-### From VPN
+### De VPN
 
 ```yaml
 # Replace VPN with private network routing
@@ -156,4 +156,6 @@ warp-routing:
 cloudflared tunnel route ip add 10.0.0.0/8 my-tunnel
 ```
 
-Users install WARP client instead of VPN.
+Usuários instalam o cliente WARP em vez de VPN tradicional.
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

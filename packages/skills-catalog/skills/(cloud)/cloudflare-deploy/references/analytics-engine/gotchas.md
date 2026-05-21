@@ -46,42 +46,42 @@ Writes can fail silently. Check tail logs.
 { blobs: [method, path, status], indexes: [userId] }
 ```
 
-### Can't Query from Workers
+### Não é possível consultar os trabalhadores
 
-Query API requires HTTP auth. Use external service or cache in KV/D1.
+A API de consulta requer autenticação HTTP. Use serviço externo ou cache em KV/D1.
 
-### No Custom Timestamps
+### Sem carimbos de data/hora personalizados
 
-Auto-generated at write time. Store original in blob if needed.
+Gerado automaticamente no momento da gravação. Armazene o original no blob, se necessário.
 
-## Common Errors
+## Erros Comuns
 
-| Error             | Fix                                            |
-| ----------------- | ---------------------------------------------- |
-| Binding not found | Check wrangler.jsonc, redeploy                 |
-| No data in query  | Wait 30s; check dataset name; check time range |
-| Query timeout     | Add time filter; use index for filtering       |
+| Erro                      | Correção                                                                        |
+| ------------------------- | ------------------------------------------------------------------------------- |
+| Vinculação não encontrada | Verifique wrangler.jsonc, reimplante                                            |
+| Nenhum dado em consulta   | Espere 30s; verifique o nome do conjunto de dados; verificar intervalo de tempo |
+| Tempo limite da consulta  | Adicionar filtro de tempo; usar índice para filtragem                           |
 
-## Limits
+## Limites
 
-| Resource                 | Limit   |
-| ------------------------ | ------- |
-| Blobs per point          | 20      |
-| Doubles per point        | 20      |
-| Indexes per point        | 1       |
-| Blob/Index size          | 16KB    |
-| Write rate (no sampling) | ~1M/min |
-| Retention                | 90 days |
-| Query timeout            | 30s     |
+| Recurso                           | Limite  |
+| --------------------------------- | ------- |
+| Blobs por ponto                   | 20      |
+| Duplica por ponto                 | 20      |
+| Índices por ponto                 | 1       |
+| Tamanho do blob/índice            | 16 KB   |
+| Taxa de gravação (sem amostragem) | ~1M/min |
+| Retenção                          | 90 dias |
+| Tempo limite da consulta          | 30 anos |
 
-## Best Practices
+## Melhores práticas
 
-✅ Pre-aggregate at high volumes  
-✅ Use index for high-cardinality (millions)  
-✅ Always include time filter in queries  
-✅ Design schema before coding
+✅ Pré-agregar em grandes volumes
+✅ Use índice para alta cardinalidade (milhões)
+✅ Sempre inclua filtro de tempo nas consultas
+✅ Projete o esquema antes de codificar
 
-❌ Don't await writeDataPoint  
-❌ Don't use index for low-cardinality  
-❌ Don't query without time range  
-❌ Don't assume all writes succeed
+❌ Não espere writeDataPoint
+❌ Não use índice para baixa cardinalidade
+❌ Não faça consultas sem intervalo de tempo
+❌ Não presuma que todas as gravações foram bem-sucedidas

@@ -1,17 +1,17 @@
 ---
-title: Lift State into Provider Components
+title: Transforme o estado em componentes do provedor
 impact: HIGH
-impactDescription: enables state sharing outside component boundaries
+impactDescription: permite o compartilhamento de estado fora dos limites dos componentes
 tags: composition, state, context, providers
 ---
 
-## Lift State into Provider Components
+## Transforme o estado em componentes do provedor
 
-Move state management into dedicated provider components. This allows sibling
-components outside the main UI to access and modify state without prop drilling
-or awkward refs.
+Mova o gerenciamento de estado para componentes de provedor dedicados. Isso permite que o irmão
+componentes fora da UI principal para acessar e modificar o estado sem perfuração de suporte
+ou árbitros estranhos.
 
-**Incorrect (state trapped inside component):**
+**Incorreto (estado preso dentro do componente):**
 
 ```tsx
 function ForwardMessageComposer() {
@@ -41,7 +41,7 @@ function ForwardMessageDialog() {
 }
 ```
 
-**Incorrect (useEffect to sync state up):**
+**Incorreto (useEffect para sincronizar o estado):**
 
 ```tsx
 function ForwardMessageDialog() {
@@ -62,7 +62,7 @@ function ForwardMessageComposer({ onInputChange }) {
 }
 ```
 
-**Incorrect (reading state from ref on submit):**
+**Incorreto (leitura do estado da referência no envio):**
 
 ```tsx
 function ForwardMessageDialog() {
@@ -76,7 +76,7 @@ function ForwardMessageDialog() {
 }
 ```
 
-**Correct (state lifted to provider):**
+**Correto (estado transferido para o provedor):**
 
 ```tsx
 function ForwardMessageProvider({ children }: { children: React.ReactNode }) {
@@ -85,11 +85,7 @@ function ForwardMessageProvider({ children }: { children: React.ReactNode }) {
   const inputRef = useRef(null)
 
   return (
-    <Composer.Provider
-      state={state}
-      actions={{ update: setState, submit: forwardMessage }}
-      meta={{ inputRef }}
-    >
+    <Composer.Provider state={state} actions={{ update: setState, submit: forwardMessage }} meta={{ inputRef }}>
       {children}
     </Composer.Provider>
   )
@@ -116,10 +112,10 @@ function ForwardButton() {
 }
 ```
 
-The ForwardButton lives outside the Composer.Frame but still has access to the
-submit action because it's within the provider. Even though it's a one-off
-component, it can still access the composer's state and actions from outside the
-UI itself.
+O ForwardButton reside fora do Composer.Frame, mas ainda tem acesso ao
+enviar ação porque está dentro do provedor. Mesmo que seja único
+componente, ele ainda pode acessar o estado e as ações do compositor de fora do
+A própria interface do usuário.
 
-**Key insight:** Components that need shared state don't have to be visually
-nested inside each other—they just need to be within the same provider.
+**Princípio principal:** Componentes que precisam de estado compartilhado não precisam ser visualmente
+aninhados um dentro do outro – eles só precisam estar dentro do mesmo provedor.

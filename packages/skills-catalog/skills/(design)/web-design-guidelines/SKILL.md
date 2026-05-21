@@ -1,6 +1,6 @@
 ---
 name: web-design-guidelines
-description: Review UI code for Web Interface Guidelines compliance. Use when asked to "review my UI", "check accessibility", "audit design", "review UX", or "check my site against best practices". Focuses on visual design and interaction patterns. Do NOT use for performance audits (use core-web-vitals), SEO (use seo), or comprehensive site audits (use web-quality-audit).
+description: Revisa código de UI conforme Web Interface Guidelines. Use quando pedirem para "revisar minha UI", "checar acessibilidade", "auditar design", "revisar UX" ou "verificar meu site frente às melhores práticas". Foca em visual e padrões de interação. NÃO use para auditorias de performance (use core-web-vitals), SEO (use seo) ou auditorias amplas do site (use web-quality-audit).
 metadata:
   author: vercel
   version: '1.0.0'
@@ -9,57 +9,57 @@ metadata:
 
 # Web Interface Guidelines
 
-Review files for compliance with Web Interface Guidelines.
+Revise arquivos quanto ao cumprimento das Web Interface Guidelines.
 
-## How It Works
+## Como funciona
 
-1. Read the guidelines from `#[[file:references/guideline.md]]`
-2. Read the specified files (or prompt user for files/pattern)
-3. Check against all rules in the guidelines
-4. Output findings in the terse `file:line` format
+1. Leia as diretrizes em `#[[file:references/guideline.md]]`
+2. Leia os arquivos indicados (ou peça ao usuário arquivos/padrão)
+3. Verifique todas as regras das diretrizes
+4. Emita achados no formato compacto `arquivo:linha`
 
-## Guidelines Reference
+## Referência das diretrizes
 
-All rules and output format instructions are in:
+Todas as regras e instruções de formato de saída estão em:
 
 ```
 #[[file:references/guideline.md]]
 ```
 
-The guidelines cover:
+As diretrizes cobrem:
 
-- Accessibility (ARIA, semantic HTML, keyboard navigation)
-- Focus states and keyboard interaction
-- Forms (autocomplete, validation, labels)
-- Animation (reduced motion, performance)
-- Typography (proper characters, number formatting)
-- Content handling (overflow, empty states)
-- Images (dimensions, lazy loading)
-- Performance (virtualization, DOM reads)
-- Navigation & state (URL sync, deep linking)
-- Touch & interaction (tap delays, safe areas)
-- Dark mode & theming
-- Locale & i18n
-- Hydration safety
-- Common anti-patterns to flag
+- Acessibilidade (ARIA, HTML semântico, navegação por teclado)
+- Estados de foco e interação por teclado
+- Formulários (autocomplete, validação, labels)
+- Animação (reduced motion, performance)
+- Tipografia (caracteres adequados, formatação de números)
+- Conteúdo (overflow, estados vazios)
+- Imagens (dimensões, lazy loading)
+- Performance (virtualização, leituras no DOM)
+- Navegação e estado (sincronização com URL, deep linking)
+- Toque e interação (tap delays, safe areas)
+- Modo escuro e temas
+- Locale e i18n
+- Segurança na hidratação
+- Antipadrões comuns a sinalizar
 
-## Usage
+## Uso
 
-When a user provides a file or pattern argument:
+Quando o usuário informar arquivo ou padrão:
 
-1. Read the guidelines from `references/guideline.md`
-2. Read the specified files
-3. Apply all rules from the guidelines
-4. Output findings using the format specified in the guidelines
+1. Leia `references/guideline.md`
+2. Leia os arquivos especificados
+3. Aplique todas as regras das diretrizes
+4. Emita achados usando o formato definido nas diretrizes
 
-If no files specified, ask the user which files to review.
+Se nenhum arquivo for especificado, pergunte quais revisar.
 
-## Output Format
+## Formato de saída
 
-Follow the format in the guidelines:
+Siga o formato das diretrizes:
 
-- Group findings by file
-- Use `file:line` format (VS Code clickable)
-- Terse, high signal-to-noise
-- State issue + location
-- Skip explanation unless fix is non-obvious
+- Agrupe achados por arquivo
+- Use formato `arquivo:linha` (clicável no VS Code)
+- Conciso e alto sinal/ruído
+- Informe problema + local
+- Omita explicação salvo quando o fix não for óbvio

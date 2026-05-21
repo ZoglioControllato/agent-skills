@@ -26,25 +26,23 @@ interface ForwardableEmailMessage {
 }
 ```
 
-**Key Properties:**
+**Principais Propriedades:**
 
-| Property  | Type             | Description                                  |
-| --------- | ---------------- | -------------------------------------------- |
-| `from`    | `string`         | Envelope sender (MAIL FROM), not header From |
-| `to`      | `string`         | Envelope recipient (RCPT TO), not header To  |
-| `headers` | `Headers`        | Email headers (Subject, From, To, etc.)      |
-| `raw`     | `ReadableStream` | Raw MIME message (consume once only)         |
+| Propriedade  | Tipo             | Descrição                                             |
+| ------------ | ---------------- | ----------------------------------------------------- |
+| `de`         | `string`         | Remetente do envelope (MAIL FROM), não cabeçalho From |
+| `para`       | `string`         | Destinatário do envelope (RCPT TO), não cabeçalho To  |
+| `cabeçalhos` | `Cabeçalhos`     | Cabeçalhos de e-mail (Assunto, De, Para, etc.)        |
+| `cru`        | `ReadableStream` | Mensagem MIME bruta (consumir apenas uma vez)         |
 
-**Methods:**
+**Métodos:**
 
-- `setReject(reason)`: Reject email with bounce message
-- `forward(rcptTo, headers?)`: Forward to verified destination, optionally add headers
+- `setReject(reason)`: rejeita e-mail com mensagem devolvida
+- `forward(rcptTo, headers?)`: Encaminha para destino verificado, opcionalmente adicione cabeçalhos
 
-### Headers Object
+### Objeto de cabeçalhos
 
-Standard Web API Headers interface:
-
-```typescript
+Interface padrão de cabeçalhos da API da Web:```typescript
 // Access headers
 const subject = message.headers.get('subject')
 const from = message.headers.get('from')
@@ -53,9 +51,10 @@ const messageId = message.headers.get('message-id')
 // Check spam score
 const spamScore = parseFloat(message.headers.get('x-cf-spamh-score') || '0')
 if (spamScore > 5) {
-  message.setReject('Spam detected')
+message.setReject('Spam detected')
 }
-```
+
+````
 
 ### Common Headers
 
@@ -73,32 +72,32 @@ message.to // "you@yourdomain.com" (your address)
 // Header addresses (display, user-facing)
 message.headers.get('from') // "Alice <alice@sender.com>"
 message.headers.get('to') // "Bob <you@yourdomain.com>"
-```
+````
 
-**Use envelope addresses for:**
+**Use endereços de envelope para:**
 
-- Authentication/SPF checks
-- Routing decisions
-- Bounce handling
+- Verificações de autenticação/SPF
+- Decisões de roteamento
+- Tratamento de salto
 
-**Use header addresses for:**
+**Use endereços de cabeçalho para:**
 
-- Display to users
-- Reply-To logic
-- User-facing filtering
+- Exibir aos usuários
+- Lógica de resposta
+- Filtragem voltada para o usuário
 
-## SendEmail Binding
+## Vinculação SendEmail
 
-Outbound email API for transactional messages.
+API de e-mail de saída para mensagens transacionais.
 
-### Configuration
+### Configuração```jsonc
 
-```jsonc
 // wrangler.jsonc
 {
-  "send_email": [{ "name": "EMAIL" }],
+"send_email": [{ "name": "EMAIL" }],
 }
-```
+
+````
 
 ### TypeScript Types
 
@@ -120,7 +119,7 @@ interface EmailMessage {
   headers?: Headers
   reply_to?: string | { name?: string; email: string }
 }
-```
+````
 
 ### Send Email Example
 
@@ -145,23 +144,23 @@ export default {
 } satisfies ExportedHandler<Env>
 ```
 
-### SendEmail Constraints
+### Restrições de SendEmail
 
-- **From address**: Must be on verified domain (your domain with Email Routing enabled)
-- **Volume limits**: Transactional only, no bulk/marketing email
-- **Rate limits**: 100 emails/minute on Free plan, higher on Paid
-- **No attachments**: Use links to hosted files instead
-- **No DKIM control**: Cloudflare signs automatically
+- **Endereço do remetente**: deve estar em um domínio verificado (seu domínio com roteamento de e-mail ativado)
+- **Limites de volume**: somente transacional, sem e-mail em massa/marketing
+- **Limites de taxa**: 100 e-mails/minuto no plano Gratuito, maior no Pago
+- **Sem anexos**: use links para arquivos hospedados
+- **Sem controle DKIM**: Cloudflare assina automaticamente
 
-## REST API Operations
+## Operações da API REST
 
-Base URL: `https://api.cloudflare.com/client/v4`
+URL base: `https://api.cloudflare.com/client/v4`
 
-### Authentication
+### Autenticação```bash
 
-```bash
 curl -H "Authorization: Bearer $API_TOKEN" https://api.cloudflare.com/client/v4/...
-```
+
+````
 
 ### Key Endpoints
 
@@ -187,6 +186,6 @@ curl -X POST "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/email/routing/
     "actions": [{"type": "forward", "value": ["alice@company.com"]}],
     "priority": 0
   }'
-```
+````
 
 Matcher types: `literal` (exact match), `all` (catch-all).

@@ -1,59 +1,58 @@
-# Cron Triggers Gotchas
+# Cron aciona pegadinhas
 
-## Common Errors
+## Erros Comuns
 
-### "Timezone Issues"
+### "Problemas de fuso horário"
 
-**Problem:** Cron runs at wrong time relative to local timezone  
-**Cause:** All crons execute in UTC, no local timezone support  
-**Solution:** Convert local time to UTC manually
+**Problema:** Cron é executado na hora errada em relação ao fuso horário local
+**Causa:** Todos os crons são executados em UTC, sem suporte para fuso horário local
+**Solução:** Converta a hora local para UTC manualmente
 
-**Conversion formula:** `utcHour = (localHour - utcOffset + 24) % 24`
+**Fórmula de conversão:** `utcHour = (localHour - utcOffset + 24) % 24`
 
-**Examples:**
+**Exemplos:**
 
-- 9am PST (UTC-8) → `(9 - (-8) + 24) % 24 = 17` → `0 17 * * *`
-- 2am EST (UTC-5) → `(2 - (-5) + 24) % 24 = 7` → `0 7 * * *`
-- 6pm JST (UTC+9) → `(18 - 9 + 24) % 24 = 33 % 24 = 9` → `0 9 * * *`
+- 9h PST (UTC-8) → `(9 - (-8) + 24)% 24 = 17` → `0 17 * * *`
+- 2h EST (UTC-5) → `(2 - (-5) + 24)% 24 = 7` → `0 7 * * *`
+- 18h JST (UTC + 9) → `(18 - 9 + 24)% 24 = 33% 24 = 9` → `0 9 * * *`
 
-**Daylight Saving Time:** Adjust manually when DST changes, or schedule at times unaffected by DST (e.g., 2am-4am local time usually safe)
+**Horário de verão:** ajuste manualmente quando o horário de verão mudar ou programe em horários não afetados pelo horário de verão (por exemplo, das 2h às 4h, horário local, geralmente seguro)
 
-### "Cron Not Executing"
+### "Cron não está em execução"
 
-**Cause:** Missing `scheduled()` export, invalid syntax, propagation delay (<15min), or plan limits  
-**Solution:** Verify export exists, validate at crontab.guru, wait 15+ min after deploy, check plan limits
+**Causa:** Exportação `agendada()` ausente, sintaxe inválida, atraso de propagação (<15 minutos) ou limites do plano
+**Solução:** Verifique se a exportação existe, valide em crontab.guru, aguarde mais de 15 minutos após a implantação, verifique os limites do plano
 
-### "Duplicate Executions"
+### "Execuções Duplicadas"
 
-**Cause:** At-least-once delivery  
-**Solution:** Track execution IDs in KV - see idempotency pattern below
+**Causa:** Entrega pelo menos uma vez
+**Solução:** rastreie IDs de execução em KV – veja o padrão de idempotência abaixo
 
-### "Execution Failures"
+### "Falhas de execução"
 
-**Cause:** CPU exceeded, unhandled exceptions, network timeouts, binding errors  
-**Solution:** Use try-catch, AbortController timeouts, `ctx.waitUntil()` for long ops, or Workflows for heavy tasks
+**Causa:** CPU excedida, exceções não tratadas, tempos limite de rede, erros de vinculação
+**Solução:** Use try-catch, tempos limite de AbortController, `ctx.waitUntil()` para operações longas ou fluxos de trabalho para tarefas pesadas
 
-### "Local Testing Not Working"
+### "O teste local não funciona"
 
-**Problem:** `/__scheduled` endpoint returns 404 or doesn't trigger handler  
-**Cause:** Missing `scheduled()` export, wrangler not running, or incorrect endpoint format  
-**Solution:**
+**Problema:** endpoint `/__scheduled` retorna 404 ou não aciona o manipulador
+**Causa:** Exportação `scheduled()` ausente, wrangler não em execução ou formato de endpoint incorreto
+**Solução:**
 
-1. Verify `scheduled()` is exported:
+1. Verifique se `scheduled()` foi exportado:```typescript
+   export default {
+   async scheduled(controller, env, ctx) {
+   console.log('Cron triggered')
+   },
+   }
 
-```typescript
-export default {
-  async scheduled(controller, env, ctx) {
-    console.log('Cron triggered')
-  },
-}
-```
+````
 
 2. Start dev server:
 
 ```bash
 npx wrangler dev
-```
+````
 
 3. Use correct endpoint format (URL-encode spaces as `+`):
 
@@ -169,39 +168,39 @@ export default {
 }
 ```
 
-## Limits & Quotas
+## Limites e cotas
 
-| Limit               | Free             | Paid             | Notes                                    |
-| ------------------- | ---------------- | ---------------- | ---------------------------------------- |
-| Triggers per Worker | 3                | Unlimited        | Maximum cron schedules per Worker        |
-| CPU time            | 10ms             | 50ms             | May need `ctx.waitUntil()` or Workflows  |
-| Execution guarantee | At-least-once    | At-least-once    | Duplicates possible - use idempotency    |
-| Propagation delay   | Up to 15 minutes | Up to 15 minutes | Time for changes to take effect globally |
-| Min interval        | 1 minute         | 1 minute         | Cannot schedule more frequently          |
-| Cron accuracy       | ±1 minute        | ±1 minute        | Execution may drift slightly             |
+| Limite                   | Grátis             | Pago               | Notas                                               |
+| ------------------------ | ------------------ | ------------------ | --------------------------------------------------- |
+| Gatilhos por trabalhador | 3                  | Ilimitado          | Cronogramas máximos de cron por Worker              |
+| Tempo de CPU             | 10ms               | 50ms               | Pode precisar de `ctx.waitUntil()` ou Workflows     |
+| Garantia de execução     | Pelo menos uma vez | Pelo menos uma vez | Possíveis duplicatas - use idempotência             |
+| Atraso de propagação     | Até 15 minutos     | Até 15 minutos     | É hora de as mudanças entrarem em vigor globalmente |
+| Intervalo mínimo         | 1 minuto           | 1 minuto           | Não é possível agendar com mais frequência          |
+| Precisão do cron         | ±1 minuto          | ±1 minuto          | A execução pode variar ligeiramente                 |
 
-## Testing Best Practices
+## Testando melhores práticas
 
-**Unit tests:**
+**Testes unitários:**
 
-- Mock `ScheduledController`, `ExecutionContext`, and bindings
-- Test each cron expression separately
-- Verify `noRetry()` is called when expected
-- Use Vitest with `@cloudflare/vitest-pool-workers` for realistic env
+- Simulação de `ScheduledController`, `ExecutionContext` e ligações
+- Teste cada expressão cron separadamente
+- Verifique se `noRetry()` é chamado quando esperado
+- Use Vitest com `@cloudflare/vitest-pool-workers` para um ambiente realista
 
-**Integration tests:**
+**Testes de integração:**
 
-- Test via `/__scheduled` endpoint in dev environment
-- Verify idempotency logic with duplicate `scheduledTime` values
-- Test error handling and retry behavior
+- Teste via endpoint `/__scheduled` no ambiente de desenvolvimento
+- Verifique a lógica de idempotência com valores `scheduledTime` duplicados
+- Teste o tratamento de erros e o comportamento de nova tentativa
 
-**Production:** Start with long intervals (`*/30 * * * *`), monitor Cron Events for 24h, set up alerts before reducing interval
+**Produção:** Comece com intervalos longos (`*/30 * * * *`), monitore eventos Cron por 24h, configure alertas antes de reduzir o intervalo
 
-## Resources
+## Recursos
 
-- [Cron Triggers Docs](https://developers.cloudflare.com/workers/configuration/cron-triggers/)
-- [Scheduled Handler API](https://developers.cloudflare.com/workers/runtime-apis/handlers/scheduled/)
-- [Cloudflare Workflows](https://developers.cloudflare.com/workflows/)
-- [Workers Limits](https://developers.cloudflare.com/workers/platform/limits/)
-- [Crontab Guru](https://crontab.guru/) - Validator
+- [Documentos sobre Cron Triggers](https://developers.cloudflare.com/workers/configuration/cron-triggers/)
+- [API do manipulador agendado](https://developers.cloudflare.com/workers/runtime-apis/handlers/scheduled/)
+- [Fluxos de trabalho Cloudflare](https://developers.cloudflare.com/workflows/)
+- [Limites de trabalhadores](https://developers.cloudflare.com/workers/platform/limits/)
+- [Crontab Guru](https://crontab.guru/) - Validador
 - [Vitest Pool Workers](https://github.com/cloudflare/workers-sdk/tree/main/fixtures/vitest-pool-workers-examples)

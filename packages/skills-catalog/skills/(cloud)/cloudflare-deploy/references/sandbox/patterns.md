@@ -1,6 +1,6 @@
-# Common Patterns
+# Padrões Comuns
 
-## AI Code Execution with Code Context
+## Execução de código AI com contexto de código
 
 ```typescript
 export default {
@@ -26,7 +26,7 @@ export default {
 }
 ```
 
-## Interactive Dev Environment
+##Ambiente de desenvolvimento interativo
 
 ```typescript
 export default {
@@ -51,7 +51,7 @@ export default {
 }
 ```
 
-## WebSocket Real-Time Service
+##Serviço WebSocket em tempo real
 
 ```typescript
 export default {
@@ -74,7 +74,7 @@ export default {
 }
 ```
 
-**Dockerfile**:
+**Arquivo Docker**:
 
 ```dockerfile
 FROM docker.io/cloudflare/sandbox:latest
@@ -82,7 +82,7 @@ RUN npm install -g ws
 EXPOSE 8080
 ```
 
-## Process Readiness Pattern
+##Padrão de prontidão do processo
 
 ```typescript
 export default {
@@ -102,7 +102,7 @@ export default {
 }
 ```
 
-## Persistent Data with Bucket Mounting
+##Dados persistentes com montagem em bucket
 
 ```typescript
 export default {
@@ -125,7 +125,7 @@ export default {
 }
 ```
 
-## CI/CD Pipeline
+##Pipeline de CI/CD
 
 ```typescript
 export default {
@@ -156,7 +156,7 @@ export default {
 }
 ```
 
-## Multi-Tenant Pattern
+##Padrão multilocatário
 
 ```typescript
 export default {
@@ -184,7 +184,7 @@ export default {
 }
 ```
 
-## Git Operations
+##Operações Git
 
 ```typescript
 // Clone repo

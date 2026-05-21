@@ -1,19 +1,19 @@
 # Cloudflare Workers
 
-Expert guidance for building, deploying, and optimizing Cloudflare Workers applications.
+Orientação especializada para criar, implantar e otimizar aplicações Cloudflare Workers.
 
-## Overview
+## Visão geral
 
-Cloudflare Workers run on V8 isolates (NOT containers/VMs):
+Cloudflare Workers rodam em isolates V8 (não em contêineres/VMs):
 
-- Extremely fast cold starts (< 1ms)
-- Global deployment across 300+ locations
-- Web standards compliant (fetch, URL, Headers, Request, Response)
-- Support JS/TS, Python, Rust, and WebAssembly
+- Cold starts extremamente rápidos (< 1 ms)
+- Implantação global em mais de 300 localidades
+- Conformidade com padrões web (fetch, URL, Headers, Request, Response)
+- Suporte a JS/TS, Python, Rust e WebAssembly
 
-**Key principle**: Workers use web platform APIs wherever possible for portability.
+**Princípio-chave**: Workers usam APIs da plataforma web sempre que possível, para portabilidade.
 
-## Module Worker Pattern (Recommended)
+## Padrão Module Worker (recomendado)
 
 ```typescript
 export default {
@@ -23,35 +23,35 @@ export default {
 }
 ```
 
-**Handler parameters**:
+**Parâmetros do handler**:
 
-- `request`: Incoming HTTP request (standard Request object)
-- `env`: Environment bindings (KV, D1, R2, secrets, vars)
-- `ctx`: Execution context (`waitUntil`, `passThroughOnException`)
+- `request`: requisição HTTP recebida (objeto Request padrão)
+- `env`: bindings de ambiente (KV, D1, R2, secrets, vars)
+- `ctx`: contexto de execução (`waitUntil`, `passThroughOnException`)
 
-## Essential Commands
+## Comandos essenciais
 
 ```bash
-npx wrangler dev                    # Local dev
-npx wrangler dev --remote           # Remote dev (actual resources)
-npx wrangler deploy                 # Production
-npx wrangler deploy --env staging   # Specific environment
-npx wrangler tail                   # Stream logs
-npx wrangler secret put API_KEY     # Set secret
+npx wrangler dev                    # Desenvolvimento local
+npx wrangler dev --remote           # Dev remoto (recursos reais)
+npx wrangler deploy                 # Produção
+npx wrangler deploy --env staging   # Ambiente específico
+npx wrangler tail                   # Stream de logs
+npx wrangler secret put API_KEY     # Definir secret
 ```
 
-## When to Use Workers
+## Quando usar Workers
 
-- API endpoints at the edge
-- Request/response transformation
-- Authentication/authorization layers
-- Static asset optimization
-- A/B testing and feature flags
-- Rate limiting and security
-- Proxy/routing logic
-- WebSocket applications
+- Endpoints de API na edge
+- Transformação de requisição/resposta
+- Camadas de autenticação/autorização
+- Otimização de ativos estáticos
+- Testes A/B e feature flags
+- Rate limiting e segurança
+- Lógica de proxy/roteamento
+- Aplicações WebSocket
 
-## Quick Start
+## Início rápido
 
 ```bash
 npm create cloudflare@latest my-worker -- --type hello-world
@@ -59,52 +59,52 @@ cd my-worker
 npx wrangler dev
 ```
 
-## Handler Signatures
+## Assinaturas de handler
 
 ```typescript
-// HTTP requests
+// Requisições HTTP
 async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response>
 
 // Cron triggers
 async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext): Promise<void>
 
-// Queue consumer
+// Consumidor de fila
 async queue(batch: MessageBatch, env: Env, ctx: ExecutionContext): Promise<void>
 
-// Tail consumer
+// Consumidor tail
 async tail(events: TraceItem[], env: Env, ctx: ExecutionContext): Promise<void>
 ```
 
-## Resources
+## Recursos
 
 **Docs**: https://developers.cloudflare.com/workers/  
-**Examples**: https://developers.cloudflare.com/workers/examples/  
+**Exemplos**: https://developers.cloudflare.com/workers/examples/  
 **Runtime APIs**: https://developers.cloudflare.com/workers/runtime-apis/
 
-## In This Reference
+## Nesta referência
 
-- [Configuration](./configuration.md) - wrangler.jsonc setup, bindings, environments
-- [API](./api.md) - Runtime APIs, bindings, execution context
-- [Patterns](./patterns.md) - Common workflows, testing, optimization
-- [Frameworks](./frameworks.md) - Hono, routing, validation
-- [Gotchas](./gotchas.md) - Common issues, limits, troubleshooting
+- [Configuration](./configuration.md) — configuração wrangler.jsonc, bindings, ambientes
+- [API](./api.md) — APIs de runtime, bindings, contexto de execução
+- [Patterns](./patterns.md) — fluxos comuns, testes, otimização
+- [Frameworks](./frameworks.md) — Hono, roteamento, validação
+- [Gotchas](./gotchas.md) — problemas comuns, limites, troubleshooting
 
-## Reading Order
+## Ordem de leitura
 
-| Task                    | Start With                          | Then Read                   |
-| ----------------------- | ----------------------------------- | --------------------------- |
-| First Worker            | README → Configuration → API        | Patterns                    |
-| Add framework           | Frameworks                          | Configuration (bindings)    |
-| Add storage/bindings    | Configuration → API (binding usage) | See Also links              |
-| Debug issues            | Gotchas                             | API (specific binding docs) |
-| Production optimization | Patterns                            | API (caching, streaming)    |
-| Type safety             | Configuration (TypeScript)          | Frameworks (Hono typing)    |
+| Tarefa                     | Comece por                           | Depois leia               |
+| -------------------------- | ------------------------------------ | ------------------------- |
+| Primeiro Worker            | README → Configuration → API         | Patterns                  |
+| Adicionar framework        | Frameworks                           | Configuration (bindings)  |
+| Adicionar storage/bindings | Configuration → API (uso de binding) | Links Ver também          |
+| Depurar problemas          | Gotchas                              | API (docs do binding)     |
+| Otimização em produção     | Patterns                             | API (cache, streaming)    |
+| Tipagem forte              | Configuration (TypeScript)           | Frameworks (tipagem Hono) |
 
-## See Also
+## Ver também
 
-- [KV](../kv/README.md) - Key-value storage
-- [D1](../d1/README.md) - SQL database
-- [R2](../r2/README.md) - Object storage
-- [Durable Objects](../durable-objects/README.md) - Stateful coordination
-- [Queues](../queues/README.md) - Message queues
-- [Wrangler](../wrangler/README.md) - CLI tool reference
+- [KV](../kv/README.md) — armazenamento chave-valor
+- [D1](../d1/README.md) — banco SQL
+- [R2](../r2/README.md) — armazenamento de objetos
+- [Durable Objects](../durable-objects/README.md) — coordenação com estado
+- [Queues](../queues/README.md) — filas de mensagens
+- [Wrangler](../wrangler/README.md) — referência da CLI

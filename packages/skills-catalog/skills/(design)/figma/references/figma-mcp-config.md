@@ -1,43 +1,45 @@
-# Figma MCP config reference
+# Referência de configuração do Figma MCP
 
-Use this snippet to register the Figma MCP server in your agent's configuration as a streamable HTTP server with bearer auth pulled from your env.
+Use este snippet para registrar o servidor Figma MCP na configuração do seu agente como um servidor HTTP streamable com autenticação de portador extraída de seu ambiente.
 
-## Configuration Example
+## Exemplo de configuração```toml
 
-```toml
 [mcp_servers.figma]
 url = "https://mcp.figma.com/mcp"
 bearer_token_env_var = "FIGMA_OAUTH_TOKEN"
 http_headers = { "X-Figma-Region" = "us-east-1" }
+
 ```
+## Notas e opções
 
-## Notes and options
+- O token ao portador deve estar disponível como `FIGMA_OAUTH_TOKEN` no ambiente que inicia seu agente.
+- Mantenha o cabeçalho da região alinhado com sua região Figma. Se sua organização usa outra região, atualize `X-Figma-Region` consistentemente.
+- OAuth em HTTP streamable requer que o recurso do cliente RMCP esteja habilitado na configuração do seu agente.
+- Tempos limites opcionais por servidor: `startup_timeout_sec` (padrão 10) e `tool_timeout_sec` (padrão 60) podem ser definidos
 
-- The bearer token must be available as `FIGMA_OAUTH_TOKEN` in the environment that launches your agent.
-- Keep the region header aligned with your Figma region. If your org uses another region, update `X-Figma-Region` consistently.
-- OAuth on streamable HTTP requires the RMCP client feature to be enabled in your agent's configuration.
-- Optional per-server timeouts: `startup_timeout_sec` (default 10) and `tool_timeout_sec` (default 60) can be set if needed.
+t se necessário.
 
-## Env var setup (if missing)
+## Configuração de env var (se estiver faltando)
 
-- One-time set for current shell: `export FIGMA_OAUTH_TOKEN="<token>"`
-- Persist for future sessions: add the export line to your shell profile (e.g., `~/.zshrc` or `~/.bashrc`), then restart the shell or your IDE.
-- Verify before launching your agent: `echo $FIGMA_OAUTH_TOKEN` should print a non-empty token.
+- Conjunto único para shell atual: `export FIGMA_OAUTH_TOKEN="<token>"`
+- Persista para sessões futuras: adicione a linha de exportação ao seu perfil de shell (por exemplo, `~/.zshrc` ou `~/.bashrc`) e reinicie o shell ou seu IDE.
+- Verifique antes de iniciar seu agente: `echo $FIGMA_OAUTH_TOKEN` deve imprimir um token não vazio.
 
-## Setup + verification checklist
+## Configuração + lista de verificação de verificação
 
-- Add the MCP server configuration to your agent's config file.
-- Enable RMCP client feature if required by your agent.
-- Restart your agent (CLI/IDE) after updating config and env vars.
-- Ask your agent to list Figma tools or run a simple call to confirm the server is reachable.
+- Adicione a configuração do servidor MCP ao arquivo de configuração do seu agente.
+- Habilite o recurso do cliente RMCP, se exigido pelo seu agente.
+- Reinicie seu agente (CLI/IDE) após atualizar as variáveis ​​de configuração e ambiente.
+- Peça ao seu agente para listar as ferramentas Figma ou faça uma chamada simples para confirmar se o servidor está acessível.
 
-## Troubleshooting
+## Solução de problemas
 
-- Token not picked up: Export `FIGMA_OAUTH_TOKEN` in the same shell that launches your agent, or add it to your shell profile and restart.
-- OAuth errors: Verify RMCP client is enabled and the bearer token is valid. Tokens copied from Figma should not include surrounding quotes.
-- Network/headers: Keep the `X-Figma-Region` header; if your org uses another region, update the header consistently across config and requests.
+- Token não coletado: Exporte `FIGMA_OAUTH_TOKEN` no mesmo shell que inicia seu agente ou adicione-o ao seu perfil de shell e reinicie.
+- Erros OAuth: verifique se o cliente RMCP está ativado e se o token do portador é válido. Os tokens copiados do Figma não devem incluir aspas.
+- Rede/cabeçalhos: Mantenha o cabeçalho `X-Figma-Region`; se sua organização usar outra região, atualize o cabeçalho de forma consistente nas configurações e nas solicitações.
 
-## Usage reminders
+## Lembretes de uso
 
-- The server is link-based: copy the Figma frame or layer link, then ask the MCP client to implement that URL. The client will extract the node ID from the link (it does not browse the page).
-- If output feels generic, restate the project-specific rules from the main skill and ensure you follow the required flow (get_design_context → get_metadata if needed → get_screenshot).
+- O servidor é baseado em link: copie o link do quadro ou camada Figma e peça ao cliente MCP para implementar esse URL. O cliente extrairá o ID do nó do link (ele não navega na página).
+- Se a saída parecer genérica, reafirme as regras específicas do projeto da habilidade principal e certifique-se de seguir o fluxo necessário (get_design_context → get_metadata se necessário → get_screenshot).
+```

@@ -1,6 +1,6 @@
-# Queues API Reference
+# Referência da API de Queues
 
-## Producer: Send Messages
+## Produtor: enviar mensagens
 
 ```typescript
 // Basic send
@@ -31,7 +31,7 @@ export default {
 }
 ```
 
-## Consumer: Push-based (Worker)
+## Consumidor: baseado em push (Worker)
 
 ```typescript
 // Type-safe handler with ExportedHandler
@@ -56,11 +56,11 @@ export default {
 } satisfies ExportedHandler<Env>
 ```
 
-**CRITICAL WARNINGS:**
+**AVISOS CRÍTICOS:**
 
-1. **Messages not explicitly ack'd or retry'd will auto-retry indefinitely** until `max_retries` is reached. Always call `msg.ack()` or `msg.retry()` for each message.
+1. **Mensagens sem ack ou retry explícito repetem automaticamente** até atingir `max_retries`. Chame sempre `msg.ack()` ou `msg.retry()` em cada mensagem.
 
-2. **Throwing uncaught errors retries the ENTIRE batch**, not just the failed message. Always wrap individual message processing in try/catch and call `msg.retry()` explicitly per message.
+2. **Erros não capturados repetem o LOTE INTEIRO**, não só a mensagem com falha. Envolva o processamento de cada mensagem em try/catch e chame `msg.retry()` explicitamente por mensagem.
 
 ```typescript
 // ❌ BAD: Uncaught error retries entire batch
@@ -84,11 +84,11 @@ async queue(batch: MessageBatch): Promise<void> {
 }
 ```
 
-## Ack/Retry Precedence Rules
+## Regras de precedência ack/retry
 
-1. **Per-message calls take precedence**: If you call both `msg.ack()` and `msg.retry()`, last call wins
-2. **Batch calls don't override**: `batch.ackAll()` only affects messages without explicit ack/retry
-3. **No action = automatic retry**: Messages with no explicit action retry with configured delay
+1. **Chamadas por mensagem têm precedência**: Se chamar `msg.ack()` e `msg.retry()`, vale a última chamada
+2. **Chamadas em lote não sobrescrevem**: `batch.ackAll()` só afeta mensagens sem ack/retry explícito
+3. **Sem ação = retry automático**: Mensagens sem ação explícita repetem com o atraso configurado
 
 ```typescript
 async queue(batch: MessageBatch): Promise<void> {
@@ -101,7 +101,7 @@ async queue(batch: MessageBatch): Promise<void> {
 }
 ```
 
-## Batch Operations
+## Operações em lote
 
 ```typescript
 // Acknowledge entire batch
@@ -113,7 +113,7 @@ try {
 }
 ```
 
-## Exponential Backoff
+## Backoff exponencial
 
 ```typescript
 async queue(batch: MessageBatch, env: Env): Promise<void> {
@@ -130,7 +130,7 @@ async queue(batch: MessageBatch, env: Env): Promise<void> {
 }
 ```
 
-## Multiple Queues, Single Consumer
+## Várias filas, um consumidor
 
 ```typescript
 export default {
@@ -152,7 +152,7 @@ export default {
 }
 ```
 
-## Consumer: Pull-based (HTTP)
+## Consumidor: baseado em pull (HTTP)
 
 ```typescript
 // Pull messages
@@ -202,3 +202,5 @@ interface QueueSendOptions {
   delaySeconds?: number // 0-43200
 }
 ```
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

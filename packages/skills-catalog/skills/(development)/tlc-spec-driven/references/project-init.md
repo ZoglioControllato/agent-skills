@@ -1,24 +1,24 @@
-# Project Initialization
+# Inicialização do Projeto
 
-**Trigger:** "Initialize project", "Setup project", "Start new project"
+**Acionador:** "Inicializar projeto", "Configurar projeto", "Iniciar novo projeto"
 
-## Process
+## Processo
 
-Extract project vision via iterative Q&A (max 3-5 questions per message):
+Extraia a visão do projeto por meio de perguntas e respostas iterativas (máximo de 3 a 5 perguntas por mensagem):
 
-**Essential questions:**
+**Perguntas essenciais:**
 
-1. What are you building?
-2. Who is it for and what problem does it solve?
-3. What tech stack are you using? (if known)
-4. What's in scope for v1? What's explicitly excluded?
-5. Critical constraints? (timeline, technical, resources)
+1. O que você está construindo?
+2. A quem se destina e que problema resolve?
+3. Qual pilha de tecnologia você está usando? (se conhecido)
+4. O que está no escopo da v1? O que está explicitamente excluído?
+5. Restrições críticas? (cronograma, técnico, recursos)
 
-**Stop when:** Clear understanding of vision, goals, and boundaries.
+**Parar quando:** Compreensão clara da visão, das metas e dos limites.
 
-## Output: .specs/project/PROJECT.md
+## Saída: .specs/project/PROJECT.md
 
-**Structure:**
+**Estrutura:**
 
 ```markdown
 # [Project Name]
@@ -62,10 +62,10 @@ Extract project vision via iterative Q&A (max 3-5 questions per message):
 - Resources: [if applicable]
 ```
 
-**Size limit:** 2,000 tokens (~1,200 words)
+**Limite de tamanho:** 2.000 tokens (aproximadamente 1.200 palavras)
 
-**Validation:**
+**Validação:**
 
-- Vision clear in 1-2 sentences?
-- Goals have measurable outcomes?
-- Scope boundaries explicit?
+- Visão clara em 1-2 frases?
+- As metas têm resultados mensuráveis?
+- Os limites do escopo são explícitos?

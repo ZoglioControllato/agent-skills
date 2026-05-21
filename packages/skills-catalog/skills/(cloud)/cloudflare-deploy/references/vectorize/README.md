@@ -1,10 +1,10 @@
 # Cloudflare Vectorize
 
-Globally distributed vector database for AI applications. Store and query vector embeddings for semantic search, recommendations, RAG, and classification.
+Banco de dados vetorial distribuído globalmente para aplicações de IA. Armazene e consulte embeddings para busca semântica, recomendações, RAG e classificação.
 
-**Status:** Generally Available (GA) | **Last Updated:** 2026-01-27
+**Status:** disponibilidade geral (GA) | **Última atualização:** 2026-01-27
 
-## Quick Start
+## Início rápido
 
 ```typescript
 // 1. Create index
@@ -17,38 +17,38 @@ Globally distributed vector database for AI applications. Store and query vector
 const matches = await env.VECTORIZE.query(queryVector, { topK: 5 })
 ```
 
-## Key Features
+## Recursos principais
 
-- **10M vectors per index** (V2)
-- Dimensions up to 1536 (32-bit float)
-- Three distance metrics: cosine, euclidean, dot-product
-- Metadata filtering (up to 10 indexes)
-- Namespace support (50K namespaces paid, 1K free)
-- Seamless Workers AI integration
-- Global distribution
+- **10M vetores por índice** (V2)
+- Dimensões até 1536 (float 32 bits)
+- Três métricas de distância: cosine, euclidean, dot-product
+- Filtro por metadados (até 10 índices)
+- Suporte a namespaces (50K namespaces pagos, 1K grátis)
+- Integração direta com Workers AI
+- Distribuição global
 
-## Reading Order
+## Ordem de leitura
 
-| Task               | Files to Read           |
-| ------------------ | ----------------------- |
-| New to Vectorize   | README only             |
-| Implement feature  | README + api + patterns |
-| Setup/configure    | README + configuration  |
-| Debug issues       | gotchas                 |
-| Integrate with AI  | README + patterns       |
-| RAG implementation | README + patterns       |
+| Tarefa                     | Arquivos a ler          |
+| -------------------------- | ----------------------- |
+| Novo no Vectorize          | Só README               |
+| Implementar funcionalidade | README + api + patterns |
+| Configurar                 | README + configuration  |
+| Depurar                    | gotchas                 |
+| Integrar com IA            | README + patterns       |
+| Implementar RAG            | README + patterns       |
 
-## File Guide
+## Guia dos arquivos
 
-- **README.md** (this file): Overview, quick decisions
-- **api.md**: Runtime API, types, operations (query/insert/upsert)
-- **configuration.md**: Setup, CLI, metadata indexes
-- **patterns.md**: RAG, Workers AI, OpenAI, LangChain, multi-tenant
-- **gotchas.md**: Limits, pitfalls, troubleshooting
+- **README.md** (este arquivo): visão geral e decisões rápidas
+- **api.md**: API de runtime, tipos, operações (query/insert/upsert)
+- **configuration.md**: setup, CLI, índices de metadados
+- **patterns.md**: RAG, Workers AI, OpenAI, LangChain, multi-inquilino
+- **gotchas.md**: limites, armadilhas, resolução de problemas
 
-## Distance Metric Selection
+## Escolha da métrica de distância
 
-Choose based on your use case:
+Escolha conforme o caso de uso:
 
 ```
 What are you building?
@@ -58,15 +58,15 @@ What are you building?
 └─ Pre-normalized vectors → dot-product
 ```
 
-| Metric        | Best For                             | Score Interpretation              |
-| ------------- | ------------------------------------ | --------------------------------- |
-| `cosine`      | Text embeddings, semantic similarity | Higher = closer (1.0 = identical) |
-| `euclidean`   | Absolute distance, spatial data      | Lower = closer (0.0 = identical)  |
-| `dot-product` | Recommendations, normalized vectors  | Higher = closer                   |
+| Métrica       | Melhor para                                 | Interpretação do score                |
+| ------------- | ------------------------------------------- | ------------------------------------- |
+| `cosine`      | Embeddings de texto, similaridade semântica | Maior = mais próximo (1.0 = idêntico) |
+| `euclidean`   | Distância absoluta, dados espaciais         | Menor = mais próximo (0.0 = idêntico) |
+| `dot-product` | Recomendações, vetores normalizados         | Maior = mais próximo                  |
 
-**Note:** Index configuration is immutable. Cannot change dimensions or metric after creation.
+**Obs.:** A configuração do índice é imutável. Não é possível alterar dimensões ou métrica após a criação.
 
-## Multi-Tenancy Strategy
+## Estratégia de multi-inquilino
 
 ```
 How many tenants?
@@ -80,9 +80,9 @@ How many tenants?
     └─ 50K index limit per account (paid plan)
 ```
 
-## Common Workflows
+## Fluxos comuns
 
-### Semantic Search
+### Busca semântica
 
 ```typescript
 // 1. Generate embedding
@@ -95,7 +95,7 @@ const matches = await env.VECTORIZE.query(result.data[0], {
 })
 ```
 
-### RAG Pattern
+### Padrão RAG
 
 ```typescript
 // 1. Generate query embedding
@@ -113,19 +113,21 @@ const answer = await env.AI.run('@cf/meta/llama-3-8b-instruct', {
 })
 ```
 
-## Critical Gotchas
+## Armadilhas críticas
 
-See `gotchas.md` for details. Most important:
+Consulte `gotchas.md` para detalhes. As mais importantes:
 
-1. **Async mutations**: Inserts take 5-10s to be queryable
-2. **500 batch limit**: Workers API enforces 500 vectors per call (undocumented)
-3. **Metadata truncation**: `"indexed"` returns first 64 bytes only
-4. **topK with metadata**: Max 20 (not 100) when using returnValues or returnMetadata: "all"
-5. **Metadata indexes first**: Must create before inserting vectors
+1. **Mutações assíncronas:** inserções levam 5–10s para ficarem consultáveis
+2. **Limite de 500 por lote:** a API Workers aplica 500 vetores por chamada (não documentado)
+3. **Truncagem de metadados:** `"indexed"` devolve apenas os primeiros 64 bytes
+4. **topK com metadados:** máximo 20 (não 100) com returnValues ou returnMetadata: "all"
+5. **Índices de metadados primeiro:** criar antes de inserir vetores
 
-## Resources
+## Recursos
 
-- [Official Docs](https://developers.cloudflare.com/vectorize/)
-- [Client API Reference](https://developers.cloudflare.com/vectorize/reference/client-api/)
-- [Workers AI Models](https://developers.cloudflare.com/workers-ai/models/#text-embeddings)
+- [Documentação oficial](https://developers.cloudflare.com/vectorize/)
+- [Referência da API cliente](https://developers.cloudflare.com/vectorize/reference/client-api/)
+- [Modelos Workers AI](https://developers.cloudflare.com/workers-ai/models/#text-embeddings)
 - [Discord: #vectorize](https://discord.cloudflare.com)
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

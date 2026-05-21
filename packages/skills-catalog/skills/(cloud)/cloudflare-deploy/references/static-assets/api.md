@@ -1,10 +1,10 @@
-# API Reference
+# Referência de API
 
-## ASSETS Binding
+## Vinculação de ATIVOS
 
-The `ASSETS` binding provides access to static assets via the `Fetcher` interface.
+A ligação `ASSETS` fornece acesso a ativos estáticos através da interface `Fetcher`.
 
-### Type Definition
+### Definição de tipo
 
 ```typescript
 interface Env {
@@ -16,7 +16,7 @@ interface Fetcher {
 }
 ```
 
-### Method Signatures
+### Assinaturas de Método
 
 ```typescript
 // 1. Forward entire request
@@ -37,109 +37,106 @@ await env.ASSETS.fetch(
 )
 ```
 
-**Key behaviors:**
+**Comportamentos principais:**
 
-- Host/origin is ignored for string/URL inputs (only path is used)
-- Method must be GET (others return 405)
-- Request headers pass through (affects response)
-- Returns standard `Response` object
+- Host/origem é ignorado para entradas de string/URL (somente o caminho é usado)
+- O método deve ser GET (outros retornam 405)
+- Passagem de cabeçalhos de solicitação (afeta a resposta)
+- Retorna o objeto `Response` padrão
 
-## Request Handling
+## Tratamento de solicitações
 
-### Path Resolution
+### Resolução de caminho
 
-```typescript
+````typescript
 // All resolve to same asset:
 env.ASSETS.fetch('https://example.com/logo.png')
 env.ASSETS.fetch('https://ignored.host/logo.png')
 env.ASSETS.fetch('/logo.png')
-```
+```Os ativos são resolvidos em relação ao `assets.directory` configurado.
 
-Assets are resolved relative to configured `assets.directory`.
+### Cabeçalhos
 
-### Headers
+Cabeçalhos de solicitação que afetam a resposta:
 
-Request headers that affect response:
-
-| Header              | Effect                                    |
+| Cabeçalho | Efeito |
 | ------------------- | ----------------------------------------- |
-| `Accept-Encoding`   | Controls compression (gzip, brotli)       |
-| `Range`             | Enables partial content (206 responses)   |
-| `If-None-Match`     | Conditional request via ETag              |
-| `If-Modified-Since` | Conditional request via modification date |
+| `Aceitar codificação` | Controla a compactação (gzip, brotli) |
+| `Alcance` | Permite conteúdo parcial (206 respostas) |
+| `If-None-Match` | Solicitação condicional via ETag |
+| `Se-Modificado-Desde` | Pedido condicional através da data de modificação |
 
-Custom headers pass through but don't affect asset serving.
+Os cabeçalhos personalizados passam, mas não afetam a veiculação de recursos.
 
-### Method Support
+### Suporte ao Método
 
-| Method              | Supported | Response               |
+| Método | Suportado | Resposta |
 | ------------------- | --------- | ---------------------- |
-| `GET`               | ✅ Yes    | Asset content          |
-| `HEAD`              | ✅ Yes    | Headers only, no body  |
-| `POST`, `PUT`, etc. | ❌ No     | 405 Method Not Allowed |
+| `OBTER` | ✅ Sim | Conteúdo de ativos |
+| `CABEÇA` | ✅ Sim | Somente cabeçalhos, sem corpo |
+| `POST`, `PUT`, etc. | ❌Não | Método 405 não permitido |
 
-## Response Behavior
+## Comportamento de resposta
 
-### Content-Type Inference
+### Inferência de tipo de conteúdo
 
-Automatically set based on file extension:
+Definido automaticamente com base na extensão do arquivo:
 
-| Extension       | Content-Type               |
+| Extensão | Tipo de conteúdo |
 | --------------- | -------------------------- |
-| `.html`         | `text/html; charset=utf-8` |
-| `.css`          | `text/css`                 |
-| `.js`           | `application/javascript`   |
-| `.json`         | `application/json`         |
-| `.png`          | `image/png`                |
-| `.jpg`, `.jpeg` | `image/jpeg`               |
-| `.svg`          | `image/svg+xml`            |
-| `.woff2`        | `font/woff2`               |
+| `.html` | `texto/html; conjunto de caracteres=utf-8` |
+| `.css` | `texto/css` |
+| `.js` | `aplicativo/javascript` |
+| `.json` | `aplicativo/json` |
+| `.png` | `imagem/png` |
+| `.jpg`, `.jpeg` | `imagem/jpeg` |
+| `.svg` | `imagem/svg+xml` |
+| `.woff2` | `fonte/woff2` |
 
-### Default Headers
+### Cabeçalhos padrão
 
-Responses include:
+As respostas incluem:
+````
 
-```
 Content-Type: <inferred>
 ETag: "<hash>"
 Cache-Control: public, max-age=3600
-Content-Encoding: br  (if supported and beneficial)
-```
-
-**Cache-Control defaults:**
-
-- 1 hour (`max-age=3600`) for most assets
-- Override via Worker response transformation (see patterns.md:27-35)
-
-### Compression
-
-Automatic compression based on `Accept-Encoding`:
-
-- **Brotli** (`br`): Preferred, best compression
-- **Gzip** (`gzip`): Fallback
-- **None**: If client doesn't support or asset too small
-
-### ETag Generation
-
-ETags are content-based hashes:
+Content-Encoding: br (if supported and beneficial)
 
 ```
+
+**Padrões de controle de cache:**
+
+- 1 hora (`max-age=3600`) para a maioria dos ativos
+- Substituição por meio da transformação de resposta do trabalhador (consulte padrões.md:27-35)
+
+### Compressão
+
+Compressão automática baseada em `Accept-Encoding`:
+
+- **Brotli** (`br`): Melhor compactação preferida
+- **Gzip** (`gzip`): substituto
+- **Nenhum**: se o cliente não oferece suporte ou o ativo é muito pequeno
+
+### Geração de ETag
+
+ETags são hashes baseados em conteúdo:
+```
+
 ETag: "a3b2c1d4e5f6..."
-```
+```Usado para solicitações condicionais (`If-None-Match`). Retorna `304 Not Modified` se corresponder.
 
-Used for conditional requests (`If-None-Match`). Returns `304 Not Modified` if match.
+## Respostas de erro
 
-## Error Responses
+| Estado | Condição                        | Comportamento                                        |
+| ------ | ------------------------------- | ---------------------------------------------------- |
+| `404`  | Ativo não encontrado            | O corpo depende da configuração `not_found_handling` |
+| `405`  | Método não GET/HEAD             | `{ "error": "Método não permitido" }`                |
+| `416`  | Cabeçalho de intervalo inválido | Intervalo não satisfatório                           |
 
-| Status | Condition            | Behavior                                    |
-| ------ | -------------------- | ------------------------------------------- |
-| `404`  | Asset not found      | Body depends on `not_found_handling` config |
-| `405`  | Non-GET/HEAD method  | `{ "error": "Method not allowed" }`         |
-| `416`  | Invalid Range header | Range not satisfiable                       |
+### 404 Manuseio
 
-### 404 Handling
-
-Depends on configuration (see configuration.md:45-52):
+Depende da configuração (consulte configuration.md:45-52):
 
 ```typescript
 // not_found_handling: "single-page-application"
@@ -152,11 +149,11 @@ Depends on configuration (see configuration.md:45-52):
 // Returns 404 response
 ```
 
-## Advanced Usage
+##Uso Avançado
 
-### Modifying Responses
+### Modificando respostas
 
-```typescript
+````typescript
 const response = await env.ASSETS.fetch(request)
 
 // Clone and modify
@@ -168,12 +165,9 @@ return new Response(response.body, {
     'X-Custom': 'value',
   },
 })
-```
+```Consulte padrões.md:27-35 para obter um exemplo completo.
 
-See patterns.md:27-35 for full example.
-
-### Error Handling
-
+### Tratamento de erros
 ```typescript
 const response = await env.ASSETS.fetch(request)
 
@@ -183,11 +177,11 @@ if (!response.ok) {
 }
 
 return response
-```
+````
 
-### Conditional Serving
+### Veiculação Condicional
 
-```typescript
+````typescript
 const url = new URL(request.url)
 
 // Serve different assets based on conditions
@@ -196,6 +190,5 @@ if (url.pathname === '/') {
 }
 
 return env.ASSETS.fetch(request)
-```
-
-See patterns.md for complete patterns.
+```Consulte padrões.md para padrões completos.
+````

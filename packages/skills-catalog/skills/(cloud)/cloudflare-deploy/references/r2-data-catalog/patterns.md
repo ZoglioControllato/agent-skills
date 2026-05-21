@@ -179,13 +179,13 @@ if avg_mb < 10 or len(files) > 1000:
     print("⚠️ Needs compaction")
 ```
 
-## Best Practices
+## Melhores práticas
 
-| Area             | Guideline                                                                      |
-| ---------------- | ------------------------------------------------------------------------------ |
-| **Partitioning** | Use day/hour for time-series; 100-1000 partitions; avoid high cardinality      |
-| **File sizes**   | Target 128-512MB; compact when avg <10MB or >10k files                         |
-| **Schema**       | Add columns as nullable (`required=False`); batch changes                      |
-| **Maintenance**  | Compact high-write daily/weekly; expire snapshots 7-30d; cleanup orphans after |
-| **Concurrency**  | Reads automatic; writes to different partitions safe; retry same partition     |
-| **Performance**  | Filter on partitions; select only needed columns; batch appends 100MB+         |
+| Área                    | Diretriz                                                                                          |
+| ----------------------- | ------------------------------------------------------------------------------------------------- |
+| **Particionamento**     | Use dia/hora para séries temporais; 100-1000 partições; evite alta cardinalidade                  |
+| **Tamanhos de arquivo** | Alvo 128-512 MB; compacto quando a média de arquivos for <10MB ou >10k                            |
+| **Esquema**             | Adicione colunas como anuláveis ​​(`required=False`); alterações em lote                          |
+| **Manutenção**          | Alta gravação compacta diariamente/semanalmente; expirar instantâneos 7-30d; limpar órfãos depois |
+| **Simultaneidade**      | Lê automaticamente; grava em diferentes partições com segurança; tente novamente a mesma partição |
+| **Desempenho**          | Filtrar por partições; selecione apenas as colunas necessárias; lote anexa mais de 100 MB         |

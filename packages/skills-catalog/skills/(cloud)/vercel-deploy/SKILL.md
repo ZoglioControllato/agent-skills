@@ -1,72 +1,72 @@
 ---
 name: vercel-deploy
-description: Deploy applications and websites to Vercel. Use when the user requests deployment actions like "deploy my app", "deploy and give me the link", "push this live", or "create a preview deployment". Do NOT use for deploying to Netlify, Cloudflare, or Render (use their respective skills).
+description: Implanta aplicações e sites na Vercel. Use quando o usuário pedir ações de deploy como "deploy my app", "deploy and give me the link", "push this live" ou "create a preview deployment". NÃO use para implantar na Netlify, Cloudflare ou Render (use as skills respectivas).
 metadata:
   author: github.com/openai/skills
   version: '1.0.0'
 ---
 
-# Vercel Deploy
+# Deploy na Vercel
 
-Deploy any project to Vercel instantly. **Always deploy as preview** (not production) unless the user explicitly asks for production.
+Implante qualquer projeto na Vercel rapidamente. **Sempre faça deploy como preview** (não produção), salvo se o usuário pedir explicitamente produção.
 
-## Prerequisites
+## Pré-requisitos
 
-- When sandboxing blocks the deployment network calls, rerun with `sandbox_permissions=require_escalated`.
-- The deployment might take a few minutes. Use appropriate timeout values.
+- Se o sandbox bloquear chamadas de rede do deploy, rode novamente com `sandbox_permissions=require_escalated`.
+- O deploy pode levar alguns minutos. Use timeouts adequados.
 
-## Quick Start
+## Início rápido
 
-**Just run this (with a 10 minute timeout):**
+**Execute isto (com timeout de 10 minutos):**
 
 ```bash
 vercel deploy [path] -y
 ```
 
-**Important:** Use a 10 minute (600000ms) timeout for the deploy command since builds can take a while.
+**Importante:** Use timeout de 10 minutos (600000 ms) no comando de deploy, pois builds podem demorar.
 
-If that fails with "No existing credentials found", use the fallback method below.
+Se falhar com "No existing credentials found", use o método alternativo abaixo.
 
-## Fallback (No Auth)
+## Fallback (sem autenticação)
 
-If CLI fails with auth error, use the deploy script:
+Se a CLI falhar por erro de auth, use o script de deploy:
 
 ```bash
-# Deploy current directory
+# Deploy do diretório atual
 bash scripts/deploy.sh
 
-# Deploy specific project
+# Deploy de projeto específico
 bash scripts/deploy.sh /path/to/project
 
-# Deploy existing tarball
+# Deploy de tarball existente
 bash scripts/deploy.sh /path/to/project.tgz
 ```
 
-The script handles framework detection, packaging, and deployment. It waits for the build to complete and returns JSON with `previewUrl` and `claimUrl`.
+O script faz detecção de framework, empacotamento e deploy. Aguarda o fim do build e devolve JSON com `previewUrl` e `claimUrl`.
 
-**Tell the user:** "Your deployment is ready at [previewUrl]. Claim it at [claimUrl] to manage your deployment."
+**Diga ao usuário:** "Seu deploy está em [previewUrl]. Reivindique em [claimUrl] para gerenciar o deployment."
 
-## Production Deploys
+## Deploys em produção
 
-Only if user explicitly asks:
+Somente se o usuário pedir explicitamente:
 
 ```bash
 vercel deploy [path] --prod -y
 ```
 
-## Output
+## Saída
 
-Show the user the deployment URL. For fallback deployments, also show the claim URL.
+Mostre ao usuário a URL do deployment. Para deploy pelo fallback, mostre também a claim URL.
 
-**Do not** curl or fetch the deployed URL to verify it works. Just return the link.
+**Não** use curl nem fetch na URL implantada para verificar se funciona. Apenas devolva o link.
 
-## Troubleshooting
+## Solução de problemas
 
-### Escalated Network Access
+### Rede com permissões elevadas
 
-If deployment fails due to network issues (timeouts, DNS errors, connection resets), rerun the deploy with escalated permissions (use `sandbox_permissions=require_escalated`). The deploy requires escalated network access when sandbox networking blocks outbound requests.
+Se o deploy falhar por rede (timeouts, DNS, resets), rode novamente com permissões elevadas (`sandbox_permissions=require_escalated`). O deploy precisa de rede elevada quando o sandbox bloqueia saída.
 
-Example guidance to the user:
+Orientação de exemplo ao usuário:
 
 ```
 The deploy needs escalated network access to deploy to Vercel. I can rerun the command with escalated permissions—want me to proceed?

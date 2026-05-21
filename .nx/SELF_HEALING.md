@@ -1,178 +1,178 @@
-# Self-Healing CI Configuration
+# Configuração de CI auto-reparável
 
-This file provides project-specific instructions to the Nx Cloud Self-Healing CI agent for the `agent-skills` monorepo.
+Este arquivo fornece instruções específicas do projeto para o agente Nx Cloud Self-Healing CI para o monorepo `agent-skills`.
 
-## Project Context
+## Contexto do Projeto
 
-This is a TypeScript monorepo managed by Nx, containing:
+Trata-se de um monorepo TypeScript gerenciado por Nx, contendo:
 
-- **CLI package** (`@tech-leads-club/agent-skills`) - Node.js CLI for installing AI agent skills
-- **Core library** (`@tech-leads-club/core`) - Shared utilities and types
-- **Skill plugin** - Nx generator for creating new skills
-- **Skills collection** - Pre-built skills for AI agents (Claude, Cursor, Copilot, etc.)
+- ** Pacote CLI ** (`@ tech-leads-club/agent-skills`) - CLI do Node.js para instalar habilidades de agente de IA
+- ** Biblioteca principal ** (`@tech-leads-club/core`) - Utilitários e tipos compartilhados
+- ** Plugin de habilidade ** - Gerador Nx para criar novas habilidades
+- ** Coleção de habilidades ** - Habilidades pré-construídas para agentes de IA (Claude, Cursor, Copiloto, etc.)
 
-See [AGENTS.md](../AGENTS.md) for comprehensive architectural context.
+Consulte [AGENTS.md](../AGENTS.md) para obter um contexto arquitetônico abrangente.
 
-## Confidence Rules
+## Regras de confiança
 
-- **High confidence required** for:
-  - Changes to `packages/cli/src/index.ts` (entry point)
-  - Changes to skill generators in `tools/skill-plugin/`
-  - Any modifications to published package versions
-  - Changes to CI/CD workflows (`.github/workflows/`)
-  - Failures in `*build*` or `*e2e*` tasks
+- **Alta confiança necessária** para:
+  - Alterações em `packages/cli/src/index.ts` (ponto de entrada)
+  - Mudanças nos geradores de habilidades em `tools/skill-plugin/`
+  - Quaisquer modificações nas versões publicadas do pacote
+  - Alterações nos fluxos de trabalho de CI/CD (`.github/workflows/`)
+  - Falhas nas tarefas `*build*` ou `*e2e*`
 
-- **Medium confidence acceptable** for:
-  - ESLint rule updates
-  - Test file modifications (`*.spec.ts`)
-  - Documentation updates (README, CHANGELOG)
-  - Type definition improvements
-  - Failures in `*test*` tasks
+- ** Confiança média aceitável** para:
+  - Atualizações da regra ESLint
+  - Modificações de arquivo de teste (`*.spec.ts`)
+  - Atualizações da documentação (README, CHANGELOG)
+  - Melhorias na definição de tipo
+  - Falhas nas tarefas de `*teste*`
 
-- **Low confidence acceptable** for:
-  - Formatting fixes (Prettier, ESLint auto-fix)
-  - Whitespace normalization
-  - Import organization
-  - Failures in `*format*` or `*lint*` tasks
+- **Baixa confiança aceitável** para:
+  - Correções de formatação (Prettier, ESLint auto-fix)
+  - Normalização de espaços em branco
+  - Importar organização
+  - Falhas em tarefas `*format*` ou `*lint*`
 
-- **Classify as environment_state**:
-  - Failures in dependency installation
-  - CI-specific environment variable issues
-  - Permission or authentication errors
+- **Classificar como environment_state**:
+  - Falhas na instalação da dependência
+  - Problemas de variáveis de ambiente específicas de CI
+  - Erros de permissão ou autenticação
 
-## Off-Limits Areas
+## Áreas fora dos limites
 
-- `/tmp/` - Temporary build outputs, do not modify
-- `CHANGELOG.md` - Managed by semantic-release, do not manually edit
-- `package-lock.json` - Only update via `npm install`, never manually
-- `/node_modules/` - Dependencies, never modify directly
+- `/tmp/` - Saídas temporárias de compilação, não modifique
+- `CHANGELOG.md` - Gerenciado por liberação semântica, não edite manualmente
+- `package-lock.json` - Atualize apenas via `npm install`, nunca manualmente
+- `/node_modules/` - Dependências, nunca modifique diretamente
 
-## Fix Preferences
+## Corrigir preferências
 
-### Linting and Formatting
+### Fiapos e formatação
 
-- **Always prefer** running `nx format` over manual formatting fixes
-- **Always prefer** updating ESLint configuration over adding `eslint-disable` comments
-- For TypeScript errors, prefer explicit types over `any` or `@ts-ignore`
-- Use `// @ts-expect-error with explanation` only when absolutely necessary
+- **Sempre prefira** executar `formato nx` em vez de correções de formatação manual
+- **Sempre prefira** atualizar a configuração do ESLint em vez de adicionar comentários `eslint-disable`
+- Para erros de TypeScript, prefira tipos explícitos em vez de `any` ou `@ts-ignore`
+- Use `// @ts-expect-error with explanation` somente quando absolutamente necessário
 
-### Testing
+### Teste
 
-- When test failures occur in `*.spec.ts` files:
-  1. First check if the test itself is outdated
-  2. Then verify if implementation changed the expected behavior
-  3. Only then suggest code fixes to make tests pass
-- Prefer updating test snapshots (`nx test --updateSnapshot`) when UI/output changes are intentional
+- Quando ocorrerem falhas de teste nos arquivos `* .spec.ts`:
+  1. Primeiro verifique se o teste em si está desatualizado
+  2. Em seguida, verifique se a implementação mudou o comportamento esperado
+  3. Só então sugira correções de código para fazer os testes passarem
+- Prefere atualizar instantâneos de teste (`nx test --updateSnapshot') quando as alterações de UI/saída são intencionais
 
-### Code Quality
+### Qualidade do código
 
-- Maintain existing code patterns (e.g., use of `@clack/prompts` for CLI interactions)
-- Follow kebab-case for file/directory names in `skills/` directory
-- Ensure all new skills have valid frontmatter in `SKILL.md`
-- Respect the monorepo structure - keep packages independent
+- Manter padrões de código existentes (por exemplo, uso de `@clack/prompts` para interações CLI)
+- Siga o kebab-case para nomes de arquivos/diretórios no diretório `skills/`
+- Certifique-se de que todas as novas habilidades tenham um frontmatter válido em `SKILL.md`
+- Respeite a estrutura monorepo - mantenha os pacotes independentes
 
-### Build Failures
+### Construir falhas
 
-- For TypeScript compilation errors, check `tsconfig.json` configuration first
-- For module resolution issues, verify entries in `tsconfig.base.json` paths
-- Build failures in CI often indicate dependency installation issues - check `package.json` and lockfile
+- Para erros de compilação TypeScript, verifique primeiro a configuração `tsconfig.json`
+- Para problemas de resolução de módulos, verifique as entradas nos caminhos `tsconfig.base.json`
+- Falhas de compilação no CI geralmente indicam problemas de instalação de dependência - verifique `package.json` e lockfile
 
-## Predefined Fixes
+## Correções predefinidas
 
-### Deterministic Nx Commands
+### Comandos Determinísticos Nx
 
-For these specific failures, always run the corresponding fix command:
+Para essas falhas específicas, sempre execute o comando FIX correspondente:
 
-- **Formatting failures** (`nx format:check`): Run `nx format` to auto-fix
-- **Sync check failures** (`nx sync:check`): Run `nx sync` to synchronize workspace
-- **Lint failures**: Try `nx affected -t lint --fix` before proposing code changes
-- **Test snapshots**: For intentional changes, run `nx affected -t test --updateSnapshot`
+- ** Falhas de formatação ** (`nx format:check`): Execute `nx format` para corrigir automaticamente
+- ** Falhas de verificação de sincronização ** (`nx sync:check`): Execute `nx sync` para sincronizar o espaço de trabalho
+- ** Falhas de fiapos **: Tente `nx affected -t lint --fix' antes de propor alterações de código
+- ** Instantâneos de teste **: para alterações intencionais, execute `nx affected -t test --updateSnapshot`
 
-### Skill Validation Failures
+# ## Falhas de validação de habilidades
 
-If `validate-skills` job fails:
+Se o trabalho `validate-skills` falhar:
 
-1. Check for missing `SKILL.md` files in skill directories
-2. Verify frontmatter starts with `---` in SKILL.md
-3. Ensure skills are properly listed in `skills/categories.json`
-4. Validate against `skills/categories.schema.json`
+1. Verifique se há arquivos `SKILL.md` ausentes nos diretórios de habilidades
+2. Verifique se o frontmatter começa com `---` em SKILL.md
+3. Certifique-se de que as habilidades estejam devidamente listadas em `skills/categories.json`
+4. Valide contra `skills/categories.schema.json`
 
-### Conventional Commit Issues
+### Questões Convencionais de Compromisso
 
-If commit message validation fails:
+Se a validação da mensagem de confirmação falhar:
 
-- Ensure commits follow format: `type(scope): description`
-- Valid types: `feat`, `fix`, `docs`, `chore`, `test`, `refactor`, `ci`
-- Breaking changes require `!` or `BREAKING CHANGE:` in footer
+- Certifique-se de que os commits sigam o formato: `type(scope): description`
+- Tipos válidos: `feat`, `fix`, `docs`, `chore`, `test`, `refactor`, `ci`
+- As alterações de interrupção requerem `!` ou `ALTERAÇÃO DE INTERRUPÇÃO:` no rodapé
 
-### TypeScript Errors
+### Erros de TypeScript
 
-For import path errors:
+Para erros de caminho de importação:
 
-- Check `tsconfig.base.json` for correct path mappings
-- Verify package exports in `package.json` files
-- Use workspace-relative imports via path aliases (e.g., `@tech-leads-club/core`)
+- Verifique `tsconfig.base.json` para mapeamentos de caminho corretos
+- Verifique as exportações de pacotes em arquivos `package.json`
+- Usar importações relativas ao espaço de trabalho por meio de pseudônimos de caminhos (por exemplo, `@ tech-leads-club/core`)
 
-## Auto-Apply Criteria
+## Critérios de aplicação automática
 
-The following task patterns are safe to auto-apply when the agent has **high confidence**:
+Os seguintes padrões de tarefas são seguros para aplicação automática quando o agente tem **alta confiança**:
 
-- `*format*` - Code formatting via Prettier/ESLint
-- `*lint*` - Linting fixes that don't change logic
-- Test updates when implementation intentionally changed behavior
+- `*format*` - Formatação de código via Prettier/ESLint
+- `*lint*` - Correções de fiapos que não mudam a lógica
+- Testar atualizações quando a implementação mudar intencionalmente o comportamento
 
-**Never auto-apply** fixes to:
+**Nunca aplicar automaticamente** correções para:
 
-- `*build*` tasks when they might affect published packages
-- `*e2e*` or integration tests
-- Version bumps or changelog generation
+- Tarefas de `*build*` quando podem afetar pacotes publicados
+- `*e2e*` ou testes de integração
+- Geração de solavancos de versão ou changelog
 
-## Context
+## Contexto
 
-See [AGENTS.md](../AGENTS.md) for complete project architecture, monorepo structure, and development guidelines.
+Consulte [AGENTS.md](../AGENTS.md) para arquitetura completa do projeto, estrutura monorepo e diretrizes de desenvolvimento.
 
-Key configuration files:
+Arquivos de configuração principais:
 
-- `nx.json` - Nx workspace configuration and task runner settings
-- `tsconfig.base.json` - TypeScript path mappings for monorepo
-- `skills/categories.json` - Skill taxonomy and categorization
-- `.github/workflows/ci.yml` - CI pipeline definition
+- `nx.json` - Configuração do espaço de trabalho Nx e configurações do executor de tarefas
+- `tsconfig.base.json` - Mapeamentos de caminho TypeScript para monorepo
+- `skills/categories.json` - Taxonomia e categorização de habilidades
+- `.github/workflows/ci.yml' - Definição do pipeline CI
 
-## Project-Specific Notes
+## Notas específicas do
 
-### Skill Creation
+projeto ### Criação de habilidades
 
-New skills must:
+Novas habilidades devem:
 
-1. Be created via `nx g @tech-leads-club/skill-plugin:skill <name>`
-2. Have kebab-case directory names
-3. Include frontmatter in SKILL.md with `name` and `description`
-4. Follow the template structure (see `tools/skill-plugin/src/generators/skill/files/`)
+1. Ser criado via `nx g @tech-leads-club/skill-plugin:skill<name>`
+2. Tenha nomes de diretório kebab-case
+3. Incluir frontmatter em SKILL.md com `name` e `description`
+4. Siga a estrutura do modelo (consulte `tools/skill-plugin/src/generators/skill/files/`)
 
-### CLI Development
+### Desenvolvimento CLI
 
-When modifying `packages/cli/`:
+Ao modificar `packages/cli/`:
 
-- Ensure changes maintain backward compatibility
-- Update tests in `__tests__/` directory
-- Verify against all supported agents (Claude, Cursor, Copilot, Antigravity, OpenCode)
-- Test with both `--local` and `--global` installation modes
+- Garantir que as alterações mantenham a compatibilidade com versões anteriores
+- Atualizar testes no diretório `__tests__/`
+- Verificar em relação a todos os agentes suportados (Claude, Cursor, Copiloto, Antigravidade, OpenCode)
+- Teste com os modos de instalação `--local` e `--global`
 
-### Testing Strategy
+### Estratégia de teste
 
-- Use `NODE_OPTIONS: '--experimental-vm-modules'` for Jest (ESM support)
-- Run affected tests via `nx affected -t test`
-- Coverage reports are in `coverage/` (gitignored)
+- Use `NODE_OPTIONS: ' --experimental-vm-modules'' para Jest (suporte a ESM)
+- Executar testes afetados via `nx affected -t test`
+- Os relatórios de cobertura estão em `coverage/` (gitignored)
 
-## Failure Classification
+## Classificação da falha
 
-When analyzing failures, classify them as:
+Ao analisar falhas, classifique-as como:
 
-- **code_quality**: Linting, formatting, type errors
-- **test_failure**: Unit/integration test failures
-- **build_failure**: Compilation, bundling errors
-- **dependency_issue**: Missing or incompatible dependencies
-- **configuration_error**: Incorrect nx.json, tsconfig, or package.json settings
-- **environment_state**: CI-specific issues (permissions, env vars)
+- **CODE_Quality**: Fiapos, formatação, erros de digitação
+- **test_failure**: falhas no teste de unidade/integração
+- **build_failure**: erros de compilação e agrupamento
+- **Dependency_Issue**: dependências ausentes ou incompatíveis
+- **configuration_error**: Configurações incorretas de nx.json, tsconfig ou package.json
+- **Environment_STATE**: problemas específicos de CI (permissões, env vars)
 
-This helps determine the appropriate fix strategy and confidence level.
+Isso ajuda a determinar a estratégia de correção apropriada e o nível de confiança.

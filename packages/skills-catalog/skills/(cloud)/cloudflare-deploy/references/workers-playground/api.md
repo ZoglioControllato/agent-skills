@@ -1,6 +1,6 @@
-# Workers Playground API
+# API Workers Playground
 
-## Handler
+## Manipulador
 
 ```javascript
 export default {
@@ -11,7 +11,7 @@ export default {
 }
 ```
 
-## Request
+##Solicitar
 
 ```javascript
 const method = request.method // "GET", "POST"
@@ -29,7 +29,7 @@ request.cf.country // "US"
 request.cf.colo // "SFO"
 ```
 
-## Response
+##Resposta
 
 ```javascript
 // Text
@@ -46,7 +46,7 @@ const modified = new Response(response.body, response);
 modified.headers.set('X-Custom', 'value');
 ```
 
-## ExecutionContext
+##ExecuçãoContexto
 
 ```javascript
 // Background work (after response sent)
@@ -54,7 +54,7 @@ ctx.waitUntil(fetch('https://logs.example.com', { method: 'POST', body: '...' })
 return new Response('OK') // Returns immediately
 ```
 
-## Fetch
+##Buscar
 
 ```javascript
 const response = await fetch('https://api.example.com')
@@ -68,7 +68,7 @@ await fetch(url, {
 })
 ```
 
-## Cache
+##Cache
 
 ```javascript
 const cache = caches.default
@@ -82,7 +82,7 @@ if (!response) {
 return response
 ```
 
-## Crypto
+##Criptografia
 
 ```javascript
 crypto.randomUUID() // UUID v4
@@ -92,10 +92,10 @@ crypto.getRandomValues(new Uint8Array(16))
 const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(data))
 ```
 
-## Limits (Playground = Free Plan)
+##Limites (Playground = Plano Gratuito)
 
-| Resource    | Limit  |
-| ----------- | ------ |
-| CPU time    | 10ms   |
-| Subrequests | 50     |
-| Memory      | 128 MB |
+| Recurso         | Limite |
+| --------------- | ------ |
+| Tempo de CPU    | 10ms   |
+| Subsolicitações | 50     |
+| Memória         | 128 MB |

@@ -1,74 +1,74 @@
 ---
 name: coding-guidelines
-description: Behavioral guidelines to reduce common LLM coding mistakes. Use when writing, modifying, or reviewing code — implementation tasks, code changes, refactoring, bug fixes, or feature development. Do NOT use for architecture design, documentation, or non-code tasks.
+description: Diretrizes comportamentais para reduzir erros comuns de codificação por LLM. Use quando escrever, modificar ou revisar código — tarefas de implementação, mudanças, refatoração, correções de bugs ou desenvolvimento de features. NÃO use para desenho de arquitetura, documentação ou tarefas sem código.
 metadata:
   author: ale
   version: '1.0.0'
   source: 'Karpathy Guidelines'
 ---
 
-# Coding Guidelines
+# Diretrizes de codificação
 
-Behavioral guidelines to reduce common LLM coding mistakes. These principles bias toward caution over speed—for trivial tasks, use judgment.
+Diretrizes comportamentais para reduzir erros comuns de codificação por LLM. Esses princípios favorecem cautela em vez de velocidade — para tarefas triviais, use o bom senso.
 
-## 1. Think Before Coding
+## 1. Pense antes de codificar
 
-**Don't assume. Don't hide confusion. Surface tradeoffs.**
+**Não assuma. Não esconda dúvida. Deixe trade-offs explícitos.**
 
-Before implementing:
+Antes de implementar:
 
-- State assumptions explicitly. If uncertain, ask.
-- If multiple interpretations exist, present them—don't pick silently.
-- If a simpler approach exists, say so. Push back when warranted.
-- If something is unclear, stop. Name what's confusing. Ask.
-- Disagree honestly. If the user's approach seems wrong, say so—don't be sycophantic.
+- Declare suposições com clareza. Se estiver incerto, pergunte.
+- Se houver várias interpretações, apresente-as — não escolha em silêncio.
+- Se existir abordagem mais simples, diga. Empurre de volta quando fizer sentido.
+- Se algo estiver pouco claro, pare. Diga o que confunde. Pergunte.
+- Discorde com honestidade. Se a abordagem do usuário parecer errada, diga — não seja subserviente.
 
-## 2. Simplicity First
+## 2. Simplicidade primeiro
 
-**Minimum code that solves the problem. Nothing speculative.**
+**Mínimo de código que resolve o problema. Nada especulativo.**
 
-- No features beyond what was asked.
-- No abstractions for single-use code.
-- No "flexibility" or "configurability" that wasn't requested.
-- No error handling for impossible scenarios.
-- If you write 200 lines and it could be 50, rewrite it.
+- Sem features além do pedido.
+- Sem abstrações para código de uso único.
+- Sem “flexibilidade” ou “configurabilidade” que não foram solicitadas.
+- Sem tratamento de erro para cenários impossíveis.
+- Se você escreveu 200 linhas e poderiam ser 50, reescreva.
 
-Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
+Pergunte a si mesmo: “Um engenheiro sênior diria que isso está complicado demais?” Se sim, simplifique.
 
-## 3. Surgical Changes
+## 3. Mudanças cirúrgicas
 
-**Touch only what you must. Clean up only your own mess.**
+**Toque só no necessário. Limpe só a bagunça que você criou.**
 
-When editing existing code:
+Ao editar código existente:
 
-- Don't "improve" adjacent code, comments, or formatting.
-- Don't refactor things that aren't broken.
-- Match existing style, even if you'd do it differently.
-- If you notice unrelated dead code, mention it—don't delete it.
+- Não “melhore” código adjacente, comentários ou formatação.
+- Não refatore o que não está quebrado.
+- Combine o estilo existente, mesmo faria diferente.
+- Se notar código morto não relacionado, mencione — não apague.
 
-When your changes create orphans:
+Quando suas mudanças criarem órfãos:
 
-- Remove imports/variables/functions that YOUR changes made unused.
-- Don't remove pre-existing dead code unless asked.
+- Remova imports/variáveis/funções que **suas** mudanças tornaram não usados.
+- Não remova código morto pré-existente, a menos que peçam.
 
-**The test:** Every changed line should trace directly to the user's request.
+**O teste:** Toda linha alterada deve se ligar diretamente ao pedido do usuário.
 
-## 4. Goal-Driven Execution
+## 4. Execução orientada a objetivo
 
-**Define success criteria. Loop until verified.**
+**Defina critérios de sucesso. Repita até verificar.**
 
-Transform tasks into verifiable goals:
+Transforme tarefas em metas verificáveis:
 
-- "Add validation" → "Write tests for invalid inputs, then make them pass"
-- "Fix the bug" → "Write a test that reproduces it, then make it pass"
-- "Refactor X" → "Ensure tests pass before and after"
+- “Adicionar validação” → “Escrever testes para entradas inválidas, depois fazer passar”
+- “Corrigir o bug” → “Escrever teste que reproduz, depois fazer passar”
+- “Refatorar X” → “Garantir que os testes passem antes e depois”
 
-For multi-step tasks, state a brief plan:
+Para tarefas com vários passos, declare um plano breve:
 
 ```
-1. [Step] → verify: [check]
-2. [Step] → verify: [check]
-3. [Step] → verify: [check]
+1. [Passo] → verificar: [checagem]
+2. [Passo] → verificar: [checagem]
+3. [Passo] → verificar: [checagem]
 ```
 
-Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
+Critérios de sucesso fortes permitem iterar sozinho. Critérios fracos (“fazer funcionar”) exigem esclarecimento constante.

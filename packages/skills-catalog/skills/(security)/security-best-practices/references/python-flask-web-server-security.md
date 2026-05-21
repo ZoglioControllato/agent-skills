@@ -1,835 +1,874 @@
-# Flask (Python) Web Security Spec (Flask 3.1.x, Python 3.x)
+# Flask (Python) Especificação de segurança da Web (Flask 3.1.x, Python 3.x)
 
-This document is designed as a **security spec** that supports:
+Este documento foi concebido como uma **especificação de segurança** que oferece suporte a:
 
-1. **Secure-by-default code generation** for new Flask code.
-2. **Security review / vulnerability hunting** in existing Flask code (passive “notice issues while working” and active “scan the repo and report findings”).
+1. **Geração de código seguro por padrão** para novo código Flask.
+2. **Revisão de segurança/caça de vulnerabilidades** no código Flask existente (passivo “notificar problemas durante o trabalho” e ativo “verificar o repositório e relatar descobertas”).
 
-It is intentionally written as a set of **normative requirements** (“MUST/SHOULD/MAY”) plus **audit rules** (what bad patterns look like, how to detect them, and how to fix/mitigate them).
-
----
-
-## 0) Safety, boundaries, and anti-abuse constraints (MUST FOLLOW)
-
-- MUST NOT request, output, log, or commit secrets (API keys, passwords, private keys, session cookies, SECRET_KEY).
-- MUST NOT “fix” security by disabling protections (e.g., turning off CSRF, relaxing CORS, disabling escaping, disabling auth checks).
-- MUST provide **evidence-based findings** during audits: cite file paths, code snippets, and configuration values that justify the claim.
-- MUST treat uncertainty honestly: if a protection might exist in infrastructure (reverse proxy, WAF, CDN), report it as “not visible in app code; verify at runtime/config”.
+Ele é intencionalmente escrito como um conjunto de **requisitos normativos** (“DEVE/DEVE/PODE”) mais **regras de auditoria** (como são os padrões ruins, como detectá-los e como corrigi-los/mitigá-los).
 
 ---
 
-## 1) Operating modes
+## 0) Segurança, limites e restrições antiabuso (DEVE SEGUIR)
 
-### 1.1 Generation mode (default)
+- NÃO DEVE solicitar, gerar, registrar ou confirmar segredos (chaves de API, senhas, chaves privadas, cookies de sessão, SECRET_KEY).
+- NÃO DEVE “consertar” a segurança desabilitando proteções (por exemplo, desligando CSRF, relaxando CORS, desabilitando escape, desabilitando verificações de autenticação).
+- DEVE fornecer **descobertas baseadas em evidências** durante as auditorias: citar caminhos de arquivos, trechos de código e valores de configuração que justifiquem a reivindicação.
+- DEVE tratar a incerteza com honestidade: se uma proteção puder extinguir
 
-When asked to write new Flask code or modify existing code:
-
-- MUST follow every **MUST** requirement in this spec.
-- SHOULD follow every **SHOULD** requirement unless the user explicitly says otherwise.
-- MUST prefer safe-by-default APIs and proven libraries over custom security code.
-- MUST avoid introducing new risky sinks (template rendering from strings, shell execution, dynamic imports, unsafe redirects, serving user files as HTML, etc.).
-
-### 1.2 Passive review mode (always on while editing)
-
-While working anywhere in a Flask repo (even if the user did not ask for a security scan):
-
-- MUST “notice” violations of this spec in touched/nearby code.
-- SHOULD mention issues as they come up, with a brief explanation + safe fix.
-
-### 1.3 Active audit mode (explicit scan request)
-
-When the user asks to “scan”, “audit”, or “hunt for vulns”:
-
-- MUST systematically search the codebase for violations of this spec.
-- MUST output findings in a structured format (see §2.3).
-
-Recommended audit order:
-
-1. App entrypoints / deployment scripts / Dockerfiles / Procfiles.
-2. Flask configuration and environment handling.
-3. Auth + sessions + cookies.
-4. CSRF protections and state-changing routes.
-5. Template rendering and XSS/SSTI.
-6. File handling (uploads + downloads) and path traversal.
-7. Injection classes (SQL, command execution, unsafe deserialization).
-8. Outbound requests (SSRF).
-9. Redirect handling (open redirects).
-10. CORS and security headers.
+ist na infraestrutura (proxy reverso, WAF, CDN), relate-o como “não visível no código do aplicativo; verifique em tempo de execução/configuração”.
 
 ---
 
-## 2) Definitions and review guidance
+## 1) Modos de operação
 
-### 2.1 Untrusted input (treat as attacker-controlled unless proven otherwise)
+### 1.1 Modo de geração (padrão)
 
-Examples include:
+Quando solicitado a escrever um novo código Flask ou modificar o código existente:
+
+- DEVE seguir todos os requisitos **DEVE** nesta especificação.
+- DEVE seguir todos os requisitos **DEVE**, a menos que o usuário diga explicitamente o contrário.
+- DEVE preferir APIs seguras por padrão e bibliotecas comprovadas em vez de código de segurança personalizado.
+- DEVE evitar a introdução de novos coletores arriscados (renderização de modelos a partir de strings, execução de shell, importações dinâmicas, redirecionamentos inseguros, exibição de arquivos de usuário como HTML, etc.).
+
+### 1.2 Modo de revisão passiva (sempre ativado durante a edição)
+
+Ao trabalhar em qualquer lugar em um repositório Flask (mesmo que o usuário não tenha solicitado uma verificação de segurança):
+
+- DEVE “notar” violações desta especificação no código tocado/próximo.
+- DEVE mencionar os problemas à medida que surgem, com uma breve explicação + solução segura.
+
+### 1.3 Modo de auditoria ativo (solicitação de verificação explícita)
+
+Quando o usuário pede para “verificar”, “auditar” ou “caçar vulnerabilidades”:
+
+- DEVE pesquisar sistematicamente a base de código em busca de violações desta especificação.
+- DEVE apresentar os resultados num formato estruturado (ver §2.3).
+
+Ordem de auditoria recomendada:
+
+1. Pontos de entrada de aplicativos/scripts de implantação/Dockerfiles/Procfiles.
+2. Configuração do flask e manipulação do ambiente.
+3. Autenticação + sessões + cookies.
+4. Proteções CSRF e rotas de mudança de estado.
+5. Renderização de modelo e XSS/SSTI.
+6. Manipulação de arquivos (uploads + downloads) e passagem de caminho.
+7. Classes de injeção (SQL, execução de comandos, desserialização insegura).
+8. Solicitações de saída (SSRF).
+9. Tratamento de redirecionamentos (redirecionamentos abertos).
+10. CORS e segurança h
+
+líderes.
+
+---
+
+## 2) Definições e orientações de revisão
+
+### 2.1 Entrada não confiável (tratada como controlada pelo invasor, salvo prova em contrário)
+
+Os exemplos incluem:
 
 - `request.args`, `request.form`, `request.values`
 - `request.get_json()`, `request.json`, `request.data`
 - `request.headers`, `request.cookies`
-- URL path parameters (e.g., `/user/<id>`)
-- Any data from external systems (webhooks, third-party APIs, message queues)
-- Any persisted user content (DB rows) that originated from users
+- Parâmetros de caminho de URL (por exemplo, `/user/<id>`)
+- Quaisquer dados de sistemas externos (webhooks, APIs de terceiros, filas de mensagens)
+- Qualquer conteúdo de usuário persistente (linhas de banco de dados) originado de usuários
 
-### 2.2 State-changing request
+### 2.2 Solicitação de mudança de estado
 
-A request is state-changing if it can create/update/delete data, change auth/session state, trigger side effects (purchase, email send, webhook send), or initiate privileged actions.
+Uma solicitação muda de estado se puder criar/atualizar/excluir dados, alterar o estado de autenticação/sessão, acionar efeitos colaterais (compra, envio de e-mail, envio de webhook) ou iniciar ações privilegiadas.
 
-### 2.3 Required audit finding format
+### 2.3 Formato de descoberta de auditoria necessário
 
-For each issue found, output:
+Para cada problema encontrado, produza:
 
-- Rule ID:
-- Severity: Critical / High / Medium / Low
-- Location: file path + function/route name + line(s)
-- Evidence: the exact code/config snippet
-- Impact: what could go wrong, who can exploit it
-- Fix: safe change (prefer minimal diff)
-- Mitigation: defense-in-depth if immediate fix is hard
-- False positive notes: what to verify if uncertain
-
----
-
-## 3) Secure baseline: minimum production configuration (MUST in production)
-
-This is the smallest “production baseline” that prevents common Flask misconfigurations.
-
-### 3.1 App initialization pattern (SHOULD)
-
-SHOULD use an app factory and environment-based config so production config is not hard-coded.
-
-Example skeleton (illustrative; adjust to your project):
-
-- Load config from environment / secret store.
-- Fail closed if critical settings are missing in production.
-
-Key baseline config targets:
-
-- `SECRET_KEY` set and not committed
-- `SESSION_COOKIE_SECURE=True` (when HTTPS) IMPORTANT NOTE: Only set `Secure` in production environment when TLS is configured. When running in a local dev environment over HTTP, do not set `Secure` property on cookies. You should do this conditionally based on if the app is running in production mode. You should also include a property like `SESSION_COOKIE_SECURE` which can be used to disable `Secure` cookies when testing over HTTP.
-- `SESSION_COOKIE_HTTPONLY=True`
-- `SESSION_COOKIE_SAMESITE='Lax'` (or `'Strict'` if compatible)
-- `TRUSTED_HOSTS` set in production
-- Security headers set (CSP, etc.) either in app or at the edge
+- ID da regra:
+- Gravidade: Crítica / Alta / Média / Baixa
+- Localização: caminho do arquivo + nome da função/rota + linha(s)
+- Evidência: o trecho de código/configuração exato
+- Impacto: o que pode dar errado, quem pode explorar
+- Correção: mudança segura (prefira diferença mínima)
+- Mitigação: defesa profunda se a solução imediata for difícil
+- Notas falso-positivas: o que verificar em caso de incerteza
 
 ---
 
-## 4) Rules (generation + audit)
+## 3) Linha de base segura: configuração mínima de produção (DEVE em produção)
 
-Each rule contains: required practice, insecure patterns, detection hints, and remediation.
+Esta é a menor “linha de base de produção” que evita configurações incorretas comuns do Flask.
 
-### FLASK-DEPLOY-001: Do not use Flask’s development server in production
+### 3.1 Padrão de inicialização do aplicativo (DEVE)
 
-Severity: High (if production)
+DEVE usar uma fábrica de aplicativos e uma configuração baseada no ambiente para que a configuração de produção não seja codificada.
 
-Required:
+Exemplo de esqueleto (ilustrativo; ajuste ao seu projeto):
 
-- MUST NOT deploy the built-in development server as the production server.
-- MUST run behind a production-grade WSGI server or managed platform (such as gunicorn)
+- Carregar configuração do ambiente/armazenamento secreto.
+- Falha fechada se faltarem configurações críticas na produção.
 
-Insecure patterns:
+Principais alvos de configuração de linha de base:
 
-- `app.run(...)` in a production entrypoint.
-- Deployment docs/scripts that use `flask run` in production.
+- `SECRET_KEY` definido e não confirmado
+- `SESSION_COOKIE_SECURE=True` (quando HTTPS) NOTA IMPORTANTE: Defina `Secure` apenas no ambiente de produção quando o TLS estiver configurado. Ao executar em um ambiente de desenvolvimento local via HTTP, não defina a propriedade `Secure` nos cookies. Você deve fazer isso condicionalmente com base no fato de o aplicativo estar sendo executado no modo de produção. Você também deve incluir uma propriedade como `SESSION_COOKIE_SECURE` que pode ser usada para desabilitar cookies `Secure`
 
-Detection hints:
+ao testar por HTTP.
 
-- Search for `app.run(`, `flask run`, `--debug`, `FLASK_DEBUG`, `FLASK_ENV=development`.
-- Check Docker CMD/ENTRYPOINT, Procfile, systemd units, shell scripts.
-
-Fix:
-
-- Use a production WSGI server (and keep Flask as the app object).
-- Ensure the dev server is only used for local development.
-
-Note:
-
-- These are often used in dev mode or local testing. This is allowed. Only flag if it is clear that it is being used as the production entrypoint
+- `SESSION_COOKIE_HTTPONLY = Verdadeiro`
+- `SESSION_COOKIE_SAMESITE='Lax'` (ou `'Strict'` se compatível)
+- `TRUSTED_HOSTS` definido em produção
+- Conjunto de cabeçalhos de segurança (CSP, etc.) no aplicativo ou na borda
 
 ---
 
-### FLASK-DEPLOY-002: Debug mode MUST be disabled in production
+## 4) Regras (geração + auditoria)
 
-Severity: Critical
+Cada regra contém: práticas necessárias, padrões inseguros, dicas de detecção e correção.
 
-Required:
+### FLASK-DEPLOY-001: Não use o servidor de desenvolvimento do Flask em produção
 
-- MUST NOT enable debug mode in production.
-- MUST treat the interactive debugger as equivalent to remote code execution if exposed.
+Gravidade: Alta (se produção)
 
-Insecure patterns:
+Obrigatório:
+
+- NÃO DEVE implantar o servidor de desenvolvimento integrado como servidor de produção.
+- DEVE ser executado atrás de um servidor WSGI de nível de produção ou plataforma gerenciada (como gunicorn)
+
+Padrões inseguros:
+
+- `app.run(...)` em um ponto de entrada de produção.
+- Documentos/scripts de implantação que usam `flask run` na produção.
+
+Dicas de detecção:
+
+- Procure por `app.run(`, `flask run`, `--debug`, `FLASK_DEBUG`, `FLASK_ENV=development`.
+- Verifique Docker CMD/ENTRYPOINT, Procfile, unidades systemd, scripts de shell.
+
+Correção:
+
+- Use um servidor WSGI de produção (e mantenha o Flask como objeto do aplicativo).
+- Certifique-se de que o servidor de desenvolvimento seja usado apenas para desenvolvimento local.
+
+Nota:
+
+- Geralmente são usados ​​​​no modo de desenvolvimento ou em testes locais. Isso é permitido. Somente sinalizar se estiver claro que ele está sendo usado como ponto de entrada de produção
+
+---
+
+### FLASK-DEPLOY-002: O modo de depuração DEVE ser desabilitado na produção
+
+Gravidade: Crítica
+
+Obrigatório:
+
+- NÃO DEVE ativar o modo de depuração na produção.
+- DEVE tratar o depurador interativo como equivalente à execução remota de código, se exposto.
+
+Padrões inseguros:
 
 - `app.run(debug=True)`
-- `flask run --debug` in production.
-- `DEBUG=True` via env/config in production.
+- `flask run --debug` em produção.
+- `DEBUG=True` via env/config em produção.
 
-Detection hints:
+Dicas de detecção:
 
-- Look for `debug=True`, `FLASK_DEBUG=1`, `DEBUG = True`, `app.debug = True`.
-- Look for `TRAP_HTTP_EXCEPTIONS`/debugger settings enabled in non-test contexts.
+- Procure por `debug=True`, `FLASK_DEBUG=1`, `DEBUG = True`, `app.debug = True`.
+- Procure as configurações `TRAP_HTTP_EXCEPTIONS`/debugger habilitadas em contextos que não sejam de teste.
 
-Fix:
+Correção:
 
-- Ensure debug is only enabled in local dev/test.
-- Prefer environment-based toggles and safe defaults.
+- Certifique-se de que a depuração esteja habilitada apenas no desenvolvimento/teste local.
+- Prefira alternâncias baseadas no ambiente e padrões seguros.
 
-Note:
+Observação:
 
-- These are often used in dev mode or local testing. This is allowed. Only flag if it is clear that it is being used as the production entrypoint
-
----
-
-### FLASK-CONFIG-001: SECRET_KEY must be strong, secret, and rotated safely
-
-Severity: High (Critical if missing in production with sessions or signing)
-
-Required:
-
-- MUST set a strong random `SECRET_KEY` in production.
-- MUST keep `SECRET_KEY` out of source control and out of logs.
-- MAY rotate keys periodically; MAY use `SECRET_KEY_FALLBACKS` to support rotation without instantly invalidating existing sessions, then remove old keys after the rotation window. This likely is not needed for smaller applications but is good practice for larger applications. As this may complicate deployment, suggest that it be implemented rather than implementing it by default.
-
-Insecure patterns:
-
-- Missing `SECRET_KEY` in production.
-- Hard-coded `SECRET_KEY` in repo (including test keys accidentally used in prod).
-- Logging or printing `SECRET_KEY`.
-
-Detection hints:
-
-- Search for `SECRET_KEY =`, `app.secret_key =`, `SECRET_KEY_FALLBACKS =`.
-- Check `.env` files committed to repo.
-- Check config modules for constants.
-
-Fix:
-
-- Load from secret manager or environment variable.
-- Add a rotation process:
-  - Set new `SECRET_KEY`
-  - Keep old key(s) temporarily in `SECRET_KEY_FALLBACKS`
-  - Remove old key(s) after the safe window.
-
-Notes:
-
-- If the application uses Flask sessions (cookie-based by default), `SECRET_KEY` is directly security-critical.
+- Geralmente são usados ​​​​no modo de desenvolvimento ou em testes locais. Isso é permitido. Somente sinalizar se estiver claro que ele está sendo usado como ponto de entrada de produção
 
 ---
 
-### FLASK-SESS-001: Session cookies must use secure attributes in production
+### FLASK-CONFIG-001: SECRET_KEY deve ser forte, secreto e girado com segurança
 
-Severity: Medium
+Gravidade: Alta (Crítica se estiver ausente na produção com sessões ou assinatura)
 
-Required (production, HTTPS):
+Obrigatório:
 
-- MUST set `SESSION_COOKIE_SECURE=True` (cookies only over HTTPS). NOTE: Only set `Secure` in production environment when TLS is configured. When running in a local dev environment over HTTP, do not set `Secure` property on cookies. You should do this conditionally based on if the app is running in production mode. You should also include a property like `SESSION_COOKIE_SECURE` which can be used to disable `Secure` cookies when testing over HTTP.
-- MUST ensure `SESSION_COOKIE_HTTPONLY=True` (protect from JS access).
-- SHOULD set `SESSION_COOKIE_SAMESITE='Lax'` (recommended) or `'Strict'` if compatible with UX.
-- SHOULD keep `SESSION_COOKIE_DOMAIN=None` unless you explicitly need subdomain-wide cookies.
-- If you need embedded/iframe third-party usage, MAY consider `SESSION_COOKIE_PARTITIONED=True` (requires HTTPS).
+- DEVE definir um `SECRET_KEY` aleatório forte na produção.
+- DEVE manter `SECRET_KEY` fora do controle de origem e fora dos logs.
+- PODE rodar as chaves periodicamente; PODE usar `SECRET_KEY_FALLBACKS` para suportar a rotação sem invalidar instantaneamente as sessões existentes e, em seguida, remover as chaves antigas após a janela de rotação. Provavelmente isso não é necessário para aplicações menores, mas é uma boa prática para aplicações maiores. Como isso pode complicar a implantação, sugira que seja
 
-Insecure patterns:
+implementado em vez de implementá-lo por padrão.
 
-- `SESSION_COOKIE_SECURE=False` in production.
-- `SESSION_COOKIE_HTTPONLY=False`.
-- `SESSION_COOKIE_SAMESITE=None` with cookie-authenticated state-changing endpoints (higher CSRF risk).
+Padrões inseguros:
 
-Detection hints:
+- Falta `SECRET_KEY` na produção.
+- `SECRET_KEY` codificado no repositório (incluindo chaves de teste usadas acidentalmente no produto).
+- Registrando ou imprimindo `SECRET_KEY`.
 
-- Inspect `app.config.update(...)` blocks and config classes.
-- Look for `set_cookie(..., secure=..., httponly=..., samesite=...)` usage on non-session cookies too.
+Dicas de detecção:
 
-Fix:
+- Procure por `SECRET_KEY =`, `app.secret_key =`, `SECRET_KEY_FALLBACKS =`.
+- Verifique os arquivos `.env` comprometidos com o repositório.
+- Verifique os módulos de configuração para constantes.
 
-- Set these config values explicitly in production config.
+Consertar:
 
-Notes:
+- Carregar do gerenciador secreto ou variável de ambiente.
+- Adicione um processo de rotação:
+  - Definir novo `SECRET_KEY`
+  - Mantenha as chaves antigas temporariamente em `SECRET_KEY_FALLBACKS`
+  - Remova a(s) chave(s) antiga(s) após a janela segura.
 
-- SameSite is defense-in-depth; do not treat it as a full replacement for CSRF tokens.
+Notas:
 
----
-
-### FLASK-SESS-002: Sessions must be bounded and resistant to fixation/replay
-
-Severity: Medium
-
-Required:
-
-- SHOULD set a bounded session lifetime appropriate to the app.
-- SHOULD set `session.permanent = True` only when you intend persistent sessions, and set `PERMANENT_SESSION_LIFETIME` to a justified value.
-- SHOULD clear the session on login and privilege changes to reduce session fixation risk.
-- MUST NOT store sensitive secrets in the default Flask session cookie. The default session is signed, not encrypted.
-
-Insecure patterns:
-
-- Extremely long or unlimited lifetimes for privileged sessions.
-- No session clearing on login.
-- Storing secrets (passwords, access tokens, PII) directly in `session[...]` when using default cookie sessions.
-
-Detection hints:
-
-- Search for `PERMANENT_SESSION_LIFETIME`, `session.permanent`, `session[...] =`.
-- Identify whether server-side session storage is used; if not, assume default cookie sessions.
-
-Fix:
-
-- Set appropriate lifetimes.
-- Clear/rotate session on login.
-- Store sensitive data server-side; store only identifiers in the session cookie.
+- Se o aplicativo usa sessões Flask (baseadas em cookies por padrão), `SECRET_KEY` é diretamente crítico para a segurança.
 
 ---
 
-### FLASK-CSRF-001: State-changing requests using cookie auth MUST be CSRF-protected
+### FLASK-SESS-001: Cookies de sessão devem usar atributos seguros na produção
 
-Severity: High
+Gravidade: Média
 
-- IMPORTANT NOTE: If cookies are not being used for auth (ie auth is via Authentication header or other passed token), then there is no CSRF risk.
+Obrigatório (produção, HTTPS):
 
-Required:
+- DEVE definir `SESSION_COOKIE_SECURE=True` (cookies apenas em HTTPS). NOTA: Defina `Secure` apenas no ambiente de produção quando o TLS estiver configurado. Ao executar em um ambiente de desenvolvimento local via HTTP, não defina a propriedade `Secure` nos cookies. Você deve fazer isso condicionalmente com base no fato de o aplicativo estar sendo executado no modo de produção. Você também deve incluir uma propriedade como `SESSION_COOKIE_SECURE` que pode ser usada para desabilitar cookies `Secure` ao testar via HTTP.
 
-- MUST protect all state-changing endpoints (POST/PUT/PATCH/DELETE) that rely on cookies for authentication.
-- MAY use a well-tested CSRF library/integration (form framework or middleware) rather than rolling your own.
-- MAY use additional defenses (Origin/Referer checking, SameSite cookies, Fetch Metadata headers, custom headers for AJAX/API), but tokens remain the primary defense for cookie-authenticated apps.
-  If tokens are impractical, or for small applications:
+- DEVE garantir `SESSION_COOKIE_HTTPONLY=True` (proteger do acesso JS).
+- DEVE definir `SESSION_COOKIE_SAMESITE='Lax'` (recomendado) ou `'Strict'` se for compatível com UX.
+- DEVE manter `SESSION_COOKIE_DOMAIN=None`, a menos que você precise explicitamente de cookies para todo o subdomínio.
+- Se você precisar de uso incorporado/iframe de terceiros, PODE considerar `SESSION_COOKIE_PARTITIONED=True` (requer HTTPS).
 
-* MUST at a minimum require a custom header to be set and set the session cookie SESSION_COOKIE_SAMESITE=lax, as this is the strongest method besides requiring a form token, and may be much easier to implement.
+Padrões inseguros:
 
-Insecure patterns:
+- `SESSION_COOKIE_SECURE=False` em produção.
+- `SESSION_COOKIE_HTTPONLY=Falso`.
+- `SESSION_COOKIE_SAMESITE=None` com endpoints de mudança de estado autenticados por cookie (maior risco de CSRF).
 
-- Cookie-authenticated endpoints that change state with no CSRF protection.
-- Using GET for state-changing actions (amplifies CSRF risk).
+Dicas de detecção:
 
-Detection hints:
+- Inspecione blocos `app.config.update(...)` e classes de configuração.
+- Procure o uso de `set_cookie(..., secure=..., httponly=..., samesite=...)` também em cookies fora da sessão.
 
-- Enumerate routes with methods other than GET and identify auth mechanism.
-- Look for CSRF integrations (e.g., Flask-WTF, global CSRF middleware). If absent, treat as suspicious.
-- Check JSON API endpoints too, not only HTML forms.
+Consertar:
 
-Fix:
+- Defina esses valores de configuração explicitamente na configuração de produção.
 
-- Add CSRF protection to all state-changing requests.
-- If the app is a pure API and uses Authorization headers (bearer tokens) rather than cookies, document that choice and ensure cookies aren’t used for auth. If cookies are not used for auth, there is no CSRF risk.
+Notas:
 
-Notes:
-
-- XSS can defeat CSRF protections; CSRF defenses do not replace XSS prevention.
+- SameSite é uma defesa profunda; não o trate como um substituto completo para tokens CSRF.
 
 ---
 
-### FLASK-XSS-001: Prevent reflected/stored XSS in templates and HTML generation
+### FLASK-SESS-002: As sessões devem ser limitadas e resistentes à fixação/repetição
 
-Severity: High
+Gravidade: Média
 
-Required:
+Obrigatório:
 
-- MUST rely on Jinja auto-escaping for HTML templates.
-- MUST NOT mark untrusted content as safe:
-  - Avoid `Markup(...)` on user data.
-  - Avoid Jinja `|safe` on user-controlled content.
-- MUST quote HTML attributes containing Jinja expressions (`value="{{ x }}"` not `value={{ x }}`).
-- MUST NOT serve uploaded HTML as active HTML; serve as download (`Content-Disposition: attachment`) or transform to a safe format. Note: This is only relevant if it is possible to upload document content such as html, js, css, etc. If it purely is image files, there is no concern.
-- SHOULD deploy a Content Security Policy (CSP) to mitigate XSS classes (including `javascript:` in `href`).
+- DEVE definir um tempo de vida de sessão limitado apropriado para o aplicativo.
+- DEVE definir `session.permanent = True` somente quando você pretende sessões persistentes e definir `PERMANENT_SESSION_LIFETIME` para um valor justificado.
+- DEVE limpar a sessão nas alterações de login e privilégios para reduzir o risco de fixação de sessão.
+- NÃO DEVE armazenar segredos confidenciais no cookie de sessão padrão do Flask. A sessão padrão é assinada, não criptografada.
 
-Insecure patterns:
+Padrões inseguros:
 
-- `Markup(request.args.get(...))`
-- Template filters: `{{ user_html|safe }}`
-- Unquoted attributes in templates
-- Serving user-uploaded content directly with `text/html` or inline rendering
+- Vidas extremamente longas ou ilimitadas para sessões privilegiadas.
+- Nenhuma compensação de sessão no login.
+- Armazenar segredos (senhas, tokens de acesso, PII) diretamente na `sessão[...]` ao usar sessões de cookies padrão.
 
-Detection hints:
+Dicas de detecção:
 
-- Search for `Markup(` and investigate origin of the data.
-- Search template files for `|safe`, `|tojson` misuse, and unquoted attributes.
-- Review file-serving routes that might return user uploads without `as_attachment=True`. Note: This is only relevant if it is possible to upload document content such as html, js, css, etc. If it purely is image files, there is no concern.
+- Procure por `PERMANENT_SESSION_LIFETIME`, `session.permanent`, `session[...] =`.
+- Identificar se o armazenamento de sessão do lado do servidor é utilizado; caso contrário, assuma sessões de cookies padrão.
 
-Fix:
+Consertar:
 
-- Remove unsafe marking; sanitize only when strictly necessary using a trusted HTML sanitizer.
-- Always quote attributes.
-- Add CSP and reduce inline scripts.
+- Defina tempos de vida apropriados.
+- Limpar/girar sessão no login.
+- Armazene dados confidenciais no servidor; armazenar apenas identificadores no cookie de sessão.
 
 ---
 
-### FLASK-SSTI-001: Never render untrusted templates (Server-Side Template Injection)
+### FLASK-CSRF-001: Solicitações de alteração de estado usando autenticação de cookie DEVEM ser protegidas por CSRF
 
-Severity: Critical
+Gravidade: Alta
 
-Required:
+- NOTA IMPORTANTE: Se os cookies não estiverem sendo usados para autenticação (ou seja, a autenticação é via cabeçalho de autenticação ou outro token passado), então não há risco de CSRF.
 
-- MUST NOT render templates that contain user-controlled template syntax.
-- MUST treat `render_template_string` and `Environment.from_string(...).render(...)` as dangerous if the template string is influenced by untrusted input.
-- MUST NOT use use `.format()` on user controlled strings
-- If untrusted templates are absolutely required, treat it as a special high-risk design:
-  - MUST use a sandboxed templating approach and restrict capabilities.
-  - MUST keep Jinja updated and assume sandbox escapes are possible; isolate further.
+Obrigatório:
 
-Insecure patterns:
+- DEVE proteger todos os endpoints que mudam de estado (POST/PUT/PATCH/DELETE) que dependem de cookies para autenticação.
+- PODE usar uma biblioteca/integração CSRF bem testada (estrutura de formulário ou middleware) em vez de criar a sua própria.
+- PODE usar defesas adicionais (verificação de origem/referente, cookies SameSite, cabeçalhos de busca de metadados, cabeçalhos personalizados para AJAX/API), mas os tokens continuam sendo a principal defesa para aplicativos autenticados por cookies.
+  Se os tokens forem impraticáveis, ou
+
+r pequenas aplicações:
+
+- DEVE, no mínimo, exigir que um cabeçalho personalizado seja definido e definir o cookie de sessão SESSION_COOKIE_SAMESITE=lax, pois este é o método mais forte, além de exigir um token de formulário, e pode ser muito mais fácil de implementar.
+
+Padrões inseguros:
+
+- Endpoints autenticados por cookie que mudam de estado sem proteção CSRF.
+- Usar GET para ações de mudança de estado (amplifica o risco de CSRF).
+
+Dicas de detecção:
+
+- Enumerar rotas com métodos diferentes de GET e identificar mecanismo de autenticação.
+- Procure integrações CSRF (por exemplo, Flask-WTF, middleware CSRF global). Se ausente, trate como suspeito.
+- Verifique também os endpoints da API JSON, não apenas os formulários HTML.
+
+Consertar:
+
+- Adicione proteção CSRF a todas as solicitações de alteração de estado.
+- Se o aplicativo for uma API pura e usar cabeçalhos de autorização (tokens de suporte) em vez de cookies, documente essa escolha e garanta que os cookies não sejam usados ​​para autenticação. Se os cookies não forem usados ​​para autenticação, não haverá risco de CSRF.
+
+Notas:
+
+- XSS pode derrotar proteções CSRF; As defesas CSRF não substituem a prevenção XSS.
+
+---
+
+### FLASK-XSS-001: Impedir XSS refletido/armazenado em modelos e geração de HTML
+
+Gravidade: Alta
+
+Obrigatório:
+
+- DEVE contar com o escape automático do Jinja para modelos HTML.
+- NÃO DEVE marcar conteúdo não confiável como seguro:
+  - Evite `Markup(...)` nos dados do usuário.
+  - Evite Jinja `|safe` em conteúdo controlado pelo usuário.
+- DEVE citar atributos HTML contendo expressões Jinja (`value="{{ x }}"` e não `value={{ x }}`).
+- NÃO DEVE servir HTML carregado como HTML ativo; servir como download (`Content-Disposition: attachment`) ou transformar para um formato seguro. Nota: Isto só é relevante se
+
+é possível fazer upload de conteúdo de documento como html, js, css, etc. Se forem apenas arquivos de imagem, não há preocupação.
+
+- DEVE implantar uma Política de Segurança de Conteúdo (CSP) para mitigar classes XSS (incluindo `javascript:` em `href`).
+
+Padrões inseguros:
+
+- `Marcação(request.args.get(...))`
+- Filtros de modelo: `{{ user_html|safe }}`
+- Atributos não citados em modelos
+- Servir conteúdo enviado pelo usuário diretamente com `text/html` ou renderização inline
+
+Dicas de detecção:
+
+- Pesquise `Markup(` e investigue a origem dos dados.
+- Pesquise arquivos de modelo por uso indevido de `|safe`, `|tojson` e atributos sem aspas.
+- Revise as rotas de entrega de arquivos que podem retornar uploads de usuários sem `as_attachment=True`. Nota: Isso só é relevante se for possível fazer upload de conteúdo de documento como html, js, css, etc. Se forem apenas arquivos de imagem, não há preocupação.
+
+Correção:
+
+- Remover marcação insegura; higienize apenas quando estritamente necessário usando um sanitizador de HTML confiável.
+- Sempre cite atributos.
+- Adicione CSP e reduza scripts embutidos.
+
+---
+
+### FLASK-SSTI-001: Nunca renderize modelos não confiáveis (injeção de modelo no lado do servidor)
+
+Gravidade: Crítica
+
+Obrigatório:
+
+- NÃO DEVE renderizar modelos que contenham sintaxe de modelo controlada pelo usuário.
+- DEVE tratar `render_template_string` e `Environment.from_string(...).render(...)` como perigosos se a string do modelo for influenciada por entradas não confiáveis.
+- NÃO DEVE usar `.format()` em strings controladas pelo usuário
+- Se forem absolutamente necessários modelos não confiáveis, trate-os como um design especial de alto risco:
+  - DEVE usar uma abordagem de modelagem em sandbox e restringir recursos.
+
+- DEVE manter o Jinja atualizado e assumir que fugas de sandbox são possíveis; isolar ainda mais.
+
+Padrões inseguros:
 
 - `render_template_string(request.args["tmpl"], ...)`
-- Storing user templates in DB and rendering them with the normal Jinja environment.
-- `request.args["tmpl"].format(...)`
+- Armazenar templates de usuário no banco de dados e renderizá-los com o ambiente normal do Jinja.
+- `request.args["tmpl"].formato(...)`
 
-Detection hints:
+Dicas de detecção:
 
-- Grep for `render_template_string`, `from_string`, `.render(` with dynamic strings.
-- Trace the origin of the template string (DB, request, uploads, admin panels).
+- Grep para `render_template_string`, `from_string`, `.render(` com strings dinâmicas.
+- Rastreie a origem da string do modelo (banco de dados, solicitação, uploads, painéis de administração).
 
-Fix:
+Correção:
 
-- Replace with safe templating alternatives that do not evaluate code (e.g., string.Template, str.replace).
-- If templates must be user-defined, use a sandbox plus strict allowlists and heavy isolation.
+- Substitua por alternativas de modelos seguras que não avaliam o código (por exemplo, string.Template, str.replace).
+- Se os modelos precisarem ser definidos pelo usuário, use um sandbox, além de listas de permissões rigorosas e isolamento pesado.
 
 ---
 
-### FLASK-HEADERS-001: Set essential security headers (in app or at the edge)
+### FLASK-HEADERS-001: Defina cabeçalhos de segurança essenciais (no aplicativo ou na borda)
 
-Severity: Medium
+Gravidade: Média
 
-Required (typical web app):
+Obrigatório (aplicativo web típico):
 
-- SHOULD set:
-  - CSP (`Content-Security-Policy`)
+- DEVE definir:
+  - CSP (`Política de Segurança de Conteúdo`)
   - `X-Content-Type-Options: nosniff`
-  - Clickjacking protection (`X-Frame-Options: SAMEORIGIN` and/or CSP `frame-ancestors`) (there may be cases where the user wants to iframe their site elsewhere. If that is the case, work with them to safely allow it)
-- SHOULD consider additional hardening headers depending on app (Referrer-Policy, Permissions-Policy).
-- MUST ensure cookies are set with secure attributes (see FLASK-SESS-001).
+  - Proteção contra clickjacking (`X-Frame-Options: SAMEORIGIN` e/ou CSP `frame-ancestors`) (pode haver casos em que o usuário queira iframe seu site em outro lugar. Se for esse o caso, trabalhe com eles para permitir isso com segurança)
+- DEVE considerar cabeçalhos de proteção adicionais dependendo do aplicativo (Referrer-Policy, Permissions-Policy).
+- DEVE garantir que os cookies sejam definidos com segurança
 
-NOTE: Security headers may be set via a proxy or other cloud provider. Check to see if there is evidence of that.
+atributos (ver FLASK-SESS-001).
 
-Insecure patterns:
+NOTA: Os cabeçalhos de segurança podem ser definidos através de um proxy ou outro provedor de nuvem. Verifique se há evidências disso.
 
-- No security headers anywhere (app or edge).
-- CSP missing on apps that display untrusted content.
+Padrões inseguros:
 
-Detection hints:
+- Sem cabeçalhos de segurança em qualquer lugar (aplicativo ou borda).
+- CSP ausente em aplicativos que exibem conteúdo não confiável.
 
-- Search for `after_request` hooks, Flask-Talisman usage, reverse proxy config.
-- If not visible in app code, flag as “verify at edge”.
+Dicas de detecção:
 
-Fix:
+- Procure por ganchos `after_request`, uso do Flask-Talisman, configuração de proxy reverso.
+- Se não estiver visível no código do aplicativo, sinalize como “verificar na borda”.
 
-- Set headers centrally (middleware / after_request) or via reverse proxy/CDN.
-- Keep CSP realistic and compatible; avoid `unsafe-inline` where possible.
+Consertar:
 
----
-
-### FLASK-LIMITS-001: Request size and form parsing limits MUST be set appropriately
-
-Severity: Low (Medium if file uploads / large bodies are possible)
-
-Required:
-
-- SHOULD set and justify:
-  - `MAX_CONTENT_LENGTH` (global maximum request bytes)
-  - `MAX_FORM_MEMORY_SIZE` (max per non-file form field in multipart)
-  - `MAX_FORM_PARTS` (max number of multipart fields)
-- MUST enforce additional limits at the reverse proxy / WSGI / platform level where possible.
-
-Insecure patterns:
-
-- Unlimited request body sizes when handling uploads or user content.
-- Accepting arbitrarily large multipart forms or many fields.
-
-Detection hints:
-
-- Inspect Flask config for these keys.
-- Inspect upload routes and APIs that accept large JSON.
-
-Fix:
-
-- Set conservative defaults, override per-route only when needed.
-- Ensure large uploads use dedicated upload mechanisms.
+- Definir cabeçalhos centralmente (middleware/after_request) ou via proxy reverso/CDN.
+- Manter o CSP realista e compatível; evite `unsafe-inline` sempre que possível.
 
 ---
 
-### FLASK-HOST-001: Host header must be validated in production
+### FLASK-LIMITS-001: O tamanho da solicitação e os limites de análise de formulário DEVEM ser definidos adequadamente
 
-Severity: Low (depends on app’s use of external URLs)
+Gravidade: Baixa (Média se uploads de arquivos/corpos grandes forem possíveis)
 
-Required:
+Obrigatório:
 
-- MUST set `TRUSTED_HOSTS` in production to restrict accepted Host values.
-- MUST NOT rely on `SERVER_NAME` as a host restriction mechanism.
+- DEVE definir e justificar:
+  - `MAX_CONTENT_LENGTH` (máximo global de bytes de solicitação)
+  - `MAX_FORM_MEMORY_SIZE` (máximo por campo de formulário que não seja de arquivo em multipart)
+  - `MAX_FORM_PARTS` (número máximo de campos multipartes)
+- DEVE impor limites adicionais no nível de proxy reverso/WSGI/plataforma sempre que possível.
 
-Insecure patterns:
+Padrões inseguros:
 
-- `TRUSTED_HOSTS` unset in production.
-- Code that generates external URLs for emails/password resets without host validation.
+- Tamanhos de corpo de solicitação ilimitados ao lidar com uploads ou conteúdo do usuário.
+- Aceitar formulários multipartes arbitrariamente grandes ou muitos campos.
 
-Detection hints:
+Dicas de detecção:
 
-- Find `TRUSTED_HOSTS` config usage.
-- Find `url_for(..., _external=True)` and check how host is determined.
+- Inspecione a configuração do Flask para essas chaves.
+- Inspecione rotas de upload e APIs que aceitam JSON grande.
 
-Fix:
+Correção:
 
-- Set `TRUSTED_HOSTS` to your expected domains (and required subdomains).
-- Ensure external URL generation uses trusted host/scheme.
-
----
-
-### FLASK-PROXY-001: Reverse proxy trust must be configured correctly
-
-Severity: Medium (High if relying on IPs for auth)
-
-Required:
-
-- If behind a reverse proxy, MUST configure Flask/Werkzeug to trust forwarded headers only from the intended proxy.
-- MUST NOT blindly trust `X-Forwarded-*` headers from the open internet.
-
-Insecure patterns:
-
-- `ProxyFix` applied with overly broad trust settings, or applied without understanding how many proxies are in front.
-- Relying on forwarded headers for scheme/host without validation.
-
-Detection hints:
-
-- Search for `ProxyFix`.
-- Search for usage of `request.remote_addr`, `request.scheme`, `request.host` in security-sensitive logic.
-
-Fix:
-
-- Configure `ProxyFix` (or platform-specific settings) with correct hop counts.
-- Keep `TRUSTED_HOSTS` in place even behind proxies.
+- Defina padrões conservadores, substitua por rota somente quando necessário.
+- Garanta que uploads grandes usem mecanismos de upload dedicados.
 
 ---
 
-### FLASK-PATH-001: Prevent path traversal and unsafe file serving
+### FLASK-HOST-001: O cabeçalho do host deve ser validado na produção
 
-Severity: High
+Gravidade: Baixa (depende do uso de URLs externos pelo aplicativo)
 
-Required:
+Obrigatório:
 
-- MUST NOT pass user-controlled file paths to `send_file` or to direct file I/O.
-- MUST use safe file serving patterns:
-  - `send_from_directory` for user-specified paths under a trusted base directory
-  - `safe_join` for joining a trusted base directory with untrusted path components
-  - `secure_filename` for uploaded filenames (and still generate your own unique storage name)
-- MUST ensure user uploads are not served as executable/active content (especially HTML).
-- SHOULD in general use `safe_join` over `os.path.join` for almost any filesystem path computations.
+- DEVE definir `TRUSTED_HOSTS` na produção para restringir os valores aceitos do Host.
+- NÃO DEVE confiar em `SERVER_NAME` como mecanismo de restrição de host.
 
-Insecure patterns:
+Padrões inseguros:
 
-- `send_file(request.args["path"])`
-- `open(os.path.join(base_dir, user_path))` where `user_path` is untrusted
-- Serving uploads from within a static web root without restrictions
+- `TRUSTED_HOSTS` não definido em produção.
+- Código que gera URLs externos para e-mails/redefinições de senha sem validação do host.
 
-Detection hints:
+Dicas de detecção:
 
-- Search for `send_file(`, `open(`, `os.path.join(`, `pathlib.Path(...)/...` in file routes.
-- Identify where filenames come from (request args, DB, headers).
+- Encontre o uso de configuração `TRUSTED_HOSTS`.
+- Encontre `url_for(..., _external=True)` e verifique como o host é determinado.
 
-Fix:
+Correção:
 
-- Serve only from a non-user-controlled directory base.
-- Store uploads outside static roots; serve through controlled routes.
-- Always validate and normalize file identifiers.
-
-Note: `safe_join` is imported from `werkzeug.security`
+- Defina `TRUSTED_HOSTS` para seus domínios esperados (e subdomínios necessários).
+- Certifique-se de que a geração de URL externa use host/esquema confiável.
 
 ---
 
-### FLASK-UPLOAD-001: File uploads must be validated, stored safely, and served safely
+### FLASK-PROXY-001: A confiança do proxy reverso deve ser configurada corretamente
 
-Severity: High
+Gravidade: Média (alta se depender de IPs para autenticação)
 
-Required:
+Obrigatório:
 
-- MUST enforce upload size limits (app + edge).
-- MUST validate file type using allowlists and content checks (not only extension).
-- MUST store uploads outside executable/static roots when possible.
-- SHOULD generate server-side filenames (random IDs) and avoid trusting original names.
-- MUST serve potentially active formats safely (download attachment) unless explicitly intended.
+- Se estiver atrás de um proxy reverso, DEVE configurar o Flask/Werkzeug para confiar nos cabeçalhos encaminhados apenas do proxy pretendido.
+- NÃO DEVE confiar cegamente nos cabeçalhos `X-Forwarded-*` da Internet aberta.
 
-Insecure patterns:
+Padrões inseguros:
 
-- Accepting arbitrary file types and serving them back inline.
-- Using user-supplied filename as storage path.
-- Missing size/type validation.
+- `ProxyFix` aplicado com configurações de confiança excessivamente amplas ou aplicado sem entender quantos proxies estão na frente.
+- Depender de cabeçalhos encaminhados para esquema/host sem validação.
 
-Detection hints:
+Dicas de detecção:
 
-- Look for `request.files[...]` handlers.
-- Check for `secure_filename` usage (and whether it’s combined with uniqueness).
-- Check where files are stored and how they are served.
+- Procure por `ProxyFix`.
+- Pesquise o uso de `request.remote_addr`, `request.scheme`, `request.host` em lógica sensível à segurança.
 
-Fix:
+Correção:
 
-- Implement allowlist validation + safe storage + safe serving.
-- Add scanning / quarantine if applicable.
+- Configure o `ProxyFix` (ou configurações específicas da plataforma) com contagens de saltos corretas.
+- Mantenha `TRUSTED_HOSTS` mesmo atrás de proxies.
 
 ---
 
-### FLASK-INJECT-001: Prevent SQL injection (use parameterized queries / ORM)
+### FLASK-PATH-001: Evita a passagem de caminho e o fornecimento inseguro de arquivos
 
-Severity: High
+Gravidade: Alta
 
-Required:
+Obrigatório:
 
-- MUST use parameterized queries or an ORM that parameterizes under the hood.
-- MUST NOT build SQL by string concatenation / f-strings with untrusted input.
+- NÃO DEVE passar caminhos de arquivos controlados pelo usuário para `send_file` ou para direcionar E/S de arquivo.
+- DEVE usar padrões seguros de serviço de arquivos:
+  - `send_from_directory` para caminhos especificados pelo usuário em um diretório base confiável
+  - `safe_join` para ingressar em um diretório base confiável com componentes de caminho não confiáveis
+  - `secure_filename` para nomes de arquivos enviados (e ainda gerar seu próprio nome de armazenamento exclusivo)
+- DEVE garantir que os uploads dos usuários não sejam veiculados como conteúdo executável/ativo
 
-Insecure patterns:
+t (especialmente HTML).
 
-- `f"SELECT ... WHERE id={request.args['id']}"`
-- `"... WHERE name = '%s'" % user_input`
+- DEVE, em geral, usar `safe_join` em vez de `os.path.join` para quase todos os cálculos de caminho do sistema de arquivos.
 
-Detection hints:
+Padrões inseguros:
 
-- Grep for `SELECT`, `INSERT`, `UPDATE`, `DELETE` strings in Python code.
-- Track untrusted data into DB execute calls.
+- `send_file(request.args["caminho"])`
+- `open(os.path.join(base_dir, user_path))` onde `user_path` não é confiável
+- Servindo uploads de uma raiz estática da web sem restrições
 
-Fix:
+Dicas de detecção:
 
-- Replace with parameterized queries or ORM query APIs.
-- Validate types (e.g., int IDs) before querying.
+- Procure por `send_file(`, `open(`, `os.path.join(`, `pathlib.Path(...)/...` nas rotas de arquivo.
+- Identifique de onde vêm os nomes dos arquivos (args de solicitação, banco de dados, cabeçalhos).
+
+Correção:
+
+- Servir apenas a partir de uma base de diretório não controlada pelo usuário.
+- Armazene uploads fora de raízes estáticas; servir através de rotas controladas.
+- Sempre valide e normalize os identificadores de arquivos.
+
+Nota: `safe_join` é importado de `werkzeug.security`
 
 ---
 
-### FLASK-INJECT-002: Prevent OS command injection
+### FLASK-UPLOAD-001: Os uploads de arquivos devem ser validados, armazenados com segurança e servidos com segurança
 
-Severity: Critical to High (depends on exposure)
+Gravidade: Alta
 
-Required:
+Obrigatório:
 
-- MUST avoid executing shell commands with untrusted input.
-- If subprocess is necessary:
-  - MUST pass args as a list (not a string)
-  - MUST NOT use `shell=True` with attacker-influenced strings
-  - SHOULD use strict allowlists for any variable component
-- If possible, use pure python or a python library rather than using a subprocess or system command
-- Do not assume that arguments to commands will be inherently safe even in `shell=False`. Commands may incorrectly process these arguments as command line flags or other trusted values.
+- DEVE impor limites de tamanho de upload (aplicativo + borda).
+- DEVE validar o tipo de arquivo usando listas de permissões e verificações de conteúdo (não apenas extensão).
+- DEVE armazenar uploads fora de raízes executáveis/estáticas quando possível.
+- DEVE gerar nomes de arquivos do lado do servidor (IDs aleatórios) e evitar confiar em nomes originais.
+- DEVE servir formatos potencialmente ativos com segurança (download de anexo), a menos que seja explicitamente pretendido.
 
-Insecure patterns:
+Padrões inseguros:
+
+- Aceitar tipos de arquivos arbitrários e servi-los de volta in-line.
+- Usando o nome de arquivo fornecido pelo usuário como caminho de armazenamento.
+- Falta de validação de tamanho/tipo.
+
+Dicas de detecção:
+
+- Procure por manipuladores `request.files[...]`.
+- Verifique o uso de `secure_filename` (e se ele está combinado com exclusividade).
+- Verifique onde os arquivos estão armazenados e como são servidos.
+
+Consertar:
+
+- Implementar validação de lista de permissões + armazenamento seguro + veiculação segura.
+- Adicione verificação/quarentena, se aplicável.
+
+---
+
+### FLASK-INJECT-001: Evita injeção de SQL (use consultas parametrizadas/ORM)
+
+Gravidade: Alta
+
+Obrigatório:
+
+- DEVE usar consultas parametrizadas ou um ORM que parametrize nos bastidores.
+- NÃO DEVE construir SQL por concatenação de strings/f-strings com entrada não confiável.
+
+Padrões inseguros:
+
+- `f"SELECIONE ... WHERE id={request.args['id']}"`
+- `"... WHERE nome = '%s'" % user_input`
+
+Dicas de detecção:
+
+- Grep para strings `SELECT`, `INSERT`, `UPDATE`, `DELETE` em código Python.
+- Rastreie dados não confiáveis ​​em chamadas de execução do banco de dados.
+
+Correção:
+
+- Substitua por consultas parametrizadas ou APIs de consulta ORM.
+- Valide os tipos (por exemplo, IDs internos) antes de consultar.
+
+---
+
+### FLASK-INJECT-002: Impedir injeção de comando do SO
+
+Gravidade: Crítica a Alta (depende da exposição)
+
+Obrigatório:
+
+- DEVE evitar executar comandos shell com entrada não confiável.
+- Se o subprocesso for necessário:
+  - DEVE passar argumentos como uma lista (não uma string)
+  - NÃO DEVE usar `shell=True` com strings influenciadas pelo invasor
+  - DEVE usar listas de permissões estritas para qualquer componente variável
+- Se possível, use python puro ou uma biblioteca python em vez de usar um subprocesso ou comando do sistema
+- Não assuma que os argumentos dos comandos serão inerentemente seguros mesmo em `shell=False`. Com
+
+mandos podem processar incorretamente esses argumentos como sinalizadores de linha de comando ou outros valores confiáveis.
+
+Padrões inseguros:
 
 - `os.system(user_input)`
-- `subprocess.run(f"cmd {user}", shell=True)`
-- Passing user strings into `bash -c`, `sh -c`, PowerShell, etc.
+- `subprocess.run(f"cmd {usuário}", shell=True)`
+- Passando strings de usuário para `bash -c`, `sh -c`, PowerShell, etc.
 
-Detection hints:
+Dicas de detecção:
 
-- Search for `os.system`, `subprocess`, `Popen`, `shell=True`.
-- Trace data from request/DB into these calls.
+- Procure por `os.system`, `subprocess`, `Popen`, `shell=True`.
+- Rastreie dados da solicitação/banco de dados para essas chamadas.
 
-Fix:
+Consertar:
 
-- Use library APIs instead of shell commands.
-- If unavoidable, hard-code the command and allowlist validated parameters. If supported by the subcommand, try to keep user values after `--` to prevent them being processed as command line flags.
+- Use APIs de biblioteca em vez de comandos shell.
+- Se for inevitável, codifique o comando e coloque os parâmetros validados na lista de permissões. Se suportado pelo subcomando, tente manter os valores do usuário após `--` para evitar que sejam processados ​​como sinalizadores de linha de comando.
 
 ---
 
-### FLASK-SSRF-001: Prevent server-side request forgery (SSRF) in outbound HTTP
+### FLASK-SSRF-001: Evita falsificação de solicitação do lado do servidor (SSRF) em HTTP de saída
 
-Severity: Medium
+Gravidade: Média
 
-- Note: For small stand alone projects this is less important. It is most important when deploying into an LAN or with other services listening on the same server.
+- Nota: Para projetos pequenos e independentes, isso é menos importante. É mais importante ao implantar em uma LAN ou com outros serviços escutando no mesmo servidor.
 
-Required:
+Obrigatório:
 
-- MUST treat outbound requests to user-provided URLs as high risk.
-- SHOULD validate and restrict destinations (allowlist hosts/domains) for any user-influenced URL fetch.
-- SHOULD block access to:
-  - localhost / private IP ranges / link-local addresses
-  - cloud metadata endpoints
-- MUST NOT allow non http/https protocols (ie file: etc)
-- SHOULD set timeouts and restrict redirects.
+- DEVE tratar as solicitações de saída para URLs fornecidos pelo usuário como de alto risco.
+- DEVE validar e restringir destinos (hosts/domínios da lista de permissões) para qualquer busca de URL influenciada pelo usuário.
+- DEVE bloquear o acesso a:
+  - localhost/intervalos de IP privados/endereços locais de link
+  - endpoints de metadados em nuvem
+- NÃO DEVE permitir protocolos não http/https (ou seja, arquivo: etc)
+- DEVE definir tempos limite e restringir redirecionamentos.
 
-Insecure patterns:
+Padrões inseguros:
 
 - `requests.get(request.args["url"])`
-- Webhooks/preview/fetch endpoints that accept arbitrary URLs.
+- Webhooks/visualização/busca de endpoints que aceitam URLs arbitrários.
 
-Detection hints:
+Dicas de detecção:
 
-- Search for `requests.get/post`, `httpx`, `urllib`, `aiohttp` usage with untrusted URL sources.
-- Identify URL fetch features (preview, import, webhook tester).
+- Pesquise o uso de `requests.get/post`, `httpx`, `urllib`, `aiohttp` com fontes de URL não confiáveis.
+- Identificar recursos de busca de URL (visualização, importação, testador de webhook).
 
-Fix:
+Consertar:
 
-- Ensure URLs are http or https (disallow file: or other protocols)
-- Enforce allowlists and network egress controls.
-- Add strict parsing and IP resolution checks; set timeouts; disable redirects if not needed.
-
----
-
-### FLASK-REDIRECT-001: Prevent open redirects
-
-Severity: Low
-
-Required:
-
-- MUST validate redirect targets derived from untrusted input (e.g., `next`, `redirect`, `return_to`).
-- SHOULD use allowlists of internal paths or known domains.
-- SHOULD prefer redirecting only to same-site relative paths.
-
-Insecure patterns:
-
-- `redirect(request.args.get("next"))` with no validation.
-
-Detection hints:
-
-- Search for `redirect(` and examine where `location` comes from.
-
-Fix:
-
-- Only allow relative paths or allowlisted domains.
-- Fall back to a safe default if validation fails.
+- Certifique-se de que os URLs sejam http ou https (proibir arquivo: ou outros protocolos)
+- Aplicar listas de permissões e controles de saída de rede.
+- Adicionar análise rigorosa e verificações de resolução de IP; definir tempos limite; desative os redirecionamentos se não for necessário.
 
 ---
 
-### FLASK-HTTP-001: Use HTTP methods safely; do not change state via GET; avoid secrets in URLs
+### FLASK-REDIRECT-001: Impedir redirecionamentos abertos
 
-Severity: Medium
+Gravidade: Baixa
 
-Required:
+Obrigatório:
 
-- MUST NOT perform state-changing actions over GET.
-- MUST NOT put secrets in URLs (query strings are commonly logged and leaked via referrers).
-- SHOULD require POST/PUT/PATCH/DELETE for state change and apply CSRF protections when cookie-authenticated.
+- DEVE validar alvos de redirecionamento derivados de entradas não confiáveis ​​(por exemplo, `next`, `redirect`, `return_to`).
+- DEVE usar listas de permissões de caminhos internos ou domínios conhecidos.
+- DEVE preferir redirecionar apenas para caminhos relativos do mesmo site.
 
-Insecure patterns:
+Padrões inseguros:
 
-- `/delete?id=...` implemented as GET
-- Password reset tokens or API keys in query params
+- `redirect(request.args.get("next"))` sem validação.
 
-Detection hints:
+Dicas de detecção:
 
-- Enumerate GET routes and inspect whether they mutate state.
-- Look for URL parameters named `token`, `key`, `secret`, `password`, etc.
+- Procure por `redirect(` e examine de onde vem `location`.
 
-Fix:
+Correção:
 
-- Move state changes to non-GET methods.
-- Move sensitive values to secure channels (POST bodies, headers) and protect them.
+- Permitir apenas caminhos relativos ou domínios permitidos.
+- Volte para um padrão seguro se a validação falhar.
 
 ---
 
-### FLASK-CORS-001: CORS must be explicit and least-privilege
+### FLASK-HTTP-001: Use métodos HTTP com segurança; não mude de estado via GET; evite segredos em URLs
 
-Severity: Medium (High if misconfigured with credentials)
+Gravidade: Média
 
-Required:
+Obrigatório:
 
-- If CORS is not needed, MUST keep it disabled.
-- If CORS is needed:
-  - MUST allowlist trusted origins (do not reflect arbitrary origins).
-  - MUST be careful with credentialed requests; do not combine broad origins with cookies.
-  - SHOULD restrict allowed methods and headers.
+- NÃO DEVE realizar ações de mudança de estado em GET.
+- NÃO DEVE colocar segredos em URLs (strings de consulta são comumente registradas e vazadas por meio de referenciadores).
+- DEVE exigir POST/PUT/PATCH/DELETE para mudança de estado e aplicar proteções CSRF quando autenticado por cookie.
 
-Insecure patterns:
+Padrões inseguros:
 
-- `Access-Control-Allow-Origin: *` paired with credentialed cookies or overly broad access.
-- Reflecting `Origin` without validation.
-- `flask_cors.CORS(app)` with permissive defaults.
+- `/delete?id=...` implementado como GET
+- Tokens de redefinição de senha ou chaves de API em parâmetros de consulta
 
-Detection hints:
+Dicas de detecção:
 
-- Search for `flask_cors`, `CORS(`, `Access-Control-Allow-Origin`.
-- Check for `supports_credentials=True` and wildcard origins.
+- Enumerar rotas GET e inspecionar se elas mudam de estado.
+- Procure por parâmetros de URL chamados `token`, `key`, `secret`, `password`, etc.
 
-Fix:
+Correção:
 
-- Use a strict origin allowlist and minimal methods/headers.
-- Ensure cookie-authenticated endpoints are not exposed cross-origin unless necessary.
+- Mover alterações de estado para métodos não GET.
+- Mova valores confidenciais para canais seguros (corpos POST, cabeçalhos) e proteja-os.
 
 ---
 
-### FLASK-SUPPLY-001: Dependency and patch hygiene (focus on security-relevant deps)
+### FLASK-CORS-001: CORS deve ser explícito e com menos privilégios
 
-Severity: Low
+Gravidade: Média (alta se as credenciais estiverem configuradas incorretamente)
 
-Required:
+Obrigatório:
 
-- SHOULD pin and regularly update security-critical dependencies (Flask, Werkzeug, Jinja2, itsdangerous).
-- MUST respond to known security advisories promptly.
+- Se o CORS não for necessário, DEVE mantê-lo desativado.
+- Se o CORS for necessário:
+  - DEVE incluir na lista de permissões origens confiáveis (não reflita origens arbitrárias).
+  - DEVE ter cuidado com solicitações credenciadas; não combine origens amplas com cookies.
+  - DEVE restringir métodos e cabeçalhos permitidos.
 
-Audit focus example:
+Padrões inseguros:
 
-- If running on Windows and using file serving with untrusted paths, ensure Werkzeug’s `safe_join` behavior is not vulnerable to Windows device-name edge cases.
+- `Access-Control-Allow-Origin: *` emparelhado com cookies credenciados ou acesso excessivamente amplo.
+- Refletindo `Origem` sem validação.
+- `flask_cors.CORS(app)` com padrões permissivos.
 
-Detection hints:
+Dicas de detecção:
 
-- Check `requirements.txt`, lockfiles, and runtime environments.
-- Identify where security helpers are used (safe_join, send_from_directory).
+- Procure por `flask_cors`, `CORS(`, `Access-Control-Allow-Origin`.
+- Verifique se há `supports_credentials=True` e origens curinga.
 
-Fix:
+Correção:
 
-- Upgrade to patched versions and add regression tests for the impacted behavior.
+- Use uma lista de permissões de origem rigorosa e métodos/cabeçalhos mínimos.
+- Certifique-se de que os pontos de extremidade autenticados por cookie não sejam expostos de origem cruzada, a menos que seja necessário.
 
 ---
 
-## 5) Practical scanning heuristics (how to “hunt”)
+### FLASK-SUPPLY-001: Dependência e higiene de patches (foco em dependências relevantes para a segurança)
 
-When actively scanning, use these high-signal patterns:
+Gravidade: Baixa
 
-- Dev server / debug:
+Obrigatório:
+
+- DEVE fixar e atualizar regularmente dependências críticas de segurança (Flask, Werkzeug, Jinja2, itsdangerous).
+- DEVE responder prontamente aos avisos de segurança conhecidos.
+
+Exemplo de foco de auditoria:
+
+- Se estiver executando no Windows e usando arquivos servindo com caminhos não confiáveis, certifique-se de que o comportamento `safe_join` do Werkzeug não seja vulnerável a casos extremos de nomes de dispositivos Windows.
+
+Dicas de detecção:
+
+- Verifique `requirements.txt`, lockfiles e ambientes de tempo de execução.
+- Identifique onde os auxiliares de segurança são usados ​​(safe_join, send_from_directory).
+
+Correção:
+
+- Atualize para versões corrigidas e adicione testes de regressão para o comportamento afetado.
+
+---
+
+## 5) Heurísticas práticas de varredura (como “caçar”)
+
+Ao digitalizar ativamente, use estes padrões de sinal alto:
+
+- Servidor de desenvolvimento/depuração:
   - `app.run(`, `flask run`, `--debug`, `DEBUG=True`, `FLASK_DEBUG`
-- Secrets:
-  - `SECRET_KEY`, `secret_key`, `.env` committed, `print(config)`
-- Cookies / sessions:
+- Segredos:
+  - `SECRET_KEY`, `secret_key`, `.env` confirmado, `print(config)`
+- Cookies/sessões:
   - `SESSION_COOKIE_SECURE`, `SESSION_COOKIE_HTTPONLY`, `SESSION_COOKIE_SAMESITE`
-  - `session[...] =` with sensitive values
+  - `session[...] =` com valores sensíveis
 - CSRF:
-  - POST/PUT/PATCH/DELETE handlers without CSRF checks in cookie-authenticated apps
-- XSS/SSTI:
-  - `Markup(`, `|safe`, unquoted attributes, `render_template_string`
-- Files:
-  - `send_file(` with user-controlled path; `open(` on user path; `os.path.join` with untrusted
-  - upload handlers using user filename for path
-- Injection:
-  - SQL strings + string formatting into `.execute(...)`
+  - Manipuladores POST/PUT/PATCH/DELETE sem verificações de CSRF em aplicativos autenticados por cookies
+    -XSS/SSTI:
+  - `Markup(`, `|safe`, sem aspas
+
+atributos, `render_template_string`
+
+- Arquivos:
+  - `send_file(` com caminho controlado pelo usuário; `open(` no caminho do usuário; `os.path.join` com não confiável
+  - fazer upload de manipuladores usando o nome de arquivo do usuário como caminho
+- Injeção:
+  - Strings SQL + formatação de strings em `.execute(...)`
   - `subprocess.*`, `shell=True`, `os.system`
 - SSRF:
-  - `requests.get/post` or `httpx` with URL from request/DB
-- Redirect:
-  - `redirect(request.args.get("next"))`
+  - `requests.get/post` ou `httpx` com URL de request/DB
+- Redirecionar:
+  - `redirect(request.args.get("próximo"))`
 - CORS:
-  - `flask_cors.CORS` permissive configs; wildcard origins with credentials
+  - `frasco_co
 
-Always try to confirm:
+configurações permissivas do rs.CORS; origens curinga com credenciais
 
-- data origin (untrusted vs trusted)
-- sink type (template/SQL/subprocess/files/redirect/http)
-- protective controls present (validation, allowlists, middleware)
+Sempre tente confirmar:
+
+- origem dos dados (não confiável versus confiável)
+- tipo de coletor (template/SQL/subprocess/files/redirect/http)
+- controles de proteção presentes (validação, listas de permissões, middleware)
 
 ---
 
-## 6) Sources (accessed 2026-01-26)
+## 6) Fontes (acessado em 26/01/2026)
 
-Primary framework documentation:
+Documentação da estrutura primária:
 
-- Flask Docs: Deploying to Production — https://flask.palletsprojects.com/en/stable/deploying/
-- Flask Docs: Debugging Application Errors — https://flask.palletsprojects.com/en/stable/debugging/
-- Flask Docs: Configuration Handling — https://flask.palletsprojects.com/en/stable/config/
-- Flask Docs: Security Considerations — https://flask.palletsprojects.com/en/stable/web-security/
-- Flask Docs: Tell Flask it is Behind a Proxy — https://flask.palletsprojects.com/en/stable/deploying/proxy_fix/
-- Flask API Docs: Sessions — https://flask.palletsprojects.com/en/stable/api/#sessions
+- Flask Docs: Implantando na produção - https://flask.palletsprojects.com/en/stable/deploying/
+- Flask Docs: Depurando erros de aplicativos - https://flask.palletsprojects.com/en/stable/debugging/
+- Flask Docs: Tratamento de configuração - https://flask.palletsprojects.com/en/stable/config/
+- Flask Docs: Considerações de segurança - https://flask.palletsprojects.com/en/stable/web-security/
+- Flask Docs: Diga ao Flask que ele está atrás de um proxy - https://flask.pall
 
-Werkzeug documentation & advisories:
+etsprojects.com/en/stable/deploying/proxy_fix/
 
-- Werkzeug Docs: Utilities (send_file / send_from_directory / safe_join / secure_filename / password hashing) — https://werkzeug.palletsprojects.com/en/stable/utils/
-- GitHub Advisory: CVE-2025-66221 (Werkzeug safe_join Windows device names) — https://github.com/advisories/GHSA-hgf8-39gv-g3f2
+- Documentos da API Flask: Sessões - https://flask.palletsprojects.com/en/stable/api/#sessions
 
-OWASP Cheat Sheet Series:
+Documentação e avisos da Werkzeug:
 
-- Session Management — https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html
-- CSRF Prevention — https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html
-- XSS Prevention — https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html
-- Input Validation — https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html
-- SQL Injection Prevention — https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html
-- Injection Prevention — https://cheatsheetseries.owasp.org/cheatsheets/Injection_Prevention_Cheat_Sheet.html
-- OS Command Injection Defense — https://cheatsheetseries.owasp.org/cheatsheets/OS_Command_Injection_Defense_Cheat_Sheet.html
-- SSRF Prevention — https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html
-- File Upload — https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html
-- Unvalidated Redirects — https://cheatsheetseries.owasp.org/cheatsheets/Unvalidated_Redirects_and_Forwards_Cheat_Sheet.html
-- HTTP Headers — https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html
+- Werkzeug Docs: Utilitários (send_file / send_from_directory / safe_join / secure_filename / hashing de senha) - https://werkzeug.palletsprojects.com/en/stable/utils/
+- Comunicado GitHub: CVE-2025-66221 (nomes de dispositivos Werkzeug safe_join Windows) - https://github.com/advisories/GHSA-hgf8-39gv-g3f2
 
-Template safety references:
+Série de folhas de dicas OWASP:
 
-- Jinja: Sandbox (rendering untrusted templates) — https://jinja.palletsprojects.com/en/stable/sandbox/
-- OWASP WSTG: Testing for Server-Side Template Injection — https://owasp.org/www-project-web-security-testing-guide/v41/4-Web_Application_Security_Testing/07-Input_Validation_Testing/18-Testing_for_Server_Side_Template_Injection
-- PortSwigger Web Security Academy: Server-side template injection — https://portswigger.net/web-security/server-side-template-injection
+- Gerenciamento de sessão — https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html
+- Prevenção de CSRF — https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html
+- Prevenção XSS — https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html
+- Validação de entrada — https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html
+  -SQL
 
-HTTP semantics:
+Prevenção de injeção - https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html
 
-- RFC 9110: HTTP Semantics (safe methods) — https://www.rfc-editor.org/rfc/rfc9110
+- Prevenção de injeção - https://cheatsheetseries.owasp.org/cheatsheets/Injection_Prevention_Cheat_Sheet.html
+- Defesa de injeção de comando do sistema operacional - https://cheatsheetseries.owasp.org/cheatsheets/OS_Command_Injection_Defense_Cheat_Sheet.html
+- Prevenção SSRF - https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Preven
+
+ção_Cheat_Sheet.html
+
+- Upload de arquivo - https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html
+- Redirecionamentos não validados — https://cheatsheetseries.owasp.org/cheatsheets/Unvalidated_Redirects_and_Forwards_Cheat_Sheet.html
+- Cabeçalhos HTTP — https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html
+
+Referências de segurança do modelo:
+
+- Jinja: Sandbox (renderizando modelos não confiáveis) — https://jinja.palletsprojects.com/en/stable/sandbox/
+- OWASP WSTG: Teste para injeção de modelo no lado do servidor - https://owasp.org/www-project-web-security-testing-guide/v41/4-Web_Application_Security_Testing/07-Input_Validation_Testing/18-Testing_for_Server_Side_Template_Injection
+- PortSwigger Web Security Academy: injeção de modelo no lado do servidor - https://portswigger.net/web-security/server-side
+
+-injeção de modelo
+
+Semântica HTTP:
+
+- RFC 9110: Semântica HTTP (métodos seguros) — https://www.rfc-editor.org/rfc/rfc9110

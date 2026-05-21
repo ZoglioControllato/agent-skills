@@ -1,33 +1,35 @@
-# Liquid Syntax Reference
+# Referência de sintaxe líquida
 
-## Tag Categories
+## Categorias de tags
 
-### Control Flow Tags
+### Tags de fluxo de controle
 
-#### if/elsif/else/endif
+#### if/elsif/else/endif```liquid
 
-```liquid
 {% if product.available %}
-  <button>Add to Cart</button>
+<button>Add to Cart</button>
 {% elsif product.coming_soon %}
+
   <p>Coming Soon</p>
 {% else %}
   <p>Sold Out</p>
 {% endif %}
 ```
 
-**Operators:**
-- `==` - equals
-- `!=` - not equals
-- `>` - greater than
-- `<` - less than
-- `>=` - greater than or equal
-- `<=` - less than or equal
-- `contains` - substring or array contains
-- `and` - logical AND
-- `or` - logical OR
+**Operadores:**
 
-**Examples:**
+- `==` - igual
+- `!=` - não é igual
+- `>` - maior que
+- `<` - menos que
+- `>=` - maior ou igual
+- `<=` - menor ou igual
+- `contém` - substring ou array contém
+- `e` - E lógico
+- `ou` - OU lógico
+
+**Exemplos:**
+
 ```liquid
 {% if product.price > 100 and product.available %}
   Premium item in stock
@@ -38,26 +40,22 @@
 {% endif %}
 ```
 
-#### unless
+#### a menos que
 
-Negated if statement:
-
-```liquid
+Declaração if negada:```liquid
 {% unless customer.name == blank %}
-  Hello, {{ customer.name }}
+Hello, {{ customer.name }}
 {% endunless %}
 
 {# Equivalent to: #}
 {% if customer.name != blank %}
-  Hello, {{ customer.name }}
+Hello, {{ customer.name }}
 {% endif %}
-```
 
-#### case/when
+````
+#### caso/quando
 
-Switch-case statement:
-
-```liquid
+Instrução switch-case:```liquid
 {% case product.type %}
   {% when 'shoes' %}
     <icon>👟</icon>
@@ -68,19 +66,19 @@ Switch-case statement:
   {% else %}
     <icon>📦</icon>
 {% endcase %}
-```
+````
 
-### Iteration Tags
+### Tags de iteração
 
-#### for loop
+#### para loop```liquid
 
-```liquid
 {% for product in collection.products %}
-  {{ product.title }}
+{{ product.title }}
 {% endfor %}
-```
 
-**Modifiers:**
+````
+
+**Modificadores:**
 
 ```liquid
 {# Limit to first 5 #}
@@ -102,9 +100,9 @@ Switch-case statement:
 {% for product in collection.products limit: 5 offset: 10 %}
   {# Items 11-15 #}
 {% endfor %}
-```
+````
 
-**forloop object (available inside loops):**
+**objeto forloop (disponível dentro de loops):**
 
 ```liquid
 {% for item in array %}
@@ -118,7 +116,7 @@ Switch-case statement:
 {% endfor %}
 ```
 
-**Example usage:**
+**Exemplo de uso:**
 
 ```liquid
 {% for product in collection.products %}
@@ -140,27 +138,24 @@ Switch-case statement:
 {% endfor %}
 ```
 
-#### break and continue
+#### interromper e continuar```liquid
 
-```liquid
 {% for product in collection.products %}
-  {% if product.handle == 'target' %}
-    {% break %}  {# Exit loop entirely #}
-  {% endif %}
+{% if product.handle == 'target' %}
+{% break %} {# Exit loop entirely #}
+{% endif %}
 
-  {% if product.available == false %}
-    {% continue %}  {# Skip to next iteration #}
-  {% endif %}
+{% if product.available == false %}
+{% continue %} {# Skip to next iteration #}
+{% endif %}
 
-  {{ product.title }}
+{{ product.title }}
 {% endfor %}
-```
 
-#### tablerow
+````
+#### tabela
 
-Creates HTML table rows:
-
-```liquid
+Cria linhas da tabela HTML:```liquid
 {% tablerow product in collection.products cols: 3 %}
   {{ product.title }}
 {% endtablerow %}
@@ -177,9 +172,9 @@ Creates HTML table rows:
     ...
   </tr>
 </table>
-```
+````
 
-**tablerow object:**
+**objeto tablerow:**
 
 ```liquid
 {% tablerow product in products cols: 3 limit: 12 %}
@@ -194,26 +189,25 @@ Creates HTML table rows:
 {% endtablerow %}
 ```
 
-#### paginate
+#### paginar
 
-For paginating large collections:
-
-```liquid
+Para paginar coleções grandes:```liquid
 {% paginate collection.products by 12 %}
 
-  {% for product in paginate.collection.products %}
-    {% render 'product-card', product: product %}
-  {% endfor %}
+{% for product in paginate.collection.products %}
+{% render 'product-card', product: product %}
+{% endfor %}
 
-  {# Pagination controls #}
-  {% if paginate.pages > 1 %}
-    {{ paginate | default_pagination }}
-  {% endif %}
+{# Pagination controls #}
+{% if paginate.pages > 1 %}
+{{ paginate | default_pagination }}
+{% endif %}
 
 {% endpaginate %}
-```
 
-**paginate object:**
+````
+
+**objeto paginar:**
 
 ```liquid
 {{ paginate.current_page }}      {# Current page number #}
@@ -230,9 +224,9 @@ For paginating large collections:
 {{ paginate.next.is_link }}       {# Boolean #}
 
 {{ paginate.parts }}              {# Array of page links #}
-```
+````
 
-**Custom pagination:**
+**Paginação personalizada:**
 
 ```liquid
 {% paginate collection.products by 20 %}
@@ -258,24 +252,20 @@ For paginating large collections:
 {% endpaginate %}
 ```
 
-### Variable Assignment
+### Atribuição de Variável
 
-#### assign
+#### atribuir
 
-Single-line variable assignment:
-
-```liquid
+Atribuição de variável de linha única:```liquid
 {% assign sale_price = product.price | times: 0.8 %}
 {% assign is_available = product.available %}
 {% assign product_count = collection.products.size %}
 {% assign full_name = customer.first_name | append: ' ' | append: customer.last_name %}
-```
 
-#### capture
+````
+#### captura
 
-Multi-line content capture:
-
-```liquid
+Captura de conteúdo multilinha:```liquid
 {% capture product_title %}
   {{ collection.title }} - {{ product.title }}
 {% endcapture %}
@@ -288,35 +278,31 @@ Multi-line content capture:
 {% endcapture %}
 
 {{ greeting }}
-```
+````
 
-#### liquid (multi-statement)
+#### líquido (multi-declarações)
 
-Cleaner syntax for multiple statements:
-
-```liquid
+Sintaxe mais limpa para múltiplas instruções:```liquid
 {% liquid
-  assign product_type = product.type
-  assign is_on_sale = product.on_sale
-  assign sale_percentage = product.discount_percent
+assign product_type = product.type
+assign is_on_sale = product.on_sale
+assign sale_percentage = product.discount_percent
 
-  if is_on_sale
-    assign status = 'SALE'
-  else
-    assign status = 'REGULAR'
-  endif
+if is_on_sale
+assign status = 'SALE'
+else
+assign status = 'REGULAR'
+endif
 
-  echo status
+echo status
 %}
-```
 
-### Template Inclusion
+````
+### Inclusão de modelo
 
-#### render
+#### renderizar
 
-Isolated scope (preferred method):
-
-```liquid
+Escopo isolado (método preferido):```liquid
 {# Basic usage #}
 {% render 'product-card', product: product %}
 
@@ -333,9 +319,9 @@ Isolated scope (preferred method):
 
 {# Pass arrays #}
 {% render 'gallery', images: product.images %}
-```
+````
 
-**Inside product-card.liquid:**
+**Dentro do product-card.liquid:**
 
 ```liquid
 {# Only has access to passed parameters #}
@@ -352,69 +338,57 @@ Isolated scope (preferred method):
 </div>
 ```
 
-#### include
+#### incluir
 
-Shared scope (legacy, avoid in new code):
-
-```liquid
+Escopo compartilhado (legado, evitado no novo código):```liquid
 {% include 'product-details' %}
 
 {# Can access all parent template variables #}
 {# Harder to debug and reason about #}
-```
 
-#### section
+````
+#### seção
 
-Load dynamic sections:
-
-```liquid
+Carregar seções dinâmicas:```liquid
 {% section 'featured-product' %}
 {% section 'newsletter-signup' %}
-```
+````
 
-### Utility Tags
+### Etiquetas utilitárias
 
-#### comment
+#### comentário
 
-Multi-line comments:
-
-```liquid
+Comentários de várias linhas:```liquid
 {% comment %}
-  This entire block is ignored
-  by the Liquid renderer.
-  Use for documentation.
+This entire block is ignored
+by the Liquid renderer.
+Use for documentation.
 {% endcomment %}
 
 {# Single-line comment #}
-```
 
-#### echo
+````
+#### eco
 
-Output shorthand (alternative to `{{ }}`):
-
-```liquid
+Abreviação de saída (alternativa para `{{ }}`):```liquid
 {% echo product.title %}
 {# Equivalent to: {{ product.title }} #}
-```
+````
 
-#### raw
+#### cru
 
-Output Liquid code without processing:
-
-```liquid
+Código líquido de saída sem processamento:```liquid
 {% raw %}
-  {{ This will be output as-is }}
-  {% Liquid tags won't be processed %}
+{{ This will be output as-is }}
+{% Liquid tags won't be processed %}
 {% endraw %}
-```
 
-Useful for documentation or code examples.
+````
+Útil para documentação ou exemplos de código.
 
-## Whitespace Control
+## Controle de espaço em branco
 
-Strip whitespace using hyphens:
-
-```liquid
+Remova os espaços em branco usando hífens:```liquid
 {%- if condition -%}
   Content (whitespace stripped on both sides)
 {%- endif -%}
@@ -427,9 +401,9 @@ Strip whitespace using hyphens:
 
 {{ product.title -}}
 {# Strips whitespace after output #}
-```
+````
 
-**Example:**
+**Exemplo:**
 
 ```liquid
 {# Without whitespace control: #}
@@ -447,9 +421,9 @@ Strip whitespace using hyphens:
 {# Output is compact #}
 ```
 
-## Operator Precedence
+## Precedência do Operador
 
-**Order of evaluation (right-to-left):**
+**Ordem de avaliação (da direita para a esquerda):**
 
 ```liquid
 {% if true or false and false %}
@@ -457,26 +431,24 @@ Strip whitespace using hyphens:
 {% endif %}
 ```
 
-**IMPORTANT:** No parentheses support in Liquid. Break complex conditions into variables:
-
-```liquid
+**IMPORTANTE:** Não há suporte para parênteses no Liquid. Divida as condições complexas em variáveis:```liquid
 {# ❌ DOESN'T WORK: #}
 {% if (x > 5 and y < 10) or z == 0 %}
 
 {# ✅ WORKS: #}
 {% assign condition1 = false %}
 {% if x > 5 and y < 10 %}
-  {% assign condition1 = true %}
+{% assign condition1 = true %}
 {% endif %}
 
 {% if condition1 or z == 0 %}
-  {# Logic here #}
+{# Logic here #}
 {% endif %}
-```
 
-## Performance Tips
+````
+## Dicas de desempenho
 
-1. **Cache repeated calculations:**
+1. **Cache de cálculos repetidos:**
 
 ```liquid
 {# ❌ Inefficient: #}
@@ -489,9 +461,9 @@ Strip whitespace using hyphens:
 {% for i in (1..10) %}
   {{ product_count }}
 {% endfor %}
-```
+````
 
-2. **Use `limit` and `offset` instead of iterating full arrays:**
+2. **Use `limit` e `offset` em vez de iterar arrays completos:**
 
 ```liquid
 {# ❌ Inefficient: #}
@@ -507,34 +479,35 @@ Strip whitespace using hyphens:
 {% endfor %}
 ```
 
-3. **Prefer `render` over `include`** for better performance and variable scoping
+3. **Prefira `render` em vez de `include`** para melhor desempenho e escopo de variáveis
 
-4. **Use `liquid` tag** for cleaner multi-statement blocks
+4. **Use a tag `liquid`** para blocos de múltiplas instruções mais limpos
 
-## Common Gotchas
+## Dicas comuns
 
-1. **No parentheses in conditions** - Use variables instead
-2. **Right-to-left evaluation** - Be careful with operator precedence
-3. **String concatenation** - Use `append` filter or `capture` tag
-4. **Array/object mutation** - Not possible; create new variables
-5. **Integer division** - `{{ 5 | divided_by: 2 }}` returns `2`, not `2.5`
-6. **Truthy/falsy values:**
-   - `false` and `nil` are falsy
-   - Everything else (including `0`, `""`, `[]`) is truthy
+1. **Sem parênteses nas condições** - Use variáveis
+2. **Avaliação da direita para a esquerda** – Tenha cuidado com a precedência do operador
+3. **Concatenação de strings** - Use o filtro `append` ou a tag `capture`
+4. **Mutação de array/objeto** - Não é possível; criar novas variáveis
+5. **Divisão inteira** - `{{ 5 | dividido_por: 2 }}` retorna `2`, não `2,5`
+6. **Valores verdadeiros/falsos:**
+   - `false` e `nil` são falsos
+   - Todo o resto (incluindo `0`, `""`, `[]`) é
+
+verdade
 
 ## LiquidDoc
 
-Document snippet parameters with structured comments (available since 2024):
+Parâmetros de snippet de documento com comentários estruturados (disponíveis desde 2024):
 
-### Basic usage
+### Uso básico```liquid
 
-```liquid
 {% doc %}
-  @param {String} title - The product title to display
-  @param {Number} price - Price in cents
-  @param {Boolean} [show_vendor] - Whether to show vendor (optional)
-  @example
-    {% render 'product-card', title: product.title, price: product.price %}
+@param {String} title - The product title to display
+@param {Number} price - Price in cents
+@param {Boolean} [show_vendor] - Whether to show vendor (optional)
+@example
+{% render 'product-card', title: product.title, price: product.price %}
 {% enddoc %}
 
 <div class="product-card">
@@ -545,46 +518,43 @@ Document snippet parameters with structured comments (available since 2024):
   {% endif %}
 </div>
 ```
+### Tipos suportados
 
-### Supported types
+- `{String}` - valores de texto
+- `{Número}` - valores numéricos
+- `{Boolean}` - verdadeiro/falso
+- `{Object}` - Objetos do Shopify (produto, coleção, etc.)
+- `{Array}` - matrizes de valores
+- `{Image}` - objetos de imagem
 
-- `{String}` - text values
-- `{Number}` - numeric values
-- `{Boolean}` - true/false
-- `{Object}` - Shopify objects (product, collection, etc.)
-- `{Array}` - arrays of values
-- `{Image}` - image objects
+### Parâmetros opcionais
 
-### Optional parameters
-
-Wrap parameter name in square brackets:
-
-```liquid
+Coloque o nome do parâmetro entre colchetes:```liquid
 {% doc %}
-  @param {String} heading - Section heading
-  @param {String} [subheading] - Optional subheading
-  @param {Number} [limit=5] - Items to show (default: 5)
+@param {String} heading - Section heading
+@param {String} [subheading] - Optional subheading
+@param {Number} [limit=5] - Items to show (default: 5)
 {% enddoc %}
-```
 
-### Benefits
+````
+### Benefícios
 
-- Theme editor shows parameter hints when editing `render` tags
-- IDE extensions can provide autocomplete
-- Self-documenting code for team collaboration
-- Theme Check validates parameter usage
+- Editor de tema mostra dicas de parâmetros ao editar tags `render`
+- Extensões IDE podem fornecer preenchimento automático
+- Código autodocumentado para colaboração em equipe
+- Theme Check valida o uso de parâmetros
 
-## Debugging Tips
+## Dicas de depuração
 
-1. **Output variable types:**
+1. **Tipos de variáveis de saída:**
 
 ```liquid
 {{ product | json }}  {# Output entire object as JSON #}
 {{ product.class }}   {# Output object type #}
 {{ variable.size }}   {# Check array/string length #}
-```
+````
 
-2. **Check for nil/existence:**
+2. **Verifique se há zero/existência:**
 
 ```liquid
 {% if product.metafield %}
@@ -594,10 +564,10 @@ Wrap parameter name in square brackets:
 {% endif %}
 ```
 
-3. **Use default filter for safety:**
+3. **Use filtro padrão por segurança:**
 
 ```liquid
 {{ product.metafield.value | default: "Not set" }}
 ```
 
-4. **Enable theme preview console** to see Liquid errors in real-time
+4. **Ative o console de visualização do tema** para ver erros do Liquid em tempo real

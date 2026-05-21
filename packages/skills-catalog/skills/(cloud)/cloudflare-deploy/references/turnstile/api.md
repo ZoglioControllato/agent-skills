@@ -1,21 +1,21 @@
-# API Reference
+# Referência da API
 
-## Client-Side JavaScript API
+## API JavaScript no cliente
 
-The Turnstile JavaScript API is available at `window.turnstile` after loading the script.
+A API Turnstile fica em `window.turnstile` após carregar o script.
 
 ### `turnstile.render(container, options)`
 
-Renders a Turnstile widget into a container element.
+Renderiza o widget Turnstile no elemento contêiner.
 
-**Parameters:**
+**Parâmetros:**
 
-- `container` (string | HTMLElement): CSS selector or DOM element
-- `options` (TurnstileOptions): Configuration object (see [configuration.md](configuration.md))
+- `container` (string | HTMLElement): seletor CSS ou elemento DOM
+- `options` (TurnstileOptions): objeto de config (veja [configuration.md](configuration.md))
 
-**Returns:** `string` - Widget ID for use with other API methods
+**Retorno:** `string` — ID do widget para outros métodos
 
-**Example:**
+**Exemplo:**
 
 ```javascript
 const widgetId = window.turnstile.render('#my-container', {
@@ -27,15 +27,15 @@ const widgetId = window.turnstile.render('#my-container', {
 
 ### `turnstile.reset(widgetId)`
 
-Resets a widget (clears token, resets challenge state). Useful when form validation fails.
+Reinicia o widget (limpa token e estado). Útil quando a validação do formulário falha.
 
-**Parameters:**
+**Parâmetros:**
 
-- `widgetId` (string): Widget ID from `render()`, or container element
+- `widgetId` (string): ID retornado por `render()`, ou elemento contêiner
 
-**Returns:** `void`
+**Retorno:** `void`
 
-**Example:**
+**Exemplo:**
 
 ```javascript
 // Reset on form error
@@ -46,15 +46,15 @@ if (!validateForm()) {
 
 ### `turnstile.remove(widgetId)`
 
-Removes a widget from the DOM completely.
+Remove o widget do DOM por completo.
 
-**Parameters:**
+**Parâmetros:**
 
-- `widgetId` (string): Widget ID from `render()`
+- `widgetId` (string): ID de `render()`
 
-**Returns:** `void`
+**Retorno:** `void`
 
-**Example:**
+**Exemplo:**
 
 ```javascript
 // Cleanup on navigation
@@ -63,15 +63,15 @@ window.turnstile.remove(widgetId)
 
 ### `turnstile.getResponse(widgetId)`
 
-Gets the current token from a widget (if challenge completed).
+Obtém o token atual do widget (se o desafio foi concluído).
 
-**Parameters:**
+**Parâmetros:**
 
-- `widgetId` (string): Widget ID from `render()`, or container element
+- `widgetId` (string): ID de `render()`, ou contêiner
 
-**Returns:** `string | undefined` - Token string, or undefined if not ready
+**Retorno:** `string | undefined` — token ou indefinido se ainda não pronto
 
-**Example:**
+**Exemplo:**
 
 ```javascript
 const token = window.turnstile.getResponse(widgetId)
@@ -82,15 +82,15 @@ if (token) {
 
 ### `turnstile.isExpired(widgetId)`
 
-Checks if a widget's token has expired (>5 minutes old).
+Verifica se o token expirou (mais de 5 minutos).
 
-**Parameters:**
+**Parâmetros:**
 
-- `widgetId` (string): Widget ID from `render()`
+- `widgetId` (string): ID de `render()`
 
-**Returns:** `boolean` - True if expired
+**Retorno:** `boolean` — verdadeiro se expirado
 
-**Example:**
+**Exemplo:**
 
 ```javascript
 if (window.turnstile.isExpired(widgetId)) {
@@ -98,7 +98,7 @@ if (window.turnstile.isExpired(widgetId)) {
 }
 ```
 
-## Callback Signatures
+## Assinaturas de callbacks
 
 ```typescript
 type TurnstileCallback = (token: string) => void
@@ -110,14 +110,14 @@ type AfterInteractiveCallback = () => void
 type UnsupportedCallback = () => void
 ```
 
-## Siteverify API (Server-Side)
+## API Siteverify (servidor)
 
 **Endpoint:** `https://challenges.cloudflare.com/turnstile/v0/siteverify`
 
-### Request
+### Requisição
 
-**Method:** POST  
-**Content-Type:** `application/json` or `application/x-www-form-urlencoded`
+**Método:** POST  
+**Content-Type:** `application/json` ou `application/x-www-form-urlencoded`
 
 ```typescript
 interface SiteverifyRequest {
@@ -128,7 +128,7 @@ interface SiteverifyRequest {
 }
 ```
 
-**Example:**
+**Exemplo:**
 
 ```javascript
 // Cloudflare Workers
@@ -144,7 +144,7 @@ const result = await fetch('https://challenges.cloudflare.com/turnstile/v0/sitev
 const data = await result.json()
 ```
 
-### Response
+### Resposta
 
 ```typescript
 interface SiteverifyResponse {
@@ -157,7 +157,7 @@ interface SiteverifyResponse {
 }
 ```
 
-**Example Success:**
+**Exemplo de sucesso:**
 
 ```json
 {
@@ -169,7 +169,7 @@ interface SiteverifyResponse {
 }
 ```
 
-**Example Failure:**
+**Exemplo de falha:**
 
 ```json
 {
@@ -178,19 +178,19 @@ interface SiteverifyResponse {
 }
 ```
 
-## Error Codes
+## Códigos de erro
 
-| Code                     | Cause                           | Solution                          |
-| ------------------------ | ------------------------------- | --------------------------------- |
-| `missing-input-secret`   | Secret key not provided         | Include `secret` in request       |
-| `invalid-input-secret`   | Secret key is wrong             | Check secret key in dashboard     |
-| `missing-input-response` | Token not provided              | Include `response` token          |
-| `invalid-input-response` | Token is invalid/malformed      | Verify token from widget          |
-| `timeout-or-duplicate`   | Token expired (>5min) or reused | Generate new token, validate once |
-| `internal-error`         | Cloudflare server error         | Retry with exponential backoff    |
-| `bad-request`            | Malformed request               | Check JSON/form encoding          |
+| Código                   | Causa                                        | Solução                       |
+| ------------------------ | -------------------------------------------- | ----------------------------- |
+| `missing-input-secret`   | Secret não enviado                           | Inclua `secret` na requisição |
+| `invalid-input-secret`   | Secret incorreto                             | Confira no painel             |
+| `missing-input-response` | Token não enviado                            | Inclua `response`             |
+| `invalid-input-response` | Token inválido/malformado                    | Token válido do widget        |
+| `timeout-or-duplicate`   | Token expirou (mais de 5 min) ou reutilizado | Novo token; valide uma vez    |
+| `internal-error`         | Erro no servidor Cloudflare                  | Retry com backoff exponencial |
+| `bad-request`            | Requisição malformada                        | Verifique JSON/form encoding  |
 
-## TypeScript Types
+## Tipos TypeScript
 
 ```typescript
 interface TurnstileOptions {
@@ -234,7 +234,7 @@ declare global {
 }
 ```
 
-## Script Loading
+## Carregamento do script
 
 ```html
 <!-- Standard -->
@@ -251,3 +251,5 @@ declare global {
   }
 </script>
 ```
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

@@ -1,8 +1,8 @@
-# Common Patterns
+# Padrões comuns
 
-## Form Integration
+## Integração em formulários
 
-### Basic Form (Implicit Rendering)
+### Formulário básico (implícito)
 
 ```html
 <!DOCTYPE html>
@@ -20,7 +20,7 @@
 </html>
 ```
 
-### Controlled Form (Explicit Rendering)
+### Formulário controlado (explícito)
 
 ```javascript
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"></script>
@@ -45,7 +45,7 @@ form.addEventListener('submit', async (e) => {
 </script>
 ```
 
-## Framework Patterns
+## Padrões por framework
 
 ### React
 
@@ -84,7 +84,7 @@ export default function Form() {
 <Turnstile siteKey={SITE_KEY} on:turnstile-callback={(e) => token = e.detail.token} />
 ```
 
-## Server Validation
+## Validação no servidor
 
 ### Cloudflare Workers
 
@@ -140,9 +140,9 @@ export const onRequestPost: PagesFunction<{ TURNSTILE_SECRET: string }> = async 
 }
 ```
 
-## Advanced Patterns
+## Padrões avançados
 
-### Pre-Clearance (Invisible)
+### Pré-liberação (invisível)
 
 ```html
 <div id="turnstile-precheck"></div>
@@ -167,7 +167,7 @@ export const onRequestPost: PagesFunction<{ TURNSTILE_SECRET: string }> = async 
 </script>
 ```
 
-### Token Refresh on Expiry
+### Renovar token ao expirar
 
 ```javascript
 let widgetId = window.turnstile.render('#container', {
@@ -180,9 +180,9 @@ let widgetId = window.turnstile.render('#container', {
 })
 ```
 
-## Testing
+## Testes
 
-### Environment-Based Keys
+### Chaves por ambiente
 
 ```javascript
 const SITE_KEY = process.env.NODE_ENV === 'production' ? 'YOUR_PRODUCTION_SITE_KEY' : '1x00000000000000000000AA' // Always passes
@@ -190,3 +190,5 @@ const SITE_KEY = process.env.NODE_ENV === 'production' ? 'YOUR_PRODUCTION_SITE_K
 const SECRET_KEY =
   process.env.NODE_ENV === 'production' ? process.env.TURNSTILE_SECRET : '1x0000000000000000000000000000000AA'
 ```
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

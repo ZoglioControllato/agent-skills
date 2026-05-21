@@ -1,21 +1,21 @@
-# Configuration
+#Configuração
 
-## Setup Methods
+## Métodos de configuração
 
-### Proxied Sites (Automatic)
+### Sites com proxy (automático)
 
-Dashboard → Web Analytics → Add site → Select hostname → Done
+Painel → Web Analytics → Adicionar site → Selecione o nome do host → Concluído
 
-| Injection Option           | Description                            |
-| -------------------------- | -------------------------------------- |
-| Enable                     | Auto-inject for all visitors (default) |
-| Enable, excluding EU       | No injection for EU (GDPR)             |
-| Enable with manual snippet | You add beacon manually                |
-| Disable                    | Pause tracking                         |
+| Opção de injeção             | Descrição                                            |
+| ---------------------------- | ---------------------------------------------------- |
+| Habilitar                    | Injeção automática para todos os visitantes (padrão) |
+| Ativar, excluindo UE         | Nenhuma injeção para a UE (GDPR)                     |
+| Habilitar com snippet manual | Você adiciona o beacon manualmente                   |
+| Desativar                    | Pausar rastreamento                                  |
 
-**Fails if response has:** `Cache-Control: public, no-transform`
+**Falha se a resposta tiver:** `Cache-Control: public, no-transform`
 
-**CSP required:**
+**CSP necessário:**
 
 ```
 script-src https://static.cloudflareinsights.com https://cloudflareinsights.com;
@@ -33,49 +33,49 @@ Dashboard → Web Analytics → Add site → Enter hostname → Copy snippet
 ></script>
 ```
 
-**Limits:** 10 non-proxied sites per account
+**Limites:** 10 sites sem proxy por conta
 
-## SPA Mode
+## Modo SPA
 
-**Enable `spa: true` for:** React Router, Next.js, Vue Router, Nuxt, SvelteKit, Angular
+**Ative `spa: true` para:** React Router, Next.js, Vue Router, Nuxt, SvelteKit, Angular
 
-**Keep `spa: false` for:** Traditional multi-page apps, static sites, WordPress
+**Mantenha `spa: false` para:** Aplicativos tradicionais de várias páginas, sites estáticos, WordPress
 
-**Hash routing (`#/path`) NOT supported** - use History API routing.
+**Roteamento de hash (`#/path`) NÃO suportado** - use roteamento da API de histórico.
 
-## Token Management
+## Gerenciamento de tokens
 
-- Found in: Dashboard → Web Analytics → Manage site
-- **Not secrets** - domain-locked, safe to expose in HTML
-- Each site gets unique token
+- Encontrado em: Dashboard → Web Analytics → Gerenciar site
+- **Não é segredo** - domínio bloqueado, seguro para exposição em HTML
+- Cada site recebe um token exclusivo
 
-## Environment Config
+## Configuração do ambiente```typescript
 
-```typescript
 // Only load in production
 if (process.env.NODE_ENV === 'production') {
-  // Load beacon
+// Load beacon
 }
+
 ```
+Ou use tokens específicos do ambiente por meio de env vars.
 
-Or use environment-specific tokens via env vars.
+## Verifique a instalação
 
-## Verify Installation
+1. Rede DevTools → filtrar `cloudflareinsights` → consulte `beacon.min.js` + solicitação de dados
+2. Nenhum erro CSP/CORS no console
+3. O painel mostra visualizações de página após um atraso de 5 a 10 minutos
 
-1. DevTools Network → filter `cloudflareinsights` → see `beacon.min.js` + data request
-2. No CSP/CORS errors in console
-3. Dashboard shows pageviews after 5-10 min delay
+## Regras (dependente do plano)
 
-## Rules (Plan-dependent)
+Configurar no painel para:
 
-Configure in dashboard for:
+- **Taxa de amostragem** - reduz a% de coleta para tráfego intenso
+- **Baseado em caminho** - comportamento diferente por rota
+- **Baseado em host** - rastreamento separado por domínio
 
-- **Sample rate** - reduce collection % for high-traffic
-- **Path-based** - different behavior per route
-- **Host-based** - separate tracking per domain
+## Retenção de dados
 
-## Data Retention
-
-- 6 months rolling window
-- 1-hour bucket granularity
-- No raw export, dashboard only
+- Janela rolante de 6 meses
+- Granularidade de balde de 1 hora
+- Sem exportação bruta, apenas painel
+```

@@ -11,34 +11,34 @@
 }
 ```
 
-## Placement Mode Values
+## Valores do modo de posicionamento
 
-| Mode          | Behavior                                                                  |
-| ------------- | ------------------------------------------------------------------------- |
-| `"smart"`     | Enable Smart Placement - automatic optimization based on traffic analysis |
-| `"off"`       | Explicitly disable Smart Placement - always run at edge closest to user   |
-| Not specified | Default behavior - run at edge closest to user (same as `"off"`)          |
+| Modo             | Comportamento                                                                                |
+| ---------------- | -------------------------------------------------------------------------------------------- |
+| `"inteligente"`  | Habilite o posicionamento inteligente - otimização automática com base na análise de tráfego |
+| `"desligado"`    | Desative explicitamente o Smart Placement - sempre execute na borda mais próxima do usuário  |
+| Não especificado | Comportamento padrão - executado na borda mais próxima do usuário (o mesmo que `"off"`)      |
 
-**Note:** Smart Placement vs Explicit Placement are separate features. Smart Placement (`mode: "smart"`) uses automatic analysis. For manual placement control, see explicit placement options (`region`, `host`, `hostname` fields - not covered in this reference).
+**Observação:** Posicionamento inteligente versus posicionamento explícito são recursos separados. O posicionamento inteligente (`mode: "smart"`) usa análise automática. Para controle de posicionamento manual, consulte opções de posicionamento explícitas (campos `region`, `host`, `hostname` - não abordados nesta referência).
 
-## Frontend + Backend Split Configuration
+## Configuração de divisão de front-end + back-end
 
-### Frontend Worker (No Smart Placement)
+### Frontend Worker (sem posicionamento inteligente)```jsonc
 
-```jsonc
 // frontend-worker/wrangler.jsonc
 {
-  "name": "frontend",
-  "main": "frontend-worker.ts",
-  // No "placement" - runs at edge
-  "services": [
-    {
-      "binding": "BACKEND",
-      "service": "backend-api",
-    },
-  ],
+"name": "frontend",
+"main": "frontend-worker.ts",
+// No "placement" - runs at edge
+"services": [
+{
+"binding": "BACKEND",
+"service": "backend-api",
+},
+],
 }
-```
+
+````
 
 ### Backend Worker (Smart Placement Enabled)
 
@@ -57,31 +57,31 @@
     },
   ],
 }
-```
+````
 
-## Requirements & Limitations
+## Requisitos e Limitações
 
-### Requirements
+### Requisitos
 
-- **Wrangler version:** 2.20.0+
-- **Analysis time:** Up to 15 minutes
-- **Traffic requirements:** Consistent multi-location traffic
-- **Workers plan:** All plans (Free, Paid, Enterprise)
+- **Versão do Wrangler:** 2.20.0+
+- **Tempo de análise:** Até 15 minutos
+- **Requisitos de tráfego:** Tráfego consistente em vários locais
+- **Plano para trabalhadores:** Todos os planos (gratuito, pago, empresarial)
 
-### What Smart Placement Affects
+### O que o posicionamento inteligente afeta
 
-**CRITICAL LIMITATION - Smart Placement ONLY Affects `fetch` Handlers:**
+**LIMITAÇÃO CRÍTICA - O posicionamento inteligente APENAS afeta os manipuladores `fetch`:**
 
-Smart Placement is fundamentally limited to Workers with default `fetch` handlers. This is a key architectural constraint.
+O posicionamento inteligente é fundamentalmente limitado a trabalhadores com manipuladores `fetch` padrão. Esta é uma restrição arquitetônica chave.
 
-- ✅ **Affects:** `fetch` event handlers ONLY (the default export's fetch method)
-- ❌ **Does NOT affect:**
-  - RPC methods (Service Bindings with `WorkerEntrypoint` - see example below)
-  - Named entrypoints (exports other than `default`)
-  - Workers without `fetch` handlers
-  - Queue consumers, scheduled handlers, or other event types
+- ✅ **Afeta:** SOMENTE manipuladores de eventos `fetch` (o método de busca da exportação padrão)
+- ❌ **NÃO afeta:**
+- Métodos RPC (Service Bindings com `WorkerEntrypoint` - veja exemplo abaixo)
+- Pontos de entrada nomeados (exportações diferentes de `default`)
+- Trabalhadores sem manipuladores `fetch`
+- Consumidores de filas, manipuladores programados ou outros tipos de eventos
 
-**Example - Smart Placement ONLY affects `fetch`:**
+**Exemplo - O posicionamento inteligente APENAS afeta `fetch`:**
 
 ```typescript
 // ✅ Smart Placement affects this:
@@ -107,31 +107,30 @@ export async function scheduled(event: ScheduledEvent, env: Env) {
 }
 ```
 
-**Consequence:** If your backend logic uses RPC methods (`WorkerEntrypoint`), Smart Placement cannot optimize those calls. You must use fetch-based patterns for Smart Placement to work.
+**Consequência:** Se sua lógica de back-end usar métodos RPC (`WorkerEntrypoint`), o Smart Placement não poderá otimizar essas chamadas. Você deve usar padrões baseados em busca para que o posicionamento inteligente funcione.
 
-**Solution:** Convert RPC methods to fetch endpoints, or use a wrapper Worker with `fetch` handler that calls your backend RPC (though this adds latency).
+**Solução:** converta métodos RPC para buscar endpoints ou use um wrapper Worker com manipulador `fetch` que chama seu RPC de back-end (embora isso adicione latência).
 
-### Baseline Traffic
+### Tráfego de linha de base
 
-Smart Placement automatically routes 1% of requests WITHOUT optimization as baseline for performance comparison.
+O Smart Placement roteia automaticamente 1% das solicitações SEM otimização como linha de base para comparação de desempenho.
 
-### Validation Rules
+### Regras de validação
 
-**Mutually exclusive fields:**
+**Campos mutuamente exclusivos:**
 
-- `mode` cannot be used with explicit placement fields (`region`, `host`, `hostname`)
-- Choose either Smart Placement OR explicit placement, not both
-
-```jsonc
-// ✅ Valid - Smart Placement
-{ "placement": { "mode": "smart" } }
+- `mode` não pode ser usado com campos de posicionamento explícitos (`region`, `host`, `hostname`)
+- Escolha posicionamento inteligente OU posicionamento explícito, não ambos```jsonc
+  // ✅ Valid - Smart Placement
+  { "placement": { "mode": "smart" } }
 
 // ✅ Valid - Explicit Placement (different feature)
 { "placement": { "region": "us-east1" } }
 
 // ❌ Invalid - Cannot combine
 { "placement": { "mode": "smart", "region": "us-east1" } }
-```
+
+````
 
 ## Dashboard Configuration
 
@@ -151,48 +150,47 @@ export default {
     return Response.json(data)
   },
 } satisfies ExportedHandler<Env>
-```
+````
 
-## Cloudflare Pages/Assets Warning
+## Aviso de páginas/ativos da Cloudflare
 
-**CRITICAL PERFORMANCE ISSUE:** Enabling Smart Placement with `assets.run_worker_first = true` in Pages projects **severely degrades asset serving performance**. This is one of the most common misconfigurations.
+**PROBLEMA CRÍTICO DE DESEMPENHO:** Ativar o posicionamento inteligente com `assets.run_worker_first = true` em projetos do Pages **degrada gravemente o desempenho do fornecimento de ativos**. Esta é uma das configurações incorretas mais comuns.
 
-**Why this is bad:**
+**Por que isso é ruim:**
 
-- Smart Placement routes ALL requests (including static assets) away from edge to remote locations
-- Static assets (HTML, CSS, JS, images) should ALWAYS be served from edge closest to user
-- Result: 2-5x slower asset loading times, poor user experience
+- O Smart Placement direciona TODAS as solicitações (incluindo ativos estáticos) da borda para locais remotos
+- Ativos estáticos (HTML, CSS, JS, imagens) SEMPRE devem ser veiculados na borda mais próxima do usuário
+- Resultado: tempos de carregamento de ativos 2 a 5 vezes mais lentos, experiência do usuário ruim
 
-**Problem:** Smart Placement routes asset requests away from edge, but static assets should always be served from edge closest to user.
+**Problema:** o Smart Placement direciona as solicitações de ativos para fora da borda, mas os ativos estáticos sempre devem ser veiculados na borda mais próxima do usuário.
 
-**Solutions (in order of preference):**
+**Soluções (em ordem de preferência):**
 
-1. **Recommended:** Split into separate Workers (frontend at edge + backend with Smart Placement)
-2. Set `"mode": "off"` to explicitly disable Smart Placement for Pages/Assets Workers
-3. Use `assets.run_worker_first = false` (serves assets first, bypasses Worker for static content)
-
-```jsonc
-// ❌ BAD - Degrades asset performance by 2-5x
-{
-  "name": "pages-app",
-  "placement": { "mode": "smart" },
-  "assets": { "run_worker_first": true }
-}
+1. **Recomendado:** Dividir em Workers separados (frontend na borda + backend com Smart Placement)
+2. Defina `"mode": "off"` para desabilitar explicitamente o Smart Placement para Pages/Assets Workers
+3. Use `assets.run_worker_first = false` (serve os ativos primeiro, ignora o Worker para conteúdo estático)```jsonc
+   // ❌ BAD - Degrades asset performance by 2-5x
+   {
+   "name": "pages-app",
+   "placement": { "mode": "smart" },
+   "assets": { "run_worker_first": true }
+   }
 
 // ✅ GOOD - Frontend at edge, backend optimized
 // frontend-worker/wrangler.jsonc
 {
-  "name": "frontend",
-  "assets": { "run_worker_first": true }
-  // No placement - runs at edge
+"name": "frontend",
+"assets": { "run_worker_first": true }
+// No placement - runs at edge
 }
 
 // backend-worker/wrangler.jsonc
 {
-  "name": "backend-api",
-  "placement": { "mode": "smart" },
-  "d1_databases": [{ "binding": "DB", "database_id": "xxx" }]
+"name": "backend-api",
+"placement": { "mode": "smart" },
+"d1_databases": [{ "binding": "DB", "database_id": "xxx" }]
 }
+
 ```
 
 **Key takeaway:** Never enable Smart Placement on Workers that serve static assets with `run_worker_first = true`.
@@ -200,3 +198,4 @@ export default {
 ## Local Development
 
 Smart Placement does NOT work in `wrangler dev` (local only). Test by deploying: `wrangler deploy --env staging`
+```

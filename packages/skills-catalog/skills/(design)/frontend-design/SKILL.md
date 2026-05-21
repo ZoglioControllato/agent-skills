@@ -1,149 +1,162 @@
 ---
 name: frontend-design
-description: Create distinctive, production-grade frontend interfaces with high design quality. Use this skill when the user asks to build web components, pages, artifacts, posters, or applications. Generates creative, polished code that avoids generic AI aesthetics. Do NOT use for design review or audit (use web-design-guidelines or web-quality-audit).
+description: Cria interfaces frontend distintas e prontas para produção com alto nível visual. Use quando o usuário pedir componentes web, páginas, artefatos, posters ou aplicações. Gera código criativo e acabado que evita estética genérica de IA. NÃO use para revisão ou auditoria de design (use web-design-guidelines ou web-quality-audit).
 metadata:
   author: Impeccable (Paul Bakaus), based on Anthropic frontend-design
   version: '1.0.0'
 source: https://github.com/pbakaus/impeccable
 ---
 
-This skill guides creation of distinctive, production-grade frontend interfaces that avoid generic "AI slop" aesthetics. Implement real working code with exceptional attention to aesthetic details and creative choices.
+Esta skill orienta criação de interfaces frontend distintas e prontas para produção que evitem a estética genérica (“AI slop”). Implemente código funcional real com atenção excepcional a detalhes estéticos e escolhas criativas.
 
-## Design Direction
+## Direção de design
 
-Commit to a BOLD aesthetic direction:
-- **Purpose**: What problem does this interface solve? Who uses it?
-- **Tone**: Pick an extreme: brutally minimal, maximalist chaos, retro-futuristic, organic/natural, luxury/refined, playful/toy-like, editorial/magazine, brutalist/raw, art deco/geometric, soft/pastel, industrial/utilitarian, etc. There are so many flavors to choose from. Use these for inspiration but design one that is true to the aesthetic direction.
-- **Constraints**: Technical requirements (framework, performance, accessibility).
-- **Differentiation**: What makes this UNFORGETTABLE? What's the one thing someone will remember?
+Comprometa-se com uma direção estética OUSADA:
 
-**CRITICAL**: Choose a clear conceptual direction and execute it with precision. Bold maximalism and refined minimalism both work—the key is intentionality, not intensity.
+- **Propósito**: Qual problema esta interface resolve? Quem usa?
+- **Tom**: Escolha um extremo: minimalismo brutal, caos maximalista, retrofuturista, orgânico/natural, luxo/refinado, lúdico/brinquedo, editorial/revista, brutalista/cruo, art déco/geométrico, suave/pastel, industrial/utilitário etc. Há muitos sabores — use como inspiração mas desenhe um fiel à direção escolhida.
+- **Restrições**: Requisitos técnicos (framework, performance, acessibilidade).
+- **Diferenciação**: O que torna isto INESQUECÍVEL? Qual a única coisa que alguém vai lembrar?
 
-Then implement working code that is:
-- Production-grade and functional
-- Visually striking and memorable
-- Cohesive with a clear aesthetic point-of-view
-- Meticulously refined in every detail
+**CRÍTICO**: Escolha direção conceitual clara e execute com precisão. Maximalismo ousado e minimalismo refinado funcionam — a chave é intencionalidade, não intensidade.
 
-## Frontend Aesthetics Guidelines
+Depois implemente código funcional que seja:
 
-### Typography
-→ *Consult [typography reference](references/typography.md) for scales, pairing, and loading strategies.*
+- Pronto para produção e funcional
+- Visualmente marcante e memorável
+- Coeso com ponto de vista estético claro
+- Meticulosamente refinado em cada detalhe
 
-Choose fonts that are beautiful, unique, and interesting. Pair a distinctive display font with a refined body font.
+## Diretrizes de estética frontend
 
-**DO**: Use a modular type scale with fluid sizing (clamp)
-**DO**: Vary font weights and sizes to create clear visual hierarchy
-**DON'T**: Use overused fonts—Inter, Roboto, Arial, Open Sans, system defaults
-**DON'T**: Use monospace typography as lazy shorthand for "technical/developer" vibes
-**DON'T**: Put large icons with rounded corners above every heading—they rarely add value and make sites look templated
+### Tipografia
 
-### Color & Theme
-→ *Consult [color reference](references/color-and-contrast.md) for OKLCH, palettes, and dark mode.*
+→ _Consulte [referência de tipografia](references/typography.md) para escalas, pares e carregamento de fontes._
 
-Commit to a cohesive palette. Dominant colors with sharp accents outperform timid, evenly-distributed palettes.
+Escolha fontes bonitas, únicas e interessantes. Una uma display marcante com um corpo refinado.
 
-**DO**: Use modern CSS color functions (oklch, color-mix, light-dark) for perceptually uniform, maintainable palettes
-**DO**: Tint your neutrals toward your brand hue—even a subtle hint creates subconscious cohesion
-**DON'T**: Use gray text on colored backgrounds—it looks washed out; use a shade of the background color instead
-**DON'T**: Use pure black (#000) or pure white (#fff)—always tint; pure black/white never appears in nature
-**DON'T**: Use the AI color palette: cyan-on-dark, purple-to-blue gradients, neon accents on dark backgrounds
-**DON'T**: Use gradient text for "impact"—especially on metrics or headings; it's decorative rather than meaningful
-**DON'T**: Default to dark mode with glowing accents—it looks "cool" without requiring actual design decisions
+**FAÇA**: Escala modular com tamanhos fluidos (clamp)
+**FAÇA**: Varie pesos e tamanhos para hierarquia clara
+**NÃO FAÇA**: Fontes gastas — Inter, Roboto, Arial, Open Sans, padrão do sistema
+**NÃO FAÇA**: Monoespaçada como atalho preguiçoso para “vibe técnico/dev”
+**NÃO FAÇA**: Ícones grandes com cantos arredondados acima de todo título — raramente agregam e deixam sites com cara de template
 
-### Layout & Space
-→ *Consult [spatial reference](references/spatial-design.md) for grids, rhythm, and container queries.*
+### Cor e tema
 
-Create visual rhythm through varied spacing—not the same padding everywhere. Embrace asymmetry and unexpected compositions. Break the grid intentionally for emphasis.
+→ _Consulte [referência de cor](references/color-and-contrast.md) para OKLCH, paletas e modo escuro._
 
-**DO**: Create visual rhythm through varied spacing—tight groupings, generous separations
-**DO**: Use fluid spacing with clamp() that breathes on larger screens
-**DO**: Use asymmetry and unexpected compositions; break the grid intentionally for emphasis
-**DON'T**: Wrap everything in cards—not everything needs a container
-**DON'T**: Nest cards inside cards—visual noise, flatten the hierarchy
-**DON'T**: Use identical card grids—same-sized cards with icon + heading + text, repeated endlessly
-**DON'T**: Use the hero metric layout template—big number, small label, supporting stats, gradient accent
-**DON'T**: Center everything—left-aligned text with asymmetric layouts feels more designed
-**DON'T**: Use the same spacing everywhere—without rhythm, layouts feel monotonous
+Comprometa-se com paleta coesa. Dominantes com acentos fortes ganham de paletas tímidas e uniformemente distribuídas.
 
-### Visual Details
-**DO**: Use intentional, purposeful decorative elements that reinforce brand
-**DON'T**: Use glassmorphism everywhere—blur effects, glass cards, glow borders used decoratively rather than purposefully
-**DON'T**: Use rounded elements with thick colored border on one side—a lazy accent that almost never looks intentional
-**DON'T**: Use sparklines as decoration—tiny charts that look sophisticated but convey nothing meaningful
-**DON'T**: Use rounded rectangles with generic drop shadows—safe, forgettable, could be any AI output
-**DON'T**: Use modals unless there's truly no better alternative—modals are lazy
+**FAÇA**: Funções de cor CSS modernas (oklch, color-mix, light-dark) para paletas perceptualmente uniformes e sustentáveis
+**FAÇA**: Tingir neutros na direção do matiz da marca — até um leve hint cria coesão inconsciente
+**NÃO FAÇA**: Cinza sobre fundo colorido — fica lavado; use um tom derivado do fundo
+**NÃO FAÇA**: Preto puro (#000) ou branco puro (#fff) — sempre tinge; puro não existe na natureza
+**NÃO FAÇA**: Paleta clichê de IA: ciano sobre escuro, gradiente roxo-azul, neon em fundo escuro
+**NÃO FAÇA**: Texto em gradiente para “impacto” — em métricas ou títulos é decorativo, não substantivo
+**NÃO FAÇA**: Cair no modo escuro padrão com brilhos — parece “legal” sem decisões de design reais
 
-### Motion
-→ *Consult [motion reference](references/motion-design.md) for timing, easing, and reduced motion.*
+### Layout e espaço
 
-Focus on high-impact moments: one well-orchestrated page load with staggered reveals creates more delight than scattered micro-interactions.
+→ _Consulte [referência espacial](references/spatial-design.md) para grades, ritmo e container queries._
 
-**DO**: Use motion to convey state changes—entrances, exits, feedback
-**DO**: Use exponential easing (ease-out-quart/quint/expo) for natural deceleration
-**DO**: For height animations, use grid-template-rows transitions instead of animating height directly
-**DON'T**: Animate layout properties (width, height, padding, margin)—use transform and opacity only
-**DON'T**: Use bounce or elastic easing—they feel dated and tacky; real objects decelerate smoothly
+Crie ritmo visual com espaçamento variado — não o mesmo padding em tudo. Abra espaço para assimetria e composições surpreendentes. Quebre a grade de propósito para ênfase.
 
-### Interaction
-→ *Consult [interaction reference](references/interaction-design.md) for forms, focus, and loading patterns.*
+**FAÇA**: Ritmo com espaçamentos variados — agrupamentos apertados, separações generosas
+**FAÇA**: Espaçamento fluido com clamp() que “respira” em telas maiores
+**FAÇA**: Assimetria e composições inesperadas; quebras de grade intencionais
+**NÃO FAÇA**: Envolver tudo em cards — nem tudo precisa de container
+**NÃO FAÇA**: Cards dentro de cards — ruído visual, achate a hierarquia
+**NÃO FAÇA**: Grades idênticas de cards — mesmo tamanho, ícone + título + texto repetidos
+**NÃO FAÇA**: Template de hero com métrica grande — número enorme, label pequena, stats de apoio, acento em gradiente
+**NÃO FAÇA**: Centralizar tudo — texto alinhado à esquerda com layout assimétrico parece mais desenhado
+**NÃO FAÇA**: Mesmo espaçamento em todo lugar — sem ritmo, layout monótono
 
-Make interactions feel fast. Use optimistic UI—update immediately, sync later.
+### Detalhes visuais
 
-**DO**: Use progressive disclosure—start simple, reveal sophistication through interaction (basic options first, advanced behind expandable sections; hover states that reveal secondary actions)
-**DO**: Design empty states that teach the interface, not just say "nothing here"
-**DO**: Make every interactive surface feel intentional and responsive
-**DON'T**: Repeat the same information—redundant headers, intros that restate the heading
-**DON'T**: Make every button primary—use ghost buttons, text links, secondary styles; hierarchy matters
+**FAÇA**: Elementos decorativos intencionais que reforcem marca
+**NÃO FAÇA**: Glassmorphism em toda parte — blur, cards de vidro, bordas brilho como enfeite vazio
+**NÃO FAÇA**: Retângulos arredondados com borda grossa colorida só de um lado — acento preguiçoso e raramente intencional
+**NÃO FAÇA**: Sparklines como decoração — gráficos minúsculos que parecem sofisticados e não dizem nada
+**NÃO FAÇA**: Retângulos arredondados com sombra genérica — seguro, esquecível, qualquer saída de IA
+**NÃO FAÇA**: Modais sem necessidade real — modais são atalho preguiçoso
 
-### Responsive
-→ *Consult [responsive reference](references/responsive-design.md) for mobile-first, fluid design, and container queries.*
+### Movimento
 
-**DO**: Use container queries (@container) for component-level responsiveness
-**DO**: Adapt the interface for different contexts—don't just shrink it
-**DON'T**: Hide critical functionality on mobile—adapt the interface, don't amputate it
+→ _Consulte [referência de motion](references/motion-design.md) para timing, easing e reduced motion._
 
-### UX Writing
-→ *Consult [ux-writing reference](references/ux-writing.md) for labels, errors, and empty states.*
+Foque picos de impacto: uma entrada de página bem orquestrada com reveals escalonados gera mais prazer que microinterações espalhadas.
 
-**DO**: Make every word earn its place
-**DON'T**: Repeat information users can already see
+**FAÇA**: Movimento para mudanças de estado — entradas, saídas, feedback
+**FAÇA**: Easing exponencial (ease-out quart/quint/expo) para desaceleração natural
+**FAÇA**: Para altura animada, prefira grid-template-rows a animar height direto
+**NÃO FAÇA**: Animar propriedades de layout (width, height, padding, margin) — use transform e opacity
+**NÃO FAÇA**: Bounce ou elastic — datados e chamativos; objetos reais desaceleram suave
 
----
+### Interação
 
-## The AI Slop Test
+→ _Consulte [referência de interação](references/interaction-design.md) para formulários, foco e loading._
 
-**Critical quality check**: If you showed this interface to someone and said "AI made this," would they believe you immediately? If yes, that's the problem.
+Interações rápidas. UI otimista — atualiza na hora, sincroniza depois.
 
-A distinctive interface should make someone ask "how was this made?" not "which AI made this?"
+**FAÇA**: Divulgação progressiva — comece simples, revela sofisticação na interação (opções básicas primeiro; avançado em expansíveis; hover revela secundárias)
+**FAÇA**: Estados vazios que ensinam a interface, não só “nada aqui”
+**FAÇA**: Toda superfície interativa intencional e responsiva
+**NÃO FAÇA**: Repetir a mesma informação — intros redundantes que repetem o título
+**NÃO FAÇA**: Todo botão primário — ghost, texto, secundário; hierarquia importa
 
-Review the DON'T guidelines above—they are the fingerprints of AI-generated work from 2024-2025.
+### Responsivo
 
----
+→ _Consulte [referência responsiva](references/responsive-design.md) para mobile-first, design fluido e container queries._
 
-## Examples
+**FAÇA**: Container queries (@container) para responsividade ao nível de componente
+**FAÇA**: Adaptar para contextos diferentes — não só encolher
+**NÃO FAÇA**: Esconder função crítica no mobile — adapte, não ampute
 
-### Example 1: Landing page with strong aesthetic
-User says: "Build a landing page for a developer tools product, something that doesn't look like every other SaaS."
-Actions: Pick a bold direction (e.g. brutalist or editorial); choose a distinctive type pairing and a cohesive palette; implement with fluid spacing and one clear focal point; avoid cards-in-cards and hero-metric clichés.
-Result: A single-page layout with clear hierarchy, memorable typography, and no generic AI tells (no purple gradients, no rounded cards with thick accent borders).
+### UX writing
 
-### Example 2: Dashboard or app UI
-User says: "Create a dashboard for viewing analytics with a dark theme."
-Actions: Commit to a specific dark aesthetic (e.g. refined dark with tinted neutrals, not default glow-on-black); use container queries for panels; add one considered motion moment (e.g. staggered list load); ensure empty states are helpful.
-Result: Functional dashboard that feels intentionally designed—distinct palette, no cyan/purple glow, clear data hierarchy and responsive behavior.
+→ _Consulte [referência de UX writing](references/ux-writing.md) para labels, erros e vazios._
 
-### Example 3: Poster or marketing artifact
-User says: "Make a poster for a conference talk about frontend performance."
-Actions: Choose a strong typographic or visual concept; use a modular type scale and limited palette; avoid generic stock-photo + headline layout.
-Result: A poster that could stand alone as a designed artifact—memorable type and composition, not a template fill-in.
+**FAÇA**: Cada palavra deve merecer estar ali
+**NÃO FAÇA**: Repetir o que o usuário já enxerga
 
 ---
 
-## Implementation Principles
+## O teste “AI slop”
 
-Match implementation complexity to the aesthetic vision. Maximalist designs need elaborate code with extensive animations and effects. Minimalist or refined designs need restraint, precision, and careful attention to spacing, typography, and subtle details.
+**Checagem crítica**: Se você mostrasse esta interface e dissesse “a IA fez”, acreditariam na hora? Se sim, é o problema.
 
-Interpret creatively and make unexpected choices that feel genuinely designed for the context. No design should be the same. Vary between light and dark themes, different fonts, different aesthetics. NEVER converge on common choices across generations.
+Uma interface distinta faz perguntarem “como foi feito?” não “qual IA fez?”
 
-Remember: the AI is capable of extraordinary creative work. Don't hold back—show what can truly be created when thinking outside the box and committing fully to a distinctive vision.
+Revise os NÃO FAÇA acima — são marcas digitais de trabalho gerado por IA em 2024-2025.
+
+---
+
+## Exemplos
+
+### Exemplo 1: Landing com estética forte
+
+Usuário: “Monte landing para produto dev tools, algo que não pareça todo SaaS igual.”
+Ações: Escolha direção ousada (ex.: brutalista ou editorial); par tipográfico distinto e paleta coesa; espaçamento fluido e um foco claro; evite cards dentro de cards e clichês de hero com métrica.
+Resultado: Página única com hierarquia clara, tipografia memorável e sem marcações óbvias de IA (sem gradiente roxo, sem cards com borda de acento grossa).
+
+### Exemplo 2: Dashboard ou app
+
+Usuário: “Dashboard de analytics com tema escuro.”
+Ações: Comprometa um escuro específico (ex.: neutros tingidos refinados, não brilho ciano/roxo padrão); container queries nos painéis; um momento de motion considerado (ex.: lista com stagger); estados vazios úteis.
+Resultado: Dashboard funcional e intencional — paleta distinta, hierarquia de dados clara, sem glow clichê.
+
+### Exemplo 3: Poster ou artefato marketing
+
+Usuário: “Poster para palestra sobre performance frontend.”
+Ações: Conceito forte tipográfico ou visual; escala modular e paleta limitada; evitar stock genérico + headline.
+Resultado: Artefato que sustenta sozinho — tipo e composição memoráveis, não preenchimento de template.
+
+---
+
+## Princípios de implementação
+
+Alinhe complexidade de implementação à visão estética. Designs maximalistas precisam de código elaborado com animações e efeitos. Minimalistas ou refinados precisam de contenção, precisão e cuidado com espaço, tipografia e detalhes sutis.
+
+Interprete com criatividade e faça escolhas inesperadas genuínas ao contexto. Nenhum design deve ser igual ao outro. Varie temas claro/escuro, fontes e estéticas. NUNCA convirja para as mesmas escolhas comuns entre gerações.
+
+Lembre: a IA é capaz de trabalho criativo extraordinário. Não se contenha — mostre o que dá para criar pensando fora da caixa e comprometendo-se com uma visão distinta.

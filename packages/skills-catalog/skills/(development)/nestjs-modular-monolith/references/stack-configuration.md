@@ -1,21 +1,19 @@
-# Stack Configuration
+# Configuração de pilha
 
-## Table of Contents
+## Índice
 
-1. NestJS + Fastify Bootstrap (line ~10)
-2. Prisma Setup (line ~60)
-3. DTOs and Validation (line ~100)
-4. Exception Filter (line ~170)
-5. Biome Configuration (line ~250)
-6. NestJS Module Definition (line ~290)
+1. NestJS + Fastify Bootstrap (linha ~10)
+2. Configuração do Prisma (linha ~60)
+3. DTOs e validação (linha ~100)
+4. Filtro de Exceção (linha ~170)
+5. Configuração do bioma (linha ~250)
+6. Definição do módulo NestJS (linha ~ 290)
 
 ---
 
 ## 1. NestJS + Fastify Bootstrap
 
-Fastify is the recommended HTTP adapter for modular monoliths. It's ~2-3x faster than Express with better TypeScript support and a plugin architecture that aligns with the modular philosophy.
-
-```typescript
+Fastify é o adaptador HTTP recomendado para monólitos modulares. É cerca de 2 a 3x mais rápido que o Express, com melhor suporte a TypeScript e uma arquitetura de plug-in que se alinha à filosofia modular.```typescript
 // apps/api/src/main.ts
 import { NestFactory } from '@nestjs/core'
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify'
@@ -25,46 +23,44 @@ import { AppModule } from './app.module'
 import { HttpExceptionFilter } from '@project/shared/infrastructure'
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter({ logger: true }))
+const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter({ logger: true }))
 
-  // Global prefix
-  app.setGlobalPrefix('api')
+// Global prefix
+app.setGlobalPrefix('api')
 
-  // Validation
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transform: true,
-      transformOptions: { enableImplicitConversion: true },
-    }),
-  )
+// Validation
+app.useGlobalPipes(
+new ValidationPipe({
+whitelist: true,
+forbidNonWhitelisted: true,
+transform: true,
+transformOptions: { enableImplicitConversion: true },
+}),
+)
 
-  // Exception filter
-  app.useGlobalFilters(new HttpExceptionFilter())
+// Exception filter
+app.useGlobalFilters(new HttpExceptionFilter())
 
-  // Swagger
-  const config = new DocumentBuilder()
-    .setTitle('Modular Monolith API')
-    .setDescription('API documentation')
-    .setVersion('1.0')
-    .addBearerAuth()
-    .build()
-  SwaggerModule.setup('docs', app, SwaggerModule.createDocument(app, config))
+// Swagger
+const config = new DocumentBuilder()
+.setTitle('Modular Monolith API')
+.setDescription('API documentation')
+.setVersion('1.0')
+.addBearerAuth()
+.build()
+SwaggerModule.setup('docs', app, SwaggerModule.createDocument(app, config))
 
-  const port = process.env.PORT ?? 3000
-  await app.listen(port, '0.0.0.0')
-  Logger.log(`Application running on port ${port}`, 'Bootstrap')
+const port = process.env.PORT ?? 3000
+await app.listen(port, '0.0.0.0')
+Logger.log(`Application running on port ${port}`, 'Bootstrap')
 }
 
 bootstrap()
-```
 
-### Express Alternative
+````
+### Alternativa Expressa
 
-If the team prefers Express or needs Express-specific middleware:
-
-```typescript
+Se a equipe preferir o Express ou precisar de um middleware específico do Express:```typescript
 // apps/api/src/main.ts
 import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
@@ -76,38 +72,35 @@ async function bootstrap() {
 }
 
 bootstrap()
-```
+````
 
 ---
 
-## 2. Prisma Setup
+## 2. Configuração do Prisma
 
-### PrismaService
+### PrismaServiço```typescript
 
-```typescript
 // libs/shared/infrastructure/src/database/prisma.service.ts
 import { Injectable, OnModuleInit, OnModuleDestroy, Logger } from '@nestjs/common'
 import { PrismaClient } from '@prisma/client'
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
-  private readonly logger = new Logger(PrismaService.name)
+private readonly logger = new Logger(PrismaService.name)
 
-  async onModuleInit() {
-    await this.$connect()
-    this.logger.log('Database connection established')
-  }
-
-  async onModuleDestroy() {
-    await this.$disconnect()
-    this.logger.log('Database connection closed')
-  }
+async onModuleInit() {
+await this.$connect()
+this.logger.log('Database connection established')
 }
-```
 
-### PrismaModule
+async onModuleDestroy() {
+await this.$disconnect()
+this.logger.log('Database connection closed')
+}
+}
 
-```typescript
+````
+### Módulo Prisma```typescript
 // libs/shared/infrastructure/src/database/prisma.module.ts
 import { Global, Module } from '@nestjs/common'
 import { PrismaService } from './prisma.service'
@@ -118,43 +111,40 @@ import { PrismaService } from './prisma.service'
   exports: [PrismaService],
 })
 export class PrismaModule {}
-```
+````
 
 ---
 
-## 3. DTOs and Validation
+## 3. DTOs e validação
 
-### Create DTO with Swagger
+### Crie DTO com Swagger```typescript
 
-```typescript
 // libs/billing/application/dtos/create-billing-plan.dto.ts
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { IsString, IsInt, IsEnum, IsNotEmpty, Min, MinLength, MaxLength } from 'class-validator'
 import { Transform } from 'class-transformer'
 
 export class CreateBillingPlanDto {
-  @ApiProperty({ example: 'Pro Plan', minLength: 2, maxLength: 100 })
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(2)
-  @MaxLength(100)
-  @Transform(({ value }) => value?.trim())
-  name: string
+@ApiProperty({ example: 'Pro Plan', minLength: 2, maxLength: 100 })
+@IsString()
+@IsNotEmpty()
+@MinLength(2)
+@MaxLength(100)
+@Transform(({ value }) => value?.trim())
+name: string
 
-  @ApiProperty({ example: 2999, description: 'Price in cents' })
-  @IsInt()
-  @Min(0)
-  priceInCents: number
+@ApiProperty({ example: 2999, description: 'Price in cents' })
+@IsInt()
+@Min(0)
+priceInCents: number
 
-  @ApiProperty({ enum: ['MONTHLY', 'YEARLY'] })
-  @IsEnum(['MONTHLY', 'YEARLY'])
-  interval: string
+@ApiProperty({ enum: ['MONTHLY', 'YEARLY'] })
+@IsEnum(['MONTHLY', 'YEARLY'])
+interval: string
 }
-```
 
-### Pagination DTO (Reusable)
-
-```typescript
+````
+### Paginação DTO (reutilizável)```typescript
 // libs/shared/domain/src/dtos/pagination.dto.ts
 import { ApiPropertyOptional } from '@nestjs/swagger'
 import { IsOptional, IsString, IsInt, Min, Max } from 'class-validator'
@@ -175,41 +165,38 @@ export class PaginationDto {
   @Transform(({ value }) => value ?? 20)
   limit: number = 20
 }
-```
+````
 
-### Response DTO
+### Resposta DTO```typescript
 
-```typescript
 // libs/billing/application/dtos/billing-plan-response.dto.ts
 import { ApiProperty } from '@nestjs/swagger'
 import { BillingPlan } from '../../domain/entities/billing-plan.entity'
 
 export class BillingPlanResponseDto {
-  @ApiProperty() id: string
-  @ApiProperty() name: string
-  @ApiProperty() priceInCents: number
-  @ApiProperty() interval: string
-  @ApiProperty() createdAt: Date
+@ApiProperty() id: string
+@ApiProperty() name: string
+@ApiProperty() priceInCents: number
+@ApiProperty() interval: string
+@ApiProperty() createdAt: Date
 
-  static from(plan: BillingPlan): BillingPlanResponseDto {
-    const dto = new BillingPlanResponseDto()
-    dto.id = plan.id
-    dto.name = plan.name
-    dto.priceInCents = plan.priceInCents
-    dto.interval = plan.interval
-    dto.createdAt = plan.createdAt
-    return dto
-  }
+static from(plan: BillingPlan): BillingPlanResponseDto {
+const dto = new BillingPlanResponseDto()
+dto.id = plan.id
+dto.name = plan.name
+dto.priceInCents = plan.priceInCents
+dto.interval = plan.interval
+dto.createdAt = plan.createdAt
+return dto
 }
-```
+}
 
+````
 ---
 
-## 4. Exception Filter
+## 4. Filtro de exceção
 
-Maps domain exceptions to HTTP status codes. Keeps domain logic free from HTTP concerns.
-
-```typescript
+Mapeia exceções de domínio para códigos de status HTTP. Mantém a lógica do domínio livre de preocupações com HTTP.```typescript
 // libs/shared/infrastructure/src/filters/http-exception.filter.ts
 import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus, Logger } from '@nestjs/common'
 
@@ -265,11 +252,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
     return null
   }
 }
-```
+````
 
-### Usage — Registering Module Errors
+### Uso — Registrando Erros do Módulo```typescript
 
-```typescript
 // libs/billing/billing.module.ts
 import { Module, OnModuleInit } from '@nestjs/common'
 import { HttpExceptionFilter } from '@project/shared/infrastructure'
@@ -277,24 +263,22 @@ import { NotFoundException, ConflictException } from '@nestjs/common'
 import { BillingPlanNotFoundError } from './domain/exceptions'
 
 @Module({
-  /* ... */
+/_ ... _/
 })
 export class BillingModule implements OnModuleInit {
-  constructor(private readonly exceptionFilter: HttpExceptionFilter) {}
+constructor(private readonly exceptionFilter: HttpExceptionFilter) {}
 
-  onModuleInit() {
-    this.exceptionFilter.registerError(BillingPlanNotFoundError, (msg) => new NotFoundException(msg))
-  }
+onModuleInit() {
+this.exceptionFilter.registerError(BillingPlanNotFoundError, (msg) => new NotFoundException(msg))
 }
-```
+}
 
+````
 ---
 
-## 5. Biome Configuration
+## 5. Configuração do bioma
 
-Biome replaces both ESLint and Prettier with a single, significantly faster tool.
-
-```json
+Biome substitui ESLint e Prettier por uma ferramenta única e significativamente mais rápida.```json
 {
   "$schema": "https://biomejs.dev/schemas/1.9.0/schema.json",
   "organizeImports": { "enabled": true },
@@ -323,27 +307,24 @@ Biome replaces both ESLint and Prettier with a single, significantly faster tool
     "ignore": ["node_modules", "dist", "coverage", ".nx"]
   }
 }
-```
+````
 
-### Package.json Scripts
+### Scripts Package.json```json
 
-```json
 {
-  "scripts": {
-    "lint": "biome check .",
-    "lint:fix": "biome check --write .",
-    "format": "biome format --write ."
-  }
+"scripts": {
+"lint": "biome check .",
+"lint:fix": "biome check --write .",
+"format": "biome format --write ."
 }
-```
+}
 
+````
 ---
 
-## 6. NestJS Module Definition Pattern
+## 6. Padrão de definição do módulo NestJS
 
-Every domain module follows this structure. This example shows the **simple service pattern** (default):
-
-```typescript
+Cada módulo de domínio segue esta estrutura. Este exemplo mostra o **padrão de serviço simples** (padrão):```typescript
 // libs/billing/billing.module.ts
 import { Module } from '@nestjs/common'
 import { EventEmitterModule } from '@nestjs/event-emitter'
@@ -379,33 +360,33 @@ import { EventPublisherModule } from '@project/shared/infrastructure'
   exports: [],
 })
 export class BillingModule {}
-```
+````
 
-For CQRS modules, add `CqrsModule` to imports and replace the service with command/query handlers:
-
-```typescript
+Para módulos CQRS, adicione `CqrsModule` às importações e substitua o serviço por manipuladores de comando/consulta:```typescript
 import { CqrsModule } from '@nestjs/cqrs'
 
 const CommandHandlers = [CreateBillingPlanHandler]
 const QueryHandlers = [GetBillingPlanHandler]
 
 @Module({
-  imports: [CqrsModule, EventPublisherModule],
-  controllers: [BillingPlanController],
-  providers: [
-    ...CommandHandlers,
-    ...QueryHandlers,
-    OnUserCreatedHandler,
-    { provide: BILLING_PLAN_REPOSITORY, useClass: PrismaBillingPlanRepository },
-  ],
-  exports: [],
+imports: [CqrsModule, EventPublisherModule],
+controllers: [BillingPlanController],
+providers: [
+...CommandHandlers,
+...QueryHandlers,
+OnUserCreatedHandler,
+{ provide: BILLING_PLAN_REPOSITORY, useClass: PrismaBillingPlanRepository },
+],
+exports: [],
 })
 export class BillingModule {}
+
 ```
 
-**Key points:**
+**Pontos principais:**
 
-- Bind repository interface to implementation via DI
-- Export NOTHING unless another module genuinely needs it
-- Cross-module communication goes through events, not exports
-- Use simple services by default; upgrade to CQRS only when the module's complexity warrants it
+- Vincular interface do repositório à implementação via DI
+- Não exporte NADA, a menos que outro módulo realmente precise dele
+- A comunicação entre módulos passa por eventos, não por exportações
+- Utilize serviços simples por padrão; atualize para CQRS somente quando a complexidade do módulo justificar
+```

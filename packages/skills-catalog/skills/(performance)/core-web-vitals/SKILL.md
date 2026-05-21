@@ -1,46 +1,46 @@
 ---
 name: core-web-vitals
-description: Optimize Core Web Vitals (LCP, INP, CLS) for better page experience and search ranking. Use when asked to "improve Core Web Vitals", "fix LCP", "reduce CLS", "optimize INP", "page experience optimization", or "fix layout shifts". Focuses specifically on the three Core Web Vitals metrics. Do NOT use for general web performance (use perf-web-optimization), Lighthouse audits (use perf-lighthouse), or Astro-specific optimization (use perf-astro).
+description: Otimize Core Web Vitals (LCP, INP, CLS) para melhor experiência de página e ranqueamento em busca. Use quando pedirem "melhorar Core Web Vitals", "corrigir LCP", "reduzir CLS", "otimizar INP", "otimizar page experience" ou "corrigir layout shift". Foco nas três métricas Core Web Vitals. NÃO use para performance web geral (use perf-web-optimization), auditorias Lighthouse (use perf-lighthouse) ou otimização específica de Astro (use perf-astro).
 license: MIT
 metadata:
   author: web-quality-skills
   version: '1.0'
 ---
 
-# Core Web Vitals optimization
+# Otimização de Core Web Vitals
 
-Targeted optimization for the three Core Web Vitals metrics that affect Google Search ranking and user experience.
+Otimização direcionada às três métricas Core Web Vitals que afetam ranqueamento no Google Search e experiência do usuário.
 
-## The three metrics
+## As três métricas
 
-| Metric  | Measures         | Good    | Needs work    | Poor    |
-| ------- | ---------------- | ------- | ------------- | ------- |
-| **LCP** | Loading          | ≤ 2.5s  | 2.5s – 4s     | > 4s    |
-| **INP** | Interactivity    | ≤ 200ms | 200ms – 500ms | > 500ms |
-| **CLS** | Visual Stability | ≤ 0.1   | 0.1 – 0.25    | > 0.25  |
+| Métrica | Mede                | Bom     | Precisa melhorar | Ruim    |
+| ------- | ------------------- | ------- | ---------------- | ------- |
+| **LCP** | Carregamento        | ≤ 2.5s  | 2.5s – 4s        | > 4s    |
+| **INP** | Interatividade      | ≤ 200ms | 200ms – 500ms    | > 500ms |
+| **CLS** | Estabilidade visual | ≤ 0.1   | 0.1 – 0.25       | > 0.25  |
 
-Google measures at the **75th percentile** — 75% of page visits must meet "Good" thresholds.
+O Google mede no **percentil 75** — 75% das visitas à página devem atingir os limiares "Bom".
 
 ---
 
 ## LCP: Largest Contentful Paint
 
-LCP measures when the largest visible content element renders. Usually this is:
+O LCP mede quando o maior elemento de conteúdo visível é renderizado. Em geral é:
 
-- Hero image or video
-- Large text block
-- Background image
-- `<svg>` element
+- Imagem ou vídeo hero
+- Bloco de texto grande
+- Imagem de fundo
+- Elemento `<svg>`
 
-### Common LCP issues
+### Problemas comuns de LCP
 
-**1. Slow server response (TTFB > 800ms)**
+**1. Resposta lenta do servidor (TTFB > 800ms)**
 
 ```
 Fix: CDN, caching, optimized backend, edge rendering
 ```
 
-**2. Render-blocking resources**
+**2. Recursos que bloqueiam renderização**
 
 ```html
 <!-- ❌ Blocks rendering -->
@@ -53,7 +53,7 @@ Fix: CDN, caching, optimized backend, edge rendering
 <link rel="preload" href="/styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
 ```
 
-**3. Slow resource load times**
+**3. Carregamento lento de recursos**
 
 ```html
 <!-- ❌ No hints, discovered late -->
@@ -64,7 +64,7 @@ Fix: CDN, caching, optimized backend, edge rendering
 <img src="/hero.webp" alt="Hero" fetchpriority="high" />
 ```
 
-**4. Client-side rendering delays**
+**4. Atrasos de renderização no cliente**
 
 ```javascript
 // ❌ Content loads after JavaScript
@@ -82,7 +82,7 @@ export async function getServerSideProps() {
 }
 ```
 
-### LCP optimization checklist
+### Checklist de otimização LCP
 
 ```markdown
 - [ ] TTFB < 800ms (use CDN, edge caching)
@@ -94,7 +94,7 @@ export async function getServerSideProps() {
 - [ ] LCP element in initial HTML (not JS-rendered)
 ```
 
-### LCP element identification
+### Identificar o elemento LCP
 
 ```javascript
 // Find your LCP element
@@ -110,21 +110,21 @@ new PerformanceObserver((list) => {
 
 ## INP: Interaction to Next Paint
 
-INP measures responsiveness across ALL interactions (clicks, taps, key presses) during a page visit. It reports the worst interaction (at 98th percentile for high-traffic pages).
+O INP mede a responsividade em **todas** as interações (cliques, toques, teclas) durante a visita. Reporta a pior interação (no percentil 98 em páginas com muito tráfego).
 
-### INP breakdown
+### Decomposição do INP
 
-Total INP = **Input Delay** + **Processing Time** + **Presentation Delay**
+INP total = **Atraso de entrada** + **Tempo de processamento** + **Atraso de apresentação**
 
-| Phase        | Target  | Optimization                |
-| ------------ | ------- | --------------------------- |
-| Input Delay  | < 50ms  | Reduce main thread blocking |
-| Processing   | < 100ms | Optimize event handlers     |
-| Presentation | < 50ms  | Minimize rendering work     |
+| Fase         | Meta    | Otimização                     |
+| ------------ | ------- | ------------------------------ |
+| Input Delay  | < 50ms  | Reduza bloqueio na main thread |
+| Processing   | < 100ms | Otimize handlers de evento     |
+| Presentation | < 50ms  | Minimize trabalho de render    |
 
-### Common INP issues
+### Problemas comuns de INP
 
-**1. Long tasks blocking main thread**
+**1. Tarefas longas bloqueando a main thread**
 
 ```javascript
 // ❌ Long synchronous task
@@ -146,7 +146,7 @@ async function processLargeArray(items) {
 }
 ```
 
-**2. Heavy event handlers**
+**2. Handlers de evento pesados**
 
 ```javascript
 // ❌ All work in handler
@@ -175,7 +175,7 @@ button.addEventListener('click', () => {
 })
 ```
 
-**3. Third-party scripts**
+**3. Scripts de terceiros**
 
 ```javascript
 // ❌ Eagerly loaded, blocks interactions
@@ -188,7 +188,7 @@ const loadWidget = () => {
 button.addEventListener('click', loadWidget, { once: true })
 ```
 
-**4. Excessive re-renders (React/Vue)**
+**4. Re-renders excessivos (React/Vue)**
 
 ```javascript
 // ❌ Re-renders entire tree
@@ -216,7 +216,7 @@ function App() {
 }
 ```
 
-### INP optimization checklist
+### Checklist de otimização INP
 
 ```markdown
 - [ ] No tasks > 50ms on main thread
@@ -228,7 +228,7 @@ function App() {
 - [ ] Web Workers for CPU-intensive operations
 ```
 
-### INP debugging
+### Depuração de INP
 
 ```javascript
 // Identify slow interactions
@@ -251,13 +251,13 @@ new PerformanceObserver((list) => {
 
 ## CLS: Cumulative Layout Shift
 
-CLS measures unexpected layout shifts. A shift occurs when a visible element changes position between frames without user interaction.
+O CLS mede deslocamentos de layout inesperados. Ocorre quando um elemento visível muda de posição entre frames sem interação do usuário.
 
-**CLS Formula:** `impact fraction × distance fraction`
+**Fórmula do CLS:** `fração de impacto × fração de distância`
 
-### Common CLS causes
+### Causas comuns de CLS
 
-**1. Images without dimensions**
+**1. Imagens sem dimensões**
 
 ```html
 <!-- ❌ Causes layout shift when loaded -->
@@ -270,7 +270,7 @@ CLS measures unexpected layout shifts. A shift occurs when a visible element cha
 <img src="photo.jpg" alt="Photo" style="aspect-ratio: 4/3; width: 100%;" />
 ```
 
-**2. Ads, embeds, and iframes**
+**2. Anúncios, embeds e iframes**
 
 ```html
 <!-- ❌ Unknown size until loaded -->
@@ -287,7 +287,7 @@ CLS measures unexpected layout shifts. A shift occurs when a visible element cha
 </div>
 ```
 
-**3. Dynamically injected content**
+**3. Conteúdo injetado dinamicamente**
 
 ```javascript
 // ❌ Inserts content above viewport
@@ -307,7 +307,7 @@ if (insertBelow) {
 }
 ```
 
-**4. Web fonts causing FOUT**
+**4. Fontes web causando FOUT**
 
 ```css
 /* ❌ Font swap shifts text */
@@ -334,7 +334,7 @@ if (insertBelow) {
 }
 ```
 
-**5. Animations triggering layout**
+**5. Animações que disparam layout**
 
 ```css
 /* ❌ Animates layout properties */
@@ -353,7 +353,7 @@ if (insertBelow) {
 }
 ```
 
-### CLS optimization checklist
+### Checklist de otimização CLS
 
 ```markdown
 - [ ] All images have width/height or aspect-ratio
@@ -365,7 +365,7 @@ if (insertBelow) {
 - [ ] No content injected above existing content
 ```
 
-### CLS debugging
+### Depuração de CLS
 
 ```javascript
 // Track layout shifts
@@ -385,19 +385,19 @@ new PerformanceObserver((list) => {
 
 ---
 
-## Measurement tools
+## Ferramentas de medição
 
-### Lab testing
+### Testes de laboratório
 
-- **Chrome DevTools** → Performance panel, Lighthouse
-- **WebPageTest** → Detailed waterfall, filmstrip
+- **Chrome DevTools** → painel Performance, Lighthouse
+- **WebPageTest** → waterfall detalhado, filmstrip
 - **Lighthouse CLI** → `npx lighthouse <url>`
 
-### Field data (real users)
+### Dados de campo (usuários reais)
 
-- **Chrome User Experience Report (CrUX)** → BigQuery or API
-- **Search Console** → Core Web Vitals report
-- **web-vitals library** → Send to your analytics
+- **Chrome User Experience Report (CrUX)** → BigQuery ou API
+- **Search Console** → relatório Core Web Vitals
+- **Biblioteca web-vitals** → enviar para sua analytics
 
 ```javascript
 import { onLCP, onINP, onCLS } from 'web-vitals'
@@ -417,7 +417,7 @@ onCLS(sendToAnalytics)
 
 ---
 
-## Framework quick fixes
+## Correções rápidas por framework
 
 ### Next.js
 
@@ -458,9 +458,9 @@ startTransition(() => setExpensiveState(newValue))
 <img :style="{ aspectRatio: '16/9' }" />
 ```
 
-## References
+## Referências
 
 - [web.dev LCP](https://web.dev/articles/lcp)
 - [web.dev INP](https://web.dev/articles/inp)
 - [web.dev CLS](https://web.dev/articles/cls)
-- [Performance skill](../performance/SKILL.md)
+- [Skill de performance](../performance/SKILL.md)

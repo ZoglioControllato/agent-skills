@@ -1,25 +1,24 @@
-# Durable Objects Patterns
+# Padrões de objetos duráveis
 
-## When to Use Which Pattern
+## Quando usar qual padrão
 
-| Need                   | Pattern            | ID Strategy              |
-| ---------------------- | ------------------ | ------------------------ |
-| Rate limit per user/IP | Rate Limiting      | `idFromName(identifier)` |
-| Mutual exclusion       | Distributed Lock   | `idFromName(resource)`   |
-| >1K req/s throughput   | Sharding           | `newUniqueId()` or hash  |
-| Real-time updates      | WebSocket Collab   | `idFromName(room)`       |
-| User sessions          | Session Management | `idFromName(sessionId)`  |
-| Background cleanup     | Alarm-based        | Any                      |
+| Necessidade                   | Padrão                   | Estratégia de identificação |
+| ----------------------------- | ------------------------ | --------------------------- |
+| Limite de taxa por usuário/IP | Limitação de taxa        | `idFromName(identificador)` |
+| Exclusão mútua                | Bloqueio Distribuído     | `idFromName(recurso)`       |
+| >1K req/s de rendimento       | Fragmentação             | `newUniqueId()` ou hash     |
+| Atualizações em tempo real    | Colaboração WebSocket    | `idFromName(sala)`          |
+| Sessões de usuário            | Gerenciamento de sessões | `idFromName(sessionId)`     |
+| Limpeza de fundo              | Baseado em alarme        | Qualquer                    |
 
-## RPC vs fetch()
+## RPC vs busca()
 
-**RPC** (compat ≥2024-04-03): Type-safe, simpler, default for new projects  
-**fetch()**: Legacy compat, HTTP semantics, proxying
-
-```typescript
+**RPC** (compatibilidade ≥2024-04-03): Tipo seguro, mais simples, padrão para novos projetos
+**fetch()**: compatibilidade legada, semântica HTTP, proxy```typescript
 const count = await stub.increment() // RPC
 const count = await (await stub.fetch(req)).json() // fetch()
-```
+
+````
 
 ## Sharding (High Throughput)
 
@@ -40,24 +39,24 @@ function hashCode(str: string): number {
   for (let i = 0; i < str.length; i++) hash = (hash << 5) - hash + str.charCodeAt(i)
   return Math.abs(hash)
 }
-```
+````
 
-**Decisions:**
+**Decisões:**
 
-- **Shard count**: 10-1000 typical (start with 100, measure, adjust)
-- **Shard key**: User ID, IP, session - must distribute evenly (use hash)
-- **Aggregation**: Coordinator DO or external system (D1, R2)
+- **Contagem de fragmentos**: 10-1000 típico (comece com 100, meça, ajuste)
+- **Chave de fragmento**: ID do usuário, IP, sessão - deve ser distribuído uniformemente (usar hash)
+- **Agregação**: Coordenador DO ou sistema externo (D1, R2)
 
-## Rate Limiting
+## Limitação de taxa```typescript
 
-```typescript
 async checkLimit(key: string, limit: number, windowMs: number): Promise<boolean> {
-  const req = this.ctx.storage.sql.exec("SELECT COUNT(*) as count FROM requests WHERE key = ? AND timestamp > ?", key, Date.now() - windowMs).one();
-  if (req.count >= limit) return false;
-  this.ctx.storage.sql.exec("INSERT INTO requests (key, timestamp) VALUES (?, ?)", key, Date.now());
-  return true;
+const req = this.ctx.storage.sql.exec("SELECT COUNT(\*) as count FROM requests WHERE key = ? AND timestamp > ?", key, Date.now() - windowMs).one();
+if (req.count >= limit) return false;
+this.ctx.storage.sql.exec("INSERT INTO requests (key, timestamp) VALUES (?, ?)", key, Date.now());
+return true;
 }
-```
+
+````
 
 ## Distributed Lock
 
@@ -71,7 +70,7 @@ async acquire(timeoutMs = 5000): Promise<boolean> {
 }
 async release() { this.held = false; await this.ctx.storage.deleteAlarm(); }
 async alarm() { this.held = false; }  // Auto-release on timeout
-```
+````
 
 ## Hibernation-Aware Pattern
 
@@ -190,16 +189,16 @@ async myMethod() {
 }
 ```
 
-## Best Practices
+## Melhores práticas
 
-- **Design**: Use `idFromName()` for coordination, `newUniqueId()` for sharding, minimize constructor work
-- **Storage**: Prefer SQLite, batch with transactions, set alarms for cleanup, use PITR before risky ops
-- **Performance**: ~1K req/s per DO max - shard for more, cache in memory, use alarms for deferred work
-- **Reliability**: Handle 503 with retry+backoff, design for cold starts, test migrations with `--dry-run`
-- **Security**: Validate inputs in Workers, rate limit DO creation, use jurisdiction for compliance
+- **Design**: Use `idFromName()` para coordenação, `newUniqueId()` para fragmentação, minimizando o trabalho do construtor
+- **Armazenamento**: Prefira SQLite, lote com transações, defina alarmes para limpeza, use PITR antes de operações arriscadas
+- **Desempenho**: ~1K req/s por DO máx. - fragmento para mais, cache na memória, use alarmes para trabalho adiado
+- **Confiabilidade**: Lidar com 503 com nova tentativa+backoff, design para partidas a frio, testar migrações com `--dry-run`
+- **Segurança**: Validar entradas em Trabalhadores, limite de taxa de criação de DO, usar jurisdição para conformidade
 
-## See Also
+## Veja também
 
-- **[API](./api.md)** - ctx methods, WebSocket handlers
-- **[Gotchas](./gotchas.md)** - Hibernation caveats, common errors
-- **[DO Storage](../do-storage/README.md)** - Storage patterns and transactions
+- **[API](./api.md)** - métodos ctx, manipuladores WebSocket
+- **[Gotchas](./gotchas.md)** - Advertências sobre hibernação, erros comuns
+- **[DO Storage](../do-storage/README.md)** - Padrões de armazenamento e transações

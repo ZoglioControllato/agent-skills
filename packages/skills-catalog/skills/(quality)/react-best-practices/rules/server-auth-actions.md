@@ -1,19 +1,19 @@
 ---
-title: Authenticate Server Actions Like API Routes
+title: Autenticar ações do servidor como rotas de API
 impact: CRITICAL
-impactDescription: prevents unauthorized access to server mutations
+impactDescription: impedir acesso não autorizado a mutações no servidor
 tags: server, server-actions, authentication, security, authorization
 ---
 
-## Authenticate Server Actions Like API Routes
+## Autenticar Server Actions como rotas de API
 
-**Impact: CRITICAL (prevents unauthorized access to server mutations)**
+**Impacto: CRÍTICO (impedir acesso não autorizado a mutações no servidor)**
 
-Server Actions (functions with `"use server"`) are exposed as public endpoints, just like API routes. Always verify authentication and authorization **inside** each Server Action—do not rely solely on middleware, layout guards, or page-level checks, as Server Actions can be invoked directly.
+Server Actions (funções com `"use server"`) são endpoints públicos, assim como rotas de API. Sempre verifique autenticação e autorização **dentro** de cada Ação do Servidor; Não depende apenas de middleware, guardas de layout nem verificações só na página, pois Actions podem ser chamadas diretamente.
 
-Next.js documentation explicitly states: "Treat Server Actions with the same security considerations as public-facing API endpoints, and verify if the user is allowed to perform a mutation."
+A documentação do Next.js deixa explícito: “Trate Server Actions com as mesmas considerações de segurança de endpoints de API pública e verifique se o usuário pode executar aquela mutação.”
 
-**Incorrect (no authentication check):**
+**Incorreto (sem verificação de autenticação):**
 
 ```typescript
 'use server'
@@ -25,7 +25,7 @@ export async function deleteUser(userId: string) {
 }
 ```
 
-**Correct (authentication inside the action):**
+**Correto (autenticação dentro da ação):**
 
 ```typescript
 'use server'
@@ -36,22 +36,22 @@ import { unauthorized } from '@/lib/errors'
 export async function deleteUser(userId: string) {
   // Always check auth inside the action
   const session = await verifySession()
-  
+
   if (!session) {
     throw unauthorized('Must be logged in')
   }
-  
+
   // Check authorization too
   if (session.user.role !== 'admin' && session.user.id !== userId) {
     throw unauthorized('Cannot delete other users')
   }
-  
+
   await db.user.delete({ where: { id: userId } })
   return { success: true }
 }
 ```
 
-**With input validation:**
+**Com validação de entrada:**
 
 ```typescript
 'use server'
@@ -62,35 +62,35 @@ import { z } from 'zod'
 const updateProfileSchema = z.object({
   userId: z.string().uuid(),
   name: z.string().min(1).max(100),
-  email: z.string().email()
+  email: z.string().email(),
 })
 
 export async function updateProfile(data: unknown) {
   // Validate input first
   const validated = updateProfileSchema.parse(data)
-  
+
   // Then authenticate
   const session = await verifySession()
   if (!session) {
     throw new Error('Unauthorized')
   }
-  
+
   // Then authorize
   if (session.user.id !== validated.userId) {
     throw new Error('Can only update own profile')
   }
-  
+
   // Finally perform the mutation
   await db.user.update({
     where: { id: validated.userId },
     data: {
       name: validated.name,
-      email: validated.email
-    }
+      email: validated.email,
+    },
   })
-  
+
   return { success: true }
 }
 ```
 
-Reference: [https://nextjs.org/docs/app/guides/authentication](https://nextjs.org/docs/app/guides/authentication)
+Referência: [https://nextjs.org/docs/app/guides/authentication](https://nextjs.org/docs/app/guides/authentication)

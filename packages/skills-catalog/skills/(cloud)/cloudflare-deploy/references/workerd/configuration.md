@@ -1,6 +1,6 @@
-# Workerd Configuration
+# Configuração do trabalhador
 
-## Basic Structure
+## Estrutura Básica
 
 ```capnp
 using Workerd = import "/workerd/workerd.capnp";
@@ -17,9 +17,9 @@ const mainWorker :Workerd.Worker = (
 );
 ```
 
-## Services
+##Serviços
 
-**Worker**: Run JS/Wasm code
+**Trabalhador**: Executar código JS/Wasm
 
 ```capnp
 (name = "api", worker = (
@@ -29,25 +29,25 @@ const mainWorker :Workerd.Worker = (
 ))
 ```
 
-**Network**: Internet access
+**Rede**: acesso à Internet
 
 ```capnp
 (name = "internet", network = (allow = ["public"], tlsOptions = (trustBrowserCas = true)))
 ```
 
-**External**: Reverse proxy
+**Externo**: proxy reverso
 
 ```capnp
 (name = "backend", external = (address = "api.com:443", http = (style = tls)))
 ```
 
-**Disk**: Static files
+**Disco**: arquivos estáticos
 
 ```capnp
 (name = "assets", disk = (path = "/var/www", writable = false))
 ```
 
-## Sockets
+##Soquetes
 
 ```capnp
 (name = "http", address = "*:8080", http = (), service = "main")
@@ -55,7 +55,7 @@ const mainWorker :Workerd.Worker = (
 (name = "app", address = "unix:/tmp/app.sock", http = (), service = "main")
 ```
 
-## Worker Formats
+##Formatos de trabalho
 
 ```capnp
 # ES Modules (recommended)
@@ -68,11 +68,11 @@ serviceWorkerScript = embed "worker.js"
 (name = "legacy.js", commonJsModule = embed "legacy.js", namedExports = ["foo"])
 ```
 
-## Bindings
+##Ligações
 
-Bindings expose resources to workers. ES modules: `env.BINDING`, Service workers: globals.
+As vinculações expõem recursos aos trabalhadores. Módulos ES: `env.BINDING`, Service Workers: globais.
 
-### Primitive Types
+### Tipos Primitivos
 
 ```capnp
 (name = "API_KEY", text = "secret")                    # String
@@ -81,7 +81,7 @@ Bindings expose resources to workers. ES modules: `env.BINDING`, Service workers
 (name = "DATABASE_URL", fromEnvironment = "DB_URL")    # System env var
 ```
 
-### Service Binding
+### Vinculação de serviço
 
 ```capnp
 (name = "AUTH", service = "auth-worker")               # Basic
@@ -92,7 +92,7 @@ Bindings expose resources to workers. ES modules: `env.BINDING`, Service workers
 ))
 ```
 
-### Storage
+### Armazenar
 
 ```capnp
 (name = "CACHE", kvNamespace = "kv-service")           # KV
@@ -107,7 +107,7 @@ Bindings expose resources to workers. ES modules: `env.BINDING`, Service workers
 ))
 ```
 
-### Other
+### Outro
 
 ```capnp
 (name = "TASKS", queue = "queue-service")
@@ -117,17 +117,14 @@ Bindings expose resources to workers. ES modules: `env.BINDING`, Service workers
 (name = "TRACED", wrapped = (moduleName = "tracing", entrypoint = "makeTracer", innerBindings = [(name = "backend", service = "backend")]))
 ```
 
-## Compatibility
+##Compatibilidade
 
-```capnp
+````capnp
 compatibilityDate = "2024-01-15"                       # Always set!
 compatibilityFlags = ["nodejs_compat", "streams_enable_constructors"]
-```
+```Versão = data máxima de compatibilidade. Atualize cuidadosamente após o teste.
 
-Version = max compat date. Update carefully after testing.
-
-## Parameter Bindings (Inheritance)
-
+## Ligações de parâmetros (herança)
 ```capnp
 const base :Workerd.Worker = (
   modules = [...], compatibilityDate = "2024-01-15",
@@ -138,9 +135,9 @@ const derived :Workerd.Worker = (
   inherit = "base-service",
   bindings = [(name = "API_URL", text = "https://api.com"), (name = "DB", service = "postgres")]
 );
-```
+````
 
-## Durable Objects Config
+##Configuração de objetos duráveis
 
 ```capnp
 const worker :Workerd.Worker = (
@@ -152,49 +149,48 @@ const worker :Workerd.Worker = (
 );
 ```
 
-## Remote Bindings (Development)
+##Ligações Remotas (Desenvolvimento)
 
-Connect local workerd to production Cloudflare resources:
+Conecte o trabalhador local aos recursos de produção da Cloudflare:
 
 ```capnp
-bindings = [
-  # Remote KV (requires API token)
-  (name = "PROD_KV", kvNamespace = (
-    remote = (
-      accountId = "your-account-id",
-      namespaceId = "your-namespace-id",
-      apiToken = .envVar("CF_API_TOKEN")
-    )
-  )),
+ligações = [
+# KV remoto (requer token de API)
+(nome = "PROD_KV", kvNamespace = (
+remoto = (
+accountId = "id da sua conta",
+namespaceId = "seu-namespace-id",
+apiToken = .envVar("CF_API_TOKEN")
+)
+)),
 
-  # Remote R2
-  (name = "PROD_R2", r2Bucket = (
-    remote = (
-      accountId = "your-account-id",
-      bucketName = "my-bucket",
-      apiToken = .envVar("CF_API_TOKEN")
-    )
-  )),
+# R2 remoto
+(nome = "PROD_R2", r2Bucket = (
+remoto = (
+accountId = "id da sua conta",
+bucketName = "meu-balde",
+apiToken = .envVar("CF_API_TOKEN")
+)
+)),
 
-  # Remote Durable Object
-  (name = "PROD_DO", durableObjectNamespace = (
-    remote = (
-      accountId = "your-account-id",
-      scriptName = "my-worker",
-      className = "MyDO",
-      apiToken = .envVar("CF_API_TOKEN")
-    )
-  ))
+# Objeto Durável Remoto
+(nome = "PROD_DO", durávelObjectNamespace = (
+remoto = (
+accountId = "id da sua conta",
+scriptName = "meu-trabalhador",
+className = "MeuDO",
+apiToken = .envVar("CF_API_TOKEN")
+)
+))
 ]
 ```
 
-**Note:** Remote bindings require network access and valid Cloudflare API credentials.
+**Observação:** As vinculações remotas exigem acesso à rede e credenciais válidas da API Cloudflare.
 
-## Logging & Debugging
+## Registro e depuração
 
-```capnp
+````capnp
 logging = (structuredLogging = true, stdoutPrefix = "OUT: ", stderrPrefix = "ERR: ")
 v8Flags = ["--expose-gc", "--max-old-space-size=2048"]  # ⚠️ Unsupported in production
-```
-
-See [patterns.md](./patterns.md) for multi-service examples, [gotchas.md](./gotchas.md) for config errors.
+```Consulte [patterns.md](./patterns.md) para exemplos de vários serviços, [gotchas.md](./gotchas.md) para erros de configuração.
+````

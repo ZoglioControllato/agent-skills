@@ -1,30 +1,30 @@
-# Wrangler Common Issues
+# Problemas comuns do Wrangler
 
-## Common Errors
+## Erros comuns
 
 ### "Binding ID vs name mismatch"
 
-**Cause:** Confusion between binding name (code) and resource ID
-**Solution:** Bindings use `binding` (code name) and `id`/`database_id`/`bucket_name` (resource ID). Preview bindings need separate IDs: `preview_id`, `preview_database_id`
+**Causa:** Confusão entre nome do binding (código) e ID do recurso
+**Solução:** Bindings usam `binding` (nome no código) e `id`/`database_id`/`bucket_name` (ID do recurso). Bindings de preview precisam de IDs separados: `preview_id`, `preview_database_id`
 
 ### "Environment not inheriting config"
 
-**Cause:** Non-inheritable keys not redefined per environment
-**Solution:** Non-inheritable keys (bindings, vars) must be redefined per environment. Inheritable keys (routes, compatibility_date) can be overridden
+**Causa:** Chaves não herdáveis não redefinidas por ambiente
+**Solução:** Chaves não herdáveis (bindings, vars) devem ser redefinidas por ambiente. Chaves herdáveis (routes, compatibility_date) podem ser sobrescritas
 
 ### "Local dev behavior differs from production"
 
-**Cause:** Using local simulation instead of remote execution
-**Solution:** Choose appropriate remote mode:
+**Causa:** Uso de simulação local em vez de execução remota
+**Solução:** Escolha o modo remoto adequado:
 
-- `wrangler dev` (default): Local simulation, fast, limited accuracy
-- `wrangler dev --remote`: Full remote execution, production-accurate, slower
-- Use `remote: "minimal"` in tests for fast tests with real remote bindings
+- `wrangler dev` (padrão): simulação local, rápida, precisão limitada
+- `wrangler dev --remote`: execução remota completa, próxima da produção, mais lenta
+- Use `remote: "minimal"` em testes para testes rápidos com bindings remotos reais
 
 ### "startWorker doesn't match production"
 
-**Cause:** Using local mode when remote resources needed
-**Solution:** Use `remote` option:
+**Causa:** Modo local quando recursos remotos são necessários
+**Solução:** Use a opção `remote`:
 
 ```typescript
 const worker = await startWorker({
@@ -35,8 +35,8 @@ const worker = await startWorker({
 
 ### "Unexpected runtime changes"
 
-**Cause:** Missing compatibility_date
-**Solution:** Always set `compatibility_date`:
+**Causa:** `compatibility_date` ausente
+**Solução:** Defina sempre `compatibility_date`:
 
 ```jsonc
 { "compatibility_date": "2025-01-01" }
@@ -44,8 +44,8 @@ const worker = await startWorker({
 
 ### "Durable Object binding not working"
 
-**Cause:** Missing script_name for external DOs
-**Solution:** Always specify `script_name` for external Durable Objects:
+**Causa:** `script_name` ausente para DOs externos
+**Solução:** Especifique sempre `script_name` para Durable Objects externos:
 
 ```jsonc
 {
@@ -55,22 +55,22 @@ const worker = await startWorker({
 }
 ```
 
-For local DOs in same Worker, `script_name` is optional.
+Para DOs locais no mesmo Worker, `script_name` é opcional.
 
 ### "Auto-provisioned resources not appearing"
 
-**Cause:** IDs written back to config on first deploy, but config not reloaded
-**Solution:** After first deploy with auto-provisioning, config file is updated with IDs. Commit the updated config. On subsequent deploys, existing resources are reused.
+**Causa:** IDs gravados de volta no config no primeiro deploy, mas config não recarregado
+**Solução:** Após o primeiro deploy com provisionamento automático, o arquivo de config é atualizado com os IDs. Faça commit do config atualizado. Em deploys seguintes, recursos existentes são reutilizados.
 
 ### "Secrets not available in local dev"
 
-**Cause:** Secrets set with `wrangler secret put` only work in deployed Workers
-**Solution:** For local dev, use `.dev.vars`
+**Causa:** Secrets definidos com `wrangler secret put` só funcionam em Workers implantados
+**Solução:** Em dev local, use `.dev.vars`
 
 ### "Node.js compatibility error"
 
-**Cause:** Missing Node.js compatibility flag
-**Solution:** Some bindings (Hyperdrive with `pg`) require:
+**Causa:** Flag de compatibilidade Node.js ausente
+**Solução:** Alguns bindings (Hyperdrive com `pg`) exigem:
 
 ```jsonc
 { "compatibility_flags": ["nodejs_compat_v2"] }
@@ -78,12 +78,12 @@ For local DOs in same Worker, `script_name` is optional.
 
 ### "Workers Assets 404 errors"
 
-**Cause:** Asset path mismatch or incorrect `html_handling`
-**Solution:**
+**Causa:** Caminho do asset incorreto ou `html_handling` errado
+**Solução:**
 
-- Check `assets.directory` points to correct build output
-- Set `html_handling: "auto-trailing-slash"` for SPAs
-- Use `not_found_handling: "single-page-application"` to serve index.html for 404s
+- Confira se `assets.directory` aponta para o build correto
+- Defina `html_handling: "auto-trailing-slash"` para SPAs
+- Use `not_found_handling: "single-page-application"` para servir index.html em 404s
 
 ```jsonc
 {
@@ -97,8 +97,8 @@ For local DOs in same Worker, `script_name` is optional.
 
 ### "Placement not reducing latency"
 
-**Cause:** Misunderstanding of Smart Placement
-**Solution:** Smart Placement only helps when Worker accesses D1 or Durable Objects. It doesn't affect KV, R2, or external API latency.
+**Causa:** Mal-entendido sobre Smart Placement
+**Solução:** Smart Placement só ajuda quando o Worker acessa D1 ou Durable Objects. Não afeta latência de KV, R2 ou APIs externas.
 
 ```jsonc
 { "placement": { "mode": "smart" } } // Only beneficial with D1/DOs
@@ -106,8 +106,8 @@ For local DOs in same Worker, `script_name` is optional.
 
 ### "unstable_startWorker not found"
 
-**Cause:** Using outdated API
-**Solution:** Use stable `startWorker` instead:
+**Causa:** API desatualizada
+**Solução:** Use a API estável `startWorker`:
 
 ```typescript
 import { startWorker } from 'wrangler' // Not unstable_startWorker
@@ -115,8 +115,8 @@ import { startWorker } from 'wrangler' // Not unstable_startWorker
 
 ### "outboundService not mocking fetch"
 
-**Cause:** Mock function not returning Response
-**Solution:** Always return Response, use `fetch(req)` for passthrough:
+**Causa:** Função mock não retorna Response
+**Solução:** Sempre retorne Response; use `fetch(req)` para repasse:
 
 ```typescript
 const worker = await startWorker({
@@ -129,22 +129,22 @@ const worker = await startWorker({
 })
 ```
 
-## Limits
+## Limites
 
-| Resource/Limit           | Value     | Notes                  |
-| ------------------------ | --------- | ---------------------- |
-| Bindings per Worker      | 64        | Total across all types |
-| Environments             | Unlimited | Named envs in config   |
-| Config file size         | ~1MB      | Keep reasonable        |
-| Workers Assets size      | 25 MB     | Per deployment         |
-| Workers Assets files     | 20,000    | Max number of files    |
-| Script size (compressed) | 1 MB      | Free, 10 MB paid       |
-| CPU time                 | 10-50ms   | Free, 50-500ms paid    |
-| Subrequest limit         | 50        | Free, 1000 paid        |
+| Recurso/limite                 | Valor     | Observação                   |
+| ------------------------------ | --------- | ---------------------------- |
+| Bindings por Worker            | 64        | Total entre todos os tipos   |
+| Ambientes                      | Ilimitado | Ambientes nomeados no config |
+| Tamanho do arquivo config      | ~1MB      | Mantenha razoável            |
+| Tamanho Workers Assets         | 25 MB     | Por deploy                   |
+| Arquivos Workers Assets        | 20.000    | Número máximo de arquivos    |
+| Tamanho do script (compactado) | 1 MB      | Grátis, 10 MB pago           |
+| Tempo de CPU                   | 10–50ms   | Grátis, 50–500ms pago        |
+| Limite de subrequests          | 50        | Grátis, 1000 pago            |
 
-## Troubleshooting
+## Resolução de problemas
 
-### Authentication Issues
+### Autenticação
 
 ```bash
 wrangler logout
@@ -152,21 +152,21 @@ wrangler login
 wrangler whoami
 ```
 
-### Configuration Errors
+### Erros de configuração
 
 ```bash
 wrangler check  # Validate config
 ```
 
-Use wrangler.jsonc with `$schema` for validation.
+Use wrangler.jsonc com `$schema` para validação.
 
-### Binding Not Available
+### Binding indisponível
 
-- Check binding exists in config
-- For environments, ensure binding defined for that env
-- Local dev: some bindings need `--remote`
+- Verifique se o binding existe no config
+- Para ambientes, garanta o binding naquele ambiente
+- Dev local: alguns bindings precisam de `--remote`
 
-### Deployment Failures
+### Falhas de deploy
 
 ```bash
 wrangler tail              # Check logs
@@ -174,7 +174,7 @@ wrangler deploy --dry-run  # Validate
 wrangler whoami            # Check account limits
 ```
 
-### Local Development Issues
+### Problemas em desenvolvimento local
 
 ```bash
 rm -rf .wrangler/state     # Clear local state
@@ -183,7 +183,7 @@ wrangler dev --persist-to ./local-state  # Custom persist location
 wrangler dev --inspector-port 9229  # Enable debugging
 ```
 
-### Testing Issues
+### Problemas em testes
 
 ```bash
 # If tests hang, ensure dispose() is called
@@ -196,7 +196,7 @@ const worker = await startWorker({
 });
 ```
 
-## Resources
+## Recursos
 
 - Docs: https://developers.cloudflare.com/workers/wrangler/
 - Config: https://developers.cloudflare.com/workers/wrangler/configuration/
@@ -204,9 +204,11 @@ const worker = await startWorker({
 - Examples: https://github.com/cloudflare/workers-sdk/tree/main/templates
 - Discord: https://discord.gg/cloudflaredev
 
-## See Also
+## Ver também
 
-- [README.md](./README.md) - Commands
-- [configuration.md](./configuration.md) - Config
-- [api.md](./api.md) - Programmatic API
-- [patterns.md](./patterns.md) - Workflows
+- [README.md](./README.md) — Comandos
+- [configuration.md](./configuration.md) — Configuração
+- [api.md](./api.md) — API programática
+- [patterns.md](./patterns.md) — Fluxos de trabalho
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

@@ -1,6 +1,6 @@
-# Workflow APIs
+# APIs de fluxo de trabalho
 
-## Step APIs
+## APIs de etapas
 
 ```typescript
 // step.do()
@@ -25,7 +25,7 @@ try {
 }
 ```
 
-## Instance Management
+##Gerenciamento de instâncias
 
 ```typescript
 // Create single
@@ -58,7 +58,7 @@ await instance.restart()
 await instance.sendEvent({ type: 'approval', payload: { approved: true } }) // Must match waitForEvent type
 ```
 
-## Triggering Workflows
+##Acionando fluxos de trabalho
 
 ```typescript
 // From Worker
@@ -96,7 +96,7 @@ export class ParentWorkflow extends WorkflowEntrypoint<Env, Params> {
 }
 ```
 
-## Error Handling
+##Tratamento de erros
 
 ```typescript
 import { NonRetryableError } from 'cloudflare:workers'
@@ -130,9 +130,9 @@ await step.do('charge', async () => {
 })
 ```
 
-## Type Constraints
+##Restrições de tipo
 
-Params and step returns must be `Rpc.Serializable<T>`:
+Os parâmetros e retornos de etapa devem ser `Rpc.Serializable<T>`:
 
 ```typescript
 // ✅ Valid types
@@ -156,9 +156,9 @@ const result = await step.do('fetch', async () => {
 })
 ```
 
-## Sleep & Scheduling
+##Sono e programação
 
-```typescript
+````typescript
 // Relative
 await step.sleep('wait 1 hour', '1 hour')
 await step.sleep('wait 30 days', '30 days')
@@ -167,23 +167,20 @@ await step.sleep('wait 5s', 5000) // ms
 // Absolute
 await step.sleepUntil('launch date', Date.parse('24 Oct 2024 13:00:00 UTC'))
 await step.sleepUntil('deadline', new Date('2024-12-31T23:59:59Z'))
-```
+```Unidades: segundo, minuto, hora, dia, semana, mês, ano. Máx.: 365 dias.
+As instâncias adormecidas não contam para a simultaneidade.
 
-Units: second, minute, hour, day, week, month, year. Max: 365 days.
-Sleeping instances don't count toward concurrency.
+## Parâmetros
 
-## Parameters
-
-**Pass from Worker:**
-
+**Passe do Trabalhador:**
 ```typescript
 const instance = await env.MY_WORKFLOW.create({
   id: crypto.randomUUID(),
   params: { userId: 'user123', email: 'user@example.com' },
 })
-```
+````
 
-**Access in Workflow:**
+**Acesso no fluxo de trabalho:**
 
 ```typescript
 async run(event: WorkflowEvent<Params>, step: WorkflowStep) {
@@ -193,13 +190,13 @@ async run(event: WorkflowEvent<Params>, step: WorkflowStep) {
 }
 ```
 
-**CLI Trigger:**
+**Acionador CLI:**
 
 ```bash
 npx wrangler workflows trigger my-workflow '{"userId":"user123"}'
 ```
 
-## Wrangler CLI
+##CLI do Wrangler
 
 ```bash
 npm create cloudflare@latest my-workflow -- --template "cloudflare/workflows-starter"
@@ -211,9 +208,9 @@ npx wrangler workflows instances describe my-workflow instance-id
 npx wrangler workflows instances pause/resume/terminate my-workflow instance-id
 ```
 
-## REST API
+##API REST
 
-```bash
+````bash
 # Create
 curl -X POST "https://api.cloudflare.com/client/v4/accounts/{account_id}/workflows/{workflow_name}/instances" -H "Authorization: Bearer {token}" -d '{"id":"custom-id","params":{"userId":"user123"}}'
 
@@ -222,6 +219,5 @@ curl "https://api.cloudflare.com/client/v4/accounts/{account_id}/workflows/{work
 
 # Send Event
 curl -X POST "https://api.cloudflare.com/client/v4/accounts/{account_id}/workflows/{workflow_name}/instances/{instance_id}/events" -H "Authorization: Bearer {token}" -d '{"type":"approval","payload":{"approved":true}}'
-```
-
-See: [configuration.md](./configuration.md), [patterns.md](./patterns.md)
+```Veja: [configuration.md](./configuration.md), [patterns.md](./patterns.md)
+````

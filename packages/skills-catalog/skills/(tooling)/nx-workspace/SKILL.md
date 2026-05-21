@@ -1,140 +1,81 @@
 ---
 name: nx-workspace
-description: Configure, explore, and optimize Nx monorepo workspaces. Use when setting up Nx, exploring workspace structure, configuring project boundaries, analyzing affected projects, optimizing build caching, or implementing CI/CD with affected commands. Keywords — nx, monorepo, workspace, projects, targets, affected. Do NOT use for running tasks (use nx-run-tasks) or code generation with generators (use nx-generate).
+description: 'Configure, explore e otimize workspaces Nx. Use quando configurar Nx, explorar estrutura, limites entre projetos, projetos afetados, cache de build ou CI com affected. Também use quando mencionarem monorepo, nx show projects ou nx affected. Palavras-chave: nx, monorepo, workspace, projetos, targets, affected. NÃO use para executar só tarefas pontuais sem contexto de workspace (use nx-run-tasks). NÃO use para scaffolding com geradores (use nx-generate).'
 ---
 
-# Nx Workspace Management
+# Gestão de workspace Nx
 
-## Quick Start
+## Início rápido
 
-**Exploring workspace**: `nx show projects` and `nx show project <name> --json`  
-**Running tasks**: `nx <target> <project>` (e.g., `nx build my-app`)  
-**Affected analysis**: `nx show projects --affected` or `nx affected -t <target>`
+**Explorar**: `nx show projects` e `nx show project <nome> --json`  
+**Rodar tarefas**: `nx <target> <projeto>`  
+**Afetados**: `nx show projects --affected` ou `nx affected -t <target>`
 
-> **Note**: Prefix commands with `npx`/`pnpx`/`yarn` if nx isn't installed globally.
+Prefixe com `npx`/`pnpm`/`yarn` se necessário.
 
-## Core Commands
+## Comandos principais
 
-### List and Explore Projects
+### Listar e explorar```bash
 
-```bash
-# List all projects
 nx show projects
-
-# Filter by type, pattern, or target
 nx show projects --type app
-nx show projects --projects "apps/*"
+nx show projects --projects "apps/\*"
 nx show projects --withTarget build
-
-# Find affected projects
 nx show projects --affected --base=main
-```
 
-### Get Project Information
+````
+### Informação do projeto
 
-**Critical**: Always use `nx show project <name> --json` for full resolved configuration. Do NOT read `project.json` directly - it contains only partial configuration.
-
-```bash
-# Get full configuration
+**Crítico**: use `nx show project <nome> --json` para config resolvida. Não leia só `project.json`.```bash
 nx show project my-app --json
-
-# Extract targets
 nx show project my-app --json | jq '.targets | keys'
-```
+````
 
-Configuration schemas:
+Esquemas: `node_modules/nx/schemas/nx-schema.json`, `project-schema.json`.
 
-- Workspace: `node_modules/nx/schemas/nx-schema.json`
-- Project: `node_modules/nx/schemas/project-schema.json`
+### Rodar tarefas```bash
 
-### Run Tasks
-
-```bash
-# Run specific project
 nx build web --configuration=production
-
-# Run affected
 nx affected -t test --base=main
-
-# View dependency graph
 nx graph
-```
 
-## Workspace Architecture
-
-```
+````
+## Arquitetura típica```
 workspace/
-├── apps/              # Deployable applications
-├── libs/              # Shared libraries
-│   ├── shared/        # Shared across scopes
-│   └── feature/       # Feature-specific
-├── nx.json            # Workspace configuration
-└── tools/             # Custom executors/generators
-```
+├── apps/
+├── libs/
+│   ├── shared/
+│   └── feature/
+├── nx.json
+└── tools/
+````
 
-### Library Types
+### Tipos de biblioteca
 
-| Type            | Purpose                          | Example             |
+| Tipo            | Função                           | Exemplo             |
 | --------------- | -------------------------------- | ------------------- |
-| **feature**     | Business logic, smart components | `feature-auth`      |
-| **ui**          | Presentational components        | `ui-buttons`        |
-| **data-access** | API calls, state management      | `data-access-users` |
-| **util**        | Pure functions, helpers          | `util-formatting`   |
+| **recurso**     | Lógica, componentes inteligentes | `feature-auth`      |
+| **ui**          | Apresentação                     | `ui-buttons`        |
+| **data-access** | API, estado                      | `data-access-users` |
+| **util**        | Funções puras                    | `formatação útil`   |
 
-## Detailed Resources
+## Recursos detalhados
 
-**Configuration**: See [reference/configuration.md](reference/configuration.md) for:
+- [reference/configuration.md](reference/configuration.md) — nx.json, limites, cache remoto
+- [reference/commands.md](reference/commands.md) — referência de comando
+- [reference/ci-cd.md](reference/ci-cd.md) — Ações do GitHub, GitLab, etc.
+- [reference/best-practices.md](reference/best-practices.md) — solução de problemas, desempenho
 
-- nx.json templates and options
-- project.json structure
-- Module boundary rules
-- Remote caching setup
+## Fluxos comuns
 
-**Commands**: See [reference/commands.md](reference/commands.md) for:
+**"O que há neste espaço de trabalho?"** → `nx show projects --type app|lib`  
+**"Como eu rodo X?"** → `nx show project X --json | jq '.targets | keys'`  
+**"O que mudou?"** → `nx show projects --affected --base=main`
 
-- Complete command reference
-- Advanced filtering options
-- Common workflows
+## Solução de problemas rápida
 
-**CI/CD**: See [reference/ci-cd.md](reference/ci-cd.md) for:
+- Alvos faltando → `nx show project <name> --json`
+- Afetado falhou → histórico git (`fetch-depth: 0` em CI)
+- Cache estranho → `nx reset`
 
-- GitHub Actions configuration
-- GitLab CI setup
-- Jenkins, Azure Pipelines, CircleCI examples
-- Affected commands in pipelines
-
-**Best Practices**: See [reference/best-practices.md](reference/best-practices.md) for:
-
-- Do's and don'ts
-- Complete troubleshooting guide
-- Performance optimization
-- Migration guides
-
-## Common Workflows
-
-**"What's in this workspace?"**
-
-```bash
-nx show projects --type app  # List applications
-nx show projects --type lib  # List libraries
-```
-
-**"How do I run project X?"**
-
-```bash
-nx show project X --json | jq '.targets | keys'
-```
-
-**"What changed?"**
-
-```bash
-nx show projects --affected --base=main
-```
-
-## Quick Troubleshooting
-
-- **Targets not showing**: Use `nx show project <name> --json`, not project.json
-- **Affected not working**: Ensure git history available (`fetch-depth: 0` in CI)
-- **Cache issues**: Run `nx reset`
-
-For detailed troubleshooting, see [reference/best-practices.md](reference/best-practices.md).
+Detalhes: [reference/best-practices.md](reference/best-practices.md).

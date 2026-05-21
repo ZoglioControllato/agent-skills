@@ -1,57 +1,55 @@
-# Diagram Types — Complete Syntax Reference
+# Tipos de Diagrama — Referência Completa de Sintaxe
 
-Load this file when you need detailed syntax for a specific diagram type beyond what the quick examples in SKILL.md provide.
+Carregue este arquivo quando precisar de sintaxe detalhada para um tipo de diagrama específico além do que os exemplos rápidos em SKILL.md fornecem.
 
-## Table of Contents
+## Índice
 
-1. Flowchart (line ~20)
-2. Sequence Diagram (line ~120)
-3. Class Diagram (line ~220)
-4. State Diagram (line ~310)
-5. ERD (line ~380)
-6. Gantt Chart (line ~440)
-7. Pie Chart (line ~490)
-8. Mindmap (line ~520)
-9. Timeline (line ~560)
-10. Git Graph (line ~600)
-11. Sankey (line ~650)
-12. XY Chart (line ~690)
-13. Quadrant Chart (line ~730)
-14. Block Diagram (line ~770)
-15. User Journey (line ~820)
-16. Requirement Diagram (line ~860)
-17. Packet Diagram (line ~900)
-18. Kanban (line ~930)
+1. Fluxograma (linha ~20)
+2. Diagrama de Sequência (linha ~120)
+3. Diagrama de Classes (linha ~220)
+4. Diagrama de Estado (linha ~310)
+5. ERD (linha ~380)
+6. Gráfico de Gantt (linha ~ 440)
+7. Gráfico de pizza (linha ~ 490)
+8. Mapa mental (linha ~520)
+9. Linha do tempo (linha ~560)
+10. Gráfico Git (linha ~ 600)
+11. Sankey (linha ~650)
+12. Gráfico XY (linha ~690)
+13. Gráfico de quadrante (linha ~ 730)
+14. Diagrama de Blocos (linha ~770)
+15. Jornada do usuário (linha ~820)
+16. Diagrama de Requisitos (linha ~860)
+17. Diagrama de Pacotes
+
+(linha ~900) 18. Kanban (linha ~930)
 
 ---
 
-## 1. Flowchart
+## 1. Fluxograma
 
-**Keyword:** `flowchart` or `graph`
-**Directions:** `TD` (top-down), `LR` (left-right), `BT`, `RL`
+**Palavra-chave:** `fluxograma` ou `gráfico`
+**Instruções:** `TD` (de cima para baixo), `LR` (esquerda-direita), `BT`, `RL`
 
-### Node Shapes
+### Formas de nós```
 
-```
-A[Rectangle]           %% Standard process
-B(Rounded)             %% Alternate process
-C([Stadium])           %% Terminal/start-end
-D{Diamond}             %% Decision
-E{{Hexagon}}           %% Preparation
-F[/Parallelogram/]     %% Input/Output
-G[\Reverse parallel\]  %% Manual operation
-H[(Database)]          %% Data store
-I((Circle))            %% Connector
-J>Asymmetric]          %% Flag/signal
-K[[Subroutine]]        %% Predefined process
-L(((Double Circle)))   %% Multiple documents
-M[/Trapezoid\]         %% Manual input
+A[Rectangle] %% Standard process
+B(Rounded) %% Alternate process
+C([Stadium]) %% Terminal/start-end
+D{Diamond} %% Decision
+E{{Hexagon}} %% Preparation
+F[/Parallelogram/] %% Input/Output
+G[\Reverse parallel\] %% Manual operation
+H[(Database)] %% Data store
+I((Circle)) %% Connector
+J>Asymmetric] %% Flag/signal
+K[[Subroutine]] %% Predefined process
+L(((Double Circle))) %% Multiple documents
+M[/Trapezoid\] %% Manual input
 N[\Inverse trapezoid/] %% Display
-```
 
-### Edge Types
-
-```
+````
+### Tipos de borda```
 A --> B                %% Arrow
 A --- B                %% Line (no arrow)
 A -.- B                %% Dotted line
@@ -63,17 +61,16 @@ A -->|text| B          %% Arrow with text (alternate)
 A <--> B               %% Bidirectional
 A o--o B               %% Circle endpoints
 A x--x B               %% Cross endpoints
-```
+````
 
-### Subgraphs
+### Subgrafos```mermaid
 
-```mermaid
 flowchart TD
-    subgraph Backend["Backend Services"]
-        direction LR
-        API[API Server]
-        Worker[Background Worker]
-    end
+subgraph Backend["Backend Services"]
+direction LR
+API[API Server]
+Worker[Background Worker]
+end
 
     subgraph Storage["Data Layer"]
         DB[(PostgreSQL)]
@@ -83,67 +80,58 @@ flowchart TD
     API --> DB
     API --> Cache
     Worker --> DB
-```
 
-### Styling
-
-```mermaid
+````
+### Estilo```mermaid
 flowchart LR
     A[Success]:::success --> B[Warning]:::warning --> C[Error]:::error
 
     classDef success fill:#10b981,stroke:#059669,color:#fff
     classDef warning fill:#f59e0b,stroke:#d97706,color:#000
     classDef error fill:#ef4444,stroke:#dc2626,color:#fff
-```
+````
 
-### Click Events
+### Clique em Eventos```
 
-```
-click A "https://example.com" "Tooltip text" _blank
+click A "https://example.com" "Tooltip text" \_blank
 click B callback "Tooltip"
-```
 
+````
 ---
 
-## 2. Sequence Diagram
+## 2. Diagrama de sequência
 
-**Keyword:** `sequenceDiagram`
+**Palavra-chave:** `sequenceDiagram`
 
-### Participant Types
-
-```mermaid
+### Tipos de participantes```mermaid
 sequenceDiagram
     actor User
     participant Frontend as Frontend App
     participant API as REST API
     participant DB as Database
-```
+````
 
-### Message Types
+### Tipos de mensagens```
 
-```
 A->>B: Solid arrow (synchronous request)
 A-->>B: Dotted arrow (asynchronous response)
 A-)B: Open arrow (async message, fire-and-forget)
 A--)B: Dotted open arrow (async response)
 A-xB: Cross arrow (lost message)
 A--xB: Dotted cross arrow
-```
 
-### Activation Boxes
-
-```
+````
+### Caixas de ativação```
 A->>+B: Request    %% Activate B
 B-->>-A: Response  %% Deactivate B
-```
+````
 
-### Control Flow
+### Fluxo de controle```mermaid
 
-```mermaid
 sequenceDiagram
-    participant A
-    participant B
-    participant C
+participant A
+participant B
+participant C
 
     alt Condition is true
         A->>B: Path 1
@@ -174,25 +162,20 @@ sequenceDiagram
     break When error occurs
         A->>B: Error notification
     end
-```
 
-### Notes
-
-```
+````
+### Notas```
 Note right of A: Single participant note
 Note over A,B: Note spanning participants
 Note left of B: Left-side note
-```
+````
 
-### Numbering
+### Numeração```
 
-```
-autonumber    %% Add at the top to auto-number messages
-```
+autonumber %% Add at the top to auto-number messages
 
-### Boxes (Grouping)
-
-```mermaid
+````
+### Caixas (Agrupamento)```mermaid
 sequenceDiagram
     box Purple Internal Services
         participant API
@@ -204,35 +187,33 @@ sequenceDiagram
 
     API->>Worker: Process
     Worker->>Payment: Charge
-```
+````
 
 ---
 
-## 3. Class Diagram
+## 3. Diagrama de classes
 
-**Keyword:** `classDiagram`
+**Palavra-chave:** `classDiagram`
 
-### Class Definition
+### Definição de Classe```mermaid
 
-```mermaid
 classDiagram
-    class Animal {
-        +String name
-        +int age
-        #String species
-        -String dna
-        +makeSound()* void
-        +move(distance int) void
-        #reproduce() Animal
-        -mutate() void
-    }
-```
+class Animal {
++String name
++int age
+#String species
+-String dna
++makeSound()\* void
++move(distance int) void
+#reproduce() Animal
+-mutate() void
+}
 
-**Visibility modifiers:** `+` public, `-` private, `#` protected, `~` package
+````
 
-### Relationships
+**Modificadores de visibilidade:** `+` público, `-` privado, `#` protegido, pacote `~`
 
-```
+### Relacionamentos```
 A <|-- B       %% Inheritance (B extends A)
 A *-- B        %% Composition (A owns B, lifecycle bound)
 A o-- B        %% Aggregation (A has B, independent lifecycle)
@@ -241,19 +222,16 @@ A ..> B        %% Dependency (A depends on B)
 A ..|> B       %% Realization (B implements A)
 A -- B         %% Link (solid)
 A .. B         %% Link (dashed)
-```
+````
 
-### Multiplicity
+### Multiplicidade```
 
-```
-A "1" --> "*" B : has
+A "1" --> "_" B : has
 A "1" --> "0..1" B : may have
-A "0..*" --> "1..*" B : relates
-```
+A "0.._" --> "1..\*" B : relates
 
-### Annotations
-
-```mermaid
+````
+### Anotações```mermaid
 classDiagram
     class Shape {
         <<interface>>
@@ -275,31 +253,28 @@ classDiagram
     class UserService {
         <<service>>
     }
-```
+````
 
-### Namespace
+### Namespace```mermaid
 
-```mermaid
 classDiagram
-    namespace Domain {
-        class User
-        class Order
-    }
-    namespace Infrastructure {
-        class UserRepository
-        class OrderRepository
-    }
-```
+namespace Domain {
+class User
+class Order
+}
+namespace Infrastructure {
+class UserRepository
+class OrderRepository
+}
 
+````
 ---
 
-## 4. State Diagram
+## 4. Diagrama de estado
 
-**Keyword:** `stateDiagram-v2`
+**Palavra-chave:** `stateDiagram-v2`
 
-### Basic Syntax
-
-```mermaid
+### Sintaxe Básica```mermaid
 stateDiagram-v2
     [*] --> Idle
     Idle --> Processing : Start
@@ -307,13 +282,12 @@ stateDiagram-v2
     Processing --> Error : Failure
     Error --> Idle : Reset
     Done --> [*]
-```
+````
 
-### Composite States
+### Estados compostos```mermaid
 
-```mermaid
 stateDiagram-v2
-    [*] --> Active
+[*] --> Active
 
     state Active {
         [*] --> Running
@@ -323,11 +297,9 @@ stateDiagram-v2
 
     Active --> Terminated : Kill
     Terminated --> [*]
-```
 
-### Forks and Joins
-
-```mermaid
+````
+### Bifurcações e junções```mermaid
 stateDiagram-v2
     state fork_state <<fork>>
     state join_state <<join>>
@@ -339,56 +311,50 @@ stateDiagram-v2
     TaskB --> join_state
     join_state --> Done
     Done --> [*]
-```
+````
 
-### Choice
+### Escolha```mermaid
 
-```mermaid
 stateDiagram-v2
-    state check <<choice>>
+state check <<choice>>
 
     [*] --> check
     check --> Approved : if valid
     check --> Rejected : if invalid
-```
 
-### Notes
-
-```
+````
+### Notas```
 note right of StateName
     Multi-line note
     explaining the state
 end note
-```
+````
 
 ---
 
-## 5. Entity Relationship Diagram
+## 5. Diagrama de Relacionamento entre Entidades
 
-**Keyword:** `erDiagram`
+**Palavra-chave:** `erDiagram`
 
-### Relationship Types
+### Tipos de relacionamento```
 
-```
 A ||--|| B : "exactly one to exactly one"
 A ||--o{ B : "one to zero or more"
 A ||--|{ B : "one to one or more"
 A }o--o{ B : "zero or more to zero or more"
 A |o--o| B : "zero or one to zero or one"
-```
 
-### Cardinality Symbols
+````
+### Símbolos de Cardinalidade
 
-| Symbol | Meaning      |
+| Símbolo | Significado |
 | ------ | ------------ |
-| `\|\|` | Exactly one  |
-| `o\|`  | Zero or one  |
-| `}o`   | Zero or more |
-| `}\|`  | One or more  |
+| `\|\|` | Exatamente um |
+| `o\|` | Zero ou um |
+| `}o` | Zero ou mais |
+| `}\|` | Um ou mais |
 
-### Attribute Types
-
-```mermaid
+### Tipos de atributos```mermaid
 erDiagram
     PRODUCT {
         uuid id PK "Unique identifier"
@@ -401,21 +367,19 @@ erDiagram
         string sku UK "Stock keeping unit"
         uuid category_id FK "Reference to category"
     }
-```
+````
 
-**Key markers:** `PK` (primary key), `FK` (foreign key), `UK` (unique key)
+**Marcadores de chave:** `PK` (chave primária), `FK` (chave estrangeira), `UK` (chave exclusiva)
 
 ---
 
-## 6. Gantt Chart
+## 6. Gráfico de Gantt
 
-**Keyword:** `gantt`
-
-```mermaid
+**Palavra-chave:** `gantt````mermaid
 gantt
-    title Project Timeline
-    dateFormat YYYY-MM-DD
-    axisFormat %b %d
+title Project Timeline
+dateFormat YYYY-MM-DD
+axisFormat %b %d
 
     section Planning
         Requirements    :done, req, 2025-01-01, 14d
@@ -431,19 +395,18 @@ gantt
 
     section Release
         Deployment      :milestone, deploy, after uat, 0d
-```
 
-**Task states:** `done`, `active`, `crit` (critical path)
-**Duration:** `7d` (days), `5h` (hours), or specific end date
-**Dependencies:** `after taskId` or comma-separated `after task1 task2`
+`````
+
+**Estados da tarefa:** `done`, `active`, `crit` (caminho crítico)
+**Duração:** `7d` (dias), `5h` (horas) ou data de término específica
+**Dependências:** `após taskId` ou `após tarefa1 tarefa2` separados por vírgula
 
 ---
 
-## 7. Pie Chart
+## 7. Gráfico de pizza
 
-**Keyword:** `pie`
-
-```mermaid
+**Palavra-chave:** `torta````mermaid
 pie showData
     title Technology Stack
     "TypeScript" : 45
@@ -451,54 +414,51 @@ pie showData
     "Go" : 15
     "Rust" : 10
     "Other" : 5
-```
+`````
 
-`showData` is optional — adds percentages to labels.
+`showData` é opcional — adiciona porcentagens aos rótulos.
 
 ---
 
-## 8. Mindmap
+## 8. Mapa mental
 
-**Keyword:** `mindmap`
-
-```mermaid
+**Palavra-chave:** `mapa mental````mermaid
 mindmap
-    root((System Design))
-        Scalability
-            Horizontal
-                Load Balancers
-                Sharding
-            Vertical
-                More CPU
-                More RAM
-        Reliability
-            Redundancy
-            Failover
-            Backups
-        Performance
-            Caching
-                CDN
-                Redis
-            Optimization
-                Indexing
-                Query tuning
-```
+root((System Design))
+Scalability
+Horizontal
+Load Balancers
+Sharding
+Vertical
+More CPU
+More RAM
+Reliability
+Redundancy
+Failover
+Backups
+Performance
+Caching
+CDN
+Redis
+Optimization
+Indexing
+Query tuning
 
-**Node shapes:**
+`````
 
-- `((Circle))` — root/emphasis
-- `(Rounded)` — default
-- `[Square]` — structured
-- `)Cloud(` — cloud shape
-- `))Bang((` — explosion/emphasis
+**Formas de nós:**
+
+- `((Círculo))` — raiz/ênfase
+- `(Arredondado)` — padrão
+- `[Quadrado]` — estruturado
+- `)Cloud(` — formato de nuvem
+- `))Bang((` — explosão/ênfase
 
 ---
 
-## 9. Timeline
+## 9. Linha do tempo
 
-**Keyword:** `timeline`
-
-```mermaid
+**Palavra-chave:** `linha do tempo````mermaid
 timeline
     title Product Roadmap 2025
     section Q1
@@ -510,42 +470,39 @@ timeline
         April : Mobile app
         May : International expansion
         June : Enterprise features
-```
+`````
 
 ---
 
-## 10. Git Graph
+## 10. Gráfico Git
 
-**Keyword:** `gitGraph`
-
-```mermaid
+**Palavra-chave:** `gitGraph````mermaid
 gitGraph
-    commit id: "Initial"
-    branch develop
-    checkout develop
-    commit id: "Feature A"
-    commit id: "Feature B"
-    branch feature/auth
-    checkout feature/auth
-    commit id: "Add login"
-    commit id: "Add OAuth"
-    checkout develop
-    merge feature/auth id: "Merge auth"
-    checkout main
-    merge develop id: "Release v1.0" tag: "v1.0"
-    commit id: "Hotfix" type: HIGHLIGHT
-```
+commit id: "Initial"
+branch develop
+checkout develop
+commit id: "Feature A"
+commit id: "Feature B"
+branch feature/auth
+checkout feature/auth
+commit id: "Add login"
+commit id: "Add OAuth"
+checkout develop
+merge feature/auth id: "Merge auth"
+checkout main
+merge develop id: "Release v1.0" tag: "v1.0"
+commit id: "Hotfix" type: HIGHLIGHT
 
-**Commit types:** `NORMAL`, `REVERSE`, `HIGHLIGHT`
-**Options:** `branch order: 0` to control branch position
+`````
+
+**Tipos de commit:** `NORMAL`, `REVERSE`, `HIGHLIGHT`
+**Opções:** `branch order: 0` para controlar a posição da filial
 
 ---
 
-## 11. Sankey Diagram
+## 11. Diagrama de Sankey
 
-**Keyword:** `sankey-beta`
-
-```mermaid
+**Palavra-chave:** `sankey-beta````mermaid
 sankey-beta
 
 Traffic,Homepage,5000
@@ -556,34 +513,30 @@ API,Mobile,2000
 API,Partners,1000
 Signup,Active Users,1200
 Signup,Churned,300
-```
+`````
 
-Format: `source,target,value` — one per line, comma-separated.
+Formato: `fonte, destino, valor` — um por linha, separado por vírgula.
 
 ---
 
-## 12. XY Chart
+## 12. Gráfico XY
 
-**Keyword:** `xychart-beta`
-
-```mermaid
+**Palavra-chave:** `xychart-beta````mermaid
 xychart-beta
-    title "Monthly Revenue"
-    x-axis [Jan, Feb, Mar, Apr, May, Jun]
-    y-axis "Revenue ($K)" 0 --> 100
-    bar [30, 45, 60, 55, 70, 85]
-    line [25, 40, 55, 50, 65, 80]
-```
+title "Monthly Revenue"
+x-axis [Jan, Feb, Mar, Apr, May, Jun]
+y-axis "Revenue ($K)" 0 --> 100
+bar [30, 45, 60, 55, 70, 85]
+line [25, 40, 55, 50, 65, 80]
 
-Supports `bar` and `line` series. Multiple series can be combined.
+`````
+Suporta as séries `bar` e `line`. Várias séries podem ser combinadas.
 
 ---
 
-## 13. Quadrant Chart
+## 13. Gráfico de quadrante
 
-**Keyword:** `quadrantChart`
-
-```mermaid
+**Palavra-chave:** `quadrantChart````mermaid
 quadrantChart
     title Feature Prioritization
     x-axis "Low Effort" --> "High Effort"
@@ -596,19 +549,17 @@ quadrantChart
     Feature B: [0.2, 0.7]
     Feature C: [0.6, 0.3]
     Feature D: [0.3, 0.2]
-```
+`````
 
-Coordinates are `[x, y]` with values between 0 and 1.
+As coordenadas são `[x, y]` com valores entre 0 e 1.
 
 ---
 
-## 14. Block Diagram
+## 14. Diagrama de blocos
 
-**Keyword:** `block-beta`
-
-```mermaid
+**Palavra-chave:** `block-beta````mermaid
 block-beta
-    columns 3
+columns 3
 
     space:1 Header["System Overview"]:1 space:1
 
@@ -616,18 +567,16 @@ block-beta
 
     Frontend --> API
     API --> DB
-```
 
-Use `columns N` to define grid. `space:N` for empty cells.
-Blocks span cells with `:N` suffix.
+`````
+Use `colunas N` para definir a grade. `espaço:N` para células vazias.
+Bloqueia células com sufixo `:N`.
 
 ---
 
-## 15. User Journey
+## 15. Jornada do usuário
 
-**Keyword:** `journey`
-
-```mermaid
+**Palavra-chave:** `jornada````mermaid
 journey
     title User Checkout Experience
     section Browse
@@ -641,24 +590,22 @@ journey
     section Post-Purchase
         Receive confirmation: 5: Customer, Email Service
         Track delivery: 3: Customer
-```
+`````
 
-Format: `Task name: satisfaction(1-5): actor1, actor2`
+Formato: `Nome da tarefa: satisfação(1-5): ator1, ator2`
 
 ---
 
-## 16. Requirement Diagram
+## 16. Diagrama de requisitos
 
-**Keyword:** `requirementDiagram`
-
-```mermaid
+**Palavra-chave:** `requirementDiagram````mermaid
 requirementDiagram
-    requirement high_availability {
-        id: REQ-001
-        text: System must achieve 99.9% uptime
-        risk: high
-        verifymethod: test
-    }
+requirement high_availability {
+id: REQ-001
+text: System must achieve 99.9% uptime
+risk: high
+verifymethod: test
+}
 
     functionalRequirement auto_failover {
         id: REQ-002
@@ -674,18 +621,17 @@ requirementDiagram
 
     high_availability - traces -> auto_failover
     auto_failover - satisfies -> load_balancer
-```
 
-**Relationship types:** `contains`, `copies`, `derives`, `satisfies`, `verifies`,
-`refines`, `traces`
+`````
+
+**Tipos de relacionamento:** `contém`, `copia`, `deriva`, `satisfaz`, `verifica`,
+`refina`, `traços`
 
 ---
 
-## 17. Packet Diagram
+## 17. Diagrama de pacotes
 
-**Keyword:** `packet-beta`
-
-```mermaid
+**Palavra-chave:** `packet-beta````mermaid
 packet-beta
     0-15: "Source Port"
     16-31: "Destination Port"
@@ -697,36 +643,32 @@ packet-beta
     112-127: "Window Size"
     128-143: "Checksum"
     144-159: "Urgent Pointer"
-```
+`````
 
-Format: `start-end: "Label"` — bit ranges for protocol headers.
+Formato: `start-end: "Label"` — intervalos de bits para cabeçalhos de protocolo.
 
 ---
 
 ## 18. Kanban
 
-**Keyword:** `kanban`
-
-```mermaid
+**Palavra-chave:** `kanban````mermaid
 kanban
-    column1["To Do"]
-        task1["Design database schema"]
-        task2["Write API specs"]
-    column2["In Progress"]
-        task3["Implement auth"]
-    column3["Review"]
-        task4["Code review: payments"]
-    column4["Done"]
-        task5["Setup CI/CD"]
-```
+column1["To Do"]
+task1["Design database schema"]
+task2["Write API specs"]
+column2["In Progress"]
+task3["Implement auth"]
+column3["Review"]
+task4["Code review: payments"]
+column4["Done"]
+task5["Setup CI/CD"]
 
+````
 ---
 
-## Global Configuration
+## Configuração Global
 
-Any diagram can be configured with frontmatter:
-
-```mermaid
+Qualquer diagrama pode ser configurado com frontmatter:```mermaid
 ---
 config:
   theme: base
@@ -738,21 +680,21 @@ config:
 ---
 flowchart LR
     A --> B --> C
-```
+````
 
-**Themes:** `default`, `forest`, `dark`, `neutral`, `base`
-**Looks:** `classic`, `handDrawn`
-**Layouts:** `dagre` (default), `elk` (advanced, needs integration)
+**Temas:** `default`, `forest`, `dark`, `neutral`, `base`
+**Aparência:** `clássico`, `handDrawn`
+**Layouts:** `dagre` (padrão), `elk` (avançado, precisa de integração)
 
-## Directives (Inline Config)
+## Diretivas (Configuração Inline)
 
-**IMPORTANT:** The init directive MUST be on the very first line, before any diagram type declaration.
-
-```
+**IMPORTANTE:** A diretiva init DEVE estar na primeira linha, antes de qualquer declaração de tipo de diagrama.```
 %%{init: {'theme': 'base', 'themeVariables': {
-  'primaryColor': '#4f46e5', 'lineColor': '#94a3b8',
-  'primaryTextColor': '#fff', 'primaryBorderColor': '#3730a3'
+'primaryColor': '#4f46e5', 'lineColor': '#94a3b8',
+'primaryTextColor': '#fff', 'primaryBorderColor': '#3730a3'
 }}}%%
+
 ```
 
-**Golden Rule:** Always include `'lineColor': '#94a3b8'` to replace the default harsh black lines with softer slate-colored lines. This single change dramatically improves diagram aesthetics.
+**Regra de ouro:** Sempre inclua `'lineColor': '#94a3b8'` para substituir as linhas pretas duras padrão por linhas de cor ardósia mais suaves. Essa única alteração melhora drasticamente a estética do diagrama.
+```

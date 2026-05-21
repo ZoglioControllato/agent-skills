@@ -1,103 +1,121 @@
-# Cognitive Bias Inventory
+# Inventário de preconceito cognitivo
 
-Structured bias detection for use during every challenge pass. Integrates findings from Fasolo, Heard & Scopelliti (2025) and the DeBiasMe metacognitive framework.
+Detecção de polarização estruturada para uso durante cada passagem de desafio. Integra descobertas de Fasolo, Heard & Scopelliti (2025) e da estrutura metacognitiva DeBiasMe.
 
-## Core Principle
+## Princípio Fundamental
 
-Cognitive biases are not accusations — they are patterns in human reasoning that systematically distort judgment. The Fool's job is to flag when a bias may be influencing a decision, not to shame the user. Frame bias findings as: "This pattern is common in this type of decision, and here's how it might be affecting your reasoning."
+Os preconceitos cognitivos não são acusações – são padrões de raciocínio humano que distorcem sistematicamente o julgamento. O trabalho do Louco é sinalizar quando um preconceito pode estar influenciando uma decisão, e não envergonhar o usuário. Enquadre as descobertas de preconceito como: "Esse padrão é comum nesse tipo de decisão e veja como isso pode estar afetando seu raciocínio."
 
-## When to Use This File
+## Quando usar este arquivo
 
-Read this file on every challenge pass, regardless of mode. After generating your mode-specific challenges, scan the user's reasoning against this inventory. Weave bias findings into your challenges — do not present them as a separate "bias report."
+Leia este arquivo em cada passagem de desafio, independentemente do modo. Depois de gerar os desafios específicos do seu modo, analise o raciocínio do usuário em relação a esse inventário. Integre as descobertas tendenciosas aos seus desafios - não as apresente como um "relatório tendencioso" separado.
 
-## The Primary Bias Inventory
+## O inventário de polarização primária
 
-### Decision-Making Biases
+### Vieses na tomada de decisões
 
-| Bias | Description | Detection Signal | Debiasing Technique |
-|------|-------------|-----------------|---------------------|
-| **Confirmation bias** | Seeking evidence that confirms existing belief | Only positive evidence cited; no counter-evidence considered | "What evidence would you need to see to change your mind?" |
-| **Anchoring** | Over-relying on first piece of information | First estimate unchanged despite new data; round numbers dominate | "Generate your own estimate BEFORE looking at others" |
-| **Sunk cost fallacy** | Continuing because of past investment | "We've already spent 6 months on this" as justification to continue | "If you were starting fresh today with no prior investment, would you choose this?" |
-| **Status quo bias** | Preferring current state despite evidence for change | "It's always been this way" or "changing is risky" without quantifying | "What is the cost of NOT changing? Is doing nothing really free?" |
-| **Overconfidence** | Overestimating the accuracy of one's predictions | Point estimates instead of ranges; no contingency planning | "Give me a confidence interval: what's the 10th and 90th percentile outcome?" |
-| **Planning fallacy** | Underestimating time, cost, and risk of future actions | Best-case estimates presented as likely; no buffer for unknowns | "What happened the last 3 times you estimated something similar?" |
+| Viés                    | Descrição                                            | Sinal de detecção                                                            | Técnica de Debiasing                                      |
+| ----------------------- | ---------------------------------------------------- | ---------------------------------------------------------------------------- | --------------------------------------------------------- |
+| **Viés de confirmação** | Buscando evidências que confirmem a crença existente | Apenas evidências positivas citadas; nenhuma contra-evidência considerada    | "Que evidências você precisaria ver para mudar de ideia?" |
+| **Ancoragem**           | Confiar excessivamente na primeira informação        | Primeira estimativa inalterada apesar dos novos dados; números redondos domi |
 
-### Social and Group Biases
+Nate | "Gere sua própria estimativa ANTES de olhar para os outros" |
+| **Falácia dos custos irrecuperáveis** | Continuando devido a investimentos anteriores | “Já gastamos 6 meses nisso” como justificativa para continuar | “Se você estivesse começando do zero hoje, sem nenhum investimento anterior, você escolheria isso?” |
+| **Viés do status quo** | Preferindo o estado atual apesar das evidências de mudança | “Sempre foi assim” ou “mudar é arriscado” sem quantificar | "Qual é o
 
-| Bias | Description | Detection Signal | Debiasing Technique |
-|------|-------------|-----------------|---------------------|
-| **Groupthink** | Desire for conformity suppresses dissent | "The whole team agrees" with no documented dissent | "Was there a moment where someone almost disagreed? What stopped them?" |
-| **Authority bias** | Deferring to authority regardless of evidence quality | "The CTO/architect/Google says so" as primary evidence | "If this proposal came from a junior engineer, would the evidence be sufficient?" |
-| **Bandwagon effect** | "Everyone is doing it" as justification | Trend adoption without fitness assessment | "Is the reason everyone is doing it the same reason you should?" |
-| **Survivorship bias** | Focusing on successes, ignoring failures | "All the successful companies do X" | "How many companies tried X and failed? What happened to them?" |
+custo de NÃO mudar? Fazer nada é realmente de graça?" |
+| **Excesso de confiança** | Superestimar a precisão das próprias previsões | Estimativas pontuais em vez de intervalos; sem planejamento de contingência | "Dê-me um intervalo de confiança: qual é o resultado dos percentis 10 e 90?" |
+| **Falácia do planejamento** | Subestimar o tempo, o custo e o risco de ações futuras | Estimativas do melhor caso apresentadas como prováveis; nenhum buffer para incógnitas | "O que aconteceu nas últimas 3 vezes
 
-### Information Processing Biases
+você estimou algo semelhante?" |
 
-| Bias | Description | Detection Signal | Debiasing Technique |
-|------|-------------|-----------------|---------------------|
-| **Availability heuristic** | Overweighting recent or vivid examples | Decision based on one memorable incident | "What does the base rate data say? Is this incident representative or exceptional?" |
-| **Dunning-Kruger** | Overconfidence in unfamiliar domain | Confident claims about areas outside expertise | "How much experience does the team have with this specific technology at this scale?" |
-| **Framing effect** | Decision changes based on how the question is framed | Positive framing hiding negatives (or vice versa) | "Reframe: instead of '90% success rate,' say '10% failure rate.' Does that change the decision?" |
-| **Recency bias** | Overweighting recent events | Last quarter's incident driving architecture decisions | "Is this a trend or an outlier? What does the 12-month data show?" |
-| **Narrative fallacy** | Creating a coherent story from random events | Clean cause-and-effect narrative with no uncertainty | "What parts of this story are we connecting retroactively?" |
+### Preconceitos sociais e de grupo
 
-## Bias Detection Workflow
+| Viés                    | Descrição                                                          | Sinal de detecção                                         | Técnica de Debiasing                                                |
+| ----------------------- | ------------------------------------------------------------------ | --------------------------------------------------------- | ------------------------------------------------------------------- |
+| **Pensamento de grupo** | Desejo de conformidade suprime dissidência                         | “Toda a equipe concorda” sem dissidência documentada      | "Houve um momento em que alguém quase discordou? O que os impediu?" |
+| **Viés de autoridade**  | Submeter-se à autoridade independentemente da qualidade das provas | "O CTO/arquiteto/Google diz isso" como evidência primária |
 
-For each challenge pass, run this quick scan:
+| “Se esta proposta viesse de um engenheiro júnior, as evidências seriam suficientes?” |
+| **Efeito de movimento** | “Todo mundo está fazendo isso” como justificativa | Adoção de tendências sem avaliação de aptidão | "A razão pela qual todos estão fazendo isso é a mesma que você deveria?" |
+| **Viés de sobrevivência** | Focando nos sucessos, ignorando os fracassos | “Todas as empresas de sucesso fazem X” | "Quantas empresas tentaram o X e falharam? O que aconteceu com elas?" |
 
-### Step 1: Check the Evidence Chain
+### Vieses no processamento de informações
 
-- Is evidence selectively presented? → **Confirmation bias**
-- Is the first data point dominating the analysis? → **Anchoring**
-- Is a single vivid example driving the decision? → **Availability heuristic**
-- Is the source of evidence interested in the outcome? → **Authority bias** or **vendor bias**
+| Viés                              | Descrição                                       | Sinal de detecção                                        | Técnica de Debiasing                                                                   |
+| --------------------------------- | ----------------------------------------------- | -------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| **Heurística de disponibilidade** | Sobreponderação em exemplos recentes ou vívidos | Decisão baseada num incidente memorável                  | “O que dizem os dados da taxa básica? Este incidente é representativo ou excepcional?” |
+| **Dunning-Kruger**                | Excesso de confiança em domínio desconhecido    | Afirmações confiantes sobre áreas fora da especialização | "Quanto ex                                                                             |
 
-### Step 2: Check the Decision Frame
+experiência que a equipe tem com esta tecnologia específica nesta escala?" |
+| **Efeito de enquadramento** | A decisão muda com base na forma como a questão é formulada | Enquadramento positivo escondendo negativos (ou vice-versa) | “Reformule: em vez de 'taxa de sucesso de 90%', diga 'taxa de fracasso de 10%.' Isso muda a decisão?" |
+| **Viés de atualidade** | Sobreponderação em acontecimentos recentes | Incidente do último trimestre impulsionando decisões de arquitetura | “Isso é uma tendência ou uma exceção? O que
 
-- Is past investment being used to justify continuing? → **Sunk cost fallacy**
-- Is the status quo being treated as free? → **Status quo bias**
-- Are estimates point values instead of ranges? → **Overconfidence**
-- Is the timeline based on best-case? → **Planning fallacy**
+os dados de 12 meses mostram?" |
+| **Falácia narrativa** | Criando uma história coerente a partir de eventos aleatórios | Narrativa limpa de causa e efeito sem incerteza | “Que partes desta história estamos conectando retroativamente?” |
 
-### Step 3: Check the Social Dynamics
+## Fluxo de trabalho de detecção de polarização
 
-- Did "everyone agree" suspiciously fast? → **Groupthink**
-- Is a senior person's opinion treated as evidence? → **Authority bias**
-- Is "industry trend" the primary justification? → **Bandwagon effect**
-- Are only success stories referenced? → **Survivorship bias**
+Para cada passagem do desafio, execute esta verificação rápida:
 
-## Bias Mitigation Techniques Summary
+### Etapa 1: Verifique a cadeia de evidências
 
-These are the gold-standard debiasing techniques (Fasolo et al. 2025, Nature Scientific Reports 2025):
+- As evidências são apresentadas de forma seletiva? → **Viés de confirmação**
+- O primeiro ponto de dados está dominando a análise? → **Ancoragem**
+- Um único exemplo vívido está guiando a decisão? → **Heurística de disponibilidade**
+- A fonte da evidência está interessada no resultado? → **Viés da autoridade** ou **Viés do fornecedor**
 
-| Technique | What It Does | When to Apply |
-|-----------|-------------|---------------|
-| **Reference class forecasting** | Use historical base rates instead of inside-view estimates | Any predictive claim or timeline estimate |
-| **Pre-mortem** | Imagine failure first | Planning fallacy, overconfidence |
-| **Red team / devil's advocate** | Structural dissent | Groupthink, confirmation bias |
-| **Blind evaluation** | Strip names, titles, vendors from proposals | Authority bias, halo effect |
-| **Probabilistic framing** | Force confidence intervals and probability ranges | Overconfidence, binary thinking |
-| **Fresh-start framing** | "If starting today with no history, would you choose this?" | Sunk cost, status quo bias |
-| **Inversion** | "What would guarantee failure?" | Confirmation bias, planning fallacy |
-| **Seek disconfirming evidence** | Actively look for evidence AGAINST your position | Confirmation bias |
-| **The Magic Question** | "What would it take to change your mind?" | All biases — tests commitment to evidence |
+### Etapa 2: Verifique o quadro de decisão
 
-## Integration with Modes
+- O investimento passado está sendo usado para justificar a continuidade? → **Falácia dos custos irrecuperáveis**
+- O status quo está sendo tratado como gratuito? → **Viés do status quo**
+- As estimativas são valores pontuais em vez de intervalos? → **Excesso de confiança**
+- O cronograma é baseado no melhor caso? → **Falácia do planejamento**
 
-| Mode | Most Common Biases to Check |
-|------|---------------------------|
-| Socratic Questioning | Confirmation bias, framing effect, narrative fallacy |
-| Dialectic Synthesis | Status quo bias, authority bias, groupthink |
-| Pre-mortem Analysis | Planning fallacy, overconfidence, survivorship bias |
-| Red Team | Availability heuristic, anchoring, Dunning-Kruger |
-| Evidence Audit | Confirmation bias, survivorship bias, authority bias |
+### Etapa 3: verifique a dinâmica social
 
-## Anti-Patterns in Bias Communication
+- "Todos concordaram" de forma suspeita e rápida? → **Pensamento de grupo**
+- A opinião de uma pessoa idosa é tratada como prova? → **Viés de autoridade**
+- A “tendência da indústria” é a principal justificativa? → **Efeito de movimento**
+- Apenas são referenciadas histórias de sucesso? → **Viés de sobrevivência**
 
-| Anti-Pattern | Problem | Better Approach |
-|-------------|---------|-----------------|
-| "You have confirmation bias" | Accusatory, triggers defensiveness | "I notice the evidence cited is all supportive — what does the counter-evidence look like?" |
-| Listing 10 biases at once | Overwhelms, loses impact | Flag the 1-2 most relevant biases, woven into specific challenges |
-| Using bias as a trump card | "You're biased therefore wrong" | Bias affects the reasoning process, not necessarily the conclusion |
-| Naming the bias first | Academic tone alienates | Describe the pattern, then (optionally) name it |
+## Resumo das técnicas de mitigação de preconceito
+
+Estas são as técnicas de eliminação de preconceito padrão-ouro (Fasolo et al. 2025, Nature Scientific Reports 2025):
+
+| Técnica                              | O que faz                                                        | Quando aplicar                                               |
+| ------------------------------------ | ---------------------------------------------------------------- | ------------------------------------------------------------ |
+| **Previsão de classe de referência** | Utilizar taxas de base históricas em vez de estimativas internas | Qualquer reivindicação preditiva ou estimativa de cronograma |
+| **Pré-mortem**                       | Imagine o fracasso primeiro                                      | Falácia de planejamento, excesso de confiança                |
+| **Time vermelho/advogado do diabo**  | Dissidência estrutural                                           | Pensamento de grupo, viés de confirmação                     |
+| **Avaliação cega**                   | Tira nomes, títulos, fornecedores                                |
+
+de propostas | Viés de autoridade, efeito halo |
+| **Enquadramento probabilístico** | Forçar intervalos de confiança e faixas de probabilidade | Excesso de confiança, pensamento binário |
+| **Enquadramento de novo começo** | “Se começasse hoje sem história, você escolheria isso?” | Custo irrecuperável, preconceito de status quo |
+| **Inversão** | "O que garantiria o fracasso?" | Viés de confirmação, falácia de planejamento |
+| **Busque evidências contrárias** | Procure ativamente por evidências CONTRA o seu p
+
+osição | Viés de confirmação |
+| **A questão mágica** | "O que seria necessário para mudar de ideia?" | Todos os preconceitos — testa o compromisso com as evidências |
+
+## Integração com modos
+
+| Modo                     | Vieses mais comuns a serem verificados                                      |
+| ------------------------ | --------------------------------------------------------------------------- |
+| Questionamento Socrático | Viés de confirmação, efeito de enquadramento, falácia narrativa             |
+| Síntese Dialética        | Viés de status quo, preconceito de autoridade, pensamento de grupo          |
+| Análise pré-mortem       | Falácia de planejamento, excesso de confiança, preconceito de sobrevivência |
+| Equipe Vermelha          | Heurística de disponibilidade, ancoragem, Dunning-Kruger                    |
+| Auditoria de Evidências  | Viés de confirmação, viés de sobrevivência, viés de autoridade              |
+
+## Antipadrões na comunicação tendenciosa
+
+| Antipadrão                          | Problema                                 | Melhor abordagem                                                                        |
+| ----------------------------------- | ---------------------------------------- | --------------------------------------------------------------------------------------- |
+| “Você tem viés de confirmação”      | Acusativo, desencadeia atitude defensiva | “Percebo que todas as evidências citadas são de apoio – como são as contra-evidências?” |
+| Listando 10 preconceitos de uma vez | Sobrecarrega, perde impacto              | Sinalize os 1-2 preconceitos mais relevantes, integrados em desafios específicos        |
+| Usando o preconceito como trunfo    | "Você é tendencioso, portanto errado"    | Viés de                                                                                 |
+
+afeta o processo de raciocínio, não necessariamente a conclusão |
+| Nomeando o preconceito primeiro | Tom acadêmico aliena | Descreva o padrão e (opcionalmente) nomeie-o |

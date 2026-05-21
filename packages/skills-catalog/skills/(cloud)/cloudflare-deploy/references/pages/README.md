@@ -1,55 +1,55 @@
 # Cloudflare Pages
 
-JAMstack platform for full-stack apps on Cloudflare's global network.
+Plataforma JAMstack para apps full-stack na rede global da Cloudflare.
 
-## Key Features
+## Recursos principais
 
-- **Git-based deploys**: Auto-deploy from GitHub/GitLab
-- **Preview deployments**: Unique URL per branch/PR
-- **Pages Functions**: File-based serverless routing (Workers runtime)
-- **Static + dynamic**: Smart asset caching + edge compute
-- **Smart Placement**: Automatic function optimization based on traffic patterns
-- **Framework optimized**: SvelteKit, Astro, Nuxt, Qwik, Solid Start
+- **Deploys via Git**: deploy automático a partir de GitHub/GitLab
+- **Preview deployments**: URL única por branch/PR
+- **Pages Functions**: roteamento serverless por arquivos (runtime Workers)
+- **Estático + dinâmico**: cache inteligente de assets + compute na edge
+- **Smart Placement**: otimização automática de funções conforme tráfego
+- **Frameworks**: SvelteKit, Astro, Nuxt, Qwik, Solid Start
 
-## Deployment Methods
+## Métodos de deploy
 
-### 1. Git Integration (Production)
+### 1. Integração Git (produção)
 
 Dashboard → Workers & Pages → Create → Connect to Git → Configure build
 
-### 2. Direct Upload
+### 2. Upload direto
 
 ```bash
 npx wrangler pages deploy ./dist --project-name=my-project
 npx wrangler pages deploy ./dist --project-name=my-project --branch=staging
 ```
 
-### 3. C3 CLI
+### 3. CLI C3
 
 ```bash
 npm create cloudflare@latest my-app
-# Select framework → auto-setup + deploy
+# Escolha framework → setup + deploy automáticos
 ```
 
-## vs Workers
+## Workers vs Pages
 
-- **Pages**: Static sites, JAMstack, frameworks, git workflow, file-based routing
-- **Workers**: Pure APIs, complex routing, WebSockets, scheduled tasks, email handlers
-- **Combine**: Pages Functions use Workers runtime, can bind to Workers
+- **Pages**: sites estáticos, JAMstack, frameworks, fluxo git, roteamento por arquivo
+- **Workers**: APIs puras, roteamento complexo, WebSockets, agendados, email handlers
+- **Combinar**: Pages Functions usam runtime Workers; podem fazer bind com Workers
 
-## Quick Start
+## Início rápido
 
 ```bash
-# Create
+# Criar
 npm create cloudflare@latest
 
-# Local dev
+# Dev local
 npx wrangler pages dev ./dist
 
 # Deploy
 npx wrangler pages deploy ./dist --project-name=my-project
 
-# Types
+# Tipos
 npx wrangler types --path='./functions/types.d.ts'
 
 # Secrets
@@ -59,34 +59,34 @@ echo "value" | npx wrangler pages secret put KEY --project-name=my-project
 npx wrangler pages deployment tail --project-name=my-project
 ```
 
-## Resources
+## Recursos
 
 - [Pages Docs](https://developers.cloudflare.com/pages/)
 - [Functions API](https://developers.cloudflare.com/pages/functions/api-reference/)
 - [Framework Guides](https://developers.cloudflare.com/pages/framework-guides/)
 - [Discord #functions](https://discord.com/channels/595317990191398933/910978223968518144)
 
-## Reading Order
+## Ordem de leitura
 
-**New to Pages?** Start here:
+**Novo no Pages?**
 
-1. README.md (you are here) - Overview & quick start
-2. [configuration.md](./configuration.md) - Project setup, wrangler.jsonc, bindings
-3. [api.md](./api.md) - Functions API, routing, context
-4. [patterns.md](./patterns.md) - Common implementations
-5. [gotchas.md](./gotchas.md) - Troubleshooting & pitfalls
+1. README.md (você está aqui) — visão geral e início rápido
+2. [configuration.md](./configuration.md) — projeto, wrangler.jsonc, bindings
+3. [api.md](./api.md) — API Functions, roteamento, contexto
+4. [patterns.md](./patterns.md) — implementações comuns
+5. [gotchas.md](./gotchas.md) — troubleshooting
 
-**Quick reference?** Jump to relevant file above.
+**Referência rápida?** Abra o arquivo relevante acima.
 
-## In This Reference
+## Nesta referência
 
-- [configuration.md](./configuration.md) - wrangler.jsonc, build, env vars, Smart Placement
-- [api.md](./api.md) - Functions API, bindings, context, advanced mode
-- [patterns.md](./patterns.md) - Full-stack patterns, framework integration
-- [gotchas.md](./gotchas.md) - Build issues, limits, debugging, framework warnings
+- [configuration.md](./configuration.md) — wrangler.jsonc, build, env, Smart Placement
+- [api.md](./api.md) — API Functions, bindings, contexto, modo avançado
+- [patterns.md](./patterns.md) — padrões full-stack, integração com frameworks
+- [gotchas.md](./gotchas.md) — build, limites, debug, avisos de frameworks
 
-## See Also
+## Ver também
 
-- [pages-functions](../pages-functions/) - File-based routing, middleware
-- [d1](../d1/) - SQL database for Pages Functions
-- [kv](../kv/) - Key-value storage for caching/state
+- [pages-functions](../pages-functions/) — roteamento por arquivo, middleware
+- [d1](../d1/) — SQL para Pages Functions
+- [kv](../kv/) — KV para cache/estado

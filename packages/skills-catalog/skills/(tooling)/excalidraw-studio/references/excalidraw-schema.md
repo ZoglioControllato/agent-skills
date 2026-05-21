@@ -1,45 +1,54 @@
-# Excalidraw JSON Schema Reference
+# Referência do esquema JSON do Excalidraw
 
-Read this file before generating your first diagram. It contains the correct element format, text container model, and binding system.
+Leia este arquivo antes de gerar seu primeiro diagrama. Ele contém o formato de elemento correto, modelo de contêiner de texto e sistema de ligação.
 
-## Top-Level Structure
+## Estrutura de nível superior```json
 
-```json
 {
-  "type": "excalidraw",
-  "version": 2,
-  "source": "https://excalidraw.com",
-  "elements": [],
-  "appState": {
-    "viewBackgroundColor": "#ffffff",
-    "gridSize": 20
-  },
-  "files": {}
+"type": "excalidraw",
+"version": 2,
+"source": "https://excalidraw.com",
+"elements": [],
+"appState": {
+"viewBackgroundColor": "#ffffff",
+"gridSize": 20
+},
+"files": {}
 }
-```
 
-## Element Properties
+````
+## Propriedades do Elemento
 
-All elements share these base properties:
+Todos os elementos compartilham estas propriedades básicas:
 
-| Property          | Type        | Default         | Description                                                                             |
-| ----------------- | ----------- | --------------- | --------------------------------------------------------------------------------------- |
-| `id`              | string      | required        | Unique identifier (e.g., `"step-1"`, `"arrow-a-b"`)                                     |
-| `type`            | string      | required        | `"rectangle"`, `"ellipse"`, `"diamond"`, `"arrow"`, `"line"`, `"text"`                  |
-| `x`, `y`          | number      | required        | Position in pixels from top-left. Use multiples of 20 for grid alignment.               |
-| `width`, `height` | number      | required        | Dimensions in pixels                                                                    |
-| `strokeColor`     | string      | `"#1e1e1e"`     | Hex color for outline                                                                   |
-| `backgroundColor` | string      | `"transparent"` | Hex color for fill                                                                      |
-| `fillStyle`       | string      | `"solid"`       | `"solid"`, `"hachure"`, `"cross-hatch"`                                                 |
-| `strokeWidth`     | number      | `2`             | Outline thickness (1-4)                                                                 |
-| `strokeStyle`     | string      | `"solid"`       | `"solid"`, `"dashed"`, `"dotted"`                                                       |
-| `roughness`       | number      | `1`             | Hand-drawn effect (0 = clean, 1 = sketch, 2 = rough)                                    |
-| `opacity`         | number      | `100`           | Transparency (0-100)                                                                    |
-| `roundness`       | object/null | varies          | `{ "type": 3 }` for rounded corners, `{ "type": 2 }` for curved arrows, `null` for text |
-| `groupIds`        | string[]    | `[]`            | Group membership for compound elements                                                  |
-| `locked`          | boolean     | `false`         | Lock element from editing                                                               |
+| Propriedade | Tipo | Padrão | Descrição |
+| ----------------- | ----------- | --------------- | -------------------------------------------------------------------------------------------------- |
+| `id` | corda | obrigatório | Identificador único (por exemplo, `"step-1"`, `"arrow-a-b"`) |
+| `tipo`
 
-**Required properties on ALL elements (Excalidraw will reject or misrender elements missing these):**
+| corda | obrigatório | `"retângulo"`, `"elipse"`, `"diamante"`, `"seta"`, `"linha"`, `"texto"` |
+| `x`, `y` | número | obrigatório | Posicione em pixels no canto superior esquerdo. Use múltiplos de 20 para alinhamento da grade.               |
+| `largura`, `altura` | número | obrigatório | Dimensões em pixels |
+| `strokeColor` | corda |
+
+`"#1e1e1e"` | Cor hexadecimal para contorno |
+| `cor de fundo` | corda | `"transparente"` | Cor hexadecimal para preenchimento |
+| `fillStyle` | corda | `"sólido"` | `"sólido"`, `"hachure"`, `"hachurado"` |
+| `strokeWidth` | número | `2` |
+
+Espessura do contorno (1-4) |
+| `strokeStyle` | corda | `"sólido"` | `"sólido"`, `"tracejado"`, `"pontilhado"` |
+| `rugosidade` | número | `1` | Efeito desenhado à mão (0 = limpo, 1 = esboço, 2 = áspero) |
+| `opacidade` | número | `100` | Transparência (0-10
+
+0) |
+| `redondeza` | objeto/nulo | varia | `{ "type": 3 }` para cantos arredondados, `{ "type": 2 }` para setas curvas, `null` para texto |
+| `IDs de grupo` | string[] | `[]` | Associação a grupos para elementos compostos |
+| `bloqueado` | booleano | `falso` | Bloquear elemento da edição
+
+|
+
+**Propriedades obrigatórias em TODOS os elementos (o Excalidraw irá rejeitar ou renderizar incorretamente os elementos que faltam):**
 
 ```json
 {
@@ -57,13 +66,13 @@ All elements share these base properties:
   "versionNonce": 987654321,
   "updated": 1706659200000
 }
-```
+````
 
-- `index` is a fractional z-index string. Use `"a0"`, `"a1"`, `"a2"`, etc. in element order. Text elements must have higher index values than shapes and arrows so they render on top.
-- Generate unique `seed` and `versionNonce` per element (any distinct integers work).
-- Omitting any of these properties will cause elements to not render correctly.
+- `index` é uma string de índice z fracionária. Use `"a0"`, `"a1"`, `"a2"`, etc. na ordem dos elementos. Os elementos de texto devem ter valores de índice mais altos do que formas e setas para que sejam renderizados na parte superior.
+- Gere `seed` e `versionNonce` exclusivos por elemento (qualquer número inteiro distinto funciona).
+- A omissão de qualquer uma dessas propriedades fará com que os elementos não sejam renderizados corretamente.
 
-**Additional required properties for arrows:**
+**Propriedades adicionais necessárias para setas:**
 
 ```json
 {
@@ -75,7 +84,7 @@ All elements share these base properties:
 }
 ```
 
-**Additional required properties for text elements inside containers:**
+**Propriedades adicionais obrigatórias para elementos de texto dentro de contêineres:**
 
 ```json
 {
@@ -86,80 +95,80 @@ All elements share these base properties:
 }
 ```
 
-## Text Inside Shapes (CRITICAL)
+## Texto dentro de formas (CRÍTICO)
 
-**DO NOT use a `label` shorthand or put `text` directly on shape elements.** The `label` shorthand is not parsed by Excalidraw's file format.
+**NÃO use uma abreviação `label` ou coloque `texto` diretamente nos elementos da forma.** A abreviação `label` não é analisada pelo formato de arquivo do Excalidraw.
 
-**Correct approach:** Add `boundElements` to the shape, then create a **separate text element** that references the shape via `containerId`. Always declare shapes first, arrows second, and text elements last — this ensures text renders on top and is never obscured by arrows.
-
-```json
+**Abordagem correta:** adicione `boundElements` à forma e, em seguida, crie um **elemento de texto separado** que faça referência à forma por meio de `containerId`. Sempre declare as formas primeiro, as setas depois e os elementos de texto por último — isso garante que o texto seja renderizado na parte superior e nunca seja obscurecido pelas setas.```json
 [
-  {
-    "id": "step-1",
-    "type": "rectangle",
-    "x": 100,
-    "y": 100,
-    "width": 200,
-    "height": 80,
-    "backgroundColor": "#a5d8ff",
-    "fillStyle": "solid",
-    "strokeColor": "#1971c2",
-    "strokeWidth": 2,
-    "roundness": { "type": 3 },
-    "boundElements": [
-      { "type": "text", "id": "text-step-1" }
-    ]
-  },
-  {
-    "id": "text-step-1",
-    "type": "text",
-    "x": 130,
-    "y": 128,
-    "width": 140,
-    "height": 24,
-    "text": "Process Input",
-    "originalText": "Process Input",
-    "fontSize": 20,
-    "fontFamily": 5,
-    "textAlign": "center",
-    "verticalAlign": "middle",
-    "containerId": "step-1",
-    "lineHeight": 1.25,
-    "strokeColor": "#1e1e1e",
-    "roundness": null
-  }
+{
+"id": "step-1",
+"type": "rectangle",
+"x": 100,
+"y": 100,
+"width": 200,
+"height": 80,
+"backgroundColor": "#a5d8ff",
+"fillStyle": "solid",
+"strokeColor": "#1971c2",
+"strokeWidth": 2,
+"roundness": { "type": 3 },
+"boundElements": [
+{ "type": "text", "id": "text-step-1" }
 ]
-```
+},
+{
+"id": "text-step-1",
+"type": "text",
+"x": 130,
+"y": 128,
+"width": 140,
+"height": 24,
+"text": "Process Input",
+"originalText": "Process Input",
+"fontSize": 20,
+"fontFamily": 5,
+"textAlign": "center",
+"verticalAlign": "middle",
+"containerId": "step-1",
+"lineHeight": 1.25,
+"strokeColor": "#1e1e1e",
+"roundness": null
+}
+]
 
-This works for `rectangle`, `ellipse`, and `diamond` elements.
+````
+Isso funciona para elementos `retângulo`, `elipse` e ​​`diamante`.
 
-**Required properties for text elements inside containers:**
+**Propriedades obrigatórias para elementos de texto dentro de contêineres:**
 
-| Property        | Value      | Description                                                          |
+| Propriedade | Valor | Descrição |
 | --------------- | ---------- | -------------------------------------------------------------------- |
-| `containerId`   | required   | ID of the parent shape                                               |
-| `originalText`  | required   | Exact copy of `text` — used by the Excalidraw editor                 |
-| `lineHeight`    | `1.25`     | Always set this for contained text                                   |
-| `text`          | required   | The text content. Use `\n` for line breaks.                          |
-| `fontSize`      | `20`       | 14-36 depending on purpose                                           |
-| `fontFamily`    | `5`        | 5 = Excalifont (hand-drawn), 1 = Virgil, 2 = Helvetica, 3 = Cascadia |
-| `textAlign`     | `"center"` | `"left"`, `"center"`, `"right"`                                      |
-| `verticalAlign` | `"middle"` | `"top"`, `"middle"`, `"bottom"`                                      |
-| `strokeColor`   | `"#1e1e1e"` | Text color                                                          |
-| `roundness`     | `null`     | Always null for text elements                                        |
+| `containerId` | obrigatório | ID da forma pai |
+| `textooriginal` | obrigatório | Cópia exata do `texto` — usado pelo editor Excalidraw |
+| `linhaAltura` | `1,25` | UM
 
-**Text element positioning inside a container at (x, y, w, h):**
+sempre defina isso para texto contido |
+| `texto` | obrigatório | O conteúdo do texto. Use `\n` para quebras de linha.                          |
+| `tamanhodafonte` | `20` | 14-36 dependendo da finalidade |
+| `fonteFamília` | `5` | 5 = Excalifont (desenhado à mão), 1 = Virgílio, 2 = Helvética, 3 = Cascadia |
+| `textAlign` | `"centro"` | `"esquerda"`, `"centro"`, `"direita"`
 
-- `text.x = container.x + 20`
+|
+| `verticalAlign` | `"meio"` | `"superior"`, `"meio"`, `"inferior"` |
+| `strokeColor` | `"#1e1e1e"` | Cor do texto |
+| `redondeza` | `nulo` | Sempre nulo para elementos de texto |
+
+**Elemento de texto posicionado dentro de um contêiner em (x, y, w, h):**
+
+- `texto.x = contêiner.x + 20`
 - `text.y = container.y + (container.height / 2) - (fontSize / 2)`
-- `text.width = container.width - 40`
+- `texto.largura = contêiner.largura - 40`
 - `text.height = fontSize * lineHeight`
 
-## Arrows and Bindings (CRITICAL)
+## Setas e ligações (CRÍTICO)
 
-### Basic Arrow
-
-```json
+### Seta Básica```json
 {
   "id": "arrow-1",
   "type": "arrow",
@@ -174,61 +183,57 @@ This works for `rectangle`, `ellipse`, and `diamond` elements.
   "roundness": { "type": 2 },
   "strokeWidth": 2
 }
-```
+````
 
-### Arrow with Label
+### Seta com etiqueta
 
-Arrow labels also require `boundElements` on the arrow and a separate text element with `containerId`. **Do NOT use a `label` shorthand** — it is not supported.
-
-```json
+Os rótulos de seta também exigem `boundElements` na seta e um elemento de texto separado com `containerId`. **NÃO use uma abreviatura `label`** — ela não é suportada.```json
 [
-  {
-    "id": "arrow-1",
-    "type": "arrow",
-    "x": 300,
-    "y": 140,
-    "width": 200,
-    "height": 0,
-    "points": [
-      [0, 0],
-      [200, 0]
-    ],
-    "roundness": { "type": 2 },
-    "strokeWidth": 2,
-    "boundElements": [
-      { "type": "text", "id": "text-arrow-1" }
-    ]
-  },
-  {
-    "id": "text-arrow-1",
-    "type": "text",
-    "x": 360,
-    "y": 122,
-    "width": 80,
-    "height": 18,
-    "text": "sends data",
-    "originalText": "sends data",
-    "fontSize": 14,
-    "fontFamily": 5,
-    "textAlign": "center",
-    "verticalAlign": "middle",
-    "containerId": "arrow-1",
-    "lineHeight": 1.25,
-    "strokeColor": "#1e1e1e",
-    "roundness": null
-  }
+{
+"id": "arrow-1",
+"type": "arrow",
+"x": 300,
+"y": 140,
+"width": 200,
+"height": 0,
+"points": [
+[0, 0],
+[200, 0]
+],
+"roundness": { "type": 2 },
+"strokeWidth": 2,
+"boundElements": [
+{ "type": "text", "id": "text-arrow-1" }
 ]
-```
+},
+{
+"id": "text-arrow-1",
+"type": "text",
+"x": 360,
+"y": 122,
+"width": 80,
+"height": 18,
+"text": "sends data",
+"originalText": "sends data",
+"fontSize": 14,
+"fontFamily": 5,
+"textAlign": "center",
+"verticalAlign": "middle",
+"containerId": "arrow-1",
+"lineHeight": 1.25,
+"strokeColor": "#1e1e1e",
+"roundness": null
+}
+]
 
-### Bound Arrows (connect to shapes)
+````
+### Setas vinculadas (conectam-se às formas)
 
-For arrows that move when shapes are repositioned, use `startBinding` and `endBinding`. **Do NOT use `start`/`end`** — they are not valid Excalidraw properties.
+Para setas que se movem quando as formas são reposicionadas, use `startBinding` e `endBinding`. **NÃO use `start`/`end`** — elas não são propriedades válidas do Excalidraw.
 
-Every connected shape must also list the arrow in its `boundElements` array.
+Cada forma conectada também deve listar a seta em seu array `boundElements`.
 
-**Element ordering matters for z-index:** declare shapes first, arrows second, text elements last — so text always renders on top.
-
-```json
+**A ordem dos elementos é importante para o índice z:** declare as formas primeiro, as setas depois e os elementos de texto por último - para que o texto sempre seja renderizado na parte superior.```json
 [
   {
     "id": "box-a",
@@ -326,176 +331,183 @@ Every connected shape must also list the arrow in its `boundElements` array.
     "roundness": null
   }
 ]
-```
+````
 
-**Binding properties:**
+**Propriedades de ligação:**
 
-| Property    | Value   | Description                                             |
-| ----------- | ------- | ------------------------------------------------------- |
-| `elementId` | string  | ID of the connected shape                               |
-| `focus`     | `0`     | Connection point: 0 = center, -1/+1 = top-bottom edges  |
-| `gap`       | `1`     | Gap in pixels between arrow tip and shape boundary      |
+| Propriedade  | Valor | Descrição                                                      |
+| ------------ | ----- | -------------------------------------------------------------- |
+| `elementoId` | corda | ID da forma conectada                                          |
+| `foco`       | `0`   | Ponto de conexão: 0 = centro, -1/+1 = bordas superior-inferior |
+| `lacuna`     | `1`   | Espaço em pixels entre a ponta da seta e o limite da forma     |
 
-### Arrow Directions
+### Direções das setas
 
-| Direction      | Points                           |
-| -------------- | -------------------------------- |
-| Horizontal (→) | `[[0, 0], [200, 0]]`             |
-| Vertical (↓)   | `[[0, 0], [0, 150]]`             |
-| Diagonal (↘)   | `[[0, 0], [200, 150]]`           |
-| L-shaped (→↓)  | `[[0, 0], [200, 0], [200, 150]]` |
+| Direção            | Pontos                           |
+| ------------------ | -------------------------------- |
+| Horizontais (→)    | `[[0, 0], [200, 0]]`             |
+| Verticais (↓)      | `[[0, 0], [0, 150]]`             |
+| Diagonal (↘)       | `[[0, 0], [200, 150]]`           |
+| Em forma de L (→↓) | `[[0, 0], [200, 0], [200, 150]]` |
 
-## Design Tokens — Elegant Palette
+## Design Tokens — Paleta Elegante
 
-Use these curated colors for professional, modern diagrams. Avoid raw primary colors.
+Use essas cores selecionadas para diagramas profissionais e modernos. Evite cores primárias cruas.
 
-### Light Theme (default)
+### Tema claro (padrão)
 
-| Role                  | Fill        | Stroke       | Hex Fill  | Hex Stroke |
-| --------------------- | ----------- | ------------ | --------- | ---------- |
-| **Primary**           | Soft blue   | Deeper blue  | `#a5d8ff` | `#1971c2`  |
-| **Success/Process**   | Mint green  | Forest green | `#b2f2bb` | `#2f9e44`  |
-| **Warning/Decision**  | Warm amber  | Deep amber   | `#ffec99` | `#e67700`  |
-| **Danger/Error**      | Soft rose   | Deep rose    | `#ffc9c9` | `#e03131`  |
-| **Neutral/Secondary** | Light gray  | Medium gray  | `#e9ecef` | `#868e96`  |
-| **Accent**            | Soft violet | Deep violet  | `#d0bfff` | `#7048e8`  |
-| **Info/Highlight**    | Soft cyan   | Teal         | `#96f2d7` | `#0c8599`  |
-| **Canvas**            | White       | —            | `#ffffff` | —          |
-| **Default stroke**    | —           | Near-black   | —         | `#1e1e1e`  |
+| Função               | Preencher    | Acidente vascular cerebral | Preenchimento hexadecimal | Curso hexadecimal |
+| -------------------- | ------------ | -------------------------- | ------------------------- | ----------------- |
+| **Primário**         | Azul suave   | Azul mais profundo         | `#a5d8ff`                 | `#1971c2`         |
+| **Sucesso/Processo** | Verde menta  | Floresta verde             | `#b2f2bb`                 | `#2f9e44`         |
+| **Aviso/Decisão**    | Âmbar quente | Âmbar profundo             | `#ffec99`                 | `#e67700`         |
+| **Perigo/Erro**      | Rosa suave   | Rosa profundo              |
 
-### Open Colors — Full Palette
+| `#ffc9c9` | `#e03131` |
+| **Neutro/Secundário** | Cinza claro | Cinza médio | `#e9ecef` | `#868e96` |
+| **Acento** | Violeta suave | Violeta profundo | `#d0bfff` | `#7048e8` |
+| **Informações/Destaque** | Ciano suave | Azul-petróleo | `#96f2d7` | `#0c8599` |
+| **Tela** | Branco | — | `#ffffff` | — |
+| **Traço padrão** | — | Quase preto | — | `#1e1e1e` |
 
-Excalidraw's native color picker is built around [Open Colors](https://yeun.github.io/open-colors/). Use shade-2 for fills and shade-8 for matching strokes to create depth.
+### Cores Abertas — Paleta Completa
 
-| Family  | Fill (shade-2) | Stroke (shade-8) | Fill hex  | Stroke hex |
-| ------- | -------------- | ---------------- | --------- | ---------- |
-| Gray    | `gray-2`       | `gray-8`         | `#e9ecef` | `#343a40`  |
-| Red     | `red-2`        | `red-8`          | `#ffc9c9` | `#c92a2a`  |
-| Pink    | `pink-2`       | `pink-8`         | `#fcc2d7` | `#a61e4d`  |
-| Grape   | `grape-2`      | `grape-8`        | `#e5dbff` | `#6741d9`  |
-| Violet  | `violet-2`     | `violet-8`       | `#d0bfff` | `#5f3dc4`  |
-| Indigo  | `indigo-2`     | `indigo-8`       | `#bac8ff` | `#3b5bdb`  |
-| Blue    | `blue-2`       | `blue-8`         | `#a5d8ff` | `#1864ab`  |
-| Cyan    | `cyan-2`       | `cyan-8`         | `#99e9f2` | `#0b7285`  |
-| Teal    | `teal-2`       | `teal-8`         | `#96f2d7` | `#087f5b`  |
-| Green   | `green-2`      | `green-8`        | `#b2f2bb` | `#2b8a3e`  |
-| Lime    | `lime-2`       | `lime-8`         | `#d8f5a2` | `#5c940d`  |
-| Yellow  | `yellow-2`     | `yellow-8`       | `#ffec99` | `#e67700`  |
-| Orange  | `orange-2`     | `orange-8`       | `#ffd8a8` | `#d9480f`  |
+O seletor de cores nativo do Excalidraw é baseado em [Open Colors](https://yeun.github.io/open-colors/). Use sombra 2 para preenchimentos e sombra 8 para traços correspondentes para criar profundidade.
 
-### Curated Professional Palettes
+| Família  | Preencher (sombra-2) | Curso (sombra-8) | Preencher hexadecimal | Curso hexadecimal |
+| -------- | -------------------- | ---------------- | --------------------- | ----------------- |
+| Cinza    | `cinza-2`            | `cinza-8`        | `#e9ecef`             | `#343a40`         |
+| Vermelho | `vermelho-2`         | `vermelho-8`     | `#ffc9c9`             | `#c92a2a`         |
+| Rosa     | `rosa-2`             | `rosa-8`         | `#fcc2d7`             | `#a61e4d`         |
+| Uva      | `uva-2`              | `uva-8`          | `#e5dbff`             | `#6741d9`         |
+| Violeta  |
 
-Use one palette per diagram for visual coherence:
+`violeta-2` | `violeta-8` | `#d0bfff` | `#5f3dc4` |
+| Índigo | `índigo-2` | `índigo-8` | `#bac8ff` | `#3b5bdb` |
+| Azul | `azul-2` | `azul-8` | `#a5d8ff` | `#1864ab` |
+| Ciano | `ciano-2` | `ciano-8` | `#99e9f2` | `#0b7285` |
+| Azul-petróleo | `azul-petróleo-2` | `azul-petróleo-8` | `#96f2d7` | `#087f5b` |
+| Verde | `verde-2` | `verde-8` | `#b2f2bb` | `#2b8a3e` |
+| Lima | `cal-2`
 
-**Blue-Tech** (APIs, microservices, cloud):
+| `cal-8` | `#d8f5a2` | `#5c940d` |
+| Amarelo | `amarelo-2` | `amarelo-8` | `#ffec99` | `#e67700` |
+| Laranja | `laranja-2` | `laranja-8` | `#ffd8a8` | `#d9480f` |
 
-- API/Gateway: fill `#a5d8ff`, stroke `#1971c2`
-- Services: fill `#b2f2bb`, stroke `#2f9e44`
-- Data: fill `#96f2d7`, stroke `#0c8599`
-- Events: fill `#d0bfff`, stroke `#7048e8`
+### Paletas profissionais selecionadas
 
-**Warm-Neutral** (business processes, workflows):
+Use uma paleta por diagrama para coerência visual:
 
-- Primary: fill `#ffd8a8`, stroke `#d9480f`
-- Secondary: fill `#ffec99`, stroke `#e67700`
-- Supporting: fill `#e9ecef`, stroke `#868e96`
-- Action: fill `#b2f2bb`, stroke `#2f9e44`
+**Blue-Tech** (APIs, microsserviços, nuvem):
 
-**Monochrome** (clean/minimal):
+- API/Gateway: preencha `#a5d8ff`, traço `#1971c2`
+- Serviços: preencha `#b2f2bb`, traço `#2f9e44`
+- Dados: preencha `#96f2d7`, traço `#0c8599`
+- Eventos: preencha `#d0bfff`, traço `#7048e8`
 
-- Main: fill `#e9ecef`, stroke `#343a40`
-- Emphasis: fill `#ced4da`, stroke `#212529`
-- Accent: fill `#a5d8ff`, stroke `#1971c2` (single color accent)
+**Quente-Neutro** (processos de negócios, fluxos de trabalho):
 
-### Dark Theme
+- Primário: preencha `#ffd8a8`, traço `#d9480f`
+- Secundário: preencha `#ffec99`, traço `#e67700`
+- Suporte: preencha `#e9ecef`, traço `#868e96`
+- Ação: preencha `#b2f2bb`, traço `#2f9e44`
 
-When user requests dark mode, set `"viewBackgroundColor": "#1e1e1e"` and use these:
+**Monocromático** (limpo/mínimo):
 
-| Role               | Fill       | Stroke      | Hex Fill  | Hex Stroke |
-| ------------------ | ---------- | ----------- | --------- | ---------- |
-| **Primary**        | Deep blue  | Light blue  | `#1864ab` | `#74c0fc`  |
-| **Success**        | Deep green | Light green | `#2b8a3e` | `#8ce99a`  |
-| **Warning**        | Deep amber | Light amber | `#e67700` | `#ffd43b`  |
-| **Danger**         | Deep red   | Light red   | `#c92a2a` | `#ff8787`  |
-| **Neutral**        | Dark gray  | Light gray  | `#343a40` | `#adb5bd`  |
-| **Default stroke** | —          | White       | —         | `#ffffff`  |
+- Principal: preencha `#e9ecef`, traço `#343a40`
+- Ênfase: preencha `#ced4da`, traço `#212529`
+- Acento: preencha `#a5d8ff`, traço `#1971c2` (acento de cor única)
 
-### Typography Scale
+### Tema escuro
 
-| Purpose         | Font Size | Font Family     |
-| --------------- | --------- | --------------- |
-| Diagram title   | 28-32     | `fontFamily: 5` |
-| Section header  | 22-24     | `fontFamily: 5` |
-| Element label   | 18-20     | `fontFamily: 5` |
-| Arrow label     | 14-16     | `fontFamily: 5` |
-| Annotation/note | 12-14     | `fontFamily: 5` |
+Quando o usuário solicitar o modo escuro, defina `"viewBackgroundColor": "#1e1e1e"` e use estes:
 
-### Spacing System
+| Função       | Preencher       | Acidente vascular cerebral | Preenchimento hexadecimal | Curso hexadecimal |
+| ------------ | --------------- | -------------------------- | ------------------------- | ----------------- |
+| **Primário** | Azul profundo   | Azul claro                 | `#1864ab`                 | `#74c0fc`         |
+| **Sucesso**  | Verde profundo  | Verde claro                | `#2b8a3e`                 | `#8ce99a`         |
+| **Aviso**    | Âmbar profundo  | Âmbar claro                | `#e67700`                 | `#ffd43b`         |
+| **Perigo**   | Vermelho escuro | Vermelho claro             | `#c92a2a`                 | `#ff8787`         |
 
-All spacing based on `gridSize: 20`:
+| **Neutro** | Cinza escuro | Cinza claro | `#343a40` | `#adb5bd` |
+| **Traço padrão** | — | Branco | — | `#ffffff` |
 
-| Context                         | Value     | Grid multiples |
-| ------------------------------- | --------- | -------------- |
-| Between elements (horizontal)   | 200-300px | 10-15 units    |
-| Between elements (vertical)     | 100-150px | 5-7.5 units    |
-| Element padding (inside shapes) | 20-40px   | 1-2 units      |
-| Arrow-to-shape clearance        | 20px      | 1 unit         |
-| Canvas margin                   | 60px      | 3 units        |
-| Between groups of elements      | 400px     | 20 units       |
+### Escala de tipografia
 
-## Font Families
+| Finalidade           | Tamanho da fonte | Família de fontes     |
+| -------------------- | ---------------- | --------------------- |
+| Título do diagrama   | 28-32            | `família da fonte: 5` |
+| Cabeçalho da seção   | 22-24            | `família da fonte: 5` |
+| Etiqueta do elemento | 18-20            | `família da fonte: 5` |
+| Etiqueta de seta     | 14-16            | `família da fonte: 5` |
+| Anotação/nota        | 12-14            | `família da fonte: 5` |
 
-| ID  | Name       | Style                | When to use                                        |
-| --- | ---------- | -------------------- | -------------------------------------------------- |
-| 5   | Excalifont | Hand-drawn (newest)  | Default — matches Excalidraw's signature aesthetic |
-| 1   | Virgil     | Hand-drawn (classic) | Fallback if fontFamily 5 is not supported          |
-| 2   | Helvetica  | Clean sans-serif     | Technical/formal diagrams when requested           |
-| 3   | Cascadia   | Monospace            | Code labels, technical identifiers                 |
+### Sistema de espaçamento
 
-**Default to fontFamily 5 for all text** unless the user explicitly requests a formal/clean style.
+Todo o espaçamento baseado em `gridSize: 20`:
 
-## Visual Modes
+| Contexto                                    | Valor     | Múltiplos de grade |
+| ------------------------------------------- | --------- | ------------------ |
+| Entre elementos (horizontal)                | 200-300px | 10-15 unidades     |
+| Entre elementos (vertical)                  | 100-150px | 5-7,5 unidades     |
+| Preenchimento de elemento (formas internas) | 20-40px   | 1-2 unidades       |
+| Folga em formato de seta                    | 20px      | 1 unidade          |
+| Margem da tela                              | 60px      | 3 unidades         |
 
-Choose a visual mode upfront and apply it consistently. Never mix modes on same-level elements.
+|
+| Entre grupos de elementos | 400px | 20 unidades |
 
-### Sketch Mode (default)
+## Famílias de fontes
 
-Excalidraw's signature hand-drawn aesthetic:
+| ID  | Nome        | Estilo                         | Quando usar                                             |
+| --- | ----------- | ------------------------------ | ------------------------------------------------------- |
+| 5   | Excalifonte | Desenhado à mão (mais recente) | Padrão — corresponde à estética exclusiva do Excalidraw |
+| 1   | Virgílio    | Desenhado à mão (clássico)     | Fallback se fontFamily 5 não for compatível             |
+| 2   | Helvética   | Limpar sem serifa              | Técnico/formal d                                        |
 
-```json
+diagramas quando solicitado |
+| 3 | Cascadia | Monoespaçado | Etiquetas de código, identificadores técnicos |
+
+**O padrão é fontFamily 5 para todo o texto**, a menos que o usuário solicite explicitamente um estilo formal/limpo.
+
+## Modos Visuais
+
+Escolha um modo visual antecipadamente e aplique-o de forma consistente. Nunca misture modos em elementos do mesmo nível.
+
+### Modo Esboço (padrão)
+
+Estética desenhada à mão exclusiva do Excalidraw:```json
 {
-  "roughness": 1,
-  "fontFamily": 5
+"roughness": 1,
+"fontFamily": 5
 }
-```
 
-Apply `roughness: 1` to all shapes and arrows. Use `fontFamily: 5` (Excalifont) for all text.
+````
+Aplique `rugosidade: 1` a todas as formas e setas. Use `fontFamily: 5` (Excalifont) para todo o texto.
 
-### Clean Mode
+### Modo Limpo
 
-Precise, polished, presentation-ready:
-
-```json
+Preciso, polido, pronto para apresentação:```json
 {
   "roughness": 0,
   "fontFamily": 2
 }
-```
+````
 
-Apply `roughness: 0` to all shapes and arrows. Use `fontFamily: 2` (Helvetica) for body, `fontFamily: 5` for titles.
+Aplique `rugosidade: 0` a todas as formas e setas. Use `fontFamily: 2` (Helvetica) para o corpo, `fontFamily: 5` para títulos.
 
-### Mixed Mode (recommended for architecture)
+### Modo Misto (recomendado para arquitetura)
 
-Background zones clean (`roughness: 0`) + foreground shapes sketchy (`roughness: 1`):
+Zonas de fundo limpas (`rugosidade: 0`) + formas de primeiro plano esboçadas (`rugosidade: 1`):
 
-- Zones: `roughness: 0` — structural, precise
-- Shapes: `roughness: 1` — content, approachable
+- Zonas: `rugosidade: 0` — estrutural, preciso
+- Formas: `rugosidade: 1` — conteúdo, acessível
 
-## Background Zones
+## Zonas de fundo
 
-Background zones are semi-transparent dashed rectangles placed **before all other elements** (lowest `index` values) to create visual grouping regions.
+As zonas de fundo são retângulos tracejados semitransparentes colocados **antes de todos os outros elementos** (valores de `índice` mais baixos) para criar regiões de agrupamento visual.
 
-**Required zone properties:**
+**Propriedades de zona obrigatórias:**
 
 ```json
 {
@@ -528,47 +540,44 @@ Background zones are semi-transparent dashed rectangles placed **before all othe
 }
 ```
 
-**Critical zone properties:**
+**Propriedades da zona crítica:**
 
-- `opacity: 35` — semi-transparent (20-40 range works; 35 is sweet spot)
-- `strokeStyle: "dashed"` — marks zone as boundary, not a regular shape
-- `roughness: 0` — clean zone edges even in sketch-mode diagrams
-- `fillStyle: "solid"` — required for opacity tinting to work
+- `opacidade: 35` — semitransparente (faixa 20-40 funciona; 35 é o ponto ideal)
+- `strokeStyle: "dashed"` — marca a zona como limite, não como uma forma regular
+- `rugosidade: 0` — limpa arestas de zona mesmo em diagramas de modo de esboço
+- `fillStyle: "solid"` — necessário para que a coloração de opacidade funcione
 
-**Zone label** — add a standalone text near top-left of zone, after other text in the array:
-
-```json
+**Rótulo da zona** — adicione um texto independente próximo ao canto superior esquerdo da zona, após outro texto na matriz:```json
 {
-  "id": "label-zone-backend",
-  "type": "text",
-  "x": 320,
-  "y": 148,
-  "width": 140,
-  "height": 18,
-  "text": "Backend Services",
-  "originalText": "Backend Services",
-  "fontSize": 14,
-  "fontFamily": 5,
-  "strokeColor": "#4c6ef5",
-  "textAlign": "left",
-  "containerId": null,
-  "lineHeight": 1.25,
-  "roundness": null
+"id": "label-zone-backend",
+"type": "text",
+"x": 320,
+"y": 148,
+"width": 140,
+"height": 18,
+"text": "Backend Services",
+"originalText": "Backend Services",
+"fontSize": 14,
+"fontFamily": 5,
+"strokeColor": "#4c6ef5",
+"textAlign": "left",
+"containerId": null,
+"lineHeight": 1.25,
+"roundness": null
 }
-```
 
-**Element ordering when zones are present:**
+````
 
-1. Background zones (indices `a0`, `a1`, ...)
-2. Content shapes (indices continue after zones)
-3. Arrows
-4. Text elements (highest indices)
+**Ordenação de elementos quando zonas estão presentes:**
 
-## Frames
+1. Zonas de fundo (índices `a0`, `a1`, ...)
+2. Formas de conteúdo (os índices continuam após as zonas)
+3. Setas
+4. Elementos de texto (índices mais altos)
 
-Frames are named containers that group elements visually with a title bar. They appear in Excalidraw's left panel for navigation.
+## Quadros
 
-```json
+Os quadros são contêineres nomeados que agrupam elementos visualmente com uma barra de título. Eles aparecem no painel esquerdo do Excalidraw para navegação.```json
 {
   "id": "frame-1",
   "type": "frame",
@@ -597,94 +606,92 @@ Frames are named containers that group elements visually with a title bar. They 
   "name": "Order Processing Flow",
   "boundElements": []
 }
-```
+````
 
-Elements inside a frame reference it via `"frameId": "frame-1"`. The frame `name` appears as the frame's title.
+Os elementos dentro de um quadro fazem referência a ele via `"frameId": "frame-1"`. O quadro `nome` aparece como o título do quadro.
 
-Use frames for: multi-page diagrams, distinct diagram sections, export boundaries.
+Use quadros para: diagramas de várias páginas, seções distintas de diagramas, limites de exportação.
 
-## Coordinate System
+## Sistema de Coordenadas
 
-- Origin `(0, 0)` is top-left corner
-- X increases to the right
-- Y increases downward
-- All units are in pixels
-- Align to grid: position on multiples of 20 (when `gridSize: 20`)
+- A origem `(0, 0)` está no canto superior esquerdo
+- X aumenta para a direita
+- Y aumenta para baixo
+- Todas as unidades estão em pixels
+- Alinhar à grade: posicionar em múltiplos de 20 (quando `gridSize: 20`)
 
-## Element Sizing Guide
+## Guia de dimensionamento de elementos
 
-| Shape     | Content                  | Width     | Height    |
-| --------- | ------------------------ | --------- | --------- |
-| Rectangle | Single word              | 140-160px | 60-80px   |
-| Rectangle | Short phrase (2-4 words) | 180-220px | 80-100px  |
-| Rectangle | Sentence                 | 250-320px | 100-120px |
-| Ellipse   | Short text (circle)      | 120×120px | —         |
-| Ellipse   | Longer text              | 160×120px | —         |
-| Diamond   | Short question           | 140×140px | —         |
-| Diamond   | Longer question          | 180×180px | —         |
+| Forma     | Conteúdo                   | Largura   | Altura    |
+| --------- | -------------------------- | --------- | --------- |
+| Retângulo | Palavra única              | 140-160px | 60-80px   |
+| Retângulo | Frase curta (2-4 palavras) | 180-220px | 80-100px  |
+| Retângulo | Frase                      | 250-320px | 100-120px |
+| Elipse    | Texto curto (círculo)      | 120×120px | —         |
+| Elipse    | Texto mais longo           | 160×120px | -         |
 
-**Width formula for text:** `text.length × fontSize × 0.6`
-**Height formula:** `fontSize × 1.2 × numberOfLines`
+|
+| Diamante | Pergunta curta | 140×140px | — |
+| Diamante | Pergunta mais longa | 180×180px | — |
 
-## Grouping Elements
+**Fórmula de largura para texto:** `text.length × fontSize × 0.6`
+**Fórmula de altura:** `fontSize × 1,2 × numberOfLines`
 
-Use `groupIds` to create compound elements that move together:
+## Agrupando Elementos
 
-```json
+Use `groupIds` para criar elementos compostos que se movem juntos:```json
 [
-  {
-    "id": "server-box",
-    "type": "rectangle",
-    "x": 100,
-    "y": 100,
-    "width": 180,
-    "height": 80,
-    "groupIds": ["server-group"],
-    "boundElements": [
-      { "type": "text", "id": "text-server-box" }
-    ]
-  },
-  {
-    "id": "server-icon",
-    "type": "text",
-    "x": 105,
-    "y": 185,
-    "width": 30,
-    "height": 30,
-    "text": "🖥️",
-    "fontSize": 20,
-    "fontFamily": 5,
-    "groupIds": ["server-group"],
-    "containerId": null,
-    "roundness": null
-  },
-  {
-    "id": "text-server-box",
-    "type": "text",
-    "x": 120,
-    "y": 128,
-    "width": 140,
-    "height": 24,
-    "text": "Web Server",
-    "originalText": "Web Server",
-    "fontSize": 20,
-    "fontFamily": 5,
-    "textAlign": "center",
-    "verticalAlign": "middle",
-    "containerId": "server-box",
-    "lineHeight": 1.25,
-    "strokeColor": "#1e1e1e",
-    "groupIds": ["server-group"],
-    "roundness": null
-  }
+{
+"id": "server-box",
+"type": "rectangle",
+"x": 100,
+"y": 100,
+"width": 180,
+"height": 80,
+"groupIds": ["server-group"],
+"boundElements": [
+{ "type": "text", "id": "text-server-box" }
 ]
-```
+},
+{
+"id": "server-icon",
+"type": "text",
+"x": 105,
+"y": 185,
+"width": 30,
+"height": 30,
+"text": "🖥️",
+"fontSize": 20,
+"fontFamily": 5,
+"groupIds": ["server-group"],
+"containerId": null,
+"roundness": null
+},
+{
+"id": "text-server-box",
+"type": "text",
+"x": 120,
+"y": 128,
+"width": 140,
+"height": 24,
+"text": "Web Server",
+"originalText": "Web Server",
+"fontSize": 20,
+"fontFamily": 5,
+"textAlign": "center",
+"verticalAlign": "middle",
+"containerId": "server-box",
+"lineHeight": 1.25,
+"strokeColor": "#1e1e1e",
+"groupIds": ["server-group"],
+"roundness": null
+}
+]
 
-## `customData` for Metadata
+````
+## `customData` para metadados
 
-Store extra information on elements that persists with the file but doesn't render:
-
-```json
+Armazene informações extras sobre elementos que persistem no arquivo, mas não são renderizados:```json
 {
   "id": "step-1",
   "type": "rectangle",
@@ -694,130 +701,131 @@ Store extra information on elements that persists with the file but doesn't rend
     "generatedBy": "excalidraw-studio"
   }
 }
+````
+
+## Exemplo Mínimo Completo
+
+Um fluxograma com duas formas conectadas. Observe a ordem dos elementos: formas → setas → elementos de texto (garante que o texto seja sempre renderizado na parte superior, nunca obscurecido por setas).```json
+{
+"type": "excalidraw",
+"version": 2,
+"source": "https://excalidraw.com",
+"elements": [
+{
+"id": "title",
+"type": "text",
+"x": 100,
+"y": 40,
+"width": 300,
+"height": 35,
+"text": "User Registration Flow",
+"originalText": "User Registration Flow",
+"fontSize": 28,
+"fontFamily": 5,
+"textAlign": "center",
+"strokeColor": "#1e1e1e",
+"opacity": 100,
+"roundness": null,
+"containerId": null,
+"lineHeight": 1.25
+},
+{
+"id": "step-1",
+"type": "rectangle",
+"x": 100,
+"y": 120,
+"width": 200,
+"height": 80,
+"strokeColor": "#1971c2",
+"backgroundColor": "#a5d8ff",
+"fillStyle": "solid",
+"strokeWidth": 2,
+"roughness": 1,
+"roundness": { "type": 3 },
+"boundElements": [
+{ "type": "text", "id": "text-step-1" },
+{ "type": "arrow", "id": "arrow-1-2" }
+]
+},
+{
+"id": "step-2",
+"type": "rectangle",
+"x": 400,
+"y": 120,
+"width": 200,
+"height": 80,
+"strokeColor": "#2f9e44",
+"backgroundColor": "#b2f2bb",
+"fillStyle": "solid",
+"strokeWidth": 2,
+"roughness": 1,
+"roundness": { "type": 3 },
+"boundElements": [
+{ "type": "text", "id": "text-step-2" },
+{ "type": "arrow", "id": "arrow-1-2" }
+]
+},
+{
+"id": "arrow-1-2",
+"type": "arrow",
+"x": 300,
+"y": 160,
+"width": 100,
+"height": 0,
+"points": [
+[0, 0],
+[100, 0]
+],
+"strokeColor": "#1e1e1e",
+"strokeWidth": 2,
+"roundness": { "type": 2 },
+"startBinding": { "elementId": "step-1", "focus": 0, "gap": 1 },
+"endBinding": { "elementId": "step-2", "focus": 0, "gap": 1 }
+},
+{
+"id": "text-step-1",
+"type": "text",
+"x": 130,
+"y": 148,
+"width": 140,
+"height": 24,
+"text": "Enter Email",
+"originalText": "Enter Email",
+"fontSize": 20,
+"fontFamily": 5,
+"textAlign": "center",
+"verticalAlign": "middle",
+"containerId": "step-1",
+"lineHeight": 1.25,
+"strokeColor": "#1e1e1e",
+"roundness": null
+},
+{
+"id": "text-step-2",
+"type": "text",
+"x": 430,
+"y": 148,
+"width": 140,
+"height": 24,
+"text": "Verify Email",
+"originalText": "Verify Email",
+"fontSize": 20,
+"fontFamily": 5,
+"textAlign": "center",
+"verticalAlign": "middle",
+"containerId": "step-2",
+"lineHeight": 1.25,
+"strokeColor": "#1e1e1e",
+"roundness": null
+}
+],
+"appState": {
+"viewBackgroundColor": "#ffffff",
+"gridSize": 20
+},
+"files": {}
+}
+
 ```
 
-## Complete Minimal Example
-
-A flowchart with two connected shapes. Note the element order: shapes → arrows → text elements (ensures text is always rendered on top, never obscured by arrows).
-
-```json
-{
-  "type": "excalidraw",
-  "version": 2,
-  "source": "https://excalidraw.com",
-  "elements": [
-    {
-      "id": "title",
-      "type": "text",
-      "x": 100,
-      "y": 40,
-      "width": 300,
-      "height": 35,
-      "text": "User Registration Flow",
-      "originalText": "User Registration Flow",
-      "fontSize": 28,
-      "fontFamily": 5,
-      "textAlign": "center",
-      "strokeColor": "#1e1e1e",
-      "opacity": 100,
-      "roundness": null,
-      "containerId": null,
-      "lineHeight": 1.25
-    },
-    {
-      "id": "step-1",
-      "type": "rectangle",
-      "x": 100,
-      "y": 120,
-      "width": 200,
-      "height": 80,
-      "strokeColor": "#1971c2",
-      "backgroundColor": "#a5d8ff",
-      "fillStyle": "solid",
-      "strokeWidth": 2,
-      "roughness": 1,
-      "roundness": { "type": 3 },
-      "boundElements": [
-        { "type": "text", "id": "text-step-1" },
-        { "type": "arrow", "id": "arrow-1-2" }
-      ]
-    },
-    {
-      "id": "step-2",
-      "type": "rectangle",
-      "x": 400,
-      "y": 120,
-      "width": 200,
-      "height": 80,
-      "strokeColor": "#2f9e44",
-      "backgroundColor": "#b2f2bb",
-      "fillStyle": "solid",
-      "strokeWidth": 2,
-      "roughness": 1,
-      "roundness": { "type": 3 },
-      "boundElements": [
-        { "type": "text", "id": "text-step-2" },
-        { "type": "arrow", "id": "arrow-1-2" }
-      ]
-    },
-    {
-      "id": "arrow-1-2",
-      "type": "arrow",
-      "x": 300,
-      "y": 160,
-      "width": 100,
-      "height": 0,
-      "points": [
-        [0, 0],
-        [100, 0]
-      ],
-      "strokeColor": "#1e1e1e",
-      "strokeWidth": 2,
-      "roundness": { "type": 2 },
-      "startBinding": { "elementId": "step-1", "focus": 0, "gap": 1 },
-      "endBinding": { "elementId": "step-2", "focus": 0, "gap": 1 }
-    },
-    {
-      "id": "text-step-1",
-      "type": "text",
-      "x": 130,
-      "y": 148,
-      "width": 140,
-      "height": 24,
-      "text": "Enter Email",
-      "originalText": "Enter Email",
-      "fontSize": 20,
-      "fontFamily": 5,
-      "textAlign": "center",
-      "verticalAlign": "middle",
-      "containerId": "step-1",
-      "lineHeight": 1.25,
-      "strokeColor": "#1e1e1e",
-      "roundness": null
-    },
-    {
-      "id": "text-step-2",
-      "type": "text",
-      "x": 430,
-      "y": 148,
-      "width": 140,
-      "height": 24,
-      "text": "Verify Email",
-      "originalText": "Verify Email",
-      "fontSize": 20,
-      "fontFamily": 5,
-      "textAlign": "center",
-      "verticalAlign": "middle",
-      "containerId": "step-2",
-      "lineHeight": 1.25,
-      "strokeColor": "#1e1e1e",
-      "roundness": null
-    }
-  ],
-  "appState": {
-    "viewBackgroundColor": "#ffffff",
-    "gridSize": 20
-  },
-  "files": {}
-}
 ```

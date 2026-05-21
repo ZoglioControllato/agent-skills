@@ -1,145 +1,147 @@
-# Excalidraw Element Types Guide
+# Guia de tipos de elementos Excalidraw
 
-Read this file when you need detailed guidance on which elements to use for specific diagram types, and how to construct them correctly.
+Leia este arquivo quando precisar de orientação detalhada sobre quais elementos usar para tipos de diagramas específicos e como construí-los corretamente.
 
-For the JSON properties and format, see `excalidraw-schema.md`.
+Para as propriedades e formato JSON, consulte `excalidraw-schema.md`.
 
-## Element Type Overview
+## Visão geral do tipo de elemento
 
-| Type        | Shape | Primary Use                            | Text binding        | Arrow binding   |
-| ----------- | ----- | -------------------------------------- | ------------------- | --------------- |
-| `rectangle` | □     | Boxes, containers, process steps       | via `boundElements` | Arrows can bind |
-| `ellipse`   | ○     | Start/end, states, emphasis            | via `boundElements` | Arrows can bind |
-| `diamond`   | ◇     | Decision points, conditions            | via `boundElements` | Arrows can bind |
-| `arrow`     | →     | Directional flow, relationships        | via `boundElements` | Binds to shapes |
-| `line`      | —     | Non-directional connections, dividers  | ❌                   | Binds to shapes |
-| `text`      | A     | Standalone labels, titles, annotations | —                   | Not bindable    |
+| Tipo        | Forma | Uso primário                            | Encadernação de texto      | Encadernação de seta    |
+| ----------- | ----- | --------------------------------------- | -------------------------- | ----------------------- |
+| `retângulo` | □     | Caixas, recipientes, etapas de processo | através de `boundElements` | As setas podem vincular |
+| `elipse`    | ○     | Início/fim, estados, ênfase             | através de `boundElements` | As setas podem vincular |
+| `diamante`  | ◇     | Decisão                                 |
 
-## Shapes — Rectangle, Ellipse, Diamond
+em pontos, condições | através de `boundElements` | As setas podem vincular |
+| `seta` | → | Fluxo direcional, relacionamentos | através de `boundElements` | Vincula-se a formas |
+| `linha` | — | Conexões não direcionais, divisórias | ❌ | Vincula-se a formas |
+| `texto` | Um | Etiquetas, títulos e anotações independentes | — | Não vinculável |
 
-### When to use each
+## Formas — Retângulo, Elipse, Diamante
 
-| Shape         | Best for                                         | Visual meaning                            |
-| ------------- | ------------------------------------------------ | ----------------------------------------- |
-| **Rectangle** | Process steps, entities, components, data stores | "This is a thing" or "This is an action"  |
-| **Ellipse**   | Start/end terminals, states, emphasis            | "This is a boundary" or "This is a state" |
-| **Diamond**   | Decision points, conditional branches            | "This is a question"                      |
+### Quando usar cada
 
-### Text in shapes
+| Forma         | Melhor para                                                         | Significado visual                       |
+| ------------- | ------------------------------------------------------------------- | ---------------------------------------- |
+| **Retângulo** | Etapas do processo, entidades, componentes, armazenamentos de dados | “Isto é uma coisa” ou “Isto é uma ação”  |
+| **Elipse**    | Terminais de início/fim, estados, ênfase                            | “Isto é um limite” ou “Isto é um estado” |
 
-**NEVER use `label: { text: "..." }` shorthand** — it is not supported in the `.excalidraw` file format. Always create a separate `text` element and link it via `containerId` and `boundElements`.
+|
+| **Diamante** | Pontos de decisão, ramificações condicionais | "Isso é uma pergunta" |
 
-```json
+### Texto em formas
+
+**NUNCA use `label: { text: "..." }` abreviação** — não é suportado no formato de arquivo `.excalidraw`. Sempre crie um elemento `text` separado e vincule-o via `containerId` e `boundElements`.```json
 [
-  {
-    "id": "step-1",
-    "type": "rectangle",
-    "x": 100,
-    "y": 100,
-    "width": 200,
-    "height": 80,
-    "backgroundColor": "#a5d8ff",
-    "fillStyle": "solid",
-    "strokeColor": "#1971c2",
-    "strokeWidth": 2,
-    "roundness": { "type": 3 },
-    "boundElements": [
-      { "type": "text", "id": "text-step-1" }
-    ]
-  },
-  {
-    "id": "text-step-1",
-    "type": "text",
-    "x": 130,
-    "y": 128,
-    "width": 140,
-    "height": 24,
-    "text": "Process Input",
-    "originalText": "Process Input",
-    "fontSize": 20,
-    "fontFamily": 5,
-    "textAlign": "center",
-    "verticalAlign": "middle",
-    "containerId": "step-1",
-    "lineHeight": 1.25,
-    "strokeColor": "#1e1e1e",
-    "backgroundColor": "transparent",
-    "autoResize": true,
-    "roundness": null
-  }
+{
+"id": "step-1",
+"type": "rectangle",
+"x": 100,
+"y": 100,
+"width": 200,
+"height": 80,
+"backgroundColor": "#a5d8ff",
+"fillStyle": "solid",
+"strokeColor": "#1971c2",
+"strokeWidth": 2,
+"roundness": { "type": 3 },
+"boundElements": [
+{ "type": "text", "id": "text-step-1" }
 ]
-```
+},
+{
+"id": "text-step-1",
+"type": "text",
+"x": 130,
+"y": 128,
+"width": 140,
+"height": 24,
+"text": "Process Input",
+"originalText": "Process Input",
+"fontSize": 20,
+"fontFamily": 5,
+"textAlign": "center",
+"verticalAlign": "middle",
+"containerId": "step-1",
+"lineHeight": 1.25,
+"strokeColor": "#1e1e1e",
+"backgroundColor": "transparent",
+"autoResize": true,
+"roundness": null
+}
+]
 
-**Multi-line text:** Use `\n` in the `text` and `originalText` fields:
+````
 
-```json
+**Texto multilinha:** Use `\n` nos campos `text` e `originalText`:```json
 {
   "text": "User\nAuthentication\nService",
   "originalText": "User\nAuthentication\nService"
 }
-```
+````
 
-**Text element positioning inside a container at (x, y, w, h):**
+**Elemento de texto posicionado dentro de um contêiner em (x, y, w, h):**
 
-- `text.x = container.x + 20`
+- `texto.x = contêiner.x + 20`
 - `text.y = container.y + (container.height / 2) - (fontSize / 2)`
-- `text.width = container.width - 40`
-- `text.height = fontSize * 1.25`
+- `texto.largura = contêiner.largura - 40`
+- `text.height = fontSize * 1,25`
 
-### Size guidelines
+### Diretrizes de tamanho
 
-| Content length | Rectangle | Ellipse | Diamond |
-| -------------- | --------- | ------- | ------- |
-| 1 word         | 140×70    | 120×120 | 140×140 |
-| 2-4 words      | 200×80    | 160×120 | 180×180 |
-| Short sentence | 280×100   | 200×140 | 220×220 |
+| Comprimento do conteúdo | Retângulo | Elipse  | Diamante |
+| ----------------------- | --------- | ------- | -------- |
+| 1 palavra               | 140×70    | 120×120 | 140×140  |
+| 2-4 palavras            | 200×80    | 160×120 | 180×180  |
+| Frase curta             | 280×100   | 200×140 | 220×220  |
 
-### Styling for elegance
+### Estilo para elegância
 
-**Use stroke + fill combinations** — matching stroke to the fill's deeper shade:
+**Use combinações de traço + preenchimento** — combinando o traço com a tonalidade mais profunda do preenchimento:
 
-| Role    | Fill      | Stroke    | Effect                        |
-| ------- | --------- | --------- | ----------------------------- |
-| Primary | `#a5d8ff` | `#1971c2` | Blue card with defined border |
-| Success | `#b2f2bb` | `#2f9e44` | Green step with emphasis      |
-| Warning | `#ffec99` | `#e67700` | Amber decision with warmth    |
-| Danger  | `#ffc9c9` | `#e03131` | Red error with urgency        |
-| Neutral | `#e9ecef` | `#868e96` | Subtle, de-emphasized         |
-| Accent  | `#d0bfff` | `#7048e8` | Purple highlight              |
+| Função   | Preencher | Acidente vascular cerebral | Efeito                         |
+| -------- | --------- | -------------------------- | ------------------------------ |
+| Primário | `#a5d8ff` | `#1971c2`                  | Cartão azul com borda definida |
+| Sucesso  | `#b2f2bb` | `#2f9e44`                  | Passo verde com ênfase         |
+| Aviso    | `#ffec99` | `#e67700`                  | Decisão âmbar com calor        |
+| Perigo   | `#ffc9c9` | `#e03131`                  | Erro vermelho com urgência     |
+| Neutro   | `#e9ecef` | `#868e96`                  | Sutil                          |
 
-**fillStyle variations** for visual variety within the same diagram:
+, sem ênfase |
+| Sotaque | `#d0bfff` | `#7048e8` | Destaque roxo |
 
-- `"solid"` — Clean, modern look (default for most shapes)
-- `"hachure"` — Sketchy fill, good for secondary/background elements
-- `"cross-hatch"` — Dense fill, good for emphasis or "completed" states
+**variações de fillStyle** para variedade visual dentro do mesmo diagrama:
 
-## Arrows
+- `"solid"` — Aparência limpa e moderna (padrão para a maioria das formas)
+- `"hachure"` — Preenchimento esboçado, bom para elementos secundários/de fundo
+- `"hachurado"` — Preenchimento denso, bom para ênfase ou estados "concluídos"
 
-### Basic directional arrow
+## Setas
 
-```json
+### Seta direcional básica```json
+
 {
-  "id": "flow-1",
-  "type": "arrow",
-  "x": 300,
-  "y": 140,
-  "width": 200,
-  "height": 0,
-  "points": [
-    [0, 0],
-    [200, 0]
-  ],
-  "strokeWidth": 2,
-  "roundness": { "type": 2 },
-  "lastCommittedPoint": null,
-  "startArrowhead": null,
-  "endArrowhead": "arrow"
+"id": "flow-1",
+"type": "arrow",
+"x": 300,
+"y": 140,
+"width": 200,
+"height": 0,
+"points": [
+[0, 0],
+[200, 0]
+],
+"strokeWidth": 2,
+"roundness": { "type": 2 },
+"lastCommittedPoint": null,
+"startArrowhead": null,
+"endArrowhead": "arrow"
 }
-```
 
-### Arrow with label
+````
+### Seta com etiqueta
 
-Arrow labels also require `boundElements` on the arrow + a separate text element with `containerId`. **Never use `label: { text: "..." }` on arrows.**
+Os rótulos de seta também requerem `boundElements` na seta + um elemento de texto separado com `containerId`. **Nunca use `label: { text: "..." }` nas setas.**
 
 ```json
 [
@@ -181,66 +183,66 @@ Arrow labels also require `boundElements` on the arrow + a separate text element
     "roundness": null
   }
 ]
-```
+````
 
-### Bound arrow (connects to shapes)
+### Seta vinculada (conecta-se a formas)
 
-Use `startBinding`/`endBinding` — **never `start`/`end`**. Connected shapes must list the arrow in their `boundElements`.
-
-```json
+Use `startBinding`/`endBinding` — **nunca `start`/`end`**. As formas conectadas devem listar a seta em seus `boundElements`.```json
 [
-  {
-    "id": "source-box",
-    "type": "rectangle",
-    "boundElements": [
-      { "type": "text", "id": "text-source" },
-      { "type": "arrow", "id": "flow-1" }
-    ]
-  },
-  {
-    "id": "target-box",
-    "type": "rectangle",
-    "boundElements": [
-      { "type": "text", "id": "text-target" },
-      { "type": "arrow", "id": "flow-1" }
-    ]
-  },
-  {
-    "id": "flow-1",
-    "type": "arrow",
-    "points": [[0, 0], [200, 0]],
-    "startBinding": { "elementId": "source-box", "focus": 0, "gap": 1 },
-    "endBinding": { "elementId": "target-box", "focus": 0, "gap": 1 },
-    "lastCommittedPoint": null,
-    "startArrowhead": null,
-    "endArrowhead": "arrow"
-  }
+{
+"id": "source-box",
+"type": "rectangle",
+"boundElements": [
+{ "type": "text", "id": "text-source" },
+{ "type": "arrow", "id": "flow-1" }
 ]
-```
+},
+{
+"id": "target-box",
+"type": "rectangle",
+"boundElements": [
+{ "type": "text", "id": "text-target" },
+{ "type": "arrow", "id": "flow-1" }
+]
+},
+{
+"id": "flow-1",
+"type": "arrow",
+"points": [[0, 0], [200, 0]],
+"startBinding": { "elementId": "source-box", "focus": 0, "gap": 1 },
+"endBinding": { "elementId": "target-box", "focus": 0, "gap": 1 },
+"lastCommittedPoint": null,
+"startArrowhead": null,
+"endArrowhead": "arrow"
+}
+]
 
-### Arrow styles for semantic meaning
+````
+### Estilos de seta para significado semântico
 
-| Style                  | strokeStyle | strokeWidth | Meaning                              |
+| Estilo | estiloAVC | largura do curso | Significado |
 | ---------------------- | ----------- | ----------- | ------------------------------------ |
-| **Primary flow**       | `"solid"`   | 2           | Main path, normal flow               |
-| **Important flow**     | `"solid"`   | 3           | Critical path, emphasis              |
-| **Optional/alternate** | `"dashed"`  | 2           | Optional path, fallback              |
-| **Indirect/async**     | `"dotted"`  | 2           | Event-driven, async, weak dependency |
+| **Fluxo primário** | `"sólido"` | 2 | Caminho principal, fluxo normal |
+| **Fluxo importante** | `"sólido"` | 3 | Caminho crítico, ênfase |
+| **Opcional/alternativo** | `"tracejado"` | 2 | Caminho opcional, queda
 
-### Arrow directions
+voltar |
+| **Indireto/assíncrono** | `"pontilhado"` | 2 | Dependência fraca, assíncrona e orientada a eventos |
 
-| Direction          | Points                           | Use case                |
+### Direções das setas
+
+| Direção | Pontos | Caso de uso |
 | ------------------ | -------------------------------- | ----------------------- |
-| → Right            | `[[0, 0], [200, 0]]`             | Process flow            |
-| ↓ Down             | `[[0, 0], [0, 150]]`             | Hierarchy, sequence     |
-| ↘ Diagonal         | `[[0, 0], [200, 150]]`           | Cross-connections       |
-| → then ↓ (L-shape) | `[[0, 0], [200, 0], [200, 150]]` | Routing around elements |
+| → Direita | `[[0, 0], [200, 0]]` | Fluxo do processo |
+| ↓ Baixo | `[[0, 0], [0, 150]]` | Hierarquia, sequência |
+| ↘ Diagonal | `[[0, 0], [200, 150]]` | Conexões cruzadas |
+| → então ↓ (formato L) | `[[0, 0
 
-## Lines
+], [200, 0], [200, 150]]` | Roteamento em torno de elementos |
 
-Non-directional connections with no arrowhead:
+## Linhas
 
-```json
+Conexões não direcionais sem ponta de seta:```json
 {
   "type": "line",
   "x": 100,
@@ -253,53 +255,50 @@ Non-directional connections with no arrowhead:
   "strokeWidth": 1,
   "strokeColor": "#868e96"
 }
-```
+````
 
-**Use cases:** Section dividers, boundaries, non-directional relationships (UML association).
+**Casos de uso:** Divisores de seção, limites, relacionamentos não direcionais (associação UML).
 
-## Standalone Text
+## Texto independente
 
-For titles, headers, annotations not inside a shape. Set `containerId: null`:
-
-```json
+Para títulos, cabeçalhos e anotações que não estão dentro de uma forma. Defina `containerId: null`:```json
 {
-  "id": "title-1",
-  "type": "text",
-  "x": 100,
-  "y": 40,
-  "width": 300,
-  "height": 35,
-  "text": "System Architecture Overview",
-  "originalText": "System Architecture Overview",
-  "fontSize": 28,
-  "fontFamily": 5,
-  "textAlign": "center",
-  "strokeColor": "#1e1e1e",
-  "containerId": null,
-  "lineHeight": 1.25,
-  "roundness": null
+"id": "title-1",
+"type": "text",
+"x": 100,
+"y": 40,
+"width": 300,
+"height": 35,
+"text": "System Architecture Overview",
+"originalText": "System Architecture Overview",
+"fontSize": 28,
+"fontFamily": 5,
+"textAlign": "center",
+"strokeColor": "#1e1e1e",
+"containerId": null,
+"lineHeight": 1.25,
+"roundness": null
 }
-```
 
-**Width/height calculation:**
+````
 
-- Width ≈ `text.length × fontSize × 0.6`
-- Height ≈ `fontSize × 1.2 × numberOfLines`
+**Cálculo de largura/altura:**
 
-## Background Zones (Visual Grouping)
+- Largura ≈ `text.length × fontSize × 0,6`
+- Altura ≈ `fontSize × 1,2 × numberOfLines`
 
-Background zones are large semi-transparent rectangles placed **behind** other elements to visually group them into regions. They are a key technique for professional architecture diagrams.
+## Zonas de fundo (agrupamento visual)
 
-**Key properties for a zone:**
+As zonas de fundo são grandes retângulos semitransparentes colocados **atrás** de outros elementos para agrupá-los visualmente em regiões. Eles são uma técnica fundamental para diagramas de arquitetura profissional.
 
-- `opacity: 35` — semi-transparent so elements behind/in front remain visible
-- `strokeStyle: "dashed"` — clearly marks it as a boundary, not a shape
-- `roughness: 0` — clean edges for background zones
-- `fillStyle: "solid"` — needed for the opacity to show color
+**Principais propriedades de uma zona:**
 
-Zones must be declared **first** in the `elements` array so they render behind everything else.
+- `opacity: 35` — semitransparente para que os elementos atrás/na frente permaneçam visíveis
+- `strokeStyle: "dashed"` — marca claramente como um limite, não uma forma
+- `rugosidade: 0` — bordas limpas para zonas de fundo
+- `fillStyle: "solid"` — necessário para que a opacidade mostre a cor
 
-```json
+As zonas devem ser declaradas **primeiro** no array `elements` para que sejam renderizadas atrás de todo o resto.```json
 [
   {
     "id": "zone-backend",
@@ -319,186 +318,188 @@ Zones must be declared **first** in the `elements` array so they render behind e
     "boundElements": []
   }
 ]
-```
+````
 
-Add a standalone text label near the top-left corner of the zone:
-
-```json
+Adicione um rótulo de texto independente próximo ao canto superior esquerdo da zona:```json
 {
-  "id": "label-zone-backend",
-  "type": "text",
-  "x": 320,
-  "y": 148,
-  "width": 120,
-  "height": 20,
-  "text": "Backend Services",
-  "originalText": "Backend Services",
-  "fontSize": 14,
-  "fontFamily": 5,
-  "strokeColor": "#1971c2",
-  "containerId": null,
-  "lineHeight": 1.25,
-  "roundness": null
+"id": "label-zone-backend",
+"type": "text",
+"x": 320,
+"y": 148,
+"width": 120,
+"height": 20,
+"text": "Backend Services",
+"originalText": "Backend Services",
+"fontSize": 14,
+"fontFamily": 5,
+"strokeColor": "#1971c2",
+"containerId": null,
+"lineHeight": 1.25,
+"roundness": null
 }
-```
 
-**Element order with zones:** zones → shapes → arrows → text elements
+````
 
-**Zone color recommendations:**
+**Ordem dos elementos com zonas:** zonas → formas → setas → elementos de texto
 
-| Zone purpose    | backgroundColor | strokeColor |
+**Recomendações de cores de zona:**
+
+| Finalidade da zona | fundoCor | traçoCor |
 | --------------- | --------------- | ----------- |
-| Services/Logic  | `#dbe4ff`       | `#4c6ef5`   |
-| Data layer      | `#d3f9d8`       | `#2f9e44`   |
-| External/Users  | `#fff9db`       | `#f08c00`   |
-| Messaging/Events| `#f3d9fa`       | `#ae3ec9`   |
-| Infrastructure  | `#e3fafc`       | `#0c8599`   |
+| Serviços/Lógica | `#dbe4ff` | `#4c6ef5` |
+| Camada de dados | `#d3f9d8` | `#2f9e44` |
+| Externos/Usuários | `#fff9db` | `#f08c00` |
+| Mensagens/Eventos | `#f3d9fa` | `#ae3ec9` |
+| Infraestrutura | `#e3fafc` | `#0c8599` |
 
-## Visual Modes
+## Modos Visuais
 
-Choose the diagram's visual mode upfront and apply it consistently to all elements.
+Escolha antecipadamente o modo visual do diagrama e aplique-o de forma consistente a todos os elementos.
 
-### Sketch Mode (default — recommended for most diagrams)
+### Modo Sketch (padrão — recomendado para a maioria dos diagramas)
 
-Hand-drawn aesthetic, matches Excalidraw's signature look:
+Estética desenhada à mão, combina com o visual exclusivo do Excalidraw:
 
-- `roughness: 1` on all shapes and arrows
-- `fontFamily: 5` (Excalifont) for all text
-- `strokeWidth: 2` for shapes, `strokeWidth: 2` for arrows
+- `rugosidade: 1` em todas as formas e setas
+- `fontFamily: 5` (Excalifont) para todo o texto
+- `strokeWidth: 2` para formas, `strokeWidth: 2` para setas
 
-Best for: informal diagrams, brainstorming, process docs, most use cases.
+Ideal para: diagramas informais, brainstorming, documentos de processos e a maioria dos casos de uso.
 
-### Clean Mode (for formal/technical diagrams)
+### Modo Limpo (para diagramas formais/técnicos)
 
-Precise, polished, presentation-ready:
+Preciso, polido, pronto para apresentação:
 
-- `roughness: 0` on all shapes and arrows
-- `fontFamily: 2` (Helvetica) for body text, `fontFamily: 5` for titles
-- `strokeWidth: 1.5-2` for shapes
+- `rugosidade: 0` em todas as formas e setas
+- `fontFamily: 2` (Helvetica) para corpo de texto, `fontFamily: 5` para títulos
+- `strokeWidth: 1,5-2` para formas
 
-Best for: executive presentations, client-facing docs, technical specifications.
+Melhor para: apresentações executivas, documentos voltados para o cliente, especificações técnicas.
 
-**Mixed mode:** Use `roughness: 0` for background zones and `roughness: 1` for shapes — zones feel like structure, shapes feel like content.
+**Modo misto:** Use `rugosidade: 0` para zonas de fundo e `rugosidade: 1` para formas — as zonas parecem estrutura, as formas parecem conteúdo.
 
-## Diagram Type Recipes
+## Receitas do tipo diagrama
 
-### Flowchart
-
-```
+### Fluxograma```
 [Start ellipse] → [Step rect] → [Decision diamond] → Yes → [Step rect] → [End ellipse]
                                                      ↓ No
                                                 [Step rect]
-```
+````
 
-- Start/End: `ellipse` with light green/red (`#b2f2bb`/`#ffc9c9`), `roundness: null`
-- Steps: `rectangle` with light blue (`#a5d8ff`)
-- Decisions: `diamond` with amber (`#ffec99`)
-- Flow: solid arrows, labeled at decision branches ("Yes"/"No")
+- Início/Fim: `elipse` com verde claro/vermelho (`#b2f2bb`/`#ffc9c9`), `redondeza: null`
+- Passos: `retângulo` com azul claro (`#a5d8ff`)
+- Decisões: `diamante` com âmbar (`#ffec99`)
+- Fluxo: setas sólidas, rotuladas nos ramos de decisão ("Sim"/"Não")
 
-### Architecture Diagram
+### Diagrama de Arquitetura
 
-Use **background zones** to show layers (see Background Zones section):
-
-```
+Use **zonas de fundo** para mostrar camadas (consulte a seção Zonas de fundo):```
 [zone: Infrastructure]
-  [zone: Backend Services]
-    [API Gateway rect] → [Order Service rect] → [Orders DB ellipse]
-                              ↓
-                        [Event Bus rect] → [Worker rect]
-  [zone: Data/Consumers]
+[zone: Backend Services]
+[API Gateway rect] → [Order Service rect] → [Orders DB ellipse]
+↓
+[Event Bus rect] → [Worker rect]
+[zone: Data/Consumers]
+
+```
+- Componentes: `retângulo` com cores variadas por camada
+- Conexões: setas sólidas com rótulos de protocolo ("REST", "gRPC", "SQL")
+- Limites de zona: retângulos tracejados semitransparentes com `opacidade: 35`
+
+### Diagrama ER
+
+- Entidades: `retângulo` com nome da entidade (negrito, fonte maior)
+- Atributos: listados em texto multilinha dentro da caixa da entidade
+- Relacionamentos: `diamante` com nome de relacionamento
+- Cardinalidade: rótulos de texto independentes próximos às setas ("1", "N", "0..1")
+
+### Diagrama de Sequência
+
+- Atores: `retângulo` no topo com o nome do ator
+- Linhas de vida: `line` (vertical, tracejada, `strokeStyle: "tracejada"`)
+- Mensagens: `seta` (horizontal, sólido = sincronizado, tracejado = assíncrono)
+- Retorno: `seta` (tracejado, direção reversa)
+- Ativação: `retângulo` fino na linha de vida, sem preenchimento
+
+### Mapa Mental
+
+- Centro: grande `elipse` com tema principal (cor brilhante, `rugosidade: 1`)
+- Ramos: `retângulo` conectados através de setas diagonais do centro
+- Subtópicos: `retângulo` menor conectado a partir de galhos
+- Use cores diferentes por ramo para agrupamento visual (uma família de cores por ramo)
+
+### Diagrama de Classes
+
+- Classes: `retângulo` com texto multilinha:
+
 ```
 
-- Components: `rectangle` with varied colors by layer
-- Connections: solid arrows with protocol labels ("REST", "gRPC", "SQL")
-- Zone boundaries: semi-transparent dashed rectangles with `opacity: 35`
+Nome da Classe
+─────────
+-campo: Tipo
++campo: Tipo
+─────────
++método(): Retorno
+-método (arg): Retorno
 
-### ER Diagram
+```
 
-- Entities: `rectangle` with entity name (bold, larger font)
-- Attributes: listed in multi-line text inside the entity box
-- Relationships: `diamond` with relationship name
-- Cardinality: standalone text labels near arrows ("1", "N", "0..1")
+- Herança: seta sólida com rótulo "estende"
+- Implementação: seta tracejada com rótulo "implementos"
+- Associação: linha sólida (sem ponta de seta)
 
-### Sequence Diagram
+### Raia
 
-- Actors: `rectangle` at top with actor name
-- Lifelines: `line` (vertical, dashed, `strokeStyle: "dashed"`)
-- Messages: `arrow` (horizontal, solid = sync, dashed = async)
-- Return: `arrow` (dashed, reverse direction)
-- Activation: thin `rectangle` on lifeline, no fill
+- Pistas: `retângulo` alto com `fillStyle: "hachure"`, `opacidade: 40`, `rugosidade: 0`
+- Cabeçalhos de pista: `texto` independente no topo de cada pista
+- Atividades: `retângulo` dentro das pistas
+- Handoffs: setas cruzando os limites da pista
 
-### Mind Map
+### Diagrama de Fluxo de Dados (DFD)
 
-- Center: large `ellipse` with main topic (bright color, `roughness: 1`)
-- Branches: `rectangle` connected via diagonal arrows from center
-- Sub-topics: smaller `rectangle` connected from branches
-- Use different colors per branch for visual grouping (one color family per branch)
+- Entidades externas: `retângulo` (traço em negrito `strokeWidth: 3`)
+- Processos: `elipse` com número e nome do processo
+- Armazenamento de dados: `retângulo` com lado aberto (use duas linhas horizontais através de elementos `line`)
+- Fluxos de dados: setas rotuladas (sempre mostram o nome dos dados na seta)
+- Direção: da esquerda para a direita ou do canto superior esquerdo para o canto inferior direito
 
-### Class Diagram
+## Princípios de design para diagramas elegantes
 
-- Classes: `rectangle` with multi-line text:
+1. **Hierarquia visual** — Use tamanho e intensidade de cor para sinalizar importância. Os elementos primários obtêm preenchimentos saturados; os elementos secundários usam preenchimentos neutros ou hachurados.
 
-  ```
-  ClassName
-  ─────────
-  -field: Type
-  +field: Type
-  ─────────
-  +method(): Return
-  -method(arg): Return
-  ```
+2. **Espessura do traço consistente** — Use `strokeWidth: 2` para todas as formas e setas. Aumente para 3-4 apenas para enfatizar os caminhos críticos.
 
-- Inheritance: solid arrow with label "extends"
-- Implementation: dashed arrow with label "implements"
-- Association: solid line (no arrowhead)
+3. **Harmonia de cores** — Use no máximo 3-4 cores de preenchimento por diagrama. Escolha na mesma linha da paleta (consulte excalidraw-schema.md Design Tokens). Evite misturar quente e frio ao acaso.
 
-### Swimlane
+4. **Espaço em branco é estrutura** — Mais espaçamento entre grupos não relacionados, menos entre elementos relacionados. Isso cria agrupamento visual sem bordas.
 
-- Lanes: tall `rectangle` with `fillStyle: "hachure"`, `opacity: 40`, `roughness: 0`
-- Lane headers: standalone `text` at top of each lane
-- Activities: `rectangle` inside lanes
-- Handoffs: arrows crossing lane boundaries
+5. **Alinhado, não disperso** — Alinhe elementos em uma grade. Os centros devem ser alinhados verticalmente ou horizontalmente sempre que possível.
 
-### Data Flow Diagram (DFD)
+6. **Rotule tudo o que não é óbvio** — Cada seta deve ter um rótulo ou seu significado deve ficar claro no contexto. Cada forma precisa de texto.
 
-- External entities: `rectangle` (bold stroke `strokeWidth: 3`)
-- Processes: `ellipse` with process number and name
-- Data stores: `rectangle` with open side (use two horizontal lines via `line` elements)
-- Data flows: labeled arrows (always show data name on arrow)
-- Direction: left-to-right or top-left to bottom-right
+7. **Convenção de direção de fluxo** — Da esquerda para a direita para fluxos de processo. De cima para baixo para hierarquias e sequências. Escolha um e seja consistente.
 
-## Design Principles for Elegant Diagrams
+8. **Correspondência do traço ao preenchimento** — Use o tom mais profundo da paleta como cor do traço para o preenchimento correspondente. Isso cria profundidade e definição.
 
-1. **Visual hierarchy** — Use size and color intensity to signal importance. Primary elements get saturated fills; secondary elements use neutral or hachure fills.
+9. **Zonas de fundo sobre bordas** — Para agrupar elementos relacionados, prefira zonas de fundo semitransparentes em vez de retângulos de borda explícitos. As zonas parecem espaciais; as fronteiras parecem contêineres.
 
-2. **Consistent stroke weight** — Use `strokeWidth: 2` for all shapes and arrows. Only increase to 3-4 to emphasize critical paths.
+10. **Escolha o modo visual antecipadamente** — Decida o modo Esboço ou Limpeza antes de gerar os elementos. Nunca misture `rugosidade: 0` e `rugosidade: 1` em formas do mesmo nível (zonas e formas podem diferir intencionalmente).
 
-3. **Color harmony** — Use at most 3-4 fill colors per diagram. Pick from the same palette row (see excalidraw-schema.md Design Tokens). Avoid mixing warm and cool haphazardly.
+## Resumo
 
-4. **Whitespace is structure** — More spacing between unrelated groups, less between related elements. This creates visual grouping without borders.
-
-5. **Aligned, not scattered** — Align elements on a grid. Centers should be aligned vertically or horizontally whenever possible.
-
-6. **Label everything that isn't obvious** — Every arrow should either have a label or its meaning should be clear from context. Every shape needs text.
-
-7. **Flow direction convention** — Left-to-right for process flows. Top-to-bottom for hierarchies and sequences. Pick one and be consistent.
-
-8. **Matching stroke to fill** — Use the deeper shade from the palette as stroke color for the corresponding fill. This creates depth and definition.
-
-9. **Background zones over borders** — For grouping related elements, prefer semi-transparent background zones over explicit border rectangles. Zones feel spatial; borders feel like containers.
-
-10. **Choose visual mode upfront** — Decide Sketch or Clean mode before generating elements. Never mix `roughness: 0` and `roughness: 1` on same-level shapes (zones and shapes can differ intentionally).
-
-## Summary
-
-| When you need...               | Use this element                                                              |
+| Quando você precisar... | Use este elemento |
 | ------------------------------ | ----------------------------------------------------------------------------- |
-| Process box, entity, component | `rectangle` with `boundElements` + separate text element                      |
-| Decision point                 | `diamond` with `boundElements` + separate text element                        |
-| Start/End terminal             | `ellipse` with `boundElements` + separate text element (`roundness: null`)    |
-| Flow direction                 | `arrow` with `startBinding`/`endBinding`, label via `boundElements` if needed |
-| Title/Header                   | `text` (large font, `containerId: null`)                                      |
-| Annotation                     | `text` (small font, `containerId: null`, positioned near target)              |
-| Non-directional connection     | `line`                                                                        |
-| Section divider                | `line` (horizontal, dashed)                                                   |
-| Visual grouping region         | `rectangle` (large, `opacity: 35`, `strokeStyle: "dashed"`, `roughness: 0`)  |
+| Caixa de processo, entidade, componente | `retângulo` com `boundElements` + elemento de texto separado |
+| Ponto de decisão | `diamond` com `boundElements` + elemento de texto separado
+
+|
+| Terminal inicial/final | `ellipse` com `boundElements` + elemento de texto separado (`redondeza: null`) |
+| Direção do fluxo | `arrow` com `startBinding`/`endBinding`, rótulo via `boundElements` se necessário |
+| Título/cabeçalho | `text` (fonte grande, `containerId: null`) |
+| Anotação | `text` (fonte pequena, `containerId: null`, posicionado próximo ao tar
+
+obter) |
+| Conexão não direcional | `linha` |
+| Divisor de seção | `linha` (horizontal, tracejada) |
+| Região de agrupamento visual | `retângulo` (grande, `opacidade: 35`, `strokeStyle: "tracejado"`, `rugosidade: 0`) |
+```

@@ -1,12 +1,12 @@
-# Workers AI API Reference
+# Referência da API de IA de trabalhadores
 
-## Core Method
+## Método principal
 
 ```typescript
 const response = await env.AI.run(model, input)
 ```
 
-## Text Generation
+##Geração de Texto
 
 ```typescript
 const result = await env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
@@ -20,14 +20,14 @@ const result = await env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
 console.log(result.response)
 ```
 
-**Streaming:**
+**Transmissão:**
 
 ```typescript
 const stream = await env.AI.run(model, { messages, stream: true })
 return new Response(stream, { headers: { 'Content-Type': 'text/event-stream' } })
 ```
 
-## Embeddings
+##Incorporações
 
 ```typescript
 const result = await env.AI.run('@cf/baai/bge-base-en-v1.5', {
@@ -36,7 +36,7 @@ const result = await env.AI.run('@cf/baai/bge-base-en-v1.5', {
 const [queryEmbed, doc1Embed, doc2Embed] = result.data // 768-dim vectors
 ```
 
-## Function Calling
+##Chamada de função
 
 ```typescript
 const tools = [
@@ -61,7 +61,7 @@ if (response.tool_calls) {
 }
 ```
 
-## Image Generation
+##Geração de imagem
 
 ```typescript
 const image = await env.AI.run('@cf/stabilityai/stable-diffusion-xl-base-1.0', {
@@ -72,7 +72,7 @@ const image = await env.AI.run('@cf/stabilityai/stable-diffusion-xl-base-1.0', {
 return new Response(image, { headers: { 'Content-Type': 'image/png' } })
 ```
 
-## Speech Recognition
+##Reconhecimento de fala
 
 ```typescript
 const audioArray = Array.from(new Uint8Array(await request.arrayBuffer()))
@@ -80,7 +80,7 @@ const result = await env.AI.run('@cf/openai/whisper', { audio: audioArray })
 console.log(result.text)
 ```
 
-## Translation
+##Tradução
 
 ```typescript
 const result = await env.AI.run('@cf/meta/m2m100-1.2b', {
@@ -91,7 +91,7 @@ const result = await env.AI.run('@cf/meta/m2m100-1.2b', {
 console.log(result.translated_text)
 ```
 
-## REST API
+##API REST
 
 ```bash
 curl https://api.cloudflare.com/client/v4/accounts/{account_id}/ai/run/@cf/meta/llama-3.1-8b-instruct \
@@ -99,17 +99,17 @@ curl https://api.cloudflare.com/client/v4/accounts/{account_id}/ai/run/@cf/meta/
   -d '{"messages":[{"role":"user","content":"Hello"}]}'
 ```
 
-## Error Codes
+##Códigos de erro
 
-| Code | Meaning           | Fix                    |
-| ---- | ----------------- | ---------------------- |
-| 7502 | Model not found   | Check spelling         |
-| 7504 | Validation failed | Verify input schema    |
-| 7505 | Rate limited      | Reduce rate or upgrade |
-| 7506 | Context exceeded  | Reduce input size      |
+| Código | Significado           | Correção                       |
+| ------ | --------------------- | ------------------------------ |
+| 7502   | Modelo não encontrado | Verifique a ortografia         |
+| 7504   | Falha na validação    | Verifique o esquema de entrada |
+| 7505   | Taxa limitada         | Reduzir taxa ou atualizar      |
+| 7506   | Contexto excedido     | Reduza o tamanho da entrada    |
 
-## Performance Tips
+## Dicas de desempenho
 
-1. **Batch embeddings** - single request for multiple texts
-2. **Stream long responses** - reduce perceived latency
-3. **Accept cold starts** - first request ~1-3s, subsequent ~100-500ms
+1. **Incorporações em lote** - solicitação única para vários textos
+2. **Transmita respostas longas** - reduza a latência percebida
+3. **Aceitar partidas a frio** - primeira solicitação ~1-3s, subsequentes ~100-500ms

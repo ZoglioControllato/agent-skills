@@ -1,200 +1,218 @@
-## BYOK (Bring Your Own Key) Pricing
+## Preços BYOK (traga sua própria chave)
 
-BYOK lets customers plug in their own LLM API keys. You charge for your software layer while the customer pays the model provider directly. This decouples your pricing from volatile model costs.
+BYOK permite que os clientes conectem suas próprias chaves de API LLM. Você cobra pela sua camada de software enquanto o cliente paga diretamente ao fornecedor do modelo. Isso dissocia seus preços dos custos voláteis do modelo.
 
-### BYOK Decision Framework
+### Estrutura de decisão BYOK
 
-| Factor | BYOK Wins | Managed Model Wins |
-|---|---|---|
-| Customer type | Enterprise with existing model contracts, developers | SMB, non-technical buyer |
-| Model preference | Customer insists on specific provider (compliance, existing deal) | Customer trusts your model selection |
-| Margin goal | Higher software margin (no COGS on model costs) | Higher total revenue (markup on model usage) |
-| Pricing simplicity | Customer comfortable with two bills | Customer wants one price for everything |
-| Support burden | Lower (model issues go to provider) | Higher (you own the full stack) |
-| Switching cost | Lower (customer can swap your tool, keep model) | Higher (bundled = stickier) |
-| Data sensitivity | Customer needs data to stay in their cloud/account | Customer trusts your data handling |
+| Fator                  | BYOK vence                                                                     | Modelo gerenciado vence                                 |
+| ---------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------- |
+| Tipo de cliente        | Empresa com contratos modelo existentes, desenvolvedores                       | PME, comprador não técnico                              |
+| Preferência de modelo  | O cliente insiste em um fornecedor específico (conformidade, acordo existente) | O cliente confia na sua seleção de modelo               |
+| Meta de margem         | Margem de software mais elevada (sem CPV sobre os custos do modelo)            | Maior receita total (markup sobre utilização do modelo) |
+| Simplicidade de preços | Cliente confortável com tw                                                     |
 
-### BYOK Pricing Structure
+o contas | Cliente quer preço único para tudo |
+| Encargos de apoio | Inferior (problemas de modelo vão para o fornecedor) | Maior (você possui a pilha completa) |
+| Custo de mudança | Inferior (cliente pode trocar sua ferramenta, manter modelo) | Maior (agrupado = mais rígido) |
+| Sensibilidade dos dados | O cliente precisa que os dados permaneçam na nuvem/conta | O cliente confia no seu tratamento de dados |
 
-| Component | What You Charge | Example |
-|---|---|---|
-| Software license | Monthly/annual fee for your platform | $49-299/mo per seat or workspace |
-| Model costs | Nothing (customer pays provider directly) | Customer pays OpenAI/Anthropic/Google |
-| Premium features | Add-on fees for orchestration, analytics, fine-tuning | $99/mo for advanced routing, $199/mo for analytics |
-| Support tier | Tiered support pricing | Free community, $99/mo priority, custom enterprise |
+### Estrutura de preços BYOK
 
-**Real BYOK examples:**
-- JetBrains AI: BYOK available for AI chat and agents, supports Anthropic, OpenAI, and compatible providers
-- OpenRouter: 5% usage fee on provider costs when routing through your own keys
-- Cursor: BYOK option lets developers use their own API keys, lower subscription tier
+| Componente          | O que você cobra                                          | Exemplo                                                        |
+| ------------------- | --------------------------------------------------------- | -------------------------------------------------------------- |
+| Licença de software | Taxa mensal/anual para sua plataforma                     | US$ 49-299/mês por assento ou espaço de trabalho               |
+| Custos do modelo    | Nada (o cliente paga diretamente ao fornecedor)           | Cliente paga OpenAI/Anthropic/Google                           |
+| Recursos premium    | Taxas adicionais para orquestração, análise e ajuste fino | US$ 99/mês para roteamento avançado, US$ 199/mês para análises |
+| Nível de suporte    | Preços de suporte escalonados                             | Comunidade gratuita, $ 99/mês antes                            |
 
-### When NOT to Offer BYOK
+empresa personalizada |
 
-- Your product's value depends on model fine-tuning or custom training
-- Your target market is non-technical (they will not manage API keys)
-- Your margin model requires model cost markup
-- You need to guarantee response quality (BYOK means variable model behavior)
-- Your product uses multi-model routing as a core feature
+**Exemplos reais de BYOK:**
 
-## Margin Management for AI Products
+- JetBrains AI: BYOK disponível para bate-papo e agentes de IA, suporta Anthropic, OpenAI e provedores compatíveis
+- OpenRouter: taxa de uso de 5% sobre os custos do provedor ao rotear através de suas próprias chaves
+- Cursor: a opção BYOK permite que os desenvolvedores usem suas próprias chaves de API, diminuindo o nível de assinatura
 
-AI products have fundamentally different economics than traditional SaaS. Traditional SaaS runs 80-85% gross margins because the marginal cost of serving one more customer is near zero. AI products incur real compute costs for every request.
+### Quando NÃO oferecer BYOK
 
-### Margin Landscape
+- O valor do seu produto depende do ajuste fino do modelo ou do treinamento personalizado
+- Seu mercado-alvo não é técnico (eles não gerenciarão chaves de API)
+- Seu modelo de margem requer marcação de custo do modelo
+- Você precisa garantir a qualidade da resposta (BYOK significa comportamento variável do modelo)
+- Seu produto usa roteamento multimodelo como recurso principal
 
-| Company Stage | Typical Gross Margin | Target | Notes |
-|---|---|---|---|
-| Early AI startup (unoptimized) | 25-40% | Survive, prove value | Bessemer calls these "Supernovas" |
-| Growth AI company (optimizing) | 50-65% | Get to 60%+ for fundraising | Active model routing, caching, batching |
-| Mature AI company | 65-75% | Approach traditional SaaS territory | Custom models, full optimization stack |
-| Traditional SaaS benchmark | 80-90% | The target AI companies grow toward | Minimal marginal cost per user |
+## Gerenciamento de margem para produtos de IA
 
-**Key data point:** 84% of companies reported AI infrastructure costs cutting gross margins by more than 6 percentage points (Mavvrik AI Cost Governance Report 2025).
+Os produtos de IA têm uma economia fundamentalmente diferente do SaaS tradicional. O SaaS tradicional gera margens brutas de 80-85% porque o custo marginal de atender mais um cliente é próximo de zero. Os produtos de IA incorrem em custos reais de computação para cada solicitação.
 
-### Unit Economics You Must Track
+### Margem Paisagem
 
-| Metric | Definition | Target | How to Calculate |
-|---|---|---|---|
-| CPT (Cost Per Task) | Total AI cost to complete one unit of work | Varies by task | Model cost + compute + orchestration / tasks completed |
-| CPR (Cost Per Resolution) | Cost to achieve one customer outcome | Less than 30% of price charged | All AI costs for resolved outcomes / resolutions |
-| CPAM (Cost Per Active Member) | AI spend per active user per month | Less than 20% of ARPU | Total AI infrastructure / monthly active users |
-| Token efficiency | Tokens consumed per task vs. minimum needed | Optimize continuously | Actual tokens / minimum viable tokens |
-| Model cost ratio | AI model costs as % of revenue | Less than 25% at scale | Total model API spend / revenue |
+| Estágio da Empresa                             | Margem bruta típica | Alvo                                       | Notas                                                |
+| ---------------------------------------------- | ------------------- | ------------------------------------------ | ---------------------------------------------------- |
+| Inicialização antecipada de IA (não otimizada) | 25-40%              | Sobreviva, prove valor                     | Bessemer chama isso de "Supernovas"                  |
+| Empresa de IA em crescimento (otimizando)      | 50-65%              | Chegue a 60%+ para arrecadação de fundos   | Roteamento de modelo ativo, cache, lote              |
+| Empresa madura de IA                           | 65-75%              | Aproxime-se do território SaaS tradicional | Modelos personalizados, pilha completa de otimização |
+| Referência SaaS tradicional                    | 80-90%              | O t                                        |
 
-### The Margin Improvement Stack
+alvo de crescimento das empresas de IA | Custo marginal mínimo por utilizador |
 
-Seven levers to improve AI product margins, ordered by typical impact.
+**Dados principais:** 84% das empresas relataram que os custos de infraestrutura de IA reduziram as margens brutas em mais de 6 pontos percentuais (Mavvrik AI Cost Governance Report 2025).
 
-| Lever | Margin Impact | Implementation Effort | How It Works |
-|---|---|---|---|
-| Model routing | 50-98% cost reduction on routed tasks | Medium | Route simple tasks to cheaper/smaller models, reserve frontier models for complex tasks |
-| Prompt caching | 45-80% reduction on repeated prompts | Low | Cache common prompt prefixes; Anthropic caching costs 90% less, OpenAI 50% less |
-| Batch processing | 50% cost reduction on batch-eligible tasks | Low | Use batch APIs for non-real-time work; guaranteed 50% savings on most providers |
-| Fine-tuned small models | 60-80% cost reduction vs. frontier models | High | Train task-specific small models that match frontier quality on narrow tasks |
-| Prompt optimization | 20-40% token reduction | Low-Medium | Shorter prompts, better few-shot examples, structured outputs |
-| Response caching | 30-60% reduction on repeated queries | Low | Cache identical or near-identical requests; semantic caching for similar queries |
-| Infrastructure optimization | 10-30% compute cost reduction | Medium-High | Spot instances, reserved capacity, multi-region routing for cost |
+### Economia da unidade que você deve acompanhar
 
-### Model Routing in Practice
+| Métrica                       | Definição                                               | Alvo                          | Como calcular                                                  |
+| ----------------------------- | ------------------------------------------------------- | ----------------------------- | -------------------------------------------------------------- |
+| CPT (Custo por Tarefa)        | Custo total de IA para concluir uma unidade de trabalho | Varia de acordo com a tarefa  | Custo do modelo + computação + orquestração/tarefas concluídas |
+| CPR (Custo por Resolução)     | Custo para alcançar um resultado de cliente             | Menos de 30% do preço cobrado | Todos os custos de IA para resultados/resoluções resolvidos    |
+| CPAM (Custo por Membro Ativo) | Gastos com IA por usuário ativo por mês                 | Menos de 20%                  |
 
-```
+do ARPU | Infraestrutura total de IA/usuários ativos mensais |
+| Eficiência simbólica | Tokens consumidos por tarefa vs. mínimo necessário | Otimizar continuamente | Tokens reais/tokens mínimos viáveis ​​|
+| Rácio de custo do modelo | Custos do modelo de IA em % da receita | Menos de 25% em escala | Gasto/receita total da API do modelo |
+
+### A pilha de melhoria de margem
+
+Sete alavancas para melhorar as margens dos produtos de IA, ordenadas por impacto típico.
+
+| Alavanca              | Impacto na Margem                                       | Esforço de Implementação | Como funciona                                                                                                      |
+| --------------------- | ------------------------------------------------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------ |
+| Roteamento de modelo  | Redução de custos de 50 a 98% em tarefas roteadas       | Médio                    | Encaminhar tarefas simples para modelos mais baratos/menores, reservar modelos de fronteira para tarefas complexas |
+| Cache de prompt       | Redução de 45-80% em solicitações repetidas             | Baixo                    | Armazenar em cache prefixos de prompt comuns; Cache antrópico custa 90% menos, OpenAI 50% menos                    |
+| Processamento em lote | Redução de custos de 50% em tarefas elegíveis para lote |
+
+| Baixo | Use APIs em lote para trabalho que não seja em tempo real; 50% de poupança garantida na maioria dos fornecedores |
+| Modelos pequenos ajustados | Redução de custos de 60-80% em comparação com modelos de fronteira | Alto | Treinar pequenos modelos específicos de tarefas que correspondam à qualidade de fronteira em tarefas restritas |
+| Otimização imediata | Redução de tokens de 20-40% | Baixo-Médio | Prompts mais curtos, melhores exemplos de poucas cenas, resultados estruturados |
+| Cache de resposta | Redução de 30-60% em consultas repetidas | Baixo | Identificação de cache
+
+solicitações específicas ou quase idênticas; cache semântico para consultas semelhantes |
+| Otimização de infraestrutura | Redução de custos de computação de 10 a 30% | Médio-Alto | Instâncias spot, capacidade reservada, roteamento multirregional por custo |
+
+### Roteamento de modelo na prática```
+
 INCOMING REQUEST
-      |
-      v
-  CLASSIFIER (lightweight model or rules)
-      |
-      +--> Simple task (FAQ, classification, extraction)
-      |    Route to: Small model (Haiku, GPT-4o-mini, Gemini Flash)
-      |    Cost: $0.0001-0.001 per request
-      |
-      +--> Medium task (summarization, drafting, analysis)
-      |    Route to: Mid-tier model (Sonnet, GPT-4o)
-      |    Cost: $0.001-0.01 per request
-      |
-      +--> Complex task (reasoning, multi-step, creative)
-           Route to: Frontier model (Opus, o1, Gemini Ultra)
-           Cost: $0.01-0.10 per request
+|
+v
+CLASSIFIER (lightweight model or rules)
+|
++--> Simple task (FAQ, classification, extraction)
+| Route to: Small model (Haiku, GPT-4o-mini, Gemini Flash)
+| Cost: $0.0001-0.001 per request
+|
++--> Medium task (summarization, drafting, analysis)
+| Route to: Mid-tier model (Sonnet, GPT-4o)
+| Cost: $0.001-0.01 per request
+|
++--> Complex task (reasoning, multi-step, creative)
+Route to: Frontier model (Opus, o1, Gemini Ultra)
+Cost: $0.01-0.10 per request
 
 RESULT: 70-80% of tasks route to cheapest tier
-        Average cost drops 60-80%
-```
+Average cost drops 60-80%
 
-### Margin Improvement Roadmap
+````
+### Roteiro de melhoria de margem
 
-| Phase | Timeline | Actions | Expected Margin |
+| Fase | Linha do tempo | Ações | Margem Esperada |
 |---|---|---|---|
-| 1. Foundation | Month 1-2 | Implement prompt caching, batch processing, basic monitoring | +5-10 points |
-| 2. Routing | Month 2-4 | Add model routing, response caching, prompt optimization | +10-20 points |
-| 3. Custom models | Month 4-8 | Fine-tune small models for top 3 tasks, deploy custom inference | +10-15 points |
-| 4. Full optimization | Month 6-12 | Semantic caching, dynamic routing, infrastructure optimization | +5-10 points |
-| **Cumulative** | **12 months** | **Full stack deployed** | **+30-45 points** |
+| 1. Fundação | Mês 1-2 | Implementar cache imediato, processamento em lote e monitoramento básico | +5-10 pontos |
+| 2. Roteamento | Mês 2-4 | Adicione roteamento de modelo, cache de resposta, otimização de prompt | +10-20 pontos |
+| 3. Modelos personalizados | Mês 4-8 | Ajuste pequenos modelos para as 3 principais tarefas, implante inferência personalizada | +10-15 pontos |
+| 4. Otimização total | Mês 6 a 12 | Cache semântico, dy
 
-### Cost Projection Model
+roteamento dinâmico, otimização de infraestrutura | +5-10 pontos |
+| **Cumulativo** | **12 meses** | **Pilha completa implantada** | **+30-45 pontos** |
 
-For a B2B AI product processing 50M tokens/month per enterprise customer:
+### Modelo de projeção de custos
 
-| Scenario | Monthly Cost | Gross Margin (at $2K MRR) | Optimization Level |
+Para um produto de IA B2B que processa 50 milhões de tokens/mês por cliente corporativo:
+
+| Cenário | Custo Mensal | Margem bruta (em US$ 2 mil MRR) | Nível de otimização |
 |---|---|---|---|
-| Unoptimized (frontier model only) | $500-2,000 | 0-75% | None |
-| Basic optimization (caching + batching) | $200-800 | 60-90% | Foundation |
-| Full routing + caching | $50-200 | 90-97% | Intermediate |
-| Custom models + full stack | $20-100 | 95-99% | Advanced |
+| Não otimizado (somente modelo de fronteira) | US$ 500-2.000 | 0-75% | Nenhum |
+| Otimização básica (cache + lote) | US$ 200-800 | 60-90% | Fundação |
+| Roteamento completo + cache | US$ 50-200 | 90-97% | Intermediário |
+| Modelos personalizados + full stack | US$ 20-100 | 95-99% | Avançado |
 
-**Key insight:** AI compute costs are falling roughly 10x every 3 years. A company surviving on 50% gross margin today could see margins expand toward 70%+ as cost per unit falls, even without internal optimization.
+**Informações importantes:** os custos de computação de IA estão caindo cerca de 10 vezes a cada 3 anos. Uma empresa que sobrevive hoje com uma margem bruta de 50% poderá ver as margens expandirem-se para mais de 70% à medida que o custo por unidade cai, mesmo sem otimização interna.
 
-## Pricing Tier Design
+## Design de níveis de preços
 
-### The Three-Tier Framework
+### A Estrutura de Três Camadas
 
-Most AI products should launch with three tiers. Fewer creates a "take it or leave it" problem. More creates decision paralysis.
+A maioria dos produtos de IA deve ser lançada com três níveis. Menos cria um problema do tipo “pegar ou largar”. Mais cria paralisia de decisão.
 
-| Element | Starter / Free | Pro / Growth | Enterprise |
+| Elemento | Iniciante / Grátis | Pró/Crescimento | Empresa |
 |---|---|---|---|
-| Purpose | Acquisition, trial, self-serve | Core revenue driver | Expansion, high-value accounts |
-| Pricing | Free or $0-49/mo | $49-499/mo | Custom ($500-5,000+/mo) |
-| Usage limits | Hard caps, limited features | Generous allocation, most features | Unlimited or custom, all features |
-| Support | Community, docs, email | Priority email, chat | Dedicated CSM, phone, SLA |
-| Security | Basic (shared infra) | SOC 2, SSO | SOC 2, SSO, SAML, audit logs, custom deployment |
-| Contract | Monthly, no commitment | Monthly or annual | Annual or multi-year |
-| Target buyer | Individual, small team, evaluator | Growing team, department | Procurement, IT, C-suite |
+| Finalidade | Aquisição, teste, autoatendimento | Principal impulsionador da receita | Expansão, contas de alto valor |
+| Preços | Grátis ou $ 0-49/mês | $ 49-499/mês | Personalizado ($500-5.000+/mês) |
+| Limites de utilização | Capas rígidas, recursos limitados | Alocação generosa, a maioria dos recursos | Ilimitado ou personalizado, todos os recursos |
+| Suporte | Comunidade, documentos, email | E-mail prioritário, chat | CSM dedicado, telefone, SLA
 
-### Pricing Page Design Principles
+|
+| Segurança | Básico (infracompartilhado) | SOC 2, SSO | SOC 2, SSO, SAML, registros de auditoria, implantação personalizada |
+| Contrato | Mensalmente, sem compromisso | Mensal ou anual | Anual ou plurianual |
+| Comprador-alvo | Individual, equipe pequena, avaliador | Equipe, departamento em crescimento | Compras, TI, C-suite |
 
-- Lead with the value metric, not the feature list
-- Highlight the Pro tier (the one you want most buyers to pick)
-- Show annual pricing by default (higher LTV), monthly as option
-- Include a calculator for usage-based components
-- Enterprise = "Contact us" (never show a fixed price for enterprise)
-- Free tier should be generous enough to prove value but limited enough to create upgrade pressure
+### Princípios de design da página de preços
 
-### Feature Gating Strategy
+- Lidere com a métrica de valor, não com a lista de recursos
+- Destaque o nível Pro (aquele que você deseja que a maioria dos compradores escolha)
+- Mostrar preços anuais por padrão (LTV mais alto), mensalmente como opção
+- Inclui uma calculadora para componentes baseados em uso
+- Enterprise = "Fale conosco" (nunca mostre um preço fixo para empresa)
+- O nível gratuito deve ser generoso o suficiente para provar valor, mas limitado o suficiente para criar pressão de atualização
 
-| Gate Type | How It Works | Example |
+### Estratégia de controle de recursos
+
+| Tipo de portão | Como funciona | Exemplo |
 |---|---|---|
-| Usage cap | Limit volume of the core action | 100 resolutions/mo on Starter, 1,000 on Pro |
-| Feature gate | Lock advanced capabilities to higher tiers | Basic analytics on Starter, custom dashboards on Pro |
-| Quality gate | Restrict model quality or speed | Standard models on Starter, frontier models on Pro |
-| Support gate | Limit support access by tier | Community on Free, priority on Pro, dedicated on Enterprise |
-| Integration gate | Limit connections to other tools | 3 integrations on Starter, unlimited on Pro |
-| Team gate | Limit collaboration features | 1 user on Starter, 10 on Pro, unlimited on Enterprise |
+| Limite de uso | Limitar o volume da ação central | 100 resoluções/mês no Starter, 1.000 no Pro |
+| Portão de recurso | Bloqueie recursos avançados para níveis superiores | Análises básicas no Starter, painéis personalizados no Pro |
+| Portão de qualidade | Restringir a qualidade ou velocidade do modelo | Modelos padrão no Starter, modelos fronteiriços no Pro |
+| Portão de apoio | Limitar o acesso ao suporte por nível | Comunidade no Gratuito, prioridade no Pro
 
-## How Pricing Shapes Your GTM Organization
+, dedicado ao Enterprise |
+| Portão de integração | Limitar conexões com outras ferramentas | 3 integrações no Starter, ilimitadas no Pro |
+| Portão da equipe | Limitar recursos de colaboração | 1 usuário no Starter, 10 no Pro, ilimitado no Enterprise |
 
-The pricing model you choose reshapes your entire go-to-market motion. Pricing is not just a finance decision. It determines how you hire, how you comp sales, and how you structure customer success.
+## Como o preço molda sua organização GTM
 
-### Pricing Model to GTM Motion Map
+O modelo de precificação que você escolhe remodela todo o seu movimento de entrada no mercado. O preço não é apenas uma decisão financeira. Ele determina como você contrata, como compensa as vendas e como estrutura o sucesso do cliente.
 
-| Pricing Model | Sales Motion | Rep Profile | Comp Structure | CS Model |
+### Modelo de preços para mapa de movimento GTM
+
+| Modelo de preços | Movimento de vendas | Perfil do representante | Estrutura Comp | Modelo CS |
 |---|---|---|---|---|
-| Self-serve consumption | Product-led growth | No traditional reps; growth/product team | N/A or usage-based bonuses | Tech-touch, in-app |
-| Per-seat (copilot) | Sales-assisted | Traditional AE, land-and-expand | Quota on new ARR + expansion | Pooled CSM, seat expansion focus |
-| Outcome-based (agent) | Consultative sale | Solution engineer + AE hybrid | Quota on ARR + outcome volume bonus | High-touch, value realization |
-| Hybrid (base + usage) | Sales-assisted to enterprise | AE for enterprise, PLG for SMB | Quota on committed ARR + usage overage | Tiered (tech-touch to dedicated) |
-| BYOK + platform fee | Developer-led, community-driven | Developer advocates + enterprise AE | Quota on platform ARR | Community + enterprise CSM |
+| Consumo de autoatendimento | Crescimento liderado pelo produto | Sem repetições tradicionais; equipe de crescimento/produto | N/A ou bônus baseados no uso | Toque tecnológico, no aplicativo |
+| Por assento (copiloto) | Assistido por vendas | AE tradicional, pousar e expandir | Cota na nova expansão ARR + | CSM agrupado, foco na expansão de assentos |
+| Baseado em resultados (agente) | Venda consultiva | Engenheiro de soluções + AE hyb
 
-### Sales Compensation Design by Pricing Model
+livrar | Cota sobre ARR + bônus de volume de resultados | Realização de valor de alto contato |
+| Híbrido (base + uso) | Vendas assistidas para empresas | AE para empresas, PLG para pequenas e médias empresas | Quota sobre ARR comprometida + excedente de utilização | Em camadas (tech-touch para dedicado) |
+| BYOK + taxa de plataforma | Liderado pelo desenvolvedor, orientado pela comunidade | Defensores do desenvolvedor + AE empresarial | Cota na plataforma ARR | Comunidade + empresa CSM |
 
-**Consumption / usage-based:**
-- Comp on committed annual spend (not actual usage)
-- Overage/expansion bonus (10-20% of expansion revenue)
-- Clawback risk if customer downsizes within 6-12 months
-- AE role often merges with account management (AE owns full lifecycle)
+### Design de compensação de vendas por modelo de preços
 
-**Outcome-based:**
-- Comp on minimum commit + projected outcome volume
-- Bonus tied to customer value realization (if customer hits usage milestones)
-- Longer sales cycles = higher base salary ratio (60/40 base/variable vs. 50/50)
-- Requires reps who can quantify ROI and run business cases
+**Consumo/com base no uso:**
+- Compensação pelo gasto anual comprometido (não pelo uso real)
+- Bônus excedente/expansão (10-20% da receita de expansão)
+- Risco de recuperação se o cliente reduzir o tamanho dentro de 6 a 12 meses
+- A função do AE geralmente se funde com o gerenciamento de contas (o AE possui o ciclo de vida completo)
 
-**Hybrid:**
-- Comp on committed platform fee (the predictable component)
-- Expansion bonus for usage/outcome growth above baseline
-- Quota split: 70% new logo, 30% expansion (or separate expansion team)
-- Works with traditional AE + CSM split
+**Com base em resultados:**
+- Compromisso mínimo + volume de resultado projetado
+- Bônus vinculado à realização de valor para o cliente (se o cliente atingir os marcos de uso)
+- Ciclos de vendas mais longos = proporção salarial base mais alta (60/40 base/variável vs. 50/50)
+- Requer representantes que possam quantificar o ROI e executar casos de negócios
 
-### Organizational Structure Impact
+**Híbrido:**
+- Comp na taxa de plataforma comprometida (o componente previsível)
+- Bônus de expansão para crescimento de uso/resultado acima da linha de base
+- Divisão de cota: 70% de novo logotipo, 30% de expansão (ou equipe de expansão separada)
+- Funciona com divisão AE + CSM tradicional
 
-```
+### Impacto na Estrutura Organizacional```
 CONSUMPTION PRICING                    OUTCOME PRICING
 +-----------------------+              +-----------------------+
 | Growth / PLG Team     |              | Solutions AE          |
@@ -221,89 +239,99 @@ PER-SEAT PRICING                       HYBRID PRICING
 | CSM (pooled)          |              | Tiered CSM            |
 | (drive seat expansion)|              | (tech-touch to high)  |
 +-----------------------+              +-----------------------+
-```
+````
 
-## Pricing Migration Strategy
+## Estratégia de migração de preços
 
-If you are moving from an existing pricing model (typically per-seat) to a new model (usage, outcome, hybrid), you need a migration plan that does not destroy existing revenue.
+Se você estiver migrando de um modelo de preços existente (normalmente por assento) para um novo modelo (uso, resultado, híbrido), precisará de um plano de migração que não destrua a receita existente.
 
-### Migration Playbook
+### Manual de migração
 
-| Phase | Duration | Actions |
-|---|---|---|
-| 1. Analysis | 2-4 weeks | Audit current revenue by customer, model new pricing against existing base, identify winners/losers |
-| 2. Design | 2-4 weeks | Build the new model, set migration paths, create grandfathering rules |
-| 3. Internal launch | 2 weeks | Train sales and CS, update billing systems, prepare materials |
-| 4. Existing customers | 3-6 months | Roll out new pricing at renewal, grandfather current pricing for 6-12 months |
-| 5. New customers | Immediate | All new customers on new pricing from day one |
-| 6. Full migration | 12-18 months | Convert all grandfathered customers, retire old model |
+| Fase                   | Duração     | Ações                                                                                                                    |
+| ---------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------ |
+| 1. Análise             | 2-4 semanas | Auditar a receita atual por cliente, modelar novos preços em relação à base existente, identificar vencedores/perdedores |
+| 2. Projeto             | 2-4 semanas | Construir o novo modelo, definir caminhos de migração, criar regras de salvaguarda                                       |
+| 3. Lançamento interno  | 2 semanas   | Treinar vendas e CS, atualizar sistemas de faturamento, preparar materiais                                               |
+| 4. Clientes existentes | 3-6 meses   | Implemente novos preços na renovação, grandfat                                                                           |
 
-### Grandfathering Rules
+seu preço atual para 6 a 12 meses |
+| 5. Novos clientes | Imediato | Todos os novos clientes com novos preços desde o primeiro dia |
+| 6. Migração completa | 12-18 meses | Converter todos os clientes adquiridos, aposentar o modelo antigo |
 
-- Lock existing customers at current pricing until next renewal
-- At renewal, offer choice: migrate to new model or accept 10-15% price increase on old model
-- Never force migration mid-contract
-- Provide a savings calculator showing how new model benefits high-usage customers
-- Set a hard sunset date for old pricing (12-18 months out)
+### Regras de avô
 
-## Competitive Pricing Analysis Framework
+- Bloquear clientes existentes com preços atuais até a próxima renovação
+- Na renovação, ofereça a opção: migrar para o novo modelo ou aceitar aumento de preço de 10 a 15% no modelo antigo
+- Nunca force a migração no meio do contrato
+- Fornecer uma calculadora de economia mostrando como o novo modelo beneficia os clientes com alto uso
+- Defina uma data de encerramento definitiva para preços antigos (12 a 18 meses antes)
 
-### Positioning Matrix
+## Estrutura de análise de preços competitivos
 
-```
+### Matriz de Posicionamento```
+
                     HIGH PRICE
                         |
      Premium/Enterprise |  Outcome-Based
      (Harvey, Glean)    |  (Sierra, Intercom Fin)
                         |
-  LOW VALUE ------------|------------ HIGH VALUE
-                        |
-     Commodity/API      |  Value Leader
-     (Open-source,BYOK) |  (Mid-tier SaaS + AI)
-                        |
-                    LOW PRICE
+
+LOW VALUE ------------|------------ HIGH VALUE
+|
+Commodity/API | Value Leader
+(Open-source,BYOK) | (Mid-tier SaaS + AI)
+|
+LOW PRICE
+
 ```
+### Manual de Resposta Competitiva
 
-### Competitive Response Playbook
-
-| Competitor Move | Your Response | Do NOT |
+| Movimento do Concorrente | Sua resposta | NÃO |
 |---|---|---|
-| Drops price 30%+ | Hold price, emphasize ROI and outcomes | Race to the bottom |
-| Launches free tier | Add a free tier if you do not have one, make it generous | Ignore it hoping it goes away |
-| Moves to outcome pricing | Evaluate your outcome measurability, test with segment | Copy without clear outcome attribution |
-| Bundles AI into platform | Unbundle and show superior depth in your niche | Try to out-bundle a platform player |
-| Offers BYOK | Decide based on your archetype (see BYOK section) | Offer BYOK reactively without a strategy |
+| Reduz o preço em 30% + | Mantenha o preço, enfatize o ROI e os resultados | Corrida para o fundo |
+| Lança nível gratuito | Adicione um nível gratuito se você não tiver um, seja generoso | Ignore esperando que desapareça |
+| Muda para precificação de resultados | Avalie a mensurabilidade do seu resultado, teste com segmento | Cópia sem atribuição clara de resultado |
+| Agrupa IA na plataforma | Desempacote e mostre profundidade superior em você
 
-## Anti-Patterns in AI Pricing
+seu nicho | Tente agrupar um player de plataforma |
+| Ofertas BYOK | Decida com base no seu arquétipo (consulte a seção BYOK) | Oferecer BYOK de forma reativa sem estratégia |
 
-| Anti-Pattern | Why It Fails | What to Do Instead |
+## Antipadrões em preços de IA
+
+| Antipadrão | Por que falha | O que fazer em vez disso |
 |---|---|---|
-| Per-seat pricing for agents | Agents replace humans; per-seat penalizes the buyer for success | Use outcome or workflow pricing |
-| Flat monthly fee with unlimited AI usage | Margins collapse as power users scale | Add usage caps or hybrid model |
-| Pricing anchored to model costs | Model costs change rapidly; you reprice constantly | Use credits to abstract model costs |
-| Free tier with no upgrade pressure | Users never convert; you fund their usage forever | Set clear usage limits that create natural friction |
-| Enterprise-only pricing (no self-serve) | Misses bottoms-up adoption; slower sales cycles | Add a self-serve tier for discovery and small teams |
-| Outcome pricing without outcome attribution | Disputes over what counts as "resolved" or "qualified" | Define outcomes precisely in contract with measurement methodology |
-| Charging per token to non-technical buyers | Buyer cannot predict or understand their bill | Use credits, tasks, or outcomes instead |
+| Preços por assento para agentes | Os agentes substituem os humanos; por assento penaliza o comprador pelo sucesso | Use preços de resultado ou fluxo de trabalho |
+| Taxa mensal fixa com uso ilimitado de IA | As margens desabam à medida que os usuários avançados aumentam | Adicionar limites de uso ou modelo híbrido |
+| Preços ancorados nos custos do modelo | Os custos do modelo mudam rapidamente; você reavalia constantemente | Use créditos para abstrair os custos do modelo |
+| Livre
 
-## Pricing Experimentation
+nível sem pressão de atualização | Os usuários nunca convertem; você financia seu uso para sempre | Estabeleça limites de uso claros que criem atrito natural |
+| Preços somente empresariais (sem autoatendimento) | Perde a adoção de baixo para cima; ciclos de vendas mais lentos | Adicione um nível de autoatendimento para descoberta e equipes pequenas |
+| Precificação de resultados sem atribuição de resultados | Disputas sobre o que é considerado "resolvido" ou "qualificado" | Defina os resultados precisamente em contrato com a medição atendida
 
-### What to Test and How
+hodologia |
+| Cobrança por token para compradores não técnicos | O comprador não consegue prever ou compreender sua fatura | Use créditos, tarefas ou resultados |
 
-| Test | Method | Duration | Success Metric |
+## Experimentação de preços
+
+### O que testar e como
+
+| Teste | Método | Duração | Métrica de sucesso |
 |---|---|---|---|
-| Price point | A/B test on pricing page | 4-8 weeks | Conversion rate, ARPU |
-| Tier structure | Cohort test (new customers only) | 8-12 weeks | Tier distribution, expansion rate |
-| Charge metric | Segment test (e.g., SMB vs. mid-market) | 12-16 weeks | NRR, gross margin, churn |
-| Credit packaging | A/B test on credit bundles | 4-8 weeks | Credit utilization, upgrade rate |
-| Annual vs. monthly | Default annual with monthly option | 8-12 weeks | Annual mix, LTV |
+| Preço | Teste A/B na página de preços | 4-8 semanas | Taxa de conversão, ARPU |
+| Estrutura de níveis | Teste de coorte (apenas novos clientes) | 8-12 semanas | Distribuição de níveis, taxa de expansão |
+| Métrica de cobrança | Teste de segmento (por exemplo, SMB vs. mercado intermediário) | 12-16 semanas | NRR, margem bruta, rotatividade |
+| Embalagem de crédito | Teste A/B em pacotes de crédito | 4-8 semanas | Utilização de crédito, taxa de atualização |
+| Ano
 
-### Pricing Review Cadence
+al vs. mensalmente | Anual padrão com opção mensal | 8-12 semanas | Mix anual, LTV |
 
-- **Monthly:** Track unit economics (CPT, CPR, CPAM), margin trends, usage patterns
-- **Quarterly:** Review tier distribution, expansion rates, competitive landscape
-- **Semi-annually:** Evaluate charge metric fit, consider model changes
-- **Annually:** Full pricing review, publish updated pricing (if changing publicly)
+### Cadência de revisão de preços
+
+- **Mensalmente:** Acompanhe a economia da unidade (CPT, CPR, CPAM), tendências de margem, padrões de uso
+- **Trimestralmente:** Revise a distribuição de níveis, taxas de expansão e cenário competitivo
+- **Semestralmente:** Avaliar o ajuste da métrica de cobrança, considerar alterações no modelo
+- **Anualmente:** Revisão completa de preços, publicação de preços atualizados (se houver alteração pública)
 
 ---
-
+```

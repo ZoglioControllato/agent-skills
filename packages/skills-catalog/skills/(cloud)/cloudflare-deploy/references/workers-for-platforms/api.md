@@ -117,19 +117,19 @@ curl -X POST ".../workers/assets/upload?base64=true" \
 # Returns: completion jwt
 ```
 
-**Multiple buckets:** Upload to all returned bucket URLs (typically 2 for redundancy) using same JWT and hash.
+**Vários buckets:** Faça upload para todos os URLs de bucket retornados (normalmente 2 para redundância) usando o mesmo JWT e hash.
 
-### 3. Deploy with Assets
+### 3. Implantar com ativos```bash
 
-```bash
 curl -X PUT ".../scripts/$SCRIPT_NAME" \
-  -F 'metadata={
-    "main_module": "index.js",
-    "assets": {"jwt": "<COMPLETION_TOKEN>"},
-    "bindings": [{"type": "assets", "name": "ASSETS"}]
-  };type=application/json' \
-  -F 'index.js=export default {...};type=application/javascript+module'
-```
+ -F 'metadata={
+"main_module": "index.js",
+"assets": {"jwt": "<COMPLETION_TOKEN>"},
+"bindings": [{"type": "assets", "name": "ASSETS"}]
+};type=application/json' \
+ -F 'index.js=export default {...};type=application/javascript+module'
+
+````
 
 **Asset Isolation:** Assets shared across namespace by default. For customer isolation, salt hash: `sha256(customerId + fileContents).slice(0, 32)`
 
@@ -145,7 +145,7 @@ export default {
     return await userWorker.fetch(request)
   },
 }
-```
+````
 
 ### Path Routing
 

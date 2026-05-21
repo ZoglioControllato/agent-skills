@@ -1,15 +1,15 @@
 ---
-title: Prevent Waterfall Chains in API Routes
+title: Evitar cadeias em cascata em rotas de API
 impact: CRITICAL
-impactDescription: 2-10× improvement
-tags: api-routes, server-actions, waterfalls, parallelization
+impactDescription: melhoria de 2-10×
+tags: rotas api, ações do servidor, cascatas, paralelização
 ---
 
-## Prevent Waterfall Chains in API Routes
+## Impedir cadeias em cascata em rotas de API
 
-In API routes and Server Actions, start independent operations immediately, even if you don't await them yet.
+Nas rotas API e Ações do Servidor, inicie operações independentes imediatamente, mesmo que ainda não as espere.
 
-**Incorrect (config waits for auth, data waits for both):**
+**Incorreto (a configuração aguarda autenticação, os dados aguardam ambos):**
 
 ```typescript
 export async function GET(request: Request) {
@@ -20,19 +20,16 @@ export async function GET(request: Request) {
 }
 ```
 
-**Correct (auth and config start immediately):**
+**Correto (autenticação e configuração iniciam imediatamente):**
 
 ```typescript
 export async function GET(request: Request) {
   const sessionPromise = auth()
   const configPromise = fetchConfig()
   const session = await sessionPromise
-  const [config, data] = await Promise.all([
-    configPromise,
-    fetchData(session.user.id)
-  ])
+  const [config, data] = await Promise.all([configPromise, fetchData(session.user.id)])
   return Response.json({ data, config })
 }
 ```
 
-For operations with more complex dependency chains, use `better-all` to automatically maximize parallelism (see Dependency-Based Parallelization).
+Para operações com cadeias de dependências mais complexas, use `better-all` para maximizar automaticamente o paralelismo (consulte Paralelização Baseada em Dependência).

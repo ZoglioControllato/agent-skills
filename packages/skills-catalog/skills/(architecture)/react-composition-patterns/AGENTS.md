@@ -1,92 +1,80 @@
-# React Composition Patterns
+# Padrões de composição de reação
 
-**Version 1.0.0**  
-Engineering  
-January 2026
+**Versão 1.0.0**  
+Engenharia  
+Janeiro de 2026
 
-> **Note:**  
-> This document is mainly for agents and LLMs to follow when maintaining,  
-> generating, or refactoring React codebases using composition. Humans  
-> may also find it useful, but guidance here is optimized for automation  
-> and consistency by AI-assisted workflows.
-
----
-
-## Abstract
-
-Composition patterns for building flexible, maintainable React components. Avoid boolean prop proliferation by using compound components, lifting state, and composing internals. These patterns make codebases easier for both humans and AI agents to work with as they scale.
+> **Nota:**  
+> Este documento é principalmente para agentes e LLMs seguirem durante a manutenção,  
+> gerar ou refatorar bases de código React usando composição. Humanos  
+> também pode ser útil, mas a orientação aqui é otimizada para automação  
+> e consistência por fluxos de trabalho assistidos por IA.
 
 ---
 
-## Table of Contents
+## Resumo
 
-1. [Component Architecture](#1-component-architecture) — **HIGH**
-   - 1.1 [Avoid Boolean Prop Proliferation](#11-avoid-boolean-prop-proliferation)
-   - 1.2 [Use Compound Components](#12-use-compound-components)
-2. [State Management](#2-state-management) — **MEDIUM**
-   - 2.1 [Decouple State Management from UI](#21-decouple-state-management-from-ui)
-   - 2.2 [Define Generic Context Interfaces for Dependency Injection](#22-define-generic-context-interfaces-for-dependency-injection)
-   - 2.3 [Lift State into Provider Components](#23-lift-state-into-provider-components)
-3. [Implementation Patterns](#3-implementation-patterns) — **MEDIUM**
-   - 3.1 [Create Explicit Component Variants](#31-create-explicit-component-variants)
-   - 3.2 [Prefer Composing Children Over Render Props](#32-prefer-composing-children-over-render-props)
-4. [React 19 APIs](#4-react-19-apis) — **MEDIUM**
-   - 4.1 [React 19 API Changes](#41-react-19-api-changes)
+Padrões de composição para construir componentes React flexíveis e de fácil manutenção. Evite a proliferação de props booleanos usando componentes compostos, levantando estados e compondo componentes internos. Esses padrões tornam as bases de código mais fáceis para humanos e agentes de IA trabalharem à medida que aumentam.
 
 ---
 
-## 1. Component Architecture
+## Índice
 
-**Impact: HIGH**
+1. [Arquitetura de componentes](arquitetura de componentes nº 1) — **ALTA**
+   - 1.1 [Evitar a proliferação de props booleanos](#11-evitar-proliferação de props booleanos)
+   - 1.2 [Usar componentes compostos](#12-use-compound-components)
+2. [Gestão Estadual](#2-gestão estadual) — **MÉDIO**
+   - 2.1 [Desacoplar gerenciamento de estado da UI](#21-desacoplar gerenciamento de estado da interface do usuário)
+   - 2.2 [Definir interfaces de contexto genérico para injeção de dependência](#22-define-generic-context-i
 
-Fundamental patterns for structuring components to avoid prop
-proliferation and enable flexible composition.
+interfaces para injeção de dependência)
 
-### 1.1 Avoid Boolean Prop Proliferation
+- 2.3 [Lift State into Provider Components](#23-lift-state-into-provider-components)
 
-**Impact: CRITICAL (prevents unmaintainable component variants)**
+3. [Padrões de implementação](#3-padrões de implementação) — **MÉDIO**
+   - 3.1 [Criar variantes de componentes explícitos](#31-create-explicit-component-variants)
+   - 3.2 [Prefira compor filhos em vez de adereços de renderização](#32-preferir-compor-filhos-em vez de adereços de renderização)
+4. [APIs React 19](#4-react-19-apis) — **MÉDIO**
+   - 4.1 [Reagir
 
-Don't add boolean props like `isThread`, `isEditing`, `isDMThread` to customize
+19 alterações de API](#41-react-19-api-changes)
 
-component behavior. Each boolean doubles possible states and creates
+---
 
-unmaintainable conditional logic. Use composition instead.
+## 1. Arquitetura de Componentes
 
-**Incorrect: boolean props create exponential complexity**
+**Impacto: ALTO**
+
+Padrões fundamentais para estruturar componentes para evitar prop
+proliferação e permitir uma composição flexível.
+
+### 1.1 Evite a proliferação de objetos booleanos
+
+**Impacto: CRÍTICO (evita variantes de componentes que não podem ser mantidas)**
+
+Não adicione adereços booleanos como `isThread`, `isEditing`, `isDMThread` para personalizar
+
+comportamento do componente. Cada booleano duplica estados possíveis e cria
+
+lógica condicional insustentável. Em vez disso, use composição.
+
+**Incorreto: adereços booleanos criam complexidade exponencial**
 
 ```tsx
-function Composer({
-  onSubmit,
-  isThread,
-  channelId,
-  isDMThread,
-  dmId,
-  isEditing,
-  isForwarding,
-}: Props) {
+function Composer({ onSubmit, isThread, channelId, isDMThread, dmId, isEditing, isForwarding }: Props) {
   return (
     <form>
       <Header />
       <Input />
-      {isDMThread ? (
-        <AlsoSendToDMField id={dmId} />
-      ) : isThread ? (
-        <AlsoSendToChannelField id={channelId} />
-      ) : null}
-      {isEditing ? (
-        <EditActions />
-      ) : isForwarding ? (
-        <ForwardActions />
-      ) : (
-        <DefaultActions />
-      )}
+      {isDMThread ? <AlsoSendToDMField id={dmId} /> : isThread ? <AlsoSendToChannelField id={channelId} /> : null}
+      {isEditing ? <EditActions /> : isForwarding ? <ForwardActions /> : <DefaultActions />}
       <Footer onSubmit={onSubmit} />
     </form>
   )
 }
 ```
 
-**Correct: composition eliminates conditionals**
+**Correto: a composição elimina condicionais**
 
 ```tsx
 // Channel composer
@@ -137,31 +125,24 @@ function EditComposer() {
 }
 ```
 
-Each variant is explicit about what it renders. We can share internals without
+Cada variante é explícita sobre o que ela renderiza. Podemos compartilhar internos sem
 
-sharing a single monolithic parent.
+compartilhando um único pai monolítico.
 
-### 1.2 Use Compound Components
+### 1.2 Use componentes compostos
 
-**Impact: HIGH (enables flexible composition without prop drilling)**
+**Impacto: ALTO (permite composição flexível sem perfuração de hélice)**
 
-Structure complex components as compound components with a shared context. Each
+Estruture componentes complexos como componentes compostos com um contexto compartilhado. Cada
 
-subcomponent accesses shared state via context, not props. Consumers compose the
+O subcomponente acessa o estado compartilhado por meio de contexto, não de adereços. Os consumidores compõem o
 
-pieces they need.
+peças que eles precisam.
 
-**Incorrect: monolithic component with render props**
+**Incorreto: componente monolítico com adereços de renderização**
 
 ```tsx
-function Composer({
-  renderHeader,
-  renderFooter,
-  renderActions,
-  showAttachments,
-  showFormatting,
-  showEmojis,
-}: Props) {
+function Composer({ renderHeader, renderFooter, renderActions, showAttachments, showFormatting, showEmojis }: Props) {
   return (
     <form>
       {renderHeader?.()}
@@ -181,17 +162,13 @@ function Composer({
 }
 ```
 
-**Correct: compound components with shared context**
+**Correto: componentes compostos com contexto compartilhado**
 
 ```tsx
 const ComposerContext = createContext<ComposerContextValue | null>(null)
 
 function ComposerProvider({ children, state, actions, meta }: ProviderProps) {
-  return (
-    <ComposerContext value={{ state, actions, meta }}>
-      {children}
-    </ComposerContext>
-  )
+  return <ComposerContext value={{ state, actions, meta }}>{children}</ComposerContext>
 }
 
 function ComposerFrame({ children }: { children: React.ReactNode }) {
@@ -205,11 +182,7 @@ function ComposerInput() {
     meta: { inputRef },
   } = use(ComposerContext)
   return (
-    <TextInput
-      ref={inputRef}
-      value={state.input}
-      onChangeText={(text) => update((s) => ({ ...s, input: text }))}
-    />
+    <TextInput ref={inputRef} value={state.input} onChangeText={(text) => update((s) => ({ ...s, input: text }))} />
   )
 }
 
@@ -234,7 +207,7 @@ const Composer = {
 }
 ```
 
-**Usage:**
+**Uso:**
 
 ```tsx
 <Composer.Provider state={state} actions={actions} meta={meta}>
@@ -249,28 +222,28 @@ const Composer = {
 </Composer.Provider>
 ```
 
-Consumers explicitly compose exactly what they need. No hidden conditionals. And the state, actions and meta are dependency-injected by a parent provider, allowing multiple usages of the same component structure.
+Os consumidores compõem explicitamente exatamente o que precisam. Sem condicionais ocultas. E o estado, as ações e o meta são injetados com dependência por um provedor pai, permitindo vários usos da mesma estrutura de componentes.
 
 ---
 
-## 2. State Management
+## 2. Gestão do Estado
 
-**Impact: MEDIUM**
+**Impacto: MÉDIO**
 
-Patterns for lifting state and managing shared context across
-composed components.
+Padrões para elevar o estado e gerenciar o contexto compartilhado entre
+componentes compostos.
 
-### 2.1 Decouple State Management from UI
+### 2.1 Desacoplar o gerenciamento de estado da UI
 
-**Impact: MEDIUM (enables swapping state implementations without changing UI)**
+**Impacto: MÉDIO (permite a troca de implementações de estado sem alterar a UI)**
 
-The provider component should be the only place that knows how state is managed.
+O componente provedor deve ser o único local que sabe como o estado é gerenciado.
 
-UI components consume the context interface—they don't know if state comes from
+Os componentes da UI consomem a interface de contexto – eles não sabem se o estado vem
 
-useState, Zustand, or a server sync.
+useState, Zustand ou uma sincronização de servidor.
 
-**Incorrect: UI coupled to state implementation**
+**Incorreto: IU acoplada à implementação de estado**
 
 ```tsx
 function ChannelComposer({ channelId }: { channelId: string }) {
@@ -280,36 +253,23 @@ function ChannelComposer({ channelId }: { channelId: string }) {
 
   return (
     <Composer.Frame>
-      <Composer.Input
-        value={state.input}
-        onChange={(text) => sync.updateInput(text)}
-      />
+      <Composer.Input value={state.input} onChange={(text) => sync.updateInput(text)} />
       <Composer.Submit onPress={() => sync.submit()} />
     </Composer.Frame>
   )
 }
 ```
 
-**Correct: state management isolated in provider**
+**Correto: gerenciamento de estado isolado no provedor**
 
 ```tsx
 // Provider handles all state management details
-function ChannelProvider({
-  channelId,
-  children,
-}: {
-  channelId: string
-  children: React.ReactNode
-}) {
+function ChannelProvider({ channelId, children }: { channelId: string; children: React.ReactNode }) {
   const { state, update, submit } = useGlobalChannel(channelId)
   const inputRef = useRef(null)
 
   return (
-    <Composer.Provider
-      state={state}
-      actions={{ update, submit }}
-      meta={{ inputRef }}
-    >
+    <Composer.Provider state={state} actions={{ update, submit }} meta={{ inputRef }}>
       {children}
     </Composer.Provider>
   )
@@ -338,7 +298,7 @@ function Channel({ channelId }: { channelId: string }) {
 }
 ```
 
-**Different providers, same UI:**
+**Provedores diferentes, mesma IU:**
 
 ```tsx
 // Local state for ephemeral forms
@@ -347,10 +307,7 @@ function ForwardMessageProvider({ children }) {
   const forwardMessage = useForwardMessage()
 
   return (
-    <Composer.Provider
-      state={state}
-      actions={{ update: setState, submit: forwardMessage }}
-    >
+    <Composer.Provider state={state} actions={{ update: setState, submit: forwardMessage }}>
       {children}
     </Composer.Provider>
   )
@@ -368,27 +325,27 @@ function ChannelProvider({ channelId, children }) {
 }
 ```
 
-The same `Composer.Input` component works with both providers because it only
+O mesmo componente `Composer.Input` funciona com ambos os provedores porque apenas
 
-depends on the context interface, not the implementation.
+depende da interface de contexto, não da implementação.
 
-### 2.2 Define Generic Context Interfaces for Dependency Injection
+### 2.2 Definir interfaces de contexto genéricas para injeção de dependência
 
-**Impact: HIGH (enables dependency-injectable state across use-cases)**
+**Impacto: ALTO (permite estado injetável de dependência em casos de uso)**
 
-Define a **generic interface** for your component context with three parts:
+Defina uma **interface genérica** para o contexto do seu componente com três partes:
 
-`state`, `actions`, and `meta`. This interface is a contract that any provider
+`estado`, `ações` e `meta`. Esta interface é um contrato que qualquer provedor
 
-can implement—enabling the same UI components to work with completely different
+pode implementar - permitindo que os mesmos componentes de UI funcionem com diferentes
 
-state implementations.
+implementações estaduais.
 
-**Core principle:** Lift state, compose internals, make state
+**Princípio fundamental:** Elevar o estado, compor os internos, criar o estado
 
-dependency-injectable.
+injetável por dependência.
 
-**Incorrect: UI coupled to specific state implementation**
+**Incorreto: IU acoplada à implementação de estado específico**
 
 ```tsx
 function ComposerInput() {
@@ -398,7 +355,7 @@ function ComposerInput() {
 }
 ```
 
-**Correct: generic interface enables dependency injection**
+**Correto: interface genérica permite injeção de dependência**
 
 ```tsx
 // Define a GENERIC interface that any provider can implement
@@ -426,7 +383,7 @@ interface ComposerContextValue {
 const ComposerContext = createContext<ComposerContextValue | null>(null)
 ```
 
-**UI components consume the interface, not the implementation:**
+**Os componentes da UI consomem a interface, não a implementação:**
 
 ```tsx
 function ComposerInput() {
@@ -447,7 +404,7 @@ function ComposerInput() {
 }
 ```
 
-**Different providers implement the same interface:**
+**Provedores diferentes implementam a mesma interface:**
 
 ```tsx
 // Provider A: Local state for ephemeral forms
@@ -488,7 +445,7 @@ function ChannelProvider({ channelId, children }: Props) {
 }
 ```
 
-**The same composed UI works with both:**
+**A mesma IU composta funciona com ambos:**
 
 ```tsx
 // Works with ForwardMessageProvider (local state)
@@ -508,7 +465,7 @@ function ChannelProvider({ channelId, children }: Props) {
 </ChannelProvider>
 ```
 
-**Custom UI outside the component can access state and actions:**
+**A UI personalizada fora do componente pode acessar estados e ações:**
 
 ```tsx
 function ForwardMessageDialog() {
@@ -552,33 +509,33 @@ function MessagePreview() {
 }
 ```
 
-The provider boundary is what matters—not the visual nesting. Components that
+O que importa é o limite do provedor, não o aninhamento visual. Componentes que
 
-need shared state don't have to be inside the `Composer.Frame`. They just need
+precisa de estado compartilhado não precisa estar dentro do `Composer.Frame`. Eles só precisam
 
-to be within the provider.
+estar dentro do provedor.
 
-The `ForwardButton` and `MessagePreview` are not visually inside the composer
+O `ForwardButton` e `MessagePreview` não estão visualmente dentro do compositor
 
-box, but they can still access its state and actions. This is the power of
+caixa, mas eles ainda podem acessar seu estado e ações. Este é o poder de
 
-lifting state into providers.
+elevando o estado a provedores.
 
-The UI is reusable bits you compose together. The state is dependency-injected
+A IU consiste em bits reutilizáveis ​​que você compõe juntos. O estado é injetado por dependência
 
-by the provider. Swap the provider, keep the UI.
+pelo provedor. Troque o provedor, mantenha a UI.
 
-### 2.3 Lift State into Provider Components
+### 2.3 Elevar o estado nos componentes do provedor
 
-**Impact: HIGH (enables state sharing outside component boundaries)**
+**Impacto: ALTO (permite o compartilhamento de estado fora dos limites do componente)**
 
-Move state management into dedicated provider components. This allows sibling
+Mova o gerenciamento de estado para componentes de provedor dedicados. Isso permite que o irmão
 
-components outside the main UI to access and modify state without prop drilling
+componentes fora da UI principal para acessar e modificar o estado sem perfuração de suporte
 
-or awkward refs.
+ou árbitros estranhos.
 
-**Incorrect: state trapped inside component**
+**Incorreto: estado preso dentro do componente**
 
 ```tsx
 function ForwardMessageComposer() {
@@ -608,7 +565,7 @@ function ForwardMessageDialog() {
 }
 ```
 
-**Incorrect: useEffect to sync state up**
+**Incorreto: useEffect para sincronizar o estado**
 
 ```tsx
 function ForwardMessageDialog() {
@@ -629,7 +586,7 @@ function ForwardMessageComposer({ onInputChange }) {
 }
 ```
 
-**Incorrect: reading state from ref on submit**
+**Incorreto: lendo o estado da referência no envio**
 
 ```tsx
 function ForwardMessageDialog() {
@@ -643,7 +600,7 @@ function ForwardMessageDialog() {
 }
 ```
 
-**Correct: state lifted to provider**
+**Correto: estado transferido para o provedor**
 
 ```tsx
 function ForwardMessageProvider({ children }: { children: React.ReactNode }) {
@@ -652,11 +609,7 @@ function ForwardMessageProvider({ children }: { children: React.ReactNode }) {
   const inputRef = useRef(null)
 
   return (
-    <Composer.Provider
-      state={state}
-      actions={{ update: setState, submit: forwardMessage }}
-      meta={{ inputRef }}
-    >
+    <Composer.Provider state={state} actions={{ update: setState, submit: forwardMessage }} meta={{ inputRef }}>
       {children}
     </Composer.Provider>
   )
@@ -683,51 +636,45 @@ function ForwardButton() {
 }
 ```
 
-The ForwardButton lives outside the Composer.Frame but still has access to the
+O ForwardButton reside fora do Composer.Frame, mas ainda tem acesso ao
 
-submit action because it's within the provider. Even though it's a one-off
+enviar ação porque está dentro do provedor. Mesmo que seja único
 
-component, it can still access the composer's state and actions from outside the
+componente, ele ainda pode acessar o estado e as ações do compositor de fora do
 
-UI itself.
+A própria interface do usuário.
 
-**Key insight:** Components that need shared state don't have to be visually
+**Princípio principal:** Componentes que precisam de estado compartilhado não precisam ser visualmente
 
-nested inside each other—they just need to be within the same provider.
+aninhados um dentro do outro – eles só precisam estar dentro do mesmo provedor.
 
 ---
 
-## 3. Implementation Patterns
+## 3. Padrões de implementação
 
-**Impact: MEDIUM**
+**Impacto: MÉDIO**
 
-Specific techniques for implementing compound components and
-context providers.
+Técnicas específicas para implementação de componentes compostos e
+provedores de contexto.
 
-### 3.1 Create Explicit Component Variants
+### 3.1 Criar variantes de componentes explícitos
 
-**Impact: MEDIUM (self-documenting code, no hidden conditionals)**
+**Impacto: MÉDIO (código autodocumentado, sem condicionais ocultas)**
 
-Instead of one component with many boolean props, create explicit variant
+Em vez de um componente com muitos adereços booleanos, crie uma variante explícita
 
-components. Each variant composes the pieces it needs. The code documents
+componentes. Cada variante compõe as peças que necessita. Os documentos de código
 
-itself.
+em si.
 
-**Incorrect: one component, many modes**
+**Incorreto: um componente, muitos modos**
 
 ```tsx
 // What does this component actually render?
-<Composer
-  isThread
-  isEditing={false}
-  channelId='abc'
-  showAttachments
-  showFormatting={false}
-/>
+<Composer isThread isEditing={false} channelId="abc" showAttachments showFormatting={false} />
 ```
 
-**Correct: explicit variants**
+**Correto: variantes explícitas**
 
 ```tsx
 // Immediately clear what this renders
@@ -740,11 +687,11 @@ itself.
 <ForwardMessageComposer messageId="123" />
 ```
 
-Each implementation is unique, explicit and self-contained. Yet they can each
+Cada implementação é única, explícita e independente. No entanto, cada um deles pode
 
-use shared parts.
+use partes compartilhadas.
 
-**Implementation:**
+**Implementação:**
 
 ```tsx
 function ThreadComposer({ channelId }: { channelId: string }) {
@@ -795,27 +742,27 @@ function ForwardMessageComposer({ messageId }: { messageId: string }) {
 }
 ```
 
-Each variant is explicit about:
+Cada variante é explícita sobre:
 
-- What provider/state it uses
+- Qual provedor/estado ele usa
 
-- What UI elements it includes
+- Quais elementos da interface do usuário ele inclui
 
-- What actions are available
+- Quais ações estão disponíveis
 
-No boolean prop combinations to reason about. No impossible states.
+Nenhuma combinação de objetos booleanos para raciocinar. Não há estados impossíveis.
 
-### 3.2 Prefer Composing Children Over Render Props
+### 3.2 Prefira composição infantil em vez de acessórios de renderização
 
-**Impact: MEDIUM (cleaner composition, better readability)**
+**Impacto: MÉDIO (composição mais limpa, melhor legibilidade)**
 
-Use `children` for composition instead of `renderX` props. Children are more
+Use `children` para composição em vez de adereços `renderX`. As crianças são mais
 
-readable, compose naturally, and don't require understanding callback
+legível, compõe naturalmente e não requer compreensão de retorno de chamada
 
-signatures.
+assinaturas.
 
-**Incorrect: render props**
+**Incorreto: adereços de renderização**
 
 ```tsx
 function Composer({
@@ -852,7 +799,7 @@ return (
 )
 ```
 
-**Correct: compound components with children**
+**Correto: componentes compostos com filhos**
 
 ```tsx
 function ComposerFrame({ children }: { children: React.ReactNode }) {
@@ -860,7 +807,7 @@ function ComposerFrame({ children }: { children: React.ReactNode }) {
 }
 
 function ComposerFooter({ children }: { children: React.ReactNode }) {
-  return <footer className='flex'>{children}</footer>
+  return <footer className="flex">{children}</footer>
 }
 
 // Usage is flexible
@@ -877,37 +824,34 @@ return (
 )
 ```
 
-**When render props are appropriate:**
+**Quando os adereços de renderização são apropriados:**
 
 ```tsx
 // Render props work well when you need to pass data back
-<List
-  data={items}
-  renderItem={({ item, index }) => <Item item={item} index={index} />}
-/>
+<List data={items} renderItem={({ item, index }) => <Item item={item} index={index} />} />
 ```
 
-Use render props when the parent needs to provide data or state to the child.
+Use adereços de renderização quando o pai precisar fornecer dados ou estado ao filho.
 
-Use children when composing static structure.
+Use filhos ao compor uma estrutura estática.
 
 ---
 
-## 4. React 19 APIs
+## 4. Reagir 19 APIs
 
-**Impact: MEDIUM**
+**Impacto: MÉDIO**
 
-React 19+ only. Don't use `forwardRef`; use `use()` instead of `useContext()`.
+Reaja apenas para maiores de 19 anos. Não use `forwardRef`; use `use()` em vez de `useContext()`.
 
-### 4.1 React 19 API Changes
+### 4.1 Alterações na API do React 19
 
-**Impact: MEDIUM (cleaner component definitions and context usage)**
+**Impacto: MÉDIO (definições de componentes e uso de contexto mais limpos)**
 
-> **⚠️ React 19+ only.** Skip this if you're on React 18 or earlier.
+> **⚠️ Somente React 19+.** Pule esta opção se você estiver no React 18 ou anterior.
 
-In React 19, `ref` is now a regular prop (no `forwardRef` wrapper needed), and `use()` replaces `useContext()`.
+No React 19, `ref` agora é um suporte regular (não é necessário wrapper `forwardRef`) e `use()` substitui `useContext()`.
 
-**Incorrect: forwardRef in React 19**
+**Incorreto: forwardRef no React 19**
 
 ```tsx
 const ComposerInput = forwardRef<TextInput, Props>((props, ref) => {
@@ -915,7 +859,7 @@ const ComposerInput = forwardRef<TextInput, Props>((props, ref) => {
 })
 ```
 
-**Correct: ref as a regular prop**
+**Correto: ref como um adereço regular**
 
 ```tsx
 function ComposerInput({ ref, ...props }: Props & { ref?: React.Ref<TextInput> }) {
@@ -923,23 +867,23 @@ function ComposerInput({ ref, ...props }: Props & { ref?: React.Ref<TextInput> }
 }
 ```
 
-**Incorrect: useContext in React 19**
+**Incorreto: useContext no React 19**
 
 ```tsx
 const value = useContext(MyContext)
 ```
 
-**Correct: use instead of useContext**
+**Correto: use em vez de useContext**
 
 ```tsx
 const value = use(MyContext)
 ```
 
-`use()` can also be called conditionally, unlike `useContext()`.
+`use()` também pode ser chamado condicionalmente, ao contrário de `useContext()`.
 
 ---
 
-## References
+## Referências
 
 1. [https://react.dev](https://react.dev)
 2. [https://react.dev/learn/passing-data-deeply-with-context](https://react.dev/learn/passing-data-deeply-with-context)

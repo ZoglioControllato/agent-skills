@@ -1,45 +1,45 @@
-# Brownfield Mapping
+# Mapeamento de brownfield
 
-**Trigger:** "Map codebase", "Analyze existing code", "Document current architecture"
+**Acionador:** "Mapear base de código", "Analisar código existente", "Documentar arquitetura atual"
 
-**Purpose:** Understand existing project structure before adding features.
+**Objetivo:** compreender a estrutura existente do projeto antes de adicionar recursos.
 
-## Process
+## Processo
 
-Before starting, check if the `codenavi` skill is available for code exploration (see Skill Integrations in SKILL.md). If available, prefer it for all discovery and navigation tasks below.
+Antes de começar, verifique se a habilidade `codenavi` está disponível para exploração de código (consulte Integrações de habilidades em SKILL.md). Se disponível, prefira-o para todas as tarefas de descoberta e navegação abaixo.
 
-**High-level approach:**
+**Abordagem de alto nível:**
 
-1. Explore directory structure systematically
-2. Identify technology stack from dependency manifests
-3. Extract patterns from representative code samples
-4. Document observed conventions and architectures
-5. Catalog external integrations
-6. Identify concerns: tech debt, known bugs, security risks, performance bottlenecks, fragile areas
+1. Explore a estrutura de diretórios sistematicamente
+2. Identifique a pilha de tecnologia a partir de manifestos de dependência
+3. Extraia padrões de amostras de código representativas
+4. Documente convenções e arquiteturas observadas
+5. Catalogue integrações externas
+6. Identifique preocupações: dívida tecnológica, bugs conhecidos, riscos de segurança, gargalos de desempenho, áreas frágeis
 
-**Analysis depth:**
+**Profundidade da análise:**
 
-- Sample 5-10 representative files per category
-- Focus on consistency and patterns, not exhaustive coverage
-- Extract actual examples, not assumptions
+- Amostra de 5 a 10 arquivos representativos por categoria
+- Concentre-se na consistência e nos padrões, não na cobertura exaustiva
+- Extraia exemplos reais, não suposições
 
-## Output: 7 Files in .specs/codebase/
+## Saída: 7 arquivos em .specs/codebase/
 
 ---
 
 ### 1. STACK.md
 
-**Purpose:** Document technology stack and dependencies.
+**Objetivo:** Documentar pilha de tecnologia e dependências.
 
-**Size limit:** 2,000 tokens (~1,200 words)
+**Limite de tamanho:** 2.000 tokens (aproximadamente 1.200 palavras)
 
-**Extract from:**
+** Extraído de: **
 
-- Dependency manifest files
-- Build configuration
-- Runtime configuration
+- Arquivos de manifesto de dependência
+- Configuração de compilação
+- Configuração de tempo de execução
 
-**Document:**
+**Documento:**
 
 ```markdown
 # Tech Stack
@@ -82,28 +82,28 @@ Before starting, check if the `codenavi` skill is available for code exploration
 - [Tool category]: [Tool name]
 ```
 
-**Instructions:**
+**Instruções:**
 
-- Extract from actual dependency files
-- Include versions for major dependencies
-- Categorize by purpose
-- Note testing frameworks explicitly
+- Extrair de arquivos de dependência reais
+- Incluir versões para dependências principais
+- Categorizar por propósito
+- Observe explicitamente as estruturas de teste
 
 ---
 
-### 2. ARCHITECTURE.md
+### 2. ARQUITETURA.md
 
-**Purpose:** Document architectural patterns and data flow.
+**Objetivo:** Documentar padrões de arquitetura e fluxo de dados.
 
-**Size limit:** 4,000 tokens (~2,400 words)
+**Limite de tamanho:** 4.000 tokens (aproximadamente 2.400 palavras)
 
-**Extract from:**
+** Extraído de: **
 
-- Directory organization
-- Code structure analysis
-- Repeated patterns across files
+- Organização de diretório
+- Análise da estrutura do código
+- Padrões repetidos em arquivos
 
-**Document:**
+**Documento:**
 
 ```markdown
 # Architecture
@@ -148,28 +148,28 @@ Before starting, check if the `codenavi` skill is available for code exploration
 [How code is divided into modules/packages]
 ```
 
-**Instructions:**
+**Instruções:**
 
-- Identify patterns from actual code, not assumptions
-- Document observed architectural decisions
-- Create flow diagrams for critical paths
-- Reference concrete examples from codebase
+- Identifique padrões de código real, não de suposições
+- Documentar decisões arquitetônicas observadas
+- Criar diagramas de fluxo para caminhos críticos
+- Referência de exemplos concretos da base de código
 
 ---
 
-### 3. CONVENTIONS.md
+### 3. CONVENÇÕES.md
 
-**Purpose:** Document code style and naming conventions.
+**Objetivo:** Estilo de código do documento e convenções de nomenclatura.
 
-**Size limit:** 3,000 tokens (~1,800 words)
+**Limite de tamanho:** 3.000 tokens (aproximadamente 1.800 palavras)
 
-**Extract from:**
+** Extraído de: **
 
-- Analyzing 5-10 representative files
-- Identifying consistent patterns
-- Observing actual conventions in use
+- Análise de 5 a 10 arquivos representativos
+- Identificação de padrões consistentes
+- Observando convenções reais em uso
 
-**Document:**
+**Documento:**
 
 ```markdown
 # Code Conventions
@@ -218,22 +218,22 @@ Examples: [actual constant names]
 [Example from actual code]
 ```
 
-**Instructions:**
+**Instruções:**
 
-- Extract patterns from actual code samples
-- Document observed conventions, not ideal conventions
-- Include concrete examples from codebase
-- Note exceptions or variations where found
+- Extraia padrões de amostras de código reais
+- Documente convenções observadas, não convenções ideais
+- Incluir exemplos concretos da base de código
+- Observe exceções ou variações quando encontradas
 
 ---
 
-### 4. STRUCTURE.md
+### 4. ESTRUTURA.md
 
-**Purpose:** Document directory layout and file organization.
+**Objetivo:** Layout do diretório de documentos e organização de arquivos.
 
-**Size limit:** 2,000 tokens (~1,200 words)
+**Limite de tamanho:** 2.000 tokens (aproximadamente 1.200 palavras)
 
-**Document:**
+**Documento:**
 
 ```markdown
 # Project Structure
@@ -275,22 +275,22 @@ Examples: [actual constant names]
 **Examples:** [key files in this directory]
 ```
 
-**Instructions:**
+**Instruções:**
 
-- Create tree view of actual directory structure
-- Limit depth to maintain readability
-- Document purpose of key directories
-- Map capabilities to physical locations
+- Crie uma visualização em árvore da estrutura de diretórios real
+- Limite a profundidade para manter a legibilidade
+- Documentar a finalidade dos principais diretórios
+- Mapear capacidades para locais físicos
 
 ---
 
-### 5. TESTING.md
+### 5. TESTE.md
 
-**Purpose:** Document testing infrastructure and patterns.
+**Objetivo:** Documentar a infraestrutura e os padrões de teste.
 
-**Size limit:** 4,000 tokens (~2,400 words)
+**Limite de tamanho:** 4.000 tokens (aproximadamente 2.400 palavras)
 
-**Document:**
+**Documento:**
 
 ```markdown
 # Testing Infrastructure
@@ -362,25 +362,31 @@ For each layer, document the required test type, file location pattern, and run 
 | Build      | After phase completion                 | [build + lint + unit + e2e] |
 ```
 
-**Instructions:**
+**Instruções:**
 
-- Identify test frameworks from dependencies and code
-- Document actual testing patterns observed
-- Note test organization approach
-- Include execution instructions
-- **Test Coverage Matrix:** Sample 5-10 existing test files to identify which layers are tested and how. Look at test file locations relative to source to determine patterns. Extract run commands from `package.json`, `project.json`, `Makefile`, CI config. Mark layers with no existing tests as "none" with a note in CONCERNS.md.
-- **Parallelism Assessment:** NOT parallel-safe signals: shared DB connection (same URL from config), table-level cleanup in `beforeEach`/`afterAll` (`.del()`, `DELETE FROM`, `TRUNCATE`), shared mock state reset on globals. Parallel-safe signals: per-test DB creation (Testcontainers, dynamic schema, SQLite in-memory), data namespacing (all data keyed by unique test ID), no shared mutable state between test files, all deps mocked (`jest.fn()`, `vi.fn()`).
-- **Gate Check Commands:** Extract from actual project commands — do not invent commands.
+- Identificar estruturas de teste a partir de dependências e código
+- Documentar padrões de teste reais observados
+- Observe a abordagem da organização do teste
+- Incluir instruções de execução
+- **Matriz de cobertura de teste:** Amostra de 5 a 10 arquivos de teste existentes para identificar quais camadas são testadas e como. Observe os locais dos arquivos de teste em relação à origem para determinar padrões. Extraia comandos de execução de `package.json`, `project.json`, `Makefile`, configuração CI. Marcar camadas sem nenhuma existente
+
+testes como "nenhum" com uma nota em CONCERNS.md.
+
+- **Avaliação de paralelismo:** Sinais NÃO seguros para paralelo: conexão de banco de dados compartilhada (mesma URL da configuração), limpeza em nível de tabela em `beforeEach`/`afterAll` (`.del()`, `DELETE FROM`, `TRUNCATE`), redefinição de estado simulado compartilhada em globais. Sinais de segurança paralela: criação de banco de dados por teste (Testcontainers, esquema dinâmico, SQLite na memória), namespace de dados (todos os dados codificados por ID de teste exclusivo), nenhum estado mutável compartilhado entre t
+
+est, todos os deps ridicularizados (`jest.fn()`, `vi.fn()`).
+
+- **Comandos de verificação de portão:** Extraia dos comandos reais do projeto - não invente comandos.
 
 ---
 
-### 6. INTEGRATIONS.md
+### 6. INTEGRAÇÕES.md
 
-**Purpose:** Document external service integrations.
+**Objetivo:** Documentar integrações de serviços externos.
 
-**Size limit:** 5,000 tokens (~3,000 words)
+**Limite de tamanho:** 5.000 tokens (aproximadamente 3.000 palavras)
 
-**Document:**
+**Documento:**
 
 ```markdown
 # External Integrations
@@ -421,35 +427,35 @@ For each layer, document the required test type, file location pattern, and run 
 **Jobs:** [key background jobs]
 ```
 
-**Instructions:**
+**Instruções:**
 
-- Identify integrations from code and configuration
-- Document authentication approaches
-- Note webhook handlers if present
-- Include background job infrastructure
-
----
-
-### 7. CONCERNS.md
-
-**Purpose:** Surface actionable warnings about the codebase — tech debt, known bugs, security gaps, performance bottlenecks, fragile areas, scaling limits, risky dependencies, missing features, and test coverage gaps.
-
-**Size limit:** 5,000 tokens (~3,000 words)
-
-See [concerns.md](concerns.md) for the full template, guidelines, and examples.
-
-**Instructions:**
-
-- Document only concerns backed by evidence (file paths, measurements, reproduction steps)
-- Include fix approaches, not just problems
-- Omit sections with no findings
-- Prioritize by risk/impact
-- Use professional, solution-oriented tone
+- Identificar integrações a partir de código e configuração
+- Abordagens de autenticação de documentos
+- Observe os manipuladores de webhook, se presentes
+- Incluir infraestrutura de trabalho em segundo plano
 
 ---
 
-## Total Context Budget
+### 7. PREOCUPAÇÕES.md
 
-**Combined:** ~19,000 tokens (10% of context window)
-**Acceptable for:** Brownfield projects requiring codebase understanding
-**Loading strategy:** Load relevant docs on-demand based on task
+**Objetivo:** Apresentar avisos acionáveis sobre a base de código: dívida tecnológica, bugs conhecidos, falhas de segurança, gargalos de desempenho, áreas frágeis, limites de escalabilidade, dependências arriscadas, recursos ausentes e lacunas na cobertura de testes.
+
+**Limite de tamanho:** 5.000 tokens (aproximadamente 3.000 palavras)
+
+Consulte [concerns.md](concerns.md) para obter o modelo completo, diretrizes e exemplos.
+
+**Instruções:**
+
+- Documente apenas questões respaldadas por evidências (caminhos de arquivos, medições, etapas de reprodução)
+- Incluir abordagens de correção, não apenas problemas
+- Omitir seções sem descobertas
+- Priorizar por risco/impacto
+- Use um tom profissional e orientado para a solução
+
+---
+
+## Orçamento de contexto total
+
+**Combinado:** aproximadamente 19.000 tokens (10% da janela de contexto)
+**Aceitável para:** Projetos brownfield que exigem compreensão da base de código
+**Estratégia de carregamento:** carregue documentos relevantes sob demanda com base na tarefa

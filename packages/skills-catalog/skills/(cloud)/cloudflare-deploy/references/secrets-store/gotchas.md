@@ -1,97 +1,92 @@
-# Gotchas
+# pegadinhas
 
-## Common Errors
+## Erros Comuns
 
-### ".get() Throws on Error"
+### ".get() gera erro"
 
-**Cause:** Assuming `.get()` returns null on failure instead of throwing  
-**Solution:** Always wrap `.get()` calls in try/catch blocks to handle errors gracefully
-
-```typescript
+**Causa:** Supondo que `.get()` retorne nulo em caso de falha em vez de lançar  
+**Solução:** Sempre envolva chamadas `.get()` em blocos try/catch para lidar com erros normalmente```typescript
 try {
-  const key = await env.API_KEY.get()
+const key = await env.API_KEY.get()
 } catch (error) {
-  return new Response('Configuration error', { status: 500 })
+return new Response('Configuration error', { status: 500 })
 }
-```
 
-### "Logging Secret Values"
+````
+### "Registrando Valores Secretos"
 
-**Cause:** Accidentally logging secret values in console or error messages  
-**Solution:** Only log metadata (e.g., "Retrieved API_KEY") never the actual secret value
+**Causa:** Registro acidental de valores secretos no console ou em mensagens de erro
+**Solução:** Registra apenas metadados (por exemplo, "API_KEY recuperada") e nunca o valor secreto real
 
-### "Module-Level Secret Access"
+### "Acesso secreto em nível de módulo"
 
-**Cause:** Attempting to access secrets during module initialization before env is available  
-**Solution:** Cache secrets in request scope only, not at module level
+**Causa:** Tentativa de acessar segredos durante a inicialização do módulo antes que o env esteja disponível
+**Solução:** Armazenar segredos em cache somente no escopo da solicitação, não no nível do módulo
 
-### "Secret not found in store"
+### "Segredo não encontrado na loja"
 
-**Cause:** Secret name doesn't exist, case mismatch, missing workers scope, or incorrect store_id  
-**Solution:** Verify secret exists with `wrangler secrets-store secret list <store-id> --remote`, check name matches exactly (case-sensitive), ensure secret has `workers` scope, and verify correct store_id
+**Causa:** O nome do segredo não existe, incompatibilidade de maiúsculas e minúsculas, escopo de trabalho ausente ou store_id incorreto
+**Solução:** Verifique se o segredo existe com `wrangler secrets-store secret list <store-id> --remote`, verifique se o nome corresponde exatamente (diferencia maiúsculas de minúsculas), certifique-se de que o segredo tenha o escopo `workers` e verifique o store_id correto
 
-### "Scope Mismatch"
+### "Incompatibilidade de escopo"
 
-**Cause:** Secret exists but missing `workers` scope (only has `ai-gateway` scope)  
-**Solution:** Update secret scopes: `wrangler secrets-store secret update <store-id> --name SECRET --scopes workers --remote` or add via Dashboard
+**Causa:** O segredo existe, mas falta o escopo `workers` (possui apenas o escopo `ai-gateway`)
+**Solução:** Atualizar escopos secretos: `wrangler secrets-store secret update <store-id> --name SECRET --scopes workers --remote` ou adicionar via Dashboard
 
-### "JSON Parsing Failure"
+### "Falha na análise JSON"
 
-**Cause:** Storing invalid JSON in secret, then failing to parse during runtime  
-**Solution:** Validate JSON before storing:
-
-```bash
+**Causa:** Armazenamento de JSON inválido em segredo e falha na análise durante o tempo de execução
+**Solução:** Valide o JSON antes de armazenar:```bash
 # Validate before storing
 echo '{"key":"value"}' | jq . && \
   echo '{"key":"value"}' | wrangler secrets-store secret create <store-id> \
     --name CONFIG --scopes workers --remote
-```
+````
 
-Runtime parsing with error handling:
-
-```typescript
+Análise de tempo de execução com tratamento de erros:```typescript
 try {
-  const configStr = await env.CONFIG.get()
-  const config = JSON.parse(configStr)
+const configStr = await env.CONFIG.get()
+const config = JSON.parse(configStr)
 } catch (error) {
-  console.error('Invalid config JSON:', error)
-  return new Response('Invalid configuration', { status: 500 })
+console.error('Invalid config JSON:', error)
+return new Response('Invalid configuration', { status: 500 })
 }
+
 ```
+### "Não é possível acessar o segredo no desenvolvedor local"
 
-### "Cannot access secret in local dev"
+**Causa:** Tentativa de acessar segredos de produção no ambiente de desenvolvimento local
+**Solução:** Crie segredos somente locais (sem sinalizador `--remote`) para desenvolvimento: `wrangler secrets-store secret create <store-id> --name API_KEY --scopes workers`
 
-**Cause:** Attempting to access production secrets in local development environment  
-**Solution:** Create local-only secrets (without `--remote` flag) for development: `wrangler secrets-store secret create <store-id> --name API_KEY --scopes workers`
+### "A propriedade 'get' não existe"
 
-### "Property 'get' does not exist"
+**Causa:** Definição de tipo TypeScript ausente para vinculação secreta
+**Solução:** Defina a interface com o método get: `interface Env { API_KEY: { get(): Promise<string> }; }`
 
-**Cause:** Missing TypeScript type definition for secret binding  
-**Solution:** Define interface with get method: `interface Env { API_KEY: { get(): Promise<string> }; }`
+### "A vinculação já existe"
 
-### "Binding already exists"
+**Causa:** Vinculação duplicada no painel ou conflito entre wrangler.jsonc e painel
+**Solução:** Remova duplicatas das Configurações do painel → Ligações, verifique se há conflitos ou exclua o antigo segredo do Worker com `wrangler secret delete API_KEY`
 
-**Cause:** Duplicate binding in dashboard or conflict between wrangler.jsonc and dashboard  
-**Solution:** Remove duplicate from dashboard Settings → Bindings, check for conflicts, or delete old Worker secret with `wrangler secret delete API_KEY`
+### "Cota secreta da conta excedida"
 
-### "Account secret quota exceeded"
+**Causa:** A conta atingiu o limite de 100 segredos (beta)
+**Solução:** Verifique a cota com `wrangler secrets-store quota --remote`, exclua segredos não utilizados, consolide duplicatas ou entre em contato com a Cloudflare para aumentar
 
-**Cause:** Account has reached 100 secret limit (beta)  
-**Solution:** Check quota with `wrangler secrets-store quota --remote`, delete unused secrets, consolidate duplicates, or contact Cloudflare for increase
+## Limites
 
-## Limits
-
-| Limit                   | Value                       | Notes                                 |
+| Limite | Valor | Notas |
 | ----------------------- | --------------------------- | ------------------------------------- |
-| Max secrets per account | 100                         | Beta limit                            |
-| Max stores per account  | 1                           | Beta limit                            |
-| Max secret size         | 1024 bytes                  | Per secret                            |
-| Local secrets           | Don't count toward limit    | Only production secrets count         |
-| Scopes available        | `workers`, `ai-gateway`     | Must have correct scope for access    |
-| Scope                   | Account-level               | Can be reused across multiple Workers |
-| Access method           | `await env.BINDING.get()`   | Async only, throws on error           |
-| Management              | Centralized                 | Via secrets-store commands            |
-| Local dev               | Separate local secrets      | Use without `--remote` flag           |
-| Regional availability   | Global except China Network | Unavailable in China Network          |
+| Máximo de segredos por conta | 100 | Limite beta |
+| Máximo de lojas por conta | 1 | Limite beta |
+| Tamanho máximo do segredo | 1024 bytes | Por segredo |
+| Segredos locais | Não conte para o limite | Apenas os segredos de produção contam |
+| Escopos disponíveis | `trabalhadores`, `ai-gateway` | Deve ter escopo correto para acesso |
+| Escopo | Nível da conta | Pode ser reutilizado em vários Trabalhadores |
+| Método de acesso | `aguarde env.BINDING.get()` | Somente assíncrono, gera erro |
+| Gestão | Centralizado | Através de comandos de armazenamento de segredos |
+| Desenvolvedor local | Segredos locais separados | Use sem sinalizador `--remote` |
+| Disponibilidade regional | Rede global exceto China | Indisponível na rede da China |
 
-See: [configuration.md](./configuration.md), [api.md](./api.md), [patterns.md](./patterns.md)
+Consulte: [configuration.md](./configuration.md), [api.md](./api.md), [patterns.md](./patterns.md)
+```

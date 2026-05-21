@@ -1,6 +1,6 @@
-# Configuration
+# Configuração
 
-## Wrangler Setup
+## Setup do Wrangler
 
 ```jsonc
 {
@@ -15,43 +15,43 @@
 }
 ```
 
-## Environment Bindings
+## Bindings de ambiente
 
-**Type-safe pattern:**
+**Padrão com tipos:**
 
 ```typescript
 interface Env {
   AI?: Ai // Workers AI
   MyAgent?: DurableObjectNamespace<MyAgent>
   ChatAgent?: DurableObjectNamespace<ChatAgent>
-  DB?: D1Database // D1 database
-  KV?: KVNamespace // KV storage
-  R2?: R2Bucket // R2 bucket
+  DB?: D1Database // Banco D1
+  KV?: KVNamespace // Armazenamento KV
+  R2?: R2Bucket // Bucket R2
   OPENAI_API_KEY?: string // Secrets
-  GITHUB_CLIENT_ID?: string // MCP OAuth credentials
+  GITHUB_CLIENT_ID?: string // Credenciais OAuth MCP
   GITHUB_CLIENT_SECRET?: string
-  QUEUE?: Queue // Queues
+  QUEUE?: Queue // Filas
 }
 ```
 
-**Best practice:** Define all DO bindings in Env interface for type safety.
+**Boas práticas:** defina todos os bindings de DO em `Env` para type safety.
 
-## Deployment
+## Deploy
 
 ```bash
-# Local dev
+# Dev local
 npx wrangler dev
 
-# Deploy production
+# Produção
 npx wrangler deploy
 
-# Set secrets
+# Definir secrets
 npx wrangler secret put OPENAI_API_KEY
 ```
 
-## Agent Routing
+## Roteamento de agentes
 
-**Recommended: Use route helpers**
+**Recomendado: helpers de rota**
 
 ```typescript
 import { routeAgent } from 'agents'
@@ -63,19 +63,19 @@ export default {
 }
 ```
 
-Helper routes requests to agents automatically based on URL patterns.
+O helper encaminha pedidos aos agentes automaticamente com base nos padrões de URL.
 
-**Manual routing (advanced):**
+**Roteamento manual (avançado):**
 
 ```typescript
 export default {
   async fetch(request: Request, env: Env) {
     const url = new URL(request.url)
 
-    // Named ID (deterministic)
+    // ID nomeado (determinístico)
     const id = env.MyAgent.idFromName('user-123')
 
-    // Random ID (from URL param)
+    // ID aleatório (do parâmetro na URL)
     // const id = env.MyAgent.idFromString(url.searchParams.get("id"));
 
     const stub = env.MyAgent.get(id)
@@ -84,7 +84,7 @@ export default {
 }
 ```
 
-**Multi-agent setup:**
+**Vários agentes:**
 
 ```typescript
 import { routeAgent } from 'agents'
@@ -93,7 +93,7 @@ export default {
   fetch(request: Request, env: Env) {
     const url = new URL(request.url)
 
-    // Route by path
+    // Rotear por caminho
     if (url.pathname.startsWith('/chat')) {
       return routeAgent(request, env, 'ChatAgent')
     }
@@ -106,9 +106,9 @@ export default {
 }
 ```
 
-## Email Routing
+## Roteamento de e-mail
 
-**Code setup:**
+**No código:**
 
 ```typescript
 import { routeAgentEmail } from 'agents'
@@ -121,30 +121,30 @@ export default {
 }
 ```
 
-**Dashboard setup:**
+**No dashboard:**
 
-Configure email routing in Cloudflare dashboard:
+Configure o roteamento de e-mail no painel da Cloudflare:
 
 ```
 Destination: Workers with Durable Objects
 Worker: my-agents-app
 ```
 
-Then handle in agent:
+Depois trate no agente:
 
 ```typescript
 export class EmailAgent extends Agent<Env> {
   async onEmail(email: AgentEmail) {
     const text = await email.text()
-    // Process email
+    // Processar e-mail
   }
 }
 ```
 
-## AI Gateway (Optional)
+## AI Gateway (opcional)
 
 ```typescript
-// Enable caching/routing through AI Gateway
+// Habilitar cache/roteamento via AI Gateway
 const response = await this.env.AI.run(
   '@cf/meta/llama-3.1-8b-instruct',
   { prompt },
@@ -158,21 +158,21 @@ const response = await this.env.AI.run(
 )
 ```
 
-## MCP Configuration (Optional)
+## Configuração MCP (opcional)
 
-For exposing tools via Model Context Protocol:
+Para expor ferramentas via Model Context Protocol:
 
 ```typescript
-// wrangler.jsonc - Add MCP OAuth secrets
+// wrangler.jsonc — adicionar secrets OAuth MCP
 {
   "vars": {
     "MCP_SERVER_URL": "https://mcp.example.com"
   }
 }
 
-// Set secrets via CLI
+// Definir secrets via CLI
 // npx wrangler secret put GITHUB_CLIENT_ID
 // npx wrangler secret put GITHUB_CLIENT_SECRET
 ```
 
-Then register in agent code (see api.md MCP section).
+Depois registre no código do agente (veja a seção MCP em api.md).

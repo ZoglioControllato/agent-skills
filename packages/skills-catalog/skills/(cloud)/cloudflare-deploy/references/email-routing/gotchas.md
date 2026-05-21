@@ -59,22 +59,22 @@ if (message.from === 'trusted@example.com') {
 const display = message.headers.get('from')
 ```
 
-### SendEmail Limits
+### Limites de envio de e-mail
 
-| Issue       | Limit         | Solution                 |
-| ----------- | ------------- | ------------------------ |
-| From domain | Must own      | Use Email Routing domain |
-| Volume      | ~100/min Free | Upgrade or throttle      |
-| Attachments | Not supported | Link to R2               |
-| Type        | Transactional | No bulk                  |
+| Edição     | Limite          | Solução                               |
+| ---------- | --------------- | ------------------------------------- |
+| Do domínio | Deve possuir    | Use o domínio de roteamento de e-mail |
+| Volume     | ~100/min Grátis | Atualizar ou acelerar                 |
+| Anexos     | Não suportado   | Link para R2                          |
+| Tipo       | Transacional    | Sem volume                            |
 
-## Common Errors
+## Erros Comuns
 
-### CPU Time Exceeded
+### Tempo de CPU excedido
 
-**Cause:** Heavy parsing, large emails
+**Causa:** Análise pesada, e-mails grandes
 
-**Solution:**
+**Solução:**
 
 ```typescript
 const size = parseInt(message.headers.get('content-length') || '0') / 1024 / 1024
@@ -187,17 +187,17 @@ example.com. IN TXT "v=spf1 include:_spf.google.com ~all"
 example.com. IN TXT "v=spf1 include:a.com include:b.com ... ~all"
 ```
 
-### DMARC Alignment
+### Alinhamento DMARC
 
-**Cause:** From domain must match SPF/DKIM domain
+**Causa:** O domínio do domínio deve corresponder ao domínio SPF/DKIM
 
-## Best Practices
+## Melhores práticas
 
-1. Consume `message.raw` immediately
-2. Verify destinations
-3. Handle missing headers (`?.`)
-4. Use envelope for routing
-5. Check spam scores
-6. Test locally first
-7. Use `ctx.waitUntil` for background work
-8. Size-check early
+1. Consumir `message.raw` imediatamente
+2. Verifique os destinos
+3. Lidar com cabeçalhos ausentes (`?.`)
+4. Use envelope para roteamento
+5. Verifique as pontuações de spam
+6. Teste localmente primeiro
+7. Use `ctx.waitUntil` para trabalho em segundo plano
+8. Verifique o tamanho com antecedência

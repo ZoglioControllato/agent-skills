@@ -1,92 +1,92 @@
 ---
 name: security-threat-model
-description: Repository-grounded threat modeling that enumerates trust boundaries, assets, attacker capabilities, abuse paths, and mitigations, and writes a concise Markdown threat model. Use when the user asks to threat model a codebase or path, enumerate threats or abuse paths, or perform AppSec threat modeling. Do NOT use for general architecture summaries, code review, security best practices (use security-best-practices), or non-security design work.
+description: 'Modelagem de ameaças ancorada no repositório: enumera fronteiras de confiança, ativos, capacidades do atacante, vetores de abuso e mitigações, e produz um modelo de ameaças em Markdown conciso. Use quando pedirem modelagem de ameaças de base ou caminho, enumerar ameaças ou vetores de abuso, ou threat modeling AppSec. NÃO use para resumos arquiteturais gerais, code review genérico, boas práticas de segurança (use security-best-practices) ou design não relacionado a segurança.'
 metadata:
   author: github.com/openai/skills
   version: '1.0.0'
 ---
 
-# Threat Model Source Code Repo
+# Modelo de ameaças no código-fonte
 
-Deliver an actionable AppSec-grade threat model that is specific to the repository or a project path, not a generic checklist. Anchor every architectural claim to evidence in the repo and keep assumptions explicit. Prioritizing realistic attacker goals and concrete impacts over generic checklists.
+Entregue um modelo de ameaças acionável em nível AppSec, específico ao repositório ou a um caminho do projeto — não uma lista genérica. Ancore cada afirmação arquitetural a evidência no repo e deixe suposições explícitas. Priorize objetivos realistas do atacante e impactos concretos em vez de checklists genéricos.
 
-## Quick start
+## Início rápido
 
-1. Collect (or infer) inputs:
+1. Coletar (ou inferir) entradas:
 
-- Repo root path and any in-scope paths.
-- Intended usage, deployment model, internet exposure, and auth expectations (if known).
-- Any existing repository summary or architecture spec.
-- Use prompts in `references/prompt-template.md` to generate a repository summary.
-- Follow the required output contract in `references/prompt-template.md`. Use it verbatim when possible.
+- Caminho raiz do repo e caminhos no escopo.
+- Uso pretendido, modelo de deploy, exposição à internet e expectativas de auth (se conhecidas).
+- Qualquer resumo ou spec de arquitetura existente.
+- Use prompts em `references/prompt-template.md` para gerar resumo do repositório.
+- Siga o contrato de saída obrigatório em `references/prompt-template.md`. Use-o literalmente quando possível.
 
-## Workflow
+## Fluxo de trabalho
 
-### 1) Scope and extract the system model
+### 1) Escopo e extração do modelo do sistema
 
-- Identify primary components, data stores, and external integrations from the repo summary.
-- Identify how the system runs (server, CLI, library, worker) and its entrypoints.
-- Separate runtime behavior from CI/build/dev tooling and from tests/examples.
-- Map the in-scope locations to those components and exclude out-of-scope items explicitly.
-- Do not claim components, flows, or controls without evidence.
+- Identifique componentes principais, armazenamentos e integrações externas a partir do resumo.
+- Identifique como o sistema roda (servidor, CLI, biblioteca, worker) e seus entrypoints.
+- Separe comportamento em runtime de CI/build/dev tooling e de testes/exemplos.
+- Mapeie locais no escopo a esses componentes e exclua explicitamente o que está fora.
+- Não afirme componentes, fluxos ou controles sem evidência.
 
-### 2) Derive boundaries, assets, and entry points
+### 2) Derivar fronteiras, ativos e pontos de entrada
 
-- Enumerate trust boundaries as concrete edges between components, noting protocol, auth, encryption, validation, and rate limiting.
-- List assets that drive risk (data, credentials, models, config, compute resources, audit logs).
-- Identify entry points (endpoints, upload surfaces, parsers/decoders, job triggers, admin tooling, logging/error sinks).
+- Enumere fronteiras de confiança como arestas concretas entre componentes, com protocolo, auth, criptografia, validação e rate limiting.
+- Liste ativos que puxam risco (dados, credenciais, modelos, config, compute, logs de auditoria).
+- Identifique pontos de entrada (endpoints, superfícies de upload, parsers/decoders, gatilhos de jobs, tooling admin, sinks de log/erro).
 
-### 3) Calibrate assets and attacker capabilities
+### 3) Calibrar ativos e capacidades do atacante
 
-- List the assets that drive risk (credentials, PII, integrity-critical state, availability-critical components, build artifacts).
-- Describe realistic attacker capabilities based on exposure and intended usage.
-- Explicitly note non-capabilities to avoid inflated severity.
+- Liste ativos que puxam risco (credenciais, PII, integridade crítica, disponibilidade, artefatos de build).
+- Descreva capacidades realistas com base na exposição e uso pretendido.
+- Registre explicitamente não-capacidades para não inflar severidade.
 
-### 4) Enumerate threats as abuse paths
+### 4) Enumerar ameaças como vetores de abuso
 
-- Prefer attacker goals that map to assets and boundaries (exfiltration, privilege escalation, integrity compromise, denial of service).
-- Classify each threat and tie it to impacted assets.
-- Keep the number of threats small but high quality.
+- Prefira objetivos do atacante ligados a ativos e fronteiras (exfiltração, elevação de privilégio, comprometimento de integridade, negação de serviço).
+- Classifique cada ameaça e ligue-a aos ativos afetados.
+- Poucas ameaças, mas de alta qualidade.
 
-### 5) Prioritize with explicit likelihood and impact reasoning
+### 5) Priorizar com probabilidade e impacto explícitos
 
-- Use qualitative likelihood and impact (low/medium/high) with short justifications.
-- Set overall priority (critical/high/medium/low) using likelihood x impact, adjusted for existing controls.
-- State which assumptions most influence the ranking.
+- Use probabilidade e impacto qualitativos (baixo/médio/alto) com justificativas curtas.
+- Defina prioridade geral (crítico/alto/médio/baixo) como probabilidade × impacto, ajustando controles existentes.
+- Indique quais suposições mais influenciam o ranqueamento.
 
-### 6) Validate service context and assumptions with the user
+### 6) Validar contexto e suposições com o usuário
 
-- Summarize key assumptions that materially affect threat ranking or scope, then ask the user to confirm or correct them.
-- Ask 1–3 targeted questions to resolve missing context (service owner and environment, scale/users, deployment model, authn/authz, internet exposure, data sensitivity, multi-tenancy).
-- Pause and wait for user feedback before producing the final report.
-- If the user declines or can’t answer, state which assumptions remain and how they influence priority.
+- Resuma suposições-chave que mudem ranqueamento ou escopo e peça confirmação ou correção.
+- Faça 1–3 perguntas objetivas sobre contexto faltante (dono do serviço, ambiente, escala/usuários, deploy, authn/authz, exposição, sensibilidade de dados, multitenancy).
+- Pause e aguarde feedback antes do relatório final.
+- Se o usuário não puder responder, diga quais suposições permanecem e como afetam prioridade.
 
-### 7) Recommend mitigations and focus paths
+### 7) Recomendar mitigações e focos
 
-- Distinguish existing mitigations (with evidence) from recommended mitigations.
-- Tie mitigations to concrete locations (component, boundary, or entry point) and control types (authZ checks, input validation, schema enforcement, sandboxing, rate limits, secrets isolation, audit logging).
-- Prefer specific implementation hints over generic advice (e.g., "enforce schema at gateway for upload payloads" vs "validate inputs").
-- Base recommendations on validated user context; if assumptions remain unresolved, mark recommendations as conditional.
+- Separe mitigações existentes (com evidência) das recomendadas.
+- Una mitigações a locais concretos (componente, fronteira, entrada) e tipos de controle (authZ, validação, schema, sandbox, rate limit, isolamento de segredos, auditoria).
+- Prefira dicas de implementação específicas a conselhos genéricos.
+- Com suposições não resolvidas, marque recomendações como condicionais.
 
-### 8) Run a quality check before finalizing
+### 8) Checagem de qualidade antes de finalizar
 
-- Confirm all discovered entrypoints are covered.
-- Confirm each trust boundary is represented in threats.
-- Confirm runtime vs CI/dev separation.
-- Confirm user clarifications (or explicit non-responses) are reflected.
-- Confirm assumptions and open questions are explicit.
-- Confirm that the format of the report matches closely the required output format defined in prompt template: `references/prompt-template.md`
-- Write the final Markdown to a file named `<repo-or-dir-name>-threat-model.md` (use the basename of the repo root, or the in-scope directory if you were asked to model a subpath).
+- Todos os entrypoints descobertos cobertos.
+- Cada fronteira de confiança representada nas ameaças.
+- Separação runtime vs CI/dev clara.
+- Esclarecimentos do usuário (ou não-respostas explícitas) refletidos.
+- Suposições e questões abertas explícitas.
+- Formato do relatório alinhado ao template: `references/prompt-template.md`
+- Grave o Markdown final em arquivo `<nome-repo-ou-dir>-threat-model.md` (basename do repo raiz ou do diretório no escopo).
 
-## Risk prioritization guidance (illustrative, not exhaustive)
+## Orientação de priorização de risco (ilustrativa, não exaustiva)
 
-- High: pre-auth RCE, auth bypass, cross-tenant access, sensitive data exfiltration, key or token theft, model or config integrity compromise, sandbox escape.
-- Medium: targeted DoS of critical components, partial data exposure, rate-limit bypass with measurable impact, log/metrics poisoning that affects detection.
-- Low: low-sensitivity info leaks, noisy DoS with easy mitigation, issues requiring unlikely preconditions.
+- Alto: RCE pré-auth, bypass de auth, acesso cross-tenant, exfiltração de dados sensíveis, roubo de chave/token, comprometimento de integridade de modelo/config, escape de sandbox.
+- Médio: DoS direcionado a componentes críticos, exposição parcial de dados, bypass de rate limit com impacto mensurável, envenenamento de log/métricas que afeta detecção.
+- Baixo: vazamento de informação pouco sensível, DoS ruidoso com mitigação fácil, issues com pré-condições improváveis.
 
-## References
+## Referências
 
-- Output contract and full prompt template: `references/prompt-template.md`
-- Optional controls/asset list: `references/security-controls-and-assets.md`
+- Contrato de saída e template completo: `references/prompt-template.md`
+- Lista opcional de controles/ativos: `references/security-controls-and-assets.md`
 
-Only load the reference files you need. Keep the final result concise, grounded, and reviewable.
+Carregue só as referências necessárias. Mantenha o resultado conciso, ancorado e revisável.

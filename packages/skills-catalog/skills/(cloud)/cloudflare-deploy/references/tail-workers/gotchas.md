@@ -187,20 +187,20 @@ export default {
 }
 ```
 
-Trigger: `curl https://producer.example.workers.dev/test`
+Gatilho: `curl https://producer.example.workers.dev/test`
 
-## Common Errors
+## Erros Comuns
 
-| Error                         | Cause            | Solution                 |
-| ----------------------------- | ---------------- | ------------------------ |
-| "Tail consumer not found"     | Not deployed     | Deploy tail Worker first |
-| "No tail handler"             | Missing `tail()` | Add to default export    |
-| "waitUntil is not a function" | Missing `ctx`    | Add `ctx` parameter      |
-| Timeout                       | Blocking await   | Use `ctx.waitUntil()`    |
+| Erro                              | Causa               | Solução                         |
+| --------------------------------- | ------------------- | ------------------------------- |
+| “Consumidor final não encontrado” | Não implantado      | Implante o tail Worker primeiro |
+| "Sem manipulador de cauda"        | Faltando `tail()`   | Adicionar à exportação padrão   |
+| "waitUntil não é uma função"      | Falta `ctx`         | Adicionar parâmetro `ctx`       |
+| Tempo limite                      | Bloqueio aguardando | Use `ctx.waitUntil()`           |
 
-## Performance Notes
+## Notas de desempenho
 
-- Max 100 events per invocation
-- Each consumer receives all events independently
-- CPU limits same as regular Workers
-- For high volume, use Durable Objects batching
+- Máximo de 100 eventos por invocação
+- Cada consumidor recebe todos os eventos de forma independente
+- Limites de CPU iguais aos de Workers regulares
+- Para alto volume, use lote de objetos duráveis

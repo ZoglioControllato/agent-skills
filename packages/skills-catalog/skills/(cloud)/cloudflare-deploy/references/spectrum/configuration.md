@@ -1,10 +1,10 @@
-## Origin Types
+## Tipos de origem
 
-### Direct IP Origin
+### Origem IP Direta
 
-Use when origin is a single server with static IP.
+Use quando a origem for um servidor único com IP estático.
 
-**TypeScript SDK:**
+**SDK TypeScript:**
 
 ```typescript
 const app = await client.spectrum.apps.create({
@@ -75,11 +75,11 @@ resource "cloudflare_spectrum_application" "database" {
 }
 ```
 
-### Load Balancer Origin
+### Origem do balanceador de carga
 
-Use for high availability and failover.
+Use para alta disponibilidade e failover.
 
-**Terraform:**
+**Terraforma:**
 
 ```hcl
 resource "cloudflare_load_balancer" "game_lb" {
@@ -128,24 +128,24 @@ const app = await client.spectrum.apps.create({
 })
 ```
 
-## Proxy Protocol
+## Protocolo proxy
 
-Forwards real client IP to origin. Origin must support parsing.
+Encaminha o IP real do cliente para a origem. A origem deve suportar análise.
 
-| Version  | Protocol | Use Case                       |
-| -------- | -------- | ------------------------------ |
-| `off`    | -        | Origin doesn't need client IP  |
-| `v1`     | TCP      | Most TCP apps (SSH, databases) |
-| `v2`     | TCP      | High-performance TCP           |
-| `simple` | UDP      | UDP applications               |
+| Versão      | Protocolo | Caso de uso                                          |
+| ----------- | --------- | ---------------------------------------------------- |
+| `desligado` | -         | Origin não precisa de IP do cliente                  |
+| `v1`        | TCP       | A maioria dos aplicativos TCP (SSH, bancos de dados) |
+| `v2`        | TCP       | TCP de alto desempenho                               |
+| `simples`   | UDP       | Aplicações UDP                                       |
 
-**Compatibility:**
+**Compatibilidade:**
 
-- **v1**: HAProxy, nginx, SSH, most databases
+- **v1**: HAProxy, nginx, SSH, a maioria dos bancos de dados
 - **v2**: HAProxy 1.5+, nginx 1.11+
-- **simple**: Cloudflare-specific UDP format
+- **simples**: formato UDP específico da Cloudflare
 
-**Enable:**
+**Ativar:**
 
 ```typescript
 const app = await client.spectrum.apps.create({

@@ -36,54 +36,54 @@ Schedule crons during low-carbon periods for carbon-aware execution:
 }
 ```
 
-**Modes:**
+**Modos:**
 
-- `"smart"` - Carbon-aware scheduling (may delay up to 24h for optimal window)
-- Default (no placement config) - Standard scheduling (no delay)
+- `"inteligente"` - Programação com reconhecimento de carbono (pode atrasar até 24h para uma janela ideal)
+- Padrão (sem configuração de posicionamento) - Agendamento padrão (sem atraso)
 
-**How it works:**
+**Como funciona:**
 
-- Cloudflare delays execution until grid carbon intensity is lower
-- Maximum delay: 24 hours from scheduled time
-- Ideal for batch jobs with flexible timing requirements
+- Cloudflare atrasa a execução até que a intensidade de carbono da rede seja menor
+- Atraso máximo: 24 horas a partir do horário programado
+- Ideal para trabalhos em lote com requisitos de tempo flexíveis
 
-**Use cases:**
+**Casos de uso:**
 
-- Nightly data processing and ETL pipelines
-- Weekly/monthly report generation
-- Database backups and maintenance
-- Analytics aggregation
-- ML model training
+- Processamento noturno de dados e pipelines ETL
+- Geração de relatórios semanais/mensais
+- Backups e manutenção de banco de dados
+- Agregação analítica
+- Treinamento de modelo de ML
 
-**Not suitable for:**
+**Não adequado para:**
 
-- Time-sensitive operations (SLA requirements)
-- User-facing features requiring immediate execution
-- Real-time monitoring and alerting
-- Compliance tasks with strict time windows
+- Operações urgentes (requisitos de SLA)
+- Recursos voltados para o usuário que exigem execução imediata
+- Monitoramento e alertas em tempo real
+- Tarefas de conformidade com janelas de tempo rigorosas
 
-## Environment-Specific Schedules
+## Cronogramas Específicos do Ambiente```jsonc
 
-```jsonc
 {
-  "name": "my-cron-worker",
-  "triggers": {
-    "crons": ["0 */6 * * *"], // Prod: every 6 hours
-  },
-  "env": {
-    "staging": {
-      "triggers": {
-        "crons": ["*/15 * * * *"], // Staging: every 15min
-      },
-    },
-    "dev": {
-      "triggers": {
-        "crons": ["*/5 * * * *"], // Dev: every 5min
-      },
-    },
-  },
+"name": "my-cron-worker",
+"triggers": {
+"crons": ["0 */6 * * *"], // Prod: every 6 hours
+},
+"env": {
+"staging": {
+"triggers": {
+"crons": ["*/15 * * * *"], // Staging: every 15min
+},
+},
+"dev": {
+"triggers": {
+"crons": ["*/5 * * * *"], // Dev: every 5min
+},
+},
+},
 }
-```
+
+````
 
 ## Schedule Format
 
@@ -93,7 +93,7 @@ Schedule crons during low-carbon periods for carbon-aware execution:
 
 ## Managing Triggers
 
-**Remove all:** `"triggers": { "crons": [] }`  
+**Remove all:** `"triggers": { "crons": [] }`
 **Preserve existing:** Omit `"triggers"` field entirely
 
 ## Deployment
@@ -107,7 +107,7 @@ npx wrangler deploy --env production
 
 # View deployments
 npx wrangler deployments list
-```
+````
 
 **⚠️ Changes take up to 15 minutes to propagate globally**
 
@@ -163,28 +163,28 @@ For complex schedules, use multiple workers:
 }
 ```
 
-**Benefits:**
+**Benefícios:**
 
-- Separate CPU limits per worker
-- Independent error isolation
-- Different Green Compute policies
-- Easier to maintain and debug
+- Limites de CPU separados por trabalhador
+- Isolamento de erros independente
+- Diferentes políticas de computação verde
+- Mais fácil de manter e depurar
 
-## Validation
+## Validação
 
-**Test cron syntax:**
+**Teste a sintaxe do cron:**
 
-- [crontab.guru](https://crontab.guru/) - Interactive validator
-- Wrangler validates on deploy but won't catch logic errors
+- [crontab.guru](https://crontab.guru/) - Validador interativo
+- O Wrangler valida na implantação, mas não detecta erros lógicos
 
-**Common mistakes:**
+**Erros comuns:**
 
-- `0 0 * * *` runs daily at midnight UTC, not your local timezone
-- `*/60 * * * *` is invalid (use `0 * * * *` for hourly)
-- `0 2 31 * *` only runs on months with 31 days
+- `0 0 * * *` funciona diariamente à meia-noite UTC, não no seu fuso horário local
+- `*/60 * * * *` é inválido (use `0 * * * *` para hora)
+- `0 2 31 * *` funciona apenas em meses com 31 dias
 
-## See Also
+## Veja também
 
-- [README.md](./README.md) - Overview, quick start
-- [api.md](./api.md) - Handler implementation
-- [patterns.md](./patterns.md) - Multi-cron routing examples
+- [README.md](./README.md) - Visão geral, início rápido
+- [api.md](./api.md) - Implementação do manipulador
+- [patterns.md](./patterns.md) - Exemplos de roteamento multi-cron

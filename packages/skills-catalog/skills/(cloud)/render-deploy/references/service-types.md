@@ -1,118 +1,109 @@
-# Render Service Types
+# Renderizar tipos de serviço
 
-Detailed explanation of each service type available on Render. Choose the right service type based on your application's needs.
+Explicação detalhada de cada tipo de serviço disponível no Render. Escolha o tipo de serviço certo com base nas necessidades do seu aplicativo.
 
-## Web Services (`type: web`)
+## Serviços Web (`tipo: web`)
 
-### Purpose
+### Objetivo
 
-Web services are HTTP servers that handle incoming requests from the internet. They're publicly accessible via HTTPS URLs.
+Os serviços da Web são servidores HTTP que lidam com solicitações recebidas da Internet. Eles são acessíveis publicamente por meio de URLs HTTPS.
 
-### Use Cases
+### Casos de uso
 
-- **REST APIs**: JSON APIs for mobile apps or frontend applications
-- **GraphQL servers**: GraphQL endpoints for client queries
-- **Web applications**: Server-rendered websites (Django, Rails, Express)
-- **Full-stack frameworks**: Next.js, Nuxt.js, Remix, SvelteKit
-- **WebSocket servers**: Real-time communication servers
-- **SSR applications**: Server-side rendered React, Vue, or Angular apps
+- **APIs REST**: APIs JSON para aplicativos móveis ou aplicativos front-end
+- **Servidores GraphQL**: endpoints GraphQL para consultas de clientes
+- **Aplicativos Web**: sites renderizados em servidor (Django, Rails, Express)
+- **Estruturas full-stack**: Next.js, Nuxt.js, Remix, SvelteKit
+- **Servidores WebSocket**: servidores de comunicação em tempo real
+- **Aplicativos SSR**: aplicativos React, Vue ou Angular renderizados no lado do servidor
 
-### Key Characteristics
+### Principais características
 
-- **Public URL**: Automatically assigned `https://[service-name].onrender.com`
-- **Port binding required**: Must bind to `0.0.0.0:$PORT`
-- **Health checks**: Render pings your service to verify it's running
-- **HTTPS**: Automatic SSL/TLS certificates
-- **Load balancing**: Traffic distributed across multiple instances
-- **Custom domains**: Support for your own domain names
+- **URL público**: atribuído automaticamente `https://[service-name].onrender.com`
+- **Vinculação de porta necessária**: Deve vincular-se a `0.0.0.0:$PORT`
+- **Verificações de integridade**: renderize pings em seu serviço para verificar se ele está em execução
+- **HTTPS**: certificados SSL/TLS automáticos
+- **Balanceamento de carga**: tráfego distribuído entre várias instâncias
+- **Domínios personalizados**: suporte para seus próprios nomes de domínio
 
-### Required Configuration
+### Configuração necessária```yaml
 
-```yaml
 type: web
 name: my-api
 runtime: node
 buildCommand: npm ci
 startCommand: npm start
-```
 
-### Best Practices
+````
+### Melhores Práticas
 
-1. **Bind to environment PORT**:
-
-```javascript
+1. **Vincular ao ambiente PORT**:```javascript
 const PORT = process.env.PORT || 3000
 app.listen(PORT, '0.0.0.0')
-```
+````
 
-2. **Add health check endpoint**:
+2. **Adicionar endpoint de verificação de integridade**:```javascript
+   app.get('/health', (req, res) => {
+   res.status(200).json({ status: 'ok' })
+   })
 
-```javascript
-app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'ok' })
-})
-```
+````
+3. **Use tempos limite apropriados**: as solicitações da Web devem ser concluídas em 30 segundos
 
-3. **Use appropriate timeouts**: Web requests should complete within 30 seconds
-
-4. **Implement graceful shutdown**: Handle SIGTERM signals properly
+4. **Implementar o desligamento normal**: Manuseie os sinais SIGTERM corretamente
 
 ---
 
-## Worker Services (`type: worker`)
+## Serviços de trabalho (`tipo: trabalhador`)
 
-### Purpose
+### Objetivo
 
-Worker services run background tasks without handling HTTP requests. They're not publicly accessible.
+Os serviços de trabalho executam tarefas em segundo plano sem lidar com solicitações HTTP. Eles não são acessíveis publicamente.
 
-### Use Cases
+### Casos de uso
 
-- **Queue processors**: Redis queue, BullMQ, Celery, Sidekiq
-- **Background jobs**: Email sending, image processing, data exports
-- **Event consumers**: Message queue consumers (Kafka, RabbitMQ, etc.)
-- **Data pipeline workers**: ETL processes, data transformation
-- **Scheduled background tasks**: Continuous processes (not cron)
-- **WebSocket backend**: Dedicated WebSocket handler services
+- **Processadores de fila**: fila Redis, BullMQ, Celery, Sidekiq
+- **Trabalhos em segundo plano**: envio de e-mail, processamento de imagens, exportação de dados
+- **Consumidores de eventos**: Consumidores de fila de mensagens (Kafka, RabbitMQ, etc.)
+- **Trabalhadores de pipeline de dados**: processos ETL, transformação de dados
+- **Tarefas agendadas em segundo plano**: processos contínuos (não cron)
+- **Backend WebSocket**: serviços de manipulador WebSocket dedicados
 
-### Key Characteristics
+### Principais características
 
-- **No public URL**: Not accessible from internet
-- **No port binding**: Doesn't need to listen on a port
-- **No health checks**: Render monitors process health differently
-- **Long-running**: Can run indefinitely
-- **Private communication**: Access via internal networking
-- **Restart on crash**: Automatically restarted if process dies
+- **Sem URL público**: Não acessível pela Internet
+- **Sem ligação de porta**: Não precisa escutar em uma porta
+- **Sem verificações de integridade**: a renderização monitora a integridade do processo de maneira diferente
+- **De longa duração**: pode ser executado indefinidamente
+- **Comunicação privada**: Acesso via rede interna
+- **Reiniciar em caso de falha**: reiniciado automaticamente se o processo morrer
 
-### Required Configuration
-
-```yaml
+### Configuração necessária```yaml
 type: worker
 name: queue-processor
 runtime: python
 buildCommand: pip install -r requirements.txt
 startCommand: celery -A tasks worker --loglevel=info
-```
+````
 
-### Best Practices
+### Melhores Práticas
 
-1. **Connect to message queue**:
+1. **Conecte-se à fila de mensagens**:```python
+   import redis
+   r = redis.from_url(os.environ['REDIS_URL'])
 
-```python
-import redis
-r = redis.from_url(os.environ['REDIS_URL'])
-```
+````
+2. **Implementar lógica de novas tentativas**: lidar com falhas normalmente
 
-2. **Implement retry logic**: Handle failures gracefully
+3. **Monitore a profundidade da fila**: rastreie trabalhos pendentes
 
-3. **Monitor queue depth**: Track pending jobs
+4. **Status de processamento de log**: facilita a depuração
 
-4. **Log processing status**: Make debugging easier
+5. **Desligamento normal**: Conclua os trabalhos atuais antes de sair
 
-5. **Graceful shutdown**: Finish current jobs before exiting
+### Padrões Comuns
 
-### Common Patterns
-
-**Node.js with BullMQ:**
+**Node.js com BullMQ:**
 
 ```yaml
 type: worker
@@ -125,9 +116,9 @@ envVars:
     fromDatabase:
       name: redis
       property: connectionString
-```
+````
 
-**Python with Celery:**
+**Python com Aipo:**
 
 ```yaml
 type: worker
@@ -144,72 +135,71 @@ envVars:
 
 ---
 
-## Cron Jobs (`type: cron`)
+## Cron Jobs (`tipo: cron`)
 
-### Purpose
+### Objetivo
 
-Cron jobs run scheduled tasks on a repeating schedule. They execute, complete, and shut down.
+Os cron jobs executam tarefas agendadas em uma programação repetitiva. Eles executam, completam e desligam.
 
-### Use Cases
+### Casos de uso
 
-- **Database backups**: Regular automated backups
-- **Report generation**: Daily/weekly reports
-- **Data cleanup**: Delete old records periodically
-- **Cache warming**: Pre-populate caches
-- **Email digests**: Send scheduled email summaries
-- **Data synchronization**: Sync between systems
-- **Batch processing**: Process accumulated data
+- **Backups de banco de dados**: backups automatizados regulares
+- **Geração de relatórios**: relatórios diários/semanais
+- **Limpeza de dados**: exclua registros antigos periodicamente
+- **Aquecimento de cache**: pré-preencher caches
+- **Resumos por e-mail**: envie resumos programados por e-mail
+- **Sincronização de dados**: sincronização entre sistemas
+- **Processamento em lote**: Processar dados acumulados
 
-### Key Characteristics
+### Principais características
 
-- **Scheduled execution**: Runs on cron schedule
-- **Automatic shutdown**: Shuts down after completing
-- **No persistent port**: Doesn't maintain listening port
-- **No health checks**: Task either completes or fails
-- **UTC timezone**: All schedules in UTC
-- **Maximum runtime**: Jobs timeout after configured limit
+- **Execução agendada**: é executado no cronograma cron
+- **Desligamento automático**: Desliga após a conclusão
+- **Sem porta persistente**: Não mantém porta de escuta
+- **Sem verificações de integridade**: a tarefa é concluída ou falha
+- **Fuso horário UTC**: todos os horários em UTC
+- **Tempo de execução máximo**: tempo limite dos trabalhos após o limite configurado
 
-### Required Configuration
+### Configuração necessária```yaml
 
-```yaml
 type: cron
 name: daily-backup
 runtime: node
-schedule: '0 2 * * *' # Daily at 2 AM UTC
+schedule: '0 2 \* \* \*' # Daily at 2 AM UTC
 buildCommand: npm ci
 startCommand: node scripts/backup.js
-```
 
-### Schedule Format
+````
+### Formato de agendamento
 
-Standard cron syntax: `minute hour day month weekday`
+Sintaxe padrão do cron: `minuto hora dia mês dia da semana`
 
-**Common schedules:**
+**Programações comuns:**
 
-| Schedule      | Description              |
+| Cronograma | Descrição |
 | ------------- | ------------------------ |
-| `*/5 * * * *` | Every 5 minutes          |
-| `0 * * * *`   | Every hour               |
-| `0 0 * * *`   | Daily at midnight UTC    |
-| `0 9 * * 1-5` | Weekdays at 9 AM UTC     |
-| `0 0 1 * *`   | First day of each month  |
-| `0 9 * * 1`   | Every Monday at 9 AM UTC |
+| `*/5 * * * *` | A cada 5 minutos |
+| `0 * * * *` | A cada hora |
+| `0 0 * * *` | Diariamente à meia-noite UTC |
+| `0 9 * * 1-5` | Dias úteis às 9h UTC |
+| `0 0 1 * *` | Primeiro dia de cada mês |
+| `0 9 * * 1` | Todas as segundas-feiras às 9h UTC |
 
-### Best Practices
+### Melhores Práticas
 
-1. **Handle failures gracefully**: Jobs should be idempotent
+1. **Lidar com falhas normalmente**: os trabalhos devem ser idempotentes
 
-2. **Log completion status**: Track success/failure
+2. **Status de conclusão do registro**: Rastreie sucesso/falha
 
-3. **Set appropriate timeouts**: Match expected job duration
+3. **Defina tempos limite apropriados**: corresponda à duração esperada do trabalho
 
-4. **Use UTC times**: All schedules are UTC-based
+4. **Use horários UTC**: todas as programações são baseadas em UTC
 
-5. **Test thoroughly**: Test with different data scenarios
+5. **Teste minuciosamente**: teste com diferentes cenários de dados
 
-### Example Use Cases
+### Exemplos de casos de uso
 
-**Daily Database Backup:**
+**Backup diário do banco de dados:**
 
 ```yaml
 type: cron
@@ -225,9 +215,9 @@ envVars:
       property: connectionString
   - key: S3_BUCKET
     value: my-backups
-```
+````
 
-**Hourly Cache Refresh:**
+**Atualização de cache por hora:**
 
 ```yaml
 type: cron
@@ -240,45 +230,42 @@ startCommand: node scripts/refresh-cache.js
 
 ---
 
-## Static Sites (`type: web` + `runtime: static`)
+## Sites estáticos (`type: web` + `runtime: static`)
 
-### Purpose
+### Objetivo
 
-Serve static HTML, CSS, and JavaScript files via CDN. No backend runtime.
+Sirva arquivos HTML, CSS e JavaScript estáticos via CDN. Sem tempo de execução de back-end.
 
-### Use Cases
+### Casos de uso
 
-- **Single Page Applications (SPAs)**: React, Vue, Angular apps
-- **Static site generators**: Gatsby, Next.js (static export), Hugo
-- **Documentation sites**: MkDocs, Docusaurus, VitePress
-- **Landing pages**: Marketing sites
-- **Portfolio sites**: Personal websites
-- **JAMstack sites**: Static sites with API integration
+- **Aplicativos de página única (SPAs)**: aplicativos React, Vue, Angular
+- **Geradores de sites estáticos**: Gatsby, Next.js (exportação estática), Hugo
+- **Sites de documentação**: MkDocs, Docusaurus, VitePress
+- **Páginas de destino**: sites de marketing
+- **Sites de portfólio**: sites pessoais
+- **Sites JAMstack**: sites estáticos com integração de API
 
-### Key Characteristics
+### Principais características
 
-- **CDN delivery**: Global edge caching
-- **No backend runtime**: Only serves built files
-- **Build output only**: Serves contents of build directory
-- **Routing support**: Rewrite rules for SPA routing
-- **Custom headers**: Cache control, security headers
-- **Fast deployment**: Quick to build and deploy
+- **Entrega de CDN**: cache de borda global
+- **Sem tempo de execução de back-end**: exibe apenas arquivos compilados
+- **Somente saída de compilação**: exibe o conteúdo do diretório de compilação
+- **Suporte de roteamento**: reescrever regras para roteamento SPA
+- **Cabeçalhos personalizados**: controle de cache, cabeçalhos de segurança
+- **Implantação rápida**: Rápido para criar e implantar
 
-### Required Configuration
+### Configuração necessária```yaml
 
-```yaml
 type: web
 name: frontend
 runtime: static
 buildCommand: npm ci && npm run build
 staticPublishPath: ./dist # or ./build, ./out, ./public
-```
 
-### Routing for SPAs
+````
+### Roteamento para SPAs
 
-Single Page Applications need rewrite rules to handle client-side routing:
-
-```yaml
+Os aplicativos de página única precisam de regras de reescrita para lidar com o roteamento do lado do cliente:```yaml
 type: web
 name: react-app
 runtime: static
@@ -288,38 +275,37 @@ routes:
   - type: rewrite
     source: /*
     destination: /index.html
-```
+````
 
-### Custom Headers
+### Cabeçalhos personalizados
 
-Add cache control and security headers:
-
-```yaml
+Adicione controle de cache e cabeçalhos de segurança:```yaml
 type: web
 name: static-site
 runtime: static
 buildCommand: npm ci && npm run build
 staticPublishPath: ./dist
 headers:
-  # Cache static assets
-  - path: /static/*
-    name: Cache-Control
-    value: public, max-age=31536000, immutable
 
-  # Security headers
-  - path: /*
-    name: X-Frame-Options
-    value: DENY
-  - path: /*
-    name: X-Content-Type-Options
-    value: nosniff
-```
+# Cache static assets
 
-### Build Filters
+- path: /static/\*
+  name: Cache-Control
+  value: public, max-age=31536000, immutable
 
-For monorepos, only build when frontend files change:
+# Security headers
 
-```yaml
+- path: /\*
+  name: X-Frame-Options
+  value: DENY
+- path: /\*
+  name: X-Content-Type-Options
+  value: nosniff
+
+````
+### Construir filtros
+
+Para monorepos, construa apenas quando os arquivos de frontend forem alterados:```yaml
 type: web
 name: frontend
 runtime: static
@@ -331,132 +317,133 @@ buildFilter:
   ignoredPaths:
     - frontend/**/*.test.js
     - frontend/README.md
-```
+````
 
-### Best Practices
+### Melhores Práticas
 
-1. **Optimize build output**: Minify, compress, tree-shake
+1. **Otimizar a saída da compilação**: minificar, compactar, agitar a árvore
 
-2. **Use proper cache headers**: Long cache for hashed assets
+2. **Use cabeçalhos de cache adequados**: cache longo para ativos com hash
 
-3. **Add security headers**: Protect against common attacks
+3. **Adicione cabeçalhos de segurança**: proteja contra ataques comuns
 
-4. **Configure SPA routing**: Add rewrite rules for client routing
+4. **Configurar roteamento SPA**: adicionar regras de reescrita para roteamento de cliente
 
-5. **Handle 404s**: Create custom 404.html page
+5. **Tratar 404s**: Crie uma página 404.html personalizada
 
 ---
 
-## Private Services (`type: pserv`)
+## Serviços Privados (`type: pserv`)
 
-### Purpose
+### Objetivo
 
-Internal services accessible only within your Render account. Not exposed to the internet.
+Serviços internos acessíveis apenas em sua conta Render. Não exposto à internet.
 
-### Use Cases
+### Casos de uso
 
-- **Internal APIs**: Services accessed only by other services
-- **Database proxies**: Connection pools, read replicas
-- **Microservices**: Service mesh architectures
-- **Admin tools**: Internal dashboards
-- **Cache layers**: Internal caching services
-- **Message brokers**: Internal message queues
+- **APIs internas**: serviços acessados apenas por outros serviços
+- **Proxies de banco de dados**: pools de conexões, réplicas de leitura
+- **Microsserviços**: arquiteturas de malha de serviço
+- **Ferramentas administrativas**: painéis internos
+- **Camadas de cache**: serviços de cache interno
+- **Message Brokers**: filas de mensagens internas
 
-### Key Characteristics
+### Principais características
 
-- **No public URL**: Only accessible via internal DNS
-- **Internal networking**: Fast, low-latency connections
-- **Port binding required**: Must bind to `0.0.0.0:$PORT`
-- **Private DNS**: `[service-name].render-internal.com`
-- **Same-account only**: Only accessible from same account
-- **No internet access**: Traffic stays within Render network
+- **Sem URL público**: acessível somente via DNS interno
+- **Rede interna**: conexões rápidas e de baixa latência
+- **Vinculação de porta necessária**: Deve vincular-se a `0.0.0.0:$PORT`
+- **DNS privado**: `[nome-serviço].render-internal.com`
+- **Somente na mesma conta**: acessível apenas na mesma conta
+- **Sem acesso à Internet**: o tráfego permanece na rede Render
 
-### Required Configuration
+### Configuração necessária```yaml
 
-```yaml
 type: pserv
 name: internal-api
 runtime: node
 buildCommand: npm ci
 startCommand: npm start
-```
 
-### Accessing Private Services
+````
+### Acessando Serviços Privados
 
-From other services in the same account:
-
-```javascript
+De outros serviços na mesma conta:```javascript
 // Use .render-internal.com domain
 const API_URL = 'http://internal-api.render-internal.com:10000'
-```
+````
 
-Or use service references:
-
-```yaml
+Ou use referências de serviço:```yaml
 services:
-  - type: web
-    name: frontend
-    runtime: node
-    envVars:
-      - key: INTERNAL_API_URL
-        fromService:
-          name: internal-api
-          type: pserv
-          property: hostport
+
+- type: web
+  name: frontend
+  runtime: node
+  envVars:
+  - key: INTERNAL_API_URL
+    fromService:
+    name: internal-api
+    type: pserv
+    property: hostport
+
 ```
+### Melhores Práticas
 
-### Best Practices
+1. **Use DNS interno**: Sempre use domínios `.render-internal.com`
 
-1. **Use internal DNS**: Always use `.render-internal.com` domains
+2. **Não é necessária autenticação**: Já está isolado na conta
 
-2. **No authentication needed**: Already isolated to account
+3. **Comunicação rápida**: Baixa latência entre serviços
 
-3. **Fast communication**: Low latency between services
-
-4. **Simplify architecture**: No need for external load balancers
+4. **Simplifique a arquitetura**: não há necessidade de balanceadores de carga externos
 
 ---
 
-## Comparison Table
+## Tabela de comparação
 
-| Feature       | Web          | Worker          | Cron            | Static       | Private           |
+| Recurso | Rede | Trabalhador | Cron | Estático | Privado |
 | ------------- | ------------ | --------------- | --------------- | ------------ | ----------------- |
-| Public URL    | ✅ Yes       | ❌ No           | ❌ No           | ✅ Yes       | ❌ No             |
-| Port Binding  | ✅ Required  | ❌ Not needed   | ❌ Not needed   | ❌ N/A       | ✅ Required       |
-| Health Checks | ✅ Yes       | ❌ No           | ❌ No           | ❌ N/A       | ✅ Yes            |
-| Runtime       | ✅ Yes       | ✅ Yes          | ✅ Yes          | ❌ No        | ✅ Yes            |
-| Persistent    | ✅ Yes       | ✅ Yes          | ❌ No           | ✅ Yes       | ✅ Yes            |
-| Scaling       | ✅ Yes       | ✅ Yes          | ❌ No           | ✅ Yes       | ✅ Yes            |
-| Use Case      | HTTP servers | Background jobs | Scheduled tasks | Static files | Internal services |
+| URL pública | ✅ Sim | ❌Não | ❌ Não | ✅ Sim | ❌ Não |
+| Vinculação de Porto | ✅ Obrigatório | ❌ Não é necessário | ❌ Não é necessário | ❌N/A | ✅ Obrigatório |
+| Verificações de saúde | ✅ Sim | ❌ Não
 
-## Choosing the Right Service Type
+| ❌ Não | ❌N/A | ✅ Sim |
+| Tempo de execução | ✅ Sim | ✅ Sim | ✅ Sim | ❌ Não | ✅ Sim |
+| Persistente | ✅ Sim | ✅ Sim | ❌ Não | ✅ Sim | ✅ Sim |
+| Dimensionamento | ✅ Sim | ✅ Sim | ❌ Não | ✅ Sim | ✅ Sim |
+| Caso de uso | Servidores HTTP | Trabalhos em segundo plano | Tarefas agendadas | Arquivos estáticos | Serviço interno
 
-**Use Web Service when:**
+ces |
 
-- Your app handles HTTP requests
-- Users need to access it via URL
-- You need load balancing and scaling
+## Escolhendo o tipo de serviço certo
 
-**Use Worker Service when:**
+**Use o serviço Web quando:**
 
-- Processing background jobs
-- Consuming from message queues
-- Running long-lived processes without HTTP
+- Seu aplicativo lida com solicitações HTTP
+- Os usuários precisam acessá-lo via URL
+- Você precisa de balanceamento de carga e escalonamento
 
-**Use Cron Job when:**
+**Use o serviço de trabalho quando:**
 
-- Running scheduled tasks
-- Processing doesn't need to be always-on
-- Tasks run periodically (hourly, daily, weekly)
+- Processamento de trabalhos em segundo plano
+- Consumindo de filas de mensagens
+- Executando processos de longa duração sem HTTP
 
-**Use Static Site when:**
+**Use o Cron Job quando:**
 
-- Serving pre-built HTML/CSS/JS
-- No backend processing needed
-- Want CDN caching and fast delivery
+- Executando tarefas agendadas
+- O processamento não precisa estar sempre ativo
+- As tarefas são executadas periodicamente (de hora em hora, diariamente, semanalmente)
 
-**Use Private Service when:**
+**Use site estático quando:**
 
-- Service only accessed by other services
-- Want internal-only communication
-- Building microservice architectures
+- Servindo HTML/CSS/JS pré-construído
+- Não é necessário processamento de back-end
+- Deseja cache CDN e entrega rápida
+
+**Use o serviço privado quando:**
+
+- Serviço acessado apenas por outros serviços
+- Deseja comunicação apenas interna
+- Construindo arquiteturas de microsserviços
+```

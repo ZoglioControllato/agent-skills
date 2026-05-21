@@ -1,210 +1,173 @@
-# Binding Gotchas and Troubleshooting
+# Gotchas e troubleshooting de bindings
 
-## Critical: Global Scope Mutation
+## Crítico: mutação em escopo global
 
-### ❌ THE #1 GOTCHA: Caching env in Global Scope
+### Armadilha #1: cachear env em escopo global
 
 ```typescript
-// ❌ DANGEROUS - env cached at deploy time
+// ❌ PERIGOSO — env no escopo global
 const apiKey = env.API_KEY // ERROR: env not available in global scope
 
 export default {
   async fetch(request: Request, env: Env) {
-    // Uses undefined or stale value!
+    // Pode usar valor indefinido ou antigo
   },
 }
 ```
 
-**Why it breaks:**
+**Por que quebra:**
 
-- `env` not available in global scope
-- If using workarounds, secrets may not update without redeployment
-- Leads to "Cannot read property 'X' of undefined" errors
+- `env` não existe em escopo global
+- Workarounds podem deixar secrets desatualizados sem redeploy
+- Erros do tipo "Cannot read property 'X' of undefined"
 
-**✅ Always access env per-request:**
+**Acesse env por requisição:**
 
 ```typescript
 export default {
   async fetch(request: Request, env: Env) {
-    const apiKey = env.API_KEY // Fresh every request
+    const apiKey = env.API_KEY
   },
 }
 ```
 
-## Common Errors
+## Erros comuns
 
 ### "env.MY_KV is undefined"
 
-**Cause:** Name mismatch or not configured  
-**Solution:** Check wrangler.jsonc (case-sensitive), run `npx wrangler types`, verify `npx wrangler kv namespace list`
+**Causa:** nome errado ou não configurado  
+**Solução:** wrangler.jsonc (case-sensitive), `npx wrangler types`, `npx wrangler kv namespace list`
 
 ### "Property 'MY_KV' does not exist on type 'Env'"
 
-**Cause:** Types not generated  
-**Solution:** `npx wrangler types`
+**Causa:** tipos não gerados  
+**Solução:** `npx wrangler types`
 
 ### "preview_id is required for --remote"
 
-**Cause:** Missing preview binding  
-**Solution:** Add `"preview_id": "dev-id"` or use `npx wrangler dev` (local mode)
+**Causa:** binding preview ausente  
+**Solução:** `"preview_id": "dev-id"` ou `npx wrangler dev` em modo local
 
 ### "Secret updated but Worker still uses old value"
 
-**Cause:** Cached in global scope or not redeployed  
-**Solution:** Avoid global caching, redeploy after secret change
+**Causa:** cache global ou sem redeploy  
+**Solução:** não cacheie `env` globalmente; redeploy após mudar secret
 
 ### "KV get() returns null for existing key"
 
-**Cause:** Eventual consistency (60s), wrong namespace, wrong environment  
-**Solution:**
+**Causa:** consistência eventual (60s), namespace ou ambiente errado  
+**Solução:**
 
 ```bash
-# Check key exists
 npx wrangler kv key get --binding=MY_KV "your-key"
-
-# Verify namespace ID
 npx wrangler kv namespace list
-
-# Check environment
 npx wrangler deployments list
 ```
 
 ### "D1 database not found"
 
-**Solution:** `npx wrangler d1 list`, verify ID in wrangler.jsonc
+**Solução:** `npx wrangler d1 list`, confira ID no wrangler.jsonc
 
 ### "Service binding returns 'No such service'"
 
-**Cause:** Target Worker not deployed, name mismatch, environment mismatch  
-**Solution:**
+**Causa:** Worker alvo não deployado, nome ou ambiente divergentes  
+**Solução:**
 
 ```bash
-# List deployed Workers
 npx wrangler deployments list --name=target-worker
-
-# Check service binding config
 cat wrangler.jsonc | grep -A2 services
-
-# Deploy target first
 cd ../target-worker && npx wrangler deploy
 ```
 
-### "Rate limit exceeded" on KV writes
+### "Rate limit exceeded" em escritas KV
 
-**Cause:** >1 write/second per key  
-**Solution:** Use different keys, Durable Objects, or Queues
+**Causa:** >1 escrita/s por chave  
+**Solução:** chaves diferentes, Durable Objects ou Queues
 
-## Type Safety Gotchas
+## Tipagem
 
-### Missing @cloudflare/workers-types
+### Falta @cloudflare/workers-types
 
-**Error:** `Cannot find name 'Request'`  
-**Solution:** `npm install -D @cloudflare/workers-types`, add to tsconfig.json `"types"`
+**Erro:** `Cannot find name 'Request'`  
+**Solução:** `npm install -D @cloudflare/workers-types` e `"types"` no tsconfig
 
-### Binding Type Mismatches
+### Incompatibilidade de tipo de binding
 
 ```typescript
-// ❌ Wrong - KV returns string | null
-const value: string = await env.MY_KV.get('key')
-
-// ✅ Handle null
 const value = await env.MY_KV.get('key')
 if (!value) return new Response('Not found', { status: 404 })
 ```
 
-## Environment Gotchas
+## Ambiente
 
-### Wrong Environment Deployed
+### Deploy no ambiente errado
 
-**Solution:** Check `npx wrangler deployments list`, use `--env` flag
+**Solução:** `npx wrangler deployments list`, use `--env`
 
-### Secrets Not Per-Environment
+### Secrets não por ambiente
 
-**Solution:** Set per environment: `npx wrangler secret put API_KEY --env staging`
+**Solução:** `npx wrangler secret put API_KEY --env staging`
 
-## Development Gotchas
+## Dev
 
 **wrangler dev vs deploy:**
 
-- dev: Uses `preview_id` or local bindings, secrets not available
-- deploy: Uses production `id`, secrets available
+- dev: `preview_id` ou bindings locais; secrets podem faltar
+- deploy: `id` de produção; secrets disponíveis
 
-**Access secrets in dev:** `npx wrangler dev --remote`  
-**Persist local data:** `npx wrangler dev --persist`
+**Secrets no dev:** `npx wrangler dev --remote`  
+**Persistência:** `npx wrangler dev --persist`
 
-## Performance Gotchas
+## Performance
 
-### Sequential Binding Calls
+### Chamadas sequenciais
 
 ```typescript
-// ❌ Slow
-const user = await env.DB.prepare('...').first()
-const config = await env.MY_KV.get('config')
-
-// ✅ Parallel
 const [user, config] = await Promise.all([env.DB.prepare('...').first(), env.MY_KV.get('config')])
 ```
 
-## Security Gotchas
+## Segurança
 
-**❌ Secrets in logs:** `console.log('Key:', env.API_KEY)` - visible in dashboard  
-**✅** `console.log('Key:', env.API_KEY ? '***' : 'missing')`
+**Logs com secrets:** evite `console.log(env.API_KEY)`  
+**Nunca** retorne o objeto `env` em JSON.
 
-**❌ Exposing env:** `return Response.json(env)` - exposes all bindings  
-**✅** Never return env object in responses
+## Referência de limites
 
-## Limits Reference
+| Recurso                   | Limite            | Impacto                 |
+| ------------------------- | ----------------- | ----------------------- |
+| **Bindings por Worker**   | 64 total          | Todos os tipos          |
+| **Variáveis de ambiente** | 64 máx., 5KB cada | Por Worker              |
+| **Tamanho do secret**     | 1KB               | Por secret              |
+| **Tamanho chave KV**      | 512 bytes         | UTF-8                   |
+| **Valor KV**              | 25 MB             | Por valor               |
+| **Escritas KV/chave**     | 1/s               | 429 se exceder          |
+| **list() KV**             | 1000 keys         | Por chamada; use cursor |
+| **Ops KV (free)**         | 1000 reads/dia    | Só free                 |
+| **Objeto R2**             | 5 TB              | Por objeto              |
+| **Tamanho DB D1**         | 10 GB             | Por banco               |
+| **Linhas por query D1**   | 100.000           | Limite do result set    |
+| **Batch fila**            | 100 mensagens     | Por batch do consumer   |
+| **Tamanho mensagem**      | 128 KB            | Por mensagem            |
 
-| Resource                  | Limit                  | Impact                         | Plan |
-| ------------------------- | ---------------------- | ------------------------------ | ---- |
-| **Bindings per Worker**   | 64 total               | All binding types combined     | All  |
-| **Environment variables** | 64 max, 5KB each       | Per Worker                     | All  |
-| **Secret size**           | 1KB                    | Per secret                     | All  |
-| **KV key size**           | 512 bytes              | UTF-8 encoded                  | All  |
-| **KV value size**         | 25 MB                  | Per value                      | All  |
-| **KV writes per key**     | 1/second               | Per key; exceeding = 429 error | All  |
-| **KV list() results**     | 1000 keys              | Per call; use cursor for more  | All  |
-| **KV operations**         | 1000 reads/day         | Free tier only                 | Free |
-| **R2 object size**        | 5 TB                   | Per object                     | All  |
-| **R2 operations**         | 1M Class A/month free  | Writes                         | All  |
-| **D1 database size**      | 10 GB                  | Per database                   | All  |
-| **D1 rows per query**     | 100,000                | Result set limit               | All  |
-| **D1 databases**          | 10                     | Free tier                      | Free |
-| **Queue batch size**      | 100 messages           | Per consumer batch             | All  |
-| **Queue message size**    | 128 KB                 | Per message                    | All  |
-| **Service binding calls** | Unlimited              | Counts toward CPU time         | All  |
-| **Durable Objects**       | 1M requests/month free | First 1M                       | Free |
-
-## Debugging Tips
+## Debug
 
 ```bash
-# Check configuration
-npx wrangler deploy --dry-run       # Validate config without deploying
-npx wrangler kv namespace list      # List KV namespaces
-npx wrangler secret list            # List secrets (not values)
-npx wrangler deployments list       # Recent deployments
-
-# Inspect bindings
+npx wrangler deploy --dry-run
+npx wrangler kv namespace list
+npx wrangler secret list
+npx wrangler deployments list
 npx wrangler kv key list --binding=MY_KV
 npx wrangler kv key get --binding=MY_KV "key-name"
 npx wrangler r2 object get my-bucket/file.txt
 npx wrangler d1 execute my-db --command="SELECT * FROM sqlite_master"
-
-# Test locally
-npx wrangler dev                  # Local mode
-npx wrangler dev --remote         # Production bindings
-npx wrangler dev --persist        # Persist data across restarts
-
-# Verify types
+npx wrangler dev
+npx wrangler dev --remote
+npx wrangler dev --persist
 npx wrangler types
-cat .wrangler/types/runtime.d.ts | grep "interface Env"
-
-# Debug specific binding issues
-npx wrangler tail                 # Stream logs in real-time
-npx wrangler tail --format=pretty # Formatted logs
+npx wrangler tail
 ```
 
-## See Also
+## Ver também
 
 - [Workers Limits](https://developers.cloudflare.com/workers/platform/limits/)
 - [Wrangler Commands](https://developers.cloudflare.com/workers/wrangler/commands/)

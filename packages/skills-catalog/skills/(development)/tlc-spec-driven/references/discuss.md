@@ -1,73 +1,74 @@
-# Specify: Discuss Gray Areas
+# Especifique: discuta as áreas cinzentas
 
-**Goal:** Capture HOW the user envisions the feature when the spec has ambiguous areas. This is NOT a separate phase — it's triggered within Specify when the agent detects gray areas that need user input.
+**Objetivo:** capturar COMO o usuário visualiza o recurso quando a especificação tem áreas ambíguas. Esta NÃO é uma fase separada — ela é acionada em Especificar quando o agente detecta áreas cinzentas que precisam de entrada do usuário.
 
-**Trigger:** Automatically when gray areas are detected during spec creation, or explicitly via "discuss feature", "how should this work?", "capture context"
+**Acionador:** automaticamente quando áreas cinzentas são detectadas durante a criação de especificações ou explicitamente por meio de "discutir recurso", "como isso deve funcionar?", "capturar contexto"
 
-**When to trigger (auto-detect):** The spec contains user-facing behavior that could go multiple ways AND the user hasn't expressed a preference. If the spec is clear and unambiguous, skip this entirely.
+**Quando acionar (detecção automática):** A especificação contém um comportamento voltado para o usuário que pode ocorrer de várias maneiras E o usuário não expressou uma preferência. Se a especificação for clara e inequívoca, ignore isso completamente.
 
-**When NOT to trigger:** Infrastructure work, CRUD operations, well-defined API contracts, anything where the "how" is obvious from the "what".
+**Quando NÃO acionar:** Trabalho de infraestrutura, operações CRUD, contratos de API bem definidos, qualquer coisa onde o "como" é óbvio a partir do "o quê".
 
-## Why This Phase Exists
+## Por que esta fase existe
 
-Specifications capture WHAT to build. Design captures the architecture. But neither captures the user's vision for ambiguous areas — layout preferences, interaction patterns, error handling style, content tone. Without this, the agent guesses. With this, the agent builds what the user actually imagined.
+As especificações capturam O QUE construir. O design captura a arquitetura. Mas nenhum deles captura a visão do usuário para áreas ambíguas – preferências de layout, padrões de interação, estilo de tratamento de erros, tom do conteúdo. Sem isso, o agente adivinha. Com isso, o agente constrói o que o usuário realmente imaginou.
 
-The output — `context.md` — feeds directly into Design and Tasks:
+A saída — `context.md` — alimenta diretamente o Design e as Tarefas:
 
-- **Design reads it** to know what decisions are locked vs. flexible
-- **Tasks reads it** to include specific behaviors in task definitions
+- **O design lê** para saber quais decisões são bloqueadas ou flexíveis
+- **Tarefas lêem** para incluir comportamentos específicos nas definições de tarefas
 
-## Process
+## Processo
 
-### 1. Analyze the Feature
+### 1. Analise o recurso
 
-Read `.specs/features/[feature]/spec.md` and identify the domain:
+Leia `.specs/features/[feature]/spec.md` e identifique o domínio:
 
-| Domain                         | Gray areas to explore                                         |
-| ------------------------------ | ------------------------------------------------------------- |
-| Something users **SEE**        | Layout, density, interactions, empty states, visual hierarchy |
-| Something users **CALL** (API) | Response format, errors, auth, versioning, rate limiting      |
-| Something users **RUN** (CLI)  | Output format, flags, modes, error handling, verbosity        |
-| Something users **READ**       | Structure, tone, depth, flow, navigation                      |
-| Something being **ORGANIZED**  | Grouping criteria, naming, duplicates, exceptions             |
+| Domínio                         | Áreas cinzentas para explorar                                                   |
+| ------------------------------- | ------------------------------------------------------------------------------- |
+| Algo que os usuários **VERÃO**  | Layout, densidade, interações, estados vazios, hierarquia visual                |
+| Usuários de algo **CALL** (API) | Formato de resposta, erros, autenticação, controle de versão, limitação de taxa |
+| Usuários de algo **RUN** (CLI)  | Formato de saída, sinalizador                                                   |
 
-Generate 3-4 **feature-specific** gray areas. Not generic categories, but concrete decisions for THIS feature.
+s, modos, tratamento de erros, verbosidade |
+| Algo que os usuários **LEIAM** | Estrutura, tom, profundidade, fluxo, navegação |
+| Algo sendo **ORGANIZADO** | Critérios de agrupamento, nomenclatura, duplicatas, exceções |
 
-### 2. Present Gray Areas
+Gere de 3 a 4 áreas cinzentas **específicas de recursos**. Não categorias genéricas, mas decisões concretas para ESTE recurso.
 
-Present the feature boundary (from spec.md) and the gray areas to the user. Let them choose which to discuss. Do NOT include a "skip all" option — the user invoked this phase to discuss.
+### 2. Apresentar áreas cinzentas
 
-### 3. Deep-Dive Each Area
+Apresente o limite do recurso (de spec.md) e as áreas cinzas ao usuário. Deixe-os escolher o que discutir. NÃO inclua a opção “pular tudo” — o usuário invocou esta fase para discutir.
 
-For each selected area:
+### 3. Aprofunde-se em cada área
 
-1. Ask 3-4 concrete questions with specific options (not vague categories)
-2. After the questions, check: "More about [area], or move on?"
-3. If more → ask 3-4 more, check again
-4. After all areas → "Ready to create context?"
+Para cada área selecionada:
 
-**Question design:**
+1. Faça de 3 a 4 perguntas concretas com opções específicas (não categorias vagas)
+2. Após as perguntas, marque: "Mais sobre [área] ou seguir em frente?"
+3. Se mais → pergunte mais 3-4, verifique novamente
+4. Depois de todas as áreas → "Pronto para criar contexto?"
 
-- Options should be concrete ("Card layout" not "Option A")
-- Each answer should inform the next question
-- Include "You decide" as an option when reasonable — captures agent discretion
+**Elaboração da pergunta:**
 
-### 4. Scope Guardrail (CRITICAL)
+- As opções devem ser concretas ("Layout do cartão" e não "Opção A")
+- Cada resposta deve informar a próxima pergunta
+- Incluir "Você decide" como uma opção quando razoável - captura a discrição do agente
 
-The feature boundary from spec.md is **fixed**. Discussion clarifies HOW to implement, never WHETHER to add new capabilities.
+### 4. Proteção do escopo (CRÍTICO)
 
-**Allowed:** "How should posts be displayed?" (clarifying ambiguity)
-**Not allowed:** "Should we also add comments?" (new capability)
+O limite do recurso de spec.md é **fixo**. A discussão esclarece COMO implementar, nunca SE adicionar novos recursos.
 
-When user suggests scope creep: "That sounds like a separate feature. I'll note it in Deferred Ideas. Back to [current area]."
+**Permitido:** "Como as postagens devem ser exibidas?" (esclarecendo a ambiguidade)
+**Não permitido:** "Devemos também adicionar comentários?" (nova capacidade)
 
-### 5. Write context.md
+Quando o usuário sugere aumento de escopo: "Parece um recurso separado. Vou anotá-lo em Ideias Adiadas. Voltar para [área atual]."
+
+### 5. Escreva context.md
 
 ---
 
-## Template: `.specs/features/[feature]/context.md`
+## Modelo: `.specs/features/[feature]/context.md````markdown
 
-```markdown
 # [Feature] Context
 
 **Gathered:** [date]
@@ -116,14 +117,17 @@ When user suggests scope creep: "That sounds like a separate feature. I'll note 
 [Ideas that came up during discussion but belong in other features/phases. Captured here so they're not lost, but explicitly out of scope]
 
 [If none: "None — discussion stayed within feature scope"]
-```
 
+```
 ---
 
-## Tips
+## Pontas
 
-- **Decisions, not vision** — "Card-based layout with subtle shadows" is a decision. "Should feel modern" is not.
-- **Scope is sacred** — Deferred Ideas captures scope creep without losing ideas
-- **User = visionary, Agent = builder** — Ask about how they imagine it, not about technical implementation
-- **Don't ask about:** Technical architecture, performance, implementation details — that's Design's job
-- **Confirm before Design** — User approves context.md before moving to design phase
+- **Decisões, não visão** — "Layout baseado em cartão com sombras sutis" é uma decisão. "Deve parecer moderno" não é.
+- **O escopo é sagrado** — Ideias diferidas capturam o aumento do escopo sem perder ideias
+- **Usuário = visionário, Agente = construtor** — Pergunte sobre como eles imaginam isso, não sobre implementação técnica
+- **Não pergunte sobre:** Arquitetura técnica, desempenho, detalhes de implementação — esse é o trabalho do Design
+- **Confirme antes do design** — Aprovação do usuário
+
+s context.md antes de passar para a fase de design
+```

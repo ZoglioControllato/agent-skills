@@ -1,6 +1,6 @@
-# Common Patterns
+# Padrões comuns
 
-## URL Transform Options
+## Opções de transformação por URL
 
 ```
 width=<PX>   height=<PX>   fit=scale-down|contain|cover|crop|pad
@@ -9,7 +9,7 @@ gravity=auto|face|left|right|top|bottom   sharpen=2   blur=10
 rotate=90|180|270   background=white   metadata=none|copyright|keep
 ```
 
-## Responsive Images (srcset)
+## Imagens responsivas (srcset)
 
 ```html
 <img
@@ -19,7 +19,7 @@ rotate=90|180|270   background=white   metadata=none|copyright|keep
 />
 ```
 
-## Format Negotiation
+## Negociação de formato
 
 ```typescript
 async fetch(request: Request, env: Env): Promise<Response> {
@@ -49,7 +49,7 @@ await fetch(result.uploadURL, { method: 'POST', body: formData })
 // Use: https://imagedelivery.net/{hash}/${result.id}/public
 ```
 
-## Transform & Store to R2
+## Transformar e armazenar no R2
 
 ```typescript
 async fetch(request: Request, env: Env): Promise<Response> {
@@ -63,7 +63,7 @@ async fetch(request: Request, env: Env): Promise<Response> {
 }
 ```
 
-## Watermarking
+## Marca d’água
 
 ```typescript
 const watermark = await env.ASSETS.fetch(new URL('/watermark.png', request.url))
@@ -74,7 +74,7 @@ const result = await env.IMAGES.input(await image.arrayBuffer())
 return result.response()
 ```
 
-## Device-Based Transforms
+## Transformações por dispositivo
 
 ```typescript
 const ua = request.headers.get('User-Agent') || ''
@@ -85,7 +85,7 @@ return env.IMAGES.input(buffer)
   .response()
 ```
 
-## Caching Strategy
+## Estratégia de cache
 
 ```typescript
 async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
@@ -100,7 +100,7 @@ async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response
 }
 ```
 
-## Batch Processing
+## Processamento em lote
 
 ```typescript
 const results = await Promise.all(
@@ -108,7 +108,7 @@ const results = await Promise.all(
 )
 ```
 
-## Error Handling
+## Tratamento de erros
 
 ```typescript
 try {
@@ -118,3 +118,5 @@ try {
   return new Response('Image processing failed', { status: 500 })
 }
 ```
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

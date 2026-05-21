@@ -1,12 +1,11 @@
-# Troubleshooting & Gotchas
+# Solução de problemas e armadilhas
 
-## Critical Rules
+## Regras críticas
 
-### ❌ Skipping Server-Side Validation
+### ❌ Pular validação no servidor
 
-**Problem:** Client-only validation is easily bypassed.
-
-**Solution:** Always validate on server.
+**Problema:** validação só no cliente é facilmente burlada.  
+**Solução:** sempre valide no servidor.
 
 ```javascript
 // CORRECT - Server validates token
@@ -21,27 +20,24 @@ app.post('/submit', async (req, res) => {
 })
 ```
 
-### ❌ Exposing Secret Key
+### ❌ Expor a chave secreta
 
-**Problem:** Secret key leaked in client-side code.
+**Problema:** secret vazou no código do cliente.  
+**Solução:** validação só no servidor. Nunca envie o secret ao cliente.
 
-**Solution:** Server-side validation only. Never send secret to client.
+### ❌ Reutilizar tokens (regra de uso único)
 
-### ❌ Reusing Tokens (Single-Use Rule)
-
-**Problem:** Tokens are single-use. Revalidation fails with `timeout-or-duplicate`.
-
-**Solution:** Generate new token for each submission. Reset widget on error.
+**Problema:** tokens são de uso único; revalidar falha com `timeout-or-duplicate`.  
+**Solução:** gere novo token por envio; reinicie o widget em erro.
 
 ```javascript
 if (!response.ok) window.turnstile.reset(widgetId)
 ```
 
-### ❌ Not Handling Token Expiry
+### ❌ Ignorar expiração do token
 
-**Problem:** Tokens expire after 5 minutes.
-
-**Solution:** Handle expiry callback or use auto-refresh.
+**Problema:** tokens expiram após 5 minutos.  
+**Solução:** trate `expired-callback` ou use auto-refresh.
 
 ```javascript
 window.turnstile.render('#container', {
@@ -51,22 +47,21 @@ window.turnstile.render('#container', {
 })
 ```
 
-## Common Errors
+## Erros comuns
 
-| Error                      | Cause                                             | Solution                                                          |
-| -------------------------- | ------------------------------------------------- | ----------------------------------------------------------------- |
-| **Widget not rendering**   | Incorrect sitekey, CSP blocking, file:// protocol | Check sitekey, add CSP for challenges.cloudflare.com, use http:// |
-| **timeout-or-duplicate**   | Token expired (>5min) or reused                   | Generate fresh token, don't cache >5min                           |
-| **invalid-input-secret**   | Wrong secret key                                  | Verify secret from dashboard, check env vars                      |
-| **missing-input-response** | Token not sent                                    | Check form field name is 'cf-turnstile-response'                  |
+| Erro                       | Causa                                             | Solução                                                          |
+| -------------------------- | ------------------------------------------------- | ---------------------------------------------------------------- |
+| **Widget not rendering**   | sitekey errado, CSP bloqueando, protocolo file:// | Confira sitekey, CSP para challenges.cloudflare.com, use http(s) |
+| **timeout-or-duplicate**   | Token expirou ou foi reutilizado                  | Token novo; não guarde cache além de ~5 min                      |
+| **invalid-input-secret**   | Secret incorreto                                  | Painel e variáveis de ambiente                                   |
+| **missing-input-response** | Token não enviado                                 | Nome do campo `cf-turnstile-response`                            |
 
-## Framework Gotchas
+## Armadilhas em frameworks
 
-### React: Widget Re-mounting
+### React: remontagem do widget
 
-**Problem:** Widget re-renders on state change, losing token.
-
-**Solution:** Control lifecycle with useRef.
+**Problema:** re-render perde token.  
+**Solução:** controle o ciclo de vida com `useRef`.
 
 ```tsx
 function TurnstileWidget({ onToken }) {
@@ -92,11 +87,10 @@ function TurnstileWidget({ onToken }) {
 }
 ```
 
-### React StrictMode: Double Render
+### React StrictMode: duplo render
 
-**Problem:** Widget renders twice in dev due to StrictMode.
-
-**Solution:** Use cleanup function.
+**Problema:** widget renderiza duas vezes em dev.  
+**Solução:** use cleanup.
 
 ```tsx
 useEffect(() => {
@@ -105,11 +99,10 @@ useEffect(() => {
 }, [])
 ```
 
-### Next.js: SSR Hydration
+### Next.js: hidratação SSR
 
-**Problem:** `window.turnstile` undefined during SSR.
-
-**Solution:** Use `'use client'` or dynamic import with `ssr: false`.
+**Problema:** `window.turnstile` indefinido no SSR.  
+**Solução:** `'use client'` ou import dinâmico com `ssr: false`.
 
 ```tsx
 'use client'
@@ -118,11 +111,10 @@ export default function Turnstile() {
 }
 ```
 
-### SPA: Navigation Without Cleanup
+### SPA: navegação sem cleanup
 
-**Problem:** Navigating leaves orphaned widgets.
-
-**Solution:** Remove widget in cleanup.
+**Problema:** widgets órfãos após navegação.  
+**Solução:** remova no cleanup.
 
 ```javascript
 // Vue
@@ -132,13 +124,12 @@ onBeforeUnmount(() => window.turnstile.remove(widgetId))
 useEffect(() => () => window.turnstile.remove(widgetId), [])
 ```
 
-## Network & Security
+## Rede e segurança
 
-### CSP Blocking
+### CSP bloqueando
 
-**Problem:** Content Security Policy blocks script/iframe.
-
-**Solution:** Add CSP directives.
+**Problema:** CSP bloqueia script/iframe.  
+**Solução:** diretivas CSP.
 
 ```html
 <meta
@@ -148,11 +139,10 @@ useEffect(() => () => window.turnstile.remove(widgetId), [])
 />
 ```
 
-### IP Address Forwarding
+### Encaminhamento de IP
 
-**Problem:** Server receives proxy IP instead of client IP.
-
-**Solution:** Use correct header.
+**Problema:** servidor vê IP do proxy, não do cliente.  
+**Solução:** header correto.
 
 ```javascript
 // Cloudflare Workers
@@ -164,21 +154,20 @@ const ip = request.headers.get('X-Forwarded-For')?.split(',')[0]
 
 ### CORS (Siteverify)
 
-**Problem:** CORS error calling siteverify from browser.
+**Problema:** CORS ao chamar siteverify do navegador.  
+**Solução:** nunca chame siteverify no cliente; backend chama siteverify.
 
-**Solution:** Never call siteverify client-side. Call your backend, backend calls siteverify.
+## Limites
 
-## Limits & Constraints
+| Limite         | Valor                                  | Impacto                |
+| -------------- | -------------------------------------- | ---------------------- |
+| Validade token | 5 minutos                              | Regenerar após expirar |
+| Uso do token   | Uso único                              | Não revalidar o mesmo  |
+| Tamanho widget | 300×65px (normal), 130×120px (compact) | Planejar layout        |
 
-| Limit          | Value                                  | Impact                       |
-| -------------- | -------------------------------------- | ---------------------------- |
-| Token validity | 5 minutes                              | Must regenerate after expiry |
-| Token use      | Single-use                             | Cannot revalidate same token |
-| Widget size    | 300x65px (normal), 130x120px (compact) | Plan layout                  |
+## Depuração
 
-## Debugging
-
-### Console Logging
+### Log no console
 
 ```javascript
 window.turnstile.render('#container', {
@@ -190,7 +179,7 @@ window.turnstile.render('#container', {
 })
 ```
 
-### Check Token State
+### Estado do token
 
 ```javascript
 const token = window.turnstile.getResponse(widgetId)
@@ -198,42 +187,39 @@ console.log('Token:', token || 'NOT READY')
 console.log('Expired:', window.turnstile.isExpired(widgetId))
 ```
 
-### Test Keys (Use First)
+### Chaves de teste
 
-Always develop with test keys before production:
+Desenvolva primeiro com chaves de teste:
 
 - Site: `1x00000000000000000000AA`
 - Secret: `1x0000000000000000000000000000000AA`
 
-### Network Tab
+### Aba Network
 
-- Verify `api.js` loads (200 OK)
-- Check siteverify request/response
-- Look for 4xx/5xx errors
+- `api.js` carrega (200)
+- Requisição/resposta siteverify
+- Erros 4xx/5xx
 
-## Misconfigurations
+## Erros de configuração
 
-### Wrong Key Pairing
+### Par site/secret errado
 
-**Problem:** Site key from one widget, secret from another.
+**Problema:** site key de um widget, secret de outro.  
+**Solução:** mesmo par no painel.
 
-**Solution:** Verify site key and secret are from same widget in dashboard.
+### Chaves de teste em produção
 
-### Test Keys in Production
-
-**Problem:** Using test keys in production.
-
-**Solution:** Environment-based keys.
+**Problema:** test keys no ar.  
+**Solução:** chaves por ambiente.
 
 ```javascript
 const SITE_KEY = process.env.NODE_ENV === 'production' ? process.env.TURNSTILE_SITE_KEY : '1x00000000000000000000AA'
 ```
 
-### Missing Environment Variables
+### Variáveis de ambiente ausentes
 
-**Problem:** Secret undefined on server.
-
-**Solution:** Check .env and verify loading.
+**Problema:** secret indefinido no servidor.  
+**Solução:** `.env` e carregamento.
 
 ```bash
 # .env
@@ -243,8 +229,10 @@ TURNSTILE_SECRET=your_secret_here
 console.log('Secret loaded:', !!process.env.TURNSTILE_SECRET);
 ```
 
-## Reference
+## Referência
 
 - [Turnstile Docs](https://developers.cloudflare.com/turnstile/)
 - [Dashboard](https://dash.cloudflare.com/?to=/:account/turnstile)
 - [Error Codes](https://developers.cloudflare.com/turnstile/troubleshooting/)
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

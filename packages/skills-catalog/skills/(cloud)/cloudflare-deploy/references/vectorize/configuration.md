@@ -1,14 +1,14 @@
-# Vectorize Configuration
+# Configuração do Vectorize
 
-## Create Index
+## Criar índice
 
 ```bash
 npx wrangler vectorize create my-index --dimensions=768 --metric=cosine
 ```
 
-**⚠️ Dimensions and metric are immutable** - cannot change after creation.
+**Dimensões e métrica são imutáveis** — não podem ser alteradas após a criação.
 
-## Worker Binding
+## Binding no Worker
 
 ```jsonc
 // wrangler.jsonc
@@ -23,22 +23,22 @@ interface Env {
 }
 ```
 
-## Metadata Indexes
+## Índices de metadados
 
-**Must create BEFORE inserting vectors** - existing vectors not retroactively indexed.
+**Crie ANTES de inserir vetores** — vetores existentes não são reindexados retroativamente.
 
 ```bash
 wrangler vectorize create-metadata-index my-index --property-name=category --type=string
 wrangler vectorize create-metadata-index my-index --property-name=price --type=number
 ```
 
-| Type      | Use For                                   |
-| --------- | ----------------------------------------- |
-| `string`  | Categories, tags (first 64 bytes indexed) |
-| `number`  | Prices, timestamps                        |
-| `boolean` | Flags                                     |
+| Tipo      | Use para                                        |
+| --------- | ----------------------------------------------- |
+| `string`  | Categorias, tags (primeiros 64 bytes indexados) |
+| `number`  | Preços, timestamps                              |
+| `boolean` | Flags                                           |
 
-## CLI Commands
+## Comandos da CLI
 
 ```bash
 # Index management
@@ -56,18 +56,18 @@ wrangler vectorize list-metadata-index <index-name>
 wrangler vectorize delete-metadata-index <index-name> --property-name=field
 ```
 
-## Bulk Upload (NDJSON)
+## Upload em massa (NDJSON)
 
 ```json
 {"id": "1", "values": [0.1, 0.2, ...], "metadata": {"category": "docs"}}
 {"id": "2", "values": [0.4, 0.5, ...], "namespace": "tenant-abc"}
 ```
 
-**Limits:** 5000 vectors per file, 100 MB max
+**Limites:** 5000 vetores por arquivo, máx. 100 MB
 
-## Cardinality Best Practice
+## Boa prática de cardinalidade
 
-Bucket high-cardinality data:
+Agrupe dados de alta cardinalidade:
 
 ```typescript
 // ❌ Millisecond timestamps
@@ -81,11 +81,13 @@ metadata: {
 }
 ```
 
-## Production Checklist
+## Checklist de produção
 
-1. Create index with correct dimensions
-2. Create metadata indexes FIRST
-3. Test bulk upload
-4. Configure bindings
-5. Deploy Worker
-6. Verify queries
+1. Criar índice com dimensões corretas
+2. Criar índices de metadados PRIMEIRO
+3. Testar upload em massa
+4. Configurar bindings
+5. Publicar Worker
+6. Validar consultas
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

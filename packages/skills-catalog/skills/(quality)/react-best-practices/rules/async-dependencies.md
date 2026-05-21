@@ -1,51 +1,48 @@
 ---
-title: Dependency-Based Parallelization
+title: Paralelização Baseada em Dependência
 impact: CRITICAL
-impactDescription: 2-10× improvement
-tags: async, parallelization, dependencies, better-all
+impactDescription: melhoria de 2-10×
+tags: assíncrono, paralelização, dependências, melhor-tudo
 ---
 
-## Dependency-Based Parallelization
+## Paralelização Baseada em Dependência
 
-For operations with partial dependencies, use `better-all` to maximize parallelism. It automatically starts each task at the earliest possible moment.
+Para operações com dependências parciais, use `better-all` para maximizar o paralelismo. Ele inicia automaticamente cada tarefa o mais cedo possível.
 
-**Incorrect (profile waits for config unnecessarily):**
+**Incorreto (perfil aguarda configuração desnecessariamente):**
 
 ```typescript
-const [user, config] = await Promise.all([
-  fetchUser(),
-  fetchConfig()
-])
+const [user, config] = await Promise.all([fetchUser(), fetchConfig()])
 const profile = await fetchProfile(user.id)
 ```
 
-**Correct (config and profile run in parallel):**
+**Correto (configuração e perfil executados em paralelo):**
 
 ```typescript
 import { all } from 'better-all'
 
 const { user, config, profile } = await all({
-  async user() { return fetchUser() },
-  async config() { return fetchConfig() },
+  async user() {
+    return fetchUser()
+  },
+  async config() {
+    return fetchConfig()
+  },
   async profile() {
     return fetchProfile((await this.$.user).id)
-  }
+  },
 })
 ```
 
-**Alternative without extra dependencies:**
+**Alternativa sem dependências extras:**
 
-We can also create all the promises first, and do `Promise.all()` at the end.
+Também podemos criar todas as promises primeiro e fazer `Promise.all()` só no final.
 
 ```typescript
 const userPromise = fetchUser()
-const profilePromise = userPromise.then(user => fetchProfile(user.id))
+const profilePromise = userPromise.then((user) => fetchProfile(user.id))
 
-const [user, config, profile] = await Promise.all([
-  userPromise,
-  fetchConfig(),
-  profilePromise
-])
+const [user, config, profile] = await Promise.all([userPromise, fetchConfig(), profilePromise])
 ```
 
-Reference: [https://github.com/shuding/better-all](https://github.com/shuding/better-all)
+Referência: [https://github.com/shuding/better-all](https://github.com/shuding/better-all)

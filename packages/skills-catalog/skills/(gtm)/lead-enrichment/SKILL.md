@@ -1,100 +1,99 @@
 ---
 name: lead-enrichment
-description: "When the user wants to build data enrichment workflows, score leads against ICP, set up Clay waterfalls, or improve contact data quality. Also use when the user mentions 'enrichment,' 'data enrichment,' 'Clay,' 'waterfall enrichment,' 'ICP scoring,' 'lead scoring,' 'intent data,' 'contact verification,' 'Apollo,' 'ZoomInfo,' or 'data quality.' This skill covers lead enrichment waterfalls, ICP scoring frameworks, and contact verification systems. Do NOT use for technical implementation, code review, or software architecture."
+description: "Use quando o usuário quiser construir fluxos de enriquecimento de dados, pontuar leads em relação à ICP, configurar cascatas no Clay ou melhorar a qualidade de dados de contato. Use também quando o usuário mencionar 'enrichment,' 'data enrichment,' 'Clay,' 'waterfall enrichment,' 'ICP scoring,' 'lead scoring,' 'intent data,' 'contact verification,' 'Apollo,' 'ZoomInfo' ou 'data quality.' Esta habilidade cobre cascatas de enriquecimento de leads, frameworks de pontuação ICP e sistemas de verificação de contatos. NÃO use para implementação técnica, revisão de código ou arquitetura de software."
 metadata:
   original_author: Chad Boyda / agent-gtm-skills
   modified_by: Felipe Rodrigues - github.com/felipfr
   source: https://github.com/chadboyda/agent-gtm-skills
   version: '1.0.0'
+---
+
+# Skill de enriquecimento de leads
+
+Você é um arquiteto de enriquecimento de dados B2B. Você constrói sistemas de enriquecimento em waterfall, frameworks de pontuação de ICP e pipelines de verificação de contatos que maximizam a cobertura e minimizam o custo por lead verificado. Você domina o cenário de provedores e desenha fluxos que sequenciam fornecedores para maior ganho incremental.
+
+## Antes de começar
+
+Confirme com o usuário: (1) ICP alvo — setor, porte da empresa, geografia, persona; (2) stack atual — CRM, ferramentas de enriquecimento, plataformas de outreach; (3) lacunas de dados — quais campos faltam ou são pouco confiáveis; (4) volume — leads por mês; (5) orçamento — priorizar cobertura ou custo.
+
+Se o usuário enviar um rascunho de fluxo ou uma tabela Clay existente, analise antes de sugerir mudanças.
 
 ---
 
-# Lead Enrichment Skill
+## Seção 1: Framework de pontuação de ICP
 
-You are a B2B data enrichment architect. You build waterfall enrichment systems, ICP scoring frameworks, and contact verification pipelines that maximize coverage while minimizing cost per verified lead. You know the provider landscape cold and design workflows that sequence providers for maximum incremental yield.
+### As três camadas de sinal
 
-## Before Starting
+Toda pontuação de ICP combina três categorias distintas de sinais. Cada camada responde a uma pergunta diferente sobre se vale a pena perseguir uma conta.
 
-Confirm with the user: (1) target ICP - industry, company size, geography, persona; (2) current stack - CRM, enrichment tools, outreach platforms; (3) data gaps - which fields are missing or unreliable; (4) volume - leads per month; (5) budget - optimizing for coverage or cost.
+| Camada de sinal | O que ela revela                          | Principais pontos de dados                                       | Ferramentas principais                   |
+| --------------- | ----------------------------------------- | ---------------------------------------------------------------- | ---------------------------------------- |
+| Firmográfica    | “Esta empresa está no nosso ponto ideal?” | Número de funcionários, ARR, setor, sede, estágio de funding     | Clay, Apollo, ZoomInfo, Clearbit         |
+| Tecnográfica    | “Eles usam ferramentas que indicam fit?”  | Stack de tecnologia, CRM, automação de marketing, infra na nuvem | BuiltWith, Wappalyzer, HG Insights       |
+| Intenção        | “Eles estão buscando ativamente agora?”   | Consumo de conteúdo, visitas ao G2, vagas, eventos de funding    | Bombora, G2 Buyer Intent, sinais do Clay |
 
-If the user provides a draft workflow or existing Clay table, analyze it before suggesting changes.
-
----
-
-## Section 1: ICP Scoring Framework
-
-### The Three Signal Layers
-
-Every ICP score pulls from three distinct signal categories. Each layer answers a different question about whether to pursue an account.
-
-| Signal Layer | What It Tells You | Key Data Points | Primary Tools |
-|---|---|---|---|
-| Firmographic | "Does this company match our sweet spot?" | Employee count, ARR, industry, HQ location, funding stage | Clay, Apollo, ZoomInfo, Clearbit |
-| Technographic | "Do they use tools that signal fit?" | Tech stack, CRM, marketing automation, cloud infra | BuiltWith, Wappalyzer, HG Insights |
-| Intent | "Are they actively looking right now?" | Content consumption, G2 visits, job postings, funding events | Bombora, G2 Buyer Intent, Clay signals |
-
-### ICP Scoring Formula
+### Fórmula de pontuação de ICP
 
 ```
 ICP Score = (Firmographic Fit x 0.30) + (Technographic Fit x 0.30) + (Intent Score x 0.40)
 ```
 
-Weight intent highest because timing beats targeting. A perfect-fit company with zero buying intent converts worse than a decent-fit company actively researching solutions.
+Dê maior peso à intenção porque timing supera targeting puro. Uma empresa perfeitamente alinhada, mas sem intenção de compra, tende a converter pior do que uma empresa razoavelmente alinhada que está pesquisando soluções ativamente.
 
-### Firmographic Fit Scoring (0-100)
+### Pontuação de fit firmográfico (0–100)
 
-Score each firmographic dimension, then average:
+Pontue cada dimensão firmográfica e depois faça a média:
 
-| Dimension | 100 (Ideal) | 75 (Strong) | 50 (Acceptable) | 25 (Stretch) | 0 (Disqualify) |
-|---|---|---|---|---|---|
-| Employee Count | 50-200 | 200-500 | 20-50 or 500-1000 | 10-20 or 1000-2000 | <10 or >2000 |
-| Annual Revenue | $5M-$50M | $50M-$100M | $1M-$5M | $100M-$500M | <$1M or >$500M |
-| Industry | SaaS B2B | Fintech, Healthtech | Professional Services | Retail, Media | Government, Education |
-| Geography | US, UK, CA | DACH, Nordics | ANZ, Benelux | LATAM, SEA | Sanctioned regions |
-| Funding Stage | Series A-B | Series C | Seed, Series D+ | Pre-seed | No data |
+| Dimensão               | 100 (ideal)              | 75 (forte)            | 50 (aceitável)         | 25 (stretch)                     | 0 (descartar)                       |
+| ---------------------- | ------------------------ | --------------------- | ---------------------- | -------------------------------- | ----------------------------------- |
+| Número de funcionários | 50–200                   | 200–500               | 20–50 ou 500–1000      | 10–20 ou 1000–2000               | Menos de 10 ou mais de 2000         |
+| Receita anual          | US$ 5M–50M               | US$ 50M–100M          | US$ 1M–5M              | US$ 100M–500M                    | Menos de US$ 1M ou mais de US$ 500M |
+| Setor                  | SaaS B2B                 | Fintech, Healthtech   | Serviços profissionais | Varejo, mídia                    | Governo, educação                   |
+| Geografia              | EUA, Reino Unido, Canadá | DACH, países nórdicos | ANZ, Benelux           | América Latina, Sudeste Asiático | Regiões sancionadas                 |
+| Estágio de funding     | Série A–B                | Série C               | Seed, Série D+         | Pré-seed                         | Sem dados                           |
 
-Adjust the ranges to your actual closed-won customer profile. Pull ranges from your CRM data, not assumptions.
+Ajuste as faixas ao perfil real de clientes com contrato fechado. Extraia faixas dos dados do CRM, não de suposições.
 
-### Technographic Fit Scoring (0-100)
+### Pontuação de fit tecnográfico (0–100)
 
-Score based on tech stack signals that indicate readiness for your product:
+Pontue com base em sinais de stack que indiquem prontidão para o seu produto:
 
 ```
 Tech_Score = (Stack_Match x 0.50) + (Complexity_Signal x 0.30) + (Migration_Signal x 0.20)
 ```
 
-**Stack Match (0-100):** Does their current tooling create a natural integration or replacement opportunity?
+**Correspondência de stack (0–100):** O ferramental atual deles cria oportunidade natural de integração ou substituição?
 
-| Signal | Score |
-|---|---|
-| Uses your direct integration partner | 100 |
-| Uses a competitor you commonly displace | 85 |
-| Uses adjacent tooling in your category | 60 |
-| Generic/unknown stack | 30 |
-| Uses a tool that blocks adoption | 0 |
+| Sinal                                       | Pontuação |
+| ------------------------------------------- | --------- |
+| Usa parceiro de integração direto seu       | 100       |
+| Usa concorrente que vocês costumam deslocar | 85        |
+| Usa ferramentas adjacentes na sua categoria | 60        |
+| Stack genérico/desconhecido                 | 30        |
+| Usa ferramenta que bloqueia adoção          | 0         |
 
-**Complexity Signal (0-100):** Does their tech footprint suggest they can absorb your product?
+**Sinal de complexidade (0–100):** A pegada tecnológica deles sugere que conseguem absorver seu produto?
 
-| Signal | Score |
-|---|---|
-| 3-5 tools in your category (consolidation ready) | 100 |
-| Running modern cloud infra + APIs | 80 |
-| 1-2 tools, clear gap | 60 |
-| Legacy on-prem heavy | 30 |
-| No detectable tech presence | 10 |
+| Sinal                                                        | Pontuação |
+| ------------------------------------------------------------ | --------- |
+| 3–5 ferramentas na sua categoria (prontos para consolidação) | 100       |
+| Infra moderna na nuvem + APIs                                | 80        |
+| 1–2 ferramentas, lacuna clara                                | 60        |
+| Legado on-prem pesado                                        | 30        |
+| Presença tecnológica indetectável                            | 10        |
 
-**Migration Signal (0-100):** Are they showing signs of switching?
+**Sinal de migração (0–100):** Há sinais de troca?
 
-| Signal | Score |
-|---|---|
-| Job posting for role that owns your category | 100 |
-| Recently adopted adjacent tool | 75 |
-| Removed a competitor from their stack (BuiltWith delta) | 90 |
-| Stable stack, no changes in 12 months | 20 |
+| Sinal                                            | Pontuação |
+| ------------------------------------------------ | --------- |
+| Vaga para papel que “dona” da sua categoria      | 100       |
+| Adoção recente de ferramenta adjacente           | 75        |
+| Removeram concorrente do stack (delta BuiltWith) | 90        |
+| Stack estável, sem mudanças em 12 meses          | 20        |
 
-### Intent Score Calculation (0-100)
+### Cálculo de score de intenção (0–100)
 
-Intent scoring requires combining multiple signal sources. No single provider captures the full picture.
+A pontuação de intenção exige combinar várias fontes. Nenhum provedor isolado cobre o quadro completo.
 
 ```
 Intent_Score = max(Bombora_Surge, G2_Intent, First_Party) x 0.60
@@ -102,55 +101,55 @@ Intent_Score = max(Bombora_Surge, G2_Intent, First_Party) x 0.60
              + Funding_Signal x 0.20
 ```
 
-**Bombora Company Surge scoring:**
+**Pontuação Bombora Company Surge:**
 
-| Surge Score | Interpretation | Lead Priority |
-|---|---|---|
-| 80-100 | Heavy active research across multiple topics | Route to SDR within 24 hours |
-| 60-79 | Moderate research, early buying cycle | Add to nurture + monitor |
-| 40-59 | Light research, could be noise | Score with other signals before acting |
-| Below 40 | No meaningful surge detected | Do not prioritize |
+| Surge Score  | Interpretação                              | Prioridade do lead                      |
+| ------------ | ------------------------------------------ | --------------------------------------- |
+| 80–100       | Pesquisa ativa intensa em vários tópicos   | Encaminhar ao SDR em até 24 horas       |
+| 60–79        | Pesquisa moderada, ciclo de compra inicial | Entrar em nutrição + monitorar          |
+| 40–59        | Pesquisa leve, pode ser ruído              | Pontuar com outros sinais antes de agir |
+| Abaixo de 40 | Sem surge relevante detectado              | Não priorizar                           |
 
-**G2 Buyer Intent signals:**
+**Sinais G2 Buyer Intent:**
 
-| Signal Type | Weight | Why It Matters |
-|---|---|---|
-| Visited your G2 profile | High | Direct purchase consideration |
-| Compared you vs. competitor | Very High | Active evaluation stage |
-| Visited category page | Medium | Early research phase |
-| Read reviews in your category | Medium-High | Validation stage |
+| Tipo de sinal                | Peso       | Por que importa               |
+| ---------------------------- | ---------- | ----------------------------- |
+| Visitou seu perfil no G2     | Alto       | Consideração de compra direta |
+| Comparou você x concorrente  | Muito alto | Etapa de avaliação ativa      |
+| Visitou página da categoria  | Médio      | Fase inicial de pesquisa      |
+| Leu reviews na sua categoria | Médio–alto | Etapa de validação            |
 
-**First-party intent signals (your own data):**
+**Sinais de intenção de primeira parte (seus próprios dados):**
 
-| Signal | Score Boost |
-|---|---|
-| Pricing page visit (2+ times) | +30 |
-| Demo page visit without booking | +25 |
-| Downloaded gated content | +15 |
-| Blog visit (3+ pages, single session) | +10 |
-| Email opened but no click | +5 |
+| Sinal                                | Aumento na pontuação |
+| ------------------------------------ | -------------------- |
+| Visita à página de preços (2+ vezes) | +30                  |
+| Visita à página de demo sem agendar  | +25                  |
+| Baixou conteúdo com formulário       | +15                  |
+| Blog (3+ páginas na mesma sessão)    | +10                  |
+| E-mail aberto sem clique             | +5                   |
 
-### Composite Score Interpretation
+### Interpretação da pontuação composta
 
-| ICP Score Range | Action | SLA |
-|---|---|---|
-| 85-100 | Hot lead - immediate SDR outreach | Contact within 4 hours |
-| 70-84 | Warm lead - prioritized sequence | Enroll within 24 hours |
-| 50-69 | Nurture - automated drip | Weekly content touches |
-| 30-49 | Monitor - check quarterly | Re-score monthly |
-| Below 30 | Disqualify - do not pursue | Archive, re-evaluate in 6 months |
+| Faixa de ICP Score | Ação                                   | SLA                            |
+| ------------------ | -------------------------------------- | ------------------------------ |
+| 85–100             | Lead quente — outreach imediato do SDR | Contato em até 4 horas         |
+| 70–84              | Lead morno — sequência priorizada      | Entrar na fila em até 24 horas |
+| 50–69              | Nutrição — drip automatizado           | Toques semanais de conteúdo    |
+| 30–49              | Monitorar — checagem trimestral        | Re-pontuar mensalmente         |
+| Abaixo de 30       | Descartar — não perseguir              | Arquivar, reavaliar em 6 meses |
 
 ---
 
-## Section 2: Enrichment Waterfall Architecture
+## Seção 2: Arquitetura de waterfall de enriquecimento
 
-### What a Waterfall Does
+### O que um waterfall faz
 
-A waterfall enrichment system queries multiple data providers in sequence. Each provider gets a chance to fill missing fields. The system stops querying for a field once a provider returns a verified result.
+Um sistema de enriquecimento em waterfall consulta vários provedores de dados em sequência. Cada provedor tem chance de preencher campos faltantes. O sistema para de consultar um campo assim que um provedor devolve um resultado verificado.
 
-Single-provider enrichment typically yields 55-65% coverage. A well-built waterfall pushes coverage to 85-95% by stacking complementary providers.
+Enriquecimento com um único provedor costuma entregar 55–65% de cobertura. Um waterfall bem montado leva a cobertura a 85–95% ao empilhar provedores complementares.
 
-### Waterfall Flow
+### Fluxo do waterfall
 
 ```
 Input Lead
@@ -177,55 +176,55 @@ Input Lead
 [Score + Route]      Apply ICP score, push to sequence or nurture
 ```
 
-### Provider Selection by Use Case
+### Escolha de provedores por caso de uso
 
-Not every waterfall needs the same providers. Match your stack to your market and budget.
+Nem todo waterfall precisa dos mesmos provedores. Alinhe o stack ao seu mercado e orçamento.
 
-**High-volume outbound (1000+ leads/month):**
+**Outbound em alto volume (1000+ leads/mês):**
 
-| Step | Provider | Why | Cost Level |
-|---|---|---|---|
-| 1 | Apollo | Large database, good mid-market coverage | $$ |
-| 2 | Hunter | Email pattern matching at scale | $ |
-| 3 | FindyMail | Catches emails Apollo and Hunter miss, <2% bounce | $$ |
-| 4 | Clay AI | LinkedIn enrichment, custom fields | $$$ |
-| Verify | MillionVerifier or ZeroBounce | Bulk verification, cheap per-unit | $ |
+| Etapa     | Provedor                      | Motivo                                                          | Nível de custo |
+| --------- | ----------------------------- | --------------------------------------------------------------- | -------------- |
+| 1         | Apollo                        | Base grande, boa cobertura mid-market                           | $$             |
+| 2         | Hunter                        | Padrões de e-mail em escala                                     | $              |
+| 3         | FindyMail                     | Pega e-mails que Apollo e Hunter perdem (menos de 2% de bounce) | $$             |
+| 4         | Clay AI                       | Enriquecimento LinkedIn, campos customizados                    | $$$            |
+| Verificar | MillionVerifier ou ZeroBounce | Verificação em massa, baixo custo unitário                      | $              |
 
-**Enterprise targeting (under 500 leads/month):**
+**Foco enterprise (menos de 500 leads/mês):**
 
-| Step | Provider | Why | Cost Level |
-|---|---|---|---|
-| 1 | ZoomInfo | Best Fortune 1000 coverage (23% unique contacts) | $$$$ |
-| 2 | Clearbit (now Breeze) | Real-time HubSpot enrichment, firmographic depth | $$$ |
-| 3 | Dropcontact | GDPR-compliant, algorithm-generated (no database) | $$ |
-| 4 | Clay AI | Flexible enrichment + AI agent for custom fields | $$$ |
-| Verify | NeverBounce or DeBounce | High-accuracy verification | $ |
+| Etapa     | Provedor                | Motivo                                                          | Nível de custo |
+| --------- | ----------------------- | --------------------------------------------------------------- | -------------- |
+| 1         | ZoomInfo                | Melhor cobertura Fortune 1000 (23% contatos únicos)             | $$$$           |
+| 2         | Clearbit (agora Breeze) | Enriquecimento HubSpot em tempo real, profundidade firmográfica | $$$            |
+| 3         | Dropcontact             | Conformidade GDPR, gerado por algoritmo (sem base própria)      | $$             |
+| 4         | Clay AI                 | Enriquecimento flexível + agente de IA para campos customizados | $$$            |
+| Verificar | NeverBounce ou DeBounce | Verificação de alta precisão                                    | $              |
 
-**Startup / budget-conscious (under 200 leads/month):**
+**Startup / orçamento enxuto (menos de 200 leads/mês):**
 
-| Step | Provider | Why | Cost Level |
-|---|---|---|---|
-| 1 | Apollo (free tier) | 10K credits/month on free plan | Free |
-| 2 | Hunter (free tier) | 25 searches/month free | Free |
-| 3 | Snov.io | Affordable at $39/month for 1,000 credits | $ |
-| Verify | MillionVerifier | $0.0005/email bulk pricing | $ |
+| Etapa     | Provedor           | Motivo                                       | Nível de custo |
+| --------- | ------------------ | -------------------------------------------- | -------------- |
+| 1         | Apollo (free tier) | 10 mil créditos/mês no plano gratuito        | Grátis         |
+| 2         | Hunter (free tier) | 25 buscas/mês grátis                         | Grátis         |
+| 3         | Snov.io            | Acessível por US$ 39/mês para 1.000 créditos | $              |
+| Verificar | MillionVerifier    | US$ 0,0005/e-mail por volume                 | $              |
 
-### Provider Comparison Matrix
+### Matriz comparativa de provedores
 
-| Provider | Database Size | Email Accuracy | Best For | Pricing (Annual) | GDPR Compliant |
-|---|---|---|---|---|---|
-| ZoomInfo | 220M+ contacts | 95% (triple-verified) | Enterprise, Fortune 1000 | $10K-$50K | Yes |
-| Apollo | 275M+ contacts | 65-80% (varies by region) | Mid-market, high volume | $1.2K-$6K | Yes |
-| Clearbit (Breeze) | 50M+ contacts | 95% (real-time) | HubSpot users, firmographics | $12K-$36K | Yes |
-| Hunter | 100M+ emails | Pattern-based (varies) | Email finding at scale | $408-$4,188 | Yes |
-| Dropcontact | Generated on-demand | 72% find rate | EU market, GDPR-first | $960-$4,800 | Yes (no database) |
-| FindyMail | Generated on-demand | >95% (verified), <2% bounce | Catch missed emails | $588-$2,388 | Yes |
-| Snov.io | 60M+ contacts | 7-tier verification | Budget outbound | $468-$2,988 | Yes |
-| Bombora | N/A (intent only) | N/A | Intent data, account targeting | $25K-$100K+ | Yes |
+| Provedor          | Tamanho da base    | Precisão de e-mail            | Melhor para                            | Preço (anual) | Conformidade GDPR |
+| ----------------- | ------------------ | ----------------------------- | -------------------------------------- | ------------- | ----------------- |
+| ZoomInfo          | 220M+ contatos     | 95% (tripla verificação)      | Enterprise, Fortune 1000               | US$ 10K–50K   | Sim               |
+| Apollo            | 275M+ contatos     | 65–80% (varia por região)     | Mid-market, alto volume                | US$ 1,2K–6K   | Sim               |
+| Clearbit (Breeze) | 50M+ contatos      | 95% (tempo real)              | Usuários HubSpot, firmografia          | US$ 12K–36K   | Sim               |
+| Hunter            | 100M+ e-mails      | Baseado em padrões (varia)    | Descoberta de e-mail em escala         | US$ 408–4.188 | Sim               |
+| Dropcontact       | Gerado sob demanda | 72% taxa de achado            | Mercado UE, privacy-first              | US$ 960–4.800 | Sim (sem base)    |
+| FindyMail         | Gerado sob demanda | >95% (verificado), <2% bounce | Recuperar e-mails perdidos             | US$ 588–2.388 | Sim               |
+| Snov.io           | 60M+ contatos      | Verificação em 7 camadas      | Outbound econômico                     | US$ 468–2.988 | Sim               |
+| Bombora           | N/A (só intenção)  | N/A                           | Dados de intenção, targeting por conta | US$ 25K–100K+ | Sim               |
 
-### Incremental Coverage by Waterfall Step
+### Cobertura incremental por etapa do waterfall
 
-Typical coverage gains when adding each provider in sequence:
+Ganhos típicos de cobertura ao adicionar cada provedor em sequência:
 
 ```
 Step 1 (Apollo):      |========================          |  ~60% coverage
@@ -235,53 +234,53 @@ Step 4 (+Clay AI):    |=================================|  ~92% coverage
 After verification:   |==============================   |  ~85% verified
 ```
 
-The drop after verification is expected. Roughly 5-8% of found emails fail bounce checks or land in catch-all domains that should be segmented separately.
+A queda após verificação é esperada. Cerca de 5–8% dos e-mails encontrados falham em checagens de bounce ou caem em domínios catch-all que devem ser segmentados à parte.
 
 ---
 
-## Section 3: Clay Workflow Design
+## Seção 3: Desenho de fluxo no Clay
 
-### Clay Architecture Basics
+### Conceitos básicos da arquitetura Clay
 
-Clay operates on a table-based model. Each row is a lead. Each column is a data field. Enrichment steps run left-to-right across columns, with waterfalls configured per field.
+O Clay opera em modelo de tabela. Cada linha é um lead. Cada coluna é um campo de dado. Etapas de enriquecimento rodam da esquerda para a direita, com waterfalls configurados por campo.
 
-**Core Clay concepts:**
+**Conceitos centrais do Clay:**
 
-| Concept | What It Does |
-|---|---|
-| Table | Your lead list - imported via CSV, CRM sync, or API |
-| Enrichment Column | Calls a provider to fill a specific field |
-| Waterfall Column | Tries multiple providers in sequence for one field |
-| AI Column | Uses GPT/Claude to derive insights from other columns |
-| Formula Column | Computes values from other columns (like ICP score) |
-| Integration Push | Sends enriched data to CRM, sequencer, or webhook |
+| Conceito                 | O que faz                                                   |
+| ------------------------ | ----------------------------------------------------------- |
+| Tabela                   | Sua lista de leads — importada via CSV, sync de CRM ou API  |
+| Coluna de enriquecimento | Chama um provedor para preencher um campo específico        |
+| Coluna waterfall         | Tenta vários provedores em sequência para um campo          |
+| Coluna de IA             | Usa GPT/Claude para derivar insights de outras colunas      |
+| Coluna fórmula           | Calcula valores a partir de outras colunas (como ICP score) |
+| Push de integração       | Envia dados enriquecidos ao CRM, sequenciador ou webhook    |
 
-### Credit Consumption Guide
+### Guia de consumo de créditos
 
-Clay charges credits per enrichment action. Budget carefully.
+O Clay cobra créditos por ação de enriquecimento. Planeje o orçamento com cuidado.
 
-| Action Type | Credits Per Row | Example |
-|---|---|---|
-| Basic enrichment (1 provider) | 4-10 | Email lookup, job title |
-| Waterfall enrichment (3 providers) | 12-30 | Email waterfall with fallbacks |
-| AI/GPT column | 10-25 | Persona summary, pain point extraction |
-| Multi-step automation | 30+ | Full enrichment + scoring + routing |
+| Tipo de ação                            | Créditos por linha | Exemplo                                          |
+| --------------------------------------- | ------------------ | ------------------------------------------------ |
+| Enriquecimento básico (1 provedor)      | 4–10               | Lookup de e-mail, cargo                          |
+| Enriquecimento waterfall (3 provedores) | 12–30              | Waterfall de e-mail com fallbacks                |
+| Coluna IA/GPT                           | 10–25              | Resumo de persona, extração de dor               |
+| Automação multi-etapa                   | 30+                | Enriquecimento completo + pontuação + roteamento |
 
-**Credit math:** 1,000 leads at 25 credits/lead = 25,000 credits. Starter plan handles that in 12.5 months, Explorer in 2.5 months, Pro in 0.5 months. Pre-filter aggressively to avoid burning credits on unqualified leads.
+**Matemática de crédito:** 1.000 leads a 25 créditos/lead = 25.000 créditos. O plano Starter cobre isso em 12,5 meses, Explorer em 2,5 meses, Pro em 0,5 mês. Pré-filtre com agressividade para não queimar crédito em leads desqualificados.
 
-### Clay Pricing (2026)
+### Preços Clay (2026)
 
-| Plan | Price/Mo | Credits/Mo | Per Credit |
-|---|---|---|---|
-| Free | $0 | 100 | N/A |
-| Starter | $149 | 2,000 | $0.075 |
-| Explorer | $349 | 10,000 | $0.035 |
-| Pro | $800 | 50,000 | $0.016 |
-| Enterprise | Custom | Custom | Custom |
+| Plano      | Preço/mês    | Créditos/mês | Por crédito  |
+| ---------- | ------------ | ------------ | ------------ |
+| Free       | US$ 0        | 100          | N/A          |
+| Starter    | US$ 149      | 2.000        | US$ 0,075    |
+| Explorer   | US$ 349      | 10.000       | US$ 0,035    |
+| Pro        | US$ 800      | 50.000       | US$ 0,016    |
+| Enterprise | Sob consulta | Sob consulta | Sob consulta |
 
-### Sample Clay Table Structure
+### Estrutura de exemplo de tabela Clay
 
-Build your enrichment workflow in this column order:
+Monte o fluxo de enriquecimento nesta ordem de colunas:
 
 ```
 Col A: Company Domain        (input)
@@ -301,101 +300,101 @@ Col N: AI Personalization    (AI column: generate first-line based on B, E, H)
 Col O: Routing               (Formula: if M > 85 then "hot" elif M > 70 then "warm")
 ```
 
-### Credit Governance Rules
+### Regras de governança de crédito
 
-1. **Pre-qualify before enriching** - domain check + firmographic filter before spending on email waterfall
-2. **Cap per campaign** - no single campaign burns more than 40% of monthly credits
-3. **Alert at 75%** - Slack/email alert when usage crosses 75% of monthly allowance
-4. **Audit weekly** - credits spent vs. leads enriched vs. leads qualified (target >60% qualification)
-5. **90-day re-enrichment** - re-enrich stale contacts before including in new campaigns
-
----
-
-## Section 4: Contact Verification Pipeline
-
-Unverified cold email lists carry 10-30% invalid addresses. Sending to bad addresses destroys sender reputation within a few campaigns. Google, Yahoo, and Microsoft now enforce bounce rates under 2% and spam complaints under 0.3%.
-
-### Verification Pipeline Steps
-
-| Step | Check | Action | Cost |
-|---|---|---|---|
-| 1 | Syntax validation | Remove malformed addresses (missing @, double dots) | Free |
-| 2 | DNS/MX lookup | Verify domain has valid mail server | Free |
-| 3 | SMTP verification | Confirm mailbox exists at provider | Provider-based |
-| 4 | Catch-all detection | Flag domains that accept all addresses | Provider-based |
-| 5 | Role account check | Flag info@, support@, admin@, sales@ | Provider-based |
-| 6 | Confidence scoring | Assign final deliverability score | Computed |
-
-### Confidence Score Thresholds
-
-| Confidence | Classification | Action |
-|---|---|---|
-| >0.85 | Deliverable | Safe to send. Include in sequences. |
-| 0.70-0.85 | Risky | Send in small batches. Monitor bounce rate per batch. |
-| 0.50-0.69 | Catch-all/Unverifiable | Segment separately. Maximum 50 per day. Watch closely. |
-| <0.50 | Invalid/High Risk | Reject. Do not send. Re-enrich with alternate provider. |
-
-### Catch-All Domain Handling
-
-Catch-all domains accept every email sent to them, even addresses that do not exist. They create silent deliverability decay because campaigns appear sent but never reach decision-makers.
-
-**Rules for catch-all addresses:**
-
-- Never mix catch-all addresses into your primary sending pool
-- Send catch-all segments from a separate sending domain
-- Limit to 20-50 catch-all sends per domain per day
-- Track reply rates separately; if reply rate drops below 1%, stop sending to that domain
-- Re-verify catch-all addresses every 30 days
-
-### Verification Tool Comparison
-
-| Tool | Verification Method | Catch-All Detection | Bulk Speed | Pricing |
-|---|---|---|---|---|
-| MillionVerifier | SMTP + proprietary | Yes | 1M/hour | $0.0005/email |
-| ZeroBounce | SMTP + AI scoring | Yes | 100K/hour | $0.008/email |
-| NeverBounce | SMTP + real-time API | Yes | 50K/hour | $0.008/email |
-| DeBounce | SMTP + disposable detect | Yes | 500K/hour | $0.001/email |
-| Bouncer | SMTP + toxicity check | Yes | 200K/hour | $0.005/email |
-
-### Deliverability Protection Checklist
-
-Before sending any enriched list to outreach:
-
-- [ ] All emails verified within the last 7 days
-- [ ] Bounce rate on verification under 2%
-- [ ] Catch-all addresses segmented into separate pool
-- [ ] Role accounts (info@, support@) removed or deprioritized
-- [ ] Sending domain has SPF, DKIM, and DMARC configured
-- [ ] Sending domain warmed for at least 14 days
-- [ ] Daily send volume does not exceed 50 per inbox per day (cold)
-- [ ] Spam complaint rate on prior campaigns under 0.3%
+1. **Pré-qualificar antes de enriquecer** — checagem de domínio + filtro firmográfico antes de gastar no waterfall de e-mail
+2. **Teto por campanha** — nenhuma campanha consome mais de 40% dos créditos mensais
+3. **Alerta aos 75%** — alerta Slack/e-mail quando o uso passar de 75% da franquia mensal
+4. **Auditoria semanal** — créditos gastos x leads enriquecidos x leads qualificados (meta: mais de 60% de qualificação)
+5. **Re-enriquecimento a 90 dias** — re-enriquecer contatos parados antes de incluir em novas campanhas
 
 ---
 
-## Section 5: Performance Benchmarks
+## Seção 4: Pipeline de verificação de contatos
 
-### Expected Conversion Lift from Enrichment
+Listas frias sem verificação carregam 10–30% de endereços inválidos. Enviar para endereços ruins destrói reputação de envio em poucas campanhas. Google, Yahoo e Microsoft passaram a exigir taxas de bounce abaixo de 2% e reclamações de spam abaixo de 0,3%.
 
-| Metric | Before Waterfall | After Waterfall | Improvement |
-|---|---|---|---|
-| Email coverage rate | 55-65% | 85-95% | +30-40% |
-| Email bounce rate | 7-15% | <2% (verified) | -70-85% |
-| Connect rate (cold call) | 4-6% | 8-12% | +80-100% |
-| Pipeline generated | Baseline | +37% | Significant |
-| Meeting-to-customer conversion | Baseline | +27% | Significant |
-| MQL-to-SQL rate (with intent) | 8-12% | 15-25% | +80-100% |
+### Etapas do pipeline de verificação
 
-### Cost-Per-Verified-Lead Benchmarks
+| Etapa | Verificação                | Ação                                                       | Custo             |
+| ----- | -------------------------- | ---------------------------------------------------------- | ----------------- |
+| 1     | Validação de sintaxe       | Remover endereços malformados (falta @, pontos duplicados) | Grátis            |
+| 2     | Consulta DNS/MX            | Confirmar domínio com servidor de e-mail válido            | Grátis            |
+| 3     | Verificação SMTP           | Confirmar que a caixa existe no provedor                   | Conforme provedor |
+| 4     | Detecção de catch-all      | Marcar domínios que aceitam qualquer endereço              | Conforme provedor |
+| 5     | Checagem de conta genérica | Marcar info@, support@, admin@, sales@                     | Conforme provedor |
+| 6     | Pontuação de confiança     | Atribuir score final de entregabilidade                    | Calculado         |
 
-| Approach | Cost Per Lead | Coverage | Quality |
-|---|---|---|---|
-| Single provider (Apollo) | $0.05-$0.15 | 60% | Medium |
-| Two-step waterfall | $0.15-$0.35 | 78% | Medium-High |
-| Three-step waterfall | $0.30-$0.60 | 88% | High |
-| Full waterfall + verification | $0.50-$1.00 | 92% verified | Very High |
-| Full waterfall + intent scoring | $1.50-$3.00 | 92% + scored | Premium |
+### Limiares de score de confiança
 
-### ROI Calculation Framework
+| Confiança      | Classificação           | Ação                                                       |
+| -------------- | ----------------------- | ---------------------------------------------------------- |
+| Acima de 0,85  | Entregável              | Seguro enviar. Incluir nas sequências.                     |
+| 0,70–0,85      | Arriscado               | Enviar em lotes pequenos. Monitorar bounce por lote.       |
+| 0,50–0,69      | Catch-all/Inverificável | Segmentar à parte. Máximo 50 por dia. Acompanhar de perto. |
+| Abaixo de 0,50 | Inválido/Alto risco     | Rejeitar. Não enviar. Re-enriquecer com outro provedor.    |
+
+### Tratamento de domínio catch-all
+
+Domínios catch-all aceitam todo e-mail enviado, inclusive para endereços inexistentes. Isso gera deterioração silenciosa da entregabilidade: as campanhas parecem enviadas, mas não chegam a decisores.
+
+**Regras para endereços catch-all:**
+
+- Nunca misture endereços catch-all no pool principal de envio
+- Envie segmentos catch-all a partir de um domínio de envio separado
+- Limite a 20–50 envios catch-all por domínio de envio por dia
+- Acompanhe taxa de resposta à parte; se cair abaixo de 1%, pare de enviar para aquele domínio
+- Re-verifique endereços catch-all a cada 30 dias
+
+### Comparação de ferramentas de verificação
+
+| Ferramenta      | Método de verificação         | Detecção catch-all | Velocidade em massa | Preço             |
+| --------------- | ----------------------------- | ------------------ | ------------------- | ----------------- |
+| MillionVerifier | SMTP + proprietário           | Sim                | 1M/hora             | US$ 0,0005/e-mail |
+| ZeroBounce      | SMTP + pontuação com IA       | Sim                | 100K/hora           | US$ 0,008/e-mail  |
+| NeverBounce     | SMTP + API tempo real         | Sim                | 50K/hora            | US$ 0,008/e-mail  |
+| DeBounce        | SMTP + detecção descartável   | Sim                | 500K/hora           | US$ 0,001/e-mail  |
+| Bouncer         | SMTP + checagem de toxicidade | Sim                | 200K/hora           | US$ 0,005/e-mail  |
+
+### Checklist de proteção à entregabilidade
+
+Antes de enviar qualquer lista enriquecida para outreach:
+
+- [ ] Todos os e-mails verificados nos últimos 7 dias
+- [ ] Taxa de bounce na verificação abaixo de 2%
+- [ ] Endereços catch-all segmentados em pool separado
+- [ ] Contas genéricas (info@, support@) removidas ou despriorizadas
+- [ ] Domínio de envio com SPF, DKIM e DMARC configurados
+- [ ] Domínio de envio aquecido por pelo menos 14 dias
+- [ ] Volume diário não ultrapassa 50 por caixa por dia (frio)
+- [ ] Taxa de reclamação de spam em campanhas anteriores abaixo de 0,3%
+
+---
+
+## Seção 5: Benchmarks de performance
+
+### Ganho de conversão esperado com enriquecimento
+
+| Métrica                     | Antes do waterfall | Depois do waterfall        | Melhoria      |
+| --------------------------- | ------------------ | -------------------------- | ------------- |
+| Taxa de cobertura de e-mail | 55–65%             | 85–95%                     | +30–40%       |
+| Taxa de bounce de e-mail    | 7–15%              | Inferior a 2% (verificado) | -70–85%       |
+| Taxa de conexão (cold call) | 4–6%               | 8–12%                      | +80–100%      |
+| Pipeline gerado             | Linha de base      | +37%                       | Significativa |
+| Conversão reunião → cliente | Linha de base      | +27%                       | Significativa |
+| Taxa MQL→SQL (com intenção) | 8–12%              | 15–25%                     | +80–100%      |
+
+### Benchmarks de custo por lead verificado
+
+| Abordagem                                  | Custo por lead | Cobertura       | Qualidade  |
+| ------------------------------------------ | -------------- | --------------- | ---------- |
+| Provedor único (Apollo)                    | US$ 0,05–0,15  | 60%             | Média      |
+| Waterfall em duas etapas                   | US$ 0,15–0,35  | 78%             | Média–alta |
+| Waterfall em três etapas                   | US$ 0,30–0,60  | 88%             | Alta       |
+| Waterfall completo + verificação           | US$ 0,50–1,00  | 92% verificado  | Muito alta |
+| Waterfall completo + pontuação de intenção | US$ 1,50–3,00  | 92% + pontuados | Premium    |
+
+### Framework de cálculo de ROI
 
 ```
 Cost:  Clay Pro ($800) + Apollo ($99) + FindyMail ($49) + MillionVerifier ($25) = $973/mo
@@ -404,61 +403,60 @@ Yield: 2,000 enriched > 1,840 verified (92%) > 1,012 ICP-qualified (55%)
 ROI:   $45,000 / $973 = 46x
 ```
 
-Adjust conversion rates for your actual pipeline. The framework matters more than the sample numbers.
+Ajuste as taxas de conversão ao pipeline real. O framework importa mais que os números de exemplo.
 
 ---
 
-## Section 6: Compliance
+## Seção 6: Conformidade
 
-### Compliance by Region
+### Conformidade por região
 
-| Requirement | US (CAN-SPAM/CCPA) | EU (GDPR) | UK (UK GDPR) |
-|---|---|---|---|
-| B2B email consent | Opt-out model | Legitimate interest | Legitimate interest |
-| Data source docs | Recommended | Required | Required |
-| Right to erasure | CCPA: Yes | Required | Required |
-| Data retention | Disclosure required | Define and enforce | Define and enforce |
+| Requisito                      | EUA (CAN-SPAM/CCPA)    | UE (GDPR)          | Reino Unido (UK GDPR) |
+| ------------------------------ | ---------------------- | ------------------ | --------------------- |
+| Consentimento para e-mail B2B  | Modelo opt-out         | Interesse legítimo | Interesse legítimo    |
+| Documentação de fonte de dados | Recomendado            | Obrigatório        | Obrigatório           |
+| Direito ao apagamento          | CCPA: sim              | Obrigatório        | Obrigatório           |
+| Retenção de dados              | Divulgação obrigatória | Definir e aplicar  | Definir e aplicar     |
 
-### Provider Notes
+### Notas sobre provedores
 
-- **Dropcontact** generates contacts algorithmically without a database (GDPR-native)
-- **Apollo, ZoomInfo, Clearbit** are compliant as platforms; you own your usage basis
-- **Clay** is compliant, but third-party providers accessed through Clay may not be. Verify each.
-- **Bombora** cooperative data is compliant; downstream outreach must follow local regulations
+- **Dropcontact** gera contatos algoritmicamente sem base de dados (nativo em GDPR)
+- **Apollo, ZoomInfo, Clearbit** são plataformas conformes; você mantém a base legal de uso
+- **Clay** é conforme, mas provedores terceiros acessados via Clay podem não ser. Verifique cada um.
+- **Dados cooperativos Bombora** são conformes; o outreach downstream deve seguir a regulamentação local
 
-### Safe Enrichment Practices
+### Práticas seguras de enriquecimento
 
-1. Document your legal basis (legitimate interest for B2B is standard)
-2. Track which provider sourced each contact
-3. Honor opt-out and erasure requests within 30 days
-4. Do not enrich or contact individuals who have previously opted out
-5. Review provider DPAs annually
-
----
-
-## Examples
-
-- **User says:** "Set up lead enrichment for our outbound" → **Result:** Agent asks budget and volume; recommends waterfall tier (e.g. Clay + Apollo for $200–1K/mo); outlines steps: import → pre-filter → waterfall → verify (confidence &gt;0.85) → score → route to SDR/sequence; suggests CRM push and 90-day re-enrich.
-- **User says:** "Our email bounce rate is high" → **Result:** Agent checks verification (MillionVerifier, NeverBounce) and confidence threshold; recommends catch-all segment and list hygiene; suggests &lt;2% bounce target and re-verification before each campaign.
-- **User says:** "Which enrichment tools should we use?" → **Result:** Agent uses Quick Reference budget tiers; maps providers (Apollo, Clay, ZoomInfo, Clearbit, etc.); recommends primary/secondary/tertiary order and when to add intent (Bombora, G2).
-
-## Troubleshooting
-
-- **Low email coverage after waterfall** → **Cause:** Weak providers or wrong order. **Fix:** Put best provider first; add LinkedIn/FindyMail as fallback; target &gt;85% coverage; track per-provider fill rate.
-- **ICP score not predicting meetings** → **Cause:** Wrong weights or stale data. **Fix:** Recalibrate firmographic/technographic/behavioral weights; ensure intent signals fresh; A/B test score bands (e.g. &gt;85 hot, 70–84 warm).
-- **Credits burning too fast** → **Cause:** Enriching everyone or wrong filters. **Fix:** Pre-filter by domain, industry, geo; set confidence threshold (e.g. 0.85 outreach, 0.50 nurture); cap credits per qualified lead (&lt;50).
+1. Documente sua base legal (interesse legítimo em contexto B2B é comum)
+2. Rastreie qual provedor originou cada contato
+3. Atenda opt-out e pedidos de apagamento em até 30 dias
+4. Não enriqueça nem contate pessoas que já deram opt-out
+5. Revise DPAs dos provedores anualmente
 
 ---
 
+## Exemplos
 
-For checklists, benchmarks, and discovery questions read `references/quick-reference.md` when you need detailed reference.
+- **Usuário diz:** "Quero montar enriquecimento de leads no outbound" → **Resultado:** O agente pergunta orçamento e volume; recomenda um pacote de waterfall (ex.: Clay + Apollo entre US$ 200–1K/mês); descreve etapas: importar → pré-filtrar → waterfall → verificar (confiança &gt;0,85) → pontuar → rotear para SDR/sequência; sugere push ao CRM e re-enriquecimento a 90 dias.
+- **Usuário diz:** "Nossa taxa de bounce está alta" → **Resultado:** O agente revisa verificação (MillionVerifier, NeverBounce) e limiar de confiança; recomenda segmento catch-all e higiene de lista; sugere meta de &lt;2% de bounce e re-verificação antes de cada campanha.
+- **Usuário diz:** "Quais ferramentas de enriquecimento usar?" → **Resultado:** O agente usa níveis de orçamento do guia rápido; mapeia provedores (Apollo, Clay, ZoomInfo, Clearbit, etc.); recomenda ordem primário/secundário/terciário e quando adicionar intenção (Bombora, G2).
+
+## Solução de problemas
+
+- **Baixa cobertura de e-mail após waterfall** → **Causa:** Provedores fracos ou ordem errada. **Correção:** Coloque o melhor provedor primeiro; adicione LinkedIn/FindyMail como fallback; meta &gt;85% de cobertura; rastreie taxa de preenchimento por provedor.
+- **ICP score não prevê reuniões** → **Causa:** Pesos errados ou dados velhos. **Correção:** Recalibre pesos firmográficos/tecnográficos/comportamentais; garanta sinais de intenção atualizados; teste A/B nas faixas (ex.: &gt;85 quente, 70–84 morno).
+- **Créditos queimando rápido** → **Causa:** Enriquecer todo mundo ou filtros ruins. **Correção:** Pré-filtre por domínio, setor, geo; defina limiar de confiança (ex.: 0,85 outreach, 0,50 nutrição); limite créditos por lead qualificado (&lt;50).
 
 ---
 
-## Related Skills
+Para checklists, benchmarks e perguntas de descoberta, leia `references/quick-reference.md` quando precisar de referência detalhada.
 
-- **positioning-icp** - Define the ICP that enrichment scores against. Start here if ICP is undefined.
-- **ai-cold-outreach** - Use enriched data in personalized cold email sequences. Enrichment feeds outreach.
-- **ai-sdr** - Automate SDR workflows that consume enriched, scored leads.
-- **gtm-engineering** - Build the technical infrastructure (APIs, webhooks, CRM integrations) that connects enrichment to the rest of the stack.
-- **solo-founder-gtm** - Budget-optimized enrichment for founders doing their own outbound.
+---
+
+## Skills relacionadas
+
+- **positioning-icp** - Defina o ICP contra o qual o enriquecimento pontua. Comece aqui se o ICP estiver indefinido.
+- **ai-cold-outreach** - Use dados enriquecidos em sequências frias personalizadas. O enriquecimento alimenta o outreach.
+- **ai-sdr** - Automatize fluxos de SDR que consomem leads enriquecidos e pontuados.
+- **gtm-engineering** - Construa a infraestrutura técnica (APIs, webhooks, integrações CRM) que liga o enriquecimento ao restante do stack.
+- **solo-founder-gtm** - Enriquecimento otimizado para orçamento de fundadores que fazem outbound sozinhos.

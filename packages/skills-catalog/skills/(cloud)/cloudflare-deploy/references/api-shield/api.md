@@ -1,8 +1,8 @@
-# API Reference
+# Referência de API
 
 Base: `/zones/{zone_id}/api_gateway`
 
-## Endpoints
+## Pontos finais
 
 ```bash
 GET /operations                    # List
@@ -13,7 +13,7 @@ DELETE /operations/{op_id}         # Delete
 DELETE /operations                 # Bulk delete: {operation_ids:[...]}
 ```
 
-## Discovery
+##Descoberta
 
 ```bash
 GET /discovery/operations                    # List discovered
@@ -22,14 +22,14 @@ PATCH /discovery/operations                  # Bulk: {operation_ids:{id:{state}}
 GET /discovery                               # OpenAPI export
 ```
 
-## Config
+##Configuração
 
 ```bash
 GET /configuration        # Get session ID config
 PUT /configuration        # Update: {auth_id_characteristics:[{name,type:"header"|"cookie"}]}
 ```
 
-## Token Validation
+##Validação de token
 
 ```bash
 GET /token_validation                  # List
@@ -37,9 +37,9 @@ POST /token_validation                 # Create: {name,location:{header:"..."},j
 POST /jwt_validation_rules             # Rule: {name,hostname,token_validation_id,action:"block"}
 ```
 
-## Workers Integration
+##Integração de Trabalhadores
 
-### Access JWT Claims
+### Acessar declarações JWT
 
 ```js
 export default {
@@ -54,7 +54,7 @@ export default {
 }
 ```
 
-### Access mTLS Info
+### Acesse informações mTLS
 
 ```js
 export default {
@@ -68,7 +68,7 @@ export default {
 }
 ```
 
-### Dynamic JWKS Update
+### Atualização dinâmica do JWKS
 
 ```js
 export default {
@@ -86,9 +86,9 @@ export default {
 }
 ```
 
-## Firewall Fields
+##Campos de Firewall
 
-### Core Fields
+### Campos principais
 
 ```js
 cf.api_gateway.auth_id_present // Session ID present
@@ -98,7 +98,7 @@ cf.tls_client_auth.cert_verified // mTLS cert valid
 cf.tls_client_auth.cert_fingerprint_sha256
 ```
 
-### JWT Validation (2026)
+### Validação JWT (2026)
 
 ```js
 // Modern validation syntax
@@ -111,7 +111,7 @@ cf.api_gateway.jwt_claims_valid
 lookup_json_string(http.request.jwt.payload['{config_id}'][0], 'claim_name')
 ```
 
-### Risk Labels (2026)
+### Rótulos de Risco (2026)
 
 ```js
 // BOLA detection
@@ -123,28 +123,28 @@ cf.api_gateway.cf - risk - missing - auth // Endpoint lacks authentication
 cf.api_gateway.cf - risk - mixed - auth // Inconsistent auth patterns
 ```
 
-## BOLA Detection
+##Detecção BOLA
 
 ```bash
 GET /user_schemas/{schema_id}/bola             # Get BOLA config
 PATCH /user_schemas/{schema_id}/bola           # Update: {enabled:true}
 ```
 
-## Auth Posture
+##Postura de autenticação
 
 ```bash
 GET /discovery/authentication_posture          # List unprotected endpoints
 ```
 
-## GraphQL Protection
+##Proteção GraphQL
 
 ```bash
 GET /settings/graphql_protection               # Get limits
 PUT /settings/graphql_protection               # Set: {max_depth,max_size}
 ```
 
-## See Also
+##Veja também
 
-- [configuration.md](configuration.md) - Setup guides for all features
-- [patterns.md](patterns.md) - Firewall rules and common patterns
-- [API Gateway API Docs](https://developers.cloudflare.com/api/resources/api_gateway/)
+- [configuration.md](configuration.md) - Guias de configuração para todos os recursos
+- [patterns.md](patterns.md) - Regras de firewall e padrões comuns
+- [Documentos da API do API Gateway](https://developers.cloudflare.com/api/resources/api_gateway/)

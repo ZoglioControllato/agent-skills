@@ -1,42 +1,42 @@
-# Cloudflare DDoS Protection
+# Proteção DDoS da Cloudflare
 
-Autonomous, always-on protection against DDoS attacks across L3/4 and L7.
+Proteção autônoma e sempre ativa contra ataques DDoS em L3/4 e L7.
 
-## Protection Types
+## Tipos de proteção
 
-- **HTTP DDoS (L7)**: Protects HTTP/HTTPS traffic, phase `ddos_l7`, zone/account level
-- **Network DDoS (L3/4)**: UDP/SYN/DNS floods, phase `ddos_l4`, account level only
-- **Adaptive DDoS**: Learns 7-day baseline, detects deviations, 4 profile types (Origins, User-Agents, Locations, Protocols)
+- **HTTP DDoS (L7)**: protege o tráfego HTTP/HTTPS, fase `ddos_l7`, nível de zona/conta
+- **DDoS de rede (L3/4)**: inundações UDP/SYN/DNS, fase `ddos_l4`, apenas no nível da conta
+- **DDoS adaptativo**: aprende a linha de base de 7 dias, detecta desvios, 4 tipos de perfil (origens, agentes de usuários, locais, protocolos)
 
-## Plan Availability
+## Disponibilidade do plano
 
-| Feature             | Free  | Pro   | Business | Enterprise | Enterprise Advanced |
-| ------------------- | ----- | ----- | -------- | ---------- | ------------------- |
-| HTTP DDoS (L7)      | ✓     | ✓     | ✓        | ✓          | ✓                   |
-| Network DDoS (L3/4) | ✓     | ✓     | ✓        | ✓          | ✓                   |
-| Override rules      | 1     | 1     | 1        | 1          | 10                  |
-| Custom expressions  | ✗     | ✗     | ✗        | ✗          | ✓                   |
-| Log action          | ✗     | ✗     | ✗        | ✗          | ✓                   |
-| Adaptive DDoS       | ✗     | ✗     | ✗        | ✓          | ✓                   |
-| Alert filters       | Basic | Basic | Basic    | Advanced   | Advanced            |
+| Recurso                   | Grátis | Pró    | Negócios | Empresa  | Empresa Avançada |
+| ------------------------- | ------ | ------ | -------- | -------- | ---------------- |
+| DDoS HTTP (L7)            | ✓      | ✓      | ✓        | ✓        | ✓                |
+| Rede DDoS (L3/4)          | ✓      | ✓      | ✓        | ✓        | ✓                |
+| Substituir regras         | 1      | 1      | 1        | 1        | 10               |
+| Expressões personalizadas | ✗      | ✗      | ✗        | ✗        | ✓                |
+| Ação de registro          | ✗      | ✗      | ✗        | ✗        | ✓                |
+| DDoS adaptativo           | ✗      | ✗      | ✗        | ✓        | ✓                |
+| Filtros de alerta         | Básico | Básico | Básico   | Avançado | Avançado         |
 
-## Actions & Sensitivity
+## Ações e Sensibilidade
 
-- **Actions**: `block`, `managed_challenge`, `challenge`, `log` (Enterprise Advanced only)
-- **Sensitivity**: `default` (high), `medium`, `low`, `eoff` (essentially off)
-- **Override**: By category/tag or individual rule ID
-- **Scope**: Zone-level overrides take precedence over account-level
+- **Ações**: `block`, `owned_challenge`, `challenge`, `log` (somente Enterprise Advanced)
+- **Sensibilidade**: `default` (alta), `medium`, `low`, `eoff` (essencialmente desligado)
+- **Substituir**: por categoria/tag ou ID de regra individual
+- **Escopo**: as substituições no nível da zona têm precedência sobre o nível da conta
 
-## Reading Order
+## Ordem de leitura
 
-| File                                   | Purpose                                                   | Start Here If...                                            |
-| -------------------------------------- | --------------------------------------------------------- | ----------------------------------------------------------- |
-| [configuration.md](./configuration.md) | Dashboard setup, rule structure, adaptive profiles        | You're setting up DDoS protection for the first time        |
-| [api.md](./api.md)                     | API endpoints, SDK usage, ruleset ID discovery            | You're automating configuration or need programmatic access |
-| [patterns.md](./patterns.md)           | Protection strategies, defense-in-depth, dynamic response | You need implementation patterns or layered security        |
-| [gotchas.md](./gotchas.md)             | False positives, tuning, error handling                   | You're troubleshooting or optimizing existing protection    |
+| Arquivo                               | Finalidade                                                           | Comece aqui se...                                                        |
+| ------------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| [configuração.md](./configuration.md) | Configuração do painel, estrutura de regras, perfis adaptáveis ​​    | Você está configurando a proteção DDoS pela primeira vez                 |
+| [api.md](./api.md)                    | Endpoints de API, uso de SDK, descoberta de ID de conjunto de regras | Você está automatizando a configuração ou precisa de acesso programático |
+| [padrões.md](./padrões.md)            | Estratégias de proteção, defesa em profundidade, resposta dinâmica   | Você precisa de padrões de implementação ou segurança em camadas         |
+| [gotchas.md](./gotchas.md)            | Falsos positivos, ajuste, tratamento de erros                        | Você está solucionando problemas ou otimizando a proteção existente      |
 
-## See Also
+## Veja também
 
-- [waf](../waf/) - Application-layer security rules
-- [bot-management](../bot-management/) - Bot detection and mitigation
+- [waf](../waf/) - Regras de segurança da camada de aplicação
+- [bot-management](../bot-management/) - Detecção e mitigação de bots

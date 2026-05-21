@@ -115,11 +115,11 @@ result = client.argo.smart_routing.edit(
 print(f"Updated: {result.value} at {result.modified_on}")
 ```
 
-## Checking Editability Before Updates
+## Verificando a editabilidade antes das atualizações
 
-**Critical:** Always check the `editable` field before attempting to enable/disable Argo. When `editable: false`, the zone has restrictions (billing not configured, insufficient permissions, or plan limitations).
+**Crítico:** Sempre verifique o campo `editável` antes de tentar ativar/desativar o Argo. Quando `editável: false`, a zona tem restrições (faturamento não configurado, permissões insuficientes ou limitações do plano).
 
-**Pattern:**
+**Padrão:**
 
 ```typescript
 async function safelyEnableArgo(client: Cloudflare, zoneId: string): Promise<boolean> {

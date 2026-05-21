@@ -43,62 +43,62 @@ const modifiedRequest = new Request(request)
 modifiedRequest.headers.set('X-Custom', 'value')
 ```
 
-### "caches is not defined"
+### "caches não estão definidos"
 
-Cache API NOT available in Snippets. Use Workers.
+API de cache NÃO disponível em snippets. Use trabalhadores.
 
-### "Module not found"
+### "Módulo não encontrado"
 
-Snippets don't support `import`. Use inline code or Workers.
+Os snippets não suportam `importação`. Use código embutido ou Workers.
 
-## Best Practices
+## Melhores práticas
 
-### Performance
+### Desempenho
 
-- Keep code <10KB (32KB limit)
-- Optimize for 5ms CPU
-- Clone only when modifying
-- Minimize subrequests
+- Mantenha o código <10 KB (limite de 32 KB)
+- Otimize para CPU de 5ms
+- Clonar apenas ao modificar
+- Minimizar subsolicitações
 
-### Security
+### Segurança
 
-- Validate all inputs
-- Use Web Crypto API for hashing
-- Sanitize headers before origin
-- Don't log secrets
+- Validar todas as entradas
+- Use Web Crypto API para hash
+- Sanitizar cabeçalhos antes da origem
+- Não registre segredos
 
-### Debugging
+### Depuração```javascript
 
-```javascript
 newResponse.headers.set('X-Debug-Country', request.cf.country)
-```
+
+````
 
 ```bash
 curl -H "X-Test: true" https://example.com -v
-```
+````
 
-## Available APIs
+## APIs disponíveis
 
-**✅ Available:** `fetch()`, `Request`, `Response`, `Headers`, `URL`, `crypto.subtle`, `crypto.randomUUID()`, `atob()`/`btoa()`, `JSON`
+**✅ Disponível:** `fetch()`, `Request`, `Response`, `Headers`, `URL`, `crypto.subtle`, `crypto.randomUUID()`, `atob()`/`btoa()`, `JSON`
 
-**❌ NOT Available:** `caches`, `KV`, `D1`, `R2`, `Durable Objects`, `WebSocket`, `HTMLRewriter`, `import`, Node.js APIs
+**❌ NÃO Disponível:** `caches`, `KV`, `D1`, `R2`, `Durable Objects`, `WebSocket`, `HTMLRewriter`, `import`, APIs Node.js
 
-## Limits
+## Limites
 
-| Resource              | Limit   |
+| Recurso                   | Limite     |
+| ------------------------- | ---------- |
+| Tamanho do trecho         | 32 KB      |
+| Prazo de execução         | CPU de 5ms |
+| Subsolicitações (Pro/Biz) | 2/5        |
+| Trechos/zona              | 20         |
+
+## Benchmarks de desempenho
+
+| Operação              | Tempo   |
 | --------------------- | ------- |
-| Snippet size          | 32KB    |
-| Execution time        | 5ms CPU |
-| Subrequests (Pro/Biz) | 2/5     |
-| Snippets/zone         | 20      |
+| Conjunto de cabeçalho | <0,1ms  |
+| Análise de URL        | <0,2ms  |
+| buscar()              | 1-3ms   |
+| SHA-256               | 0,5-1ms |
 
-## Performance Benchmarks
-
-| Operation   | Time    |
-| ----------- | ------- |
-| Header set  | <0.1ms  |
-| URL parsing | <0.2ms  |
-| fetch()     | 1-3ms   |
-| SHA-256     | 0.5-1ms |
-
-**Migrate to Workers when:** >5ms needed, >5 subrequests, need storage (KV/D1/R2), need npm packages, >32KB code
+**Migrar para Workers quando:** >5 ms necessários, >5 subsolicitações, precisar de armazenamento (KV/D1/R2), precisar de pacotes npm, >32 KB de código

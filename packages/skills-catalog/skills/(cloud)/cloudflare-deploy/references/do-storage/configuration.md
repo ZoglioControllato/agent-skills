@@ -1,6 +1,6 @@
-# DO Storage Configuration
+# FAÇA a configuração de armazenamento
 
-## SQLite-backed (Recommended)
+## apoiado por SQLite (recomendado)
 
 **wrangler.jsonc:**
 
@@ -15,9 +15,9 @@
 }
 ```
 
-**Migration lifecycle:** Migrations run once per deployment. Existing DO instances get new storage backend on next invocation. Renaming/removing classes requires `renamed_classes` or `deleted_classes` entries.
+**Ciclo de vida da migração:** as migrações são executadas uma vez por implantação. As instâncias DO existentes obtêm um novo back-end de armazenamento na próxima invocação. Renomear/remover classes requer entradas `renamed_classes` ou `deleted_classes`.
 
-## KV-backed (Legacy)
+## Apoiado por KV (Legado)
 
 **wrangler.jsonc:**
 
@@ -32,7 +32,7 @@
 }
 ```
 
-## TypeScript Setup
+##Configuração do TypeScript
 
 ```typescript
 export class MyDurableObject extends DurableObject {
@@ -73,7 +73,7 @@ export default {
 }
 ```
 
-## CPU Limits
+##Limites de CPU
 
 ```jsonc
 {
@@ -83,7 +83,7 @@ export default {
 }
 ```
 
-## Location Control
+##Controle de localização
 
 ```typescript
 // Jurisdiction (GDPR/FedRAMP)
@@ -96,7 +96,7 @@ const stub = env.MY_DO.get(id, { locationHint: 'enam' })
 // Hints: wnam, enam, sam, weur, eeur, apac, oc, afr, me
 ```
 
-## Initialization
+##Inicialização
 
 ```typescript
 export class Counter extends DurableObject {

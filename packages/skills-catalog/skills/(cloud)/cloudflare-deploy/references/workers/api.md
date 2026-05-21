@@ -1,6 +1,6 @@
-# Workers Runtime APIs
+# APIs de runtime do Workers
 
-## Fetch Handler
+## Fetch handler
 
 ```typescript
 export default {
@@ -12,7 +12,7 @@ export default {
         headers: { 'Content-Type': 'application/json' },
       })
     }
-    return fetch(request) // Subrequest to origin
+    return fetch(request) // Subrequest para origem
   },
 }
 ```
@@ -20,11 +20,11 @@ export default {
 ## Execution Context
 
 ```typescript
-ctx.waitUntil(logAnalytics(request)) // Background work, don't block response
-ctx.passThroughOnException() // Failover to origin on error
+ctx.waitUntil(logAnalytics(request)) // Trabalho em segundo plano, não bloqueia a resposta
+ctx.passThroughOnException() // Failover para origem em caso de erro
 ```
 
-**Never** `await` background operations - use `ctx.waitUntil()`.
+**Nunca** use `await` em operações de segundo plano — use `ctx.waitUntil()`.
 
 ## Bindings
 
@@ -40,10 +40,10 @@ await env.MY_BUCKET.put('file.txt', 'content')
 // D1
 const result = await env.DB.prepare('SELECT * FROM users WHERE id = ?').bind(1).first()
 
-// D1 Sessions (2024+) - read-after-write consistency
+// D1 Sessions (2024+) — consistência read-after-write
 const session = env.DB.withSession()
 await session.prepare('INSERT INTO users (name) VALUES (?)').bind('Alice').run()
-const user = await session.prepare('SELECT * FROM users WHERE name = ?').bind('Alice').first() // Guaranteed fresh
+const user = await session.prepare('SELECT * FROM users WHERE name = ?').bind('Alice').first() // Garantido fresco
 
 // Queues
 await env.MY_QUEUE.send({ timestamp: Date.now() })
@@ -62,7 +62,7 @@ if (!response) {
   response = await fetch(request)
   response = new Response(response.body, response)
   response.headers.set('Cache-Control', 'max-age=3600')
-  ctx.waitUntil(cache.put(request, response.clone())) // Clone before caching
+  ctx.waitUntil(cache.put(request, response.clone())) // Clone antes de cachear
 }
 ```
 
@@ -81,11 +81,11 @@ return new HTMLRewriter()
   .transform(response)
 ```
 
-**Use cases**: A/B testing, analytics injection, link rewriting
+**Casos de uso**: testes A/B, injeção de analytics, reescrita de links
 
 ## WebSockets
 
-### Standard WebSocket
+### WebSocket padrão
 
 ```typescript
 const [client, server] = Object.values(new WebSocketPair())
@@ -98,17 +98,17 @@ server.addEventListener('message', (event) => {
 return new Response(null, { status: 101, webSocket: client })
 ```
 
-### WebSocket Hibernation (Recommended for idle connections)
+### WebSocket Hibernation (recomendado para conexões ociosas)
 
 ```typescript
-// In Durable Object
+// Em Durable Object
 export class WebSocketDO {
   async webSocketMessage(ws: WebSocket, message: string) {
     ws.send(`Echo: ${message}`)
   }
 
   async webSocketClose(ws: WebSocket, code: number, reason: string) {
-    // Cleanup on close
+    // Limpeza ao fechar
   }
 
   async webSocketError(ws: WebSocket, error: Error) {
@@ -117,11 +117,11 @@ export class WebSocketDO {
 }
 ```
 
-Hibernation automatically suspends inactive connections (no CPU cost), wakes on events
+A hibernação suspende automaticamente conexões inativas (sem custo de CPU) e acorda em eventos
 
 ## Durable Objects
 
-### RPC Pattern (Recommended 2024+)
+### Padrão RPC (recomendado 2024+)
 
 ```typescript
 export class Counter {
@@ -133,7 +133,7 @@ export class Counter {
     })
   }
 
-  // Export methods directly - called via RPC (type-safe, zero serialization)
+  // Exporte métodos diretamente — chamados via RPC (tipado, zero serialização)
   async increment(): Promise<number> {
     this.value++
     await this.state.storage.put('value', this.value)
@@ -145,12 +145,12 @@ export class Counter {
   }
 }
 
-// Worker usage:
+// Uso no Worker:
 const stub = env.COUNTER.get(env.COUNTER.idFromName('global'))
-const count = await stub.increment() // Direct method call, full type safety
+const count = await stub.increment() // Chamada de método direta, tipagem completa
 ```
 
-### Legacy Fetch Pattern (Pre-2024)
+### Padrão fetch legado (pré-2024)
 
 ```typescript
 async fetch(request: Request): Promise<Response> {
@@ -160,12 +160,12 @@ async fetch(request: Request): Promise<Response> {
   }
   return new Response(String(this.value));
 }
-// Usage: await stub.fetch('http://x/increment')
+// Uso: await stub.fetch('http://x/increment')
 ```
 
-**When to use DOs**: Real-time collaboration, rate limiting, strongly consistent state
+**Quando usar DOs**: colaboração em tempo real, rate limiting, estado fortemente consistente
 
-## Other Handlers
+## Outros handlers
 
 ```typescript
 // Cron: async scheduled(event, env, ctx) { ctx.waitUntil(doCleanup(env)); }
@@ -176,22 +176,22 @@ async fetch(request: Request): Promise<Response> {
 ## Service Bindings
 
 ```typescript
-// Worker-to-worker RPC (zero latency, no internet round-trip)
+// RPC Worker-to-worker (latência zero, sem round-trip na internet)
 return env.SERVICE_B.fetch(request)
 
-// With RPC (2024+) - same as Durable Objects RPC
+// Com RPC (2024+) — igual ao RPC de Durable Objects
 export class ServiceWorker {
   async getData() {
     return { data: 'value' }
   }
 }
-// Usage: const data = await env.SERVICE_B.getData();
+// Uso: const data = await env.SERVICE_B.getData();
 ```
 
-**Benefits**: Type-safe method calls, no HTTP overhead, share code between Workers
+**Benefícios**: chamadas de método tipadas, sem overhead HTTP, compartilhamento de código entre Workers
 
-## See Also
+## Ver também
 
-- [Configuration](./configuration.md) - Binding setup
-- [Patterns](./patterns.md) - Common workflows
+- [Configuration](./configuration.md) — configuração de bindings
+- [Patterns](./patterns.md) — fluxos comuns
 - [KV](../kv/README.md), [D1](../d1/README.md), [R2](../r2/README.md), [Durable Objects](../durable-objects/README.md), [Queues](../queues/README.md)

@@ -1,58 +1,57 @@
-# Interaction Design
+# Design de interação
 
-## The Eight Interactive States
+## Os Oito Estados Interativos
 
-Every interactive element needs these states designed:
+Cada elemento interativo precisa destes estados projetados:
 
-| State | When | Visual Treatment |
-|-------|------|------------------|
-| **Default** | At rest | Base styling |
-| **Hover** | Pointer over (not touch) | Subtle lift, color shift |
-| **Focus** | Keyboard/programmatic focus | Visible ring (see below) |
-| **Active** | Being pressed | Pressed in, darker |
-| **Disabled** | Not interactive | Reduced opacity, no pointer |
-| **Loading** | Processing | Spinner, skeleton |
-| **Error** | Invalid state | Red border, icon, message |
-| **Success** | Completed | Green check, confirmation |
+| Estado            | Quando                     | Tratamento Visual                |
+| ----------------- | -------------------------- | -------------------------------- |
+| **Padrão**        | Em repouso                 | Estilo básico                    |
+| **Passe o mouse** | Ponteiro sobre (não toque) | Elevação sutil, mudança de cor   |
+| **Foco**          | Foco teclado/programático  | Anel visível (ver abaixo)        |
+| **Ativo**         | Sendo pressionado          | Pressionado, mais escuro         |
+| **Desativado**    | Não interativo             | Opacidade reduzida, sem ponteiro |
+| **Carregando**    | Processamento              | Spinner, esqueleto               |
+| **Erro**          | Estado inválido            | Ré                               |
 
-**The common miss**: Designing hover without focus, or vice versa. They're different. Keyboard users never see hover states.
+borda d, ícone, mensagem |
+| **Sucesso** | Concluído | Cheque verde, confirmação |
 
-## Focus Rings: Do Them Right
+**O erro comum**: projetar o foco sem foco ou vice-versa. Eles são diferentes. Os usuários de teclado nunca veem estados de foco.
 
-**Never `outline: none` without replacement.** It's an accessibility violation. Instead, use `:focus-visible` to show focus only for keyboard users:
+## Anéis de foco: faça-os corretamente
 
-```css
-/* Hide focus ring for mouse/touch */
+**Nunca `outline: none` sem substituição.** É uma violação de acessibilidade. Em vez disso, use `:focus-visible` para mostrar o foco apenas para usuários de teclado:```css
+/_ Hide focus ring for mouse/touch _/
 button:focus {
-  outline: none;
+outline: none;
 }
 
-/* Show focus ring for keyboard */
+/_ Show focus ring for keyboard _/
 button:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 2px;
+outline: 2px solid var(--color-accent);
+outline-offset: 2px;
 }
-```
 
-**Focus ring design**:
-- High contrast (3:1 minimum against adjacent colors)
-- 2-3px thick
-- Offset from element (not inside it)
-- Consistent across all interactive elements
+````
 
-## Form Design: The Non-Obvious
+**Design do anel de foco**:
+- Alto contraste (mínimo 3:1 contra cores adjacentes)
+- 2-3px de espessura
+- Deslocamento do elemento (não dentro dele)
+- Consistente em todos os elementos interativos
 
-**Placeholders aren't labels**—they disappear on input. Always use visible `<label>` elements. **Validate on blur**, not on every keystroke (exception: password strength). Place errors **below** fields with `aria-describedby` connecting them.
+## Design de formulário: o não óbvio
 
-## Loading States
+**Espaços reservados não são rótulos** — eles desaparecem na entrada. Sempre use elementos `<label>` visíveis. **Validar no desfoque**, não em cada pressionamento de tecla (exceção: força da senha). Coloque os erros **abaixo** dos campos com `aria-describedby` conectando-os.
 
-**Optimistic updates**: Show success immediately, rollback on failure. Use for low-stakes actions (likes, follows), not payments or destructive actions. **Skeleton screens > spinners**—they preview content shape and feel faster than generic spinners.
+## Carregando Estados
 
-## Modals: The Inert Approach
+**Atualizações otimistas**: mostre sucesso imediatamente e reverta em caso de falha. Use para ações de baixo risco (curtir, seguir), não para pagamentos ou ações destrutivas. **Telas esqueleto > spinners**: elas visualizam a forma do conteúdo e parecem mais rápidas do que spinners genéricos.
 
-Focus trapping in modals used to require complex JavaScript. Now use the `inert` attribute:
+## Modais: A Abordagem Inerte
 
-```html
+Trapping de foco em modais usados para exigir JavaScript complexo. Agora use o atributo `inert`:```html
 <!-- When modal is open -->
 <main inert>
   <!-- Content behind modal can't be focused or clicked -->
@@ -61,63 +60,57 @@ Focus trapping in modals used to require complex JavaScript. Now use the `inert`
   <h2>Modal Title</h2>
   <!-- Focus stays inside modal -->
 </dialog>
-```
+````
 
-Or use the native `<dialog>` element:
-
-```javascript
+Ou use o elemento nativo `<dialog>`:```javascript
 const dialog = document.querySelector('dialog');
-dialog.showModal();  // Opens with focus trap, closes on Escape
-```
+dialog.showModal(); // Opens with focus trap, closes on Escape
 
-## The Popover API
+````
+## A API Popover
 
-For tooltips, dropdowns, and non-modal overlays, use native popovers:
-
-```html
+Para dicas de ferramentas, menus suspensos e sobreposições não modais, use popovers nativos:```html
 <button popovertarget="menu">Open menu</button>
 <div id="menu" popover>
   <button>Option 1</button>
   <button>Option 2</button>
 </div>
-```
+````
 
-**Benefits**: Light-dismiss (click outside closes), proper stacking, no z-index wars, accessible by default.
+**Benefícios**: Light-dismiss (clique fora para fechar), empilhamento adequado, sem guerras de índice z, acessível por padrão.
 
-## Destructive Actions: Undo > Confirm
+## Ações Destrutivas: Desfazer > Confirmar
 
-**Undo is better than confirmation dialogs**—users click through confirmations mindlessly. Remove from UI immediately, show undo toast, actually delete after toast expires. Use confirmation only for truly irreversible actions (account deletion), high-cost actions, or batch operations.
+**Desfazer é melhor do que caixas de diálogo de confirmação** — os usuários clicam nas confirmações sem pensar. Remova da interface do usuário imediatamente, mostre desfazer o brinde e exclua depois que o brinde expirar. Utilize a confirmação apenas para ações verdadeiramente irreversíveis (exclusão de conta), ações de alto custo ou operações em lote.
 
-## Keyboard Navigation Patterns
+## Padrões de navegação do teclado
 
-### Roving Tabindex
+### Tabindex itinerante
 
-For component groups (tabs, menu items, radio groups), one item is tabbable; arrow keys move within:
+Para grupos de componentes (guias, itens de menu, grupos de rádio), um item pode ser tabulado; as teclas de seta se movem dentro:```html
 
-```html
 <div role="tablist">
   <button role="tab" tabindex="0">Tab 1</button>
   <button role="tab" tabindex="-1">Tab 2</button>
   <button role="tab" tabindex="-1">Tab 3</button>
 </div>
 ```
+As teclas de seta movem `tabindex="0"` entre os itens. A guia passa inteiramente para o próximo componente.
 
-Arrow keys move `tabindex="0"` between items. Tab moves to the next component entirely.
+### Pular links
 
-### Skip Links
+Forneça links para pular (`<a href="#main-content">Pular para o conteúdo principal</a>`) para que os usuários do teclado possam pular a navegação. Oculte fora da tela, mostre em foco.
 
-Provide skip links (`<a href="#main-content">Skip to main content</a>`) for keyboard users to jump past navigation. Hide off-screen, show on focus.
+## Descoberta de gestos
 
-## Gesture Discoverability
+Deslizar para excluir e gestos semelhantes são invisíveis. Sugestão de sua existência:
 
-Swipe-to-delete and similar gestures are invisible. Hint at their existence:
+- **Revelar parcialmente**: mostra o botão de exclusão aparecendo na borda
+- **Onboarding**: notas do treinador no primeiro uso
+- **Alternativa**: Sempre forneça um substituto visível (menu com "Excluir")
 
-- **Partially reveal**: Show delete button peeking from edge
-- **Onboarding**: Coach marks on first use
-- **Alternative**: Always provide a visible fallback (menu with "Delete")
-
-Don't rely on gestures as the only way to perform actions.
+Não confie em gestos como única forma de realizar ações.
 
 ---
 
-**Avoid**: Removing focus indicators without alternatives. Using placeholder text as labels. Touch targets <44x44px. Generic error messages. Custom controls without ARIA/keyboard support.
+**Evitar**: remover indicadores de foco sem alternativas. Usando texto de espaço reservado como rótulos. Alvos de toque <44x44px. Mensagens de erro genéricas. Controles personalizados sem suporte ARIA/teclado.

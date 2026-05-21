@@ -1,151 +1,151 @@
 # Agent Skills Marketplace
 
-A Next.js static site that serves as a marketplace for browsing and discovering agent skills.
+Site estático Next.js que funciona como vitrine para explorar e descobrir agent skills.
 
-## Overview
+## Visão geral
 
-The marketplace automatically generates a static website from the skills in the `skills/` directory. It includes:
+O marketplace gera automaticamente um site estático a partir das skills no diretório `skills/`. Inclui:
 
-- Homepage with featured skills, stats, and NPM download metrics
-- Skills listing page with search, category filtering, and pagination
-- Individual skill detail pages with full content and markdown rendering
-- About page displaying repository README
-- Dark mode support with theme persistence
-- SEO optimized with JSON-LD structured data
-- Responsive design with Tailwind CSS
-- Static site generation deployed to custom domain
+- Página inicial com skills em destaque, estatísticas e métricas de downloads NPM
+- Listagem com busca, filtro por categoria e paginação
+- Páginas de detalhe com conteúdo completo e renderização Markdown
+- Página Sobre exibindo o README do repositório
+- Modo escuro com persistência de tema
+- SEO com dados estruturados JSON-LD
+- Layout responsivo com Tailwind CSS
+- Export estático hospedado em domínio customizado
 
-## Development
+## Desenvolvimento
 
-### Setup
+### Ambiente
 
 ```bash
 npm ci
 ```
 
-### Generate Skills Data
+### Gerar dados das skills
 
 ```bash
 nx run marketplace:generate-data
 ```
 
-This parses all `SKILL.md` files in the `skills/` directory and generates `src/data/skills.json`.
+Este comando analisa todos os `SKILL.md` em `skills/` e gera `src/data/skills.json`.
 
-### Run Development Server
+### Servidor de desenvolvimento
 
 ```bash
 nx run marketplace:dev
 ```
 
-Open http://localhost:3000 in your browser.
+Abra http://localhost:3000 no navegador.
 
-**Note**: The site runs with the actual production configuration in development for consistency.
+**Nota:** o site usa a mesma configuração da produção em desenvolvimento, para consistência.
 
-### Build for Production
+### Build de produção
 
 ```bash
 nx run marketplace:build
 ```
 
-This generates static files in `out/.next/` ready for deployment.
+Gera arquivos estáticos em `out/.next/` prontos para deploy.
 
-## Deployment
+## Implantação
 
-The site automatically deploys to the custom domain `agent-skills.techleads.club` when changes are pushed to the `main` branch via the `.github/workflows/deploy-marketplace.yml` workflow.
+O site faz deploy automaticamente no domínio `agent-skills.techleads.club` quando há push na branch `main` via workflow `.github/workflows/deploy-marketplace.yml`.
 
-### Manual Deployment
+### Deploy manual
 
-To deploy manually:
+1. Garantir que o build passa: `nx run marketplace:build`
+2. Os arquivos estáticos ficam em `packages/marketplace/.next/`
+3. Envie esses arquivos para qualquer hospedagem estática
 
-1. Ensure the build succeeds: `nx run marketplace:build`
-2. The static files are in `packages/marketplace/.next/`
-3. Deploy these files to any static hosting service
-
-## Project Structure
+## Estrutura do projeto
 
 ```
 marketplace/
 ├── scripts/
-│   └── generate-data.ts        # Parses skills and generates JSON
+│   └── generate-data.ts        # Analisa skills e gera JSON
 ├── src/
 │   ├── app/
-│   │   ├── page.tsx            # Homepage
-│   │   ├── layout.tsx          # Root layout with navigation
+│   │   ├── page.tsx            # Home
+│   │   ├── layout.tsx          # Layout raiz com navegação
 │   │   ├── about/
-│   │   │   └── page.tsx        # About page (displays README)
+│   │   │   └── page.tsx        # Sobre (mostra README)
 │   │   └── skills/
-│   │       ├── page.tsx        # Skills listing page (wrapper)
-│   │       ├── SkillsClient.tsx # Skills listing (client component)
+│   │       ├── page.tsx        # Wrapper da listagem
+│   │       ├── SkillsClient.tsx # Listagem (client component)
 │   │       └── [id]/
-│   │           └── page.tsx    # Individual skill detail page
+│   │           └── page.tsx    # Detalhe da skill
 │   ├── components/
-│   │   ├── CategoryFilter.tsx  # Category filter buttons
-│   │   ├── CopyButton.tsx      # Copy to clipboard button
-│   │   ├── JsonLd.tsx          # Structured data (SEO)
-│   │   ├── NpmDownloadsCard.tsx # NPM download stats
-│   │   ├── Pagination.tsx      # Pagination component
-│   │   ├── SearchBar.tsx       # Search input with debounce
-│   │   ├── SkillCard.tsx       # Skill preview card
-│   │   ├── StatsCard.tsx       # Stats display card
-│   │   ├── ThemeProvider.tsx   # Dark mode context provider
-│   │   └── ThemeToggle.tsx     # Dark/light mode toggle
+│   │   ├── CategoryFilter.tsx  # Filtro por categoria
+│   │   ├── CopyButton.tsx      # Copiar para a área de transferência
+│   │   ├── JsonLd.tsx          # Dados estruturados (SEO)
+│   │   ├── NpmDownloadsCard.tsx # Estatísticas de download NPM
+│   │   ├── Pagination.tsx      # Paginação
+│   │   ├── SearchBar.tsx       # Busca com debounce
+│   │   ├── SkillCard.tsx       # Card prévia da skill
+│   │   ├── StatsCard.tsx       # Cartão de estatísticas
+│   │   ├── ThemeProvider.tsx   # Context do tema escuro
+│   │   └── ThemeToggle.tsx     # Alternar claro/escuro
 │   ├── data/
-│   │   └── skills.json         # Generated skills data
+│   │   └── skills.json         # Dados gerados
 │   └── types/
-│       └── index.ts            # TypeScript types
-├── next.config.mjs             # Next.js configuration
-├── postcss.config.cjs          # PostCSS configuration
-└── project.json                # Nx project configuration
+│       └── index.ts            # Tipos TypeScript
+├── next.config.mjs             # Config Next.js
+├── postcss.config.cjs          # PostCSS
+└── project.json                # Projeto Nx
 ```
 
-## Technologies
+## Tecnologias
 
-- **Next.js 16**: React framework with App Router
-- **Tailwind CSS 4**: Utility-first CSS framework
-- **TypeScript**: Type safety
-- **React Markdown**: Markdown rendering for skill content
-- **Gray Matter**: YAML frontmatter parsing
-- **Rehype/Remark**: Markdown plugins (syntax highlighting, GFM support)
-- **Nx**: Build system and monorepo tooling
+- **Next.js 16:** React com App Router
+- **Tailwind CSS 4:** utilitários CSS
+- **TypeScript:** tipagem
+- **React Markdown:** renderização Markdown
+- **Gray Matter:** frontmatter YAML
+- **Rehype/Remark:** plugins (destaque de sintaxe, GFM)
+- **Nx:** build e monorepo
 
-## Features
+## Funcionalidades
 
-### Dark Mode
-The site includes a fully functional dark mode with:
-- System preference detection
-- Manual toggle control
-- Theme persistence in localStorage
-- Smooth transitions between themes
+### Modo escuro
 
-### SEO Optimization
-- JSON-LD structured data for all pages
-- OpenGraph and Twitter Card metadata
-- Canonical URLs and proper meta tags
-- Sitemap generation support
+- Detecção da preferência do sistema
+- Alternância manual
+- Persistência em localStorage
+- Transições suaves entre temas
 
-### Performance
-- Static site generation (SSG)
-- Optimized build output
-- Responsive images
+### SEO
+
+- JSON-LD em todas as páginas
+- OpenGraph e Twitter Cards
+- URLs canônicas e meta tags
+- Suporte a sitemap
+
+### Desempenho
+
+- Geração estática (SSG)
+- Build otimizado
+- Imagens responsivas
 - Code splitting
 
-## Configuration
+## Configuração
 
-The site is configured for deployment to a custom domain:
+O site está preparado para o domínio:
 
-- Domain: `agent-skills.techleads.club`
-- Static export: `output: 'export'`
-- Unoptimized images: Required for static export
-- Trailing slashes: Enabled for better compatibility
+- Domínio: `agent-skills.techleads.club`
+- Export estático: `output: 'export'`
+- Imagens não otimizadas (exigência do export estático)
+- Barras finais habilitadas para compatibilidade
 
-To deploy to a different domain, update the `metadataBase` URL in `src/app/layout.tsx`.
+Para outro domínio, atualize a URL `metadataBase` em `src/app/layout.tsx`.
 
-## Adding New Skills
+## Novas skills
 
-Skills are automatically discovered when:
+As skills aparecem automaticamente quando:
 
-1. A new directory is added to `skills/`
-2. The directory contains a `SKILL.md` file
-3. The skill is listed in `skills/categories.json`
+1. Um novo diretório é adicionado em `skills/`
+2. O diretório contém `SKILL.md`
+3. A skill está em `skills/categories.json`
 
-The marketplace will automatically include the new skill on the next build.
+O marketplace incluirá a skill no próximo build.

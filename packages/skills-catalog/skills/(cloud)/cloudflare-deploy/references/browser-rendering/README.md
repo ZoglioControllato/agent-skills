@@ -1,84 +1,84 @@
-# Cloudflare Browser Rendering Skill Reference
+# Referência de habilidade de renderização do navegador Cloudflare
 
-**Description**: Expert knowledge for Cloudflare Browser Rendering - control headless Chrome on Cloudflare's global network for browser automation, screenshots, PDFs, web scraping, testing, and content generation.
+**Descrição**: Conhecimento especializado em renderização de navegador Cloudflare: controle o Chrome headless na rede global da Cloudflare para automação de navegador, capturas de tela, PDFs, web scraping, testes e geração de conteúdo.
 
-**When to use**: Any task involving Cloudflare Browser Rendering including: taking screenshots, generating PDFs, web scraping, browser automation, testing web applications, extracting structured data, capturing page metrics, or automating browser interactions.
+**Quando usar**: Qualquer tarefa que envolva o Cloudflare Browser Rendering, incluindo: captura de tela, geração de PDFs, web scraping, automação de navegador, teste de aplicativos web, extração de dados estruturados, captura de métricas de página ou automatização de interações do navegador.
 
-## Decision Tree
+## Árvore de decisão
 
-### REST API vs Workers Bindings
+### API REST versus vinculações de trabalhadores
 
-**Use REST API when:**
+**Use a API REST quando:**
 
-- One-off, stateless tasks (screenshot, PDF, content fetch)
-- No Workers infrastructure yet
-- Simple integrations from external services
-- Need quick prototyping without deployment
+- Tarefas únicas e sem estado (captura de tela, PDF, busca de conteúdo)
+- Nenhuma infraestrutura de trabalhadores ainda
+- Integrações simples de serviços externos
+- Precisa de prototipagem rápida sem implantação
 
-**Use Workers Bindings when:**
+**Use vinculações de trabalhadores quando:**
 
-- Complex browser automation workflows
-- Need session reuse for performance
-- Multiple page interactions per request
-- Custom scripting and logic required
-- Building production applications
+- Fluxos de trabalho complexos de automação de navegador
+- Precisa de reutilização de sessão para desempenho
+- Múltiplas interações de página por solicitação
+- Scripting e lógica personalizados necessários
+- Construindo aplicações de produção
 
-### Puppeteer vs Playwright
+### Marionetista vs Dramaturgo
 
-| Feature        | Puppeteer                    | Playwright                |
-| -------------- | ---------------------------- | ------------------------- |
-| API Style      | Chrome DevTools Protocol     | High-level abstractions   |
-| Selectors      | CSS, XPath                   | CSS, text, role, test-id  |
-| Best for       | Advanced control, CDP access | Quick automation, testing |
-| Learning curve | Steeper                      | Gentler                   |
+| Recurso               | Marionetista                  | Dramaturgo                      |
+| --------------------- | ----------------------------- | ------------------------------- |
+| Estilo API            | Protocolo Chrome DevTools     | Abstrações de alto nível        |
+| Seletores             | CSS, XPath                    | CSS, texto, função, ID de teste |
+| Melhor para           | Controle avançado, acesso CDP | Automação rápida, testes        |
+| Curva de aprendizagem | Mais íngreme                  | Mais suave                      |
 
-**Use Puppeteer:** Need CDP protocol access, Chrome-specific features, migration from existing Puppeteer code
-**Use Playwright:** Modern selector APIs, cross-browser patterns, faster development
+**Usar o Puppeteer:** Precisa de acesso ao protocolo CDP, recursos específicos do Chrome, migração do código existente do Puppeteer
+**Use o Playwright:** APIs de seletores modernos, padrões entre navegadores, desenvolvimento mais rápido
 
-## Tier Limits Summary
+## Resumo dos limites de nível
 
-| Limit               | Free Tier  | Paid Tier   |
-| ------------------- | ---------- | ----------- |
-| Daily browser time  | 10 minutes | Unlimited\* |
-| Concurrent sessions | 3          | 30          |
-| Requests per minute | 6          | 180         |
+| Limite                    | Nível gratuito | Nível pago  |
+| ------------------------- | -------------- | ----------- |
+| Tempo diário de navegação | 10 minutos     | Ilimitado\* |
+| Sessões simultâneas       | 3              | 30          |
+| Solicitações por minuto   | 6              | 180         |
 
-\*Subject to fair-use policy. See [gotchas.md](gotchas.md) for details.
+\*Sujeito à política de uso justo. Consulte [gotchas.md](gotchas.md) para obter detalhes.
 
-## Reading Order
+## Ordem de leitura
 
-**New to Browser Rendering:**
+**Novidade na renderização do navegador:**
 
-1. [configuration.md](configuration.md) - Setup and deployment
-2. [patterns.md](patterns.md) - Common use cases with examples
-3. [api.md](api.md) - API reference
-4. [gotchas.md](gotchas.md) - Avoid common pitfalls
+1. [configuration.md](configuration.md) - Configuração e implantação
+2. [patterns.md](patterns.md) – Casos de uso comuns com exemplos
+3. [api.md](api.md) - referência da API
+4. [gotchas.md](gotchas.md) - Evite armadilhas comuns
 
-**Specific task:**
+**Tarefa específica:**
 
-- **Setup/deployment** → [configuration.md](configuration.md)
-- **API reference/endpoints** → [api.md](api.md)
-- **Example code/patterns** → [patterns.md](patterns.md)
-- **Debugging/troubleshooting** → [gotchas.md](gotchas.md)
+- **Configuração/implantação** → [configuration.md](configuration.md)
+- **Referência/endpoints de API** → [api.md](api.md)
+- **Exemplo de código/padrões** → [patterns.md](patterns.md)
+- **Depuração/solução de problemas** → [gotchas.md](gotchas.md)
 
-**REST API users:**
+**Usuários da API REST:**
 
-- Start with [api.md](api.md) REST API section
-- Check [gotchas.md](gotchas.md) for rate limits
+- Comece com a seção [api.md](api.md) REST API
+- Verifique [gotchas.md](gotchas.md) para limites de taxa
 
-**Workers users:**
+**Usuários trabalhadores:**
 
-- Start with [configuration.md](configuration.md)
-- Review [patterns.md](patterns.md) for session management
-- Reference [api.md](api.md) for Workers Bindings
+- Comece com [configuration.md](configuration.md)
+- Revise [patterns.md](patterns.md) para gerenciamento de sessão
+- Referência [api.md](api.md) para vinculações de trabalhadores
 
-## In This Reference
+## Nesta referência
 
-- **[configuration.md](configuration.md)** - Setup, deployment, wrangler config, compatibility
-- **[api.md](api.md)** - REST API endpoints + Workers Bindings (Puppeteer/Playwright)
-- **[patterns.md](patterns.md)** - Common patterns, use cases, real examples
-- **[gotchas.md](gotchas.md)** - Troubleshooting, best practices, tier limits, common errors
+- **[configuration.md](configuration.md)** - Configuração, implantação, configuração do wrangler, compatibilidade
+- **[api.md](api.md)** - Endpoints da API REST + Vinculações de trabalhadores (Puppeteer/Playwright)
+- **[patterns.md](patterns.md)** - Padrões comuns, casos de uso, exemplos reais
+- **[gotchas.md](gotchas.md)** - Solução de problemas, práticas recomendadas, limites de nível, erros comuns
 
-## See Also
+## Veja também
 
-- [Cloudflare Docs](https://developers.cloudflare.com/browser-rendering/)
+- [Documentos Cloudflare](https://developers.cloudflare.com/browser-rendering/)

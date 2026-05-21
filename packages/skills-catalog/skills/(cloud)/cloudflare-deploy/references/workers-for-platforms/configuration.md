@@ -16,36 +16,32 @@
 }
 ```
 
-## Worker Isolation Mode
+## Modo de isolamento do trabalhador
 
-Workers in a namespace run in **untrusted mode** by default for security:
+Os trabalhadores em um namespace são executados em **modo não confiável** por padrão para segurança:
 
-- No access to `request.cf` object
-- Isolated cache per Worker (no shared cache)
-- `caches.default` disabled
+- Sem acesso ao objeto `request.cf`
+- Cache isolado por Worker (sem cache compartilhado)
+- `caches.default` desabilitado
 
-### Enable Trusted Mode
+### Ativar modo confiável
 
-For internal platforms where you control all code:
-
-```bash
+Para plataformas internas onde você controla todo o código:```bash
 curl -X PUT \
-  "https://api.cloudflare.com/client/v4/accounts/$ACCOUNT_ID/workers/dispatch/namespaces/$NAMESPACE" \
-  -H "Authorization: Bearer $API_TOKEN" \
+ "https://api.cloudflare.com/client/v4/accounts/$ACCOUNT_ID/workers/dispatch/namespaces/$NAMESPACE" \
+ -H "Authorization: Bearer $API_TOKEN" \
   -d '{"name": "'$NAMESPACE'", "trusted_workers": true}'
-```
 
-**Caveats:**
+````
+**Advertências:**
 
-- Workers share cache within namespace (use cache key prefixes: `customer-${id}:${key}`)
-- `request.cf` object accessible
-- Redeploy existing Workers after enabling trusted mode
+- Os trabalhadores compartilham cache dentro do namespace (use prefixos de chave de cache: `customer-${id}:${key}`)
+- objeto `request.cf` acessível
+- Reimplantar trabalhadores existentes após ativar o modo confiável
 
-**When to use:** Internal platforms, A/B testing platforms, need geolocation data
+**Quando usar:** plataformas internas, plataformas de testes A/B, precisam de dados de geolocalização
 
-### With Outbound Worker
-
-```jsonc
+### Com trabalhador externo```jsonc
 {
   "dispatch_namespaces": [
     {
@@ -58,7 +54,7 @@ curl -X PUT \
     },
   ],
 }
-```
+````
 
 ## Wrangler Commands
 

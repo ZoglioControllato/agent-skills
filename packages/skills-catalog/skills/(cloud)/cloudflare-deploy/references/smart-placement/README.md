@@ -1,53 +1,53 @@
-# Cloudflare Workers Smart Placement
+# Posicionamento inteligente de trabalhadores da Cloudflare
 
-Automatic workload placement optimization to minimize latency by running Workers closer to backend infrastructure rather than end users.
+Otimização automática do posicionamento da carga de trabalho para minimizar a latência, executando Workers mais próximos da infraestrutura de back-end, e não dos usuários finais.
 
-## Core Concept
+## Conceito Central
 
-Smart Placement automatically analyzes Worker request duration across Cloudflare's global network and intelligently routes requests to optimal data center locations. Instead of defaulting to the location closest to the end user, Smart Placement can forward requests to locations closer to backend infrastructure when this reduces overall request duration.
+O Smart Placement analisa automaticamente a duração da solicitação do trabalhador em toda a rede global da Cloudflare e encaminha as solicitações de maneira inteligente para locais ideais de data center. Em vez de usar como padrão o local mais próximo do usuário final, o Smart Placement pode encaminhar solicitações para locais mais próximos da infraestrutura de back-end quando isso reduz a duração geral da solicitação.
 
-### When to Use
+### Quando usar
 
-**Enable Smart Placement when:**
+**Ative o posicionamento inteligente quando:**
 
-- Worker makes multiple round trips to backend services/databases
-- Backend infrastructure is geographically concentrated
-- Request duration dominated by backend latency rather than network latency from user
-- Running backend logic in Workers (APIs, data aggregation, SSR with DB calls)
-- Worker uses `fetch` handler (not RPC methods)
+- O trabalhador faz várias viagens de ida e volta para serviços/bancos de dados de back-end
+- A infraestrutura de back-end está geograficamente concentrada
+- Duração da solicitação dominada pela latência de back-end em vez da latência da rede do usuário
+- Execução de lógica backend em Workers (APIs, agregação de dados, SSR com chamadas de banco de dados)
+- Worker usa manipulador `fetch` (não métodos RPC)
 
-**Do NOT enable for:**
+**NÃO habilite para:**
 
-- Workers serving only static content or cached responses
-- Workers without significant backend communication
-- Pure edge logic (auth checks, redirects, simple transformations)
-- Workers without fetch event handlers
-- Workers with RPC methods or named entrypoints (only `fetch` handlers are affected)
-- Pages/Assets Workers with `run_worker_first = true` (degrades asset serving)
+- Trabalhadores que atendem apenas conteúdo estático ou respostas em cache
+- Trabalhadores sem comunicação de back-end significativa
+- Lógica de borda pura (verificações de autenticação, redirecionamentos, transformações simples)
+- Trabalhadores sem manipuladores de eventos fetch
+- Trabalhadores com métodos RPC ou pontos de entrada nomeados (somente manipuladores `fetch` são afetados)
+- Trabalhadores de páginas/assets com `run_worker_first = true` (degrada o fornecimento de ativos)
 
-### Decision Tree
+### Árvore de decisão```
 
-```
-Does your Worker have a fetch handler?
-├─ No → Smart Placement won't work (skip)
-└─ Yes
-   │
-   Does it make multiple backend calls (DB/API)?
-   ├─ No → Don't enable (won't help)
-   └─ Yes
-      │
-      Is backend geographically concentrated?
-      ├─ No (globally distributed) → Probably won't help
-      └─ Yes or uncertain
-         │
-         Does it serve static assets with run_worker_first=true?
-         ├─ Yes → Don't enable (will hurt performance)
-         └─ No → Enable Smart Placement
-            │
-            After 15min, check placement_status
-            ├─ SUCCESS → Monitor metrics
-            ├─ INSUFFICIENT_INVOCATIONS → Need more traffic
-            └─ UNSUPPORTED_APPLICATION → Disable (hurting performance)
+O seu Worker tem um manipulador de busca?
+├─ Não → O posicionamento inteligente não funciona (pular)
+└─ Sim
+│
+Faz múltiplas chamadas de back-end (DB/API)?
+├─ Não → Não ativar (não vai ajudar)
+└─ Sim
+│
+O back-end está concentrado geograficamente?
+├─ Não (distribuído globalmente) → Provavelmente não vai ajudar
+└─ Sim ou incerto
+│
+Serve ativos estáticos com run_worker_first=true?
+├─ Sim → Não ativar (prejudicará o desempenho)
+└─ Não → Ativar posicionamento inteligente
+│
+Após 15 minutos, verifique o posicionamento_status
+├─ SUCESSO → Monitore métricas
+├─ INSUFFICIENT_INVOCATIONS → Precisa de mais tráfego
+└─ UNSUPPORTED_APPLICATION → Desativar (prejudicando o desempenho)
+
 ```
 
 ### Key Architecture Pattern
@@ -55,12 +55,14 @@ Does your Worker have a fetch handler?
 **Recommended:** Split full-stack applications into separate Workers:
 
 ```
+
 User → Frontend Worker (at edge, close to user)
-         ↓ Service Binding
-       Backend Worker (Smart Placement enabled, close to DB/API)
-         ↓
-       Database/Backend Service
-```
+↓ Service Binding
+Backend Worker (Smart Placement enabled, close to DB/API)
+↓
+Database/Backend Service
+
+````
 
 This maintains fast, reactive frontends while optimizing backend latency.
 
@@ -73,28 +75,28 @@ This maintains fast, reactive frontends while optimizing backend latency.
     "mode": "smart", // or "off" to explicitly disable
   },
 }
-```
+````
 
-Deploy and wait 15 minutes for analysis. Check status via API or dashboard metrics.
+Implante e aguarde 15 minutos para análise. Verifique o status por meio de API ou métricas do painel.
 
-**To disable:** Set `"mode": "off"` or remove `placement` field entirely (both equivalent).
+**Para desabilitar:** Defina `"mode": "off"` ou remova completamente o campo `placement` (ambos equivalentes).
 
-## Requirements
+## Requisitos
 
-- Wrangler 2.20.0+
-- Analysis time: Up to 15 minutes after enabling
-- Traffic requirements: Consistent traffic from multiple global locations
-- Available on all Workers plans (Free, Paid, Enterprise)
+- Disputador 2.20.0+
+- Tempo de análise: Até 15 minutos após a ativação
+- Requisitos de tráfego: tráfego consistente de vários locais globais
+- Disponível em todos os planos Workers (Gratuito, Pago, Empresarial)
 
-## Placement Status Values
+## Valores de status de veiculação```typescript
 
-```typescript
 type PlacementStatus =
-  | undefined // Not yet analyzed
-  | 'SUCCESS' // Successfully optimized
-  | 'INSUFFICIENT_INVOCATIONS' // Not enough traffic
-  | 'UNSUPPORTED_APPLICATION' // Made Worker slower (reverted)
-```
+| undefined // Not yet analyzed
+| 'SUCCESS' // Successfully optimized
+| 'INSUFFICIENT_INVOCATIONS' // Not enough traffic
+| 'UNSUPPORTED_APPLICATION' // Made Worker slower (reverted)
+
+````
 
 ## CLI Commands
 
@@ -109,35 +111,35 @@ curl -H "Authorization: Bearer $TOKEN" \
 
 # Monitor
 wrangler tail your-worker-name --header cf-placement
-```
+````
 
-## Reading Order
+## Ordem de leitura
 
-**First time?** Start here:
+**Primeira vez?** Comece aqui:
 
-1. This README - understand core concepts and when to use Smart Placement
-2. [configuration.md](./configuration.md) - set up wrangler.jsonc and understand limitations
-3. [patterns.md](./patterns.md) - see practical examples for your use case
-4. [api.md](./api.md) - monitor and verify Smart Placement is working
-5. [gotchas.md](./gotchas.md) - troubleshoot common issues
+1. Este README – entenda os conceitos básicos e quando usar o Smart Placement
+2. [configuration.md](./configuration.md) - configure o wrangler.jsonc e entenda as limitações
+3. [patterns.md](./patterns.md) - veja exemplos práticos para seu caso de uso
+4. [api.md](./api.md) - monitore e verifique se o posicionamento inteligente está funcionando
+5. [gotchas.md](./gotchas.md) - solucionar problemas comuns
 
-**Quick lookup:**
+**Pesquisa rápida:**
 
-- "Should I enable Smart Placement?" → See "When to Use" above
-- "How do I configure it?" → [configuration.md](./configuration.md)
-- "How do I split frontend/backend?" → [patterns.md](./patterns.md)
-- "Why isn't it working?" → [gotchas.md](./gotchas.md)
+- "Devo ativar o posicionamento inteligente?" → Consulte "Quando usar" acima
+- "Como faço para configurar isso?" → [configuration.md](./configuration.md)
+- "Como faço para dividir frontend/backend?" → [padrões.md](./padrões.md)
+- "Por que não está funcionando?" → [gotchas.md](./gotchas.md)
 
-## In This Reference
+## Nesta referência
 
-- [configuration.md](./configuration.md) - wrangler.jsonc setup, mode values, validation rules
-- [api.md](./api.md) - Placement Status API, cf-placement header, monitoring
-- [patterns.md](./patterns.md) - Frontend/backend split, database workers, SSR patterns
-- [gotchas.md](./gotchas.md) - Troubleshooting INSUFFICIENT_INVOCATIONS, performance issues
+- [configuration.md](./configuration.md) - configuração do wrangler.jsonc, valores de modo, regras de validação
+- [api.md](./api.md) - API de status de posicionamento, cabeçalho cf-placement, monitoramento
+- [patterns.md](./patterns.md) - Divisão frontend/backend, trabalhadores de banco de dados, padrões SSR
+- [gotchas.md](./gotchas.md) - Solução de problemas de INSUFFICIENT_INVOCATIONS, problemas de desempenho
 
-## See Also
+## Veja também
 
-- [workers](../workers/) - Worker runtime and fetch handlers
-- [d1](../d1/) - D1 database that benefits from Smart Placement
-- [durable-objects](../durable-objects/) - Durable Objects with backend logic
-- [bindings](../bindings/) - Service bindings for frontend/backend split
+- [workers](../workers/) - Tempo de execução do trabalhador e manipuladores de busca
+- [d1](../d1/) - Banco de dados D1 que se beneficia do Smart Placement
+- [durable-objects](../durable-objects/) - Objetos duráveis com lógica de back-end
+- [bindings](../bindings/) - Vinculações de serviço para divisão frontend/backend

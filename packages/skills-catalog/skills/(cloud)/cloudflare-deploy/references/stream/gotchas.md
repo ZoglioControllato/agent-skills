@@ -1,98 +1,98 @@
-# Stream Gotchas
+# Armadilhas Stream
 
-## Common Errors
+## Erros comuns
 
 ### "ERR_NON_VIDEO"
 
-**Cause:** Uploaded file is not a valid video format
-**Solution:** Ensure file is in supported format (MP4, MKV, MOV, AVI, FLV, MPEG-2 TS/PS, MXF, LXF, GXF, 3GP, WebM, MPG, QuickTime)
+**Causa:** arquivo enviado não é um formato de vídeo válido  
+**Solução:** use formatos suportados (MP4, MKV, MOV, AVI, FLV, MPEG-2 TS/PS, MXF, LXF, GXF, 3GP, WebM, MPG, QuickTime)
 
 ### "ERR_DURATION_EXCEED_CONSTRAINT"
 
-**Cause:** Video duration exceeds `maxDurationSeconds` constraint
-**Solution:** Increase `maxDurationSeconds` in direct upload config or trim video before upload
+**Causa:** duração excede `maxDurationSeconds`  
+**Solução:** aumente o limite na config de upload direto ou corte o vídeo antes
 
 ### "ERR_FETCH_ORIGIN_ERROR"
 
-**Cause:** Failed to download video from URL (upload from URL)
-**Solution:** Ensure URL is publicly accessible, uses HTTPS, and video file is available
+**Causa:** falha ao baixar vídeo da URL (upload por URL)  
+**Solução:** URL pública, HTTPS e arquivo disponível
 
 ### "ERR_MALFORMED_VIDEO"
 
-**Cause:** Video file is corrupted or improperly encoded
-**Solution:** Re-encode video using FFmpeg or check source file integrity
+**Causa:** arquivo corrompido ou encoding inadequado  
+**Solução:** reencode com FFmpeg ou valide a fonte
 
 ### "ERR_DURATION_TOO_SHORT"
 
-**Cause:** Video must be at least 0.1 seconds long
-**Solution:** Ensure video has valid duration (not a single frame)
+**Causa:** vídeo precisa ter pelo menos ~0,1 s  
+**Solução:** garanta duração válida (não um único frame)
 
-## Troubleshooting
+## Solução de problemas
 
-### Video stuck in "inprogress" state
+### Vídeo preso em "inprogress"
 
-- **Cause**: Processing large/complex video
-- **Solution**: Wait up to 5 minutes for processing; use webhooks instead of polling
+- **Causa:** processamento grande/complexo
+- **Solução:** aguarde até ~5 min; use webhooks em vez de polling
 
-### Signed URL returns 403
+### URL assinada retorna 403
 
-- **Cause**: Token expired or invalid signature
-- **Solution**: Check expiration timestamp, verify JWK is correct, ensure clock sync
+- **Causa:** token expirado ou assinatura inválida
+- **Solução:** confira `exp`, JWK e sincronismo de relógio
 
-### Live stream not connecting
+### Live não conecta
 
-- **Cause**: Invalid RTMPS URL or stream key
-- **Solution**: Use exact URL/key from API, ensure firewall allows outbound 443
+- **Causa:** URL RTMPS ou stream key inválidos
+- **Solução:** use exatamente URL/chave da API; firewall permitindo saída 443
 
-### Webhook signature verification fails
+### Falha na verificação de assinatura do webhook
 
-- **Cause**: Incorrect secret or timestamp window
-- **Solution**: Use exact secret from webhook setup, allow 5-minute timestamp drift
+- **Causa:** secret errado ou janela de tempo
+- **Solução:** use o secret exato do setup; aceite deriva de até ~5 min no timestamp
 
-### Video uploads but isn't visible
+### Upload ok mas vídeo não aparece
 
-- **Cause**: `requireSignedURLs` enabled without providing token
-- **Solution**: Generate signed token or set `requireSignedURLs: false` for public videos
+- **Causa:** `requireSignedURLs` sem token
+- **Solução:** gere token ou `requireSignedURLs: false` para público
 
-### Player shows infinite loading
+### Player carrega indefinidamente
 
-- **Cause**: CORS issue with allowedOrigins
-- **Solution**: Add your domain to `allowedOrigins` array
+- **Causa:** CORS / allowedOrigins
+- **Solução:** inclua seu domínio em `allowedOrigins`
 
-## Limits
+## Limites
 
-| Resource                        | Limit                                               |
-| ------------------------------- | --------------------------------------------------- |
-| Max file size                   | 30 GB                                               |
-| Max frame rate                  | 60 fps (recommended)                                |
-| Max duration per direct upload  | Configurable via `maxDurationSeconds`               |
-| Token generation (API endpoint) | 1,000/day recommended (use signing keys for higher) |
-| Live input outputs (simulcast)  | 5 per live input                                    |
-| Webhook retry attempts          | 5 (exponential backoff)                             |
-| Webhook timeout                 | 30 seconds                                          |
-| Caption file size               | 5 MB                                                |
-| Watermark image size            | 2 MB                                                |
-| Metadata keys per video         | Unlimited                                           |
-| Search results per page         | Max 1,000                                           |
+| Recurso                           | Limite                                        |
+| --------------------------------- | --------------------------------------------- |
+| Tamanho máx. arquivo              | 30 GB                                         |
+| Taxa de quadros máx.              | 60 fps (recomendado)                          |
+| Duração máx. por upload direto    | configurável via `maxDurationSeconds`         |
+| Geração de token (endpoint API)   | ~1.000/dia recomendado (use chaves para mais) |
+| Saídas ao vivo (simulcast)        | 5 por entrada ao vivo                         |
+| Tentativas de retry do webhook    | 5 (backoff exponencial)                       |
+| Timeout do webhook                | 30 segundos                                   |
+| Tamanho do arquivo de legenda     | 5 MB                                          |
+| Tamanho da imagem de marca d’água | 2 MB                                          |
+| Chaves de metadados por vídeo     | ilimitado                                     |
+| Resultados de busca por página    | máx. 1.000                                    |
 
-## Performance Issues
+## Desempenho
 
-### Upload is slow
+### Upload lento
 
-- **Cause**: Large file size or network constraints
-- **Solution**: Use TUS resumable upload, compress video before upload, check bandwidth
+- **Causa:** arquivo grande ou rede
+- **Solução:** TUS, comprimir antes, checar largura de banda
 
-### Playback buffering
+### Buffer na reprodução
 
-- **Cause**: Network congestion or low bandwidth
-- **Solution**: Use ABR (adaptive bitrate) with HLS/DASH, reduce max bitrate
+- **Causa:** congestionamento ou pouca banda
+- **Solução:** ABR com HLS/DASH; reduzir bitrate máx.
 
-### High processing time
+### Processamento longo
 
-- **Cause**: Complex video codec, high resolution
-- **Solution**: Pre-encode with H.264 (most efficient), reduce resolution
+- **Causa:** codec complexo ou alta resolução
+- **Solução:** pré-codificar H.264; reduzir resolução
 
-## Type Safety
+## Tipagem
 
 ```typescript
 // Error response type
@@ -118,22 +118,24 @@ async function uploadWithErrorHandling(url: string, file: File) {
 }
 ```
 
-## Security Gotchas
+## Segurança
 
-1. **Never expose API token in frontend** - Use direct creator uploads
-2. **Always verify webhook signatures** - Prevent spoofed notifications
-3. **Set appropriate token expiration** - Short-lived for security
-4. **Use requireSignedURLs for private content** - Prevent unauthorized access
-5. **Whitelist allowedOrigins** - Prevent hotlinking/embedding on unauthorized sites
+1. **Nunca exponha token de API no frontend** — use upload direto do criador
+2. **Sempre verifique assinaturas de webhook**
+3. **Expiração curta de tokens** quando fizer sentido
+4. **requireSignedURLs para conteúdo privado**
+5. **Lista allow de allowedOrigins** — evite embed não autorizado
 
-## In This Reference
+## Nesta referência
 
-- [README.md](./README.md) - Overview and quick start
-- [configuration.md](./configuration.md) - Setup and config
-- [api.md](./api.md) - On-demand video APIs
-- [api-live.md](./api-live.md) - Live streaming APIs
-- [patterns.md](./patterns.md) - Full-stack flows, best practices
+- [README.md](./README.md)
+- [configuration.md](./configuration.md)
+- [api.md](./api.md)
+- [api-live.md](./api-live.md)
+- [patterns.md](./patterns.md)
 
-## See Also
+## Ver também
 
-- [workers](../workers/) - Deploy Stream APIs securely
+- [workers](../workers/) — Stream com segurança em Workers
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

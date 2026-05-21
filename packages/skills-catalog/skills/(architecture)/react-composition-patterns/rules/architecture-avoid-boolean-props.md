@@ -1,51 +1,33 @@
 ---
-title: Avoid Boolean Prop Proliferation
+title: Evite a proliferação de objetos booleanos
 impact: CRITICAL
-impactDescription: prevents unmaintainable component variants
+impactDescription: evita variantes de componentes insustentáveis
 tags: composition, props, architecture
 ---
 
-## Avoid Boolean Prop Proliferation
+## Evite a proliferação de objetos booleanos
 
-Don't add boolean props like `isThread`, `isEditing`, `isDMThread` to customize
-component behavior. Each boolean doubles possible states and creates
-unmaintainable conditional logic. Use composition instead.
+Não adicione adereços booleanos como `isThread`, `isEditing`, `isDMThread` para personalizar
+comportamento do componente. Cada booleano duplica estados possíveis e cria
+lógica condicional insustentável. Em vez disso, use composição.
 
-**Incorrect (boolean props create exponential complexity):**
+**Incorreto (adereços booleanos criam complexidade exponencial):**
 
 ```tsx
-function Composer({
-  onSubmit,
-  isThread,
-  channelId,
-  isDMThread,
-  dmId,
-  isEditing,
-  isForwarding,
-}: Props) {
+function Composer({ onSubmit, isThread, channelId, isDMThread, dmId, isEditing, isForwarding }: Props) {
   return (
     <form>
       <Header />
       <Input />
-      {isDMThread ? (
-        <AlsoSendToDMField id={dmId} />
-      ) : isThread ? (
-        <AlsoSendToChannelField id={channelId} />
-      ) : null}
-      {isEditing ? (
-        <EditActions />
-      ) : isForwarding ? (
-        <ForwardActions />
-      ) : (
-        <DefaultActions />
-      )}
+      {isDMThread ? <AlsoSendToDMField id={dmId} /> : isThread ? <AlsoSendToChannelField id={channelId} /> : null}
+      {isEditing ? <EditActions /> : isForwarding ? <ForwardActions /> : <DefaultActions />}
       <Footer onSubmit={onSubmit} />
     </form>
   )
 }
 ```
 
-**Correct (composition eliminates conditionals):**
+**Correto (a composição elimina condicionais):**
 
 ```tsx
 // Channel composer
@@ -96,5 +78,5 @@ function EditComposer() {
 }
 ```
 
-Each variant is explicit about what it renders. We can share internals without
-sharing a single monolithic parent.
+Cada variante é explícita sobre o que ela renderiza. Podemos compartilhar internos sem
+compartilhando um único pai monolítico.

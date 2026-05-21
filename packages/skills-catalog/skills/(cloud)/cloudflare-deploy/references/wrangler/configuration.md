@@ -1,10 +1,10 @@
-# Wrangler Configuration
+# Configuração do Wrangler
 
-Configuration reference for wrangler.jsonc (recommended).
+Referência de configuração para wrangler.jsonc (recomendado).
 
-## Config Format
+## Formato do config
 
-**wrangler.jsonc recommended** (v3.91.0+) - provides schema validation.
+**wrangler.jsonc recomendado** (v3.91.0+) — oferece validação por schema.
 
 ```jsonc
 {
@@ -17,12 +17,12 @@ Configuration reference for wrangler.jsonc (recommended).
 }
 ```
 
-## Field Inheritance
+## Herança de campos
 
-Inheritable: `name`, `main`, `compatibility_date`, `routes`, `triggers`
-Non-inheritable (define per env): `vars`, bindings (KV, D1, R2, etc.)
+Hereditários: `name`, `main`, `compatibility_date`, `routes`, `triggers`
+Não hereditários (definir por ambiente): `vars`, bindings (KV, D1, R2, etc.)
 
-## Environments
+## Ambientes
 
 ```jsonc
 {
@@ -40,7 +40,7 @@ Non-inheritable (define per env): `vars`, bindings (KV, D1, R2, etc.)
 
 Deploy: `wrangler deploy --env production`
 
-## Routing
+## Roteamento
 
 ```jsonc
 // Custom domain (recommended)
@@ -107,9 +107,9 @@ Deploy: `wrangler deploy --env production`
 { "constellation": [{ "binding": "MODEL", "project_id": "proj-id" }] }
 ```
 
-## Workers Assets (Static Files)
+## Workers Assets (arquivos estáticos)
 
-Recommended for serving static files (replaces old `site` config).
+Recomendado para servir arquivos estáticos (substitui o antigo config `site`).
 
 ```jsonc
 {
@@ -122,7 +122,7 @@ Recommended for serving static files (replaces old `site` config).
 }
 ```
 
-Access in Worker:
+Acesso no Worker:
 
 ```typescript
 export default {
@@ -139,7 +139,7 @@ export default {
 
 ## Placement
 
-Control where Workers run geographically.
+Controle onde os Workers rodam geograficamente.
 
 ```jsonc
 {
@@ -149,20 +149,20 @@ Control where Workers run geographically.
 }
 ```
 
-- `"smart"`: Run Worker near data sources (D1, Durable Objects) to reduce latency
-- `"off"`: Default distribution (run everywhere)
+- `"smart"`: executa o Worker perto das fontes de dados (D1, Durable Objects) para reduzir latência
+- `"off"`: distribuição padrão (execução em todo lugar)
 
-## Auto-Provisioning (Beta)
+## Provisionamento automático (beta)
 
-Omit resource IDs - Wrangler creates them and writes back to config on deploy.
+Omita IDs de recurso — o Wrangler cria e grava de volta no config no deploy.
 
 ```jsonc
 { "kv_namespaces": [{ "binding": "MY_KV" }] } // No id - auto-provisioned
 ```
 
-After deploy, ID is added to config automatically.
+Após o deploy, o ID é adicionado ao config automaticamente.
 
-## Advanced
+## Avançado
 
 ```jsonc
 // Cron Triggers
@@ -190,9 +190,11 @@ After deploy, ID is added to config automatically.
 { "unsafe": { "bindings": [{ "name": "MY_BINDING", "type": "plain_text", "text": "value" }] } }
 ```
 
-## See Also
+## Ver também
 
-- [README.md](./README.md) - Overview and commands
-- [api.md](./api.md) - Programmatic API
-- [patterns.md](./patterns.md) - Workflows
-- [gotchas.md](./gotchas.md) - Common issues
+- [README.md](./README.md) — Visão geral e comandos
+- [api.md](./api.md) — API programática
+- [patterns.md](./patterns.md) — Fluxos de trabalho
+- [gotchas.md](./gotchas.md) — Problemas comuns
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

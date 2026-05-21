@@ -1,249 +1,244 @@
-# Stitch Integration Guide
+# Guia de integração de pontos
 
-Read this file when the user has no existing mockups in Figma or similar tools,
-is unsure about what they want visually, or when you need to generate Stitch
-prompts or interact with the Stitch MCP. Also read when the user asks about
-Stitch setup, configuration, or troubleshooting.
+Leia este arquivo quando o usuário não tiver maquetes existentes no Figma ou ferramentas semelhantes,
+não tem certeza sobre o que deseja visualmente ou quando precisa gerar o Stitch
+solicita ou interage com o Stitch MCP. Leia também quando o usuário perguntar sobre
+Instalação, configuração ou solução de problemas do Stitch.
 
-## Table of Contents
+## Índice
 
-1. What is Stitch
-2. When to Suggest Stitch
-3. MCP Setup & Authentication
-4. Generating Effective Stitch Prompts
-5. Design Modes
-6. Device Types
-7. Design Systems via MCP
-8. Variants & Creative Range
-9. MCP Tools Reference
-10. Full Integration Workflow
-
----
-
-## 1. What is Stitch
-
-Google Stitch (stitch.withgoogle.com) is an AI-powered UI design tool from
-Google Labs that generates complete interface designs from text prompts or
-uploaded images. It runs on Gemini 3 Pro and Gemini 3 Flash.
-
-Key capabilities for our workflow:
-
-- Generates full UI layouts from natural language descriptions
-- Supports mobile, desktop, tablet, and agnostic device types
-- Generates multiple design variants for comparison
-- Exports HTML/CSS code and Figma-compatible layouts
-- Creates interactive prototypes for testing hover states and interactions
-- Has a full MCP server with 14 tools for programmatic control
-- Supports Design Systems with tokens (colors, typography, shapes)
-
-Stitch is FREE (Google Labs) with generation limits:
-
-- Gemini 3 Flash: faster generation, higher monthly limits
-- Gemini 3 Pro: higher fidelity, deeper reasoning, lower limits
-
-Stitch is an IDEATION tool — it generates starting points, not final
-production code. This makes it perfect for our workflow: visualize first,
-code after approval.
+1. O que é ponto
+2. Quando sugerir ponto
+3. Configuração e autenticação MCP
+4. Gerando prompts de pontos eficazes
+5. Modos de projeto
+6. Tipos de dispositivos
+7. Projetar Sistemas via MCP
+8. Variantes e gama criativa
+9. Referência de ferramentas MCP
+10. Fluxo de trabalho de integração total
 
 ---
 
-## 2. When to Suggest Stitch
+## 1. O que é ponto
 
-### Always suggest when ALL of these are true
+Google Stitch (stitch.withgoogle.com) é uma ferramenta de design de IU com tecnologia de IA da
+Google Labs que gera designs de interface completos a partir de prompts de texto ou
+imagens carregadas. Ele roda em Gemini 3 Pro e Gemini 3 Flash.
 
-- The user has NOT mentioned existing mockups (Figma, Sketch, Adobe XD, etc.)
-- The project involves visual UI (not just backend or logic)
-- The project has more than one screen OR the user is unsure about direction
+Principais recursos para nosso fluxo de trabalho:
 
-### Strongly suggest when ANY of these are true
+- Gera layouts de UI completos a partir de descrições em linguagem natural
+- Suporta tipos de dispositivos móveis, desktop, tablets e agnósticos
+- Gera múltiplas variantes de design para comparação
+- Exporta código HTML/CSS e layouts compatíveis com Figma
+- Cria protótipos interativos para testar estados e interações flutuantes
+- Possui servidor MCP completo com 14 ferramentas para controle programático
+- Suporta Design Systems com tokens (cores, tipografia, formas)
 
-- User says "I don't know what I want" or similar uncertainty
-- User can't provide visual references
-- User wants to compare multiple design directions quickly
-- Project is in early ideation / MVP phase
-- User mentions "prototype" or "mockup" without a specific tool
+Stitch é GRATUITO (Google Labs) com limites de geração:
 
-### Do NOT suggest when
+- Gemini 3 Flash: geração mais rápida, limites mensais mais elevados
+- Gemini 3 Pro: maior fidelidade, raciocínio mais profundo, limites mais baixos
 
-- User already has Figma/Sketch files ready
-- User explicitly says they don't want to use external tools
-- The task is a single small component (button, input, card)
-- User is doing a code-only refactor with no visual changes
-
-### How to suggest it
-
-Frame it as a time-saver, not a requirement. Example:
-
-"Before we write any code, I'd suggest we prototype this in Google Stitch
-first. It'll take 2 minutes to generate the screens, you can see exactly
-what the result will look like, and we avoid any rework. I can generate
-the prompts for you — you just paste them in stitch.withgoogle.com.
-
-If you have the Stitch MCP connected, I can even generate the designs
-directly from here. Want me to help you set that up?"
+Stitch é uma ferramenta de IDEAÇÃO – gera pontos de partida, não finais
+código de produção. Isso o torna perfeito para nosso fluxo de trabalho: visualize primeiro,
+código após aprovação.
 
 ---
 
-## 3. MCP Setup & Authentication
+## 2. Quando sugerir ponto
 
-Stitch exposes a remote MCP server at a single URL. Any AI agent or IDE
-that supports HTTP-based MCP servers can connect to it.
+### Sempre sugira quando TUDO isso for verdade
 
-### Connection Essentials
+- O usuário NÃO mencionou mockups existentes (Figma, Sketch, Adobe XD, etc.)
+- O projeto envolve UI visual (não apenas backend ou lógica)
+- O projeto tem mais de uma tela OU o usuário não tem certeza sobre a direção
 
-```
-MCP Server URL:  https://stitch.googleapis.com/mcp
-Auth method:     API Key (recommended) or OAuth token
-```
+### Sugira fortemente quando QUALQUER uma dessas situações for verdadeira
 
-### API Key Setup (Recommended)
+- O usuário diz "Não sei o que quero" ou incerteza semelhante
+- O usuário não pode fornecer referências visuais
+- O usuário deseja comparar várias direções de design rapidamente
+- O projeto está em fase inicial de ideação/MVP
+- O usuário menciona “protótipo” ou “mockup” sem ferramenta específica
 
-1. Go to stitch.withgoogle.com → Settings → API Keys
-2. Click "Create API Key"
-3. Copy and store securely (never commit to public repos)
+### NÃO sugira quando
 
-### Generic MCP Configuration Pattern
+- O usuário já possui os arquivos Figma/Sketch prontos
+- O usuário diz explicitamente que não deseja usar ferramentas externas
+- A tarefa é um único pequeno componente (botão, entrada, cartão)
+- O usuário está refatorando apenas o código, sem alterações visuais
 
-Every MCP client uses the same core structure — only the config file
-format and field names differ. The universal pattern is:
+### Como sugerir
 
-```
+Enquadre isso como uma economia de tempo, não como um requisito. Exemplo:
+
+"Antes de escrevermos qualquer código, sugiro que façamos um protótipo no Google Stitch
+primeiro. Levará 2 minutos para gerar as telas, você pode ver exatamente
+como ficará o resultado e evitamos qualquer retrabalho. eu posso gerar
+as instruções para você - basta colá-las em stitch.withgoogle.com.
+
+Se você tiver o Stitch MCP conectado, posso até gerar os desenhos
+diretamente daqui. Quer que eu ajude você a configurar isso?"
+
+---
+
+## 3. Configuração e autenticação do MCP
+
+Stitch expõe um servidor MCP remoto em um único URL. Qualquer agente de IA ou IDE
+que suporta servidores MCP baseados em HTTP podem se conectar a ele.
+
+### Fundamentos de Conexão```
+
+MCP Server URL: https://stitch.googleapis.com/mcp
+Auth method: API Key (recommended) or OAuth token
+
+````
+### Configuração da chave de API (recomendado)
+
+1. Vá para stitch.withgoogle.com → Configurações → Chaves de API
+2. Clique em "Criar chave API"
+3. Copie e armazene com segurança (nunca se comprometa com repositórios públicos)
+
+### Padrão genérico de configuração do MCP
+
+Cada cliente MCP usa a mesma estrutura central – apenas o arquivo de configuração
+o formato e os nomes dos campos são diferentes. O padrão universal é:```
 Server URL:  https://stitch.googleapis.com/mcp
 Header:      X-Goog-Api-Key: <YOUR-API-KEY>
-```
+````
 
-When helping the user configure their specific tool:
+Ao ajudar o usuário a configurar sua ferramenta específica:
 
-1. Ask which agent/IDE they use
-2. Locate where that tool stores MCP server configs (usually a JSON file)
-3. Apply the pattern above using that tool's config schema
+1. Pergunte qual agente/IDE eles usam
+2. Localize onde essa ferramenta armazena as configurações do servidor MCP (geralmente um arquivo JSON)
+3. Aplique o padrão acima usando o esquema de configuração dessa ferramenta
 
-For reference, here are examples for common tools (may change — always
-defer to the tool's own MCP documentation if these don't work):
+Para referência, aqui estão exemplos de ferramentas comuns (podem mudar - sempre
+consulte a documentação MCP da própria ferramenta se não funcionar):
 
-**JSON-based config** (Cursor, VSCode, Windsurf, Antigravity, etc.):
-
-```json
+**Configuração baseada em JSON** (Cursor, VSCode, Windsurf, Antigravity, etc.):```json
 {
-  "url": "https://stitch.googleapis.com/mcp",
-  "headers": {
-    "X-Goog-Api-Key": "YOUR-API-KEY"
-  }
+"url": "https://stitch.googleapis.com/mcp",
+"headers": {
+"X-Goog-Api-Key": "YOUR-API-KEY"
 }
-```
+}
 
-**CLI-based config** (Claude Code, Gemini CLI, etc.):
+````
 
-```
+**Configuração baseada em CLI** (Claude Code, Gemini CLI, etc.):```
 <tool> mcp add stitch --transport http https://stitch.googleapis.com/mcp --header "X-Goog-Api-Key: YOUR-API-KEY"
-```
+````
 
-The exact file path and wrapping structure varies per tool. If the user
-doesn't know where their config goes, suggest checking the tool's docs
-for "MCP server configuration" or "remote MCP setup".
+O caminho exato do arquivo e a estrutura de encapsulamento variam de acordo com a ferramenta. Se o usuário
+não sabe para onde vai sua configuração, sugira verificar a documentação da ferramenta
+para "configuração do servidor MCP" ou "configuração remota do MCP".
 
-### OAuth (Advanced — edge cases only)
+### OAuth (Avançado – apenas casos extremos)
 
-Some environments don't allow persistent API keys on disk. In those
-cases, Stitch supports OAuth via Google Cloud Application Default
-Credentials. This requires the gcloud CLI, a Google Cloud project with
-the Stitch API enabled, and generates short-lived tokens (~1 hour).
+Alguns ambientes não permitem chaves de API persistentes no disco. Naqueles
+casos, Stitch oferece suporte a OAuth por meio do Google Cloud Application Default
+Credenciais. Isso requer a CLI gcloud, um projeto do Google Cloud com
+a API Stitch está habilitada e gera tokens de curta duração (cerca de 1 hora).
 
-The OAuth setup header pattern is:
-
-```
-Authorization:      Bearer <ACCESS_TOKEN>
+O padrão de cabeçalho de configuração do OAuth é:```
+Authorization: Bearer <ACCESS_TOKEN>
 X-Goog-User-Project: <PROJECT_ID>
-```
 
-If the user needs OAuth, refer them to the official Stitch MCP setup
-documentation at stitch.withgoogle.com/docs/mcp/setup for the most
-current instructions. Do NOT attempt to script this — the process
-involves browser-based login flows that are best done interactively.
+````
+Se o usuário precisar do OAuth, consulte a configuração oficial do Stitch MCP
+documentação em stitch.withgoogle.com/docs/mcp/setup para obter o máximo
+instruções atuais. NÃO tente criar um script para isso - o processo
+envolve fluxos de login baseados em navegador que são melhor executados de forma interativa.
 
-### Verifying Connection
+### Verificando a conexão
 
-After setup, ask the agent: "Show me my Stitch projects" or
-"List my Stitch projects". If it returns results or an empty list
-(not an error), the connection is working.
+Após a configuração, pergunte ao agente: "Mostre-me meus projetos Stitch" ou
+"Listar meus projetos Stitch". Se retornar resultados ou uma lista vazia
+(não é um erro), a conexão está funcionando.
 
-### Troubleshooting
+### Solução de problemas
 
-| Problem | Solution |
-|---------|----------|
-| "Unauthenticated" error | API key invalid or OAuth token expired — regenerate |
-| "Permission denied" | For OAuth: ensure `serviceUsageConsumer` role is granted |
-| Connection timeout | Stitch MCP is remote — check internet, retry in 30s |
-| Tool not found | Ensure MCP URL is exactly `https://stitch.googleapis.com/mcp` |
-| Config not recognized | Check your tool's MCP docs for the correct config format |
+| Problema | Solução |
+|--------|----------|
+| Erro "não autenticado" | Chave de API inválida ou token OAuth expirado — regenerar |
+| "Permissão negada" | Para OAuth: certifique-se de que a função `serviceUsageConsumer` seja concedida |
+| Tempo limite de conexão | Stitch MCP é remoto – verifique a Internet, tente novamente em 30 segundos |
+| Ferramenta não encontrada | Certifique-se de que o URL do MCP seja exatamente `https://stitch.googleapis.com/mcp` |
+| Configuração não reconhecida | Verifique os documentos MCP da sua ferramenta para obter a configuração correta para
+
+tapete |
 
 ---
 
-## 4. Generating Effective Stitch Prompts
+## 4. Gerando prompts de pontos eficazes
 
-### The Prompt Formula
+### A fórmula imediata
 
-Every Stitch prompt should follow this structure:
-
-```
+Cada prompt do Stitch deve seguir esta estrutura:```
 Idea:    What it is (app type, purpose, name if applicable)
 Theme:   The core visual direction (adjectives, style keywords, contrast)
 Content: The actual content on the screen (sections, components, text)
 Image:   Optional reference image for visual direction
-```
+````
 
-The first prompt does NOT need to be perfect. Stitch is iterative —
-generate, review, refine one thing at a time.
+O primeiro prompt NÃO precisa ser perfeito. Stitch é iterativo -
+gerar, revisar, refinar uma coisa de cada vez.
 
-### Prompt Quality Rules
+### Regras de qualidade imediata
 
-DO:
+FAZER:
 
-- Be specific about what components appear on screen
-- Use UI/UX keywords: "navigation bar", "card layout", "hero section",
-  "call-to-action button", "drop shadow", "visual hierarchy"
-- Set the vibe with adjectives: "minimalist", "vibrant", "high-contrast"
-- Reference specific screens: "On the login screen, change..."
-- One major change per refinement prompt
+- Seja específico sobre quais componentes aparecem na tela
+- Use palavras-chave UI/UX: "barra de navegação", "layout do cartão", "seção herói",
+  "botão de call to action", "sombra projetada", "hierarquia visual"
+- Defina a vibração com adjetivos: "minimalista", "vibrante", "alto contraste"
+- Referência de telas específicas: "Na tela de login, altere..."
+- Uma grande mudança por solicitação de refinamento
 
-DON'T:
+NÃO:
 
-- Write 5000+ character prompts (Stitch drops components)
-- Combine multiple structural changes in one edit prompt
-- Say vague things like "make it look cool" — use Style Word Bank instead
-- Forget to specify which screen when editing
+- Escreva prompts de mais de 5.000 caracteres (ponto elimina componentes)
+- Combine várias alterações estruturais em um prompt de edição
+- Diga coisas vagas como "faça com que pareça legal" - use o Style Word Bank
+- Esqueci de especificar qual tela ao editar
 
-### Translating Design Direction to Stitch Prompts
+### Traduzindo a direção do design para instruções de costura
 
-When generating prompts from the agreed Design Direction (Phase 3),
-map each element systematically:
+Ao gerar prompts da Direção de Design acordada (Fase 3),
+mapeie cada elemento sistematicamente:
 
-| Design Direction element | Stitch prompt mapping |
-|--------------------------|----------------------|
-| Mood/vibe | Idea + Theme section with adjectives |
-| Color palette | Theme: specific hex codes or mood description |
-| Typography | Theme: font name if in Stitch's 29 fonts, or description |
-| Layout approach | Content: describe grid, spacing, component arrangement |
-| Icon style | Content: describe icon treatment in components |
-| References applied | Use key descriptors from refs, not URLs |
+| Elemento de direção de design | Mapeamento de prompt de ponto                                       |
+| ----------------------------- | ------------------------------------------------------------------- |
+| Humor/vibração                | Seção Ideia + Tema com adjetivos                                    |
+| Paleta de cores               | Tema: códigos hexadecimais específicos ou descrição do humor        |
+| Tipografia                    | Tema: nome da fonte se estiver nas 29 fontes do Stitch ou descrição |
+| Abordagem de layout           | Conteúdo: descrever grade, espaçamento, disposição dos componentes  |
+| Estilo do ícone               | Conteúdo: descrever o tratamento de ícones em componentes           |
 
-### Stitch's Supported Fonts (29 families)
+| Referência
 
-Sans-serif: Inter, Roboto, DM Sans, Geist, Sora, Manrope, Lexend,
-Epilogue, Be Vietnam Pro, Plus Jakarta Sans, Public Sans, Space Grotesk,
+é aplicado | Use descritores de chave de referências, não de URLs |
+
+### Fontes suportadas pelo Stitch (29 famílias)
+
+Sem serifa: Inter, Roboto, DM Sans, Geist, Sora, Manrope, Lexend,
+Epílogo, Seja Vietnam Pro, Plus Jakarta Sans, Public Sans, Space Grotesk,
 Spline Sans, Work Sans, Montserrat, Metropolis, Source Sans Three,
 Nunito Sans, Arimo, Hanken Grotesk, Rubik, IBM Plex Sans
 
-Serif: Newsreader, Noto Serif, Domine, Libre Caslon Text, EB Garamond,
-Literata, Source Serif Four
+Serif: Leitor de notícias, Noto Serif, Domine, Libre Caslon Text, EB Garamond,
+Literata, Fonte Serif Quatro
 
-If the user's chosen font is not in this list, pick the closest match
-from the list above and note the substitution. The final code will use
-the actual desired font — Stitch is just for prototyping.
+Se a fonte escolhida pelo usuário não estiver nesta lista, escolha a correspondência mais próxima
+da lista acima e observe a substituição. O código final usará
+a fonte real desejada - Stitch é apenas para prototipagem.
 
-### Prompt Templates by Project Type
+### Modelos de prompt por tipo de projeto
 
-**Landing Page:**
+**Página de destino:**
 
 ```
 Idea: A landing page for [product/service name] — [one-line description].
@@ -255,7 +250,7 @@ Content: Hero section with headline "[actual headline text]" and
   testimonials, pricing, FAQ, footer]. Navigation with links to [items].
 ```
 
-**Dashboard:**
+**Painel:**
 
 ```
 Idea: A [type] dashboard for [purpose/audience].
@@ -265,7 +260,7 @@ Content: Sidebar navigation with [items]. Main area with [widget types:
   [Specific data to display in each widget].
 ```
 
-**Mobile App Screen:**
+**Tela do aplicativo móvel:**
 
 ```
 Idea: [Screen name] screen for [app name] — [app description].
@@ -275,7 +270,7 @@ Content: [Top navigation/header]. [Main content area with specific
   labels, and placeholder data].
 ```
 
-**E-commerce:**
+**Comércio eletrônico:**
 
 ```
 Idea: [Page type: product listing / product detail / cart / checkout]
@@ -285,151 +280,150 @@ Content: [Specific components: product grid with N columns, filters,
   price display, add-to-cart button, image gallery, reviews section].
 ```
 
-### Refinement Prompt Patterns
+### Padrões de prompt de refinamento
 
-After initial generation, refine with targeted prompts:
+Após a geração inicial, refine com prompts direcionados:
 
-- Layout: "Change the product grid from 2 columns to a 4-column desktop
-  layout. Maintain the card spacing and style."
-- Typography: "Change headings to a serif font. Increase the hero
-  headline size to create stronger visual hierarchy."
-- Color: "Update the accent color to [hex]. Ensure all interactive
-  elements (buttons, links) use this new accent."
-- Component: "Add a search bar to the header, positioned to the right
-  of the logo. Style it with a subtle border and search icon."
-- Imagery: "Change background of all product images to light taupe.
-  Ensure images have consistent padding within their cards."
+- Layout: "Altere a grade do produto de 2 colunas para uma área de trabalho de 4 colunas
+  layout. Mantenha o espaçamento e o estilo dos cartões."
+- Tipografia: "Altere os títulos para uma fonte serifada. Aumente o herói
+  tamanho do título para criar uma hierarquia visual mais forte."
+- Cor: "Atualize a cor de destaque para [hex]. Certifique-se de que todos os recursos interativos
+  elementos (botões, links) usam esse novo acento."
+- Componente: "Adicionar uma barra de pesquisa ao cabeçalho, posicionada à direita
+  do logotipo. Estilize
 
----
+com uma borda sutil e um ícone de pesquisa."
 
-## 5. Design Modes
-
-### Thinking with 3 Pro
-
-- **Use for:** Complex logic, multi-section layouts, dashboards,
-  production-candidate designs
-- **Behavior:** Takes longer, "thinks" through implications — navigation
-  flow, hierarchy, color interactions
-- **Best when:** Building complex dashboards, nuanced landing pages,
-  multi-step flows
-- **MCP `modelId`:** `GEMINI_3_PRO` (current value — may change as new
-  models are released)
-
-### Gemini 3 Flash
-
-- **Use for:** Quick ideation, rapid iteration, exploring multiple concepts
-- **Behavior:** Fast generation, good for getting past blank canvas
-- **Best when:** Early exploration, generating many options quickly
-- **MCP `modelId`:** `GEMINI_3_FLASH` (current value — may change)
-
-### Default Model Selection
-
-When generating via MCP, use `MODEL_ID_UNSPECIFIED` as the default.
-This lets Stitch choose the best available model automatically. Only
-specify a concrete model when the user has an explicit need:
-
-- Speed priority → use the Flash-tier model
-- Quality priority → use the Pro-tier model
-- No preference → omit `modelId` or use `MODEL_ID_UNSPECIFIED`
-
-Note: model enum values are set by Stitch's API and may be updated
-as new models are released. If a known enum value stops working,
-fall back to `MODEL_ID_UNSPECIFIED` and inform the user.
-
-### Redesign (Nano Banana Pro)
-
-- **Use for:** Modernizing existing UIs, stylistic experiments, vibe-based
-  workflows
-- **Behavior:** Excels at applying specific design aesthetics
-- **Only in Stitch UI** (not available via MCP)
-
-### The Style Word Bank (for Redesign mode and prompt enrichment)
-
-Use these keywords to give precise creative direction:
-
-**Layout & Structure:**
-
-- Bento Grid — modular, card-based, compartmentalized
-- Editorial — magazine feel, large serif headings, generous whitespace
-- Swiss Style — grid systems, sans-serif, flush-left, objectively clear
-- Split-Screen — vertical division, color block paired with imagery
-
-**Texture & Depth:**
-
-- Glassmorphism — frosted glass, translucency, background blur
-- Claymorphism — soft 3D shapes, inner shadows, friendly/tactile
-- Skeuomorphic — realistic textures (leather, paper, metal)
-- Grainy/Noise — film grain overlays on gradients, warmth
-
-**Atmosphere & Era:**
-
-- Brutalist — raw, system fonts, high contrast, hard edges
-- Cyberpunk — dark mode, neon accents (cyan/magenta), glitch effects
-- Y2K — chrome textures, bubble letters, bright blues/pinks, pill buttons
-- Retro-Futurism — 80s synthwave, sunsets, wireframe grids, VHS aesthetic
-
-**Color & Contrast:**
-
-- Duotone — entire UI from two contrasting colors
-- Monochromatic — single base hue with shade variations
-- Pastel Goth — soft pastels with stark black typography
-- Dark Mode OLED — true black (#000000), maximum contrast
-
-These keywords can be combined in prompts:
-"Redesign this dashboard. Use a modern Bento Grid layout. Dark mode
-background. Use the Inter font for headers."
+- Imagens: "Altere o fundo de todas as imagens do produto para cinza claro.
+  Certifique-se de que as imagens tenham preenchimento consistente em seus cartões."
 
 ---
 
-## 6. Device Types
+## 5. Modos de design
 
-### Choosing the Right Type
+### Pensando com 3 Pro
 
-| Type | Use when | MCP enum |
-|------|----------|----------|
-| Mobile | Primary mobile app, phone-first UI | `MOBILE` |
-| Desktop | Web apps, dashboards, wide layouts | `DESKTOP` |
-| Tablet | Tablet-specific apps, iPad layouts | `TABLET` |
-| Agnostic | Not tied to a specific device | `AGNOSTIC` |
+- **Use para:** Lógica complexa, layouts de várias seções, painéis,
+  projetos candidatos à produção
+- **Comportamento:** Demora mais, "pensa" nas implicações - navegação
+  fluxo, hierarquia, interações de cores
+- **Melhor quando:** criar painéis complexos, páginas de destino diferenciadas,
+  fluxos de várias etapas
+- **MCP `modelId`:** `GEMINI_3_PRO` (valor atual — pode mudar como novo
+  modelos são lançados)
 
-### How Device Type Affects Generation
+### Gêmeos 3 Flash
 
-- **Mobile:** Optimizes for vertical scroll, bottom navigation (thumb
-  zones), stacked content
-- **Desktop:** Optimizes for horizontal layouts, top navigation,
-  multi-column grids
-- **Tablet:** Hybrid approach
+- **Use para:** Ideação rápida, iteração rápida, exploração de vários conceitos
+- **Comportamento:** Geração rápida, boa para passar da tela em branco
+- **Melhor quando:** Exploração antecipada, gerando muitas opções rapidamente
+- **MCP `modelId`:** `GEMINI_3_FLASH` (valor atual — pode mudar)
 
-### Translating Between Device Types
+### Seleção de modelo padrão
 
-Don't resize — translate. When converting app to web (or vice versa),
-prompt for the structural changes needed:
+Ao gerar via MCP, use `MODEL_ID_UNSPECIFIED` como padrão.
+Isso permite que Stitch escolha automaticamente o melhor modelo disponível. Somente
+especifique um modelo concreto quando o usuário tiver uma necessidade explícita:
 
-```
+- Prioridade de velocidade → use o modelo Flash-tier
+- Prioridade de qualidade → usar o modelo Pro-tier
+- Sem preferência → omita `modelId` ou use `MODEL_ID_UNSPECIFIED`
+
+Nota: os valores de enum do modelo são definidos pela API do Stitch e podem ser atualizados
+à medida que novos modelos são lançados. Se um valor enum conhecido parar de funcionar,
+volte para `MODEL_ID_UNSPECIFIED` e informe o usuário.
+
+### Redesenho (Nano Banana Pro)
+
+- **Use para:** Modernização de UIs existentes, experimentos estilísticos, baseados em vibração
+  fluxos de trabalho
+- **Comportamento:** é excelente na aplicação de estética de design específica
+- **Somente no Stitch UI** (não disponível via MCP)
+
+### The Style Word Bank (para modo Redesign e enriquecimento imediato)
+
+Use estas palavras-chave para fornecer uma direção criativa precisa:
+
+**Layout e Estrutura:**
+
+- Bento Grid — modular, baseado em cartão, compartimentado
+- Editorial – estilo de revista, títulos com serifa grande, espaços em branco generosos
+- Estilo Suíço - sistemas de grade, sem serifa, alinhado à esquerda, objetivamente claro
+- Tela dividida – divisão vertical, bloco de cores emparelhado com imagens
+
+**Textura e Profundidade:**
+
+- Glassmorfismo - vidro fosco, translucidez, desfoque de fundo
+- Claymorfismo — formas 3D suaves, sombras internas, amigáveis/táteis
+- Skeuomorphic – texturas realistas (couro, papel, metal)
+- Granulado/Ruído — sobreposições de grãos de filme em gradientes, calor
+
+**Atmosfera e Era:**
+
+- Brutalista — raw, fontes do sistema, alto contraste, bordas rígidas
+- Cyberpunk — modo escuro, detalhes neon (ciano/magenta), efeitos de falha
+- Y2K – texturas cromadas, letras em forma de bolha, azuis/rosa brilhantes, botões de comprimidos
+- Retro-Futurismo - synthwave dos anos 80, pôr do sol, grades de wireframe, estética VHS
+
+**Cor e contraste:**
+
+- Duotone — UI inteira com duas cores contrastantes
+- Monocromático – matiz de base única com variações de tonalidade
+- Pastel Goth – pastéis suaves com tipografia totalmente preta
+- Modo escuro OLED - preto verdadeiro (#000000), contraste máximo
+
+Essas palavras-chave podem ser combinadas em prompts:
+"Redesenhe este painel. Use um layout moderno do Bento Grid. Modo escuro
+fundo. Use a fonte Inter para cabeçalhos."
+
+---
+
+## 6. Tipos de dispositivos
+
+### Escolhendo o tipo certo
+
+| Tipo             | Use quando                                                               | Enumeração MCP |
+| ---------------- | ------------------------------------------------------------------------ | -------------- |
+| Móvel            | Aplicativo móvel principal, interface de usuário voltada para o telefone | `MÓVEL`        |
+| Área de Trabalho | Aplicativos Web, painéis, layouts amplos                                 | `DESKTOP`      |
+| Tablet           | Aplicativos específicos para tablets, layouts de iPad                    | `TABLET`       |
+| Agnóstico        | Não vinculado a um dispositivo específico                                | `AGNOSTIC`     |
+
+### Como o tipo de dispositivo afeta a geração
+
+- **Celular:** Otimiza para rolagem vertical, navegação inferior (polegar
+  zonas), conteúdo empilhado
+- **Desktop:** Otimiza para layouts horizontais, navegação superior,
+  grades de múltiplas colunas
+- **Tablet:** Abordagem híbrida
+
+### Tradução entre tipos de dispositivos
+
+Não redimensione – traduza. Ao converter aplicativo para web (ou vice-versa),
+solicitar as mudanças estruturais necessárias:```
 Navigation: "Consolidate the bottom tab bar into a horizontal
-  navigation bar at the top with links for [items]."
+navigation bar at the top with links for [items]."
 Hero: "Transform the stacked mobile hero into a split-layout
-  hero section. Text on left, image covering the right."
+hero section. Text on left, image covering the right."
 Grid: "Update from 2-column mobile layout to 4-column desktop grid.
-  Maintain the card style and spacing rhythm."
-```
+Maintain the card style and spacing rhythm."
 
-Pro tip: When switching device type within a project, Stitch may hide
-content below the frame boundary. Increase the frame height to reveal
-the full generated layout.
+````
+Dica profissional: ao mudar o tipo de dispositivo dentro de um projeto, o Stitch pode ocultar
+conteúdo abaixo do limite do quadro. Aumente a altura do quadro para revelar
+o layout completo gerado.
 
 ---
 
-## 7. Design Systems via MCP
+## 7. Sistemas de projeto via MCP
 
-Design Systems in Stitch ensure visual consistency across all screens
-in a project. They map directly to our Design Direction (Phase 3).
+Os sistemas de design no Stitch garantem consistência visual em todas as telas
+em um projeto. Eles mapeiam diretamente para nossa Direção de Design (Fase 3).
 
-### Creating a Design System from Design Direction
+### Criando um sistema de design a partir da direção do design
 
-Map the agreed Design Direction to Stitch's DesignTheme:
-
-```
+Mapeie a direção de design acordada para o DesignTheme do Stitch:```
 Design Direction           → DesignTheme field
 ─────────────────────────────────────────────
 Light/dark preference      → colorMode: "LIGHT" or "DARK"
@@ -441,199 +435,195 @@ Light background (hex)     → backgroundLight: "#hexcode"
 Dark background (hex)      → backgroundDark: "#hexcode"
 Overall mood description   → description: brief theme text
 Additional guidelines      → styleGuidelines: freeform text
-```
+````
 
-### MCP Call: create_design_system
+### Chamada MCP: create_design_system```json
 
-```json
 {
-  "projectId": "PROJECT_ID",
-  "designSystem": {
-    "displayName": "Project Brand Identity",
-    "theme": {
-      "colorMode": "DARK",
-      "font": "GEIST",
-      "roundness": "ROUND_EIGHT",
-      "preset": "blue",
-      "customColor": "#1a1a2e",
-      "backgroundDark": "#0a0a0f",
-      "description": "Clean, modern dark theme with blue accents"
-    },
-    "styleGuidelines": "Spacious layout with card-based components. Strong typographic hierarchy. Subtle hover animations."
-  }
+"projectId": "PROJECT_ID",
+"designSystem": {
+"displayName": "Project Brand Identity",
+"theme": {
+"colorMode": "DARK",
+"font": "GEIST",
+"roundness": "ROUND_EIGHT",
+"preset": "blue",
+"customColor": "#1a1a2e",
+"backgroundDark": "#0a0a0f",
+"description": "Clean, modern dark theme with blue accents"
+},
+"styleGuidelines": "Spacious layout with card-based components. Strong typographic hierarchy. Subtle hover animations."
 }
-```
+}
 
-### Applying to Screens
+````
+### Aplicando em Telas
 
-After creating the design system, apply it to all screens:
-
-```json
+Após criar o design system, aplique-o a todas as telas:```json
 {
   "projectId": "PROJECT_ID",
   "selectedScreenIds": ["screen1", "screen2", "screen3"],
   "assetId": "DESIGN_SYSTEM_ASSET_ID"
 }
-```
+````
 
-This ensures every screen follows the same visual tokens.
+Isso garante que cada tela siga os mesmos tokens visuais.
 
 ---
 
-## 8. Variants & Creative Range
+## 8. Variantes e gama criativa
 
-Variants generate 1-5 alternative versions of a screen. Crucial for
-the prototyping phase when the user needs to compare options.
+As variantes geram de 1 a 5 versões alternativas de uma tela. Crucial para
+a fase de prototipagem quando o usuário precisa comparar opções.
 
-### When to Generate Variants
+### Quando gerar variantes
 
-- User is unsure between two visual directions
-- Want to explore layout alternatives
-- Testing different color schemes
-- Getting unstuck ("I know it's not right but I don't know why")
+- O usuário não tem certeza entre duas direções visuais
+- Quer explorar alternativas de layout
+- Testando diferentes esquemas de cores
+- Desvencilhar-se ("Sei que não está certo, mas não sei por quê")
 
-### Creative Range
+### Gama Criativa
 
-| Range | Behavior | Use when |
-|-------|----------|----------|
-| REFINE | Keeps structure, tweaks fonts/spacing/colors | Polishing |
-| EXPLORE | Balanced exploration (default) | Comparing options |
-| REIMAGINE | Complete restructure allowed | Starting over or pivoting |
+| Alcance    | Comportamento                                       | Use quando           |
+| ---------- | --------------------------------------------------- | -------------------- |
+| REFINAR    | Mantém a estrutura, ajusta fontes/espaçamento/cores | Polimento            |
+| EXPLORAR   | Exploração equilibrada (padrão)                     | Comparando opções    |
+| REIMAGINAR | Reestruturação completa permitida                   | Recomeçar ou pivotar |
 
-### Variant Aspects
+### Aspectos Variantes
 
-Focus generation on specific dimensions:
+Geração de foco em dimensões específicas:
 
-| Aspect | What changes |
-|--------|-------------|
-| LAYOUT | Element arrangement and grid structure |
-| COLOR_SCHEME | Color palette variations |
-| IMAGES | Image usage and treatment |
-| TEXT_FONT | Typography choices |
-| TEXT_CONTENT | Actual text content |
+| Aspecto      | O que muda                                |
+| ------------ | ----------------------------------------- |
+| LAYOUT       | Arranjo de elementos e estrutura de grade |
+| COLOR_SCHEME | Variações da paleta de cores              |
+| IMAGENS      | Uso e tratamento de imagens               |
+| TEXT_FONT    | Opções de tipografia                      |
+| TEXT_CONTENT | Conteúdo de texto real                    |
 
-### MCP Call: generate_variants
+### Chamada MCP: generate_variants```json
 
-```json
 {
-  "projectId": "PROJECT_ID",
-  "selectedScreenIds": ["screen_to_vary"],
-  "prompt": "Explore different layout approaches for the hero section while maintaining the dark theme",
-  "variantOptions": {
-    "variantCount": 3,
-    "creativeRange": "EXPLORE",
-    "aspects": ["LAYOUT", "COLOR_SCHEME"]
-  },
-  "deviceType": "DESKTOP"
+"projectId": "PROJECT_ID",
+"selectedScreenIds": ["screen_to_vary"],
+"prompt": "Explore different layout approaches for the hero section while maintaining the dark theme",
+"variantOptions": {
+"variantCount": 3,
+"creativeRange": "EXPLORE",
+"aspects": ["LAYOUT", "COLOR_SCHEME"]
+},
+"deviceType": "DESKTOP"
 }
-```
 
-Omit `modelId` to let Stitch choose, or specify one if the user
-has a preference for speed vs quality.
+````
+Omita `modelId` para permitir que Stitch escolha ou especifique um se o usuário
+tem preferência por velocidade versus qualidade.
 
-### Iterating on Variants
+### Iterando em variantes
 
-1. Generate 3-5 variants with EXPLORE range
-2. User picks the closest to their vision
-3. Generate 2-3 more with REFINE range on the winner
-4. User approves → proceed to code
+1. Gere de 3 a 5 variantes com a faixa EXPLORE
+2. O usuário escolhe o que mais se aproxima de sua visão
+3. Gere mais 2-3 com faixa REFINE no vencedor
+4. O usuário aprova → prossiga para o código
 
 ---
 
-## 9. MCP Tools Reference
+## 9. Referência de ferramentas MCP
 
-### Project Management
+### Gerenciamento de Projetos
 
-| Tool | Purpose | Key params |
+| Ferramenta | Finalidade | Parâmetros principais |
 |------|---------|-----------|
-| `create_project` | New design project | `title` (string) |
-| `get_project` | Get project details | `name` (format: `projects/{id}`) |
-| `delete_project` | Delete project (irreversible!) | `name` |
-| `list_projects` | List all projects | `filter`: "owned" or "shared" |
+| `criar_projeto` | Novo projeto de design | `título` (string) |
+| `get_projeto` | Obtenha detalhes do projeto | `nome` (formato: `projetos/{id}`) |
+| `delete_projeto` | Excluir projeto (irreversível!) | `nome` |
+| `lista_projetos` | Listar todos os projetos | `filter`: "proprietário" ou "compartilhado" |
 
-### Screen Management
+### Gerenciamento de tela
 
-| Tool | Purpose | Key params |
+| Ferramenta | Finalidade | Parâmetros principais |
 |------|---------|-----------|
-| `list_screens` | All screens in project | `projectId` |
-| `get_screen` | Screen details + code + image URLs | `name`, `projectId`, `screenId` |
+| `lista_telas` | Todas as telas do projeto | `projectId` |
+| `get_screen` | Detalhes da tela + código + URLs de imagem | `nome`, `projectId`, `screenId` |
 
-The `get_screen` response includes:
+A resposta `get_screen` inclui:
 
-- `htmlCode` — File object with `downloadUrl` for the HTML/CSS
-- `screenshot` — File object with `downloadUrl` for the PNG image
-- `figmaExport` — File object for Figma-compatible export
-- `theme` — DesignTheme used for generation
-- `prompt` — Original prompt used
+- `htmlCode` — Objeto de arquivo com `downloadUrl` para HTML/CSS
+- `screenshot` — Objeto de arquivo com `downloadUrl` para a imagem PNG
+- `fimaExport` — Objeto de arquivo para exportação compatível com Figma
+- `theme` — DesignTheme usado para geração
+- `prompt` — Prompt original usado
 
-### AI Generation
+### Geração de IA
 
-| Tool | Purpose | Key params |
+| Ferramenta | Finalidade | Parâmetros principais |
 |------|---------|-----------|
-| `generate_screen_from_text` | Generate new screen | `projectId`, `prompt`, `deviceType`, `modelId` (optional) |
-| `upload_screens_from_images` | Upload images as screens | `projectId`, `images[]` (base64 + mimeType) |
-| `edit_screens` | Edit existing screens | `projectId`, `selectedScreenIds[]`, `prompt`, `deviceType`, `modelId` (optional) |
-| `generate_variants` | Generate design variants | `projectId`, `selectedScreenIds[]`, `prompt`, `variantOptions`, `modelId` (optional) |
+| `generate_screen_from_text` | Gerar nova tela | `projectId`, `prompt`, `deviceType`, `modelId` (opcional) |
+| `upload_screens_from_images` | Carregar imagens como telas | `projectId`, `imagens[]` (base64 + mimeType) |
+| `edit_telas` | Editar telas existentes | `projectId`, `selectedScreenIds[]`, `prompt`, `deviceType`, `modelId` (opcional) |
+| `generate_variants` | Gerar projeto v
 
-IMPORTANT: `generate_screen_from_text` and `edit_screens` take a few
-minutes. Connection errors don't mean failure — check with `get_screen`
-after a few minutes. Do NOT retry immediately or you'll create duplicates.
+arianos | `projectId`, `selectedScreenIds[]`, `prompt`, `variantOptions`, `modelId` (opcional) |
 
-If `output_components` contains `suggestion` entries, present them to
-the user. If accepted, call again with the suggestion as the new prompt.
+IMPORTANTE: `generate_screen_from_text` e `edit_screens` demoram alguns
+minutos. Erros de conexão não significam falha — verifique com `get_screen`
+depois de alguns minutos. NÃO tente novamente imediatamente ou você criará duplicatas.
 
-### Design Systems
+Se `output_components` contém entradas de `sugestão`, apresente-as para
+o usuário. Se aceito, ligue novamente com a sugestão como novo prompt.
 
-| Tool | Purpose | Key params |
+### Sistemas de Projeto
+
+| Ferramenta | Finalidade | Parâmetros principais |
 |------|---------|-----------|
-| `create_design_system` | Create new system | `designSystem` (DesignSystem object), `projectId` |
-| `update_design_system` | Update existing system | `designSystem` (Asset wrapper with `name`) |
-| `list_design_systems` | List systems | `projectId` (optional) |
-| `apply_design_system` | Apply to screens | `projectId`, `selectedScreenIds[]`, `assetId` |
+| `criar_sistema_de_design` | Criar novo sistema | `designSystem` (objeto DesignSystem), `projectId` |
+| `update_design_system` | Atualizar sistema existente | `designSystem` (wrapper de ativos com `nome`) |
+| `list_design_systems` | Sistemas de lista | `projectId` (opcional) |
+| `apply_design_system` | Aplicar nas telas | `projectId`, `selectedScreenIds[]`, `assetId` |
 
-### Device Type Enum Values
+### Valores de enumeração de tipo de dispositivo
 
 `DEVICE_TYPE_UNSPECIFIED`, `MOBILE`, `DESKTOP`, `TABLET`, `AGNOSTIC`
 
-### Model ID Enum Values
+### Valores de enum de ID do modelo
 
-`MODEL_ID_UNSPECIFIED` (default — recommended), `GEMINI_3_PRO` (higher
-quality), `GEMINI_3_FLASH` (faster). These enum values may change as
-Stitch releases new models — always prefer `MODEL_ID_UNSPECIFIED` unless
-the user has a specific reason to pin a model.
+`MODEL_ID_UNSPECIFIED` (padrão - recomendado), `GEMINI_3_PRO` (maior
+qualidade), `GEMINI_3_FLASH` (mais rápido). Esses valores enum podem mudar conforme
+Stitch lança novos modelos - sempre prefira `MODEL_ID_UNSPECIFIED`, a menos que
+o usuário tem um motivo específico para fixar um modelo.
 
-### Roundness Enum Values
+### Valores de enumeração de arredondamento
 
 `ROUND_FOUR` (4px), `ROUND_EIGHT` (8px), `ROUND_TWELVE` (12px), `ROUND_FULL`
 
-### Color Mode Enum Values
+### Valores de enumeração do modo de cor
 
-`LIGHT`, `DARK`
+`LUZ`, `ESCURO`
 
-### Creative Range Enum Values
+### Valores de enum de intervalo de criativos
 
-`REFINE` (subtle), `EXPLORE` (balanced), `REIMAGINE` (radical)
+`REFINE` (sutil), `EXPLORE` (equilibrado), `REIMAGINE` (radical)
 
-### Variant Aspect Enum Values
+### Valores de enumeração de aspecto variante
 
 `LAYOUT`, `COLOR_SCHEME`, `IMAGES`, `TEXT_FONT`, `TEXT_CONTENT`
 
-### Font Enum Values (29 supported)
+### Valores de enum de fonte (29 suportados)
 
-INTER, ROBOTO, DM_SANS, GEIST, SORA, MANROPE, LEXEND, EPILOGUE,
+INTER, ROBOTO, DM_SANS, GEIST, SORA, MANROPE, LEXEND, EPÍLOGO,
 BE_VIETNAM_PRO, PLUS_JAKARTA_SANS, PUBLIC_SANS, SPACE_GROTESK,
-SPLINE_SANS, WORK_SANS, MONTSERRAT, METROPOLIS, SOURCE_SANS_THREE,
+SPLINE_SANS, WORK_SANS, MONTSERRAT, METRÓPOLIS, SOURCE_SANS_THREE,
 NUNITO_SANS, ARIMO, HANKEN_GROTESK, RUBIK, IBM_PLEX_SANS,
-NEWSREADER, NOTO_SERIF, DOMINE, LIBRE_CASLON_TEXT, EB_GARAMOND,
-LITERATA, SOURCE_SERIF_FOUR
+LEITOR DE NOTÍCIAS, NOTO_SERIF, DOMINE, LIBRE_CASLON_TEXT, EB_GARAMOND,
+LITERATA, FONTE_SERIF_FOUR
 
 ---
 
-## 10. Full Integration Workflow
+## 10. Fluxo de trabalho de integração total
 
-### Scenario A: MCP Available (direct integration)
-
-```
+### Cenário A: MCP disponível (integração direta)```
 1. Create project:
    → create_project(title: "Project Name")
    → Save the returned project ID
@@ -666,11 +656,10 @@ LITERATA, SOURCE_SERIF_FOUR
 
 8. Proceed to Execution Plan and Atomic Build phases
    using Stitch outputs as the source of truth.
-```
+````
 
-### Scenario B: No MCP (manual Stitch usage)
+### Cenário B: Sem MCP (uso de costura manual)```
 
-```
 1. Suggest user opens stitch.withgoogle.com
 
 2. Recommend device type based on project:
@@ -689,34 +678,35 @@ LITERATA, SOURCE_SERIF_FOUR
 
 7. Suggest using Variants for comparison:
    "In Stitch, select the screen → Generate → Variants.
-    Set Creative Range to [Refined/Creative] and generate
-    3 options to compare."
+   Set Creative Range to [Refined/Creative] and generate
+   3 options to compare."
 
 8. Suggest using Edit Theme for quick adjustments:
    "Select the screen → Generate → Edit Theme.
-    Here you can quickly change light/dark mode, accent
-    color, corner radius, and font."
+   Here you can quickly change light/dark mode, accent
+   color, corner radius, and font."
 
 9. Suggest creating a Prototype to test:
    "Select the screen → Generate → Prototype.
-    This creates an interactive version — check hover states,
-    scroll behavior, and input sizes."
+   This creates an interactive version — check hover states,
+   scroll behavior, and input sizes."
 
 10. Once approved, user exports code (View Code → HTML/CSS)
     or exports to Figma for further refinement.
 
 11. User shares exported code/screenshot for code generation phase.
+
 ```
+### Convertendo Stitch HTML em Target Framework
 
-### Converting Stitch HTML to Target Framework
+Stitch exporta HTML + Tailwind CSS. Ao converter para o usuário
+estrutura, use esta abordagem:
 
-Stitch exports HTML + Tailwind CSS. When converting to the user's
-framework, use this approach:
-
-1. Download the HTML from Stitch (via MCP or manual export)
-2. Use the HTML as structural reference (not copy-paste)
-3. Use the screenshot as visual reference
-4. Rewrite in the target framework (React, Vue, Svelte, etc.)
-   following the agreed Design Direction tokens
-5. Maintain semantic HTML, accessibility, and responsive behavior
-6. Replace Tailwind classes with the project's CSS approach if different
+1. Baixe o HTML do Stitch (via MCP ou exportação manual)
+2. Use o HTML como referência estrutural (não copie e cole)
+3. Use a captura de tela como referência visual
+4. Reescreva na estrutura de destino (React, Vue, Svelte, etc.)
+   seguindo os tokens de direção de design acordados
+5. Mantenha HTML semântico, acessibilidade e comportamento responsivo
+6. Substitua as classes Tailwind pela abordagem CSS do projeto, se for diferente
+```

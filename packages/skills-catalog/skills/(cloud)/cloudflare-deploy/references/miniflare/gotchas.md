@@ -1,29 +1,29 @@
-# Gotchas & Troubleshooting
+# Dicas e solução de problemas
 
-## Miniflare Limitations
+## Limitações do Miniflare
 
-**Not supported:**
+**Não suportado:**
 
-- Analytics Engine (use mocks)
-- Cloudflare Images/Stream
-- Browser Rendering API
-- Tail Workers
-- Workers for Platforms (partial support)
+- Analytics Engine (use simulações)
+- Imagens/stream da Cloudflare
+- API de renderização do navegador
+- Trabalhadores de cauda
+- Trabalhadores para Plataformas (apoio parcial)
 
-**Behavior differences from production:**
+**Diferenças de comportamento em relação à produção:**
 
-- Runs workerd locally, not Cloudflare edge
-- Storage is local (filesystem/memory), not distributed
-- `Request.cf` is cached/mocked, not real edge data
-- Performance differs from edge
-- Caching implementation may vary slightly
+- Executa o trabalho localmente, não na borda do Cloudflare
+- O armazenamento é local (sistema de arquivos/memória), não distribuído
+- `Request.cf` é armazenado em cache/simulado, e não dados de borda reais
+- O desempenho difere da borda
+- A implementação do cache pode variar um pouco
 
-## Common Errors
+## Erros Comuns
 
-### "Cannot find module"
+### "Não foi possível encontrar o módulo"
 
-**Cause:** Module path wrong or `modulesRules` not configured  
-**Solution:**
+**Causa:** Caminho do módulo errado ou `modulesRules` não configurado
+**Solução:**
 
 ```js
 new Miniflare({
@@ -100,36 +100,36 @@ const ns = await mf.getKVNamespace('TEST')
 const { keys } = await ns.list()
 ```
 
-## Best Practices
+## Melhores práticas
 
-**✓ Do:**
+**✓ Faça:**
 
-- Use `dispatchFetch()` for tests (no HTTP server)
-- In-memory storage for CI (omit persist options)
-- New instances per test for isolation
-- Type-safe bindings with interfaces
-- `await mf.dispose()` in cleanup
+- Use `dispatchFetch()` para testes (sem servidor HTTP)
+- Armazenamento na memória para CI (omitir opções de persistência)
+- Novas instâncias por teste para isolamento
+- Ligações de tipo seguro com interfaces
+- `await mf.dispose()` na limpeza
 
-**✗ Avoid:**
+**✗ Evite:**
 
-- HTTP server in tests
-- Shared instances without cleanup
-- Old compatibility dates (use 2026+)
+- Servidor HTTP em testes
+- Instâncias compartilhadas sem limpeza
+- Datas de compatibilidade antigas (use 2026+)
 
-## Migration Guides
+## Guias de migração
 
-### From Miniflare 2.x to 3+
+### Do Miniflare 2.x ao 3+
 
-Breaking changes in v3+:
+Mudanças importantes na v3+:
 
-| v2                   | v3+                             |
-| -------------------- | ------------------------------- |
-| `getBindings()` sync | `getBindings()` returns Promise |
-| `ready` is void      | `ready` returns `Promise<URL>`  |
-| service-worker-mock  | Built on workerd                |
-| Different options    | Restructured constructor        |
+| v2                                  | v3+                              |
+| ----------------------------------- | -------------------------------- |
+| `getBindings()` sincronização       | `getBindings()` retorna Promessa |
+| `ready` é nulo                      | `ready` retorna `Promessa<URL>`  |
+| simulação de trabalhador de serviço | Construído em trabalhador        |
+| Diferentes opções                   | Construtor reestruturado         |
 
-**Example migration:**
+**Exemplo de migração:**
 
 ```js
 // v2

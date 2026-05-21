@@ -1,15 +1,15 @@
 ---
-title: Calculate Derived State During Rendering
+title: Calcular estado derivado durante a renderização
 impact: MEDIUM
-impactDescription: avoids redundant renders and state drift
+impactDescription: evita renderizações redundantes e desvios de estado
 tags: rerender, derived-state, useEffect, state
 ---
 
-## Calculate Derived State During Rendering
+## Calcula o estado derivado durante a renderização
 
-If a value can be computed from current props/state, do not store it in state or update it in an effect. Derive it during render to avoid extra renders and state drift. Do not set state in effects solely in response to prop changes; prefer derived values or keyed resets instead.
+Se um valor pode ser derivado das props ou do estado atual, não guarde em estado nem atualize com efeito. Calcule durante o render para evitar renderizações extras e inconsistência entre estado derivado e fonte da verdade. Não atualize estado em efeitos apenas porque os props mudaram; prefira valores calculados ou redefinidos por `key`.
 
-**Incorrect (redundant state and effect):**
+**Incorreto (estado e efeito redundantes):**
 
 ```tsx
 function Form() {
@@ -25,7 +25,7 @@ function Form() {
 }
 ```
 
-**Correct (derive during render):**
+**Correto (derivado sem renderização):**
 
 ```tsx
 function Form() {
@@ -37,4 +37,4 @@ function Form() {
 }
 ```
 
-References: [You Might Not Need an Effect](https://react.dev/learn/you-might-not-need-an-effect)
+Referências: [Você pode não precisar de um efeito](https://react.dev/learn/you-might-not-need-an-effect)

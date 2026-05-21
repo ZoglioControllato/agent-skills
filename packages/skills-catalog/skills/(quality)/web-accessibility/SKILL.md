@@ -1,40 +1,42 @@
 ---
 name: accessibility
-description: Audit and improve web accessibility following WCAG 2.1 guidelines. Use when asked to "improve accessibility", "a11y audit", "WCAG compliance", "screen reader support", "keyboard navigation", or "make accessible". Do NOT use for SEO (use seo), performance (use core-web-vitals), or comprehensive site audits covering multiple areas (use web-quality-audit).
+description: Audita e melhora acessibilidade web seguindo WCAG 2.1. Use quando pedirem "melhore a acessibilidade", "auditoria a11y", "conformidade WCAG", "leitor de tela", "navegação por teclado" ou "tornar acessível". NÃO use para SEO (use seo), performance (use core-web-vitals) ou auditorias amplas (use web-quality-audit).
 license: MIT
 metadata:
   author: web-quality-skills
   version: '1.0'
 ---
 
-# Accessibility (a11y)
+# Acessibilidade (a11y)
 
-Comprehensive accessibility guidelines based on WCAG 2.1 and Lighthouse accessibility audits. Goal: make content usable by everyone, including people with disabilities.
+Diretrizes abrangentes de acessibilidade baseadas nas auditorias de acessibilidade WCAG 2.1 e Lighthouse. Objetivo: tornar o conteúdo utilizável por todos, inclusive pessoas com deficiência.
 
-## WCAG Principles: POUR
+## Princípios WCAG: POUR
 
-| Principle          | Description                                       |
-| ------------------ | ------------------------------------------------- |
-| **P**erceivable    | Content can be perceived through different senses |
-| **O**perable       | Interface can be operated by all users            |
-| **U**nderstandable | Content and interface are understandable          |
-| **R**obust         | Content works with assistive technologies         |
+| Princípio          | Descrição                                                    |
+| ------------------ | ------------------------------------------------------------ |
+| **P**ercebível     | O conteúdo pode ser percebido através de diferentes sentidos |
+| **O**perável       | Interface pode ser operada por todos os usuários             |
+| **U**compreensível | O conteúdo e a interface são compreensíveis                  |
+| **R**obusto        | Conteúdo funciona com tecnologias assistivas                 |
 
-## Conformance levels
+## Níveis de conformidade
 
-| Level   | Requirement            | Target                                                |
-| ------- | ---------------------- | ----------------------------------------------------- |
-| **A**   | Minimum accessibility  | Must pass                                             |
-| **AA**  | Standard compliance    | Should pass (legal requirement in many jurisdictions) |
-| **AAA** | Enhanced accessibility | Nice to have                                          |
+| Nível   | Requisito                 | Alvo                                                      |
+| ------- | ------------------------- | --------------------------------------------------------- |
+| **A**   | Acessibilidade mínima     | Deve passar                                               |
+| **AA**  | Conformidade com padrões  | Deve ser aprovado (requisito legal em muitas jurisdições) |
+| **AAA** | Acessibilidade aprimorada | É bom ter                                                 |
+
+|
 
 ---
 
-## Perceivable
+## Perceptível
 
-### Text alternatives (1.1)
+### Alternativas de texto (1.1)
 
-**Images require alt text:**
+**As imagens requerem texto alternativo:**
 
 ```html
 <!-- ❌ Missing alt -->
@@ -55,7 +57,7 @@ Comprehensive accessibility guidelines based on WCAG 2.1 and Lighthouse accessib
 </figure>
 ```
 
-**Icon buttons need accessible names:**
+**Botões de ícone precisam de nomes acessíveis:**
 
 ```html
 <!-- ❌ No accessible name -->
@@ -75,7 +77,7 @@ Comprehensive accessibility guidelines based on WCAG 2.1 and Lighthouse accessib
 </button>
 ```
 
-**Visually hidden class:**
+**Classe visualmente oculta:**
 
 ```css
 .visually-hidden {
@@ -91,35 +93,35 @@ Comprehensive accessibility guidelines based on WCAG 2.1 and Lighthouse accessib
 }
 ```
 
-### Color contrast (1.4.3, 1.4.6)
+### Contraste de cores (1.4.3, 1.4.6)
 
-| Text Size                          | AA minimum | AAA enhanced |
-| ---------------------------------- | ---------- | ------------ |
-| Normal text (< 18px / < 14px bold) | 4.5:1      | 7:1          |
-| Large text (≥ 18px / ≥ 14px bold)  | 3:1        | 4.5:1        |
-| UI components & graphics           | 3:1        | 3:1          |
+| Tamanho do texto                          | Mínimo AA | AAA aprimorado |
+| ----------------------------------------- | --------- | -------------- | ------ |
+| Texto normal (<18px / <14px em negrito)   | 4,5:1     | 7:1            |
+| Texto grande (≥ 18px / ≥ 14px em negrito) | 3:1       | 4,5:1          |
+| Componentes e gráficos de UI              | 3:1       | 3:1            | ```css |
 
-```css
-/* ❌ Low contrast (2.5:1) */
+/_ ❌ Low contrast (2.5:1) _/
 .low-contrast {
-  color: #999;
-  background: #fff;
+color: #999;
+background: #fff;
 }
 
-/* ✅ Sufficient contrast (7:1) */
+/_ ✅ Sufficient contrast (7:1) _/
 .high-contrast {
-  color: #333;
-  background: #fff;
+color: #333;
+background: #fff;
 }
 
-/* ✅ Focus states need contrast too */
+/_ ✅ Focus states need contrast too _/
 :focus-visible {
-  outline: 2px solid #005fcc;
-  outline-offset: 2px;
+outline: 2px solid #005fcc;
+outline-offset: 2px;
 }
-```
 
-**Don't rely on color alone:**
+````
+
+**Não confie apenas na cor:**
 
 ```html
 <!-- ❌ Only color indicates error -->
@@ -138,9 +140,9 @@ Comprehensive accessibility guidelines based on WCAG 2.1 and Lighthouse accessib
     Please enter a valid email address
   </span>
 </div>
-```
+````
 
-### Media alternatives (1.2)
+### Alternativas de mídia (1.2)
 
 ```html
 <!-- Video with captions -->
@@ -162,11 +164,11 @@ Comprehensive accessibility guidelines based on WCAG 2.1 and Lighthouse accessib
 
 ---
 
-## Operable
+## Operável
 
-### Keyboard accessible (2.1)
+### Teclado acessível (2.1)
 
-**All functionality must be keyboard accessible:**
+**Todas as funcionalidades devem ser acessíveis pelo teclado:**
 
 ```javascript
 // ❌ Only handles click
@@ -182,7 +184,7 @@ element.addEventListener('keydown', (e) => {
 })
 ```
 
-**No keyboard traps:**
+**Sem armadilhas de teclado:**
 
 ```javascript
 // Modal focus management
@@ -213,7 +215,7 @@ function openModal(modal) {
 }
 ```
 
-### Focus visible (2.4.7)
+### Foco visível (2.4.7)
 
 ```css
 /* ❌ Never remove focus outlines */
@@ -237,7 +239,7 @@ button:focus-visible {
 }
 ```
 
-### Skip links (2.4.1)
+### Pular links (2.4.1)
 
 ```html
 <body>
@@ -265,7 +267,7 @@ button:focus-visible {
 }
 ```
 
-### Timing (2.2)
+### Tempo (2.2)
 
 ```javascript
 // Allow users to extend time limits
@@ -282,7 +284,7 @@ function showSessionWarning() {
 }
 ```
 
-### Motion (2.3)
+### Movimento (2.3)
 
 ```css
 /* Respect reduced motion preference */
@@ -300,9 +302,9 @@ function showSessionWarning() {
 
 ---
 
-## Understandable
+## Compreensível
 
-### Page language (3.1.1)
+### Idioma da página (3.1.1)
 
 ```html
 <!-- ❌ No language specified -->
@@ -315,7 +317,7 @@ function showSessionWarning() {
 </html>
 ```
 
-### Consistent navigation (3.2.3)
+### Navegação consistente (3.2.3)
 
 ```html
 <!-- Navigation should be consistent across pages -->
@@ -328,7 +330,7 @@ function showSessionWarning() {
 </nav>
 ```
 
-### Form labels (3.3.2)
+### Etiquetas de formulário (3.3.2)
 
 ```html
 <!-- ❌ No label association -->
@@ -350,7 +352,7 @@ function showSessionWarning() {
 <p id="password-requirements">Must be at least 8 characters with one number.</p>
 ```
 
-### Error handling (3.3.1, 3.3.3)
+### Tratamento de erros (3.3.1, 3.3.3)
 
 ```html
 <!-- Announce errors to screen readers -->
@@ -381,9 +383,9 @@ form.addEventListener('submit', (e) => {
 
 ---
 
-## Robust
+## Robusto
 
-### Valid HTML (4.1.1)
+### HTML válido (4.1.1)
 
 ```html
 <!-- ❌ Duplicate IDs -->
@@ -401,9 +403,9 @@ form.addEventListener('submit', (e) => {
 <a href="/" class="button-link">Click</a>
 ```
 
-### ARIA usage (4.1.2)
+### Uso de ARIA (4.1.2)
 
-**Prefer native elements:**
+**Prefira elementos nativos:**
 
 ```html
 <!-- ❌ ARIA role on div -->
@@ -419,7 +421,7 @@ form.addEventListener('submit', (e) => {
 <label><input type="checkbox" /> Option</label>
 ```
 
-**When ARIA is needed:**
+**Quando ARIA é necessária:**
 
 ```html
 <!-- Custom tabs component -->
@@ -435,7 +437,7 @@ form.addEventListener('submit', (e) => {
 </div>
 ```
 
-### Live regions (4.1.3)
+### Regiões ativas (4.1.3)
 
 ```html
 <!-- Status updates -->
@@ -462,11 +464,12 @@ function showNotification(message, type = 'polite') {
 
 ---
 
-## Testing checklist
+## Lista de verificação de teste
 
-### Automated testing
+### Teste automatizado
 
 ```bash
+
 # Lighthouse accessibility audit
 npx lighthouse https://example.com --only-categories=accessibility
 
@@ -475,57 +478,59 @@ npm install @axe-core/cli -g
 axe https://example.com
 ```
 
-### Manual testing
+### Teste manual
 
-- [ ] **Keyboard navigation:** Tab through entire page, use Enter/Space to activate
-- [ ] **Screen reader:** Test with VoiceOver (Mac), NVDA (Windows), or TalkBack (Android)
-- [ ] **Zoom:** Content usable at 200% zoom
-- [ ] **High contrast:** Test with Windows High Contrast Mode
-- [ ] **Reduced motion:** Test with `prefers-reduced-motion: reduce`
-- [ ] **Focus order:** Logical and follows visual order
+- [ ] **Navegação pelo teclado:** Navegue pela página inteira, use Enter/Espaço para ativar
+- [ ] **Leitor de tela:** Teste com VoiceOver (Mac), NVDA (Windows) ou TalkBack (Android)
+- [ ] **Zoom:** Conteúdo utilizável com zoom de 200%
+- [ ] **Alto contraste:** Teste com o modo de alto contraste do Windows
+- [] **Movimento reduzido:** Teste com `prefere movimento reduzido: reduzir`
+- [ ] **Ordem de foco:** Lógica e segue a ordem visual
 
-### Screen reader commands
+### Comandos do leitor de tela
 
-| Action        | VoiceOver (Mac)     | NVDA (Windows) |
-| ------------- | ------------------- | -------------- |
-| Start/Stop    | ⌘ + F5              | Ctrl + Alt + N |
-| Next item     | VO + →              | ↓              |
-| Previous item | VO + ←              | ↑              |
-| Activate      | VO + Space          | Enter          |
-| Headings list | VO + U, then arrows | H / Shift + H  |
-| Links list    | VO + U              | K / Shift + K  |
+| Ação             | VozOver (Mac)        | NVDA (Windows)  |
+| ---------------- | -------------------- | --------------- |
+| Iniciar/Parar    | ⌘+F5                 | Ctrl+Alt+N      |
+| Próximo item     | VO+ →                | ↓               |
+| Ponto anterior   | VO + ←               | ↑               |
+| Ativar           | VO + Espaço          | Entrar          |
+| Lista de títulos | VO + U, depois setas | H / Mudança + H |
+| Lista de links   | VO + você            | K / Mudança +   |
+
+K |
 
 ---
 
-## Common issues by impact
+## Problemas comuns por impacto
 
-### Critical (fix immediately)
+### Crítico (corrigir imediatamente)
 
-1. Missing form labels
-2. Missing image alt text
-3. Insufficient color contrast
-4. Keyboard traps
-5. No focus indicators
+1. Rótulos de formulário ausentes
+2. Texto alternativo da imagem ausente
+3. Contraste de cor insuficiente
+4. Armadilhas de teclado
+5. Sem indicadores de foco
 
-### Serious (fix before launch)
+### Sério (corrigir antes do lançamento)
 
-1. Missing page language
-2. Missing heading structure
-3. Non-descriptive link text
-4. Auto-playing media
-5. Missing skip links
+1. Idioma da página ausente
+2. Estrutura de título ausente
+3. Texto do link não descritivo
+4. Mídia de reprodução automática
+5. Links para pular ausentes
 
-### Moderate (fix soon)
+### Moderado (corrigir em breve)
 
-1. Missing ARIA labels on icons
-2. Inconsistent navigation
-3. Missing error identification
-4. Timing without controls
-5. Missing landmark regions
+1. Etiquetas ARIA ausentes nos ícones
+2. Navegação inconsistente
+3. Falta de identificação de erro
+4. Cronometragem sem controles
+5. Regiões de referência ausentes
 
-## References
+## Referências
 
-- [WCAG 2.1 Quick Reference](https://www.w3.org/WAI/WCAG21/quickref/)
-- [WAI-ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/)
-- [Deque axe Rules](https://dequeuniversity.com/rules/axe/)
-- [Web Quality Audit](../web-quality-audit/SKILL.md)
+- [Referência rápida do WCAG 2.1](https://www.w3.org/WAI/WCAG21/quickref/)
+- [Práticas de autoria WAI-ARIA](https://www.w3.org/WAI/ARIA/apg/)
+- [Regras do Deque axe](https://dequeuniversity.com/rules/axe/)
+- [Auditoria de qualidade da Web](../web-quality-audit/SKILL.md)

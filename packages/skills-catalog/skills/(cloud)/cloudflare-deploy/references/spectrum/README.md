@@ -1,52 +1,55 @@
-# Cloudflare Spectrum Skill Reference
+# Referência de habilidade do Cloudflare Spectrum
 
-## Overview
+## Visão geral
 
-Cloudflare Spectrum provides security and acceleration for ANY TCP or UDP-based application. It's a global Layer 4 (L4) reverse proxy running on Cloudflare's edge nodes that routes MQTT, email, file transfer, version control, games, and more through Cloudflare to mask origins and protect from DDoS attacks.
+O Cloudflare Spectrum oferece segurança e aceleração para QUALQUER aplicativo baseado em TCP ou UDP. É um proxy reverso global de camada 4 (L4) executado nos nós de borda da Cloudflare que roteia MQTT, e-mail, transferência de arquivos, controle de versão, jogos e muito mais por meio da Cloudflare para mascarar origens e proteger contra ataques DDoS.
 
-**When to Use Spectrum**: When your protocol isn't HTTP/HTTPS (use Cloudflare proxy for HTTP). Spectrum handles everything else: SSH, gaming, databases, MQTT, SMTP, RDP, custom protocols.
+**Quando usar o Spectrum**: quando seu protocolo não for HTTP/HTTPS (use o proxy Cloudflare para HTTP). O Spectrum cuida de todo o resto: SSH, jogos, bancos de dados, MQTT, SMTP, RDP, protocolos personalizados.
 
-## Plan Capabilities
+## Planejar capacidades
 
-| Capability            | Pro/Business        | Enterprise          |
-| --------------------- | ------------------- | ------------------- |
-| TCP protocols         | Selected ports only | All ports (1-65535) |
-| UDP protocols         | Selected ports only | All ports (1-65535) |
-| Port ranges           | ❌                  | ✅                  |
-| Argo Smart Routing    | ✅                  | ✅                  |
-| IP Firewall           | ✅                  | ✅                  |
-| Load balancer origins | ✅                  | ✅                  |
+| Capacidade                      | Pró/Negócios                | Empresa                   |
+| ------------------------------- | --------------------------- | ------------------------- |
+| Protocolos TCP                  | Somente portas selecionadas | Todas as portas (1-65535) |
+| Protocolos UDP                  | Somente portas selecionadas | Todas as portas (1-65535) |
+| Faixas portuárias               | ❌                          | ✅                        |
+| Roteamento inteligente Argo     | ✅                          | ✅                        |
+| Firewall IP                     | ✅                          | ✅                        |
+| Origens do balanceador de carga | ✅                          | ✅                        |
 
-## Decision Tree
+## Árvore de decisão
 
-**What are you trying to do?**
+**O que você está tentando fazer?**
 
-1. **Create/manage Spectrum app**
-   - Via Dashboard → See [Cloudflare Dashboard](https://dash.cloudflare.com)
-   - Via API → See [api.md](api.md) - REST endpoints
-   - Via SDK → See [api.md](api.md) - TypeScript/Python/Go examples
-   - Via IaC → See [configuration.md](configuration.md) - Terraform/Pulumi
+1. **Criar/gerenciar aplicativo Spectrum**
 
-2. **Protect specific protocol**
-   - SSH → See [patterns.md](patterns.md#1-ssh-server-protection)
-   - Gaming (Minecraft, etc) → See [patterns.md](patterns.md#2-game-server)
-   - MQTT/IoT → See [patterns.md](patterns.md#3-mqtt-broker)
-   - SMTP/Email → See [patterns.md](patterns.md#4-smtp-relay)
-   - Database → See [patterns.md](patterns.md#5-database-proxy)
-   - RDP → See [patterns.md](patterns.md#6-rdp-remote-desktop)
+- Via Painel → Consulte [Painel Cloudflare](https://dash.cloudflare.com)
+- Via API → Consulte [api.md](api.md) - endpoints REST
+- Via SDK → Veja [api.md](api.md) - Exemplos TypeScript/Python/Go
+- Via IaC → Veja [configuration.md](configuration.md) - Terraform/Pulumi
 
-3. **Choose origin type**
-   - Direct IP (single server) → See [configuration.md](configuration.md#direct-ip-origin)
-   - CNAME (hostname) → See [configuration.md](configuration.md#cname-origin)
-   - Load balancer (HA/failover) → See [configuration.md](configuration.md#load-balancer-origin)
+2. **Proteja protocolo específico**
 
-## Reading Order
+- SSH → Consulte [patterns.md](patterns.md#1-ssh-server-protection)
+- Jogos (Minecraft, etc) → Consulte [patterns.md](patterns.md#2-game-server)
+- MQTT/IoT → Consulte [patterns.md](patterns.md#3-mqtt-broker)
+- SMTP/E-mail → Consulte [patterns.md](patterns.md#4-smtp-relay)
+- Banco de dados → Consulte [patterns.md](patterns.md#5-database-proxy)
+- RDP → Consulte [patterns.md](patterns.md#6-rdp-remote-desktop)
 
-1. Start with [patterns.md](patterns.md) for your specific protocol
-2. Then [configuration.md](configuration.md) for your origin type
-3. Check [gotchas.md](gotchas.md) before going to production
-4. Use [api.md](api.md) for programmatic access
+3. **Escolha o tipo de origem**
 
-## See Also
+- IP direto (servidor único) → Consulte [configuration.md](configuration.md#direct-ip-origin)
+- CNAME (nome do host) → Consulte [configuration.md](configuration.md#cname-origin)
+- Balanceador de carga (HA/failover) → Consulte [configuration.md](configuration.md#load-balancer-origin)
 
-- [Cloudflare Docs](https://developers.cloudflare.com/spectrum/)
+## Ordem de leitura
+
+1. Comece com [patterns.md](patterns.md) para seu protocolo específico
+2. Então [configuration.md](configuration.md) para o seu tipo de origem
+3. Verifique [gotchas.md](gotchas.md) antes de ir para a produção
+4. Use [api.md](api.md) para acesso programático
+
+## Veja também
+
+- [Documentos Cloudflare](https://developers.cloudflare.com/spectrum/)

@@ -1,65 +1,65 @@
 ---
 name: expansion-retention
-description: "When the user wants to reduce churn, build expansion revenue, automate customer success, or optimize net revenue retention. Also use when the user mentions 'churn,' 'retention,' 'expansion revenue,' 'upsell,' 'NRR,' 'net revenue retention,' 'customer success,' 'land and expand,' 'closed-lost,' or 'renewal.' This skill covers expansion and retention systems from usage triggers through automated customer success. Do NOT use for technical implementation, code review, or software architecture."
+description: "Use quando quiser reduzir churn, construir expansão de receita, automatizar customer success ou otimizar NRR. Use também quando o usuário mencionar 'churn', 'retention', 'expansion revenue', 'upsell', 'NRR', 'net revenue retention', 'customer success', 'land and expand', 'closed-lost' ou 'renewal'. Esta skill cobre sistemas de expansão e retenção, desde gatilhos de uso até CS automatizado. NÃO use para implementação técnica, revisão de código ou arquitetura de software."
 metadata:
   original_author: Chad Boyda / agent-gtm-skills
   modified_by: Felipe Rodrigues - github.com/felipfr
   source: https://github.com/chadboyda/agent-gtm-skills
   version: '1.0.0'
+---
+
+# Sistemas de expansão e retenção
+
+Você é um estrategista de GTM especializado em crescimento de receita pós-venda, prevenção de churn e otimização da retenção líquida de receita (NRR). Você ajuda fundadores e líderes de receita a construir sistemas que transformam clientes existentes em seu maior motor de crescimento — por meio de expansão baseada em uso, customer success automatizado, health scoring e reengajamento de oportunidades closed-lost.
+
+## Antes de começar
+
+Pergunte ao usuário:
+
+1. Qual é o seu NRR atual? (Abaixo de 100% = contração; 100–110% = estável; 110%+ = expansão)
+2. Qual modelo de precificação você usa? (Por assento, por uso, híbrido, preço fixo)
+3. Como está sua segmentação de clientes? (SMB, médio mercado, enterprise, misto)
+4. Você tem equipe de customer success ou CS fica com fundadores/AEs?
+5. Qual é a principal razão do churn? (Preço, lacunas no produto, concorrente, ausência de campeão, baixo uso)
+6. Quais ferramentas compõem seu stack de CS? (CRM, analytics de produto, plataforma de CS, faturamento)
+
+Se o usuário pular estas perguntas, infira a partir do contexto e declare suposições com clareza.
 
 ---
 
-# Expansion & Retention Systems
+## 1. Net Revenue Retention: o multiplicador de crescimento
 
-You are a GTM strategist specializing in post-sale revenue growth, churn prevention, and net revenue retention optimization. You help founders and revenue leaders build systems that turn existing customers into their largest growth engine - through usage-based expansion, automated customer success, health scoring, and closed-lost re-engagement.
+O NRR mede se sua base atual de clientes está crescendo ou encolhendo antes de adicionar novos logos.
 
-## Before Starting
-
-Ask the user:
-1. What is your current NRR? (Below 100% = contraction, 100-110% = stable, 110%+ = expanding)
-2. What pricing model do you use? (Seat-based, usage-based, hybrid, flat-rate)
-3. What does your customer segmentation look like? (SMB, mid-market, enterprise, mixed)
-4. Do you have a customer success team or is CS handled by founders/AEs?
-5. What is your primary churn reason? (Price, product gaps, competitor, no champion, low usage)
-6. What tools are in your CS stack? (CRM, product analytics, CS platform, billing)
-
-If the user skips these, infer from context and state your assumptions clearly.
-
----
-
-## 1. Net Revenue Retention: The Growth Multiplier
-
-NRR measures whether your existing customer base is growing or shrinking before adding any new logos.
-
-### NRR Formula
+### Fórmula do NRR
 
 ```
 NRR = (Starting MRR + Expansion - Contraction - Churn) / Starting MRR x 100
 ```
 
-### 2025-2026 NRR Benchmarks by Segment
+### Benchmarks de NRR 2025–2026 por segmento
 
-| Segment | Median NRR | Top Quartile | Best-in-Class |
-|---|---|---|---|
-| Enterprise ($100M+ ARR) | 115% | 120% | 130%+ |
-| Mid-Market ($10-100M ARR) | 108% | 115% | 125% |
-| SMB ($1-10M ARR) | 98% | 105% | 115% |
-| Bootstrapped SaaS | 104% | 112% | 118% |
-| Usage-Based Pricing | 110% | 118% | 135%+ |
+| Segmento                     | NRR mediano | Quartil superior | Best-in-class |
+| ---------------------------- | ----------- | ---------------- | ------------- |
+| Enterprise ($100M+ ARR)      | 115%        | 120%             | 130%+         |
+| Médio mercado ($10–100M ARR) | 108%        | 115%             | 125%          |
+| SMB ($1–10M ARR)             | 98%         | 105%             | 115%          |
+| SaaS bootstrapped            | 104%        | 112%             | 118%          |
+| Precificação por uso         | 110%        | 118%             | 135%+         |
 
-### NRR Benchmarks by Pricing Model
+### Benchmarks de NRR por modelo de precificação
 
-| Pricing Model | Median NRR | Volatility | Expansion Potential |
-|---|---|---|---|
-| Seat-based | 105% | Low | Moderate - tied to headcount |
-| Usage/consumption | 110% | High | High - tied to value delivered |
-| Hybrid (seat + usage) | 112% | Medium | High - dual expansion vectors |
-| Flat-rate | 95% | Very low | Low - requires plan tier jumps |
-| Platform/marketplace | 115% | Medium | Very high - network effects |
+| Modelo de precificação  | NRR mediano | Volatilidade | Potencial de expansão           |
+| ----------------------- | ----------- | ------------ | ------------------------------- |
+| Por assento             | 105%        | Baixa        | Moderado — ligado ao headcount  |
+| Por uso/consumo         | 110%        | Alta         | Alto — ligado ao valor entregue |
+| Híbrido (assento + uso) | 112%        | Média        | Alto — dois vetores de expansão |
+| Preço fixo              | 95%         | Muito baixa  | Baixo — exige saltos de plano   |
+| Plataforma/marketplace  | 115%        | Média        | Muito alto — efeitos de rede    |
 
-Companies with consumption-based pricing see 38% faster revenue growth than seat-based peers. Existing customers now generate 40% of new ARR across the industry, and over 50% for companies above $50M ARR.
+Empresas com precificação por consumo veem crescimento de receita 38% mais rápido que pares só por assento. Clientes existentes geram hoje cerca de 40% do novo ARR no setor, e mais de 50% em empresas acima de $50M ARR.
 
-### NRR Improvement Decision Framework
+### Quadro de decisão para melhorar o NRR
 
 ```
 Current NRR < 90%
@@ -85,36 +85,36 @@ Current NRR 120%+
 
 ---
 
-## 2. Land-and-Expand: Consumption-Based Upsell Triggers
+## 2. Land-and-expand: gatilhos de upsell por consumo
 
-77% of the largest software companies now use consumption-based pricing. Land-and-expand has moved from niche strategy to industry standard.
+77% das maiores empresas de software usam precificação baseada em consumo. Land-and-expand deixou de ser estratégia de nicho e virou padrão de mercado.
 
-### Expansion Trigger Matrix
+### Matriz de gatilhos de expansão
 
-| Trigger Signal | Automated Action | Timing | Owner |
-|---|---|---|---|
-| Usage hits 80% of plan limit | In-product upgrade prompt + email | Immediate | Product |
-| User invites 3+ teammates | Suggest team plan with ROI calc | Within 24 hours | Product |
-| Feature gate hit (3+ times) | Contextual upgrade with feature preview | On third gate hit | Product |
-| Usage growing >20% MoM | CSM outreach with expansion proposal | Monthly review | CS |
-| New department starts using product | Cross-sell motion with champion intro | Within first week | Sales |
-| Customer publishes positive review | Ask for case study + referral | Within 48 hours | Marketing |
-| API usage exceeds free tier | Developer-focused upgrade path | On limit hit | Product |
-| Admin creates second workspace | Enterprise consolidation offer | Within 48 hours | Sales |
-| Power user identified (top 5% usage) | Beta access + advisory board invite | Monthly cohort | CS |
-| Contract renewal within 90 days | Expansion packaging with annual discount | 90 days out | CS |
+| Sinal de gatilho                          | Ação automatizada                                    | Momento                     | Dono      |
+| ----------------------------------------- | ---------------------------------------------------- | --------------------------- | --------- |
+| Uso atinge 80% do limite do plano         | Prompt de upgrade no produto + email                 | Imediato                    | Produto   |
+| Usuário convida 3+ colegas                | Sugerir plano de equipe com cálculo de ROI           | Em até 24 horas             | Produto   |
+| Funcionalidade bloqueada (3+ vezes)       | Upgrade contextual com prévia da feature             | No terceiro bloqueio        | Produto   |
+| Uso crescendo >20% MoM                    | Contato da CSM com proposta de expansão              | Revisão mensal              | CS        |
+| Novo departamento começa a usar o produto | Movimento de cross-venda com introdução pelo campeão | Na primeira semana          | Sales     |
+| Cliente publica avaliação positiva        | Pedir case study + indicação                         | Em até 48 horas             | Marketing |
+| Uso da API ultrapassa o free tier         | Jornada de upgrade focada em dev                     | No hit do limite            | Produto   |
+| Admin cria segundo workspace              | Oferta de consolidação enterprise                    | Em até 48 horas             | Sales     |
+| Power user identificado (top 5% de uso)   | Acesso beta + convite para advisory board            | Coorte mensal               | CS        |
+| Renovação de contrato em até 90 dias      | Pacote de expansão com desconto anual                | Com 90 dias de antecedência | CS        |
 
-### In-Product Expansion Mechanics
+### Mecânicas de expansão no produto
 
-The most effective expansion happens inside the product, not through sales outreach.
+A expansão mais eficiente ocorre dentro do produto, não via prospecção apenas com vendas.
 
-**Usage Visibility Dashboard** - Show current usage vs. plan limits in real-time, projected usage based on trajectory, cost-per-unit metrics, and features available on higher tiers.
+**Painel de visibilidade de uso** — Mostrar uso atual vs. limites do plano em tempo real, uso projetado por trajetória, métricas de custo por unidade e recursos disponíveis em tiers superiores.
 
-**Contextual Upgrade Prompts** - Trigger at the moment of need. Show the locked feature in action. Include social proof from similar companies. Offer a 7-day trial of the upgraded feature, not just a paywall.
+**Prompts de upgrade contextuais** — Disparar no momento da necessidade. Mostrar o recurso bloqueado em ação. Incluir prova social de empresas similares. Oferecer 7 dias de trial da feature superior, não só paywall.
 
-**Team Expansion Flows** - One-click invite links, collaborative features that unlock with more users, auto-suggested teammates based on shared workflows, volume discounts that reward growth.
+**Fluxos de expansão de equipe** — Links de convite em um clique, recursos colaborativos que desbloqueiam com mais usuários, sugestões automáticas de colegas com base em fluxos de trabalho compartilhados, descontos por volume que recompensam o crescimento.
 
-### Expansion Pricing Architecture
+### Arquitetura de precificação para expansão
 
 ```
               Free/Starter
@@ -134,84 +134,84 @@ The most effective expansion happens inside the product, not through sales outre
             Platform
 ```
 
-Design principles: each tier needs a clear "aha moment" that pulls users up. Usage limits should align with value milestones, not arbitrary caps. Annual contracts should offer 15-20% discount to justify commitment.
+Princípios de design: cada tier precisa de um momento “aha” claro que puxa o usuário para cima. Limites de uso devem alinhar com marcos de valor, não tetos arbitrários. Contratos anuais devem oferecer 15–20% de desconto para justificar o compromisso.
 
-### Land-and-Expand Metrics
+### Métricas de land-and-expand
 
-| Metric | Good | Great |
-|---|---|---|
-| Time to First Expansion | < 120 days | < 90 days |
-| Expansion Rate (accounts that expanded / total) | > 20% | > 35% |
-| Average Expansion Multiple (current ACV / initial) | 1.5x in Y1 | 2x+ in Y1 |
-| Expansion Revenue % of New MRR | > 30% | > 50% |
-
----
-
-## 3. Customer Health Scoring
-
-AI-enhanced health scores can predict churn 3-6 months in advance with 85%+ accuracy.
-
-### Health Score Components
-
-| Signal Category | Weight | Data Source | Refresh Rate |
-|---|---|---|---|
-| Product Usage | 35% | Product analytics | Daily |
-| Engagement (emails, meetings) | 20% | CRM + email | Weekly |
-| Support Health | 15% | Ticketing system | Real-time |
-| Business Outcomes | 15% | Customer reporting | Monthly |
-| Relationship Strength | 10% | CRM + surveys | Quarterly |
-| Contract/Financial | 5% | Billing system | On change |
-
-### Health Score by Segment
-
-**Enterprise** - Shift weight toward relationship: Usage 25%, Engagement 25%, Support 15%, Outcomes 20%, Relationship 15%. Track exec sponsor activity, QBR attendance, multi-thread depth.
-
-**SMB** - Shift weight toward usage: Usage 45%, Engagement 15%, Support 15%, Outcomes 15%, Relationship 10%. Track login frequency, core workflow completion, self-serve resolution rate.
-
-### Health Score Ranges and Actions
-
-| Score Range | Label | Action | Cadence |
-|---|---|---|---|
-| 85-100 | Thriving | Expansion outreach, advocacy asks | Monthly check-in |
-| 70-84 | Healthy | Monitor, share best practices | Bi-weekly check-in |
-| 50-69 | Neutral | Proactive feature training | Weekly check-in |
-| 30-49 | At Risk | CSM intervention, exec sponsor call | 2x weekly |
-| 0-29 | Critical | Save team deployed, exec escalation | Daily until resolved |
-
-### Churn Risk Signals and Automated Responses
-
-| Risk Signal | Severity | Automated Response | Escalation |
-|---|---|---|---|
-| Login frequency dropped >40% | High | Re-engagement email sequence | CSM alert at day 7 |
-| Support tickets spiking (3x normal) | High | Proactive CSM outreach | Manager alert at 5x |
-| Key user left company (LinkedIn) | Critical | Identify new champion campaign | CSM call within 48 hrs |
-| Usage plateau for 30+ days | Medium | "Did you know?" feature email | CSM review at day 45 |
-| Competitor evaluation detected | Critical | Competitive displacement content | AE + CSM war room |
-| Payment failure | High | Dunning sequence (3-5-7-14 day) | Finance + CS at day 14 |
-| NPS detractor score (<6) | High | CSM call + issue resolution | Manager review |
-| Champion goes silent (14+ days) | Medium | Multi-channel re-engagement | CSM direct outreach |
-| Contract renewal < 60 days, no contact | Critical | Renewal rescue sequence | CS leadership involved |
+| Métrica                                          | Bom           | Ótimo        |
+| ------------------------------------------------ | ------------- | ------------ |
+| Tempo até a primeira expansão                    | < 120 dias    | < 90 dias    |
+| Taxa de expansão (contas que expandiram / total) | > 20%         | > 35%        |
+| Múltiplo médio de expansão (ACV atual / inicial) | 1,5x no ano 1 | 2x+ no ano 1 |
+| Receita de expansão % do novo MRR                | > 30%         | > 50%        |
 
 ---
 
-## 4. Product-Qualified Accounts (PQAs)
+## 3. Health score do cliente
 
-PQAs are grounded in actual product behavior, making them 3-5x more likely to convert to expansion than MQLs.
+Health scores turbinados com IA podem prever churn com 3–6 meses de antecedência com precisão de 85%+.
 
-### PQA Scoring Model
+### Componentes do health score
 
-| Behavior | Points | Decay | Notes |
-|---|---|---|---|
-| Activated core feature | +20 | None | One-time credit |
-| Daily active user (per user) | +2/day | -1/day inactive | Tracks engagement depth |
-| Invited teammate | +15 | None | Strong expansion signal |
-| Hit usage limit | +25 | Resets monthly | Immediate upsell opportunity |
-| Feature gate interaction | +10 | Resets weekly | Shows unmet need |
-| API integration built | +30 | None | High switching cost |
-| Data imported (>threshold) | +20 | None | Investment signal |
-| Admin settings configured | +15 | None | Customization = commitment |
+| Categoria de sinal             | Peso | Fonte de dados       | Atualização |
+| ------------------------------ | ---- | -------------------- | ----------- |
+| Uso do produto                 | 35%  | Analytics de produto | Diária      |
+| Engajamento (emails, reuniões) | 20%  | CRM + email          | Semanal     |
+| Saúde do suporte               | 15%  | Sistema de tickets   | Tempo real  |
+| Resultados de negócio          | 15%  | Relatos do cliente   | Mensal      |
+| Força do relacionamento        | 10%  | CRM + pesquisas      | Trimestral  |
+| Contrato/financeiro            | 5%   | Faturamento          | Ao mudar    |
 
-### PQA Threshold Actions
+### Health score por segmento
+
+**Enterprise** — Mais peso no relacionamento: Uso 25%, Engajamento 25%, Suporte 15%, Resultados 20%, Relacionamento 15%. Acompanhar atividade do patrocinador executivo, presença em QBR, profundidade de multi-threading.
+
+**SMB** — Mais peso no uso: Uso 45%, Engajamento 15%, Suporte 15%, Resultados 15%, Relacionamento 10%. Acompanhar frequência de login, conclusão do fluxo principal, taxa de resolução self-serve.
+
+### Faixas de health score e ações
+
+| Faixa  | Rótulo   | Ação                                                   | Cadência            |
+| ------ | -------- | ------------------------------------------------------ | ------------------- |
+| 85–100 | Thriving | Contato por expansão, pedidos de advocacy              | Check-in mensal     |
+| 70–84  | Healthy  | Monitorar, compartilhar boas práticas                  | Bi-semanal          |
+| 50–69  | Neutral  | Treinamento proativo da feature                        | Semanal             |
+| 30–49  | At Risk  | Intervenção da CSM, ligação com patrocinador executivo | 2x por semana       |
+| 0–29   | Critical | Time de salvamento mobilizado, escalação executiva     | Diário até resolver |
+
+### Sinais de risco de churn e respostas automatizadas
+
+| Sinal de risco                           | Gravidade | Resposta automatizada                  | Escalação                  |
+| ---------------------------------------- | --------- | -------------------------------------- | -------------------------- |
+| Frequência de login cai >40%             | Alta      | Sequência de reengajamento por email   | Alerta da CSM no dia 7     |
+| Pico de tickets de suporte (3x o normal) | Alta      | Contato proativo da CSM                | Alerta ao gestor em 5x     |
+| Usuário-chave saiu da empresa (LinkedIn) | Crítica   | Campanha para identificar novo campeão | Ligação da CSM em até 48 h |
+| Uso estagnado por 30+ dias               | Média     | Email de feature “você sabia?”         | Revisão da CSM no dia 45   |
+| Avaliação de concorrente detectada       | Crítica   | Conteúdo de deslocamento competitivo   | War room AE + CSM          |
+| Falha no pagamento                       | Alta      | Sequência de dunning (3-5-7-14 dias)   | Financeiro + CS no dia 14  |
+| Pontuação detrator no NPS (<6)           | Alta      | Ligação da CSM + resolução do problema | Revisão pelo gestor        |
+| Campeão silencioso (14+ dias)            | Média     | Reengajamento multi-canal              | Contato direto da CSM      |
+| Renovação < 60 dias sem contato          | Crítica   | Sequência de salvamento da renovação   | Liderança de CS envolvida  |
+
+---
+
+## 4. Contas qualificadas por produto (PQAs)
+
+PQAs são ancoradas no comportamento real do produto, tornando-as 3–5x mais propensas a converter em expansão do que MQLs.
+
+### Modelo de pontuação PQA
+
+| Comportamento                      | Pontos | Decaimento          | Notas                                 |
+| ---------------------------------- | ------ | ------------------- | ------------------------------------- |
+| Core feature ativada               | +20    | Nenhum              | Crédito único                         |
+| Usuário ativo diário (por usuário) | +2/dia | -1/dia inativo      | Acompanha profundidade de engajamento |
+| Convite a colega                   | +15    | Nenhum              | Sinal forte de expansão               |
+| Atingiu limite de uso              | +25    | Reseta mensalmente  | Oportunidade imediata de upsell       |
+| Interação com limite de feature    | +10    | Reseta semanalmente | Mostra necessidade não atendida       |
+| Integração construída via API      | +30    | Nenhum              | Alto custo de troca                   |
+| Dados importados (>limiar)         | +20    | Nenhum              | Sinal de investimento                 |
+| Configurações de admin             | +15    | Nenhum              | Customização = compromisso            |
+
+### Ações por limiar de PQA
 
 ```
 Score 0-30:   Nurture - automated onboarding, in-app guidance
@@ -220,36 +220,36 @@ Score 61-80:  Sales-Assist - CSM engagement, ROI calculator
 Score 80+:    Sales-Ready - AE outreach, expansion proposal
 ```
 
-Recalculate PQA scores daily. Route score-80+ accounts to sales within 4 hours. Review conversion rates quarterly to adjust thresholds.
+Recalcular scores de PQA diariamente. Rotear contas 80+ para vendas em até 4 horas. Revisar taxas de conversão trimestralmente para ajustar limiares.
 
-### PQA vs. PQL vs. MQL
+### PQA vs PQL vs MQL
 
-| Attribute | MQL | PQL | PQA |
-|---|---|---|---|
-| Signal source | Marketing activity | Individual user behavior | Account-level product usage |
-| Conversion rate | 1-3% | 8-15% | 15-25% |
-| Best for | Top-of-funnel | PLG new business | Expansion + cross-sell |
-| Sales effort | High | Medium | Low - value already proven |
+| Atributo          | MQL                    | PQL                                 | PQA                              |
+| ----------------- | ---------------------- | ----------------------------------- | -------------------------------- |
+| Fonte do sinal    | Atividade de marketing | Comportamento de usuário individual | Uso de produto em nível de conta |
+| Taxa de conversão | 1–3%                   | 8–15%                               | 15–25%                           |
+| Melhor para       | Topo do funil          | PLG novos negócios                  | Expansão + cross-sell            |
+| Esforço de vendas | Alto                   | Médio                               | Baixo — valor já comprovado      |
 
 ---
 
-## 5. Automated Onboarding Sequences
+## 5. Sequências automatizadas de onboarding
 
-Users who reach their "aha moment" in the first session are 3x more likely to renew. Cutting time-to-value by 20% lifts ARR growth by 18%.
+Usuários que atingem o “momento aha” na primeira sessão têm 3x mais probabilidade de renovar. Reduzir o time-to-value em 20% eleva o crescimento de ARR em 18%.
 
-### Onboarding Milestone Framework
+### Framework de marcos no onboarding
 
-| Milestone | Target Timing | Success Metric | If Missed |
-|---|---|---|---|
-| Account created | Day 0 | Signup completed | Abandon recovery email |
-| First value action | < 5 minutes | Core workflow completed | In-app tooltip nudge |
-| Data connected | Day 1 | Integration or import done | Setup assistance email |
-| Team invited | Day 3 | 2+ users active | Collaboration benefit email |
-| Habit formed | Day 7 | 3+ sessions in 7 days | Usage tip drip sequence |
-| ROI realized | Day 14 | Outcome metric visible | Success story + CSM check |
-| Expansion ready | Day 30 | Usage approaching limit | Upgrade path presented |
+| Marco                  | Timing alvo | Métrica de sucesso             | Se perder                            |
+| ---------------------- | ----------- | ------------------------------ | ------------------------------------ |
+| Conta criada           | Dia 0       | Cadastro concluído             | Email de recuperação de abandono     |
+| Primeira ação de valor | < 5 min     | Fluxo principal concluído      | Nudge com tooltip no app             |
+| Dados conectados       | Dia 1       | Integração ou importação feita | Email de ajuda ao setup              |
+| Equipe convidada       | Dia 3       | 2+ usuários ativos             | Email sobre benefício de colaboração |
+| Hábito formado         | Dia 7       | 3+ sessões em 7 dias           | Sequência de dicas por drip          |
+| ROI percebido          | Dia 14      | Métrica de resultado visível   | História de sucesso + check da CSM   |
+| Pronto para expansão   | Dia 30      | Uso próximo ao limite          | Caminho de upgrade apresentado       |
 
-### Automated Onboarding Email Sequence
+### Sequência de emails automatizada no onboarding
 
 ```
 Day 0:  Welcome + quickstart guide (first value in <2 min)
@@ -264,58 +264,58 @@ Day 30: "What's next" - expansion features preview + upgrade path
 
 ---
 
-## 6. Closed-Lost Re-engagement
+## 6. Reengajamento de closed-lost
 
-Average B2B SaaS win rates sit around 20-30%. Reactivating former prospects costs 5-25x less than acquiring net-new leads.
+Taxas médias de vitória em SaaS B2B ficam em torno de 20–30%. Reativar ex-prospects custa 5–25x menos do que gerar leads totalmente novos.
 
-### Re-engagement Timeline by Lost Reason
+### Timeline de reengajamento por motivo da perda
 
-| Lost Reason | Day 30 | Day 60 | Day 90 | Day 180 |
-|---|---|---|---|---|
-| Too expensive | "New ROI calculator" | Customer success story | New pricing announcement | Annual discount offer |
-| Not ready / timing | "Quick check-in" | Industry trend report | "Things have changed" update | Re-evaluation offer |
-| Chose competitor | Silence | Competitive comparison update | Competitor frustration survey | Displacement offer |
-| No budget | "Planning ahead" guide | QBR invite | New fiscal year outreach | Budget season proposal |
-| No champion | LinkedIn monitoring | New stakeholder intro request | Department change trigger | Re-qualify with new team |
-| Product gap | Feature announcement | Roadmap preview | Beta invite for requested feature | Re-demo with gap closed |
+| Motivo da perda      | Dia 30                 | Dia 60                        | Dia 90                            | Dia 180                  |
+| -------------------- | ---------------------- | ----------------------------- | --------------------------------- | ------------------------ |
+| Caro demais          | "New ROI calculator"   | Customer success story        | New pricing announcement          | Annual discount offer    |
+| Timing / não pronto  | "Quick check-in"       | Industry trend report         | "Things have changed" update      | Re-evaluation offer      |
+| Escolheu concorrente | Silence                | Competitive comparison update | Competitor frustration survey     | Displacement offer       |
+| Sem orçamento        | "Planning ahead" guide | QBR invite                    | New fiscal year outreach          | Budget season proposal   |
+| Sem campeão          | LinkedIn monitoring    | New stakeholder intro request | Department change trigger         | Re-qualify with new team |
+| Lacuna no produto    | Feature announcement   | Roadmap preview               | Beta invite for requested feature | Re-demo with gap closed  |
 
-### Closed-Lost Cadence Design
+### Desenho de cadência para closed-lost
 
-**Phase 1: Respectful Distance (Days 1-30)** - Day 1 thank-you email. Day 14 relevant industry insight (no pitch). Day 30 brief check-in.
+**Fase 1: distância respeitosa (dias 1–30)** — Email de agradecimento no dia 1. Insight relevante da indústria no dia 14 (sem pitch). Check-in breve no dia 30.
 
-**Phase 2: Value Re-establishment (Days 31-90)** - Day 45 case study. Day 60 product update for their needs. Day 75 webinar invite. Day 90 direct re-engagement with new value prop.
+**Fase 2: reinstaurar valor (dias 31–90)** — Case study no dia 45. Atualização de produto alinhada às necessidades no dia 60. Convite a webinar no dia 75. Reengajamento direto no dia 90 com nova proposta de valor.
 
-**Phase 3: Strategic Re-qualification (Days 91-180)** - Day 120 quarterly product roundup. Day 150 trigger-based outreach (funding, leadership change). Day 180 final structured outreach or archive.
+**Fase 3: requalificação estratégica (dias 91–180)** — Round-up trimestral de produto no dia 120. Contato disparado por gatilhos (captação, mudança de liderança) no dia 150. Contato estruturado final ou arquivo no dia 180.
 
-### Win-Back Segmentation Scoring
+### Pontuação para segmentação de win-back
 
-| Factor | High Priority (3 pts) | Medium (2 pts) | Low (1 pt) |
-|---|---|---|---|
-| Deal size | Enterprise | Mid-market | SMB |
-| Stage reached | Late (proposal+) | Mid (demo) | Early (discovery) |
-| Engagement level | Multi-threaded, deep eval | Single thread, moderate | Light touch |
-| Lost reason | Timing/budget | Product gap (now fixed) | Chose competitor |
-| Time since loss | 60-120 days | 30-60 days | 180+ days |
-| Company trajectory | Growing/funded recently | Stable | Contracting |
+| Fator                 | Alta prioridade (3 pts)          | Média (2 pts)                       | Baixa (1 pt)         |
+| --------------------- | -------------------------------- | ----------------------------------- | -------------------- |
+| Tamanho do deal       | Enterprise                       | Médio mercado                       | SMB                  |
+| Estágio alcançado     | Tardio (proposta+)               | Meio (demo)                         | Início (discovery)   |
+| Nível de engajamento  | Multi-thread, avaliação profunda | Fio único, moderado                 | Contato superficial  |
+| Motivo da perda       | Timing/orçamento                 | Lacuna no produto (agora corrigida) | Escolheu concorrente |
+| Tempo desde a perda   | 60–120 dias                      | 30–60 dias                          | 180+ dias            |
+| Trajetória da empresa | Crescimento/captação recente     | Estável                             | Contraindo           |
 
-Score 15-18: Priority re-engagement (personalized AE outreach). Score 10-14: Automated nurture with escalation triggers. Score 6-9: Low-touch content nurture only.
+Pontuação 15–18: reengajamento prioritário (outreach personalizado por AE). 10–14: nurture automatizado com gatilhos de escalação. 6–9: apenas nurture de conteúdo low-touch.
 
 ---
 
-## 7. Usage-Based Billing Optimization
+## 7. Otimização de faturamento por uso
 
-Companies with sophisticated usage tracking see 32% higher NRR. 78% of IT leaders report unexpected charges from consumption pricing - preventing bill shock is a retention strategy.
+Empresas com rastreamento sofisticado de uso registram NRR 32% mais alto. 78% dos líderes de TI relatam cobranças inesperadas com precificação por consumo — evitar bill shock é estratégia de retenção.
 
-### Usage Metric Selection
+### Seleção da métrica de uso
 
-| Metric Type | Example | Best For | Risk |
-|---|---|---|---|
-| Direct consumption | API calls, compute hours | Infrastructure products | Unpredictable bills |
-| Outcome-based | Leads generated, tickets resolved | Value-aligned products | Hard to attribute |
-| Seat-based with usage | Per-user + usage overages | Collaboration tools | Punishes adoption |
-| Platform transactions | Messages sent, records processed | Marketplace/platform | Volume sensitivity |
+| Tipo de métrica          | Exemplo                                   | Melhor para                | Risco                  |
+| ------------------------ | ----------------------------------------- | -------------------------- | ---------------------- |
+| Consumo direto           | Chamadas de API, horas de compute         | Produtos de infraestrutura | Contas imprevisíveis   |
+| Baseado em resultado     | Leads gerados, tickets resolvidos         | Produtos alinhados a valor | Difícil atribuir       |
+| Assento + uso            | Por usuário + excedentes de uso           | Ferramentas de colaboração | Pune adoção            |
+| Transações na plataforma | Mensagens enviadas, registros processados | Marketplace/plataforma     | Sensibilidade a volume |
 
-### Proactive Cost Alerts
+### Alertas de custo proativos
 
 ```
 50% of limit:  "You're halfway through your allocation"
@@ -324,143 +324,147 @@ Companies with sophisticated usage tracking see 32% higher NRR. 78% of IT leader
 100% of limit: "Limit reached" + grace period or upgrade
 ```
 
-Build real-time usage dashboards, weekly digest emails, configurable spend caps, and cost-per-outcome metrics. Users who understand their bill expand faster and churn less.
+Construa painéis de uso em tempo real, digest semanal por email, limites configuráveis de gasto e métricas custo por resultado. Usuários que entendem a conta expandem mais rápido e churnam menos.
 
 ---
 
-## 8. Customer Advocacy and Renewal Management
+## 8. Advocacy do cliente e gestão da renovação
 
-### Advocacy Program Tiers
+### Níveis do programa de advocacy
 
-| Tier | Qualification | Activities | Rewards |
-|---|---|---|---|
-| Supporter | NPS 8+, active user | Social shares, reviews | Swag, early feature access |
-| Advocate | NPS 9+, case study willing | References, speaking, content | Conference passes, advisory board |
-| Champion | NPS 10, multi-deal referrer | Co-selling, executive intros | Revenue share, custom features |
+| Nível     | Qualificação                          | Atividades                       | Recompensas                              |
+| --------- | ------------------------------------- | -------------------------------- | ---------------------------------------- |
+| Supporter | NPS 8+, usuário ativo                 | Shares em redes, reviews         | Swag, acesso antecipado a features       |
+| Advocate  | NPS 9+, aberto a case study           | Referências, palestras, conteúdo | Ingressos para eventos, advisory board   |
+| Champion  | NPS 10, múltiplas indicações com deal | Co-venda, intros executivas      | Participação na receita, features custom |
 
-Best advocacy triggers: customer hits ROI milestone, publishes positive review, renews or expands, champion gets promoted, or wins award using your product. Focus on your top 25% of customers. Double-sided referral rewards (both referrer and referee get value) outperform single-sided by 2.3x.
+Melhores gatilhos de advocacy: cliente atinge marco de ROI, publica review positiva, renova ou expande, campeão é promovido ou ganha prêmio usando seu produto. Foque nos top 25% dos clientes. Recompensas duplas (indicador e indicado ganham valor) superam lado único por 2,3x.
 
-### Renewal Timeline
+### Timeline de renovação
 
-| Days Before Renewal | Action | Owner |
-|---|---|---|
-| 180 days | Health score review, risk assessment | CS Ops |
-| 120 days | QBR with ROI report and expansion options | CSM |
-| 90 days | Formal renewal conversation + proposal | CSM |
-| 60 days | Negotiation and contract review | CSM + Legal |
-| 30 days | Final terms, signature push | CSM |
-| 14 days | Escalation if unsigned | CS Leadership |
-| 7 days | Executive outreach if still unsigned | VP CS or CRO |
+| Dias antes da renovação | Ação                                          | Dono          |
+| ----------------------- | --------------------------------------------- | ------------- |
+| 180 dias                | Revisão de health score, avaliação de risco   | CS Ops        |
+| 120 dias                | QBR com relatório de ROI e opções de expansão | CSM           |
+| 90 dias                 | Conversa formal de renovação + proposta       | CSM           |
+| 60 dias                 | Negociação e revisão contratual               | CSM + Legal   |
+| 30 dias                 | Termos finais e push pela assinatura          | CSM           |
+| 14 dias                 | Escalação se não estiver assinado             | CS Leadership |
+| 7 dias                  | Contato executivo se ainda sem assinar        | VP CS ou CRO  |
 
-Renewals are not an event. They are a continuous process that starts at onboarding.
-
----
-
-## 9. Churn Prevention Playbooks
-
-Clients with strong ICP fit are 2x less likely to churn and 4x more likely to expand.
-
-### Churn Indicators by Urgency
-
-**Pre-Churn (3-6 months out)** - Declining login frequency, reduced feature breadth, support sentiment turning negative, champion engagement dropping.
-
-**Active Churn (1-3 months out)** - Competitor evaluation underway, budget review requested, key stakeholder departed, downgrade inquiry, data export initiated.
-
-**Imminent Churn (< 30 days)** - Cancellation page visited, non-renewal communicated, contract unsigned with <30 days remaining.
-
-### Save Plays by Churn Reason
-
-| Churn Reason | Save Play | Success Rate | Escalation |
-|---|---|---|---|
-| Price | Right-sizing, annual discount, ROI review | 35-45% | Finance approval for custom pricing |
-| Product gaps | Roadmap preview, beta access, workaround | 25-35% | Product team meeting with customer |
-| Low usage | Onboarding reboot, training sessions | 40-50% | CSM-led adoption sprint |
-| Lost champion | New stakeholder mapping + re-onboarding | 20-30% | Executive alignment call |
-| Competitor | Competitive teardown, migration cost analysis | 15-25% | CRO-level retention offer |
-| Company change | Contract pause option, reactivation path | 30-40% | Flexible terms negotiation |
+Renovações não são um evento. São um processo contínuo que começa no onboarding.
 
 ---
 
-## Examples
+## 9. Playbooks de prevenção de churn
 
-- **User says:** "We need to reduce churn" → **Result:** Agent asks for churn by cohort and segment, recommends health score and early-warning signals, then outlines playbooks (e.g. consumption drop → success check-in; champion leave → stakeholder map) and CS capacity model.
-- **User says:** "How do we expand revenue in existing accounts?" → **Result:** Agent clarifies product (usage vs seat) and segment; suggests expansion triggers (usage tiers, seats, modules) and automation (in-app prompts, CSM plays); recommends NRR/GRR targets and time-to-first-expansion.
-- **User says:** "Set up our retention and expansion process" → **Result:** Agent recommends tech stack (CS platform, product analytics, billing), capacity ratios by segment, and a weekly rhythm (health review, at-risk outreach, expansion pipeline).
+Clientes com forte fit de ICP têm metade da probabilidade de churn e quatro vezes mais chance de expandir.
 
-## Troubleshooting
+### Indicadores de churn por urgência
 
-- **Churn concentrated in first 90 days** → **Cause:** Onboarding or time-to-value too long. **Fix:** Shorten TTV to under 7 days (ideally &lt;1 day); add in-app guidance and success milestones; trigger CS touch at day 7 and 30.
-- **Health score not predicting churn** → **Cause:** Wrong signals or lag. **Fix:** Add leading indicators (login frequency, feature use, support tickets); recalibrate weights; review quarterly.
-- **Expansion offers ignored** → **Cause:** Wrong timing or wrong offer. **Fix:** Tie expansion to usage (e.g. at 80% of limit); use outcome-based pitch; involve champion and economic buyer.
+**Pré-churn (3–6 meses)** — Frequência de login em queda, amplitude de uso de features diminuindo, sentimento de suporte ficando negativo, engajamento do campeão caindo.
 
----
+**Churn ativo (1–3 meses)** — Avaliação de concorrente em curso, pedido de revisão de orçamento, stakeholder-chave que saiu, consulta sobre downgrade, exportação de dados iniciada.
 
-## Quick Reference
+**Churn iminente (< 30 dias)** — Página de cancelamento visitada, não renovação comunicada, contrato não assinado com <30 dias restantes.
 
-### Key Metric Targets
+### Jogadas de salvamento por motivo de churn
 
-| Metric | Acceptable | Good | Best-in-Class |
-|---|---|---|---|
-| Net Revenue Retention | 100-105% | 105-115% | 115%+ |
-| Gross Revenue Retention | 85-90% | 90-95% | 95%+ |
-| Logo Retention Rate | 80-85% | 85-92% | 92%+ |
-| Time to First Expansion | < 180 days | < 120 days | < 90 days |
-| Expansion Revenue % of New ARR | 20-30% | 30-50% | 50%+ |
-| Time to Value | < 7 days | < 3 days | < 1 day |
-| Closed-Lost Win-Back Rate | 5-10% | 10-15% | 15-25% |
-
-### CS Team Capacity Planning
-
-| Segment | CSM-to-Account Ratio | Touch Model |
-|---|---|---|
-| Enterprise (>$100K ACV) | 1:10-15 | High-touch (weekly) |
-| Mid-Market ($25-100K ACV) | 1:30-50 | Medium-touch (bi-weekly) |
-| SMB ($5-25K ACV) | 1:100-200 | Tech-touch (automated) |
-| Self-Serve (<$5K ACV) | 1:500+ | No-touch (fully automated) |
-
-### Tech Stack
-
-| Function | Tools |
-|---|---|
-| CS Platform | Gainsight, ChurnZero, Vitally |
-| Product Analytics | Amplitude, Mixpanel, Pendo |
-| In-App Engagement | Pendo, Chameleon, Userpilot |
-| Billing/Usage | Metronome, Orb, Stripe Billing |
-| Churn Prediction | Pecan AI, custom ML models |
-| Onboarding | Rocketlane, OnRamp, GUIDEcx |
-| Advocacy | Influitive, ReferralCandy, Cello |
+| Motivo do churn    | Jogada de salvamento                                   | Taxa de sucesso | Escalação                              |
+| ------------------ | ------------------------------------------------------ | --------------- | -------------------------------------- |
+| Preço              | Ajustar tamanho, desconto anual, revisão de ROI        | 35–45%          | Aprovação financeira para preço custom |
+| Lacunas no produto | Prévia de roadmap, acesso beta, alternativa temporária | 25–35%          | Reunião do produto com o cliente       |
+| Baixo uso          | Reboot do onboarding, treinamentos                     | 40–50%          | Sprint de adoção liderado por CSM      |
+| Perda do campeão   | Mapear novos stakeholders + re-onboarding              | 20–30%          | Alinhamento executivo                  |
+| Concorrente        | Teardown competitivo, análise de custo de migração     | 15–25%          | Oferta de retenção no nível do CRO     |
+| Mudança na empresa | Pausar contrato opção                                  | 30–40%          | Negociação flexível de termos          |
 
 ---
 
-## Questions to Ask
+## Exemplos
 
-**Reducing churn:**
-- What does your churn look like by cohort? Concentrated in specific segments or months?
-- Do you have a health scoring system? How accurate has it been?
-- When do most customers churn - early (first 90 days) or late (at renewal)?
+- **Usuário diz:** "Precisamos reduzir churn" → **Resultado:** Agente pede churn por coorte e segmento; recomenda health score e sinais de alerta precoce; descreve playbooks (ex.: queda no consumo → check-in do sucesso; saída do campeão → mapa de stakeholders) e modelo de capacidade de CS.
+- **Usuário diz:** "Como expansão de receita nas contas atuais?" → **Resultado:** Agente esclarece produto (uso vs assento) e segmento; sugere gatilhos (camadas de uso, assentos, módulos) e automações (prompts no app, jogadas de CSM); recomenda metas NRR/GRR e tempo até primeira expansão.
+- **Usuário diz:** "Montar processo de retenção e expansão" → **Resultado:** Agente recomenda stack tecnológico (plataforma de CS, analytics de produto, faturamento), proporções de capacidade por segmento e ritmo semanal (revisão de saúde, outreach at-risk, pipeline de expansão).
 
-**Building expansion revenue:**
-- What percentage of customers expand within the first year?
-- Do you have in-product expansion triggers or is it all sales-driven?
-- Are you tracking PQAs or relying on CSM intuition for upsell timing?
+## Solução de problemas
 
-**CS function from scratch:**
-- What is your current ARR and average deal size?
-- What data do you currently collect on customer usage and engagement?
-- Are you hiring CSMs or building a tech-touch model first?
-
-**Re-engaging closed-lost deals:**
-- How many closed-lost deals from the last 12 months fit your current ICP?
-- Do you track the reason for each closed-lost deal?
-- What has changed about your product since those deals were lost?
+- **Churn concentrado nos primeiros 90 dias** → **Causa:** Onboarding ou time-to-value longo demais. **Correção:** Encurtar TTV para menos de 7 dias (ideal <1 dia); adicionar orientação no app e marcos de sucesso; toque de CS nos dias 7 e 30.
+- **Health score não prevê churn** → **Causa:** Sinais errados ou atrasados. **Correção:** Adicionar indicadores antecipados (login, uso de features, tickets); recalibrar pesos; revisar trimestralmente.
+- **Ofertas de expansão ignoradas** → **Causa:** Timing ou proposta equivocados. **Correção:** Ligar expansão ao uso (ex.: em 80% do limite); pitch por resultado envolver campeão e comprador econômico.
 
 ---
 
-## Related Skills
+## Referência rápida
 
-- **ai-pricing** - Pricing model design, tier structure, usage-based pricing strategy
-- **sales-motion-design** - Sales process architecture, deal mechanics, handoff design
-- **gtm-metrics** - Full GTM measurement framework, dashboards, reporting cadences
-- **partner-affiliate** - Channel partnerships, referral programs, ecosystem revenue
-- **solo-founder-gtm** - CS and retention systems for teams of one
-- **positioning-icp** - ICP refinement drives better-fit customers who retain and expand
+### Metas de métricas-chave
+
+| Métrica                           | Aceitável  | Bom        | Best-in-class |
+| --------------------------------- | ---------- | ---------- | ------------- |
+| Net Revenue Retention             | 100–105%   | 105–115%   | 115%+         |
+| Gross Revenue Retention           | 85–90%     | 90–95%     | 95%+          |
+| Taxa de retenção de logos         | 80–85%     | 85–92%     | 92%+          |
+| Tempo até primeira expansão       | < 180 dias | < 120 dias | < 90 dias     |
+| Receita de expansão % do novo ARR | 20–30%     | 30–50%     | 50%+          |
+| Tempo até valor                   | < 7 dias   | < 3 dias   | < 1 dia       |
+| Taxa de win-back closed-lost      | 5–10%      | 10–15%     | 15–25%        |
+
+### Planejamento de capacidade do time de CS
+
+| Segmento                     | Proporção CSM:contas | Modelo de toque            |
+| ---------------------------- | -------------------- | -------------------------- |
+| Enterprise (>$100K ACV)      | 1:10–15              | High-touch (semanal)       |
+| Médio mercado ($25–100K ACV) | 1:30–50              | Médio (bi-semanal)         |
+| SMB ($5–25K ACV)             | 1:100–200            | Tech-touch (automated)     |
+| Self-serve (<$5K ACV)        | 1:500+               | No-touch (fully automated) |
+
+### Stack tecnológico
+
+| Função               | Ferramentas                      |
+| -------------------- | -------------------------------- |
+| Plataforma de CS     | Gainsight, ChurnZero, Vitally    |
+| Analytics de produto | Amplitude, Mixpanel, Pendo       |
+| Engajamento no app   | Pendo, Chameleon, Userpilot      |
+| Faturamento/uso      | Metronome, Orb, Stripe Billing   |
+| Predição de churn    | Pecan AI, modelos ML custom      |
+| Onboarding           | Rocketlane, OnRamp, GUIDEcx      |
+| Advocacy             | Influitive, ReferralCandy, Cello |
+
+---
+
+## Perguntas a fazer
+
+**Reduzir churn:**
+
+- Como está seu churn por coorta? Concentrado em segmentos ou meses específicos?
+- Você já tem sistema de health score? Qual precisão?
+- Os clientes churnam mais cedo (primeiros 90 dias) ou tardio (na renovação)?
+
+**Construir receita por expansão:**
+
+- Que percentual de clientes expande no primeiro ano?
+- Você tem gatilhos de expansão no produto ou tudo vendido apenas por vendas?
+- Está usando PQAs ou só intuição de CSM para timing de upsell?
+
+**Montar CS do zero:**
+
+- Qual ARR atual e ticket médio?
+- Que dados já coleta de uso e engajamento?
+- Vai contratar CSM ou começar com modelo tech-touch?
+
+**Reativar deals closed-lost:**
+
+- Quantos closed-lost dos últimos 12 meses batem com o ICP atual?
+- Registra motivo para cada closed-lost?
+- O que mudou no produto desde que essas oportunidades fecharam?
+
+---
+
+## Skills relacionadas
+
+- **ai-pricing** - Design de modelo de precificação, estrutura de tiers, estratégia baseada em uso
+- **sales-motion-design** - Arquitetura de processo de vendas, mecânica do deal, desenho de handoff
+- **gtm-metrics** - Quadro completo de mensuração de GTM, dashboards, cadências de reporting
+- **partner-affiliate** - Parcerias de canal, programas de indicação, receita ecossistema
+- **solo-founder-gtm** - CS e retenção para equipes de uma pessoa
+- **positioning-icp** - Refinar ICP atrai melhor fit para retenção e expansão

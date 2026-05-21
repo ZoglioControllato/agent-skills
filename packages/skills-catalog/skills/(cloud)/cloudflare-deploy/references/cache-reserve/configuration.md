@@ -158,13 +158,13 @@ Control Cache Reserve eligibility via Cache Rules:
 // Create via API: PUT to zones/{zone_id}/rulesets/phases/http_request_cache_settings/entrypoint
 ```
 
-## Wrangler Integration
+## Integração com Wrangler
 
-Cache Reserve works automatically with Workers deployed via Wrangler. No special wrangler.jsonc configuration needed - enable Cache Reserve via Dashboard or API for the zone.
+A Reserva de Cache funciona automaticamente com Workers implantados via Wrangler. Nenhuma configuração especial do wrangler.jsonc é necessária – habilite a reserva de cache por meio do painel ou API para a zona.
 
-## See Also
+## Veja também
 
-- [README](./README.md) - Overview and core concepts
-- [API Reference](./api.md) - Purging and monitoring APIs
-- [Patterns](./patterns.md) - Best practices and optimization
-- [Gotchas](./gotchas.md) - Common issues and troubleshooting
+- [README](./README.md) - Visão geral e conceitos básicos
+- [Referência de API](./api.md) - Limpeza e monitoramento de APIs
+- [Padrões](./patterns.md) - Melhores práticas e otimização
+- [Gotchas](./gotchas.md) - Problemas comuns e solução de problemas

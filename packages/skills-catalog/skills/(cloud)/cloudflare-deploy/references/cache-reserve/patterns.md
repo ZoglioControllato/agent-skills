@@ -177,16 +177,16 @@ console.log(mediaLibrary)
 // }
 ```
 
-### Optimization Guidelines
+### Diretrizes de otimização
 
-- **Set appropriate TTLs**: 10hr minimum, 24hr+ optimal for stable content, 30d max cautiously
-- **Cache high-value stable assets**: Images, media, fonts, archives, documentation
-- **Exclude frequently changing**: APIs, user-specific content, real-time data
-- **Compression note**: Cache Reserve fetches uncompressed from origin, serves compressed to visitors - factor in origin egress costs
+- **Defina TTLs apropriados**: mínimo de 10 horas, 24 horas ou mais ideal para conteúdo estável, 30 dias no máximo com cautela
+- **Ativos estáveis de alto valor em cache**: imagens, mídia, fontes, arquivos, documentação
+- **Excluir alterações frequentes**: APIs, conteúdo específico do usuário, dados em tempo real
+- **Nota de compactação**: Cache Reserve busca descompactado na origem e serve compactado aos visitantes - leva em consideração os custos de saída da origem
 
-## See Also
+## Veja também
 
-- [README](./README.md) - Overview and core concepts
-- [Configuration](./configuration.md) - Setup and Cache Rules
-- [API Reference](./api.md) - Purging and monitoring
-- [Gotchas](./gotchas.md) - Common issues and troubleshooting
+- [README](./README.md) - Visão geral e conceitos básicos
+- [Configuração](./configuration.md) - Regras de configuração e cache
+- [Referência da API](./api.md) - Limpeza e monitoramento
+- [Gotchas](./gotchas.md) - Problemas comuns e solução de problemas

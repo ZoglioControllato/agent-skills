@@ -1,103 +1,102 @@
-# Cloudflare Durable Objects
+# Objetos duráveis Cloudflare
 
-Expert guidance for building stateful applications with Cloudflare Durable Objects.
+Orientação especializada para criar aplicações com estado com objetos duráveis da Cloudflare.
 
-## Reading Order
+## Ordem de leitura
 
-1. **First time?** Read this overview + Quick Start
-2. **Setting up?** See [Configuration](./configuration.md)
-3. **Building features?** Use decision trees below → [Patterns](./patterns.md)
-4. **Debugging issues?** Check [Gotchas](./gotchas.md)
-5. **Deep dive?** [API](./api.md) and [DO Storage](../do-storage/README.md)
+1. **Primeira vez?** Leia esta visão geral + Início rápido
+2. **Configurando?** Consulte [Configuração](./configuration.md)
+3. **Criando recursos?** Use as árvores de decisão abaixo → [Padrões](./patterns.md)
+4. **Problemas de depuração?** Verifique [Pegadas](./gotchas.md)
+5. **Aprofundamento?** [API](./api.md) e [DO Storage](../do-storage/README.md)
 
-## Overview
+## Visão geral
 
-Durable Objects combine compute with storage in globally-unique, strongly-consistent packages:
+Objetos Duráveis combinam computação com armazenamento em pacotes globalmente exclusivos e fortemente consistentes:
 
-- **Globally unique instances**: Each DO has unique ID for multi-client coordination
-- **Co-located storage**: Fast, strongly-consistent storage with compute
-- **Automatic placement**: Objects spawn near first request location
-- **Stateful serverless**: In-memory state + persistent storage
-- **Single-threaded**: Serial request processing (no race conditions)
+- **Instâncias globalmente exclusivas**: cada DO possui um ID exclusivo para coordenação multicliente
+- **Armazenamento colocalizado**: armazenamento rápido e altamente consistente com computação
+- **Colocação automática**: Objetos aparecem perto do local da primeira solicitação
+- **Sem servidor com estado**: estado na memória + armazenamento persistente
+- **Single-threaded**: processamento de solicitação serial (sem condições de corrida)
 
-## Rules of Durable Objects
+## Regras de objetos duráveis
 
-Critical rules preventing most production issues:
+Regras críticas que evitam a maioria dos problemas de produção:
 
-1. **One alarm per DO** - Schedule multiple events via queue pattern
-2. **~1K req/s per DO max** - Shard for higher throughput
-3. **Constructor runs every wake** - Keep initialization light; use lazy loading
-4. **Hibernation clears memory** - In-memory state lost; persist critical data
-5. **Use `ctx.waitUntil()` for cleanup** - Ensures completion after response sent
-6. **No setTimeout for persistence** - Use `setAlarm()` for reliable scheduling
+1. **Um alarme por DO** - Programe vários eventos via padrão de fila
+2. **~1K req/s por DO max** - Fragmento para maior rendimento
+3. **O construtor é executado a cada wake** - Mantenha a inicialização leve; usar carregamento lento
+4. **A hibernação limpa a memória** - Estado da memória perdido; persistir dados críticos
+5. **Use `ctx.waitUntil()` para limpeza** - Garante a conclusão após o envio da resposta
+6. **Sem setTimeout para persistência** - Use `setAlarm()` para agendamento confiável
 
-## Core Concepts
+## Conceitos Básicos
 
-### Class Structure
+### Estrutura de Classe
 
-All DOs extend `DurableObject` base class with constructor receiving `DurableObjectState` (storage, WebSockets, alarms) and `Env` (bindings).
+Todos os DOs estendem a classe base `DurableObject` com o construtor recebendo `DurableObjectState` (armazenamento, WebSockets, alarmes) e `Env` (ligações).
 
-### Lifecycle States
+### Estados do ciclo de vida```
 
-```
 [Not Created] → [Active] ⇄ [Hibernated] → [Evicted]
-                   ↓
-              [Destroyed]
-```
-
-- **Not Created**: DO ID exists but instance never spawned
-- **Active**: Processing requests, in-memory state valid, billed per GB-hour
-- **Hibernated**: WebSocket connections open but zero compute, zero cost
-- **Evicted**: Removed from memory; next request triggers cold start
-- **Destroyed**: Data deleted via migration or manual deletion
-
-### Accessing from Workers
-
-Workers use bindings to get stubs, then call RPC methods directly (recommended) or use fetch handler (legacy).
-
-**RPC vs fetch() decision:**
+↓
+[Destroyed]
 
 ```
+- **Não criado**: DO ID existe, mas a instância nunca foi gerada
+- **Ativo**: Processamento de solicitações, estado válido na memória, faturado por GB-hora
+- **Hibernado**: conexões WebSocket abertas, mas zero computação, custo zero
+- **Despejado**: Removido da memória; próxima solicitação aciona inicialização a frio
+- **Destruído**: dados excluídos por migração ou exclusão manual
+
+### Acessando de Trabalhadores
+
+Os trabalhadores usam ligações para obter stubs e, em seguida, chamam métodos RPC diretamente (recomendado) ou usam o manipulador de busca (legado).
+
+**Decisão RPC vs fetch():**
+
+```
+
 ├─ New project + compat ≥2024-04-03 → RPC (type-safe, simpler)
 ├─ Need HTTP semantics (headers, status) → fetch()
 ├─ Proxying requests to DO → fetch()
 └─ Legacy compatibility → fetch()
-```
-
-See [Patterns: RPC vs fetch()](./patterns.md) for examples.
-
-### ID Generation
-
-- `idFromName()`: Deterministic, named coordination (rate limiting, locks)
-- `newUniqueId()`: Random IDs for sharding high-throughput workloads
-- `idFromString()`: Derive from existing IDs
-- Jurisdiction option: Data locality compliance
-
-### Storage Options
-
-**Which storage API?**
 
 ```
+Consulte [Padrões: RPC vs fetch()](./patterns.md) para obter exemplos.
+
+### Geração de ID
+
+- `idFromName()`: Coordenação determinística nomeada (limitação de taxa, bloqueios)
+- `newUniqueId()`: IDs aleatórios para fragmentação de cargas de trabalho de alto rendimento
+- `idFromString()`: deriva de IDs existentes
+- Opção de jurisdição: conformidade com a localidade dos dados
+
+### Opções de armazenamento
+
+**Qual API de armazenamento?**
+
+```
+
 ├─ Structured data, relations, transactions → SQLite (recommended)
 ├─ Simple KV on SQLite DO → ctx.storage.kv (sync KV)
 └─ Legacy KV-only DO → ctx.storage (async KV)
-```
 
-- **SQLite** (recommended): Structured data, transactions, 10GB/DO
-- **Synchronous KV API**: Simple key-value on SQLite objects
-- **Asynchronous KV API**: Legacy/advanced use cases
+````
+- **SQLite** (recomendado): dados estruturados, transações, 10 GB/DO
+- **API KV síncrona**: valor-chave simples em objetos SQLite
+- **API KV assíncrona**: casos de uso legado/avançado
 
-See [DO Storage](../do-storage/README.md) for deep dive.
+Consulte [DO Storage](../do-storage/README.md) para se aprofundar.
 
-### Special Features
+### Recursos especiais
 
-- **Alarms**: Schedule future execution per-DO (1 per DO - use queue pattern for multiple)
-- **WebSocket Hibernation**: Zero-cost idle connections (memory cleared on hibernation)
-- **Point-in-Time Recovery**: Restore to any point in 30 days (SQLite only)
+- **Alarmes**: Agende execução futura por DO (1 por DO - use padrão de fila para vários)
+- **Hibernação WebSocket**: conexões ociosas com custo zero (memória limpa na hibernação)
+- **Recuperação pontual**: Restaure para qualquer ponto em 30 dias (somente SQLite)
 
-## Quick Start
-
-```typescript
+## Início rápido```typescript
 import { DurableObject } from 'cloudflare:workers'
 
 export class Counter extends DurableObject<Env> {
@@ -122,36 +121,38 @@ export default {
     return new Response(`Count: ${count}`)
   },
 }
-```
+````
 
-## Decision Trees
+## Árvores de decisão
 
-### What do you need?
+### O que você precisa?```
 
-```
 ├─ Coordinate requests (rate limit, lock, session)
-│   → idFromName(identifier) → [Patterns: Rate Limiting/Locks](./patterns.md)
+│ → idFromName(identifier) → [Patterns: Rate Limiting/Locks](./patterns.md)
 │
 ├─ High throughput (>1K req/s)
-│   → Sharding with newUniqueId() or hash → [Patterns: Sharding](./patterns.md)
+│ → Sharding with newUniqueId() or hash → [Patterns: Sharding](./patterns.md)
 │
 ├─ Real-time updates (WebSocket, chat, collab)
-│   → WebSocket hibernation + room pattern → [Patterns: Real-time](./patterns.md)
+│ → WebSocket hibernation + room pattern → [Patterns: Real-time](./patterns.md)
 │
 ├─ Background work (cleanup, notifications, scheduled tasks)
-│   → Alarms + queue pattern (1 alarm/DO) → [Patterns: Multiple Events](./patterns.md)
+│ → Alarms + queue pattern (1 alarm/DO) → [Patterns: Multiple Events](./patterns.md)
 │
 └─ User sessions with expiration
-    → Session pattern + alarm cleanup → [Patterns: Session Management](./patterns.md)
+→ Session pattern + alarm cleanup → [Patterns: Session Management](./patterns.md)
+
 ```
 
 ### Which access pattern?
 
 ```
+
 ├─ New project + typed methods → RPC (compat ≥2024-04-03)
 ├─ Need HTTP semantics → fetch()
 ├─ Proxying to DO → fetch()
 └─ Legacy compat → fetch()
+
 ```
 
 See [Patterns: RPC vs fetch()](./patterns.md) for examples.
@@ -159,10 +160,12 @@ See [Patterns: RPC vs fetch()](./patterns.md) for examples.
 ### Which storage?
 
 ```
+
 ├─ Structured data, SQL queries, transactions → SQLite (recommended)
 ├─ Simple KV on SQLite DO → ctx.storage.kv (sync API)
 └─ Legacy KV-only DO → ctx.storage (async API)
-```
+
+````
 
 See [DO Storage](../do-storage/README.md) for complete guide.
 
@@ -172,7 +175,7 @@ See [DO Storage](../do-storage/README.md) for complete guide.
 npx wrangler dev              # Local dev with DOs
 npx wrangler dev --remote     # Test against prod DOs
 npx wrangler deploy           # Deploy + auto-apply migrations
-```
+````
 
 ## Resources
 

@@ -1,16 +1,17 @@
-# TURN Configuration
+#Configuração TURN
 
-Setup and configuration for Cloudflare TURN service in Workers and applications.
+Instalação e configuração do serviço Cloudflare TURN em Workers e aplicativos.
 
-## Environment Variables
+## Variáveis ​​de ambiente```bash
 
-```bash
 # .env
+
 CLOUDFLARE_ACCOUNT_ID=your_account_id
 CLOUDFLARE_API_TOKEN=your_api_token
 TURN_KEY_ID=your_turn_key_id
 TURN_KEY_SECRET=your_turn_key_secret
-```
+
+````
 
 Validate with zod:
 
@@ -25,7 +26,7 @@ const envSchema = z.object({
 })
 
 export const config = envSchema.parse(process.env)
-```
+````
 
 ## wrangler.jsonc
 
@@ -143,39 +144,40 @@ dig turn.cloudflare.com A
 dig turn.cloudflare.com AAAA
 ```
 
-Set up automated monitoring to detect IP changes and update allowlists within 14 days.
+Configure o monitoramento automatizado para detectar alterações de IP e atualizar listas de permissões em até 14 dias.
 
-## IPv6 Support
+## Suporte IPv6
 
-- **Client-to-TURN**: Both IPv4 and IPv6 supported
-- **Relay addresses**: IPv4 only (no RFC 6156 support)
-- **TCP relaying**: Not supported (RFC 6062)
+- **Cliente para TURN**: suporte para IPv4 e IPv6
+- **Endereços de retransmissão**: somente IPv4 (sem suporte a RFC 6156)
+- **Retransmissão TCP**: não compatível (RFC 6062)
 
-Clients can connect via IPv6, but relayed traffic uses IPv4 addresses.
+Os clientes podem se conectar via IPv6, mas o tráfego retransmitido usa endereços IPv4.
 
-## TLS Configuration
+## Configuração TLS
 
-### Supported TLS Versions
+### Versões TLS suportadas
 
-- TLS 1.1
-- TLS 1.2
-- TLS 1.3
+-TLS 1.1
+-TLS 1.2
+-TLS 1.3
 
-### Recommended Ciphers (TLS 1.3)
+### Cifras recomendadas (TLS 1.3)
 
-- AEAD-AES128-GCM-SHA256
-- AEAD-AES256-GCM-SHA384
-- AEAD-CHACHA20-POLY1305-SHA256
+-AEAD-AES128-GCM-SHA256
+-AEAD-AES256-GCM-SHA384
+-AEAD-CHACHA20-POLY1305-SHA256
 
-### Recommended Ciphers (TLS 1.2)
+### Cifras recomendadas (TLS 1.2)
 
-- ECDHE-ECDSA-AES128-GCM-SHA256
-- ECDHE-RSA-AES128-GCM-SHA256
-- ECDHE-RSA-AES128-SHA (also TLS 1.1)
-- AES128-GCM-SHA256
+-ECDHE-ECDSA-AES128-GCM-SHA256
+-ECDHE-RSA-AES128-GCM-SHA256
 
-## See Also
+- ECDHE-RSA-AES128-SHA (também TLS 1.1)
+  -AES128-GCM-SHA256
 
-- [api.md](./api.md) - TURN key creation, credential generation API
-- [patterns.md](./patterns.md) - Full Worker implementation patterns
-- [gotchas.md](./gotchas.md) - Security best practices, troubleshooting
+## Veja também
+
+- [api.md](./api.md) - Criação de chave TURN, API de geração de credenciais
+- [patterns.md](./patterns.md) - Padrões completos de implementação do Worker
+- [gotchas.md](./gotchas.md) - Práticas recomendadas de segurança, solução de problemas

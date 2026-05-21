@@ -1,6 +1,6 @@
-# Vectorize API Reference
+# Referência da API do Vectorize
 
-## Types
+## Tipos
 
 ```typescript
 interface VectorizeVector {
@@ -24,9 +24,9 @@ const matches = await env.VECTORIZE.query(queryVector, {
 // matches.matches[0] = { id, score, metadata? }
 ```
 
-**returnMetadata:** `"none"` (fastest) → `"indexed"` (recommended) → `"all"` (topK max 20)
+**returnMetadata:** `"none"` (mais rápido) → `"indexed"` (recomendado) → `"all"` (topK máx. 20)
 
-**queryById (V2 only):** Search using existing vector as query.
+**queryById (somente V2):** busca usando um vetor existente como consulta.
 
 ```typescript
 await env.VECTORIZE.queryById('doc-123', { topK: 5 })
@@ -42,9 +42,9 @@ await env.VECTORIZE.insert([{ id, values, metadata }])
 await env.VECTORIZE.upsert([{ id, values, metadata }])
 ```
 
-**Max 500 vectors per call.** Queryable after 5-10 seconds.
+**Máx. 500 vetores por chamada.** Consultável após 5–10 segundos.
 
-## Other Operations
+## Outras operações
 
 ```typescript
 // Get by IDs
@@ -58,32 +58,34 @@ const info = await env.VECTORIZE.describe()
 // { dimensions, metric, vectorCount }
 ```
 
-## Filtering
+## Filtragem
 
-Requires metadata index. Filter operators:
+Exige índice de metadados. Operadores de filtro:
 
-| Operator                     | Example                          |
+| Operador                     | Exemplo                          |
 | ---------------------------- | -------------------------------- |
-| `$eq` (implicit)             | `{ category: "docs" }`           |
+| `$eq` (implícito)            | `{ category: "docs" }`           |
 | `$ne`                        | `{ status: { $ne: "deleted" } }` |
 | `$in` / `$nin`               | `{ tag: { $in: ["sale"] } }`     |
 | `$lt`, `$lte`, `$gt`, `$gte` | `{ price: { $lt: 100 } }`        |
 
-**Constraints:** Max 2048 bytes, no dots/`$` in keys, values: string/number/boolean/null.
+**Restrições:** máx. 2048 bytes, sem pontos/`$` nas chaves, valores: string/número/boolean/null.
 
-## Performance
+## Desempenho
 
-| Configuration               | topK Limit | Speed   |
-| --------------------------- | ---------- | ------- |
-| No metadata                 | 100        | Fastest |
-| `returnMetadata: "indexed"` | 100        | Fast    |
-| `returnMetadata: "all"`     | 20         | Slower  |
-| `returnValues: true`        | 20         | Slower  |
+| Configuração                | Limite topK | Velocidade  |
+| --------------------------- | ----------- | ----------- |
+| Sem metadados               | 100         | Mais rápida |
+| `returnMetadata: "indexed"` | 100         | Rápida      |
+| `returnMetadata: "all"`     | 20          | Mais lenta  |
+| `returnValues: true`        | 20          | Mais lenta  |
 
-**Batch operations:** Always batch (500/call) for optimal throughput.
+**Operações em lote:** sempre em lotes (500/chamada) para melhor vazão.
 
 ```typescript
 for (let i = 0; i < vectors.length; i += 500) {
   await env.VECTORIZE.upsert(vectors.slice(i, i + 500))
 }
 ```
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

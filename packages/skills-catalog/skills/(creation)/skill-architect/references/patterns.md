@@ -1,317 +1,348 @@
-# Skill Patterns Reference
+# Referência de padrões de habilidades
 
-This document details the five proven patterns for skill architecture.
-Read this when deciding how to structure a skill's workflow during the
-Architecture phase.
+Este documento detalha os cinco padrões comprovados para arquitetura de habilidades.
+Leia isto ao decidir como estruturar o fluxo de trabalho de uma habilidade durante o
+Fase de arquitetura.
 
-## Table of Contents
+## Índice
 
-1. Sequential Workflow Orchestration (line ~20)
-2. Multi-MCP Coordination (line ~70)
-3. Iterative Refinement (line ~120)
-4. Context-Aware Tool Selection (line ~170)
-5. Domain-Specific Intelligence (line ~210)
-6. Choosing Between Patterns (line ~250)
-7. Combining Patterns (line ~280)
+1. Orquestração de fluxo de trabalho sequencial (linha ~20)
+2. Coordenação Multi-MCP (linha ~70)
+3. Refinamento Iterativo (linha ~120)
+4. Seleção de ferramenta baseada no contexto (linha ~170)
+5. Inteligência Específica de Domínio (linha ~210)
+6. Escolhendo entre padrões (linha ~250)
+7. Combinando Padrões (linha ~280)
 
 ---
 
-## 1. Sequential Workflow Orchestration
+## 1. Orquestração de fluxo de trabalho sequencial
 
-**Use when:** Users need multi-step processes executed in a specific order,
-where each step depends on the previous one.
+**Use quando:** os usuários precisam de processos de várias etapas executados em uma ordem específica,
+onde cada etapa depende da anterior.
 
-**Problem-first framing:** "I need to onboard a new customer" → Skill
-orchestrates the right calls in the right sequence.
+**Enquadramento do problema primeiro:** "Preciso integrar um novo cliente" → Habilidade
+orquestra as chamadas certas na sequência certa.
 
-**Key characteristics:**
+**Características principais:**
 
-- Explicit step ordering with dependencies between steps
-- Validation gates between steps (don't proceed if step N fails)
-- Rollback instructions for failures
-- Data flows from earlier steps to later ones
+- Ordenação explícita de etapas com dependências entre etapas
+- Portas de validação entre etapas (não prossiga se a etapa N falhar)
+- Instruções de reversão para falhas
+- Os dados fluem das etapas anteriores para as posteriores
 
-**Structure template:**
+**Modelo de estrutura:**
 
 ```markdown
 ## Workflow: [Name]
 
 ### Step 1: [Action]
+
 Call tool: `tool_name`
 Parameters: [what's needed]
 Validation: [how to know it succeeded]
 On failure: [what to do]
 
 ### Step 2: [Action]
+
 Depends on: Step 1 (uses [specific output])
 Call tool: `tool_name`
 Parameters: [include output from Step 1]
 Validation: [check]
 
 ### Step 3: [Action]
+
 ...
 ```
 
-**When to choose this pattern:**
+**Quando escolher este padrão:**
 
-- The workflow has a natural linear order
-- Steps have clear dependencies
-- Skipping a step would break the workflow
-- Users currently do these steps manually in sequence
+- O fluxo de trabalho tem uma ordem linear natural
+- As etapas têm dependências claras
+- Pular uma etapa interromperia o fluxo de trabalho
+- Atualmente, os usuários realizam essas etapas manualmente em sequência
 
-**Watch out for:**
+**Cuidado com:**
 
-- Rigid ordering when some steps could be parallel
-- Missing rollback logic (what if step 3 fails after step 1 and 2 succeeded?)
-- Not validating between steps
+- Ordenação rígida quando algumas etapas podem ser paralelas
+- Lógica de reversão ausente (e se a etapa 3 falhar após as etapas 1 e 2 terem sido bem-sucedidas?)
+- Não validando entre etapas
 
 ---
 
-## 2. Multi-MCP Coordination
+## 2. Coordenação Multi-MCP
 
-**Use when:** Workflows span multiple external services, each connected
-via its own MCP server.
+**Use quando:** Os fluxos de trabalho abrangem vários serviços externos, cada um conectado
+através de seu próprio servidor MCP.
 
-**Key characteristics:**
+**Características principais:**
 
-- Clear phase separation by service
-- Data passing between MCP servers
-- Validation before moving to next phase
-- Centralized error handling across services
+- Separação clara de fases por serviço
+- Passagem de dados entre servidores MCP
+- Validação antes de passar para a próxima fase
+- Tratamento centralizado de erros entre serviços
 
-**Structure template:**
+**Modelo de estrutura:**
 
 ```markdown
 ## Workflow: [Name]
 
 ### Phase 1: [Service A] ([MCP name])
+
 1. [Action using Service A tools]
 2. [Action using Service A tools]
-Output: [data needed by Phase 2]
+   Output: [data needed by Phase 2]
 
 ### Phase 2: [Service B] ([MCP name])
+
 Input: [data from Phase 1]
+
 1. [Action using Service B tools]
 2. [Action using Service B tools]
-Output: [data needed by Phase 3]
+   Output: [data needed by Phase 3]
 
 ### Phase 3: [Service C] ([MCP name])
+
 ...
 
 ## Error Handling
+
 - If Phase 1 fails: [action]
 - If Phase 2 fails but Phase 1 succeeded: [action]
 ```
 
-**When to choose this pattern:**
+**Quando escolher este padrão:**
 
-- The workflow crosses service boundaries
-- Multiple MCP servers are involved
-- Data needs to flow between services
-- Users currently switch between tools manually
+- O fluxo de trabalho ultrapassa os limites do serviço
+- Vários servidores MCP estão envolvidos
+- Os dados precisam fluir entre os serviços
+- Os usuários atualmente alternam entre as ferramentas manualmente
 
-**Watch out for:**
+**Cuidado com:**
 
-- Assuming all MCPs are connected (check availability first)
-- Not handling partial failures (Phase 2 fails but Phase 1 already ran)
-- Tight coupling between phases (prefer passing data explicitly)
+- Supondo que todos os MCPs estejam conectados (verifique a disponibilidade primeiro)
+- Não lidar com falhas parciais (a Fase 2 falha, mas a Fase 1 já foi executada)
+- Acoplamento forte entre fases (prefira passar dados explicitamente)
 
 ---
 
-## 3. Iterative Refinement
+## 3. Refinamento Iterativo
 
-**Use when:** Output quality improves through multiple review-and-fix cycles.
+**Use quando:** A qualidade da saída melhora através de vários ciclos de revisão e correção.
 
-**Key characteristics:**
+**Características principais:**
 
-- Initial draft generation
-- Quality check against explicit criteria
-- Refinement loop with clear stopping conditions
-- Finalization step
+- Geração de rascunho inicial
+- Verificação de qualidade em relação a critérios explícitos
+- Loop de refinamento com condições de parada claras
+- Etapa de finalização
 
-**Structure template:**
+**Modelo de estrutura:**
 
 ```markdown
 ## Workflow: [Name]
 
 ### Initial Draft
+
 1. Gather input data
 2. Generate first version
 3. Save to working file
 
 ### Quality Check
+
 Run validation: `scripts/check_quality.py`
 Criteria:
+
 - [Criterion 1]: [how to check]
 - [Criterion 2]: [how to check]
 - [Criterion 3]: [how to check]
 
 ### Refinement Loop
+
 For each issue found:
+
 1. Identify the specific problem
 2. Fix it
 3. Re-validate
 
 STOP when:
+
 - All criteria pass, OR
 - 3 iterations completed (diminishing returns), OR
 - User signals satisfaction
 
 ### Finalization
+
 1. Apply final formatting
 2. Generate summary of changes
 3. Save final version
 ```
 
-**When to choose this pattern:**
+**Quando escolher este padrão:**
 
-- Output quality is subjective or multi-dimensional
-- First drafts are usually "close but not quite"
-- Users currently review and ask for revisions manually
-- There are explicit quality criteria to check against
+- A qualidade da saída é subjetiva ou multidimensional
+- Os primeiros rascunhos são geralmente "próximos, mas não exatamente"
+- Os usuários atualmente revisam e solicitam revisões manualmente
+- Existem critérios de qualidade explícitos a serem verificados
 
-**Watch out for:**
+**Cuidado com:**
 
-- Infinite loops (always define stopping conditions)
-- Over-polishing (3 iterations is usually enough)
-- Vague quality criteria (make them checkable)
+- Loops infinitos (sempre defina condições de parada)
+- Polimento excessivo (3 iterações geralmente são suficientes)
+- Critérios de qualidade vagos (torná-los verificáveis)
 
 ---
 
-## 4. Context-Aware Tool Selection
+## 4. Seleção de ferramenta baseada no contexto
 
-**Use when:** The same goal can be achieved with different tools depending
-on the input or context.
+**Usar quando:** O mesmo objetivo pode ser alcançado com ferramentas diferentes dependendo
+na entrada ou contexto.
 
-**Key characteristics:**
+**Características principais:**
 
-- Decision tree based on input properties
-- Fallback options when primary choice isn't available
-- Transparency about why a particular path was chosen
+- Árvore de decisão baseada em propriedades de entrada
+- Opções alternativas quando a escolha principal não está disponível
+- Transparência sobre por que um determinado caminho foi escolhido
 
-**Structure template:**
+**Modelo de estrutura:**
 
 ```markdown
 ## Workflow: [Name]
 
 ### Analyze Input
+
 Check: [what properties to examine]
+
 - Property A: [value range or type]
 - Property B: [value range or type]
 
 ### Decision Tree
+
 IF [condition 1]:
-  → Use [Tool/Approach A]
-  Rationale: [why this is better for this case]
+→ Use [Tool/Approach A]
+Rationale: [why this is better for this case]
 ELIF [condition 2]:
-  → Use [Tool/Approach B]
-  Rationale: [why]
+→ Use [Tool/Approach B]
+Rationale: [why]
 ELSE:
-  → Use [Tool/Approach C] (default)
+→ Use [Tool/Approach C] (default)
 
 ### Execute
+
 Based on decision, execute using the selected approach.
 
 ### Explain Choice
+
 Tell the user which approach was selected and why.
 ```
 
-**When to choose this pattern:**
+**Quando escolher este padrão:**
 
-- Multiple valid approaches exist for the same goal
-- The "best" approach depends on input characteristics
-- Users don't know (or shouldn't need to know) which tool is optimal
+- Existem múltiplas abordagens válidas para o mesmo objetivo
+- A “melhor” abordagem depende das características de entrada
+- Os usuários não sabem (ou não deveriam saber) qual ferramenta é ideal
 
-**Watch out for:**
+**Cuidado com:**
 
-- Decision criteria that overlap (ambiguous routing)
-- Missing fallback for edge cases
-- Not explaining the choice to the user
+- Critérios de decisão que se sobrepõem (roteamento ambíguo)
+- Falta de fallback para casos extremos
+- Não explicar a escolha ao usuário
 
 ---
 
-## 5. Domain-Specific Intelligence
+## 5. Inteligência Específica de Domínio
 
-**Use when:** The skill's value comes from specialized knowledge, not just
-tool orchestration.
+**Use quando:** o valor da habilidade vem do conhecimento especializado, não apenas
+orquestração de ferramentas.
 
-**Key characteristics:**
+**Características principais:**
 
-- Domain rules and constraints embedded in logic
-- Compliance or validation checks before action
-- Comprehensive audit trails
-- Expert-level decision making
+- Regras e restrições de domínio incorporadas na lógica
+- Verificações de conformidade ou validação antes da ação
+- Trilhas de auditoria abrangentes
+- Tomada de decisão em nível de especialista
 
-**Structure template:**
+**Modelo de estrutura:**
 
 ```markdown
 ## Workflow: [Name]
 
 ### Pre-Check ([Domain] Rules)
+
 Before proceeding, verify:
+
 1. [Domain rule 1]: [how to check]
 2. [Domain rule 2]: [how to check]
 3. [Domain rule 3]: [how to check]
 
 IF any rule fails:
-  → [Escalation or alternative path]
-  → Document the failure
+→ [Escalation or alternative path]
+→ Document the failure
 
 ### Execute
+
 Only if pre-checks pass:
+
 1. [Action with domain context]
 2. [Action with domain context]
 
 ### Audit Trail
+
 Log:
+
 - All checks performed and results
 - Decisions made and rationale
 - Actions taken
 ```
 
-**When to choose this pattern:**
+**Quando escolher este padrão:**
 
-- The skill needs expert knowledge to execute correctly
-- There are compliance, safety, or quality rules to enforce
-- Getting it wrong has significant consequences
-- Users benefit from the skill's "expertise" more than its automation
+- A habilidade precisa de conhecimento especializado para ser executada corretamente
+- Existem regras de conformidade, segurança ou qualidade a serem aplicadas
+- Errar tem consequências significativas
+- Os usuários se beneficiam mais da “expertise” da habilidade do que de sua automação
 
-**Watch out for:**
+**Cuidado com:**
 
-- Outdated domain knowledge (plan for updates)
-- Over-encoding rules that change frequently (reference external docs instead)
-- Not documenting the reasoning for decisions
-
----
-
-## 6. Choosing Between Patterns
-
-| Signal | Suggested Pattern |
-|--------|------------------|
-| "Do A, then B, then C" | Sequential Workflow |
-| "Get data from X, send to Y, notify in Z" | Multi-MCP Coordination |
-| "Make it good, then review and improve" | Iterative Refinement |
-| "Handle PDFs differently from CSVs" | Context-Aware Selection |
-| "Follow our compliance rules" | Domain-Specific Intelligence |
-| Steps have no dependencies | Consider parallel execution |
-| User says "it depends" a lot | Context-Aware Selection |
-| Quality is subjective | Iterative Refinement |
+- Conhecimento de domínio desatualizado (planejar atualizações)
+- Regras de codificação excessiva que mudam com frequência (em vez disso, consulte documentos externos)
+- Não documentar o raciocínio das decisões
 
 ---
 
-## 7. Combining Patterns
+## 6. Escolhendo entre padrões
 
-Most real skills combine patterns. Common combinations:
+| Sinal                                             | Padrão sugerido                    |
+| ------------------------------------------------- | ---------------------------------- |
+| "Faça A, depois B, depois C"                      | Fluxo de trabalho sequencial       |
+| “Obter dados de X, enviar para Y, notificar em Z” | Coordenação Multi-MCP              |
+| "Faça bom, depois revise e melhore"               | Refinamento Iterativo              |
+| "Tratar PDFs de maneira diferente de CSVs"        | Seleção baseada no contexto        |
+| “Siga nossas regras de compliance”                | Inteligência Específica de Domínio |
+| As etapas não têm dependências                    | Considere a execução paralela      |
 
-- **Sequential + Domain Intelligence:** Follow steps in order, but embed
-  expert checks at critical points (e.g., compliance check before payment)
-- **Multi-MCP + Iterative:** Coordinate across services, then refine the
-  combined output
-- **Context-Aware + Sequential:** Choose the right tool first, then follow
-  a sequential workflow specific to that tool
-- **Domain Intelligence + Iterative:** Apply domain rules, generate output,
-  review against domain criteria, refine
+| O usuário diz
 
-When combining, identify the PRIMARY pattern (the one that shapes the
-overall flow) and SECONDARY patterns (the ones that apply within specific
-steps).
+é "depende" muito | Seleção baseada no contexto |
+| A qualidade é subjetiva | Refinamento Iterativo |
+
+---
+
+## 7. Combinando Padrões
+
+A maioria das habilidades reais combina padrões. Combinações comuns:
+
+- **Sequencial + Inteligência de Domínio:** Siga as etapas na ordem, mas incorpore
+  verificações especializadas em pontos críticos (por exemplo, verificação de conformidade antes do pagamento)
+- **Multi-MCP + Iterativo:** coordene entre serviços e refine o
+  saída combinada
+- **Context-Aware + Sequencial:** Escolha a ferramenta certa primeiro e depois siga
+  um fluxo de trabalho sequencial específico para essa ferramenta
+- **Inteligência de Domínio + Iterativo:** Aplicar regras de domínio, gerar saída,
+  revise novamente
+
+critérios de domínio st, refinar
+
+Ao combinar, identifique o padrão PRIMÁRIO (aquele que molda o
+fluxo geral) e padrões SECUNDÁRIOS (aqueles que se aplicam dentro de
+etapas).

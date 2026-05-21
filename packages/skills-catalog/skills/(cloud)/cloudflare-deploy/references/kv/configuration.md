@@ -1,6 +1,6 @@
-# KV Configuration
+# Configuração KV
 
-## Create Namespace
+## Criar namespace
 
 ```bash
 wrangler kv namespace create MY_NAMESPACE
@@ -9,7 +9,7 @@ wrangler kv namespace create MY_NAMESPACE
 wrangler kv namespace create MY_NAMESPACE --preview  # For local dev
 ```
 
-## Workers Binding
+## Binding no Workers
 
 **wrangler.jsonc:**
 
@@ -29,7 +29,7 @@ wrangler kv namespace create MY_NAMESPACE --preview  # For local dev
 }
 ```
 
-## TypeScript Types
+## Tipos TypeScript
 
 **env.d.ts:**
 
@@ -53,7 +53,7 @@ export default {
 } satisfies ExportedHandler<Env>
 ```
 
-**Type-safe JSON operations:**
+**Operações JSON tipadas:**
 
 ```typescript
 interface UserProfile {
@@ -69,7 +69,7 @@ if (profile) {
 }
 ```
 
-## CLI Operations
+## Operações CLI
 
 ```bash
 # Put
@@ -91,7 +91,7 @@ wrangler kv bulk get keys.json --binding=MY_KV
 wrangler kv bulk delete keys.json --binding=MY_KV --force
 ```
 
-## Local Development
+## Desenvolvimento local
 
 ```bash
 wrangler dev                # Local KV (isolated)
@@ -101,9 +101,9 @@ wrangler dev --remote       # Remote KV (production)
 # "kv_namespaces": [{ "binding": "MY_KV", "id": "...", "remote": true }]
 ```
 
-## REST API
+## API REST
 
-### Single Operations
+### Operações únicas
 
 ```typescript
 import Cloudflare from 'cloudflare'
@@ -121,7 +121,7 @@ await client.kv.namespaces.values.update(namespaceId, 'key', {
 })
 ```
 
-### Bulk Operations
+### Operações em lote
 
 ```typescript
 // Bulk update (up to 10,000 keys, max 100MB total)

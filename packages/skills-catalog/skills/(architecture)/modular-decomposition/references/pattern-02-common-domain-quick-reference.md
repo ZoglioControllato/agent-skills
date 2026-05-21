@@ -1,119 +1,112 @@
-# Common Domain Component Detection - Quick Reference
+# Detecção de componente de domínio comum - referência rápida
 
-## Domain vs Infrastructure
+## Domínio vs Infraestrutura
 
-| Type               | Description                              | Examples                        | Consolidate?               |
-| ------------------ | ---------------------------------------- | ------------------------------- | -------------------------- |
-| **Domain**         | Business logic, common to some processes | Notification, audit, validation | ✅ Yes                     |
-| **Infrastructure** | Technical concerns, common to all        | Logging, metrics, security      | ❌ No (handled separately) |
+| Tipo               | Descrição                                  | Exemplos                          | Consolidar? |
+| ------------------ | ------------------------------------------ | --------------------------------- | ----------- |
+| **Domínio**        | Lógica de negócio comum a alguns processos | Notificação, auditoria, validação | ✅ Sim      |
+| **Infraestrutura** | Preocupações técnicas, comuns a todos      |
 
-## Detection Strategies
+| Registro, métricas, segurança | ❌ Não (tratado separadamente) |
 
-### 1. Namespace Pattern Detection
+## Estratégias de detecção
 
-Find components with common leaf node names:
+### 1. Detecção de padrão de namespace
 
-```
-services/customer/notification  ← Common pattern
-services/ticket/notification     ← Common pattern
-services/survey/notification     ← Common pattern
-```
+Encontre componentes com nomes de nós folha comuns:```
+services/customer/notification ← Common pattern
+services/ticket/notification ← Common pattern
+services/survey/notification ← Common pattern
 
-**Common Patterns**:
+````
 
-- `*.notification`, `*.notify`, `*.email`
+**Padrões Comuns**:
+
+- `*.notificação`, `*.notify`, `*.email`
 - `*.audit`, `*.auditing`, `*.log`
-- `*.validation`, `*.validate`, `*.validator`
+- `*.validação`, `*.validate`, `*.validator`
 - `*.format`, `*.formatter`, `*.formatting`
 
-### 2. Shared Class Detection
+### 2. Detecção de classe compartilhada
 
-Find classes used across multiple components:
-
-```
+Encontre classes usadas em vários componentes:```
 SMTPConnection → Used by 5 components
 AuditLogger → Used by 8 components
 DataFormatter → Used by 3 components
-```
+````
 
-### 3. Functionality Analysis
+### 3. Análise de Funcionalidade
 
-Examine code to verify similarity:
+Examine o código para verificar a similaridade:
 
-- Read source code of each component
-- Identify similarities and differences
-- Assess if differences can be abstracted
+- Leia o código fonte de cada componente
+- Identificar semelhanças e diferenças
+- Avaliar se as diferenças podem ser abstraídas
 
-## Coupling Analysis
+## Análise de acoplamento
 
-### Before Consolidation
+### Antes da Consolidação```
 
-```
 Component A: CA = 2 (used by 2 components)
 Component B: CA = 2 (used by 2 components)
 Component C: CA = 1 (used by 1 component)
 Total CA: 5
-```
 
-### After Consolidation
-
-```
+````
+### Após a consolidação```
 Consolidated Component: CA = 5 (used by 5 components)
 Total CA: 5 (same!)
-```
+````
 
-**Verdict**: ✅ Safe to consolidate (no coupling increase)
+**Veredicto**: ✅ Seguro para consolidar (sem aumento de acoplamento)
 
-### Warning Signs
+### Sinais de alerta```
 
-```
 After Consolidation: CA = 15 (was 5)
 Verdict: ⚠️ High coupling increase - reconsider
-```
 
-## Consolidation Approaches
+````
+## Abordagens de consolidação
 
-### Shared Service
+### Serviço Compartilhado
 
-**Use when**:
+**Usar quando**:
 
-- Functionality changes frequently
-- Complex operations
-- Needs independent scaling
+- A funcionalidade muda frequentemente
+- Operações complexas
+- Precisa de escalonamento independente
 
-**Example**: Notification service called by multiple components
+**Exemplo**: serviço de notificação chamado por vários componentes
 
-### Shared Library
+### Biblioteca Compartilhada
 
-**Use when**:
+**Usar quando**:
 
-- Stable functionality
-- Simple utilities
-- Compile-time dependency acceptable
+- Funcionalidade estável
+- Utilitários simples
+- Dependência em tempo de compilação aceitável
 
-**Example**: Validation utilities packaged as npm package
+**Exemplo**: Utilitários de validação empacotados como pacote npm
 
-### Component Merge
+### Mesclagem de Componentes
 
-**Use when**:
+**Usar quando**:
 
-- Highly related functionality
-- Low coupling impact
-- Same deployment unit acceptable
+- Funcionalidade altamente relacionada
+- Baixo impacto de acoplamento
+- Mesma unidade de implantação aceitável
 
-**Example**: Merge 3 notification components into 1
+**Exemplo**: mesclar três componentes de notificação em um
 
-## Quick Analysis Steps
+## Etapas de análise rápida
 
-1. **Scan** → Find common namespace patterns
-2. **Detect** → Identify shared classes
-3. **Analyze** → Verify functionality similarity
-4. **Assess** → Calculate coupling impact
-5. **Recommend** → Suggest consolidation approach
+1. **Verificar** → Encontre padrões de namespace comuns
+2. **Detectar** → Identificar classes compartilhadas
+3. **Analisar** → Verifique a similaridade de funcionalidade
+4. **Avaliar** → Calcular o impacto do acoplamento
+5. **Recomendar** → Sugerir abordagem de consolidação
 
-## Output Template
-
-```markdown
+## Modelo de saída```markdown
 ## Common Domain Components Found
 
 ### [Functionality Name]
@@ -136,34 +129,34 @@ Verdict: ⚠️ High coupling increase - reconsider
 - Verdict: ✅ Safe / ⚠️ Monitor / ❌ Too risky
 
 **Recommendation**: [consolidation approach]
-```
+````
 
-## Decision Tree
+## Árvore de Decisão```
 
-```
 Found common pattern?
 ├─ YES → Analyze functionality
-│   ├─ Similar enough?
-│   │   ├─ YES → Assess coupling
-│   │   │   ├─ CA increase acceptable?
-│   │   │   │   ├─ YES → ✅ Consolidate
-│   │   │   │   └─ NO → ⚠️ Reconsider or use shared library
-│   │   └─ NO → ❌ Don't consolidate
-│   └─ NO → ❌ Don't consolidate
+│ ├─ Similar enough?
+│ │ ├─ YES → Assess coupling
+│ │ │ ├─ CA increase acceptable?
+│ │ │ │ ├─ YES → ✅ Consolidate
+│ │ │ │ └─ NO → ⚠️ Reconsider or use shared library
+│ │ └─ NO → ❌ Don't consolidate
+│ └─ NO → ❌ Don't consolidate
 └─ NO → No consolidation needed
+
 ```
+## Padrões Comuns
 
-## Common Patterns
+### Candidatos de alta consolidação ✅
 
-### High Consolidation Candidates ✅
+- Componentes de notificação
+- Componentes de auditoria
+- Componentes de validação
+- Componentes de formatação
 
-- Notification components
-- Audit components
-- Validation components
-- Formatting components
+### Candidatos com baixa consolidação ❌
 
-### Low Consolidation Candidates ❌
-
-- Infrastructure utilities
-- Different business contexts
-- High coupling risk scenarios
+- Utilidades de infraestrutura
+- Diferentes contextos de negócios
+- Cenários de alto risco de acoplamento
+```

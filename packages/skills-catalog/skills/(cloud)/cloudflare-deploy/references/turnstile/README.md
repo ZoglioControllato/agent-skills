@@ -1,22 +1,22 @@
-# Cloudflare Turnstile Implementation Skill Reference
+# Referência da skill de implementação Cloudflare Turnstile
 
-Expert guidance for implementing Cloudflare Turnstile - a smart CAPTCHA alternative that protects websites from bots without showing traditional CAPTCHA puzzles.
+Orientação especializada para implementar o Cloudflare Turnstile — alternativa inteligente a CAPTCHA que protege sites de bots sem quebra-cabeças tradicionais.
 
-## Overview
+## Visão geral
 
-Turnstile is a user-friendly CAPTCHA alternative that runs challenges in the background without user interaction. It validates visitors automatically using signals like browser behavior, device fingerprinting, and machine learning.
+O Turnstile é uma alternativa amigável a CAPTCHA: executa desafios em segundo plano sem interação obrigatória. Valida visitantes com sinais de comportamento do navegador, fingerprinting e ML.
 
-## Widget Types
+## Tipos de widget
 
-| Type                  | Interaction                        | Use Case                                |
-| --------------------- | ---------------------------------- | --------------------------------------- |
-| **Managed** (default) | Shows checkbox when needed         | Forms, logins - balance UX and security |
-| **Non-Interactive**   | Invisible, runs automatically      | Frictionless UX, low-risk actions       |
-| **Invisible**         | Hidden, triggered programmatically | Pre-clearance, API calls, headless      |
+| Tipo                 | Interação                         | Caso de uso                                   |
+| -------------------- | --------------------------------- | --------------------------------------------- |
+| **Managed** (padrão) | Mostra checkbox quando necessário | Formulários, logins — equilíbrio UX/segurança |
+| **Non-Interactive**  | Invisível, automático             | UX sem fricção, ações de baixo risco          |
+| **Invisible**        | Oculto, acionado por código       | Pré-liberação, APIs, headless                 |
 
-## Quick Start
+## Início rápido
 
-### Implicit Rendering (HTML-based)
+### Renderização implícita (HTML)
 
 ```html
 <!-- 1. Add script -->
@@ -29,7 +29,7 @@ Turnstile is a user-friendly CAPTCHA alternative that runs challenges in the bac
 </form>
 ```
 
-### Explicit Rendering (JavaScript-based)
+### Renderização explícita (JavaScript)
 
 ```html
 <div id="turnstile-container"></div>
@@ -42,7 +42,7 @@ Turnstile is a user-friendly CAPTCHA alternative that runs challenges in the bac
 </script>
 ```
 
-### Server Validation (Required)
+### Validação no servidor (obrigatória)
 
 ```javascript
 // Cloudflare Workers
@@ -70,33 +70,35 @@ export default {
 }
 ```
 
-## Testing Keys
+## Chaves de teste
 
-**Critical for development/testing:**
+**Essenciais para desenvolvimento/testes:**
 
-| Type                           | Key                                   | Behavior                           |
-| ------------------------------ | ------------------------------------- | ---------------------------------- |
-| **Site Key (Always Passes)**   | `1x00000000000000000000AA`            | Widget succeeds, token validates   |
-| **Site Key (Always Blocks)**   | `2x00000000000000000000AB`            | Widget fails visibly               |
-| **Site Key (Force Challenge)** | `3x00000000000000000000FF`            | Always shows interactive challenge |
-| **Secret Key (Testing)**       | `1x0000000000000000000000000000000AA` | Validates test tokens              |
+| Tipo                           | Chave                                 | Comportamento                    |
+| ------------------------------ | ------------------------------------- | -------------------------------- |
+| **Site Key (sempre passa)**    | `1x00000000000000000000AA`            | Widget ok, token valida          |
+| **Site Key (sempre bloqueia)** | `2x00000000000000000000AB`            | Falha visível                    |
+| **Site Key (força desafio)**   | `3x00000000000000000000FF`            | Sempre mostra desafio interativo |
+| **Secret Key (testes)**        | `1x0000000000000000000000000000000AA` | Valida tokens de teste           |
 
-**Note:** Test keys work on `localhost` and any domain. Do NOT use in production.
+**Nota:** chaves de teste funcionam em `localhost` e qualquer domínio. Não use em produção.
 
-## Key Constraints
+## Restrições das chaves
 
-- **Token expiry:** 5 minutes after generation
-- **Single-use:** Each token can only be validated once
-- **Server validation required:** Client-side checks are insufficient
+- **Expiração do token:** 5 minutos após geração
+- **Uso único:** cada token só pode ser validado uma vez
+- **Validação no servidor obrigatória:** checagem só no cliente é insuficiente
 
-## Reading Order
+## Ordem de leitura
 
-1. **[configuration.md](configuration.md)** - Setup, widget options, script loading
-2. **[api.md](api.md)** - JavaScript API, siteverify endpoints, TypeScript types
-3. **[patterns.md](patterns.md)** - Form integration, framework examples, validation patterns
-4. **[gotchas.md](gotchas.md)** - Common errors, debugging, limitations
+1. **[configuration.md](configuration.md)** — setup, opções do widget, carregamento do script
+2. **[api.md](api.md)** — API JS, siteverify, tipos TypeScript
+3. **[patterns.md](patterns.md)** — formulários, frameworks, validação
+4. **[gotchas.md](gotchas.md)** — erros comuns, depuração, limites
 
-## See Also
+## Ver também
 
-- [Cloudflare Turnstile Docs](https://developers.cloudflare.com/turnstile/)
-- [Dashboard](https://dash.cloudflare.com/?to=/:account/turnstile)
+- [Documentação Turnstile](https://developers.cloudflare.com/turnstile/)
+- [Painel](https://dash.cloudflare.com/?to=/:account/turnstile)
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

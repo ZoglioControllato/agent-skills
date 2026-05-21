@@ -18,13 +18,11 @@ return container.fetch(request)
 
 ### ⚠️ startAndWaitForPorts() vs start()
 
-**Problem:** "connection refused" after `start()`
+**Problema:** "conexão recusada" após `start()`
 
-**Cause:** `start()` returns when process starts, NOT when ports ready
+**Causa:** `start()` retorna quando o processo é iniciado, NÃO quando as portas estão prontas
 
-**Fix:** Use `startAndWaitForPorts()` before requests
-
-```typescript
+**Correção:** Use `startAndWaitForPorts()` antes das solicitações```typescript
 // ❌ WRONG
 await container.start()
 return container.fetch(request)
@@ -32,7 +30,8 @@ return container.fetch(request)
 // ✅ CORRECT
 await container.startAndWaitForPorts()
 return container.fetch(request)
-```
+
+````
 
 ### ⚠️ Activity Timeout on Long Operations
 
@@ -52,131 +51,127 @@ try {
 } finally {
   clearInterval(interval)
 }
-```
+````
 
-### ⚠️ blockConcurrencyWhile for Startup
+### ⚠️ blockConcurrencyWhile para inicialização
 
-**Problem:** Race conditions during initialization
+**Problema:** Condições de corrida durante a inicialização
 
-**Fix:** Use `blockConcurrencyWhile` for atomic initialization
-
-```typescript
+**Correção:** Use `blockConcurrencyWhile` para inicialização atômica```typescript
 await this.ctx.blockConcurrencyWhile(async () => {
-  if (!this.initialized) {
-    await this.startAndWaitForPorts()
-    this.initialized = true
-  }
+if (!this.initialized) {
+await this.startAndWaitForPorts()
+this.initialized = true
+}
 })
-```
 
-### ⚠️ Lifecycle Hooks Block Requests
+````
+### ⚠️ Solicitações de bloqueio de ganchos de ciclo de vida
 
-**Problem:** Container unresponsive during `onStart()`
+**Problema:** Container não responde durante `onStart()`
 
-**Cause:** Hooks run in `blockConcurrencyWhile` - no concurrent requests
+**Causa:** Hooks são executados em `blockConcurrencyWhile` - sem solicitações simultâneas
 
-**Fix:** Keep hooks fast, avoid long operations
+**Correção:** Mantenha os ganchos rápidos, evite operações longas
 
-### ⚠️ Don't Override alarm() When Using schedule()
+### ⚠️ Não substitua o alarme() ao usar agendamento()
 
-**Problem:** Scheduled tasks don't execute
+**Problema:** tarefas agendadas não são executadas
 
-**Cause:** `schedule()` uses `alarm()` internally
+**Causa:** `schedule()` usa `alarm()` internamente
 
-**Fix:** Implement `alarm()` to handle scheduled tasks
+**Correção:** Implemente `alarm()` para lidar com tarefas agendadas
 
-## Common Errors
+## Erros Comuns
 
-### "Container start timeout"
+### "Tempo limite de início do contêiner"
 
-**Cause:** Container took >8s (`start()`) or >20s (`startAndWaitForPorts()`)
+**Causa:** O contêiner demorou >8s (`start()`) ou >20s (`startAndWaitForPorts()`)
 
-**Solutions:**
+**Soluções:**
 
-- Optimize image (smaller base, fewer layers)
-- Check `entrypoint` correct
-- Verify app listens on correct ports
-- Increase timeout if needed
+- Otimizar imagem (base menor, menos camadas)
+- Verifique o `ponto de entrada` correto
+- Verifique se o aplicativo escuta nas portas corretas
+- Aumente o tempo limite, se necessário
 
-### "Port not available"
+### "Porta não disponível"
 
-**Cause:** Calling `fetch()` before port ready
+**Causa:** Chamando `fetch()` antes da porta estar pronta
 
-**Solution:** Use `startAndWaitForPorts()`
+**Solução:** Use `startAndWaitForPorts()`
 
-### "Container memory exceeded"
+### "Memória do contêiner excedida"
 
-**Cause:** Using more memory than instance type allows
+**Causa:** uso de mais memória do que o tipo de instância permite
 
-**Solutions:**
+**Soluções:**
 
-- Use larger instance type (standard-2, standard-3, standard-4)
-- Optimize app memory usage
-- Use custom instance type
-
-```jsonc
+- Use um tipo de instância maior (padrão 2, padrão 3, padrão 4)
+- Otimize o uso de memória do aplicativo
+- Use tipo de instância personalizado```jsonc
 "instance_type_custom": {
   "vcpu": 2,
   "memory_mib": 8192
 }
-```
+````
 
-### "Max instances reached"
+### "Máximo de instâncias alcançado"
 
-**Cause:** All `max_instances` slots in use
+**Causa:** Todos os slots `max_instances` em uso
 
-**Solutions:**
+**Soluções:**
 
-- Increase `max_instances`
-- Implement proper `sleepAfter`
-- Use `getRandom()` for distribution
-- Check for instance leaks
+- Aumentar `max_instances`
+- Implementar `sleepAfter` adequado
+- Use `getRandom()` para distribuição
+- Verifique se há vazamentos de instância
 
-### "No container instance available"
+### "Nenhuma instância de contêiner disponível"
 
-**Cause:** Account capacity limits reached
+**Causa:** Limites de capacidade da conta atingidos
 
-**Solutions:**
+**Soluções:**
 
-- Check account limits
-- Review instance types across containers
-- Contact Cloudflare support
+- Verifique os limites da conta
+- Revise os tipos de instância em contêineres
+- Entre em contato com o suporte da Cloudflare
 
-## Limits
+## Limites
 
-| Resource                         | Limit   | Notes                      |
-| -------------------------------- | ------- | -------------------------- |
-| Cold start                       | 2-3s    | Image pre-fetched globally |
-| Graceful shutdown                | 15 min  | SIGTERM → SIGKILL          |
-| `start()` timeout                | 8s      | Process start              |
-| `startAndWaitForPorts()` timeout | 20s     | Port ready                 |
-| Max vCPU per container           | 4       | standard-4 or custom       |
-| Max memory per container         | 12 GiB  | standard-4 or custom       |
-| Max disk per container           | 20 GB   | Ephemeral, resets          |
-| Account total memory             | 400 GiB | All containers             |
-| Account total vCPU               | 100     | All containers             |
-| Account total disk               | 2 TB    | All containers             |
-| Image storage                    | 50 GB   | Per account                |
-| Disk persistence                 | None    | Use DO storage             |
+| Recurso                               | Limite     | Notas                          |
+| ------------------------------------- | ---------- | ------------------------------ |
+| Arranque a frio                       | 2-3s       | Imagem pré-buscada globalmente |
+| Desligamento elegante                 | 15 minutos | SIGTERM → SIGKILL              |
+| Tempo limite `start()`                | 8s         | Início do processo             |
+| Tempo limite `startAndWaitForPorts()` | 20 anos    | Porto pronto                   |
+| Máximo de vCPU por contêiner          | 4          | padrão-4 ou personalizado      |
+| Memória máxima por contêiner          | 12 GB      | padrão-4 ou personalizado      |
+| Máximo de disco por contêiner         | 20 GB      | Efêmero, reinicia              |
+| Memória total da conta                | 400 GB     | Todos os contêineres           |
+| Total de vCPU da conta                | 100        | Todos os contêineres           |
+| Disco total da conta                  | 2 TB       | Todos os contêineres           |
+| Armazenamento de imagens              | 50 GB      | Por conta                      |
+| Persistência de disco                 | Nenhum     | Use armazenamento DO           |
 
-## Best Practices
+## Melhores práticas
 
-1. **Use `startAndWaitForPorts()` by default** - Prevents port errors
-2. **Set appropriate `sleepAfter`** - Balance resources vs cold starts
-3. **Use `fetch()` for WebSocket** - Not `containerFetch()`
-4. **Design for restarts** - Ephemeral disk, implement graceful shutdown
-5. **Monitor resources** - Stay within account limits
-6. **Keep hooks fast** - Run in `blockConcurrencyWhile`
-7. **Renew activity for long ops** - Touch storage to prevent timeout
+1. **Use `startAndWaitForPorts()` por padrão** - Evita erros de porta
+2. **Defina `sleepAfter`** apropriado - Equilibre recursos versus partidas a frio
+3. **Use `fetch()` para WebSocket** - Não `containerFetch()`
+4. **Projeto para reinicializações** - Disco efêmero, implementar desligamento normal
+5. **Monitore recursos** - Fique dentro dos limites da conta
+6. **Mantenha os ganchos rápidos** - Execute em `blockConcurrencyWhile`
+7. **Renovar atividades para operações longas** - Toque no armazenamento para evitar o tempo limite
 
-## Beta Caveats
+## Advertências beta
 
-⚠️ Containers in **beta**:
+⚠️ Contêineres em **beta**:
 
-- **API may change** without notice
-- **No SLA** guarantees
-- **Limited regions** initially
-- **No autoscaling** - manual via `getRandom()`
-- **Rolling deploys** only (not instant like Workers)
+- **API pode mudar** sem aviso prévio
+- **Sem garantias de SLA**
+- **Regiões limitadas** inicialmente
+- **Sem escalonamento automático** - manual via `getRandom()`
+- **Implantações contínuas** apenas (não instantâneas como Workers)
 
-Plan for API changes, test thoroughly before production.
+Planeje mudanças na API e teste minuciosamente antes da produção.

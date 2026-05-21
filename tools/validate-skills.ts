@@ -153,8 +153,23 @@ function validateSkill(skillPath: string): ValidationResult {
       !hasXml ? 'No XML brackets in description' : 'XML angle brackets found in description (forbidden)',
     )
 
-    // Trigger phrase check
-    const triggerKeywords = ['use when', 'use for', 'use this', 'trigger', 'ask for', 'asks to', 'says', 'mentions']
+    // Trigger phrase check (EN + PT)
+    const triggerKeywords = [
+      'use when',
+      'use for',
+      'use this',
+      'trigger',
+      'ask for',
+      'asks to',
+      'says',
+      'mentions',
+      'use quando',
+      'use para',
+      'aciona em',
+      'dispara em',
+      'usuário diz',
+      'usuário pede',
+    ]
     const descLower = descStr.toLowerCase()
     const hasTriggers = triggerKeywords.some((kw) => descLower.includes(kw))
     addCheck(
@@ -162,18 +177,26 @@ function validateSkill(skillPath: string): ValidationResult {
       hasTriggers,
       hasTriggers
         ? 'Description includes trigger guidance'
-        : "Missing trigger phrases — add 'Use when...' guidance (mandatory per CONTRIBUTING.md)",
+        : "Missing trigger phrases — add 'Use quando...' / 'Use when...' guidance (mandatory per CONTRIBUTING.md)",
     )
 
-    // Negative scope check
-    const negativeKeywords = ['do not use', "don't use", 'not for', 'not intended for']
+    // Negative scope check (EN + PT)
+    const negativeKeywords = [
+      'do not use',
+      "don't use",
+      'not for',
+      'not intended for',
+      'não use para',
+      'não usar para',
+      'não serve para',
+    ]
     const hasNegativeScope = negativeKeywords.some((kw) => descLower.includes(kw))
     addCheck(
       'description_has_negative_scope',
       hasNegativeScope,
       hasNegativeScope
         ? 'Description includes negative scope'
-        : "Missing negative scope — add 'Do NOT use for...' guidance (mandatory per CONTRIBUTING.md)",
+        : "Missing negative scope — add 'NÃO use para...' / 'Do NOT use for...' guidance (mandatory per CONTRIBUTING.md)",
     )
   }
 

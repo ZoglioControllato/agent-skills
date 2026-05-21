@@ -1,34 +1,31 @@
-# Jira Assistant Skill
+# Habilidade do assistente Jira
 
-This skill provides expert Jira operations using Atlassian MCP tools. It automatically detects workspace Jira configuration from context or prompts for project details.
+Essa habilidade fornece operações especializadas do Jira usando ferramentas Atlassian MCP. Ele detecta automaticamente a configuração do Jira do espaço de trabalho a partir do contexto ou solicita detalhes do projeto.
 
-## Configuration Requirements
+## Requisitos de configuração
 
-The skill requires the following configuration values to be available in your workspace context:
+A habilidade requer que os seguintes valores de configuração estejam disponíveis no contexto do seu espaço de trabalho:
 
-### Required Values
+### Valores Obrigatórios
 
-- **Project Key** - The Jira project key (e.g., `KAN`, `PROJ`, `DEV`)
-- **Cloud ID** - Your Atlassian Cloud ID (UUID format or site URL)
-- **URL** - Your Atlassian site URL (e.g., `https://example.atlassian.net/`)
+- **Chave do projeto** - A chave do projeto Jira (por exemplo, `KAN`, `PROJ`, `DEV`)
+- **Cloud ID** - Seu Atlassian Cloud ID (formato UUID ou URL do site)
+- **URL** - URL do seu site Atlassian (por exemplo, `https://example.atlassian.net/`)
 
-### Optional Values
+### Valores Opcionais
 
-- **Project Name** - Human-readable project name
-- **Board URL** - Link to your Jira board (optional, for convenience)
+- **Nome do projeto** - Nome do projeto legível por humanos
+- **URL do quadro** - Link para seu quadro Jira (opcional, por conveniência)
 
-## Where to Configure
+## Onde configurar
 
-The skill detects configuration from multiple sources, making it compatible with different IDEs and setups:
+A habilidade detecta configurações de diversas fontes, tornando-a compatível com diferentes IDEs e configurações:
 
-### Option 1: Cursor Rules (`.cursor/rules/jira-config.mdc`)
+### Opção 1: Regras do Cursor (`.cursor/rules/jira-config.mdc`)
 
-If you're using Cursor, create a rule file:
+## Se você estiver usando o Cursor, crie um arquivo de regras:```yaml
 
-```yaml
----
-alwaysApply: false
----
+## alwaysApply: false
 
 # Jira Project Configuration
 
@@ -39,13 +36,11 @@ This workspace uses the following Jira configuration:
 - **URL:** https://your-site.atlassian.net/
 - **Project Name:** Your Project Name (optional)
 - **Board URL:** https://your-site.atlassian.net/jira/software/projects/YOUR_PROJECT_KEY/boards/1 (optional)
-```
 
-### Option 2: AGENTS.md
+````
+### Opção 2: AGENTES.md
 
-If you're using another IDE or prefer AGENTS.md, add the configuration there:
-
-```markdown
+Se você estiver usando outro IDE ou preferir AGENTS.md, adicione a configuração lá:```markdown
 # Jira Configuration
 
 - **Project Key:** YOUR_PROJECT_KEY
@@ -53,91 +48,90 @@ If you're using another IDE or prefer AGENTS.md, add the configuration there:
 - **URL:** https://your-site.atlassian.net/
 - **Project Name:** Your Project Name (optional)
 - **Board URL:** https://your-site.atlassian.net/jira/software/projects/YOUR_PROJECT_KEY/boards/1 (optional)
-```
+````
 
-### Option 3: Other Context Sources
+### Opção 3: outras fontes de contexto
 
-The skill will also detect configuration from:
+A habilidade também detectará configurações de:
 
-- Workspace documentation files
-- Project README files
-- Any markdown files in your workspace that contain Jira configuration
+- Arquivos de documentação do espaço de trabalho
+- Arquivos README do projeto
+- Quaisquer arquivos markdown no seu espaço de trabalho que contenham configuração do Jira
 
-### Option 4: Interactive Prompt
+### Opção 4: prompt interativo
 
-If no configuration is found, the skill will:
+Se nenhuma configuração for encontrada, a habilidade irá:
 
-1. Use MCP tools to discover available Jira projects
-2. Prompt you to select your project
-3. Store the selection for the current conversation
+1. Use ferramentas MCP para descobrir projetos Jira disponíveis
+2. Solicitar que você selecione seu projeto
+3. Armazene a seleção da conversa atual
 
-## Configuration Detection Flow
+## Fluxo de detecção de configuração
 
-When the skill is activated, it follows this detection order:
+Quando a habilidade é ativada, ela segue esta ordem de detecção:
 
-1. **Check workspace context** - Looks for Jira configuration in:
-
+1. **Verifique o contexto do espaço de trabalho** – procura a configuração do Jira em:
    - `.cursor/rules/jira-config.mdc` (Cursor)
-   - `AGENTS.md` (any IDE)
-   - Other workspace documentation files
+   - `AGENTS.md` (qualquer IDE)
+   - Outros arquivos de documentação do espaço de trabalho
 
-2. **If not found** - Uses MCP search to discover available projects
+2. **Se não encontrado** - Usa a pesquisa MCP para descobrir projetos disponíveis
 
-3. **If still unclear** - Prompts user to specify project key
+3. **Se ainda não estiver claro** - Solicita ao usuário que especifique a chave do projeto
 
-4. **Uses detected values** - Applies configuration for all operations
+4. **Usa valores detectados** - Aplica configuração para todas as operações
 
-## Example Configuration
+## Exemplo de configuração
 
-Here's a complete example configuration:
+Aqui está um exemplo completo de configuração:```markdown
 
-```markdown
 # Jira Project Configuration
 
 - **Project Key:** KAN
 - **Cloud ID:** d58e860b-469d-4463-8f46-684934a5a851
 - **URL:** https://techleadsclub.atlassian.net/
-- **Project Name:** Tech Leads Club
+- **Project Name:** Controllato Club
 - **Board URL:** https://techleadsclub.atlassian.net/jira/software/projects/KAN/boards/1
+
 ```
+## Uso
 
-## Usage
+Depois de configurada, a habilidade usa automaticamente as configurações do seu projeto para:
 
-Once configured, the skill automatically uses your project settings for:
+- Pesquisando problemas
+- Criação de tarefas, épicos e subtarefas
+- Problemas de atualização
+- Status do problema de transição
+- Adicionando comentários
+- Consultando com JQL
 
-- Searching issues
-- Creating tasks, epics, and subtasks
-- Updating issues
-- Transitioning issue status
-- Adding comments
-- Querying with JQL
+Todas as operações usarão automaticamente a chave do projeto configurada e o ID da nuvem.
 
-All operations will use your configured project key and cloud ID automatically.
+## Solução de problemas
 
-## Troubleshooting
+**A habilidade não consegue encontrar a configuração:**
 
-**Skill can't find configuration:**
+- Certifique-se de que seu arquivo de configuração esteja na raiz do espaço de trabalho ou no diretório `.cursor/rules/`
+- Verifique se o arquivo contém os valores necessários (chave do projeto, Cloud ID, URL)
+- Verifique se o formato corresponde aos exemplos acima
 
-- Ensure your configuration file is in the workspace root or `.cursor/rules/` directory
-- Check that the file contains the required values (Project Key, Cloud ID, URL)
-- Verify the format matches the examples above
+**Projeto errado sendo usado:**
 
-**Wrong project being used:**
+- Verifique seu arquivo de configuração para obter a chave correta do projeto
+- A habilidade usa a primeira configuração válida que encontra
+- Você pode substituir especificando o projeto em sua solicitação
 
-- Check your configuration file for the correct project key
-- The skill uses the first valid configuration it finds
-- You can override by specifying the project in your request
+**Configuração não detectada:**
 
-**Configuration not detected:**
+- A habilidade irá avisá-lo interativamente se nenhuma configuração for encontrada
+- Você também pode especificar detalhes do projeto diretamente na sua solicitação: "Criar uma tarefa no projeto PROJECT_KEY"
 
-- The skill will prompt you interactively if no configuration is found
-- You can also specify project details directly in your request: "Create a task in PROJECT_KEY project"
+## Compatibilidade
 
-## Compatibility
-
-This skill works with:
+Esta habilidade funciona com:
 
 - Cursor IDE (via `.cursor/rules/`)
-- Any IDE supporting AGENTS.md
-- Any workspace with accessible configuration files
-- Interactive mode (prompts for configuration)
+- Qualquer IDE compatível com AGENTS.md
+- Qualquer espaço de trabalho com arquivos de configuração acessíveis
+- Modo interativo (solicitações de configuração)
+```

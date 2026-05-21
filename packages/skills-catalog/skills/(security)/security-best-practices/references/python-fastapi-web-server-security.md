@@ -1,1030 +1,1079 @@
-# FastAPI (Python) Web Security Spec (FastAPI 0.128.x, Python 3.x) ([PyPI][1])
+# Especificação de segurança da Web FastAPI (Python) (FastAPI 0.128.x, Python 3.x) ([PyPI][1])
 
-This document is designed as a **security spec** that supports:
+Este documento foi concebido como uma **especificação de segurança** que oferece suporte a:
 
-1. **Secure-by-default code generation** for new FastAPI code.
-2. **Security review / vulnerability hunting** in existing FastAPI code (passive “notice issues while working” and active “scan the repo and report findings”).
+1. **Geração de código seguro por padrão** para novo código FastAPI.
+2. **Revisão de segurança/caça de vulnerabilidades** no código FastAPI existente (passivo “notificar problemas durante o trabalho” e ativo “verificar o repositório e relatar descobertas”).
 
-It is intentionally written as a set of **normative requirements** (“MUST/SHOULD/MAY”) plus **audit rules** (what bad patterns look like, how to detect them, and how to fix/mitigate them).
+Ele é intencionalmente escrito como um conjunto de **requisitos normativos** (“DEVE/DEVE/PODE”) mais **regras de auditoria** (como são os padrões ruins, como detectá-los e como corrigi-los/mitigá-los).
 
-FastAPI is commonly deployed with an ASGI server (e.g., Uvicorn) and is built on Starlette + Pydantic, so this spec covers those layers where they affect security. ([PyPI][1])
-
----
-
-## 0) Safety, boundaries, and anti-abuse constraints (MUST FOLLOW)
-
-- MUST NOT request, output, log, or commit secrets (API keys, passwords, private keys, session cookies, signing keys, database URLs with credentials).
-- MUST NOT “fix” security by disabling protections (e.g., weakening auth, making CORS permissive, skipping signature checks, disabling validation, turning off TLS verification, adding `allow_origins=["*"]` with credentials).
-- MUST provide **evidence-based findings** during audits: cite file paths, code snippets, and configuration values that justify the claim.
-- MUST treat uncertainty honestly: if a protection might exist in infrastructure (reverse proxy, WAF, CDN, service mesh), report it as “not visible in app code; verify at runtime/config”.
-- MUST treat browser controls correctly:
-  - CORS is **not** an auth mechanism; it only affects browsers.
-  - CSRF defenses apply when the browser automatically attaches credentials (cookies); they are usually not relevant for purely header-token APIs. ([OWASP Cheat Sheet Series][2])
+FastAPI é comumente implantado com um servidor ASGI (por exemplo, Uvicorn) e é construído em Starlette + Pydantic, portanto, esta especificação cobre as camadas onde elas afetam a segurança. ([PyPI][1])
 
 ---
 
-## 1) Operating modes
+## 0) Segurança, limites e restrições antiabuso (DEVE SEGUIR)
 
-### 1.1 Generation mode (default)
+- NÃO DEVE solicitar, gerar, registrar ou confirmar segredos (chaves de API, senhas, chaves privadas, cookies de sessão, chaves de assinatura, URLs de banco de dados com credenciais).
+- NÃO DEVE “consertar” a segurança desabilitando proteções (por exemplo, enfraquecendo a autenticação, tornando o CORS permissivo, ignorando verificações de assinatura, desabilitando a validação, desligando a verificação TLS, adicionando `allow_origins=["*"]` com credenciais).
+- DEVE fornecer **descobertas baseadas em evidências** durante as auditorias: citar caminhos de arquivos,
 
-When asked to write new FastAPI code or modify existing code:
+trechos de código e valores de configuração que justificam a afirmação.
 
-- MUST follow every **MUST** requirement in this spec.
-- SHOULD follow every **SHOULD** requirement unless the user explicitly says otherwise.
-- MUST prefer safe-by-default APIs and proven libraries over custom security code.
-- MUST avoid introducing new risky sinks (shell execution, unsafe deserialization, dynamic eval, untrusted template rendering, unsafe file serving, unsafe redirects, arbitrary outbound fetching).
+- DEVE tratar a incerteza com honestidade: se existir uma proteção na infraestrutura (proxy reverso, WAF, CDN, service mesh), relate-a como “não visível no código do aplicativo; verifique em tempo de execução/configuração”.
+- DEVE tratar os controles do navegador corretamente:
+  - CORS **não** é um mecanismo de autenticação; afeta apenas os navegadores.
+  - As defesas CSRF se aplicam quando o navegador anexa automaticamente credenciais (cookies); eles
 
-### 1.2 Passive review mode (always on while editing)
-
-While working anywhere in a FastAPI repo (even if the user did not ask for a security scan):
-
-- MUST “notice” violations of this spec in touched/nearby code.
-- SHOULD mention issues as they come up, with a brief explanation + safe fix.
-
-### 1.3 Active audit mode (explicit scan request)
-
-When the user asks to “scan”, “audit”, or “hunt for vulns”:
-
-- MUST systematically search the codebase for violations of this spec.
-- MUST output findings in a structured format (see §2.3).
-
-Recommended audit order:
-
-1. App entrypoints / deployment scripts / Dockerfiles / Procfiles / Helm/terraform.
-2. ASGI server configuration (Uvicorn/Gunicorn), proxy settings, debug/reload settings.
-3. FastAPI app configuration (docs exposure, middleware, trusted hosts, CORS).
-4. Authn/Authz design (dependencies, JWT/session handling, password storage).
-5. Cookie/session usage + CSRF (if cookies are used).
-6. Input validation and output shaping (Pydantic models, mass assignment, excessive data exposure).
-7. Template rendering and XSS/SSTI (if HTML is served).
-8. File handling (uploads + downloads), StaticFiles, Range support.
-9. Injection classes (SQL, command execution, unsafe deserialization).
-10. Outbound requests (SSRF), redirect handling, WebSockets security.
+geralmente não são relevantes para APIs puramente de token de cabeçalho. ([Série de folhas de dicas OWASP] [2])
 
 ---
 
-## 2) Definitions and review guidance
+## 1) Modos de operação
 
-### 2.1 Untrusted input (treat as attacker-controlled unless proven otherwise)
+### 1.1 Modo de geração (padrão)
 
-Examples include:
+Quando solicitado a escrever um novo código FastAPI ou modificar o código existente:
 
-- Query parameters / path parameters
-- JSON bodies (including nested fields)
-- Headers (including `Host`, `Origin`, `X-Forwarded-*`)
-- Cookies (including session cookies)
-- File uploads (multipart parts)
-- WebSocket messages, query params, and headers during handshake ([Starlette][3])
-- Any data from external systems (webhooks, third-party APIs, message queues)
-- Any persisted user content (DB rows) that originated from users
+- DEVE seguir todos os requisitos **DEVE** nesta especificação.
+- DEVE seguir todos os requisitos **DEVE**, a menos que o usuário diga explicitamente o contrário.
+- DEVE preferir APIs seguras por padrão e bibliotecas comprovadas em vez de código de segurança personalizado.
+- DEVE evitar a introdução de novos coletores arriscados (execução de shell, desserialização insegura, avaliação dinâmica, renderização de modelo não confiável, serviço de arquivo inseguro, redirecionamentos inseguros, busca de saída arbitrária).
 
-### 2.2 State-changing request
+### 1.2 Modo de revisão passiva (sempre ativado durante a edição)
 
-A request is state-changing if it can create/update/delete data, change auth/session state, trigger side effects (purchase, email send, webhook send), or initiate privileged actions.
+Ao trabalhar em qualquer lugar em um repositório FastAPI (mesmo que o usuário não tenha solicitado uma verificação de segurança):
 
-### 2.3 Required audit finding format
+- DEVE “notar” violações desta especificação no código tocado/próximo.
+- DEVE mencionar os problemas à medida que surgem, com uma breve explicação + solução segura.
 
-For each issue found, output:
+### 1.3 Modo de auditoria ativo (solicitação de verificação explícita)
 
-- Rule ID:
-- Severity: Critical / High / Medium / Low
-- Location: file path + function/route name + line(s)
-- Evidence: the exact code/config snippet
-- Impact: what could go wrong, who can exploit it
-- Fix: safe change (prefer minimal diff)
-- Mitigation: defense-in-depth if immediate fix is hard
-- False positive notes: what to verify if uncertain
+Quando o usuário pede para “verificar”, “auditar” ou “caçar vulnerabilidades”:
 
----
+- DEVE pesquisar sistematicamente a base de código em busca de violações desta especificação.
+- DEVE apresentar os resultados num formato estruturado (ver §2.3).
 
-## 3) Secure baseline: minimum production configuration (MUST in production)
+Ordem de auditoria recomendada:
 
-This is the smallest “production baseline” that prevents common FastAPI/ASGI misconfigurations.
+1. Pontos de entrada de aplicativos / scripts de implantação / Dockerfiles / Procfiles / Helm/terraform.
+2. Configuração do servidor ASGI (Uvicorn/Gunicorn), configurações de proxy, configurações de depuração/recarregamento.
+3. Configuração do aplicativo FastAPI (exposição de documentos, middleware, hosts confiáveis, CORS).
+4. Design Authn/Authz (dependências, manipulação de JWT/sessão, armazenamento de senha).
+5. Uso de cookies/sessão + CSRF (se cookies forem usados).
+6. Validação de entrada e modelagem de saída (modelos Pydantic, atribuição em massa
 
-Baseline goals:
-
-- No debug tracebacks or auto-reload in production. ([PyPI][4])
-- Run under a production ASGI server configuration (workers, timeouts, resource controls). ([PyPI][4])
-- Host header validation enabled (TrustedHostMiddleware or equivalent). ([PyPI][5])
-- CORS disabled unless explicitly needed; if enabled, it is strict and least-privilege. ([OWASP Cheat Sheet Series][6])
-- Auth is enforced consistently via dependencies (no “oops, forgot auth on this route”). ([FastAPI][7])
-- If cookies/sessions are used, cookie flags are secure and CSRF is addressed. ([OWASP Cheat Sheet Series][8])
-- Request size limits and multipart limits exist at the edge and are validated in app as needed (to mitigate memory/CPU DoS). ([advisories.gitlab.com][9])
-- Dependencies are patched promptly, especially Starlette/python-multipart (multiple DoS and traversal advisories exist historically). ([advisories.gitlab.com][10])
+investimento, exposição excessiva de dados). 7. Renderização de modelo e XSS/SSTI (se HTML for veiculado). 8. Manipulação de arquivos (uploads + downloads), StaticFiles, suporte a intervalos. 9. Classes de injeção (SQL, execução de comandos, desserialização insegura). 10. Solicitações de saída (SSRF), manipulação de redirecionamento, segurança WebSockets.
 
 ---
 
-## 4) Rules (generation + audit)
+## 2) Definições e orientações de revisão
 
-Each rule contains: required practice, insecure patterns, detection hints, and remediation.
+### 2.1 Entrada não confiável (tratada como controlada pelo invasor, salvo prova em contrário)
 
-### FASTAPI-DEPLOY-001: Do not use auto-reload / dev-only server modes in production
+Os exemplos incluem:
 
-Severity: High (if production)
+- Parâmetros de consulta/parâmetros de caminho
+- Corpos JSON (incluindo campos aninhados)
+- Cabeçalhos (incluindo `Host`, `Origin`, `X-Forwarded-*`)
+- Cookies (incluindo cookies de sessão)
+- Uploads de arquivos (partes múltiplas)
+- Mensagens WebSocket, parâmetros de consulta e cabeçalhos durante o handshake ([Starlette][3])
+- Quaisquer dados de sistemas externos (webhooks, APIs de terceiros, filas de mensagens)
+- Qualquer conteúdo de usuário persistente (linhas de banco de dados) originado de usuários
 
-Required:
+### 2.2 Solicitação de mudança de estado
 
-- MUST NOT run production using auto-reload/watch mode (e.g., Uvicorn reload).
-- MUST run with a production process model (e.g., multiple workers where appropriate) and stable server settings. ([PyPI][4])
+Uma solicitação muda de estado se puder criar/atualizar/excluir dados, alterar o estado de autenticação/sessão, acionar efeitos colaterais (compra, envio de e-mail, envio de webhook) ou iniciar ações privilegiadas.
 
-Insecure patterns:
+### 2.3 Formato de descoberta de auditoria necessário
 
-- `uvicorn ... --reload` (or equivalent “reload=True” configs) in production entrypoints.
-- Docker/Procfile/systemd commands that run with `--reload` in production.
+Para cada problema encontrado, produza:
 
-Detection hints:
-
-- Search for `--reload`, `reload=True`, `watchfiles`, `fastapi dev`, “development” run scripts.
-- Check Docker CMD/ENTRYPOINT, Procfile, systemd units, shell scripts.
-
-Fix:
-
-- Remove reload in production; run Uvicorn/Gunicorn with stable settings and explicit worker configuration. ([PyPI][4])
-
-Note:
-
-- Reload is fine for local development. Only flag when it is clearly used as a production entrypoint.
-
----
-
-### FASTAPI-DEPLOY-002: Debug mode MUST be disabled in production
-
-Severity: Critical
-
-Required:
-
-- MUST NOT enable debug tracebacks in production (FastAPI/Starlette debug mode can expose sensitive internals and make some exploit chains easier). ([PyPI][5])
-- MUST treat any configuration that returns detailed stack traces to clients as sensitive.
-
-Insecure patterns:
-
-- `app = FastAPI(debug=True)` (or Starlette `debug=True`), or equivalent environment toggles enabling debug in production. ([PyPI][5])
-- Server/log config that exposes tracebacks to end users.
-
-Detection hints:
-
-- Search for `debug=True`, `DEBUG = True`, environment flags mapped to debug.
-- Review exception middleware and error handler setup.
-
-Fix:
-
-- Ensure debug is only enabled in local dev/test.
-- Return generic error responses to clients; log details internally.
+- ID da regra:
+- Gravidade: Crítica / Alta / Média / Baixa
+- Localização: caminho do arquivo + nome da função/rota + linha(s)
+- Evidência: o trecho de código/configuração exato
+- Impacto: o que pode dar errado, quem pode explorar
+- Correção: mudança segura (prefira diferença mínima)
+- Mitigação: defesa profunda se a solução imediata for difícil
+- Notas falso-positivas: o que verificar em caso de incerteza
 
 ---
 
-### FASTAPI-OPENAPI-001: OpenAPI and interactive docs MUST be disabled or protected in production
+## 3) Linha de base segura: configuração mínima de produção (DEVE em produção)
 
-Severity: Medium (can be High in sensitive/internal apps)
+Esta é a menor “linha de base de produção” que evita configurações incorretas comuns de FastAPI/ASGI.
 
-Required:
+Metas básicas:
 
-- SHOULD disable `/docs`, `/redoc`, and `/openapi.json` in production for public-facing services unless there is an explicit business need.
-- If enabled, MUST protect them (e.g., auth, network allowlists, or internal-only routing).
-- MUST NOT assume “security through obscurity”; treat docs exposure as an information disclosure amplifier.
+- Sem rastreamentos de depuração ou recarga automática na produção. ([PyPI][4])
+- Execute sob uma configuração de servidor ASGI de produção (trabalhadores, tempos limite, controles de recursos). ([PyPI][4])
+- Validação de cabeçalho de host habilitada (TrustedHostMiddleware ou equivalente). ([PyPI][5])
+- CORS desativado, a menos que seja explicitamente necessário; se ativado, é estrito e tem menos privilégios. ([Série de folhas de dicas OWASP] [6])
+- A autenticação é aplicada de forma consistente por meio de dependências (não “oops, esqueci a autenticação neste
 
-Insecure patterns:
+rota”). ([FastAPI][7])
 
-- Publicly reachable `/docs` and `/openapi.json` for internal/admin APIs.
-- Docs enabled on the same hostname as production without access control.
+- Se forem utilizados cookies/sessões, os sinalizadores de cookies são seguros e o CSRF é abordado. ([Série de folhas de dicas OWASP] [8])
+- Limites de tamanho de solicitação e limites multipartes existem na borda e são validados no aplicativo conforme necessário (para mitigar DoS de memória/CPU). ([advisories.gitlab.com][9])
+- As dependências são corrigidas imediatamente, especialmente Starlette/python-multipart (existem historicamente vários avisos de DoS e de passagem). ([advisories.gitlab.com]
 
-Detection hints:
-
-- Look for `FastAPI(docs_url=..., redoc_url=..., openapi_url=...)` or defaults.
-- Check reverse proxy routing and allowlists.
-
-Fix:
-
-- Disable docs endpoints in prod (`docs_url=None`, `redoc_url=None`, `openapi_url=None`) or restrict access at the edge.
+[10])
 
 ---
 
-### FASTAPI-AUTH-001: Authentication MUST be explicit and consistently enforced via dependencies
+## 4) Regras (geração + auditoria)
 
-Severity: High
+Cada regra contém: práticas necessárias, padrões inseguros, dicas de detecção e correção.
 
-Required:
+### FASTAPI-DEPLOY-001: Não use modos de servidor de recarga automática/somente dev em produção
 
-- MUST implement authentication as a dependency (or router-level dependency) so that protected endpoints cannot “forget” auth.
-- MUST default to “deny” for privileged routers/endpoints; explicitly mark truly public routes.
-- SHOULD centralize auth enforcement at router boundaries (e.g., protected `APIRouter` for authenticated endpoints). ([FastAPI][7])
+Gravidade: Alta (se produção)
 
-Insecure patterns:
+Obrigatório:
 
-- Per-route ad-hoc auth checks scattered through handlers (easy to miss).
-- A mix of protected/unprotected endpoints with no clear policy.
+- NÃO DEVE executar a produção usando o modo de recarga automática/observação (por exemplo, recarga do Uvicorn).
+- DEVE ser executado com um modelo de processo de produção (por exemplo, vários trabalhadores, quando apropriado) e configurações de servidor estáveis. ([PyPI][4])
 
-Detection hints:
+Padrões inseguros:
 
-- Identify routers and endpoints; check whether protected ones include `Depends(...)`/`Security(...)`.
-- Search for patterns like `if user is None: raise ...` inside handlers (instead of dependencies).
+- `uvicorn ... --reload` (ou configurações equivalentes “reload=True”) em pontos de entrada de produção.
+- Comandos Docker/Procfile/systemd que são executados com `--reload` em produção.
 
-Fix:
+Dicas de detecção:
 
-- Move authentication into a dependency and attach it to the router/endpoint consistently using `Depends()`/`Security()`. ([FastAPI][7])
+- Procure por `--reload`, `reload=True`, `watchfiles`, `fastapi dev`, scripts de execução de “desenvolvimento”.
+- Verifique Docker CMD/ENTRYPOINT, Procfile, unidades systemd, scripts de shell.
 
----
+Correção:
 
-### FASTAPI-AUTH-002: Use standard auth transports; avoid secrets in URLs
+- Remover recarga em produção; execute Uvicorn/Gunicorn com configurações estáveis ​​e configuração de trabalhador explícita. ([PyPI][4])
 
-Severity: High
+Nota:
 
-Required:
-
-- SHOULD use the `Authorization: Bearer <token>` header for token auth, not query parameters. ([FastAPI][11])
-- MUST NOT place secrets (tokens, reset links containing long-lived secrets, API keys) in query strings when avoidable.
-
-Insecure patterns:
-
-- `?token=...`, `?api_key=...`, `?auth=...` used for primary auth.
-- Long-lived access tokens embedded in URLs (leak via logs, referrers, caches).
-
-Detection hints:
-
-- Search for parameter names like `token`, `api_key`, `key`, `secret`, `password`.
-- Look for security schemes that use query API keys without justification.
-
-Fix:
-
-- Move tokens to Authorization headers; rotate/shorten lifetimes; use POST bodies for sensitive values.
+- Recarregar é bom para o desenvolvimento local. Sinalize apenas quando for claramente usado como ponto de entrada de produção.
 
 ---
 
-### FASTAPI-AUTH-003: Password storage MUST be strongly hashed; never store plaintext passwords
+### FASTAPI-DEPLOY-002: O modo de depuração DEVE ser desabilitado na produção
 
-Severity: Critical
+Gravidade: Crítica
 
-Required:
+Obrigatório:
 
-- MUST store passwords using a strong, slow password hashing scheme (e.g., Argon2id, bcrypt).
-- MUST NOT store plaintext passwords, or reversible encryption as the primary protection.
-- SHOULD use established libraries for hashing and verification (do not roll your own).
+- NÃO DEVE ativar rastreamentos de depuração na produção (o modo de depuração FastAPI/Starlette pode expor componentes internos confidenciais e facilitar algumas cadeias de exploração). ([PyPI][5])
+- DEVE tratar qualquer configuração que retorne rastreamentos de pilha detalhados aos clientes como confidenciais.
 
-Insecure patterns:
+Padrões inseguros:
 
-- Storing plaintext passwords in DB.
-- Using fast hashes (e.g., SHA256) without a proper password hashing KDF.
-- Returning password hashes in API responses.
+- `app = FastAPI(debug=True)` (ou Starlette `debug=True`), ou alternadores de ambiente equivalentes, permitindo a depuração na produção. ([PyPI][5])
+- Configuração de servidor/log que expõe tracebacks aos usuários finais.
 
-Detection hints:
+Dicas de detecção:
 
-- Search for `password=` persisted fields, and look for `hashlib.md5/sha1/sha256` usage on passwords.
-- Inspect response models for password/hash fields.
+- Procure por `debug=True`, `DEBUG = True`, sinalizadores de ambiente mapeados para depuração.
+- Revise a configuração do middleware de exceção e do manipulador de erros.
 
-Fix:
+Consertar:
 
-- Migrate to a proper password hashing library; add a re-hash-on-login upgrade path.
-
----
-
-### FASTAPI-AUTH-004: JWT validation MUST be strict; JWTs MUST NOT carry secrets
-
-Severity: High
-
-Required:
-
-- MUST validate JWT signature and enforce an algorithm allowlist.
-- MUST validate standard claims appropriate to your system (at least `exp`; typically also `iss`/`aud` if multi-service or multi-tenant).
-- MUST treat JWT contents as readable by the client; do not put secrets in JWT payloads. ([FastAPI][12])
-
-Insecure patterns:
-
-- `jwt.decode(..., options={"verify_signature": False})` or equivalent.
-- Accepting `alg=none` / algorithm confusion.
-- Using JWT payload to store sensitive secrets (API keys, passwords).
-
-Detection hints:
-
-- Search for `jwt.decode`, `python-jose`, `PyJWT`, `verify_signature`.
-- Check for missing exp validation or long expirations.
-
-Fix:
-
-- Enforce strict validation (signature, allowed algorithms, exp, and any required issuer/audience constraints).
-- Store only identifiers/claims you are comfortable exposing to the client. ([FastAPI][12])
+- Certifique-se de que a depuração esteja habilitada apenas no desenvolvimento/teste local.
+- Retornar respostas genéricas de erros aos clientes; registrar detalhes internamente.
 
 ---
 
-### FASTAPI-AUTHZ-001: Authorization MUST be enforced per-object and per-property
+### FASTAPI-OPENAPI-001: OpenAPI e documentos interativos DEVEM ser desabilitados ou protegidos na produção
 
-Severity: High
+Gravidade: Média (pode ser Alta em aplicativos confidenciais/internos)
 
-Required:
+Obrigatório:
 
-- MUST perform object-level authorization whenever accessing a resource by user-controlled identifier (ID in path/query/body).
-- MUST perform property-level authorization and response shaping to prevent “excessive data exposure” (e.g., admin-only fields). ([OWASP Foundation][13])
+- DEVE desabilitar `/docs`, `/redoc` e `/openapi.json` na produção para serviços voltados ao público, a menos que haja uma necessidade comercial explícita.
+- Se ativado, DEVE protegê-los (por exemplo, autenticação, listas de permissões de rede ou roteamento somente interno).
+- NÃO DEVE assumir “segurança através da obscuridade”; trate a exposição de documentos como um amplificador de divulgação de informações.
 
-Insecure patterns:
+Padrões inseguros:
 
-- `GET /users/{id}` returns user record without verifying caller can access that `id`.
-- Response models include internal fields (roles, permissions, billing data, password hashes).
+- `/docs` e `/openapi.json` publicamente acessíveis para APIs internas/administrativas.
+- Documentos habilitados no mesmo nome de host da produção sem controle de acesso.
 
-Detection hints:
+Dicas de detecção:
 
-- Enumerate endpoints that accept IDs; trace whether an authz check is performed.
-- Compare response models for public vs internal fields.
+- Procure por `FastAPI(docs_url=..., redoc_url=..., openapi_url=...)` ou padrões.
+- Verifique o roteamento de proxy reverso e as listas de permissões.
 
-Fix:
+Correção:
 
-- Add object-level checks (ownership, ACLs, tenant boundaries).
-- Use dedicated response models that include only allowed fields.
-
----
-
-### FASTAPI-SESS-001: If using cookie-based sessions and TLS, cookie attributes MUST be secure in production
-
-Severity: High (only if TLS is enabled)
-
-Required (production, HTTPS):
-
-- MUST set session cookies to be sent only over HTTPS (secure). IMPORTANT NOTE: Only set `Secure` in production environment when TLS is configured. When running in a local dev environment over HTTP, do not set `Secure` property on cookies. You should do this conditionally based on if the app is running in production mode. You should also include a property like `SESSION_COOKIE_SECURE` which can be used to disable `Secure` cookies when testing over HTTP.
-- MUST set HttpOnly for session cookies (not accessible to JS).
-- SHOULD use `SameSite=Lax` (or `Strict` if UX allows); if you require cross-site cookies, document the CSRF implications and add compensating controls. ([OWASP Cheat Sheet Series][8])
-- If using Starlette `SessionMiddleware`, MUST set `https_only=True` in production and choose an appropriate `same_site`. ([PyPI][5])
-
-Insecure patterns:
-
-- Session cookies without Secure/HttpOnly.
-- `SameSite=None` cookies used for authenticated state-changing endpoints without CSRF protections.
-
-Detection hints:
-
-- Search for `SessionMiddleware(` and inspect parameters like `https_only`, `same_site`.
-- Search for `set_cookie(` usage and cookie flags.
-
-Fix:
-
-- Set secure cookie attributes; prefer short lifetimes for high-privilege sessions. ([OWASP Cheat Sheet Series][8])
+- Desative endpoints de documentos em prod (`docs_url=None`, `redoc_url=None`, `openapi_url=None`) ou restrinja o acesso na borda.
 
 ---
 
-### FASTAPI-SESS-002: Do not store sensitive secrets in signed session cookies
+### FASTAPI-AUTH-001: A autenticação DEVE ser explícita e aplicada de forma consistente por meio de dependências
 
-Severity: High
+Gravidade: Alta
 
-Required:
+Obrigatório:
 
-- MUST assume cookie-based session data is readable by the client (signed ≠ encrypted); do not store secrets/PII unless encrypted server-side.
-- Store only opaque identifiers (e.g., session ID) or non-sensitive state in the cookie; store sensitive session state server-side. ([OWASP Cheat Sheet Series][8])
+- DEVE implementar a autenticação como uma dependência (ou dependência no nível do roteador) para que os endpoints protegidos não possam “esquecer” a autenticação.
+- DEVE ser padronizado como “deny” para roteadores/endpoints privilegiados; marcar explicitamente rotas verdadeiramente públicas.
+- DEVE centralizar a aplicação de autenticação nos limites do roteador (por exemplo, `APIRouter` protegido para endpoints autenticados). ([FastAPI][7])
 
-Insecure patterns:
+Padrões inseguros:
 
-- Storing access tokens, refresh tokens, or PII directly in cookie session payloads.
-- Treating “signed cookies” as confidential storage.
+- Verificações de autenticação ad-hoc por rota espalhadas pelos manipuladores (fáceis de perder).
+- Uma mistura de endpoints protegidos/desprotegidos sem uma política clara.
 
-Detection hints:
+Dicas de detecção:
 
-- Search for `request.session[...] =` or `session[...] =`-equivalent patterns; identify what is stored.
-- Identify use of `SessionMiddleware` or other cookie session mechanisms.
+- Identificar roteadores e endpoints; verifique se os protegidos incluem `Depends(...)`/`Security(...)`.
+- Procure padrões como `if user is None: raise ...` dentro de manipuladores (em vez de dependências).
 
-Fix:
+Consertar:
 
-- Move sensitive values to server-side storage; keep cookie minimal.
-
----
-
-### FASTAPI-CSRF-001: Cookie-authenticated state-changing requests MUST be CSRF-protected
-
-Severity: High
-
-Note: This only applies if using cookie based auth. If the application uses header or token based auth such as Authorization header, then CSRF is not an issue.
-
-Required:
-
-- MUST protect all state-changing endpoints (POST/PUT/PATCH/DELETE) that rely on cookies for authentication.
-- SHOULD use a proven CSRF approach (synchronizer token pattern, or well-reviewed middleware) rather than rolling your own. ([OWASP Cheat Sheet Series][2])
-- MAY add defense-in-depth (Origin/Referer checks, SameSite cookies, Fetch Metadata), but tokens are the primary defense for cookie-authenticated apps. ([OWASP Cheat Sheet Series][2])
-- IMPORTANT NOTE: If cookies are not used for auth (auth is via `Authorization` header), CSRF is usually not applicable. ([FastAPI][11])
-
-Insecure patterns:
-
-- Cookie-authenticated endpoints that change state with no CSRF validation.
-- Using GET for state-changing actions (amplifies CSRF risk).
-
-Detection hints:
-
-- Enumerate routes with methods other than GET; identify whether cookies are used for auth.
-- Look for CSRF token generation/verification or middleware.
-
-Fix:
-
-- Add CSRF tokens (and validate them) on state-changing actions when cookie auth is in use. ([OWASP Cheat Sheet Series][2])
+- Mova a autenticação para uma dependência e anexe-a ao roteador/endpoint de forma consistente usando `Depends()`/`Security()`. ([FastAPI][7])
 
 ---
 
-### FASTAPI-VALID-001: Request parsing and validation MUST be schema-driven; prevent mass assignment
+### FASTAPI-AUTH-002: Use transportes de autenticação padrão; evite segredos em URLs
 
-Severity: Medium (especially for APIs that write to DB)
+Gravidade: Alta
 
-Required:
+Obrigatório:
 
-- SHOULD use Pydantic models for request bodies instead of accepting arbitrary `dict`/`Any`.
-- SHOULD configure models to reject unexpected fields where appropriate (prevents “mass assignment” style bugs).
-- MUST validate and normalize identifiers (IDs, email, URLs) before using them for access control or side effects. ([OWASP Cheat Sheet Series][14])
+- DEVE usar o cabeçalho `Authorization: Bearer <token>` para autenticação de token, não parâmetros de consulta. ([FastAPI][11])
+- NÃO DEVE colocar segredos (tokens, links de redefinição contendo segredos de longa duração, chaves de API) em strings de consulta quando evitável.
 
-Insecure patterns:
+Padrões inseguros:
 
-- `payload = await request.json()` followed by `Model(**payload)` or direct DB writes with `payload` (no allowlist).
-- Models that silently accept unknown fields for write endpoints.
+- `?token=...`, `?api_key=...`, `?auth=...` usado para autenticação primária.
+- Tokens de acesso de longa duração incorporados em URLs (vazamento via logs, referenciadores, caches).
 
-Detection hints:
+Dicas de detecção:
 
-- Search for `await request.json()`, `request.body()`, `dict`-typed bodies, `Any`-typed bodies.
-- Look for endpoints that do `db.update(**payload)` or `Model(**payload)` with unfiltered input.
+- Pesquise nomes de parâmetros como `token`, `api_key`, `key`, `secret`, `password`.
+- Procure esquemas de segurança que utilizem chaves de API de consulta sem justificativa.
 
-Fix:
+Correção:
 
-- Use explicit Pydantic models with allowlisted fields; reject extras for write endpoints. ([OWASP Cheat Sheet Series][14])
-
----
-
-### FASTAPI-RESP-001: Prevent excessive data exposure via response models and explicit serialization
-
-Severity: Medium
-
-Required:
-
-- MUST define response models that include only intended fields (especially for user objects, auth-related objects, billing objects).
-- SHOULD use separate models for “create input”, “db/internal”, and “public output” to avoid leaking sensitive fields. ([FastAPI][15])
-
-Insecure patterns:
-
-- Returning ORM objects or dicts that include internal columns.
-- Reusing “DB model” as the response model (includes `password_hash`, `is_admin`, etc).
-
-Detection hints:
-
-- Look for endpoints that `return user` where `user` is an ORM instance.
-- Check for `response_model` omissions on endpoints that return sensitive resources.
-
-Fix:
-
-- Add explicit response models; create “public” schemas that exclude sensitive fields. ([FastAPI][15])
+- Mover tokens para cabeçalhos de autorização; girar/encurtar a vida útil; use corpos POST para valores confidenciais.
 
 ---
 
-### FASTAPI-XSS-001: Prevent reflected/stored XSS in HTML responses and templates
+### FASTAPI-AUTH-003: O armazenamento de senha DEVE ser fortemente hash; nunca armazene senhas em texto simples
 
-Severity: High (if the service serves HTML)
+Gravidade: Crítica
 
-Required:
+Obrigatório:
 
-- MUST use templating with auto-escaping enabled for HTML.
-- MUST NOT mark untrusted content as safe (no unsafe “raw HTML” rendering of user-controlled data).
-- SHOULD deploy a CSP when serving HTML that includes any user content. ([OWASP Cheat Sheet Series][16])
+- DEVE armazenar senhas usando um esquema de hashing de senha forte e lento (por exemplo, Argon2id, bcrypt).
+- NÃO DEVE armazenar senhas em texto simples ou criptografia reversível como proteção primária.
+- DEVE usar bibliotecas estabelecidas para hashing e verificação (não crie as suas próprias).
 
-Insecure patterns:
+Padrões inseguros:
 
-- Rendering user content directly into HTML without escaping/sanitization.
-- Disabling auto-escaping or using “raw HTML” features without sanitization.
+- Armazenamento de senhas em texto simples no banco de dados.
+- Usar hashes rápidos (por exemplo, SHA256) sem um hash de senha adequado KDF.
+- Retornando hashes de senha nas respostas da API.
 
-Detection hints:
+Dicas de detecção:
 
-- Search for template rendering and string concatenation that builds HTML.
-- Review templates for “unsafe” filters/constructs and unquoted attributes.
+- Pesquise os campos persistentes `password=` e procure o uso de `hashlib.md5/sha1/sha256` nas senhas.
+- Inspecione modelos de resposta para campos de senha/hash.
 
-Fix:
+Correção:
 
-- Keep auto-escaping on; sanitize user HTML only if absolutely required using a trusted sanitizer; add CSP. ([OWASP Cheat Sheet Series][16])
-
-Note:
-
-- If the app is a pure JSON API, XSS is usually a client/app concern, but error pages/docs pages might still render HTML.
+- Migrar para uma biblioteca adequada de hashing de senhas; adicione um caminho de atualização de novo hash no login.
 
 ---
 
-### FASTAPI-SSTI-001: Never render untrusted templates (Server-Side Template Injection)
+### FASTAPI-AUTH-004: A validação do JWT DEVE ser rigorosa; JWTs NÃO DEVEM conter segredos
 
-Severity: Critical
+Gravidade: Alta
 
-Required:
+Obrigatório:
 
-- MUST NOT render templates that contain user-controlled template syntax.
-- MUST treat “template-from-string” rendering as dangerous if influenced by untrusted input.
-- If untrusted templates are absolutely required (rare, high-risk):
-  - MUST use a sandboxed templating approach and restrict capabilities.
-  - MUST assume sandbox escapes are possible; add isolation and strict allowlists. ([OWASP Foundation][17])
+- DEVE validar a assinatura JWT e impor uma lista de permissões de algoritmo.
+- DEVE validar declarações padrão apropriadas ao seu sistema (pelo menos `exp`; normalmente também `iss`/`aud` se for multiserviço ou multilocatário).
+- DEVE tratar o conteúdo do JWT como legível pelo cliente; não coloque segredos em cargas JWT. ([FastAPI][12])
 
-Insecure patterns:
+Padrões inseguros:
 
-- Rendering templates loaded from user input or DB via a normal Jinja environment.
-- Building templates dynamically using user-controlled strings.
+- `jwt.decode(..., options={"verify_signature": False})` ou equivalente.
+- Aceitando `alg=none`/confusão de algoritmo.
+- Usando carga JWT para armazenar segredos confidenciais (chaves de API, senhas).
 
-Detection hints:
+Dicas de detecção:
 
-- Grep for Jinja `Environment.from_string`, `Template(...)`, or similar.
-- Trace origin of template string (request, DB, uploads, admin panels).
+- Pesquise `jwt.decode`, `python-jose`, `PyJWT`, `verify_signature`.
+- Verifique se há validação de exp ausente ou expirações longas.
 
-Fix:
+Consertar:
 
-- Replace with non-executable templating (simple string substitution).
-- If truly needed, use Jinja’s sandbox environment plus strong isolation. ([jinja.palletsprojects.com][18])
+- Aplicar validação rigorosa (assinatura, algoritmos permitidos, exp e quaisquer restrições necessárias de emissor/público).
+- Armazene apenas identificadores/declarações que você se sinta confortável em expor ao cliente. ([FastAPI][12])
 
 ---
 
-### FASTAPI-HEADERS-001: Set essential security headers (in app or at the edge)
+### FASTAPI-AUTHZ-001: A autorização DEVE ser aplicada por objeto e por propriedade
 
-Severity: Medium
+Gravidade: Alta
 
-Required (typical API/web app):
+Obrigatório:
 
-- SHOULD set:
+- DEVE realizar autorização em nível de objeto sempre que acessar um recurso por identificador controlado pelo usuário (ID no caminho/consulta/corpo).
+- DEVE realizar autorização em nível de propriedade e modelagem de resposta para evitar “exposição excessiva de dados” (por exemplo, campos somente de administrador). ([Fundação OWASP][13])
+
+Padrões inseguros:
+
+- `GET /users/{id}` retorna o registro do usuário sem verificar se o chamador pode acessar esse `id`.
+- Os modelos de resposta incluem campos internos (funções, permissões, dados de cobrança, hashes de senha).
+
+Dicas de detecção:
+
+- Enumerar endpoints que aceitam IDs; rastreie se uma verificação de autorização é executada.
+- Compare modelos de resposta para campos públicos e internos.
+
+Consertar:
+
+- Adicione verificações em nível de objeto (propriedade, ACLs, limites de locatário).
+- Use modelos de resposta dedicados que incluam apenas campos permitidos.
+
+---
+
+### FASTAPI-SESS-001: Se estiver usando sessões baseadas em cookies e TLS, os atributos dos cookies DEVEM ser seguros na produção
+
+Gravidade: Alta (somente se o TLS estiver ativado)
+
+Obrigatório (produção, HTTPS):
+
+- DEVE definir cookies de sessão para serem enviados apenas por HTTPS (seguro). NOTA IMPORTANTE: Defina `Secure` apenas no ambiente de produção quando o TLS estiver configurado. Ao executar em um ambiente de desenvolvimento local via HTTP, não defina a propriedade `Secure` nos cookies. Você deve fazer isso condicionalmente com base no fato de o aplicativo estar sendo executado no modo de produção. Você também deve incluir uma propriedade como `SESSION_COOKIE_SECURE` que pode ser usada para desabilitar cookies `Secure` ao testar
+
+rHTTP.
+
+- DEVE definir HttpOnly para cookies de sessão (não acessíveis a JS).
+- DEVE usar `SameSite=Lax` (ou `Strict` se o UX permitir); se você precisar de cookies entre sites, documente as implicações do CSRF e adicione controles de compensação. ([Série de folhas de dicas OWASP] [8])
+- Se estiver usando Starlette `SessionMiddleware`, DEVE definir `https_only=True` na produção e escolher um `same_site` apropriado. ([PyPI][5])
+
+Padrões inseguros:
+
+- Cookies de sessão sem Secure/HttpOnly.
+- Cookies `SameSite=None` usados ​​para endpoints de mudança de estado autenticados sem proteções CSRF.
+
+Dicas de detecção:
+
+- Procure por `SessionMiddleware(` e inspecione parâmetros como `https_only`, `same_site`.
+- Procure por `set_cookie(` uso e sinalizadores de cookies.
+
+Correção:
+
+- Definir atributos de cookies seguros; prefira vidas curtas para sessões de alto privilégio. ([Série de folhas de dicas OWASP] [8])
+
+---
+
+### FASTAPI-SESS-002: Não armazene segredos confidenciais em cookies de sessão assinada
+
+Gravidade: Alta
+
+Obrigatório:
+
+- DEVE assumir que os dados da sessão baseados em cookies podem ser lidos pelo cliente (assinados ≠ criptografados); não armazene segredos/PII, a menos que sejam criptografados no lado do servidor.
+- Armazenar apenas identificadores opacos (por exemplo, ID de sessão) ou estado não sensível no cookie; armazenar estado de sessão confidencial no lado do servidor. ([Série de folhas de dicas OWASP] [8])
+
+Padrões inseguros:
+
+- Armazenar tokens de acesso, tokens de atualização ou PII diretamente em cargas de sessão de cookies.
+- Tratar “cookies assinados” como armazenamento confidencial.
+
+Dicas de detecção:
+
+- Procure por `request.session[...] =` ou `session[...] =`-padrões equivalentes; identificar o que está armazenado.
+- Identificar o uso de `SessionMiddleware` ou outros mecanismos de sessão de cookies.
+
+Correção:
+
+- Mover valores confidenciais para armazenamento no servidor; mantenha o cookie mínimo.
+
+---
+
+### FASTAPI-CSRF-001: Solicitações de alteração de estado autenticadas por cookie DEVEM ser protegidas por CSRF
+
+Gravidade: Alta
+
+Nota: Isto só se aplica se estiver usando autenticação baseada em cookies. Se o aplicativo usar autenticação baseada em cabeçalho ou token, como cabeçalho de autorização, o CSRF não será um problema.
+
+Obrigatório:
+
+- DEVE proteger todos os endpoints que mudam de estado (POST/PUT/PATCH/DELETE) que dependem de cookies para autenticação.
+- DEVE usar uma abordagem CSRF comprovada (padrão de token sincronizador ou middleware bem revisado) em vez de lançar o seu próprio. ([Série de folhas de dicas OWASP] [2])
+- PODE adicionar defesa profunda (verificações de origem/referenciador, cookies SameSite, busca de metadados), mas os tokens são a principal defesa para aplicativos autenticados por cookies. ([Série de folhas de dicas OWASP] [2])
+-
+
+NOTA IMPORTANTE: Se os cookies não forem usados ​​para autenticação (a autenticação é feita através do cabeçalho `Authorization`), o CSRF geralmente não é aplicável. ([FastAPI][11])
+
+Padrões inseguros:
+
+- Endpoints autenticados por cookie que mudam de estado sem validação de CSRF.
+- Usar GET para ações de mudança de estado (amplifica o risco de CSRF).
+
+Dicas de detecção:
+
+- Enumerar rotas com métodos diferentes de GET; identificar se os cookies são usados ​​para autenticação.
+- Procure geração/verificação de token CSRF ou middleware.
+
+Consertar:
+
+- Adicione tokens CSRF (e valide-os) em ações de mudança de estado quando a autenticação de cookie estiver em uso. ([Série de folhas de dicas OWASP] [2])
+
+---
+
+### FASTAPI-VALID-001: A análise e validação de solicitações DEVEM ser orientadas por esquema; evitar atribuição em massa
+
+Gravidade: Média (especialmente para APIs que gravam no banco de dados)
+
+Obrigatório:
+
+- DEVE usar modelos Pydantic para corpos de solicitação em vez de aceitar `dict`/`Any` arbitrários.
+- DEVE configurar modelos para rejeitar campos inesperados quando apropriado (evita erros de estilo de “atribuição em massa”).
+- DEVE validar e normalizar identificadores (IDs, e-mail, URLs) antes de usá-los para controle de acesso ou efeitos colaterais. ([Série de folhas de dicas OWASP] [14])
+
+Padrões inseguros:
+
+- `payload = await request.json()` seguido por `Model(**payload)` ou gravações diretas no banco de dados com `payload` (sem lista de permissões).
+- Modelos que aceitam silenciosamente campos desconhecidos para pontos de extremidade de gravação.
+
+Dicas de detecção:
+
+- Procure por `await request.json()`, `request.body()`, corpos digitados `dict`, corpos digitados `Any`.
+- Procure endpoints que fazem `db.update(**payload)` ou `Model(**payload)` com entrada não filtrada.
+
+Consertar:
+
+- Use modelos Pydantic explícitos com campos permitidos; rejeitar extras para pontos de extremidade de gravação. ([Série de folhas de dicas OWASP] [14])
+
+---
+
+### FASTAPI-RESP-001: Evite a exposição excessiva de dados por meio de modelos de resposta e serialização explícita
+
+Gravidade: Média
+
+Obrigatório:
+
+- DEVE definir modelos de resposta que incluam apenas campos pretendidos (especialmente para objetos de usuário, objetos relacionados a autenticação, objetos de cobrança).
+- DEVE usar modelos separados para “criar entrada”, “db/internal” e “saída pública” para evitar vazamento de campos sensíveis. ([FastAPI][15])
+
+Padrões inseguros:
+
+- Retornando objetos ORM ou dictos que incluem colunas internas.
+- Reutilização do “modelo de banco de dados” como modelo de resposta (inclui `password_hash`, `is_admin`, etc).
+
+Dicas de detecção:
+
+- Procure endpoints que `retornam usuário` onde `usuário` é uma instância ORM.
+- Verifique se há omissões de `response_model` em endpoints que retornam recursos confidenciais.
+
+Correção:
+
+- Adicionar modelos de resposta explícitos; crie esquemas “públicos” que excluam campos confidenciais. ([FastAPI][15])
+
+---
+
+### FASTAPI-XSS-001: Impedir XSS refletido/armazenado em respostas e modelos HTML
+
+Gravidade: Alta (se o serviço servir HTML)
+
+Obrigatório:
+
+- DEVE usar modelos com escape automático habilitado para HTML.
+- NÃO DEVE marcar conteúdo não confiável como seguro (sem renderização “HTML bruto” insegura de dados controlados pelo usuário).
+- DEVE implantar um CSP ao servir HTML que inclua qualquer conteúdo do usuário. ([Série de folhas de dicas OWASP] [16])
+
+Padrões inseguros:
+
+- Renderização do conteúdo do usuário diretamente em HTML sem escape/higienização.
+- Desativar o escape automático ou usar recursos de “HTML bruto” sem higienização.
+
+Dicas de detecção:
+
+- Pesquise renderização de modelos e concatenação de strings que criam HTML.
+- Revise modelos para filtros/construções “inseguras” e atributos não citados.
+
+Correção:
+
+- Mantenha o escape automático ativado; higienize o HTML do usuário somente se for absolutamente necessário, usando um higienizador confiável; adicione CSP. ([Série de folhas de dicas OWASP] [16])
+
+Nota:
+
+- Se o aplicativo for uma API JSON pura, o XSS geralmente é uma preocupação do cliente/aplicativo, mas páginas de erro/páginas de documentos ainda podem renderizar HTML.
+
+---
+
+### FASTAPI-SSTI-001: Nunca renderize modelos não confiáveis (injeção de modelo no lado do servidor)
+
+Gravidade: Crítica
+
+Obrigatório:
+
+- NÃO DEVE renderizar modelos que contenham sintaxe de modelo controlada pelo usuário.
+- DEVE tratar a renderização de “modelo de string” como perigosa se influenciada por entradas não confiáveis.
+- Se modelos não confiáveis forem absolutamente necessários (raros, de alto risco):
+  - DEVE usar uma abordagem de modelagem em sandbox e restringir recursos.
+  - DEVE assumir que escapes de sandbox são possíveis; adicione isolamento e listas de permissões estritas. ([Fundação OWASP][17])
+
+Padrões inseguros:
+
+- Renderização de modelos carregados a partir da entrada do usuário ou banco de dados por meio de um ambiente Jinja normal.
+- Construindo modelos dinamicamente usando strings controladas pelo usuário.
+
+Dicas de detecção:
+
+- Grep para Jinja `Environment.from_string`, `Template(...)` ou similar.
+- Rastrear origem da string do modelo (solicitação, banco de dados, uploads, painéis de administração).
+
+Consertar:
+
+- Substitua por modelos não executáveis ​​(substituição simples de string).
+- Se for realmente necessário, use o ambiente sandbox do Jinja, além de forte isolamento. ([jinja.palletsprojects.com][18])
+
+---
+
+### FASTAPI-HEADERS-001: Defina cabeçalhos de segurança essenciais (no aplicativo ou na borda)
+
+Gravidade: Média
+
+Obrigatório (API/aplicativo web típico):
+
+- DEVE definir:
   - `X-Content-Type-Options: nosniff`
-  - Clickjacking protection (`X-Frame-Options` and/or CSP `frame-ancestors`) if HTML is served
-  - `Referrer-Policy` and `Permissions-Policy` as appropriate
+  - Proteção contra clickjacking (`X-Frame-Options` e/ou `frame-ancestors` CSP) se HTML for veiculado
+  - `Referrer-Policy` e `Permissions-Policy` conforme apropriado
 
-NOTE:
+NOTA:
 
-- Headers may be set by a proxy/CDN. If not visible in app code, flag as “verify at edge”. ([OWASP Cheat Sheet Series][6])
+- Os cabeçalhos podem ser definidos por um proxy/CDN. Se não estiver visível no código do aplicativo, sinalize como “verificar na borda”. ([Série de folhas de dicas OWASP] [6])
 
-Insecure patterns:
+Padrões inseguros:
 
-- No security headers anywhere (app or edge) for apps serving HTML or sensitive APIs.
+- Não há cabeçalhos de segurança em nenhum lugar (aplicativo ou borda) para aplicativos que atendem HTML ou APIs confidenciais.
 
-Detection hints:
+Dicas de detecção:
 
-- Search for middleware that sets headers; check reverse proxy config.
+- Procure por middleware que configure cabeçalhos; verifique a configuração do proxy reverso.
 
-Fix:
+Correção:
 
-- Set headers centrally (middleware) or via reverse proxy/CDN.
-
----
-
-### FASTAPI-CORS-001: CORS MUST be explicit and least-privilege
-
-Severity: Medium (High if misconfigured with credentials)
-
-Required:
-
-- If CORS is not needed, MUST keep it disabled.
-- If CORS is needed:
-  - MUST allowlist trusted origins (do not reflect arbitrary origins).
-  - MUST NOT combine credentialed requests with wildcard origins (this is unsafe and commonly rejected by compliant middleware). ([OWASP Cheat Sheet Series][6])
-  - SHOULD restrict allowed methods and headers.
-
-Insecure patterns:
-
-- `allow_origins=["*"]` together with `allow_credentials=True`.
-- Reflecting `Origin` without validation.
-- `allow_origin_regex=".*"` used broadly.
-
-Detection hints:
-
-- Search for `CORSMiddleware` configuration.
-- Look for `allow_origins=["*"]`, `allow_credentials=True`, `allow_origin_regex`.
-
-Fix:
-
-- Use an explicit origin allowlist and minimal methods/headers; keep credentials off unless required. ([OWASP Cheat Sheet Series][6])
+- Defina cabeçalhos centralmente (middleware) ou via proxy reverso/CDN.
 
 ---
 
-### FASTAPI-HOST-001: Host header MUST be validated in production
+### FASTAPI-CORS-001: O CORS DEVE ser explícito e com menos privilégios
 
-Severity: Low
+Gravidade: Média (alta se as credenciais estiverem configuradas incorretamente)
 
-Required:
+Obrigatório:
 
-- SHOULD use `TrustedHostMiddleware` (or equivalent at edge) to restrict accepted Host values. ([PyPI][5])
-- MUST NOT trust the `Host` header for security-sensitive decisions without validation.
+- Se o CORS não for necessário, DEVE mantê-lo desativado.
+- Se o CORS for necessário:
+  - DEVE incluir na lista de permissões origens confiáveis (não reflita origens arbitrárias).
+  - NÃO DEVE combinar solicitações credenciadas com origens curinga (isso não é seguro e é comumente rejeitado por middleware compatível). ([Série de folhas de dicas OWASP] [6])
+  - DEVE restringir métodos e cabeçalhos permitidos.
 
-Insecure patterns:
+Padrões inseguros:
 
-- No Host validation while generating external URLs (password reset links, callback URLs) from request host.
-- Allowing arbitrary Host headers in apps behind permissive proxies.
+- `allow_origins=["*"]` junto com `allow_credentials=True`.
+- Refletindo `Origem` sem validação.
+- `allow_origin_regex=".*"` amplamente utilizado.
 
-Detection hints:
+Dicas de detecção:
 
-- Search for `TrustedHostMiddleware` usage.
-- Search for logic that uses `request.url`, `request.base_url`, or host-derived values to build external URLs.
+- Pesquise a configuração `CORSMiddleware`.
+- Procure por `allow_origins=["*"]`, `allow_credentials=True`, `allow_origin_regex`.
 
-Fix:
+Correção:
 
-- Configure a strict allowed-hosts list in production; enforce at edge too if possible.
-
----
-
-### FASTAPI-PROXY-001: Reverse proxy trust MUST be configured correctly
-
-Severity: High (when behind a proxy)
-
-Required:
-
-- If behind a reverse proxy, MUST configure forwarded-header trust correctly.
-- MUST NOT blindly trust `X-Forwarded-*` headers from the open internet.
-- If using Uvicorn proxy header support, MUST restrict which IPs are allowed to provide forwarded headers. ([PyPI][4])
-
-Insecure patterns:
-
-- Enabling proxy headers broadly without restricting trusted proxy IPs.
-- Using forwarded headers to decide “is secure” / “is internal” / “client IP” without proper trust boundaries.
-
-Detection hints:
-
-- Search for `--proxy-headers`, `--forwarded-allow-ips`, or equivalent config.
-- Search for security-sensitive use of `request.client.host`, `request.url.scheme`, `request.headers["x-forwarded-for"]`.
-
-Fix:
-
-- Configure Uvicorn with proxy headers only when behind a known proxy, and restrict `forwarded_allow_ips` to that proxy. ([PyPI][4])
-- Keep Host allowlisting in place even behind proxies.
+- Use uma lista de permissões de origem explícita e métodos/cabeçalhos mínimos; mantenha as credenciais desativadas, a menos que seja necessário. ([Série de folhas de dicas OWASP] [6])
 
 ---
 
-### FASTAPI-LIMITS-001: Request and multipart limits MUST be enforced to prevent DoS
+### FASTAPI-HOST-001: O cabeçalho do host DEVE ser validado na produção
 
-Severity: Low
+Gravidade: Baixa
 
-Required:
+Obrigatório:
 
-- MUST enforce request size limits at the edge (reverse proxy/load balancer) and validate in app where needed.
-- MUST apply special scrutiny to multipart/form-data handling; historical vulnerabilities include unbounded buffering and DoS vectors. ([advisories.gitlab.com][9])
-- SHOULD rate limit and/or add per-IP/per-user throttles for expensive endpoints.
+- DEVE usar `TrustedHostMiddleware` (ou equivalente na borda) para restringir valores de Host aceitos. ([PyPI][5])
+- NÃO DEVE confiar no cabeçalho `Host` para decisões sensíveis à segurança sem validação.
 
-Insecure patterns:
+Padrões inseguros:
 
-- Accepting arbitrarily large JSON bodies or multipart forms.
-- Parsing multipart forms without size/field-count controls.
+- Nenhuma validação de host ao gerar URLs externos (links de redefinição de senha, URLs de retorno de chamada) do host de solicitação.
+- Permitir cabeçalhos de host arbitrários em aplicativos atrás de proxies permissivos.
 
-Detection hints:
+Dicas de detecção:
 
-- Identify file upload endpoints and `multipart/form-data` usage.
-- Look for missing proxy-level limits (nginx `client_max_body_size`, ALB limits, etc.) and missing app-level checks.
+- Pesquise o uso de `TrustedHostMiddleware`.
+- Pesquise lógica que use `request.url`, `request.base_url` ou valores derivados de host para criar URLs externos.
 
-Fix:
+Correção:
 
-- Enforce strict body limits and multipart constraints; keep Starlette and python-multipart updated to patched versions. ([advisories.gitlab.com][9])
-
----
-
-### FASTAPI-FILES-001: Prevent path traversal and unsafe static file exposure
-
-Severity: High
-
-Required:
-
-- MUST NOT pass user-controlled file paths to `FileResponse`/filesystem calls without strict validation and safe base directories.
-- If using `StaticFiles`, MUST keep Starlette updated and understand the security history (path traversal advisory exists for older versions). ([advisories.gitlab.com][10])
-- MUST NOT serve user uploads as executable/active content (especially HTML/JS) from a static root without safe handling.
-
-Insecure patterns:
-
-- `FileResponse(request.query_params["path"])`
-- Mounting `StaticFiles(directory="uploads")` where uploads include HTML/JS/SVG and are served inline.
-
-Detection hints:
-
-- Search for `FileResponse(`, `StaticFiles(`, `open(` in routes.
-- Trace whether the path originates from untrusted input.
-
-Fix:
-
-- Use opaque IDs for files; map IDs to server-side stored paths.
-- Serve untrusted content as attachment downloads where appropriate.
+- Configurar uma lista restrita de hosts permitidos em produção; impor na borda também, se possível.
 
 ---
 
-### FASTAPI-FILES-002: Mitigate Range-header DoS on file-serving endpoints
+### FASTAPI-PROXY-001: A confiança do proxy reverso DEVE ser configurada corretamente
 
-Severity: Low (if affected versions and file serving is enabled)
+Gravidade: Alta (quando atrás de um proxy)
 
-Required:
+Obrigatório:
 
-- MUST keep Starlette patched against known file-serving DoS issues if using `FileResponse`/`StaticFiles`.
-- MUST treat unusual `Range` header handling and file serving as a DoS surface. ([advisories.gitlab.com][19])
+- Se estiver atrás de um proxy reverso, DEVE configurar corretamente a confiança do cabeçalho encaminhado.
+- NÃO DEVE confiar cegamente nos cabeçalhos `X-Forwarded-*` da Internet aberta.
+- Se estiver usando suporte a cabeçalho de proxy Uvicorn, DEVE restringir quais IPs têm permissão para fornecer cabeçalhos encaminhados. ([PyPI][4])
 
-Insecure patterns:
+Padrões inseguros:
 
-- Serving large files with vulnerable Starlette versions.
-- No rate limiting / CDN shielding for file endpoints.
+- Habilitar cabeçalhos de proxy amplamente sem restringir IPs de proxy confiáveis.
+- Usar cabeçalhos encaminhados para decidir “é seguro”/“é interno”/“IP do cliente” sem limites de confiança adequados.
 
-Detection hints:
+Dicas de detecção:
 
-- Identify Starlette version; if in affected range, flag.
-- Find uses of `FileResponse` and `StaticFiles`.
+- Procure por `--proxy-headers`, `--forwarded-allow-ips` ou configuração equivalente.
+- Pesquise o uso sensível à segurança de `request.client.host`, `request.url.scheme`, `request.headers["x-forwarded-for"]`.
 
-Fix:
+Consertar:
 
-- Upgrade Starlette to a fixed version per advisory guidance. ([advisories.gitlab.com][19])
-- Add edge caching/rate limiting for file endpoints where appropriate.
-
----
-
-### FASTAPI-UPLOAD-001: File uploads MUST be validated, stored safely, and served safely
-
-Severity: Medium
-
-Required:
-
-- MUST enforce upload size limits (app + edge).
-- MUST validate file type using allowlists and content checks (not only extension). ([OWASP Cheat Sheet Series][20])
-- SHOULD generate server-side filenames (random IDs) and avoid trusting original names.
-- MUST serve potentially active formats safely (download attachment) unless explicitly intended.
-
-Insecure patterns:
-
-- Accepting arbitrary file types and serving them back inline.
-- Using user-supplied filename as storage path.
-
-Detection hints:
-
-- Look for upload handlers and where/how files are written.
-- Look for direct exposure of upload directories.
-
-Fix:
-
-- Implement allowlist validation + safe storage + safe serving; add scanning/quarantine if applicable. ([OWASP Cheat Sheet Series][20])
+- Configure o Uvicorn com cabeçalhos de proxy somente quando estiver atrás de um proxy conhecido e restrinja `forwarded_allow_ips` a esse proxy. ([PyPI][4])
+- Mantenha a lista de permissões de hosts em vigor, mesmo atrás de proxies.
 
 ---
 
-### FASTAPI-INJECT-001: Prevent SQL injection (use parameterized queries / ORM)
+### FASTAPI-LIMITS-001: Limites de solicitação e multipart DEVEM ser aplicados para evitar DoS
 
-Severity: High
+Gravidade: Baixa
 
-Required:
+Obrigatório:
 
-- MUST use parameterized queries or an ORM that parameterizes under the hood.
-- MUST NOT build SQL by string concatenation / f-strings with untrusted input. ([OWASP Cheat Sheet Series][21])
+- DEVE impor limites de tamanho de solicitação na borda (proxy reverso/balanceador de carga) e validar no aplicativo quando necessário.
+- DEVE aplicar um exame especial ao tratamento de dados de múltiplas partes/formulários; vulnerabilidades históricas incluem buffer ilimitado e vetores DoS. ([advisories.gitlab.com][9])
+- DEVE limitar a taxa e/ou adicionar aceleradores por IP/por usuário para endpoints caros.
 
-Insecure patterns:
+Padrões inseguros:
 
-- `f"SELECT ... WHERE id={user_id}"`
-- `"... WHERE name = '%s'" % user_input`
+- Aceitar corpos JSON arbitrariamente grandes ou formulários multipartes.
+- Análise de formulários multipartes sem controles de tamanho/contagem de campos.
 
-Detection hints:
+Dicas de detecção:
 
-- Grep for SQL keywords in Python strings near `.execute(...)`.
-- Trace untrusted data into DB calls.
+- Identifique endpoints de upload de arquivos e uso de `multipart/form-data`.
+- Procure limites ausentes no nível do proxy (nginx `client_max_body_size`, limites ALB, etc.) e verificações ausentes no nível do aplicativo.
 
-Fix:
+Consertar:
 
-- Replace with parameterized queries / ORM query APIs; validate types before querying. ([OWASP Cheat Sheet Series][21])
+- Aplicar limites rígidos ao corpo e restrições multipartes; mantenha Starlette e python-multipart atualizados para versões corrigidas. ([advisories.gitlab.com][9])
 
 ---
 
-### FASTAPI-INJECT-002: Prevent OS command injection
+### FASTAPI-FILES-001: Evita a passagem de caminho e a exposição insegura de arquivos estáticos
 
-Severity: Critical to High (depends on exposure)
+Gravidade: Alta
 
-Required:
+Obrigatório:
 
-- MUST avoid executing shell commands with untrusted input.
-- If subprocess is necessary:
-  - MUST pass args as a list (not a string)
-  - MUST NOT use `shell=True` with attacker-influenced strings
-  - SHOULD use strict allowlists for any variable component ([OWASP Cheat Sheet Series][22])
+- NÃO DEVE passar caminhos de arquivos controlados pelo usuário para chamadas `FileResponse`/sistema de arquivos sem validação estrita e diretórios base seguros.
+- Se estiver usando `StaticFiles`, DEVE manter o Starlette atualizado e entender o histórico de segurança (existe um aviso de passagem de caminho para versões mais antigas). ([advisories.gitlab.com][10])
+- NÃO DEVE veicular uploads de usuários como conteúdo executável/ativo (especialmente HTML/JS) de uma raiz estática sem manuseio seguro.
 
-Insecure patterns:
+Padrões inseguros:
+
+- `FileResponse(request.query_params["caminho"])`
+- Montagem de `StaticFiles(directory="uploads")` onde os uploads incluem HTML/JS/SVG e são veiculados inline.
+
+Dicas de detecção:
+
+- Procure por `FileResponse(`, `StaticFiles(`, `open(` em rotas.
+- Rastreie se o caminho se origina de uma entrada não confiável.
+
+Correção:
+
+- Use IDs opacos para arquivos; mapear IDs para caminhos armazenados no lado do servidor.
+- Servir conteúdo não confiável como downloads de anexos, quando apropriado.
+
+---
+
+### FASTAPI-FILES-002: Mitigar DoS de cabeçalho de intervalo em endpoints de serviço de arquivos
+
+Gravidade: Baixa (se as versões afetadas e o serviço de arquivos estiverem ativados)
+
+Obrigatório:
+
+- DEVE manter o Starlette corrigido contra problemas conhecidos de DoS de serviço de arquivos se estiver usando `FileResponse`/`StaticFiles`.
+- DEVE tratar o manuseio incomum do cabeçalho `Range` e servir como uma superfície DoS. ([advisories.gitlab.com][19])
+
+Padrões inseguros:
+
+- Servindo arquivos grandes com versões vulneráveis ​​do Starlette.
+- Sem limitação de taxa/proteção CDN para endpoints de arquivo.
+
+Dicas de detecção:
+
+- Identificar versão Starlette; se estiver na faixa afetada, sinalizar.
+- Encontre usos de `FileResponse` e ​​`StaticFiles`.
+
+Correção:
+
+- Atualize o Starlette para uma versão fixa de acordo com orientação consultiva. ([advisories.gitlab.com][19])
+- Adicione cache de borda/limitação de taxa para endpoints de arquivo, quando apropriado.
+
+---
+
+### FASTAPI-UPLOAD-001: Os uploads de arquivos DEVEM ser validados, armazenados com segurança e servidos com segurança
+
+Gravidade: Média
+
+Obrigatório:
+
+- DEVE impor limites de tamanho de upload (aplicativo + borda).
+- DEVE validar o tipo de arquivo usando listas de permissões e verificações de conteúdo (não apenas extensão). ([Série de folhas de dicas OWASP] [20])
+- DEVE gerar nomes de arquivos do lado do servidor (IDs aleatórios) e evitar confiar em nomes originais.
+- DEVE servir formatos potencialmente ativos com segurança (download de anexo), a menos que seja explicitamente pretendido.
+
+Padrões inseguros:
+
+- Aceitar tipos de arquivos arbitrários e servi-los de volta in-line.
+- Usando o nome de arquivo fornecido pelo usuário como caminho de armazenamento.
+
+Dicas de detecção:
+
+- Procure manipuladores de upload e onde/como os arquivos são gravados.
+- Procure exposição direta de diretórios de upload.
+
+Correção:
+
+- Implementar validação de lista de permissões + armazenamento seguro + serviço seguro; adicione verificação/quarentena, se aplicável. ([Série de folhas de dicas OWASP] [20])
+
+---
+
+### FASTAPI-INJECT-001: Evita injeção de SQL (use consultas parametrizadas/ORM)
+
+Gravidade: Alta
+
+Obrigatório:
+
+- DEVE usar consultas parametrizadas ou um ORM que parametrize nos bastidores.
+- NÃO DEVE construir SQL por concatenação de strings/f-strings com entrada não confiável. ([Série de folhas de dicas OWASP] [21])
+
+Padrões inseguros:
+
+- `f"SELECIONE ... WHERE id={user_id}"`
+- `"... WHERE nome = '%s'" % user_input`
+
+Dicas de detecção:
+
+- Grep para palavras-chave SQL em strings Python próximas a `.execute(...)`.
+- Rastreie dados não confiáveis ​​em chamadas de banco de dados.
+
+Correção:
+
+- Substituir por consultas parametrizadas/APIs de consulta ORM; valide os tipos antes de consultar. ([Série de folhas de dicas OWASP] [21])
+
+---
+
+### FASTAPI-INJECT-002: Impedir injeção de comando do SO
+
+Gravidade: Crítica a Alta (depende da exposição)
+
+Obrigatório:
+
+- DEVE evitar executar comandos shell com entrada não confiável.
+- Se o subprocesso for necessário:
+  - DEVE passar argumentos como uma lista (não uma string)
+  - NÃO DEVE usar `shell=True` com strings influenciadas pelo invasor
+  - DEVE usar listas de permissões estritas para qualquer componente variável ([OWASP Cheat Sheet Series][22])
+
+Padrões inseguros:
 
 - `os.system(user_input)`
-- `subprocess.run(f"cmd {user}", shell=True)`
-- Passing user strings into `bash -c`, `sh -c`, PowerShell, etc.
+- `subprocess.run(f"cmd {usuário}", shell=True)`
+- Passando strings de usuário para `bash -c`, `sh -c`, PowerShell, etc.
 
-Detection hints:
+Dicas de detecção:
 
-- Search for `os.system`, `subprocess`, `Popen`, `shell=True`.
-- Trace data from request/DB into these calls.
+- Procure por `os.system`, `subprocess`, `Popen`, `shell=True`.
+- Rastreie dados da solicitação/banco de dados para essas chamadas.
 
-Fix:
+Correção:
 
-- Use library APIs instead of shell commands.
-- If unavoidable, hard-code the command and allowlist validated parameters; use `--` separator where supported. ([OWASP Cheat Sheet Series][22])
+- Use APIs de biblioteca em vez de comandos shell.
+- Se for inevitável, codifique o comando e coloque na lista de permissões os parâmetros validados; use o separador `--` onde houver suporte. ([Série de folhas de dicas OWASP] [22])
 
 ---
 
-### FASTAPI-SSRF-001: Prevent server-side request forgery (SSRF) in outbound HTTP
+### FASTAPI-SSRF-001: Evita falsificação de solicitação do lado do servidor (SSRF) em HTTP de saída
 
-Severity: Medium (can be High in cloud/VPC environments)
+Gravidade: Média (pode ser Alta em ambientes de nuvem/VPC)
 
-- Note: For small stand alone projects this is less important. It is most important when deploying into an LAN or with other services listening on the same server.
+- Nota: Para projetos pequenos e independentes, isso é menos importante. É mais importante ao implantar em uma LAN ou com outros serviços escutando no mesmo servidor.
 
-Required:
+Obrigatório:
 
-- MUST treat outbound requests to user-provided URLs as high risk.
-- SHOULD validate and restrict destinations (allowlist hosts/domains) for any user-influenced URL fetch.
-- SHOULD block access to localhost/private IP ranges/link-local and cloud metadata endpoints.
-- MUST restrict protocols to http/https.
-- SHOULD set timeouts and carefully control redirects. ([OWASP Cheat Sheet Series][23])
+- DEVE tratar as solicitações de saída para URLs fornecidos pelo usuário como de alto risco.
+- DEVE validar e restringir destinos (hosts/domínios da lista de permissões) para qualquer busca de URL influenciada pelo usuário.
+- DEVE bloquear o acesso a locaishost/intervalos de IP privados/link-local e endpoints de metadados em nuvem.
+- DEVE restringir os protocolos a http/https.
+- DEVE definir tempos limite e controlar cuidadosamente os redirecionamentos. ([Série de folhas de dicas OWASP] [23])
 
-Insecure patterns:
+Padrões inseguros:
 
 - `httpx.get(request.query_params["url"])`
-- “URL preview/import/webhook tester” features that accept arbitrary URLs.
+- Recursos de “visualização/importação/testador de webhook de URL” que aceitam URLs arbitrários.
 
-Detection hints:
+Dicas de detecção:
 
-- Search for `requests`, `httpx`, `urllib`, `aiohttp` calls with URLs derived from requests/DB.
-- Identify endpoints named `fetch`, `preview`, `proxy`, `webhook`, `import`.
+- Pesquise chamadas `requests`, `httpx`, `urllib`, `aiohttp` com URLs derivadas de requests/DB.
+- Identifique endpoints chamados `fetch`, `preview`, `proxy`, `webhook`, `import`.
 
-Fix:
+Consertar:
 
-- Implement strict URL parsing + allowlists; add egress controls; set short timeouts; disable redirects if not required. ([OWASP Cheat Sheet Series][23])
-
----
-
-### FASTAPI-REDIRECT-001: Prevent open redirects
-
-Severity: Low
-
-Required:
-
-- MUST validate redirect targets derived from untrusted input (`next`, `redirect`, `return_to`).
-- SHOULD prefer redirecting only to same-site relative paths or an allowlist of domains. ([OWASP Cheat Sheet Series][24])
-
-Insecure patterns:
-
-- Returning `RedirectResponse(next)` where `next` is user-controlled with no validation.
-
-Detection hints:
-
-- Search for `RedirectResponse(` or redirect logic and examine the source of the target.
-
-Fix:
-
-- Allow only relative paths or allowlisted domains; fall back to a safe default. ([OWASP Cheat Sheet Series][24])
+- Implementar análise rigorosa de URL + listas de permissões; adicione controles de saída; definir intervalos curtos; desative os redirecionamentos se não for necessário. ([Série de folhas de dicas OWASP] [23])
 
 ---
 
-### FASTAPI-WS-001: WebSocket endpoints MUST be authenticated and protected against cross-site abuse
+### FASTAPI-REDIRECT-001: Impedir redirecionamentos abertos
 
-Severity: Medium to High (depends on data/privilege)
+Gravidade: Baixa
 
-Required:
+Obrigatório:
 
-- MUST authenticate WebSocket connections for any non-public channel (WebSockets don’t inherently provide auth). ([OWASP Cheat Sheet Series][25])
-- SHOULD enforce origin/CSRF-like protections appropriate for browser-based WebSocket clients (Origin validation is a common control).
-- SHOULD rate limit message frequency and connection attempts; close idle/abusive connections.
+- DEVE validar alvos de redirecionamento derivados de entradas não confiáveis ​​(`next`, `redirect`, `return_to`).
+- DEVE preferir o redirecionamento apenas para caminhos relativos do mesmo site ou uma lista de domínios permitidos. ([Série de folhas de dicas OWASP] [24])
 
-Insecure patterns:
+Padrões inseguros:
 
-- `@app.websocket(...)` accepts and trusts the connection with no auth check.
-- Using query-string tokens for auth without considering leakage/rotation.
+- Retornando `RedirectResponse(next)` onde `next` é controlado pelo usuário sem validação.
 
-Detection hints:
+Dicas de detecção:
 
-- Search for `@app.websocket` / `websocket_endpoint` and inspect whether auth is performed before accepting sensitive operations.
-- Review origin checks, token parsing, and per-connection authorization.
+- Procure por `RedirectResponse(` ou lógica de redirecionamento e examine a origem do alvo.
 
-Fix:
+Correção:
 
-- Require authentication during handshake (e.g., a token or session) and enforce authorization for actions/messages.
-- Validate Origin for browser-based clients where appropriate; apply rate limits and timeouts. ([OWASP Cheat Sheet Series][25])
+- Permitir apenas caminhos relativos ou domínios permitidos; voltar a um padrão seguro. ([Série de folhas de dicas OWASP] [24])
 
 ---
 
-### FASTAPI-SUPPLY-001: Dependency and patch hygiene (focus on security-relevant deps)
+### FASTAPI-WS-001: Endpoints WebSocket DEVEM ser autenticados e protegidos contra abuso entre sites
 
-Severity: Low
+Gravidade: Média a Alta (depende dos dados/privilégio)
 
-Required:
+Obrigatório:
 
-- SHOULD pin and regularly update security-critical dependencies (FastAPI, Starlette, Uvicorn, Pydantic, python-multipart, auth/JWT libs).
-- MUST respond to known security advisories promptly.
-- MUST treat file serving and multipart parsing dependencies as security-sensitive due to historical CVEs. ([advisories.gitlab.com][10])
+- DEVE autenticar conexões WebSocket para qualquer canal não público (WebSockets não fornece autenticação inerentemente). ([Série de folhas de dicas OWASP] [25])
+- DEVE impor proteções semelhantes a Origin/CSRF apropriadas para clientes WebSocket baseados em navegador (a validação de Origin é um controle comum).
+- DEVE limitar a frequência de mensagens e tentativas de conexão; feche conexões ociosas/abusivas.
 
-Audit focus examples (historical):
+Padrões inseguros:
 
-- Starlette StaticFiles path traversal (fixed in 0.27.0). ([advisories.gitlab.com][10])
-- Starlette multipart/form-data DoS (fixed in 0.40.0). ([advisories.gitlab.com][9])
-- Starlette FileResponse Range header DoS (fixed in 0.49.1). ([advisories.gitlab.com][19])
+- `@app.websocket(...)` aceita e confia na conexão sem verificação de autenticação.
+- Usando tokens de string de consulta para autenticação sem considerar vazamento/rotação.
 
-Detection hints:
+Dicas de detecção:
 
-- Check `requirements.txt`, lockfiles, container images, and runtime environments for actual installed versions.
-- Map file upload/file serving features to dependency versions.
+- Pesquise `@app.websocket` / `websocket_endpoint` e inspecione se a autenticação é executada antes de aceitar operações confidenciais.
+- Revise verificações de origem, análise de token e autorização por conexão.
 
-Fix:
+Consertar:
 
-- Upgrade to patched versions per advisories; add regression tests around affected behavior.
+- Exigir autenticação durante o handshake (por exemplo, um token ou sessão) e impor autorização para ações/mensagens.
+- Validar Origin para clientes baseados em navegador, quando apropriado; aplicar limites de taxa e tempos limite. ([Série de folhas de dicas OWASP] [25])
 
 ---
 
-## 5) Practical scanning heuristics (how to “hunt”)
+### FASTAPI-SUPPLY-001: Dependência e higiene de patches (foco em dependências relevantes para a segurança)
 
-When actively scanning, use these high-signal patterns:
+Gravidade: Baixa
 
-- Dev server / debug:
+Obrigatório:
+
+- DEVE fixar e atualizar regularmente dependências críticas de segurança (FastAPI, Starlette, Uvicorn, Pydantic, python-multipart, auth/JWT libs).
+- DEVE responder prontamente aos avisos de segurança conhecidos.
+- DEVE tratar as dependências de serviço de arquivo e análise multipartes como sensíveis à segurança devido a CVEs históricos. ([advisories.gitlab.com][10])
+
+Exemplos de foco de auditoria (histórico):
+
+- Travessia do caminho Starlette StaticFiles (corrigido em 0.27.0). ([advisories.gitlab.com][10])
+- DoS multipart/form-data Starlette (corrigido em 0.40.0). ([advisories.gitlab.com][9])
+- DoS do cabeçalho Starlette FileResponse Range (corrigido em 0.49.1). ([advisories.gitlab.com][19])
+
+Dicas de detecção:
+
+- Verifique `requirements.txt`, lockfiles, imagens de contêiner e ambientes de tempo de execução para versões reais instaladas.
+- Mapear recursos de upload/servimento de arquivos para versões de dependência.
+
+Correção:
+
+- Atualização para versões corrigidas por avisos; adicione testes de regressão em torno do comportamento afetado.
+
+---
+
+## 5) Heurísticas práticas de varredura (como “caçar”)
+
+Ao digitalizar ativamente, use estes padrões de sinal alto:
+
+- Servidor de desenvolvimento/depuração:
   - `--reload`, `reload=True`, `debug=True`, `FastAPI(debug=True)` ([PyPI][4])
 
-- OpenAPI/docs exposure:
+- Exposição OpenAPI/docs:
   - `/docs`, `/redoc`, `/openapi.json`, `docs_url=`, `openapi_url=`
 
-- Auth enforcement gaps:
-  - Endpoints missing `Depends()`/`Security()` where expected; routers without a consistent dependency boundary ([FastAPI][7])
-  - Tokens in query params (`token=`, `api_key=`, `key=`) ([FastAPI][11])
+- Lacunas de aplicação de autenticação:
+  - Endpoints faltando `Depends()`/`Security()` onde esperado; roteadores sem um limite de dependência consistente ([FastAPI][7])
+  - Tokens em parâmetros de consulta (`token=`, `api_key=`, `key=`) ([FastAPI][11])
 
-- Session/cookies + CSRF:
-  - `SessionMiddleware(` and cookie flags (`https_only`, `same_site`) ([PyPI][5])
-  - POST/PUT/PATCH/DELETE handlers using cookie auth with no CSRF checks ([OWASP Cheat Sheet Series][2])
+- Sessão/cookies + CSRF:
+  - `SessionMiddleware(` e sinalizadores de cookies (`https_only`, `same_site`) ([PyPI][5])
+  - Manipuladores POST/PUT/PATCH/DELETE usando autenticação de cookie sem verificações CSRF ([OWASP Cheat Sheet Series][2])
 
-- Input validation & mass assignment:
-  - `await request.json()` and direct DB writes from dicts; models accepting extra fields ([OWASP Cheat Sheet Series][14])
+- Validação de entrada e atribuição em massa:
+  - `await request.json()` e gravações diretas no banco de dados de dictos; modelos que aceitam campos extras ([Série de folhas de dicas OWASP] [14])
 
-- Excessive data exposure:
-  - Returning ORM objects or dicts without `response_model`; responses containing password/role/internal fields ([FastAPI][15])
+- Exposição excessiva de dados:
+  - Retornando objetos ORM ou dict sem `response_model`; respostas contendo senha/função/campos internos ([FastAPI][15])
 
 - CORS:
-  - `CORSMiddleware` with `allow_origins=["*"]`, `allow_origin_regex=".*"`, `allow_credentials=True` ([OWASP Cheat Sheet Series][6])
+  - `CORSMiddleware` com `allow_origins=["*"]`, `allow_origin_regex=".*"`, `allow_credentials=True` ([Série de folhas de dicas OWASP][6])
 
-- Files:
-  - `FileResponse(` with user-controlled paths; `StaticFiles(` exposing uploads ([advisories.gitlab.com][10])
+- Arquivos:
+  - `FileResponse(` com caminhos controlados pelo usuário; `StaticFiles(` expondo uploads ([advisories.gitlab.com][10])
 
-- Uploads / multipart:
-  - `multipart/form-data` endpoints with no size/field constraints; outdated Starlette/python-multipart ([advisories.gitlab.com][9])
+- Uploads/multiparte:
+  - endpoints `multipart/form-data` sem restrições de tamanho/campo; Starlette/python-multipart desatualizado ([advisories.gitlab.com][9])
 
-- Injection:
-  - SQL strings with f-strings/concatenation into `.execute(...)` ([OWASP Cheat Sheet Series][21])
-  - `subprocess.*`, `shell=True`, `os.system` ([OWASP Cheat Sheet Series][22])
+- Injeção:
+  - Strings SQL com f-strings/concatenação em `.execute(...)` ([OWASP Cheat Sheet Series][21])
+  - `subprocess.*`, `shell=True`, `os.system` ([Série de Folhas de Dicas OWASP][22])
 
 - SSRF:
-  - `httpx.get/post` or `requests.*` with URL from request/DB, no allowlist/timeouts ([OWASP Cheat Sheet Series][23])
+  - `httpx.get/post` ou `requests.*` com URL de solicitação/banco de dados, sem lista de permissões/tempos limite ([Série de folhas de dicas OWASP][23])
 
-- Redirect:
-  - `RedirectResponse(next)` with no validation ([OWASP Cheat Sheet Series][24])
+- Redirecionar:
+  - `RedirectResponse(next)` sem validação ([OWASP Cheat Sheet Series][24])
 
 - WebSockets:
-  - `@app.websocket` handlers without auth/origin checks; use of `ws://` in prod configs ([FastAPI][27])
+  - Manipuladores `@app.websocket` sem verificações de autenticação/origem; uso de `ws://` nas configurações do produto ([FastAPI][27])
 
-Always try to confirm:
+Sempre tente confirmar:
 
-- data origin (untrusted vs trusted)
-- sink type (SQL/subprocess/files/template/http/redirect/ws)
-- protective controls present (validation, allowlists, middleware, edge controls)
-- installed dependency versions vs vulnerable ranges ([advisories.gitlab.com][10])
+- origem dos dados (não confiável versus confiável)
+- tipo de coletor (SQL/subprocess/files/template/http/redirect/ws)
+- controles de proteção presentes (validação, listas de permissões, middleware, controles de borda)
+- versões de dependência instaladas versus intervalos vulneráveis ([advisories.gitlab.com][10])
 
 ---
 
-## 6) Sources (accessed 2026-01-27)
+## 6) Fontes (acessado em 27/01/2026)
 
-Primary framework documentation:
+Documentação da estrutura primária:
 
-- FastAPI (PyPI metadata, versioning) — `https://pypi.org/project/fastapi/` ([PyPI][1])
-- FastAPI docs: Security “First Steps” (Authorization Bearer header conventions) — `https://fastapi.tiangolo.com/tutorial/security/first-steps/` ([FastAPI][11])
-- FastAPI reference: Dependencies (`Depends`, `Security`) — `https://fastapi.tiangolo.com/reference/dependencies/` ([FastAPI][7])
-- FastAPI reference: APIRouter (router-level dependencies) — `https://fastapi.tiangolo.com/reference/apirouter/` ([FastAPI][28])
-- FastAPI docs: WebSockets — `https://fastapi.tiangolo.com/advanced/websockets/` ([FastAPI][27])
+- FastAPI (metadados PyPI, versionamento) — `https://pypi.org/project/fastapi/` ([PyPI][1])
+- Documentos FastAPI: “Primeiros passos” de segurança (convenções de cabeçalho do portador de autorização) — `https://fastapi.tiangolo.com/tutorial/security/first-steps/` ([FastAPI][11])
+- Referência FastAPI: Dependências (`Depends`, `Segurança`) — `https://fastapi.tiangolo.com/reference/dependencies/` ([FastAPI][7])
+- Referência FastAPI: APIRouter (dependências em nível de roteador) — `https://f
 
-ASGI/server stack documentation:
+astapi.tiangolo.com/reference/apirouter/` ([FastAPI][28])
 
-- Starlette (PyPI, general capabilities) — `https://pypi.org/project/starlette/` ([PyPI][5])
-- Starlette docs: WebSockets — `https://starlette.dev/websockets/` ([Starlette][3])
-- Uvicorn (PyPI metadata) — `https://pypi.org/project/uvicorn/` ([PyPI][4])
-- Pydantic docs (v2.12.x) — `https://docs.pydantic.dev/latest/` ([Pydantic][29])
+- Documentos FastAPI: WebSockets — `https://fastapi.tiangolo.com/advanced/websockets/` ([FastAPI][27])
 
-Security standards and cheat sheets:
+Documentação da pilha ASGI/servidor:
 
-- OWASP Cheat Sheet Series: Session Management — `https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html` ([OWASP Cheat Sheet Series][8])
-- OWASP Cheat Sheet Series: CSRF Prevention — `https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html` ([OWASP Cheat Sheet Series][2])
-- OWASP Cheat Sheet Series: XSS Prevention — `https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html` ([OWASP Cheat Sheet Series][16])
-- OWASP Cheat Sheet Series: Mass Assignment — `https://cheatsheetseries.owasp.org/cheatsheets/Mass_Assignment_Cheat_Sheet.html` ([OWASP Cheat Sheet Series][14])
-- OWASP API Security Top 10 (2023) — `https://owasp.org/API-Security/editions/2023/en/0x11-t10/` ([OWASP Foundation][13])
-- OWASP Cheat Sheet Series: SQL Injection Prevention — `https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html` ([OWASP Cheat Sheet Series][21])
-- OWASP Cheat Sheet Series: OS Command Injection Defense — `https://cheatsheetseries.owasp.org/cheatsheets/OS_Command_Injection_Defense_Cheat_Sheet.html` ([OWASP Cheat Sheet Series][22])
-- OWASP Cheat Sheet Series: SSRF Prevention — `https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html` ([OWASP Cheat Sheet Series][23])
-- OWASP Cheat Sheet Series: File Upload — `https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html` ([OWASP Cheat Sheet Series][20])
-- OWASP Cheat Sheet Series: Unvalidated Redirects and Forwards — `https://cheatsheetseries.owasp.org/cheatsheets/Unvalidated_Redirects_and_Forwards_Cheat_Sheet.html` ([OWASP Cheat Sheet Series][24])
-- OWASP Cheat Sheet Series: HTTP Security Response Headers — `https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html` ([OWASP Cheat Sheet Series][6])
-- OWASP Cheat Sheet Series: WebSocket Security — `https://cheatsheetseries.owasp.org/cheatsheets/WebSocket_Security_Cheat_Sheet.html` ([OWASP Cheat Sheet Series][25])
-- OWASP WSTG: Testing for Server-Side Template Injection — `https://owasp.org/www-project-web-security-testing-guide/v41/4-Web_Application_Security_Testing/07-Input_Validation_Testing/18-Testing_for_Server_Side_Template_Injection` ([OWASP Foundation][17])
-- OWASP WSTG: Testing WebSockets — `https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/11-Client-side_Testing/10-Testing_WebSockets` ([OWASP Foundation][26])
+- Starlette (PyPI, capacidades gerais) — `https://pypi.org/project/starlette/` ([PyPI][5])
+- Documentos Starlette: WebSockets - `https://starlette.dev/websockets/` ([Starlette][3])
+- Uvicorn (metadados PyPI) — `https://pypi.org/project/uvicorn/` ([PyPI][4])
+- Documentos Pydantic (v2.12.x) — `https://docs.pydantic.dev/latest/` ([Pydantic][29])
 
-Template safety references:
+Padrões de segurança e folhas de dicas:
+
+- Série de folhas de dicas OWASP: gerenciamento de sessão - `https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html` ([Série de folhas de dicas OWASP] [8])
+- Série de folhas de dicas OWASP: Prevenção de CSRF - `https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html` ([Série de folhas de dicas OWASP] [2])
+- Série de folhas de dicas OWASP: Prevenção XSS - `https://cheatsheetseries.owasp.org/cheatsheets/Cross_Sit
+
+e_Scripting_Prevention_Cheat_Sheet.html` ([Série de folhas de dicas OWASP] [16])
+
+- Série de folhas de dicas OWASP: Atribuição em massa - `https://cheatsheetseries.owasp.org/cheatsheets/Mass_Assignment_Cheat_Sheet.html` ([Série de folhas de dicas OWASP] [14])
+- Top 10 de segurança da API OWASP (2023) — `https://owasp.org/API-Security/editions/2023/en/0x11-t10/` ([Fundação OWASP][13])
+- Série de folhas de dicas OWASP: Prevenção de injeção de SQL - `https://cheatsheetseries.owasp.org/ch
+
+eatsheets/SQL_Injection_Prevention_Cheat_Sheet.html` ([Série de folhas de dicas OWASP] [21])
+
+- Série de folhas de dicas OWASP: Defesa de injeção de comando do sistema operacional - `https://cheatsheetseries.owasp.org/cheatsheets/OS_Command_Injection_Defense_Cheat_Sheet.html` ([Série de folhas de dicas OWASP] [22])
+- Série de folhas de dicas OWASP: Prevenção de SSRF - `https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html` ([Série de folhas de dicas OWASP
+
+][23])
+
+- Série de folhas de dicas OWASP: upload de arquivo - `https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html` ([Série de folhas de dicas OWASP] [20])
+- Série de folhas de dicas OWASP: Redirecionamentos e encaminhamentos não validados - `https://cheatsheetseries.owasp.org/cheatsheets/Unvalidated_Redirects_and_Forwards_Cheat_Sheet.html` ([Série de folhas de dicas OWASP] [24])
+- Série de folhas de dicas OWASP: cabeçalhos de resposta de segurança HTTP - `https://cheatsheetseries.owas
+
+p.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html` ([Série de folhas de dicas OWASP] [6])
+
+- Série de folhas de dicas OWASP: Segurança WebSocket - `https://cheatsheetseries.owasp.org/cheatsheets/WebSocket_Security_Cheat_Sheet.html` ([Série de folhas de dicas OWASP] [25])
+- OWASP WSTG: Teste para injeção de modelo no lado do servidor - `https://owasp.org/www-project-web-security-testing-guide/v41/4-Web_Application_Security_Testing/07-Input_Validation_Testing/18-Testing_for_Ser
+
+ver_Side_Template_Injection` ([Fundação OWASP][17])
+
+- OWASP WSTG: Testando WebSockets — `https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/11-Client-side_Testing/10-Testing_WebSockets` ([Fundação OWASP][26])
+
+Referências de segurança do modelo:
 
 - Jinja: Sandbox — `https://jinja.palletsprojects.com/en/stable/sandbox/` ([jinja.palletsprojects.com][18])
 
-Selected supply-chain/advisory references (Starlette examples):
+Referências selecionadas de cadeia de suprimentos/consultoria (exemplos Starlette):
 
-- CVE-2023-29159 (StaticFiles path traversal; fixed 0.27.0) — `https://advisories.gitlab.com/pkg/pypi/starlette/CVE-2023-29159/` ([advisories.gitlab.com][10])
-- CVE-2024-47874 (multipart/form-data DoS; fixed 0.40.0) — `https://advisories.gitlab.com/pkg/pypi/starlette/CVE-2024-47874/` ([advisories.gitlab.com][9])
-- CVE-2025-62727 (FileResponse Range header DoS; fixed 0.49.1) — `https://advisories.gitlab.com/pkg/pypi/starlette/CVE-2025-62727/` ([advisories.gitlab.com][19])
+- CVE-2023-29159 (travessia de caminho StaticFiles; corrigido 0.27.0) — `https://advisories.gitlab.com/pkg/pypi/starlette/CVE-2023-29159/` ([advisories.gitlab.com][10])
+- CVE-2024-47874 (DoS multipart/form-data; fixo 0.40.0) — `https://advisories.gitlab.com/pkg/pypi/starlette/CVE-2024-47874/` ([advisories.gitlab.com][9])
+- CVE-2025-62727 (DoS do cabeçalho FileResponse Range; corrigido 0.49.1) - `https://advisories.gitlab.com/pkg/pypi/starlette/CVE-2025-62727/` ([anúncio
+
+viseries.gitlab.com][19])
 
 [1]: https://pypi.org/project/fastapi/ 'https://pypi.org/project/fastapi/'
 [2]: https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html 'https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html'
 [3]: https://starlette.dev/websockets/ 'Websockets'
 [4]: https://pypi.org/project/uvicorn/ 'https://pypi.org/project/uvicorn/'
-[5]: https://pypi.org/project/starlette/ 'https://pypi.org/project/starlette/'
-[6]: https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html 'HTTP Security Response Headers Cheat Sheet'
-[7]: https://fastapi.tiangolo.com/reference/dependencies/ 'Dependencies - Depends() and Security() - FastAPI'
-[8]: https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html 'https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html'
-[9]: https://advisories.gitlab.com/pkg/pypi/starlette/CVE-2024-47874/ 'Starlette Denial of service (DoS) via multipart/form-data | GitLab Advisory Database'
-[10]: https://advisories.gitlab.com/pkg/pypi/starlette/CVE-2023-29159/ 'Starlette has Path Traversal vulnerability in StaticFiles | GitLab Advisory Database'
-[11]: https://fastapi.tiangolo.com/tutorial/security/first-steps/ 'Security - First Steps - FastAPI'
-[12]: https://fastapi.tiangolo.com/tutorial/response-model/ 'https://fastapi.tiangolo.com/tutorial/response-model/'
+[5]: https://pypi.org/project/starlet
+
+te/ 'https://pypi.org/project/starlette/'
+[6]: https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html 'Folha de referências dos cabeçalhos de resposta de segurança HTTP'
+[7]: https://fastapi.tiangolo.com/reference/dependencies/ 'Dependências - Depends() e Segurança() - FastAPI'
+[8]: https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html 'https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html
+
+'
+[9]: https://advisories.gitlab.com/pkg/pypi/starlette/CVE-2024-47874/ 'Starlette Negação de serviço (DoS) via multipart/form-data | Banco de dados consultivo GitLab'
+[10]: https://advisories.gitlab.com/pkg/pypi/starlette/CVE-2023-29159/ 'Starlette tem vulnerabilidade Path Traversal em StaticFiles | Banco de dados consultivo GitLab'
+[11]: https://fastapi.tiangolo.com/tutorial/security/first-steps/ 'Segurança - Primeiros Passos - FastAPI'
+[12]: https://fastapi.tiangolo.c
+
+om/tutorial/modelo de resposta/ 'https://fastapi.tiangolo.com/tutorial/modelo de resposta/'
 [13]: https://owasp.org/API-Security/editions/2023/en/0x11-t10/ 'https://owasp.org/API-Security/editions/2023/en/0x11-t10/'
 [14]: https://cheatsheetseries.owasp.org/cheatsheets/Mass_Assignment_Cheat_Sheet.html 'https://cheatsheetseries.owasp.org/cheatsheets/Mass_Assignment_Cheat_Sheet.html'
-[15]: https://fastapi.tiangolo.com/tutorial/extra-models/ 'https://fastapi.tiangolo.com/tutorial/extra-models/'
+[15]: https://fastapi.tiangolo.com/tutorial/extra-models/ 'https://fastapi
+
+.tiangolo.com/tutorial/extra-models/'
 [16]: https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html 'https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html'
-[17]: https://owasp.org/www-project-web-security-testing-guide/v41/4-Web_Application_Security_Testing/07-Input_Validation_Testing/18-Testing_for_Server_Side_Template_Injection 'Testing for Server Side Template Injection'
-[18]: https://jinja.palletsprojects.com/en/stable/sandbox/ 'Sandbox — Jinja Documentation (3.1.x)'
-[19]: https://advisories.gitlab.com/pkg/pypi/starlette/CVE-2025-62727/ 'Starlette vulnerable to O(n^2) DoS via Range header merging in ``starlette.responses.FileResponse`` | GitLab Advisory Database'
-[20]: https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html 'https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html'
+[17]: https://owasp.org/www-project-web-security-testing-guide/v41/4-Web_Application_Security_Testing/07-Input_Validation_Testing/18-Testing_for_Server_Side_Template_Injection 'Teste para modelo do lado do servidor em
+
+rejeição'
+[18]: https://jinja.palletsprojects.com/en/stable/sandbox/ 'Sandbox - Documentação Jinja (3.1.x)'
+[19]: https://advisories.gitlab.com/pkg/pypi/starlette/CVE-2025-62727/ 'Starlette vulnerável a O (n ^ 2) DoS por meio da fusão do cabeçalho Range em `starlette.responses.FileResponse` | Banco de dados consultivo GitLab'
+[20]: https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html 'https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_
+
+Cheat_Sheet.html'
 [21]: https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html 'https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html'
 [22]: https://cheatsheetseries.owasp.org/cheatsheets/OS_Command_Injection_Defense_Cheat_Sheet.html 'https://cheatsheetseries.owasp.org/cheatsheets/OS_Command_Injection_Defense_Cheat_Sheet.html'
-[23]: https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html 'https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html'
-[24]: https://cheatsheetseries.owasp.org/cheatsheets/Unvalidated_Redirects_and_Forwards_Cheat_Sheet.html 'Unvalidated Redirects and Forwards Cheat Sheet'
-[25]: https://cheatsheetseries.owasp.org/cheatsheets/WebSocket_Security_Cheat_Sheet.html 'WebSocket Security - OWASP Cheat Sheet Series'
-[26]: https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/11-Client-side_Testing/10-Testing_WebSockets 'WSTG - Latest | OWASP Foundation'
+[23]: https://cheatsheetseries.owasp.org/cheatsheets
+
+/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html 'https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html'
+[24]: https://cheatsheetseries.owasp.org/cheatsheets/Unvalidated_Redirects_and_Forwards_Cheat_Sheet.html 'Folha de referências de redirecionamentos e encaminhamentos não validados'
+[25]: https://cheatsheetseries.owasp.org/cheatsheets/WebSocket_Security_Cheat_Sheet.html 'Segurança WebSocket - Série de folhas de dicas OWASP
+
+é
+[26]: https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/11-Client-side_Testing/10-Testing_WebSockets 'WSTG - Mais recente | Fundação OWASP'
 [27]: https://fastapi.tiangolo.com/advanced/websockets/ 'WebSockets - FastAPI'
-[28]: https://fastapi.tiangolo.com/reference/apirouter/ 'APIRouter class - FastAPI'
+[28]: https://fastapi.tiangolo.com/reference/apirouter/ 'Classe APIRouter - FastAPI'
 [29]: https://docs.pydantic.dev/latest/ 'https://docs.pydantic.dev/latest/'

@@ -1,6 +1,6 @@
-# Architecture Patterns
+# Padrões de arquitetura
 
-## Component Resources
+## Component resources
 
 ```typescript
 class WorkerApp extends pulumi.ComponentResource {
@@ -37,7 +37,7 @@ class WorkerApp extends pulumi.ComponentResource {
 }
 ```
 
-## Full-Stack Worker App
+## App Worker full-stack
 
 ```typescript
 const kv = new cloudflare.WorkersKvNamespace('cache', { accountId, title: 'api-cache' })
@@ -55,7 +55,7 @@ const apiWorker = new cloudflare.WorkerScript('api', {
 })
 ```
 
-## Multi-Environment Setup
+## Configuração multiambiente
 
 ```typescript
 const stack = pulumi.getStack()
@@ -67,12 +67,12 @@ const worker = new cloudflare.WorkerScript(`worker-${stack}`, {
 })
 ```
 
-## Queue-Based Processing
+## Processamento baseado em filas
 
 ```typescript
 const queue = new cloudflare.Queue('processing-queue', { accountId, name: 'image-processing' })
 
-// Producer: API receives requests
+// Produtor: API recebe requisições
 const apiWorker = new cloudflare.WorkerScript('api', {
   accountId,
   name: 'api-worker',
@@ -80,7 +80,7 @@ const apiWorker = new cloudflare.WorkerScript('api', {
   queueBindings: [{ name: 'PROCESSING_QUEUE', queue: queue.id }],
 })
 
-// Consumer: Process async
+// Consumidor: processamento assíncrono
 const processorWorker = new cloudflare.WorkerScript('processor', {
   accountId,
   name: 'processor-worker',
@@ -90,7 +90,7 @@ const processorWorker = new cloudflare.WorkerScript('processor', {
 })
 ```
 
-## Microservices with Service Bindings
+## Microsserviços com service bindings
 
 ```typescript
 const authWorker = new cloudflare.WorkerScript('auth', { accountId, name: 'auth-service', content: authCode })
@@ -102,7 +102,7 @@ const apiWorker = new cloudflare.WorkerScript('api', {
 })
 ```
 
-## Event-Driven Architecture
+## Arquitetura orientada a eventos
 
 ```typescript
 const eventQueue = new cloudflare.Queue('events', { accountId, name: 'event-bus' })
@@ -120,7 +120,7 @@ const consumer = new cloudflare.WorkerScript('consumer', {
 })
 ```
 
-## v6.x Versioned Deployments (Blue-Green/Canary)
+## Deploys versionados v6.x (blue-green/canary)
 
 ```typescript
 const worker = new cloudflare.Worker('api', { accountId, name: 'api-worker' })
@@ -137,7 +137,7 @@ const v2 = new cloudflare.WorkerVersion('v2', {
   compatibilityDate: '2025-01-01',
 })
 
-// Gradual rollout: 10% v2, 90% v1
+// Lançamento gradual: 10% v2, 90% v1
 const deployment = new cloudflare.WorkersDeployment('canary', {
   accountId,
   workerId: worker.id,
@@ -149,11 +149,11 @@ const deployment = new cloudflare.WorkersDeployment('canary', {
 })
 ```
 
-**Use:** Canary releases, A/B testing, blue-green. Most apps use `WorkerScript` (auto-versioning).
+**Uso:** releases canary, A/B, blue-green. A maioria dos apps usa `WorkerScript` (versionamento automático).
 
-## Wrangler.toml Generation (Bridge IaC with Local Dev)
+## Geração de wrangler.toml (ponte IaC com dev local)
 
-Generate wrangler.toml from Pulumi config to keep local dev in sync:
+Gere wrangler.toml a partir da config Pulumi para manter o dev local alinhado:
 
 ```typescript
 import * as command from '@pulumi/command'
@@ -169,7 +169,7 @@ const kv = new cloudflare.WorkersKvNamespace('kv', { accountId, title: 'my-kv' }
 const db = new cloudflare.D1Database('db', { accountId, name: 'my-db' })
 const bucket = new cloudflare.R2Bucket('bucket', { accountId, name: 'my-bucket' })
 
-// Generate wrangler.toml after resources created
+// Gera wrangler.toml após criar recursos
 const wranglerGen = new command.local.Command(
   'gen-wrangler',
   {
@@ -196,7 +196,7 @@ EOF`,
   { dependsOn: [kv, db, bucket] },
 )
 
-// Deploy worker after wrangler.toml generated
+// Publica Worker após gerar wrangler.toml
 const worker = new cloudflare.WorkerScript(
   'worker',
   {
@@ -213,15 +213,15 @@ const worker = new cloudflare.WorkerScript(
 )
 ```
 
-**Benefits:**
+**Benefícios:**
 
-- `wrangler dev` uses same bindings as production
-- No config drift between Pulumi and local dev
-- Single source of truth (Pulumi config)
+- `wrangler dev` usa os mesmos bindings que produção
+- Sem drift de config entre Pulumi e dev local
+- Fonte única de verdade (config Pulumi)
 
-**Alternative:** Read wrangler.toml in Pulumi (reverse direction) if wrangler is source of truth
+**Alternativa:** leia wrangler.toml no Pulumi (direção inversa) se o wrangler for a fonte da verdade
 
-## Build + Deploy Pattern
+## Padrão build + deploy
 
 ```typescript
 import * as command from '@pulumi/command'
@@ -237,9 +237,9 @@ const worker = new cloudflare.WorkerScript(
 )
 ```
 
-## Content SHA Pattern (Force Updates)
+## Padrão content SHA (forçar updates)
 
-Prevent false "no changes" detections:
+Evite detecções falsas de "sem mudanças":
 
 ```typescript
 const version = Date.now().toString()
@@ -247,10 +247,12 @@ const worker = new cloudflare.WorkerScript('worker', {
   accountId,
   name: 'my-worker',
   content: code,
-  plainTextBindings: [{ name: 'VERSION', text: version }], // Forces deployment
+  plainTextBindings: [{ name: 'VERSION', text: version }], // força novo deploy
 })
 ```
 
 ---
 
-See: [README.md](./README.md), [configuration.md](./configuration.md), [api.md](./api.md), [gotchas.md](./gotchas.md)
+Ver: [README.md](./README.md), [configuration.md](./configuration.md), [api.md](./api.md), [gotchas.md](./gotchas.md)
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

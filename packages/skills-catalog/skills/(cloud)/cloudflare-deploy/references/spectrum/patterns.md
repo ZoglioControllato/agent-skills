@@ -78,15 +78,15 @@ resource "cloudflare_spectrum_application" "smtp" {
 }
 ```
 
-**Limitations:**
+**Limitações:**
 
-- Spectrum IPs lack reverse DNS (PTR records)
-- Many mail servers reject without valid rDNS
-- Best for internal/trusted relay only
+- IPs de espectro não possuem DNS reverso (registros PTR)
+- Muitos servidores de e-mail rejeitam sem rDNS válido
+- Melhor apenas para relé interno/confiável
 
-### 5. Database Proxy
+### 5. Proxy de banco de dados
 
-MySQL/PostgreSQL. **Use with caution** - security critical.
+MySQL/PostgreSQL. **Use com cuidado** - segurança crítica.
 
 **PostgreSQL:**
 
@@ -124,19 +124,19 @@ resource "cloudflare_spectrum_application" "mysql" {
 }
 ```
 
-**Security:**
+**Segurança:**
 
-- ALWAYS use `tls: "strict"`
-- ALWAYS use `ip_firewall: true`
-- Restrict to known IPs via zone firewall
-- Use strong DB authentication
-- Consider VPN or Cloudflare Access instead
+- SEMPRE use `tls: "strict"`
+- SEMPRE use `ip_firewall: true`
+- Restringir a IPs conhecidos via firewall de zona
+- Use autenticação de banco de dados forte
+- Considere VPN ou Cloudflare Access
 
-### 6. RDP (Remote Desktop)
+### 6. RDP (área de trabalho remota)
 
-**Requires IP firewall.**
+**Requer firewall IP.**
 
-**Terraform:**
+**Terraforma:**
 
 ```hcl
 resource "cloudflare_spectrum_application" "rdp" {

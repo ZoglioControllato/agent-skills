@@ -87,60 +87,63 @@ export default {
 } satisfies ExportedHandler<Env>
 ```
 
-## Request Duration Metrics
+## Métricas de duração da solicitação
 
-Available in Cloudflare dashboard when Smart Placement enabled:
+Disponível no painel da Cloudflare quando o Smart Placement está ativado:
 
-**Workers & Pages → [Your Worker] → Metrics → Request Duration**
+**Trabalhadores e páginas → [Seu trabalhador] → Métricas → Duração da solicitação**
 
-Shows histogram comparing:
+Mostra o histograma comparando:
 
-- Request duration WITH Smart Placement (99% of traffic)
-- Request duration WITHOUT Smart Placement (1% baseline)
+- Duração da solicitação COM posicionamento inteligente (99% do tráfego)
+- Duração da solicitação SEM posicionamento inteligente (linha de base de 1%)
 
-**Request Duration vs Execution Duration:**
+**Duração da solicitação versus duração da execução:**
 
-- **Request duration:** Total time from request arrival to response delivery (includes network latency)
-- **Execution duration:** Time Worker code actively executing (excludes network waits)
+- **Duração da solicitação:** Tempo total desde a chegada da solicitação até a entrega da resposta (inclui latência da rede)
+- **Duração da execução:** Tempo de execução ativa do código do Worker (exclui esperas de rede)
 
-Use request duration to measure Smart Placement impact.
+Use a duração da solicitação para medir o impacto do posicionamento inteligente.
 
-### Interpreting Metrics
+### Interpretando Métricas
 
-| Metric Comparison | Interpretation          | Action                               |
-| ----------------- | ----------------------- | ------------------------------------ |
-| WITH < WITHOUT    | Smart Placement helping | Keep enabled                         |
-| WITH ≈ WITHOUT    | Neutral impact          | Consider disabling to free resources |
-| WITH > WITHOUT    | Smart Placement hurting | Disable with `mode: "off"`           |
+| Comparação de métricas | Interpretação                       | Ação                                        |
+| ---------------------- | ----------------------------------- | ------------------------------------------- |
+| COM < SEM              | Ajuda no posicionamento inteligente | Manter ativado                              |
+| COM ≈ SEM              | Impacto neutro                      | Considere desabilitar para liberar recursos |
+| COM > SEM              | Colocação inteligente prejudicando  | Desative com `mode: "off"`                  |
 
-**Why Smart Placement might hurt performance:**
+**Por que o posicionamento inteligente pode prejudicar o desempenho:**
 
-- Worker primarily serves static assets or cached content
-- Backend services are globally distributed (no single optimal location)
-- Worker has minimal backend communication
-- Using Pages with `assets.run_worker_first = true`
+- O Worker atende principalmente ativos estáticos ou conteúdo em cache
+- Os serviços de back-end são distribuídos globalmente (sem um único local ideal)
+- O trabalhador tem comunicação de back-end mínima
+- Usando páginas com `assets.run_worker_first = true`
 
-**Typical improvements when Smart Placement helps:**
+**Melhorias típicas quando o posicionamento inteligente ajuda:**
 
-- 20-50% reduction in request duration for database-heavy Workers
-- 30-60% reduction for Workers making multiple backend API calls
-- Larger improvements when backend is geographically concentrated
+- Redução de 20 a 50% na duração da solicitação para trabalhadores com uso intenso de banco de dados
+- Redução de 30 a 60% para trabalhadores que fazem múltiplas chamadas de API de back-end
+- Melhorias maiores quando o back-end está concentrado geograficamente
 
-## Monitoring Commands
+## Comandos de monitoramento```bash
 
-```bash
 # Tail Worker logs
+
 wrangler tail your-worker-name
 
 # Tail with filters
+
 wrangler tail your-worker-name --status error
 wrangler tail your-worker-name --header cf-placement
 
 # Check placement status via API
+
 curl -H "Authorization: Bearer $TOKEN" \
   https://api.cloudflare.com/client/v4/accounts/$ACCOUNT_ID/workers/services/$WORKER_NAME \
-  | jq .result.placement_status
-```
+ | jq .result.placement_status
+
+````
 
 ## TypeScript Types
 
@@ -185,4 +188,4 @@ export default {
     return response
   },
 } satisfies ExportedHandler<Env>
-```
+````

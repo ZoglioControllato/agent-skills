@@ -1,347 +1,352 @@
-# Design Principles Reference
+# Referência de Princípios de Design
 
-Read this file when you need deeper guidance on specific design decisions
-during Phase 3 (Design Direction) or Phase 5 (Atomic Build). Do NOT read
-this upfront — only when a specific section is relevant to the current task.
+Leia este arquivo quando precisar de orientação mais profunda sobre decisões específicas de design
+durante a Fase 3 (Direção do Projeto) ou Fase 5 (Construção Atômica). NÃO leia
+isso antecipadamente - somente quando uma seção específica for relevante para a tarefa atual.
 
-## Table of Contents
+## Índice
 
-1. Typography Pairing Rules (line ~15)
-2. Color System Architecture (line ~70)
-3. Spacing & Rhythm Systems (line ~130)
-4. Layout Patterns by Project Type (line ~175)
-5. Common Anti-Patterns to Catch (line ~230)
-6. Accessibility Minimums (line ~275)
-7. Animation & Motion Guidelines (line ~310)
-8. Icon Systems (line ~350)
-
----
-
-## 1. Typography Pairing Rules
-
-### The Fundamentals
-
-Good typography pairing creates visual hierarchy and personality. Bad pairing
-creates noise and distraction.
-
-**Safe pairing strategies:**
-
-- Contrast in structure: pair a geometric sans with a humanist serif
-  (e.g., DM Sans + Lora)
-- Same family, different weights: one font with wide weight range can
-  handle both headings and body (e.g., Inter 800 for headings, 400 for body)
-- Contrast in width: pair a condensed display font with a regular-width
-  body font (e.g., Bebas Neue + Source Sans Pro)
-
-**Pairing red flags:**
-
-- Two decorative fonts competing for attention
-- Fonts from the same classification with subtle differences (looks like
-  a mistake, not a choice)
-- More than 2 font families in a single project (3 max for complex apps)
-- Using a display font for body text or vice versa
-
-### Font Selection by Project Mood
-
-| Mood | Heading direction | Body direction | Example pair |
-|------|------------------|---------------|-------------|
-| Corporate / Trustworthy | Clean geometric sans | Readable humanist sans | Outfit + Nunito |
-| Editorial / Sophisticated | High-contrast serif | Elegant serif or clean sans | Playfair Display + Source Serif |
-| Technical / Developer | Monospace or geometric | Clean sans | JetBrains Mono + Inter |
-| Playful / Creative | Rounded or display | Friendly sans | Fredoka + Quicksand |
-| Luxury / Premium | Thin serif or elegant sans | Light-weight readable | Cormorant Garamond + Montserrat |
-| Brutalist / Bold | Heavy grotesque | Neutral sans | Anton + Work Sans |
-| Startup / Modern | Geometric sans | Same family or neutral | General Sans + Cabinet Grotesk |
-
-### Typography Scale
-
-Use a consistent scale ratio. Common ones:
-
-- 1.200 (Minor Third): subtle hierarchy, good for dense UIs
-- 1.250 (Major Third): balanced, works for most projects
-- 1.333 (Perfect Fourth): strong hierarchy, good for editorial
-- 1.500 (Perfect Fifth): dramatic, good for marketing pages
-
-Apply the scale: base (1rem) → h6 → h5 → h4 → h3 → h2 → h1, each
-multiplied by the ratio. This creates mathematical harmony.
+1. Regras de emparelhamento de tipografia (linha ~15)
+2. Arquitetura do sistema de cores (linha ~70)
+3. Sistemas de espaçamento e ritmo (linha ~130)
+4. Padrões de layout por tipo de projeto (linha ~175)
+5. Antipadrões comuns a serem capturados (linha ~230)
+6. Mínimos de acessibilidade (linha ~275)
+7. Diretrizes de animação e movimento (linha ~310)
+8. Sistemas de ícones (linha ~350)
 
 ---
 
-## 2. Color System Architecture
+## 1. Regras de emparelhamento de tipografia
 
-### Building a Palette
+### Os Fundamentos
 
-Every color system needs:
+Um bom emparelhamento tipográfico cria hierarquia visual e personalidade. Emparelhamento ruim
+cria ruído e distração.
 
-- **Primary:** The brand color. Used for CTAs, links, key interactive elements
-- **Secondary:** Supporting color. Used for secondary actions, accents
-- **Neutral scale:** 9-11 shades from near-white to near-black for text,
-  backgrounds, borders, dividers
-- **Semantic colors:** Success (green family), Warning (amber family),
-  Error (red family), Info (blue family)
-- **Surface colors:** Background layers (at least 3 levels for depth)
+**Estratégias de emparelhamento seguras:**
 
-### Color Ratio Rule
+- Contraste na estrutura: combine uma sans geométrica com uma serifa humanista
+  (por exemplo, DM Sans + Lora)
+- Mesma família, pesos diferentes: uma fonte com ampla faixa de peso pode
+  lidar com títulos e corpo (por exemplo, Inter 800 para títulos, 400 para corpo)
+- Contraste em largura: combine uma fonte de exibição condensada com uma fonte de largura regular
+  fonte do corpo (por exemplo, Bebas Neue + Source Sans Pro)
 
-Follow the 60-30-10 rule:
+**Emparelhamento de bandeiras vermelhas:**
 
-- 60% dominant (neutrals, backgrounds)
-- 30% secondary (cards, sections, supporting elements)
-- 10% accent (CTAs, highlights, key interactive elements)
+- Duas fontes decorativas competindo por atenção
+- Fontes da mesma classificação com diferenças sutis (parece
+  um erro, não uma escolha)
+- Mais de 2 famílias de fontes em um único projeto (3 no máximo para aplicativos complexos)
+- Usando uma fonte de exibição para o corpo do texto ou vice-versa
 
-Projects that feel "off" usually violate this ratio — too much accent
-color or no clear dominant.
+### Seleção de fonte por Project Mood
 
-### Dark Mode Considerations
+| Humor                   | Direção do rumo            | Direção do corpo             | Par de exemplo                 |
+| ----------------------- | -------------------------- | ---------------------------- | ------------------------------ |
+| Corporativo / Confiável | Sans geométrico limpo      | Humanista legível sem        | Roupa + Nunito                 |
+| Editorial / Sofisticado | Serifa de alto contraste   | Serif elegante ou sans limpo | Display Playfair + Fonte Serif |
+| Técnico / Desenvolvedor | Monoespaçado ou geométrico | Limpar sem                   | JetBrains Mono + Inter         |
+| Lúdico / Criativo       | Arredondado                |
 
-Dark mode is NOT "invert all colors." Key differences:
+exibição | Amigável sem | Fredoka + Areia Movediça |
+| Luxo / Premium | Serifa fina ou sans elegante | Legível leve | Cormorão Garamond + Montserrat |
+| Brutalista / Ousado | Grotesco pesado | Neutro sem | Anton + Work Sans |
+| Inicialização / Moderno | Sans geométricos | Mesma família ou neutra | General Sans + Gabinete Grotesk |
 
-- Surface colors: use desaturated near-blacks (#0a0a0a to #1a1a2e), NOT pure #000000
-- Reduce contrast slightly: pure white (#fff) on dark is harsh. Use #e0e0e0 to #f0f0f0
-- Accent colors may need lightening to maintain contrast ratios
-- Shadows become less visible — use lighter borders or subtle glows instead
-- Elevation is shown by lighter surfaces, not darker shadows
+### Escala de tipografia
 
-### Generating Palette from a Single Color
+Use uma proporção de escala consistente. Comuns:
 
-If the user provides just one brand color:
+- 1.200 (Terceiro Menor): hierarquia sutil, boa para UIs densas
+- 1.250 (Terceiro Maior): equilibrado, funciona para a maioria dos projetos
+- 1.333 (Quarto Perfeito): hierarquia forte, bom para editorial
+- 1.500 (Quinto Perfeito): dramático, bom para páginas de marketing
 
-1. Use it as the primary
-2. Generate a complementary or analogous secondary
-3. Build neutral scale by desaturating the primary and adjusting lightness
-4. Ensure all semantic colors have sufficient contrast from primary
-5. Test: does the primary stand out when surrounded by neutrals? If not, adjust.
+Aplique a escala: base (1rem) → h6 → h5 → h4 → h3 → h2 → h1, cada
+multiplicado pela proporção. Isso cria harmonia matemática.
 
 ---
 
-## 3. Spacing & Rhythm Systems
+## 2. Arquitetura do sistema de cores
 
-### Base Unit System
+### Construindo uma paleta
 
-Choose a base unit (4px or 8px) and derive ALL spacing from it:
+Todo sistema de cores precisa de:
 
-**4px base (tighter, good for dense UIs):**
+- **Primário:** A cor da marca. Usado para CTAs, links, principais elementos interativos
+- **Secundário:** Cor de suporte. Usado para ações secundárias, acentos
+- **Escala neutra:** 9 a 11 tons de quase branco a quase preto para texto,
+  fundos, bordas, divisórias
+- **Cores semânticas:** Sucesso (família verde), Aviso (família âmbar),
+  Erro (família vermelha), Informações (família azul)
+- **Cores de superfície:** Camadas de fundo (pelo menos 3 níveis de profundidade)
+
+### Regra de proporção de cores
+
+Siga a regra 60-30-10:
+
+- 60% dominante (neutros, fundos)
+- 30% secundário (cartões, seções, elementos de suporte)
+- 10% de destaque (CTAs, destaques, principais elementos interativos)
+
+Projetos que parecem "desligados" geralmente violam essa proporção - muita ênfase
+cor ou sem dominante claro.
+
+### Considerações sobre o modo escuro
+
+O modo escuro NÃO é "inverter todas as cores". Principais diferenças:
+
+- Cores de superfície: use pretos quase dessaturados (#0a0a0a a #1a1a2e), NÃO #000000 puro
+- Reduza ligeiramente o contraste: o branco puro (#fff) no escuro é áspero. Use #e0e0e0 para #f0f0f0
+- As cores de destaque podem precisar de iluminação para manter as taxas de contraste
+- As sombras ficam menos visíveis – use bordas mais claras ou brilhos sutis
+- A elevação é mostrada por superfícies mais claras, não por sombras mais escuras
+
+### Gerando paleta a partir de uma única cor
+
+Se o usuário fornecer apenas uma cor de marca:
+
+1. Use-o como principal
+2. Gere um secundário complementar ou análogo
+3. Construa uma escala neutra dessaturando o primário e ajustando a luminosidade
+4. Certifique-se de que todas as cores semânticas tenham contraste suficiente em relação às cores primárias
+5. Teste: o primário se destaca quando cercado por neutros? Se não, ajuste.
+
+---
+
+## 3. Sistemas de espaçamento e ritmo
+
+### Sistema de Unidade Básica
+
+Escolha uma unidade base (4px ou 8px) e derive TODOS os espaçamentos dela:
+
+**Base de 4px (mais compacta, boa para UIs densas):**
 4, 8, 12, 16, 20, 24, 32, 40, 48, 64, 80, 96, 128
 
-**8px base (spacious, good for marketing/editorial):**
+**Base de 8px (espaçosa, boa para marketing/editorial):**
 8, 16, 24, 32, 48, 64, 80, 96, 128, 160, 192
 
-### Where Spacing Matters Most
+### Onde o espaçamento é mais importante
 
-These are the spacing decisions that make or break a design:
+Estas são as decisões de espaçamento que determinam ou quebram um projeto:
 
-- **Component internal padding:** Buttons, cards, inputs, modals
-- **Between related elements:** Label to input, icon to text, card items
-- **Between sections:** Page sections, content blocks
-- **Page margins:** Overall content container padding
+- **Preenchimento interno do componente:** Botões, cartões, entradas, modais
+- **Entre elementos relacionados:** Etiqueta para entrada, ícone para texto, itens de cartão
+- **Entre seções:** Seções de página, blocos de conteúdo
+- **Margens da página:** Preenchimento geral do contêiner de conteúdo
 
-### Common Spacing Mistakes
+### Erros comuns de espaçamento
 
-- Inconsistent padding inside similar components
-- Same spacing between all elements (no rhythm)
-- Too little spacing between sections (content feels cramped)
-- Not increasing spacing proportionally at larger breakpoints
-- Ignoring optical alignment (mathematical center ≠ visual center)
-
----
-
-## 4. Layout Patterns by Project Type
-
-### Landing / Marketing Pages
-
-- Full-width hero with strong visual focal point
-- Section-based vertical flow with alternating layouts
-- Generous whitespace between sections (80px-160px)
-- Max content width: 1200px-1440px
-- Mobile: single column, stack everything
-
-### Dashboards / Admin Panels
-
-- Sidebar navigation (collapsible) + main content area
-- Card-based widgets or data panels
-- Dense but organized — clear visual groups
-- Max content width: fluid (100%) or 1600px+
-- Consider: fixed header, scrollable content area
-
-### E-commerce / Product Pages
-
-- Grid-based product listing (2-4 columns responsive)
-- Product detail: image gallery left, info right (or stacked mobile)
-- Clear price and CTA hierarchy
-- Trust signals visible (reviews, security badges)
-
-### Documentation / Content Sites
-
-- Two-column: sidebar TOC + content area
-- Max content width for readability: 700px-800px for prose
-- Code blocks with proper formatting
-- Sticky navigation elements
-
-### Forms / Workflows
-
-- Single column for forms (reduces cognitive load)
-- Clear step indication for multi-step flows
-- Inline validation, not just on submit
-- Group related fields with subtle visual separation
-
-### Component Libraries / Design Systems
-
-- Consistent prop documentation
-- Live preview + code side by side
-- Clear variant demonstrations
-- Responsive behavior documentation
+- Preenchimento inconsistente dentro de componentes semelhantes
+- Mesmo espaçamento entre todos os elementos (sem ritmo)
+- Muito pouco espaçamento entre as seções (o conteúdo parece apertado)
+- Não aumentar o espaçamento proporcionalmente em pontos de interrupção maiores
+- Ignorando o alinhamento óptico (centro matemático ≠ centro visual)
 
 ---
 
-## 5. Common Anti-Patterns to Catch
+## 4. Padrões de layout por tipo de projeto
 
-When reviewing user requests or during build, watch for:
+### Páginas de destino/marketing
 
-**Typography:**
+- Herói de largura total com forte ponto focal visual
+- Fluxo vertical baseado em seções com layouts alternados
+- Espaço em branco generoso entre as seções (80px-160px)
+- Largura máxima do conteúdo: 1200px-1440px
+- Móvel: coluna única, empilhe tudo
 
-- All caps for paragraphs (hard to read)
-- Justified text on web (causes uneven word spacing)
-- Line length over 75 characters (hard to track lines)
-- Body text smaller than 16px on mobile
-- No clear heading hierarchy (h1-h6 look similar)
+### Painéis/Painéis de administração
 
-**Color:**
+- Navegação na barra lateral (recolhível) + área de conteúdo principal
+- Widgets baseados em cartão ou painéis de dados
+- Denso, mas organizado — grupos visuais claros
+- Largura máxima do conteúdo: fluida (100%) ou 1600px+
+- Considere: cabeçalho fixo, área de conteúdo rolável
 
-- Red/green only for status (colorblind-unfriendly)
-- Accent color used for 30%+ of the interface
-- Low contrast text on patterned backgrounds
-- Different colors for same-purpose elements
-- Neon or high-saturation colors for large areas
+### E-commerce/Páginas de produtos
+
+- Listagem de produtos baseada em grade (responsiva de 2 a 4 colunas)
+- Detalhe do produto: galeria de imagens à esquerda, informações à direita (ou celular empilhado)
+- Hierarquia clara de preços e CTA
+- Sinais de confiança visíveis (avaliações, crachás de segurança)
+
+### Documentação/Sites de Conteúdo
+
+- Duas colunas: barra lateral TOC + área de conteúdo
+- Largura máxima do conteúdo para legibilidade: 700px-800px para prosa
+- Blocos de código com formatação adequada
+- Elementos de navegação fixos
+
+### Formulários/Fluxos de trabalho
+
+- Coluna única para formulários (reduz a carga cognitiva)
+- Indicação clara de etapas para fluxos de várias etapas
+- Validação inline, não apenas no envio
+- Agrupe campos relacionados com separação visual sutil
+
+### Bibliotecas de componentes/sistemas de design
+
+- Documentação de prop consistente
+- Visualização ao vivo + código lado a lado
+- Demonstrações de variantes claras
+- Documentação de comportamento responsivo
+
+---
+
+## 5. Antipadrões comuns para capturar
+
+Ao revisar as solicitações do usuário ou durante a construção, observe:
+
+**Tipografia:**
+
+- Todas as letras maiúsculas dos parágrafos (difíceis de ler)
+- Texto justificado na web (causa espaçamento irregular entre palavras)
+- Comprimento da linha acima de 75 caracteres (linhas difíceis de rastrear)
+- Corpo do texto menor que 16px em dispositivos móveis
+- Nenhuma hierarquia de títulos clara (h1-h6 é semelhante)
+
+**Cor:**
+
+- Vermelho/verde apenas para status (daltônico hostil)
+- Cor de destaque usada em mais de 30% da interface
+- Texto de baixo contraste em fundos padronizados
+- Cores diferentes para elementos com a mesma finalidade
+- Cores neon ou de alta saturação para grandes áreas
 
 **Layout:**
 
-- Horizontal scrolling for content (except intentional carousels)
-- Fixed-width layouts that break on different screens
-- Content touching viewport edges (no container padding)
-- Inconsistent alignment between sections
-- Z-index wars (elements overlapping unexpectedly)
+- Rolagem horizontal para conteúdo (exceto carrosséis intencionais)
+- Layouts de largura fixa que quebram em telas diferentes
+- Conteúdo tocando nas bordas da janela de visualização (sem preenchimento de contêiner)
+- Alinhamento inconsistente entre seções
+- Guerras de índice Z (elementos sobrepostos inesperadamente)
 
-**Interaction:**
+**Interação:**
 
-- Click targets smaller than 44x44px on mobile
-- No visible focus states for keyboard navigation
-- Hover-only interactions with no mobile alternative
-- Autoplay audio or video
-- Disabling browser zoom
+- Destinos de clique menores que 44 x 44 px em dispositivos móveis
+- Nenhum estado de foco visível para navegação pelo teclado
+- Interações apenas com foco, sem alternativa móvel
+- Reprodução automática de áudio ou vídeo
+- Desativando o zoom do navegador
 
-**Component-level:**
+**Nível do componente:**
 
-- Carousels for less than 4 items
-- Modal inside a modal
-- Infinite scroll without "back to top" or pagination option
-- Toast notifications that disappear too quickly
-- Dropdowns with more than 10-15 items (use search/filter)
-
----
-
-## 6. Accessibility Minimums
-
-These are NON-NEGOTIABLE in generated code:
-
-**Contrast:**
-
-- Normal text: minimum 4.5:1 ratio against background
-- Large text (18px+ or 14px+ bold): minimum 3:1 ratio
-- Interactive elements: minimum 3:1 ratio against adjacent colors
-
-**Keyboard:**
-
-- All interactive elements reachable via Tab
-- Visible focus indicators (not just browser default — style them)
-- Escape closes modals/overlays
-- Enter/Space activates buttons and links
-
-**Semantic HTML:**
-
-- Use heading hierarchy (h1 > h2 > h3, no skipping)
-- Use button for actions, a for navigation
-- Use nav, main, aside, footer, section, article
-- Form inputs must have associated labels (not just placeholder)
-
-**Screen Readers:**
-
-- Images need alt text (decorative images: alt="")
-- Icon-only buttons need aria-label
-- Dynamic content changes: use aria-live regions
-- Hide decorative elements from screen readers (aria-hidden="true")
+- Carrosséis para menos de 4 itens
+- Modal dentro de um modal
+- Rolagem infinita sem "voltar ao topo" ou opção de paginação
+- Notificações do Toast que desaparecem muito rapidamente
+- Menus suspensos com mais de 10 a 15 itens (use pesquisa/filtro)
 
 ---
 
-## 7. Animation & Motion Guidelines
+## 6. Mínimos de acessibilidade
 
-### When to Animate
+Estes são NÃO NEGOCIÁVEIS no código gerado:
 
-- **State transitions:** hover, focus, active, selected/unselected
-- **Entrance/exit:** elements appearing or disappearing
-- **Feedback:** success, error, loading, progress
-- **Attention:** drawing focus to important changes
-- **Continuity:** connecting related UI states
+**Contraste:**
 
-### When NOT to Animate
+- Texto normal: proporção mínima de 4,5:1 em relação ao fundo
+- Texto grande (18px+ ou 14px+ negrito): proporção mínima de 3:1
+- Elementos interativos: proporção mínima de 3:1 em relação às cores adjacentes
 
-- Motion that delays the user's primary task
-- Animation for decoration with no functional purpose (in data-heavy UIs)
-- Repeating/looping animations that distract
-- Animation that triggers on every scroll event without throttling
+**Teclado:**
 
-### Duration Guidelines
+- Todos os elementos interativos acessíveis via Tab
+- Indicadores de foco visíveis (não apenas o padrão do navegador - estilize-os)
+- Escape fecha modais/sobreposições
+- Enter/Space ativa botões e links
 
-- Micro-interactions (hover, toggle): 100-200ms
-- Component transitions (expand, slide): 200-300ms
-- Page/view transitions: 300-500ms
-- Complex orchestrated sequences: 500-800ms
-- Anything over 1s should be interruptible or skipable
+**HTML semântico:**
 
-### Easing
+- Use hierarquia de títulos (h1 > h2 > h3, sem pular)
+- Use o botão para ações, um para navegação
+- Use nav, principal, aparte, rodapé, seção, artigo
+- As entradas do formulário devem ter rótulos associados (não apenas espaço reservado)
 
-- **ease-out** for entrances (fast start, gentle stop — feels responsive)
-- **ease-in** for exits (gentle start, fast end — feels natural)
-- **ease-in-out** for state changes (smooth both ways)
-- **linear** only for continuous animations (loading spinners, progress)
-- **cubic-bezier** custom curves for personality and polish
+**Leitores de tela:**
 
-### Reduced Motion
+- As imagens precisam de texto alternativo (imagens decorativas: alt="")
+- Botões somente de ícone precisam de rótulo aria
+- Mudanças dinâmicas de conteúdo: use regiões aria-live
+- Ocultar elementos decorativos dos leitores de tela (aria-hidden="true")
 
-ALWAYS include a `prefers-reduced-motion` media query:
+---
 
-```css
+## 7. Diretrizes de animação e movimento
+
+### Quando animar
+
+- **Transições de estado:** passar o mouse, focar, ativo, selecionado/desmarcado
+- **Entrada/saída:** elementos aparecendo ou desaparecendo
+- **Feedback:** sucesso, erro, carregamento, progresso
+- **Atenção:** direcionando o foco para mudanças importantes
+- **Continuidade:** conectando estados de IU relacionados
+
+### Quando NÃO animar
+
+- Movimento que atrasa a tarefa principal do usuário
+- Animação para decoração sem finalidade funcional (em UIs com muitos dados)
+- Animações repetidas/em loop que distraem
+- Animação que é acionada em cada evento de rolagem sem limitação
+
+### Diretrizes de Duração
+
+- Microinterações (passar, alternar): 100-200ms
+- Transições de componentes (expandir, deslizar): 200-300ms
+- Transições de página/visualização: 300-500ms
+- Sequências orquestradas complexas: 500-800ms
+- Qualquer coisa acima de 1s deve ser interrompível ou ignorável
+
+### Facilitando
+
+- **facilidade** para entradas (início rápido, parada suave – parece responsivo)
+- **facilidade** para saídas (início suave, final rápido - parece natural)
+- **facilidade de entrada** para mudanças de estado (suavização em ambos os sentidos)
+- **linear** apenas para animações contínuas (carregando spinners, progresso)
+- **cúbico-bezier** curvas personalizadas para personalidade e polimento
+
+### Movimento Reduzido
+
+SEMPRE inclua uma consulta de mídia `prefere movimento reduzido`:```css
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-  }
+_, _::before, \*::after {
+animation-duration: 0.01ms !important;
+transition-duration: 0.01ms !important;
 }
-```
+}
 
+```
 ---
 
-## 8. Icon Systems
+## 8. Sistemas de ícones
 
-### Popular Libraries and Their Personalities
+### Bibliotecas populares e suas personalidades
 
-| Library | Style | Best for |
-|---------|-------|----------|
-| Lucide | Clean, geometric outlines | Modern apps, dashboards |
-| Phosphor | Versatile, 6 weights | Design systems, flexibility needed |
-| Heroicons | Two styles (outline/solid) | Tailwind projects, clean UI |
-| Tabler Icons | Consistent stroke width | Developer tools, admin panels |
-| Radix Icons | Minimal, 15x15 grid | Compact UIs, toolbars |
-| Font Awesome | Comprehensive, varied | Legacy projects, icon variety |
-| Material Symbols | Google's design language | Material Design projects |
+| Biblioteca | Estilo | Melhor para |
+|--------|-------|----------|
+| Lúcida | Contornos limpos e geométricos | Aplicativos modernos, painéis |
+| Fósforo | Versátil, 6 pesos | Sistemas de design, flexibilidade necessária |
+| Heroícones | Dois estilos (contorno/sólido) | Projetos Tailwind, UI limpa |
+| Ícones de mesa | Largura de traço consistente | Ferramentas para desenvolvedores, painéis de administração |
+| Ícones de raiz | Mínimo, grade 15x15 | UIs compactas, barras de ferramentas |
+| Fonte incrível | Abrangente, variado |
 
-### Icon Usage Rules
+Projetos legados, variedade de ícones |
+| Símbolos Materiais | Linguagem de design do Google | Projetos de Design de Materiais |
 
-- Maintain consistent size within the same context (don't mix 20px and 24px
-  icons in the same toolbar)
-- Maintain consistent stroke weight (don't mix outlined and filled in the
-  same section unless intentional for state indication)
-- Icons should support meaning, not replace text (except universally
-  understood: search, close, menu, play/pause)
-- Touch targets: even if the icon is 20px, the clickable area should be
-  at least 44x44px
-- Use a single icon library per project for visual consistency
+### Regras de uso de ícones
+
+- Mantenha um tamanho consistente dentro do mesmo contexto (não misture 20px e 24px
+  ícones na mesma barra de ferramentas)
+- Mantenha uma espessura de traço consistente (não misture contorno e preenchimento no
+  mesma seção, a menos que seja intencional para indicação de estado)
+- Os ícones devem apoiar o significado, não substituir o texto (exceto universalmente
+  compreendido: pesquisar, fechar, menu, reproduzir/pausar)
+- Alvos de toque: mesmo que o ícone tenha 20px, a área clicável deve ser
+  pelo menos 44x44px
+- Use um
+
+biblioteca de ícones únicos por projeto para consistência visual
+```

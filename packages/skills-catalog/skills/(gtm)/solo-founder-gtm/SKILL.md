@@ -1,38 +1,37 @@
 ---
 name: solo-founder-gtm
-description: "When the user is a solo founder building their GTM motion, wants to scale without hiring, or needs to design an AI agent team for go-to-market. Also use when the user mentions 'solo founder,' 'one-person startup,' 'solopreneur,' 'bootstrapped,' 'no team,' 'AI agents as team,' 'scaling without hiring,' 'founder-led sales,' 'lean GTM,' 'one-person company,' or 'no employees.' This skill covers the complete solo founder GTM playbook from stack selection through agent team design, revenue-stage transitions, time allocation, and when to finally hire. Do NOT use for technical implementation, code review, or software architecture."
+description: "Use quando o usuário for fundador solo construindo seu motion de GTM, quiser escalar sem contratar ou precisar desenhar um time de agentes de IA para go-to-market. Use também quando o usuário mencionar 'solo founder', 'one-person startup', 'solopreneur', 'bootstrapped', 'no team', 'AI agents as team', 'scaling without hiring', 'founder-led sales', 'lean GTM', 'one-person company' ou 'no employees'. Esta skill cobre o playbook completo de GTM para fundador solo, desde escolha de stack até design do time de agentes, transições por estágio de receita, alocação de tempo e quando contratar de fato. NÃO use para implementação técnica, revisão de código ou arquitetura de software."
 metadata:
   original_author: Chad Boyda / agent-gtm-skills
   modified_by: Felipe Rodrigues - github.com/felipfr
   source: https://github.com/chadboyda/agent-gtm-skills
   version: '1.0.0'
+---
+
+# GTM para fundador solo: playbook completo para escalar sem contratar
+
+Você é especialista em estratégia go-to-market para fundador solo, design de time de agentes de IA, operações enxutas e distribuição liderada pelo fundador. Você entende o cenário 2025-2026 em que mais de um terço das novas startups é fundada por uma pessoa só e uma única pessoa com o stack certo pode chegar a US$ 100K+ MRR mais rápido do que um time de 20 pessoas há cinco anos. Você ajuda fundadores a escolher entre self-serve e sales-led, desenhar fluxos de agentes de IA que substituem contratações tradicionais, alocar o recurso mais escasso (tempo) e saber exatamente quando escalar sem pessoas deixa de funcionar.
+
+## Antes de começar
+
+Reúna este contexto antes de montar qualquer plano de GTM para fundador solo:
+
+- O que o produto faz hoje? Um parágrafo, só features lançadas, sem roadmap.
+- Qual a receita atual? MRR, número de clientes pagantes e tendência (crescendo, estável, caindo).
+- Como os clientes acham o produto hoje? Orgânico, pago, outbound, indicação, comunidade ou misto.
+- Qual o stack tecnológico atual? Liste cada ferramenta paga e cada gratuita em uso ativo.
+- Quantas horas por semana o fundador gasta em GTM vs construir? A divisão real, não a aspiracional.
+- Qual o ACV (valor anual do contrato) ou receita média por cliente?
+- O produto é self-serve hoje ou toda venda exige call?
+- O fundador tem audiência? Seguidores no X, conexões no LinkedIn, assinantes de newsletter, membros de comunidade.
+- O que o fundador já tentou em GTM que não funcionou? Canais que falham informam tanto quanto os que funcionam.
+- Qual a maior restrição do fundador agora? Tempo, dinheiro, habilidade técnica, distribuição ou outra coisa.
 
 ---
 
-# Solo Founder GTM: The Complete Playbook for Scaling Without Hiring
+## 1. Gosto como fosso: por que julgamento vence headcount
 
-You are an expert in solo founder go-to-market strategy, AI agent team design, lean operations, and founder-led distribution. You understand the 2025-2026 landscape where over one-third of new startups are solo-founded and a single person with the right stack can reach $100K+ MRR faster than a 20-person team could five years ago. You help founders choose between self-serve and sales-led motions, design AI agent workflows that replace traditional hires, allocate their most constrained resource (time), and know exactly when scaling without people stops working.
-
-## Before Starting
-
-Gather this context before building any solo founder GTM plan:
-
-- What does the product do today? One paragraph, shipped features only, no roadmap.
-- What is the current revenue? MRR, number of paying customers, and trend (growing, flat, declining).
-- How are customers finding the product today? Organic, paid, outbound, referral, community, or a mix.
-- What is the current tech stack? List every tool the founder pays for and every free tool in active use.
-- How many hours per week does the founder spend on GTM vs building? Get the real split, not the aspirational one.
-- What is the ACV (annual contract value) or average revenue per customer?
-- Is the product self-serve today, or does every sale require a call?
-- Does the founder have an existing audience? X followers, LinkedIn connections, newsletter subscribers, community members.
-- What has the founder tried for GTM that did not work? Failed channels are as informative as successful ones.
-- What is the founder's biggest constraint right now? Time, money, technical skill, distribution, or something else.
-
----
-
-## 1. Taste as Moat: Why Judgment Beats Headcount
-
-AI handles execution at scale. Writing 100 cold emails, researching 500 prospects, generating 50 ad variations. All of that is commodity work now. The moat for a solo founder is judgment: knowing which market to enter, which messaging resonates, which customers to prioritize, and which signals to act on.
+A IA executa em escala. Escrever 100 cold emails, pesquisar 500 prospects, gerar 50 variações de anúncio. Tudo isso virou commodity. O fosso do fundador solo é julgamento: saber qual mercado entrar, qual mensagem ressoa, quais clientes priorizar e em quais sinais agir.
 
 ```
 DELEGATE TO AI AGENTS              OWN PERSONALLY
@@ -49,31 +48,31 @@ DELEGATE TO AI AGENTS              OWN PERSONALLY
 +----------------------------+     +----------------------------+
 ```
 
-The rule: if a task requires taste, market context, or relationship capital, you do it. If a task requires throughput, pattern matching, or repetitive execution, an AI agent does it.
+A regra: se a tarefa exige gosto, contexto de mercado ou capital de relacionamento, você faz. Se exige throughput, reconhecimento de padrão ou execução repetitiva, um agente de IA faz.
 
 ---
 
-## 2. The One-Person Startup Stack
+## 2. O stack da startup de uma pessoa
 
-| Function | Recommended Tool | Monthly Cost | Why This One |
-|---|---|---|---|
-| CRM | Attio or Folk | $0-30 | Lightweight, API-friendly, no enterprise bloat |
-| Email outreach | Instantly or Smartlead | $30-97 | Multi-inbox rotation, warmup included |
-| Enrichment | Clay (Starter) or Apollo Free | $0-149 | Clay for waterfall enrichment, Apollo for basic lookups |
-| AI personalization | Claude API or GPT API | $20-50 | Per-message personalization at scale |
-| Landing pages | Framer or Carrd | $0-24 | Ship in hours, not weeks |
-| Analytics | PostHog or Plausible | $0 | PostHog for product analytics, Plausible for web |
-| Scheduling | Cal.com or Calendly Free | $0 | Cal.com is open-source and self-hostable |
-| Payments | Stripe | 2.9% + $0.30/txn | Standard, reliable, great API |
-| Support | Crisp Free or Intercom Starter | $0-39 | Crisp for chat widget, Intercom if you need AI bot |
-| Automation | n8n (self-hosted) or Make | $0-30 | n8n for full control, Make for visual workflows |
-| AI coding | Cursor or Claude Code | $20-40 | Ship features without a dev team |
-| Content | Claude or Notion AI | $0-20 | Long-form drafts, repurposing, research |
-| Social scheduling | Buffer or Typefully | $0-15 | Typefully for X-native scheduling |
-| Email marketing | Loops or Resend | $0-25 | Developer-friendly transactional + marketing |
-| **Total** | | **$50-450/mo** | |
+| Função                | Ferramenta recomendada         | Custo mensal        | Por esta                                          |
+| --------------------- | ------------------------------ | ------------------- | ------------------------------------------------- |
+| CRM                   | Attio ou Folk                  | US$ 0-30            | Leve, API-friendly, sem inchado enterprise        |
+| Email outreach        | Instantly ou Smartlead         | US$ 30-97           | Rotação multi-inbox, warmup incluso               |
+| Enriquecimento        | Clay (Starter) ou Apollo Free  | US$ 0-149           | Clay para waterfall, Apollo para lookups básicos  |
+| Personalização com IA | Claude API ou GPT API          | US$ 20-50           | Personalização por mensagem em escala             |
+| Landing pages         | Framer ou Carrd                | US$ 0-24            | Publicar em horas, não semanas                    |
+| Analytics             | PostHog ou Plausible           | US$ 0               | PostHog para produto, Plausible para web          |
+| Agendamento           | Cal.com ou Calendly Free       | US$ 0               | Cal.com é open source e self-hostable             |
+| Pagamentos            | Stripe                         | 2,9% + US$ 0,30/txn | Padrão, confiável, ótima API                      |
+| Suporte               | Crisp Free ou Intercom Starter | US$ 0-39            | Crisp para widget, Intercom se precisar bot de IA |
+| Automação             | n8n (self-hosted) ou Make      | US$ 0-30            | n8n para controle total, Make para fluxos visuais |
+| Coding com IA         | Cursor ou Claude Code          | US$ 20-40           | Entregar features sem time de dev                 |
+| Conteúdo              | Claude ou Notion AI            | US$ 0-20            | Rascunhos longos, reuso, pesquisa                 |
+| Social scheduling     | Buffer ou Typefully            | US$ 0-15            | Typefully nativo para X                           |
+| Email marketing       | Loops ou Resend                | US$ 0-25            | Transacional + marketing friendly a devs          |
+| **Total**             |                                | **US$ 50-450/mês**  |                                                   |
 
-### Stack Selection by GTM Motion
+### Escolha de stack por motion de GTM
 
 ```
 Product-Led (self-serve) --> Analytics (PostHog), Landing page (Framer),
@@ -89,107 +88,107 @@ Community-Led --> Community platform (Discord/Circle),
                   Content AI (Claude), Email (Loops), CRM (Folk)
 ```
 
-### Stack Anti-Patterns
+### Anti-padrões de stack
 
-| Anti-Pattern | Why It Hurts | What to Do Instead |
-|---|---|---|
-| Salesforce or HubSpot Enterprise | $150+/mo, 80% features unused, weeks to configure | Attio or Folk at $0-30/mo |
-| Building internal tools pre-PMF | Engineering time that should go to the product | Off-the-shelf tools until $50K+ MRR |
-| Buying annual contracts early | Locks in spend before you know what works | Stay monthly until a tool proves critical |
-| Using 15+ tools at once | Context-switching tax exceeds the tool's value | Cap at 8-10 core tools |
-
----
-
-## 3. Revenue Stage Playbook
-
-GTM strategy shifts at every revenue milestone. What works at $0 MRR actively hurts at $50K MRR.
-
-### Stage 1: $0-1K MRR (Validation)
-
-**Goal**: Find 10 people who will pay. Nothing else matters.
-**Time split**: 40% customer conversations, 40% building, 20% content.
-
-- DM 20 people per day on X or LinkedIn who match your hypothesis.
-- Charge from day one. Free users give bad feedback. Even $9/mo filters for real need.
-- Build the smallest thing that solves a real pain. One feature, not a platform.
-- Track who says "I need this" vs "that is interesting." Only "I need this" counts.
-- Do not automate anything yet. Manual processes reveal what matters.
-- **Skip**: Outbound sequences, paid ads, SEO, partnerships, complex funnels.
-
-### Stage 2: $1K-10K MRR (Traction)
-
-**Goal**: Find a repeatable acquisition channel.
-**Time split**: 50% distribution, 30% building, 20% customer conversations.
-
-- Test 2-3 acquisition channels simultaneously. Give each 30 days and $500 (or equivalent time).
-- Start building in public. Share metrics, lessons, and behind-the-scenes.
-- Set up basic outbound if ACV supports it. 50 personalized emails per week using Clay + Instantly.
-- Document every deal: objections, buying triggers, competitor mentions. This becomes your sales playbook.
-- Deploy Research Agent and Writing Agent (see Section 5).
-- **Skip**: Hiring, complex automations, enterprise features, annual plans.
-
-### Stage 3: $10K-50K MRR (Scale the Machine)
-
-**Goal**: Systematize what works and deploy AI agents to multiply output.
-**Time split**: 30% systems/automation, 30% distribution, 25% product, 15% strategy.
-
-- Deploy full AI agent team for proven channels.
-- Batch-create content weekly, repurpose across channels, schedule with AI.
-- Raise prices. Most solo founders underprice by 2-3x at this stage.
-- Introduce annual plans. Offer 2 months free for annual commitment.
-- Start evaluating first hire (see Section 7).
-- **Skip**: Enterprise sales, custom integrations, complex RBAC, dedicated support tiers.
-
-### Stage 4: $50K-100K+ MRR (Founder Leverage)
-
-**Goal**: Maximize revenue per founder-hour. Decide on hiring vs staying solo.
-**Time split**: 30% strategy, 25% distribution, 25% product, 20% team management.
-
-- Every hour should generate $200+ in value. Audit ruthlessly.
-- Consider fractional hires or contractors before full-time employees.
-- Personal brand is now a real distribution channel. Invest 5-10 hrs/week.
-- Build moats: integrations, data network effects, community, switching costs.
-- Run quarterly positioning reviews. At this revenue, competitors notice you.
+| Anti-padrão                      | Por que machuca                                                 | O que fazer                            |
+| -------------------------------- | --------------------------------------------------------------- | -------------------------------------- |
+| Salesforce ou HubSpot Enterprise | US$ 150+/mês, 80% das features sem uso, semanas para configurar | Attio ou Folk a US$ 0-30/mês           |
+| Ferramentas internas pré-PMF     | Tempo de engenharia que deveria ir ao produto                   | Ferramentas prontas até US$ 50K+ MRR   |
+| Contrato anual cedo demais       | Trava gasto antes de saber o que funciona                       | Mensal até a ferramenta provar crítica |
+| 15+ ferramentas ao mesmo tempo   | Custo de troca de contexto supera o valor                       | Teto de 8-10 ferramentas core          |
 
 ---
 
-## 4. Self-Serve vs Sales Calls Decision Framework
+## 3. Playbook por estágio de receita
 
-This is the highest-leverage decision a solo founder makes. The wrong motion wastes months.
+A estratégia de GTM muda a cada marco de receita. O que funciona a US$ 0 MRR prejudica ativamente a US$ 50K MRR.
 
-| Factor | Go Self-Serve | Go Sales-Led | Hybrid |
-|---|---|---|---|
-| ACV | Under $1,000/yr | Over $5,000/yr | $1,000-5,000/yr |
-| Setup complexity | Under 5 min to value | Requires config or training | 15-30 min setup |
-| Buyer type | IC, developer | VP/Director, needs approval | Manager, can expense |
-| Product complexity | Single use case, obvious value | Multi-stakeholder workflows | Clear value, benefits from guidance |
-| Competition | Crowded, differentiate on UX | Few players, differentiate on outcomes | Moderate, differentiate on speed |
-| Your time | Cannot do sales calls | 10+ hrs/week for calls | 5-10 hrs/week for high-value calls |
+### Estágio 1: US$ 0-1K MRR (validação)
 
-### Self-Serve Readiness Checklist
+**Objetivo**: Achar 10 pessoas que pagam. Nada mais importa.
+**Divisão de tempo**: 40% conversas com clientes, 40% construir, 20% conteúdo.
 
-- [ ] Can a new user get value in under 5 minutes without talking to anyone?
-- [ ] Is the pricing simple enough to not need explanation?
-- [ ] Can you show the product's value in a 60-second demo video?
-- [ ] Is the buyer authorized to spend this amount without approval?
-- [ ] Can you handle support at scale with docs + AI chatbot?
+- 20 DMs por dia no X ou LinkedIn com quem casa com sua hipótese.
+- Cobrar desde o dia um. Usuários grátis dão feedback ruim. Mesmo US$ 9/mês filtra necessidade real.
+- Construir o mínimo que resolve uma dor real. Uma feature, não uma plataforma.
+- Rastrear quem diz "preciso disso" vs "isso é interessante". Só conta "preciso disso".
+- Não automatizar nada ainda. Processos manuais revelam o que importa.
+- **Pule**: sequências outbound, anúncios pagos, SEO, parcerias, funis complexos.
 
-If any answer is "no," you need at least a sales-assist layer.
+### Estágio 2: US$ 1K-10K MRR (tração)
 
-### Founder-Led Sales Ceiling
+**Objetivo**: Achar um canal de aquisição repetível.
+**Divisão de tempo**: 50% distribuição, 30% construir, 20% conversas com clientes.
 
-| Metric | Solo Founder Ceiling | Red Flag |
-|---|---|---|
-| Discovery calls per week | 10-15 | Calendar is 60%+ calls |
-| Active deals in pipeline | 20-30 | Deals slipping from lack of follow-up |
-| Sales cycle | 30-45 days | Stretching to 60+ days |
-| Revenue from sales-led | $30-50K MRR | Growth flatlines despite full pipeline |
+- Teste 2-3 canais ao mesmo tempo. Dê 30 dias e US$ 500 (ou tempo equivalente) a cada um.
+- Comece a construir em público. Compartilhe métricas, lições e bastidores.
+- Monte outbound básico se o ACV suportar. 50 emails personalizados por semana com Clay + Instantly.
+- Documente cada negócio: objeções, gatilhos de compra, menções a concorrentes. Vira playbook de vendas.
+- Implante Research Agent e Writing Agent (veja Seção 5).
+- **Pule**: contratar, automações complexas, features enterprise, planos anuais.
 
-When you hit these limits, see Section 7: When to Make the First GTM Hire.
+### Estágio 3: US$ 10K-50K MRR (escalar a máquina)
+
+**Objetivo**: Sistematizar o que funciona e implantar agentes de IA para multiplicar saída.
+**Divisão de tempo**: 30% sistemas/automação, 30% distribuição, 25% produto, 15% estratégia.
+
+- Implante o time completo de agentes de IA para canais comprovados.
+- Produza conteúdo em lote semanalmente, reuse canais, agende com IA.
+- Suba preços. A maioria dos fundadores solo subprecifica 2-3x neste estágio.
+- Introduza planos anuais. Ofereça 2 meses grátis no compromisso anual.
+- Comece a avaliar primeira contratação (veja Seção 7).
+- **Pule**: vendas enterprise, integrações custom, RBAC complexo, tiers de suporte dedicados.
+
+### Estágio 4: US$ 50K-100K+ MRR (alavancagem do fundador)
+
+**Objetivo**: Maximizar receita por hora do fundador. Decidir entre contratar ou permanecer solo.
+**Divisão de tempo**: 30% estratégia, 25% distribuição, 25% produto, 20% gestão de time.
+
+- Cada hora deve gerar US$ 200+ em valor. Audite sem piedade.
+- Considere fractional ou PJ antes de CLT.
+- Marca pessoal vira canal real de distribuição. Invista 5-10 h/semana.
+- Construa fossos: integrações, efeitos de rede de dados, comunidade, custo de troca.
+- Faça revisões trimestrais de posicionamento. Nesta receita, concorrentes notam você.
 
 ---
 
-## 5. AI Agent Team: Your GTM Org Chart
+## 4. Framework self-serve vs calls de vendas
+
+É a decisão de maior alavancagem do fundador solo. O motion errado desperdiça meses.
+
+| Fator                   | Ir self-serve                  | Ir sales-led                           | Híbrido                              |
+| ----------------------- | ------------------------------ | -------------------------------------- | ------------------------------------ |
+| ACV                     | Abaixo de US$ 1.000/ano        | Acima de US$ 5.000/ano                 | US$ 1.000-5.000/ano                  |
+| Complexidade de setup   | Menos de 5 min até valor       | Exige config ou treino                 | 15-30 min de setup                   |
+| Tipo de comprador       | IC, desenvolvedor              | VP/Diretor, precisa aprovação          | Gestor, pode colocar na despesa      |
+| Complexidade do produto | Caso de uso único, valor óbvio | Fluxos multi-stakeholder               | Valor claro, ganha com orientação    |
+| Competição              | Lotado, diferenciar em UX      | Poucos players, diferenciar em outcome | Moderada, diferenciar em velocidade  |
+| Seu tempo               | Não pode fazer calls de vendas | 10+ h/semana em calls                  | 5-10 h/semana em calls de alto valor |
+
+### Checklist de prontidão self-serve
+
+- [ ] Um novo usuário obtém valor em menos de 5 minutos sem falar com ninguém?
+- [ ] O preço é simples o bastante para não precisar explicação?
+- [ ] Dá para mostrar o valor do produto em vídeo de 60 segundos?
+- [ ] O comprador está autorizado a gastar esse valor sem aprovação?
+- [ ] Dá para escalar suporte com docs + chatbot de IA?
+
+Se alguma resposta for "não", você precisa de pelo menos camada de sales-assist.
+
+### Teto de vendas lideradas pelo fundador
+
+| Métrica                     | Teto fundador solo | Alerta vermelho                            |
+| --------------------------- | ------------------ | ------------------------------------------ |
+| Discovery calls por semana  | 10-15              | Calendário 60%+ calls                      |
+| Negócios ativos no pipeline | 20-30              | Negócios escorregam por falta de follow-up |
+| Ciclo de vendas             | 30-45 dias         | Esticando para 60+ dias                    |
+| Receita sales-led           | US$ 30-50K MRR     | Crescimento estagna com pipeline cheio     |
+
+Quando bater nesses limites, veja Seção 7: quando fazer a primeira contratação em GTM.
+
+---
+
+## 5. Time de agentes de IA: seu organograma de GTM
 
 ```
                     +------------------+
@@ -215,134 +214,134 @@ When you hit these limits, see Section 7: When to Make the First GTM Hire.
     +--------------+  +--------------+  +--------------+
 ```
 
-### Agent Definitions
+### Definições de agentes
 
-| Agent | Tools | Workflow | Output | Time Saved |
-|---|---|---|---|---|
-| Research | Clay, Apollo, Claude API | Identify prospect > Enrich data > Score ICP > Find decision maker > Pull personalization context | Enriched prospect with personalization brief | 15-20 hrs/wk |
-| Writing | Claude API, Typefully | Pull topic > Draft in founder's voice > Generate variations > Queue for review > Schedule | 5-10 posts/wk, 1-2 long-form/mo | 8-12 hrs/wk |
-| Outreach | Instantly, Clay, Claude API | Receive prospect brief > Personalize first line > Select template > Send sequence > Suggest replies | 200-500 personalized emails/wk | 20+ hrs/wk |
-| Analytics | PostHog, Claude API, n8n | Pull metrics > Compare trailing averages > Flag anomalies > Generate summary | Daily brief, weekly trend report | 5-8 hrs/wk |
-| Support | Crisp AI, Claude API | Classify issue > Check knowledge base > Auto-respond or escalate | 60-80% tickets resolved without you | 10-15 hrs/wk |
-| Scheduling | Cal.com, Zapier, CRM | Detect intent > Send link > Confirm > Prep meeting doc > Remind | Zero back-and-forth scheduling | 3-5 hrs/wk |
+| Agente     | Ferramentas                 | Fluxo                                                                                                  | Saída                             | Tempo economizado |
+| ---------- | --------------------------- | ------------------------------------------------------------------------------------------------------ | --------------------------------- | ----------------- |
+| Research   | Clay, Apollo, Claude API    | Identificar prospect > Enriquecer > Pontuar ICP > Achar decisor > Contexto para personalização         | Prospect enriquecido com brief    | 15-20 h/sem       |
+| Writing    | Claude API, Typefully       | Puxar tema > Rascunhar na voz do fundador > Variações > Fila para revisão > Agendar                    | 5-10 posts/sem, 1-2 longos/mês    | 8-12 h/sem        |
+| Outreach   | Instantly, Clay, Claude API | Receber brief > Personalizar primeira linha > Escolher template > Enviar sequência > Sugerir respostas | 200-500 emails personalizados/sem | 20+ h/sem         |
+| Analytics  | PostHog, Claude API, n8n    | Puxar métricas > Comparar médias > Sinalizar anomalias > Resumo                                        | Brief diário, relatório semanal   | 5-8 h/sem         |
+| Support    | Crisp AI, Claude API        | Classificar > Consultar base > Auto-responder ou escalar                                               | 60-80% tickets sem você           | 10-15 h/sem       |
+| Scheduling | Cal.com, Zapier, CRM        | Detectar intenção > Enviar link > Confirmar > Doc pré-reunião > Lembrete                               | Zero ida e volta de agenda        | 3-5 h/sem         |
 
-### Deployment Priority and Cost
+### Prioridade de implantação e custo
 
-| Priority | Agent | Deploy At | Monthly Cost |
-|---|---|---|---|
-| 1 | Research | $1K MRR | $60-170 |
-| 2 | Writing | $1K MRR | $15-45 |
-| 3 | Outreach | $5K MRR | $40-117 |
-| 4 | Analytics | $10K MRR | $5-10 |
-| 5 | Support | $10K MRR | $10-59 |
-| 6 | Scheduling | $15K MRR | $0-5 |
-| **Full team** | | | **$130-406/mo** |
+| Prioridade        | Agente     | Implantar em | Custo mensal        |
+| ----------------- | ---------- | ------------ | ------------------- |
+| 1                 | Research   | US$ 1K MRR   | US$ 60-170          |
+| 2                 | Writing    | US$ 1K MRR   | US$ 15-45           |
+| 3                 | Outreach   | US$ 5K MRR   | US$ 40-117          |
+| 4                 | Analytics  | US$ 10K MRR  | US$ 5-10            |
+| 5                 | Support    | US$ 10K MRR  | US$ 10-59           |
+| 6                 | Scheduling | US$ 15K MRR  | US$ 0-5             |
+| **Time completo** |            |              | **US$ 130-406/mês** |
 
-Compare to hiring: one junior SDR costs $4,000-6,000/mo fully loaded. The full agent team costs under $500/mo and works 24/7.
-
----
-
-## 6. Building in Public and Personal Brand as Distribution
-
-Personal brand is the cheapest, highest-converting acquisition channel for a solo founder. Your audience trusts you before they trust your product. Every post is free distribution.
-
-### Content Cadence
-
-| Content Type | Frequency | Platform | Time | Purpose |
-|---|---|---|---|---|
-| Short posts (insights, lessons) | Daily | X, LinkedIn | 15-20 min | Stay visible, build trust |
-| Thread or long-form post | 2x/week | X, LinkedIn | 30-45 min | Demonstrate expertise |
-| Newsletter | Weekly | Email | 1-2 hrs | Own the audience (not rented) |
-| Product update | Bi-weekly | X, LinkedIn, blog | 30 min | Show momentum |
-| Metrics transparency post | Monthly | X, LinkedIn | 20 min | Build trust through honesty |
-
-### What to Share vs Keep Private
-
-| Share Freely | Keep Private |
-|---|---|
-| Revenue milestones and growth rate | Specific customer names without permission |
-| Lessons from failures | Technical vulnerabilities |
-| Product decisions and reasoning | Exact pricing strategy mechanics |
-| Tool stack and workflows | Unreleased competitive advantages |
-| Customer feedback themes | Individual customer data |
-
-### Community as Moat
-
-| Stage | Channel | Why |
-|---|---|---|
-| $0-5K MRR | X/LinkedIn engagement + DMs | Low overhead, high signal |
-| $5-20K MRR | Discord or Slack group | Direct access to power users |
-| $20K+ MRR | Dedicated platform (Circle, Bettermode) | Owned community with structured content |
-
-A healthy community has 40%+ member-to-member conversations (not founder answering everything), regular actionable feature requests, and growing organic referrals. If the community consumes 15+ hrs/week, the ROI has turned negative.
+Comparado a contratar: um SDR júnior custa US$ 4.000-6.000/mês carregado. O time de agentes custa menos de US$ 500/mês e trabalha 24/7.
 
 ---
 
-## 7. When to Make the First GTM Hire
+## 6. Construir em público e marca pessoal como distribuição
 
-Do not hire based on revenue alone. Hire based on constraints and opportunity cost.
+Marca pessoal é o canal de aquisição mais barato e com melhor conversão para fundador solo. Sua audiência confia em você antes do produto. Cada post é distribuição grátis.
 
-### Signals You Need a Hire
+### Cadência de conteúdo
 
-| Signal | What It Looks Like | Urgency |
-|---|---|---|
-| Revenue leaving the table | Qualified leads going cold, cannot follow up | High |
-| Founder bottleneck on sales | Pipeline full, close rate dropping | High |
-| Burnout approaching | 65+ hour weeks for 3+ months | High |
-| Churn from support gaps | Customers leaving citing slow response | High |
-| Support consuming build time | 10+ hrs/week on support | Medium |
+| Tipo                              | Frequência | Plataforma        | Tempo     | Objetivo                        |
+| --------------------------------- | ---------- | ----------------- | --------- | ------------------------------- |
+| Posts curtos (insights, lições)   | Diário     | X, LinkedIn       | 15-20 min | Visibilidade, confiança         |
+| Thread ou post longo              | 2x/semana  | X, LinkedIn       | 30-45 min | Demonstrar expertise            |
+| Newsletter                        | Semanal    | Email             | 1-2 h     | Audiência própria (não alugada) |
+| Update de produto                 | Quinzenal  | X, LinkedIn, blog | 30 min    | Mostrar tração                  |
+| Post de transparência de métricas | Mensal     | X, LinkedIn       | 20 min    | Confiança pela honestidade      |
 
-### Signals You Do NOT Need a Hire
+### O que compartilhar vs manter privado
 
-| Signal | What to Do Instead |
-|---|---|
-| "I should have a team by now" | Ignore. Revenue per person is what matters. |
-| One slow month | Diagnose root cause, do not panic-hire |
-| Feature requests piling up | Prioritize ruthlessly, build less |
-| Investor pressure on headcount | Raise on metrics, not team size |
+| Compartilhe à vontade                   | Mantenha privado                            |
+| --------------------------------------- | ------------------------------------------- |
+| Marcos de receita e taxa de crescimento | Nomes de clientes específicos sem permissão |
+| Lições de fracassos                     | Vulnerabilidades técnicas                   |
+| Decisões de produto e raciocínio        | Mecânica exata de precificação              |
+| Stack e fluxos de trabalho              | Vantagens competitivas não lançadas         |
+| Temas de feedback de clientes           | Dados individuais de clientes               |
 
-### First Hire Decision Table
+### Comunidade como fosso
 
-| Bottleneck | Hire This | Cost | Alternative |
-|---|---|---|---|
-| Sales calls and pipeline | Fractional AE (part-time closer) | $2-4K/mo | AI SDR agent + your closing |
-| Content volume | Freelance writer | $1-3K/mo | AI writing agent + your editing |
-| Customer support | Part-time support rep | $1.5-3K/mo | AI support agent + escalation |
-| Engineering velocity | Contract developer | $3-8K/mo | AI coding tools + your direction |
-| Operations and admin | Virtual assistant | $500-1.5K/mo | Automation + AI agents |
+| Estágio       | Canal                                    | Por quê                                     |
+| ------------- | ---------------------------------------- | ------------------------------------------- |
+| US$ 0-5K MRR  | Engajamento X/LinkedIn + DMs             | Baixo overhead, alto sinal                  |
+| US$ 5-20K MRR | Grupo Discord ou Slack                   | Acesso direto a power users                 |
+| US$ 20K+ MRR  | Plataforma dedicada (Circle, Bettermode) | Comunidade própria com conteúdo estruturado |
 
-### Revenue Threshold Framework
-
-| Revenue | Team Size | Logic |
-|---|---|---|
-| $0-10K MRR | Solo + AI agents | Every dollar to product and distribution |
-| $10-30K MRR | Solo + 1-2 contractors | Fractional help on biggest bottleneck |
-| $30-50K MRR | Solo + 1 FTE or 3-4 contractors | Can afford $4-6K/mo for one role |
-| $50-100K MRR | 2-3 people total | Founder + engineer + GTM person |
-| $100K+ MRR | Build the team matching your GTM motion | Revenue supports a real org chart |
+Uma comunidade saudável tem 40%+ conversas membro-a-membro (não o fundador respondendo tudo), pedidos de feature acionáveis regulares e indicações orgânicas crescendo. Se a comunidade consome 15+ h/semana, o ROI virou negativo.
 
 ---
 
-## 8. Enterprise Features to Skip
+## 7. Quando fazer a primeira contratação em GTM
 
-Solo founders waste months building features that enterprise buyers demand but that generate zero revenue before PMF.
+Não contrate só por receita. Contrate por restrições e custo de oportunidade.
 
-| Feature | Skip Until | Why |
-|---|---|---|
-| SAML/SSO | $50K MRR or first enterprise deal requires it | Weeks of dev, zero SMB customers care |
-| Complex RBAC | $30K MRR | Admin/member is enough for 95% of early customers |
-| SOC 2 compliance | $50K MRR or enterprise pipeline demands it | $20-50K and 3-6 months |
-| Custom SLAs | $50K MRR | You cannot guarantee uptime you do not measure |
-| Custom integrations | Per-deal over $10K ACV | Build standard integrations first |
-| Annual invoicing with PO | $30K MRR | Manual invoicing works for small deal counts |
-| Audit logs | $50K MRR | Enterprise compliance feature |
-| White-labeling | Never (unless it IS the product) | Massive complexity for rare demand |
+### Sinais de que precisa contratar
 
-**Build instead**: Dead-simple onboarding (under 2 min), one killer integration with the tool your ICP lives in, excellent docs, webhook/API for power users, and usage-based billing via Stripe. These ship in days and move activation, retention, and revenue.
+| Sinal                             | Como se parece                              | Urgência |
+| --------------------------------- | ------------------------------------------- | -------- |
+| Receita deixando na mesa          | Leads qualificados esfriando, sem follow-up | Alta     |
+| Gargalo do fundador em vendas     | Pipeline cheio, taxa de fechamento caindo   | Alta     |
+| Burnout se aproximando            | 65+ h/semana por 3+ meses                   | Alta     |
+| Churn por gaps de suporte         | Clientes saindo citando resposta lenta      | Alta     |
+| Suporte consumindo tempo de build | 10+ h/semana em suporte                     | Média    |
+
+### Sinais de que NÃO precisa contratar
+
+| Sinal                               | O que fazer em vez disso                        |
+| ----------------------------------- | ----------------------------------------------- |
+| "Já era para ter time"              | Ignore. O que importa é receita por pessoa.     |
+| Um mês lento                        | Diagnostique causa raiz, não contrate no pânico |
+| Pedidos de feature acumulando       | Priorize sem piedade, construa menos            |
+| Pressão de investidor por headcount | Levante com métricas, não tamanho de time       |
+
+### Tabela da primeira contratação
+
+| Gargalo                    | Contrate                         | Custo            | Alternativa                                |
+| -------------------------- | -------------------------------- | ---------------- | ------------------------------------------ |
+| Calls de vendas e pipeline | Fractional AE (part-time closer) | US$ 2-4K/mês     | Agente SDR de IA + seu fechamento          |
+| Volume de conteúdo         | Redator freelancer               | US$ 1-3K/mês     | Agente de writing + sua edição             |
+| Suporte ao cliente         | Suporte part-time                | US$ 1,5-3K/mês   | Agente de suporte + escalação              |
+| Velocidade de engenharia   | Dev contratado                   | US$ 3-8K/mês     | Ferramentas de coding com IA + sua direção |
+| Operações e admin          | Assistente virtual               | US$ 500-1,5K/mês | Automação + agentes de IA                  |
+
+### Framework de limiar de receita
+
+| Receita         | Tamanho do time                        | Lógica                                 |
+| --------------- | -------------------------------------- | -------------------------------------- |
+| US$ 0-10K MRR   | Solo + agentes de IA                   | Cada dólar para produto e distribuição |
+| US$ 10-30K MRR  | Solo + 1-2 PJ                          | Ajuda fractional no maior gargalo      |
+| US$ 30-50K MRR  | Solo + 1 CLT ou 3-4 PJ                 | Aguenta US$ 4-6K/mês para um papel     |
+| US$ 50-100K MRR | 2-3 pessoas no total                   | Fundador + engenheiro + GTM            |
+| US$ 100K+ MRR   | Monte o time alinhado ao motion de GTM | Receita sustenta organograma real      |
 
 ---
 
-## 9. Founder-Led Sales Process
+## 8. Features enterprise para pular
+
+Fundadores solo perdem meses construindo features que compradores enterprise exigem mas que geram zero receita antes do PMF.
+
+| Feature             | Pule até                                  | Por quê                                            |
+| ------------------- | ----------------------------------------- | -------------------------------------------------- |
+| SAML/SSO            | US$ 50K MRR ou primeiro enterprise exigir | Semanas de dev, zero SMB se importa                |
+| RBAC complexo       | US$ 30K MRR                               | Admin/membro basta para 95% dos primeiros clientes |
+| Compliance SOC 2    | US$ 50K MRR ou pipeline enterprise exigir | US$ 20-50K e 3-6 meses                             |
+| SLAs customizados   | US$ 50K MRR                               | Não garanta uptime que não mede                    |
+| Integrações custom  | Negócio por ACV maior que US$ 10K         | Integre o padrão primeiro                          |
+| Fatura anual com PO | US$ 30K MRR                               | Fatura manual funciona com poucos negócios         |
+| Audit logs          | US$ 50K MRR                               | Feature de compliance enterprise                   |
+| White-label         | Nunca (a menos que SEJA o produto)        | Complexidade enorme para demanda rara              |
+
+**Construa em vez disso**: Onboarding trivial (menos de 2 min), uma integração matadora com a ferramenta onde seu ICP vive, documentação excelente, webhook/API para power users e billing usage-based via Stripe. Isso entrega em dias e move ativação, retenção e receita.
+
+---
+
+## 9. Processo de vendas liderado pelo fundador
 
 ```
 QUALIFY (5 min): ICP match? Can afford price? Has the problem?
@@ -363,91 +362,91 @@ ONBOARD (async, 30 min): Guide within 1 hour. Setup call if
   needed. Check in at day 3 and day 7.
 ```
 
-### Sales Velocity Targets
+### Metas de velocidade de vendas
 
-| Metric | Target | Red Flag |
-|---|---|---|
-| Calls to close | Under 3 | Over 5 per deal |
-| Sales cycle | Under 14 days | Over 30 days |
-| Close rate | 25-40% of qualified opps | Under 15% |
-| No-show rate | Under 15% | Over 30% |
+| Métrica            | Alvo                                 | Alerta vermelho       |
+| ------------------ | ------------------------------------ | --------------------- |
+| Calls até fechar   | Menos de 3                           | Mais de 5 por negócio |
+| Ciclo de vendas    | Menos de 14 dias                     | Mais de 30 dias       |
+| Taxa de fechamento | 25-40% de oportunidades qualificadas | Menos de 15%          |
+| No-show            | Menos de 15%                         | Mais de 30%           |
 
-Document every conversation: objection log, winning phrases, losing patterns, pricing reactions, competitive mentions. This playbook becomes the training manual for your first sales hire.
-
----
-
-## Examples
-
-- **User says:** "I'm a solo founder, how do I do GTM?" → **Result:** Agent asks MRR and ACV, recommends time split (e.g. 40% conversations, 40% building at $0–1K MRR), suggests $50–450/mo stack and AI agent deploy order (Research → Writing → Outreach → …), and caps calls at 10–15/week.
-- **User says:** "When should I hire my first sales person?" → **Result:** Agent uses Quick Reference thresholds (first contractor $10–30K MRR, first FTE $30–50K MRR), asks current pipeline and deal capacity, and suggests what to systematize before hiring.
-- **User says:** "What tools should a solo founder use?" → **Result:** Agent recommends 8–10 tool max, maps by function (CRM, enrichment, sending, content, analytics), and suggests budget tier and content cadence (daily short + weekly newsletter).
-
-## Troubleshooting
-
-- **No time for both building and selling** → **Cause:** No guardrails or too many channels. **Fix:** Block 3–4 hr morning deep work; cap sales calls at 10–15/week; focus on one acquisition channel until it converts.
-- **Deals slipping or no-shows** → **Cause:** Too many active deals or weak qualification. **Fix:** Cap active deals at 20–30; tighten ICP and qualification; use objection log to improve messaging.
-- **Revenue per founder-hour flat** → **Cause:** Low ACV or high-touch with no leverage. **Fix:** Aim for $100+/hr; add self-serve or product-led motion if ACV allows; automate outreach and content with AI agents.
+Documente cada conversa: log de objeções, frases que ganham, padrões que perdem, reação a preço, menções a concorrentes. Este playbook vira manual de treino da primeira contratação em vendas.
 
 ---
 
-## Quick Reference
+## Exemplos
 
-| Concept | Key Number or Rule |
-|---|---|
-| Total stack cost (solo founder) | $50-450/mo |
-| AI agent team cost | $130-406/mo for all six agents |
-| Equivalent single SDR hire | $4,000-6,000/mo fully loaded |
-| Time split at $0-1K MRR | 40% conversations, 40% building, 20% content |
-| Time split at $10-50K MRR | 30% systems, 30% distribution, 25% product, 15% strategy |
-| Self-serve ACV ceiling | Under $1,000/yr |
-| Sales-led ACV floor | Over $5,000/yr |
-| First contractor threshold | $10-30K MRR |
-| First full-time hire threshold | $30-50K MRR |
-| SOC 2 skip-until threshold | $50K MRR or enterprise deal requires it |
-| Max tools in stack | 8-10 before diminishing returns |
-| Content cadence minimum | Daily short posts + weekly newsletter |
-| Sales calls ceiling (solo) | 10-15/week before quality drops |
-| Active deal ceiling (solo) | 20-30 before deals slip |
-| Revenue per founder-hour target | $100+ and growing |
-| Monthly churn ceiling (SMB) | Under 5% |
-| Agent deploy order | Research > Writing > Outreach > Analytics > Support > Scheduling |
-| Morning deep work block | 3-4 hrs, no meetings, no interruptions |
+- **Usuário diz:** "Sou fundador solo, como faço GTM?" → **Resultado:** O agente pergunta MRR e ACV, recomenda divisão de tempo (ex. 40% conversas, 40% construir em US$ 0–1K MRR), sugere stack US$ 50–450/mês e ordem de implantação dos agentes (Research → Writing → Outreach → …) e limita calls a 10–15/semana.
+- **Usuário diz:** "Quando contrato minha primeira pessoa de vendas?" → **Resultado:** O agente usa limiares do Quick Reference (primeiro PJ US$ 10–30K MRR, primeiro CLT US$ 30–50K MRR), pergunta pipeline e capacidade de negócios e sugere o que sistematizar antes de contratar.
+- **Usuário diz:** "Quais ferramentas um fundador solo deve usar?" → **Resultado:** O agente recomenda no máximo 8–10 ferramentas, mapeia por função (CRM, enriquecimento, envio, conteúdo, analytics) e sugere faixa de orçamento e cadência de conteúdo (post curto diário + newsletter semanal).
+
+## Solução de problemas
+
+- **Sem tempo para construir e vender** → **Causa:** Sem guardrails ou canais demais. **Correção:** Bloco manhã 3–4 h de trabalho profundo; limite calls a 10–15/semana; foque um canal de aquisição até converter.
+- **Negócios escorregando ou no-shows** → **Causa:** Negócios ativos demais ou qualificação fraca. **Correção:** Limite 20–30 ativos; aperte ICP e qualificação; use log de objeções para melhorar mensagem.
+- **Receita por hora do fundador estagnada** → **Causa:** ACV baixo ou alto toque sem alavancagem. **Correção:** Mirar US$ 100+/h; adicione self-serve ou motion product-led se o ACV permitir; automatize outreach e conteúdo com agentes de IA.
 
 ---
 
-## Questions to Ask
+## Referência rápida
 
-1. What is your current MRR and how many paying customers do you have?
-2. How are customers finding you today, and which channel converts best?
-3. How many hours per week do you actually spend on GTM vs building?
-4. What is your ACV and does every sale require a conversation?
-5. Do you have an existing audience on any platform? How large and how engaged?
-6. What have you tried for acquisition that did not work?
-7. What is your biggest time sink each week that is not directly building or selling?
-8. Are you burning personal savings, generating revenue, or funded?
-9. What does your current tool stack cost monthly?
-10. When you lose a deal or a customer churns, what reason do they give?
-11. Have you documented your sales process and objection responses?
-12. Are you building in public? If so, what content performs best?
-13. What manual process do you repeat more than 3 times per week?
-14. At what point would you consider your first hire, and for what role?
-15. What is the single highest-leverage thing you could do this week that you are not doing?
+| Conceito                             | Número ou regra-chave                                            |
+| ------------------------------------ | ---------------------------------------------------------------- |
+| Custo total do stack (fundador solo) | US$ 50-450/mês                                                   |
+| Custo do time de agentes de IA       | US$ 130-406/mês para os seis agentes                             |
+| Equivalente a um SDR contratado      | US$ 4.000-6.000/mês carregado                                    |
+| Divisão de tempo em US$ 0-1K MRR     | 40% conversas, 40% construir, 20% conteúdo                       |
+| Divisão em US$ 10-50K MRR            | 30% sistemas, 30% distribuição, 25% produto, 15% estratégia      |
+| Teto ACV self-serve                  | Abaixo de US$ 1.000/ano                                          |
+| Piso ACV sales-led                   | Acima de US$ 5.000/ano                                           |
+| Limiar primeiro PJ                   | US$ 10-30K MRR                                                   |
+| Limiar primeiro CLT                  | US$ 30-50K MRR                                                   |
+| Limiar para pular SOC 2              | US$ 50K MRR ou enterprise exigir                                 |
+| Máximo de ferramentas no stack       | 8-10 antes de retornos decrescentes                              |
+| Cadência mínima de conteúdo          | Post curto diário + newsletter semanal                           |
+| Teto de calls de vendas (solo)       | 10-15/semana antes da queda de qualidade                         |
+| Teto de negócios ativos (solo)       | 20-30 antes de escorregar                                        |
+| Meta receita por hora do fundador    | US$ 100+ e crescendo                                             |
+| Teto de churn mensal (SMB)           | Menos de 5%                                                      |
+| Ordem de implantação de agentes      | Research > Writing > Outreach > Analytics > Support > Scheduling |
+| Bloco manhã de trabalho profundo     | 3-4 h, sem reuniões, sem interrupções                            |
 
 ---
 
-## Related Skills
+## Perguntas a fazer
 
-| Skill | When to Cross-Reference |
-|---|---|
-| gtm-engineering | When building automated workflows, agent orchestration, and data pipelines |
-| ai-cold-outreach | When setting up the outreach agent with personalized sequences |
-| ai-sdr | When designing the full AI SDR workflow from lead ID through meeting booking |
-| lead-enrichment | When building the research agent's enrichment waterfall and data quality |
-| content-to-pipeline | When converting content and audience into measurable pipeline |
-| social-selling | When building personal brand strategy and social selling workflows |
-| gtm-metrics | When scaling past $50K MRR and need comprehensive metrics frameworks |
-| ai-pricing | When setting or adjusting pricing for self-serve vs sales-led |
-| positioning-icp | When defining ICP and positioning with limited research bandwidth |
-| sales-motion-design | When formalizing founder-led sales into a repeatable motion |
-| expansion-retention | When NRR becomes a growth lever at $30K+ MRR |
-| partner-affiliate | When building partner channels to scale distribution without hiring |
+1. Qual seu MRR atual e quantos clientes pagantes você tem?
+2. Como os clientes te encontram hoje e qual canal converte melhor?
+3. Quantas horas por semana você gasta de fato em GTM vs construir?
+4. Qual seu ACV e toda venda exige conversa?
+5. Você tem audiência em alguma plataforma? Quão grande e engajada?
+6. O que você já tentou em aquisição que não funcionou?
+7. Qual seu maior consumidor de tempo por semana que não é construir ou vender diretamente?
+8. Você está queimando poupança, gerando receita ou tem funding?
+9. Quanto custa seu stack de ferramentas por mês?
+10. Quando perde um negócio ou um cliente churna, qual motivo eles dão?
+11. Você documentou processo de vendas e respostas a objeções?
+12. Você constrói em público? Se sim, que conteúdo performa melhor?
+13. Qual processo manual você repete mais de 3 vezes por semana?
+14. Em que ponto você consideraria a primeira contratação e para qual papel?
+15. Qual a coisa de maior alavancagem que você poderia fazer esta semana e não está fazendo?
+
+---
+
+## Skills relacionadas
+
+| Skill               | Quando cruzar referência                                                           |
+| ------------------- | ---------------------------------------------------------------------------------- |
+| gtm-engineering     | Ao construir fluxos automatizados, orquestração de agentes e pipelines de dados    |
+| ai-cold-outreach    | Ao configurar o agente de outreach com sequências personalizadas                   |
+| ai-sdr              | Ao desenhar o fluxo completo de SDR com IA da identificação do lead ao agendamento |
+| lead-enrichment     | Ao montar o waterfall de enriquecimento do agente de pesquisa e qualidade de dados |
+| content-to-pipeline | Ao converter conteúdo e audiência em pipeline mensurável                           |
+| social-selling      | Ao construir estratégia de marca pessoal e fluxos de social selling                |
+| gtm-metrics         | Ao escalar além de US$ 50K MRR e precisar de frameworks de métricas                |
+| ai-pricing          | Ao definir ou ajustar preços para self-serve vs sales-led                          |
+| positioning-icp     | Ao definir ICP e posicionamento com pouca banda de pesquisa                        |
+| sales-motion-design | Ao formalizar vendas lideradas pelo fundador em motion repetível                   |
+| expansion-retention | Quando NRR vira alavanca de crescimento a US$ 30K+ MRR                             |
+| partner-affiliate   | Ao construir canais de parceiros para escalar distribuição sem contratar           |

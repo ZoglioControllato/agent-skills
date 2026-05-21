@@ -1,8 +1,8 @@
-# API Reference
+# Referência da API
 
-See [README.md](./README.md) for overview, [configuration.md](./configuration.md) for setup.
+Veja [README.md](./README.md) para visão geral e [configuration.md](./configuration.md) para configuração.
 
-## Binding Interface
+## Interface do binding
 
 ```typescript
 interface Hyperdrive {
@@ -20,9 +20,9 @@ interface Env {
 }
 ```
 
-**Generate types:** `npx wrangler types` (auto-creates worker-configuration.d.ts from wrangler.jsonc)
+**Gerar tipos:** `npx wrangler types` (cria automaticamente `worker-configuration.d.ts` a partir do `wrangler.jsonc`)
 
-## PostgreSQL (node-postgres) - RECOMMENDED
+## PostgreSQL (node-postgres) — RECOMENDADO
 
 ```typescript
 import { Client } from 'pg' // pg@^8.17.2
@@ -41,7 +41,7 @@ export default {
 }
 ```
 
-**⚠️ Workers connection limit: 6 per Worker invocation** - use connection pooling wisely.
+**⚠️ Limite de conexões do Workers: 6 por invocação** — use pooling com critério.
 
 ## PostgreSQL (postgres.js)
 
@@ -57,7 +57,7 @@ const sql = postgres(env.HYPERDRIVE.connectionString, {
 const users = await sql`SELECT * FROM users WHERE active = ${true} LIMIT 10`
 ```
 
-**⚠️ `prepare: true` is enabled by default and required for Hyperdrive caching.** Setting to `false` disables prepared statements + cache.
+**⚠️ `prepare: true` vem habilitado por padrão e é necessário para o cache do Hyperdrive.** Definir como `false` desativa prepared statements e o cache.
 
 ## MySQL (mysql2)
 
@@ -77,18 +77,18 @@ const [results] = await conn.query('SELECT * FROM users WHERE active = ? LIMIT ?
 ctx.waitUntil(conn.end())
 ```
 
-**⚠️ MySQL support is less mature than PostgreSQL** - expect fewer optimizations and potential edge cases.
+**⚠️ Suporte a MySQL é menos maduro que PostgreSQL** — espere menos otimizações e possíveis casos extremos.
 
-## Query Caching
+## Cache de consultas
 
-**Cacheable:**
+**Cacheável:**
 
 ```sql
 SELECT * FROM posts WHERE published = true;
 SELECT COUNT(*) FROM users;
 ```
 
-**NOT cacheable:**
+**NÃO cacheável:**
 
 ```sql
 -- Writes
@@ -101,13 +101,13 @@ SELECT LASTVAL();  -- PostgreSQL
 SELECT UUID();     -- MySQL
 ```
 
-**Cache config:**
+**Configuração de cache:**
 
-- Default: `max_age=60s`, `swr=15s`
-- Max `max_age`: 3600s
-- Disable: `--caching-disabled=true`
+- Padrão: `max_age=60s`, `swr=15s`
+- `max_age` máximo: 3600s
+- Desativar: `--caching-disabled=true`
 
-**Multiple configs pattern:**
+**Padrão com várias configs:**
 
 ```typescript
 // Reads: cached
@@ -146,4 +146,6 @@ const db = new Kysely({
 const users = await db.selectFrom('users').selectAll().where('active', '=', true).execute()
 ```
 
-See [patterns.md](./patterns.md) for use cases, [gotchas.md](./gotchas.md) for limits.
+Veja [patterns.md](./patterns.md) para casos de uso e [gotchas.md](./gotchas.md) para limites.
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

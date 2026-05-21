@@ -10,76 +10,73 @@ export default {
 } satisfies ExportedHandler<Env>
 ```
 
-**Parameters:**
+**Parâmetros:**
 
-- `events`: Array of `TraceItem` objects (one per producer invocation)
-- `env`: Bindings (KV, D1, R2, env vars, etc.)
-- `ctx`: Context with `waitUntil()` for async work
+- `events`: Array de objetos `TraceItem` (um por invocação do produtor)
+- `env`: Ligações (KV, D1, R2, env vars, etc.)
+- `ctx`: Contexto com `waitUntil()` para trabalho assíncrono
 
-**CRITICAL:** Tail handlers don't return values. Use `ctx.waitUntil()` for async operations.
+**CRÍTICO:** Os manipuladores finais não retornam valores. Use `ctx.waitUntil()` para operações assíncronas.
 
-## TraceItem Type
+## Tipo de TraceItem```typescript
 
-```typescript
 interface TraceItem {
-  scriptName: string // Producer Worker name
-  eventTimestamp: number // Epoch milliseconds
-  outcome:
-    | 'ok'
-    | 'exception'
-    | 'exceededCpu'
-    | 'exceededMemory'
-    | 'canceled'
-    | 'scriptNotFound'
-    | 'responseStreamDisconnected'
-    | 'unknown'
+scriptName: string // Producer Worker name
+eventTimestamp: number // Epoch milliseconds
+outcome:
+| 'ok'
+| 'exception'
+| 'exceededCpu'
+| 'exceededMemory'
+| 'canceled'
+| 'scriptNotFound'
+| 'responseStreamDisconnected'
+| 'unknown'
 
-  event?: {
-    request?: {
-      url: string // Redacted by default
-      method: string
-      headers: Record<string, string> // Sensitive headers redacted
-      cf?: IncomingRequestCfProperties
-      getUnredacted(): TraceRequest // Bypass redaction (use carefully)
-    }
-    response?: {
-      status: number
-    }
-  }
-
-  logs: Array<{
-    timestamp: number // Epoch milliseconds
-    level: 'debug' | 'info' | 'log' | 'warn' | 'error'
-    message: unknown[] // Args passed to console function
-  }>
-
-  exceptions: Array<{
-    timestamp: number // Epoch milliseconds
-    name: string // Error type (Error, TypeError, etc.)
-    message: string // Error description
-  }>
-
-  diagnosticsChannelEvents: Array<{
-    channel: string
-    message: unknown
-    timestamp: number // Epoch milliseconds
-  }>
+event?: {
+request?: {
+url: string // Redacted by default
+method: string
+headers: Record<string, string> // Sensitive headers redacted
+cf?: IncomingRequestCfProperties
+getUnredacted(): TraceRequest // Bypass redaction (use carefully)
 }
-```
+response?: {
+status: number
+}
+}
 
-**Note:** Official SDK uses `TraceItem`, not `TailItem`. Use `@cloudflare/workers-types` for accurate types.
+logs: Array<{
+timestamp: number // Epoch milliseconds
+level: 'debug' | 'info' | 'log' | 'warn' | 'error'
+message: unknown[] // Args passed to console function
+}>
 
-## Timestamp Handling
+exceptions: Array<{
+timestamp: number // Epoch milliseconds
+name: string // Error type (Error, TypeError, etc.)
+message: string // Error description
+}>
 
-All timestamps are **epoch milliseconds**, not seconds:
+diagnosticsChannelEvents: Array<{
+channel: string
+message: unknown
+timestamp: number // Epoch milliseconds
+}>
+}
 
-```typescript
+````
+**Observação:** O SDK oficial usa `TraceItem`, não `TailItem`. Use `@cloudflare/workers-types` para tipos precisos.
+
+## Tratamento de carimbo de data/hora
+
+Todos os carimbos de data/hora são **milissegundos de época**, não segundos:```typescript
 // ✅ CORRECT - use directly with Date
 const date = new Date(event.eventTimestamp)
 
 // ❌ WRONG - don't multiply by 1000
 const date = new Date(event.eventTimestamp * 1000)
-```
+````
 
 ## Automatic Redaction
 
@@ -113,32 +110,31 @@ export default {
 }
 ```
 
-**Best practices:**
+**Práticas recomendadas:**
 
-- Only call `getUnredacted()` when absolutely necessary
-- Never log unredacted sensitive data
-- Implement additional filtering before external transmission
-- Use environment variables for API keys, never hardcode
+- Chame `getUnredacted()` apenas quando for absolutamente necessário
+- Nunca registre dados confidenciais não editados
+- Implementar filtragem adicional antes da transmissão externa
+- Use variáveis de ambiente para chaves de API, nunca codifique
 
-## Type-Safe Handler
+## Manipulador de tipo seguro```typescript
 
-```typescript
 interface Env {
-  LOGS_KV: KVNamespace
-  ANALYTICS: AnalyticsEngineDataset
-  LOG_ENDPOINT: string
-  API_TOKEN: string
+LOGS_KV: KVNamespace
+ANALYTICS: AnalyticsEngineDataset
+LOG_ENDPOINT: string
+API_TOKEN: string
 }
 
 export default {
-  async tail(events: TraceItem[], env: Env, ctx: ExecutionContext): Promise<void> {
-    const payload = events.map((event) => ({
-      script: event.scriptName,
-      timestamp: event.eventTimestamp,
-      outcome: event.outcome,
-      url: event.event?.request?.url,
-      status: event.event?.response?.status,
-    }))
+async tail(events: TraceItem[], env: Env, ctx: ExecutionContext): Promise<void> {
+const payload = events.map((event) => ({
+script: event.scriptName,
+timestamp: event.eventTimestamp,
+outcome: event.outcome,
+url: event.event?.request?.url,
+status: event.event?.response?.status,
+}))
 
     ctx.waitUntil(
       fetch(env.LOG_ENDPOINT, {
@@ -147,9 +143,11 @@ export default {
         body: JSON.stringify(payload),
       }),
     )
-  },
+
+},
 } satisfies ExportedHandler<Env>
-```
+
+````
 
 ## Outcome vs HTTP Status
 
@@ -169,7 +167,7 @@ if (event.outcome === 'exception') {
 if (event.event?.response?.status === 500) {
   // HTTP 500 returned (script may have handled error)
 }
-```
+````
 
 ## Serialization Considerations
 

@@ -1,38 +1,38 @@
 ---
-description: Creates comprehensive Technical Design Documents (TDD) with mandatory and optional sections through interactive discovery. Use when user asks to "write a design doc", "create a TDD", "technical spec", "architecture document", "RFC", "design proposal", or needs to document a technical decision before implementation. Do NOT use for README files, API docs, or general documentation (use docs-writer instead).
+description: Cria Technical Design Documents (TDDs) completos com seções obrigatórias e opcionais por descoberta interativa. Use quando o usuário pedir para "escrever design doc", "criar um TDD", "spec técnica", "documento de arquitetura", "RFC", "proposta de design" ou precisar documentar decisão técnica antes da implementação. NÃO use para READMEs, docs de API ou documentação geral (use docs-writer).
 name: technical-design-doc-creator
 ---
 
 # Technical Design Doc Creator
 
-You are an expert in creating Technical Design Documents (TDDs) that clearly communicate software architecture decisions, implementation plans, and risk assessments following industry best practices.
+Você é especialista em criar Technical Design Documents (TDDs) que comunicam com clareza decisões de arquitetura de software, planos de implementação e avaliação de riscos, seguindo boas práticas da indústria.
 
-## When to Use This Skill
+## Quando usar esta skill
 
-Use this skill when:
+Use esta skill quando:
 
-- User asks to "create a TDD", "write a design doc", or "document technical design"
-- User asks to "criar um TDD", "escrever um design doc", or "documentar design técnico"
-- Starting a new feature or integration project
-- Designing a system that requires team alignment
-- Planning a migration or replacement of existing systems
-- User mentions needing documentation for stakeholder approval
-- Before implementing significant technical changes
+- O usuário pedir para "criar um TDD", "escrever um design doc" ou "documentar design técnico"
+- O usuário pedir para "criar um TDD", "escrever um design doc" ou "documentar design técnico"
+- Iniciar feature nova ou projeto de integração
+- Desenhar sistema que exige alinhamento de time
+- Planejar migração ou substituição de sistemas
+- O usuário mencionar documentação para aprovação de stakeholders
+- Antes de implementar mudanças técnicas significativas
 
-## Language Adaptation
+## Adaptação de idioma
 
-**CRITICAL**: Always generate the TDD in the **same language as the user's request**. Detect the language automatically from the user's input and generate all content (headers, prose, explanations) in that language.
+**CRÍTICO**: Gere o TDD sempre no **mesmo idioma do pedido do usuário**. Detecte o idioma automaticamente a partir da entrada e gere todo conteúdo (cabeçalhos, prosa, explicações) nesse idioma.
 
-**Translation Guidelines**:
+**Orientações de tradução**:
 
-- Translate all section headers, prose, and explanations to match user's language
-- Keep technical terms in English when appropriate (e.g., "API", "webhook", "JSON", "rollback", "feature flag")
-- Keep code examples and schemas language-agnostic (JSON, diagrams, code)
-- Company/product names remain in original language
-- Use natural, professional language for the target language
-- Maintain consistency in terminology throughout the document
+- Traduza cabeçalhos de seção, prosa e explicações ao idioma do usuário
+- Mantenha termos técnicos em inglês quando apropriado (ex.: API, webhook, JSON, rollback, feature flag)
+- Mantenha exemplos de código e esquemas agnósticos de linguagem (JSON, diagramas, código)
+- Nomes de empresa/produto no idioma original
+- Linguagem natural e profissional no idioma alvo
+- Consistência terminológica ao longo do documento
 
-**Common Section Header Translations**:
+**Traduções comuns de cabeçalhos de seção**:
 
 | English                    | Portuguese                      | Spanish                      |
 | -------------------------- | ------------------------------- | ---------------------------- |
@@ -47,47 +47,47 @@ Use this skill when:
 | Monitoring & Observability | Monitoramento e Observabilidade | Monitoreo y Observabilidad   |
 | Rollback Plan              | Plano de Rollback               | Plan de Reversión            |
 
-## Industry Standards Reference
+## Referência de padrões da indústria
 
-This skill follows established patterns from:
+Esta skill segue padrões estabelecidos de:
 
-- **Google Design Docs**: Context, Goals, Non-Goals, Design, Alternatives, Security, Testing
-- **Amazon PR-FAQ**: Working Backwards - start with customer problem
-- **RFC Pattern**: Summary, Motivation, Explanation, Alternatives, Drawbacks
-- **ADR (Architecture Decision Records)**: Context, Decision, Consequences
-- **SRE Book**: Monitoring, Rollback, SLOs, Observability
-- **PCI DSS**: Security requirements for payment systems
-- **OWASP**: Security best practices
+- **Google Design Docs**: Contexto, objetivos, não-objetivos, design, alternativas, segurança, testes
+- **Amazon PR-FAQ**: Working backwards — partir do problema do cliente
+- **Padrão RFC**: Resumo, motivação, explicação, alternativas, drawbacks
+- **ADR (Architecture Decision Records)**: Contexto, decisão, consequências
+- **SRE Book**: Monitoramento, rollback, SLOs, observabilidade
+- **PCI DSS**: Requisitos de segurança em sistemas de pagamento
+- **OWASP**: Boas práticas de segurança
 
-## High-Level vs Implementation Details
+## Alto nível vs detalhes de implementação
 
-**CRITICAL PRINCIPLE**: TDDs document **architectural decisions and contracts**, NOT implementation code.
+**PRINCÍPIO CRÍTICO**: TDDs documentam **decisões arquiteturais e contratos**, NÃO código de implementação.
 
-### ✅ What to Include (High-Level)
+### ✅ O que incluir (alto nível)
 
-| Category          | Include                       | Example                                                         |
-| ----------------- | ----------------------------- | --------------------------------------------------------------- |
-| **API Contracts** | Request/Response schemas      | `POST /subscriptions` with JSON body structure                  |
-| **Data Schemas**  | Table structures, field types | `BillingCustomer` table with fields: id, email, stripeId        |
-| **Architecture**  | Components, data flow         | "Frontend → API → Service → Stripe → Database"                  |
-| **Decisions**     | What technology, why chosen   | "Use Stripe because: global support, PCI compliance, best docs" |
-| **Diagrams**      | Sequence, architecture, flow  | Mermaid/PlantUML diagrams showing interactions                  |
-| **Structures**    | Log format, event schemas     | JSON structure for structured logging                           |
-| **Strategies**    | Approach, not commands        | "Rollback via feature flag" (not the curl command)              |
+| Category          | Include                       | Example                                                    |
+| ----------------- | ----------------------------- | ---------------------------------------------------------- |
+| **API Contracts** | Request/Response schemas      | `POST /subscriptions` com corpo JSON estruturado           |
+| **Data Schemas**  | Table structures, field types | Tabela `BillingCustomer` com campos: id, email, stripeId   |
+| **Architecture**  | Components, data flow         | "Frontend → API → Service → Stripe → Database"             |
+| **Decisions**     | What technology, why chosen   | "Usar Stripe por: alcance global, PCI, documentação forte" |
+| **Diagrams**      | Sequence, architecture, flow  | Diagramas Mermaid/PlantUML das interações                  |
+| **Structures**    | Log format, event schemas     | Estrutura JSON para logs estruturados                      |
+| **Strategies**    | Approach, not commands        | "Rollback via feature flag" (não o comando curl)           |
 
-### ❌ What to Avoid (Implementation Code)
+### ❌ O que evitar (código de implementação)
 
-| Category                 | Avoid                                    | Why                                               |
-| ------------------------ | ---------------------------------------- | ------------------------------------------------- |
-| **CLI Commands**         | `nx db:generate`, `kubectl rollout undo` | Too specific, may change with tooling             |
-| **Code Snippets**        | TypeScript/JavaScript implementation     | Belongs in code, not docs                         |
-| **Framework Specifics**  | `@Injectable()`, `extends Repository`    | Framework may change, decision is what matters    |
-| **File Paths**           | `scripts/backfill-feature.ts`            | Implementation detail, not architectural decision |
-| **Tool-Specific Syntax** | NestJS decorators, TypeORM entities      | Document pattern, not implementation              |
+| Category                 | Avoid                                    | Why                                                |
+| ------------------------ | ---------------------------------------- | -------------------------------------------------- |
+| **CLI Commands**         | `nx db:generate`, `kubectl rollout undo` | Muito específico, muda com a ferramenta            |
+| **Code Snippets**        | TypeScript/JavaScript implementation     | Pertence ao código, não ao doc                     |
+| **Framework Specifics**  | `@Injectable()`, `extends Repository`    | Framework pode mudar; importa a decisão            |
+| **File Paths**           | `scripts/backfill-feature.ts`            | Detalhe de implementação, não decisão arquitetural |
+| **Tool-Specific Syntax** | NestJS decorators, TypeORM entities      | Documente o padrão, não a implementação            |
 
-### Examples: High-Level vs Implementation
+### Exemplos: alto nível vs implementação
 
-#### ❌ BAD (Too Implementation-Specific)
+#### ❌ RUIM (excessivamente específico de implementação)
 
 ````markdown
 **Rollback Steps**:
@@ -103,20 +103,20 @@ nx db:rollback billing
 
 ````
 
-#### ✅ GOOD (High-Level Decision)
+#### ✅ BOM (decisão de alto nível)
 
 ```markdown
-**Rollback Steps**:
-1. Disable feature flag via feature flag service dashboard
-2. Revert database schema using down migration
-3. Verify system returns to previous state
-4. Monitor error rates to confirm rollback success
+**Passos de rollback**:
+1. Desabilitar feature flag pelo painel do serviço de flags
+2. Reverter schema do banco com down migration
+3. Verificar retorno ao estado anterior
+4. Monitorar taxa de erro para confirmar rollback
 ````
 
-#### ❌ BAD (Implementation Code)
+#### ❌ RUIM (código de implementação)
 
 ````markdown
-**Service Implementation**:
+**Implementação do serviço**:
 
 ```typescript
 @Injectable()
@@ -133,164 +133,164 @@ export class CustomerService {
 
 ````
 
-#### ✅ GOOD (High-Level Structure)
+#### ✅ BOM (estrutura em alto nível)
 
 ```markdown
-**Service Layer**:
-- `CustomerService`: Manages customer lifecycle
-  - `create()`: Creates customer, validates email uniqueness
-  - `getById()`: Retrieves customer by ID
-  - `updatePaymentMethod()`: Updates default payment method
-- All write operations use transactions to ensure data consistency
-- Services call external Stripe API and cache results locally
+**Camada de serviços**:
+- `CustomerService`: Ciclo de vida do cliente
+  - `create()`: Cria cliente, valida unicidade de e-mail
+  - `getById()`: Busca cliente por ID
+  - `updatePaymentMethod()`: Atualiza método de pagamento padrão
+- Escritas com transações para consistência
+- Chamadas à API Stripe externa e cache local dos resultados
 ````
 
-### Guideline: Ask "Will This Change?"
+### Diretriz: pergunte “isso vai mudar?”
 
-Before adding detail to TDD, ask:
+Antes de detalhar no TDD:
 
-- **"If we change frameworks, does this detail still apply?"**
-  - YES → Include (it's an architectural decision)
-  - NO → Exclude (it's implementation detail)
+- **“Se mudarmos de framework, esse detalhe ainda faz sentido?”**
+  - SIM → Inclua (decisão arquitetural)
+  - NÃO → Exclua (detalhe de implementação)
 
-- **"Can someone implement this differently and still meet the requirement?"**
-  - YES → Focus on the requirement, not the implementation
-  - NO → You might be too specific
+- **“Outra implementação poderia satisfazer o requisito?”**
+  - SIM → Foque no requisito, não na implementação
+  - NÃO → Você pode estar excessivamente específico
 
-**Goal**: TDD should survive implementation changes. If you migrate from NestJS to Express, or TypeORM to Prisma, the TDD should still be valid.
+**Meta**: O TDD sobrevive a mudanças de implementação. Se migrar NestJS→Express ou TypeORM→Prisma, o TDD deve continuar válido.
 
-## Document Structure
+## Estrutura do documento
 
-### Mandatory Sections (Must Have)
+### Seções obrigatórias
 
-These sections are **required**. If the user doesn't provide information, you **must ask** using AskQuestion tool:
+Estas seções são **obrigatórias**. Se o usuário não fornecer informação, **pergunte** com a ferramenta AskQuestion:
 
-1. **Header & Metadata**
-2. **Context**
-3. **Problem Statement & Motivation**
-4. **Scope** (In Scope / Out of Scope)
-5. **Technical Solution**
-6. **Risks**
-7. **Implementation Plan**
+1. **Cabeçalho e metadata**
+2. **Contexto**
+3. **Problema e motivação**
+4. **Escopo** (dentro / fora)
+5. **Solução técnica**
+6. **Riscos**
+7. **Plano de implementação**
 
-### Critical Sections (Ask if Missing)
+### Seções críticas (pergunte se faltarem)
 
-These are **highly recommended** especially for:
+**Altamente recomendadas**, em especial para:
 
-- Payment integrations (Security is MANDATORY)
-- Production systems (Monitoring, Rollback are MANDATORY)
-- External integrations (Dependencies, Security)
+- Integrações de pagamento (Segurança **obrigatória**)
+- Sistemas em produção (Monitoramento e Rollback **obrigatórios**)
+- Integrações externas (Dependências, Segurança)
 
-8. **Security Considerations** (MANDATORY for payments/auth/PII)
-9. **Testing Strategy**
-10. **Monitoring & Observability**
-11. **Rollback Plan**
+8. **Considerações de segurança** (obrigatório para pagamento/auth/PII)
+9. **Estratégia de testes**
+10. **Monitoramento e observabilidade**
+11. **Plano de rollback**
 
-### Suggested Sections (Offer to User)
+### Seções sugeridas (ofereça ao usuário)
 
-Ask user: "Would you like to add these sections now or later?"
+Pergunte: "Deseja adicionar estas seções agora ou depois?"
 
-12. **Success Metrics**
-13. **Glossary & Domain Terms**
-14. **Alternatives Considered**
-15. **Dependencies**
-16. **Performance Requirements**
-17. **Migration Plan** (if applicable)
-18. **Open Questions**
-19. **Roadmap / Timeline**
-20. **Approval & Sign-off**
+12. **Métricas de sucesso**
+13. **Glossário e termos de domínio**
+14. **Alternativas consideradas**
+15. **Dependências**
+16. **Requisitos de performance**
+17. **Plano de migração** (se aplicável)
+18. **Questões em aberto**
+19. **Roadmap / linha do tempo**
+20. **Aprovação e sign-off**
 
-## Project Size Adaptation
+## Adaptação ao tamanho do projeto
 
-Use this heuristic to determine project complexity:
+Heurística para complexidade:
 
-### Small Project (< 1 week)
+### Projeto pequeno (‹ 1 semana)
 
-**Use sections**: 1, 2, 3, 4, 5, 6, 7, 9
+**Seções**: 1, 2, 3, 4, 5, 6, 7, 9
 
-**Skip**: Alternatives, Migration Plan, Approval
+**Pule**: Alternativas, plano de migração, aprovação
 
-### Medium Project (1-4 weeks)
+### Projeto médio (1–4 semanas)
 
-**Use sections**: 1-11, 15, 18
+**Seções**: 1–11, 15, 18
 
-**Offer**: Success Metrics, Glossary, Alternatives, Performance
+**Ofereça**: Métricas de sucesso, glossário, alternativas, performance
 
-### Large Project (> 1 month)
+### Projeto grande (› 1 mês)
 
-**Use all sections** (1-20)
+**Todas** (1–20)
 
-**Critical**: All mandatory + critical sections must be detailed
+**Crítico**: todas as obrigatórias + críticas bem detalhadas
 
-## Interactive Workflow
+## Fluxo interativo
 
-### Step 1: Initial Gathering
+### Etapa 1: Coleta inicial
 
-Use **AskQuestion** tool to collect basic information:
+Use **AskQuestion** para coletar dados básicos:
 
 ```json
 {
-  "title": "TDD Project Information",
+  "title": "Informações do projeto para o TDD",
   "questions": [
     {
       "id": "project_name",
-      "prompt": "What is the name of the feature/integration/project?",
-      "options": [] // Free text
+      "prompt": "Qual é o nome da feature/integração/projeto?",
+      "options": []
     },
     {
       "id": "project_size",
-      "prompt": "What is the expected project size?",
+      "prompt": "Qual o tamanho esperado do projeto?",
       "options": [
-        { "id": "small", "label": "Small (< 1 week)" },
-        { "id": "medium", "label": "Medium (1-4 weeks)" },
-        { "id": "large", "label": "Large (> 1 month)" }
+        { "id": "small", "label": "Pequeno (‹ 1 semana)" },
+        { "id": "medium", "label": "Médio (1–4 semanas)" },
+        { "id": "large", "label": "Grande (› 1 mês)" }
       ]
     },
     {
       "id": "project_type",
-      "prompt": "What type of project is this?",
+      "prompt": "Que tipo de projeto é este?",
       "allow_multiple": true,
       "options": [
-        { "id": "integration", "label": "External integration (API, service)" },
-        { "id": "feature", "label": "New feature" },
-        { "id": "refactor", "label": "Refactoring/migration" },
-        { "id": "infrastructure", "label": "Infrastructure/platform" },
-        { "id": "payment", "label": "Payment/billing system" },
-        { "id": "auth", "label": "Authentication/authorization" },
-        { "id": "data", "label": "Data migration/processing" }
+        { "id": "integration", "label": "Integração externa (API, serviço)" },
+        { "id": "feature", "label": "Nova feature" },
+        { "id": "refactor", "label": "Refatoração/migração" },
+        { "id": "infrastructure", "label": "Infraestrutura/plataforma" },
+        { "id": "payment", "label": "Sistema de pagamento/billing" },
+        { "id": "auth", "label": "Autenticação/autorização" },
+        { "id": "data", "label": "Migração/processamento de dados" }
       ]
     },
     {
       "id": "has_context",
-      "prompt": "Do you have a clear problem statement and context?",
+      "prompt": "Você tem definição clara do problema e contexto?",
       "options": [
-        { "id": "yes", "label": "Yes, I can provide it now" },
-        { "id": "partial", "label": "Partially, need help clarifying" },
-        { "id": "no", "label": "No, need help defining it" }
+        { "id": "yes", "label": "Sim, posso fornecer agora" },
+        { "id": "partial", "label": "Parcialmente — preciso de ajuda para clarificar" },
+        { "id": "no", "label": "Não — preciso de ajuda para definir" }
       ]
     }
   ]
 }
 ```
 
-### Step 2: Validate Mandatory Information
+### Etapa 2: Validar informações obrigatórias
 
-Based on answers, check if user can provide:
+Com base nas respostas, verifique se o usuário pode fornecer:
 
-**MANDATORY fields to ask if missing**:
+**Campos obrigatórios a perguntar se faltarem**:
 
-- Tech Lead / Owner
-- Team members
-- Problem description (what/why/impact)
-- What is in scope
-- What is out of scope
-- High-level solution approach
-- At least 3 risks
-- Implementation tasks breakdown
+- Tech lead / responsável
+- Membros do time
+- Descrição do problema (o quê/por quê/impacto)
+- O que está no escopo
+- O que está fora do escopo
+- Abordagem técnica de alto nível
+- Pelo menos 3 riscos
+- Decomposição de tarefas de implementação
 
-**Ask using AskQuestion or natural conversation IN THE USER'S LANGUAGE**:
+**Pergunte com AskQuestion ou conversa natural NO IDIOMA DO USUÁRIO**:
 
-**English Example**:
+**Exemplo em inglês**:
 
 ```
 I need the following information to create the TDD:
@@ -312,7 +312,7 @@ I need the following information to create the TDD:
 Can you provide this information?
 ```
 
-**Portuguese Example**:
+**Exemplo em português**:
 
 ```
 Preciso das seguintes informações para criar o TDD:
@@ -334,19 +334,19 @@ Preciso das seguintes informações para criar o TDD:
 Você pode fornecer essas informações?
 ```
 
-### Step 3: Check for Critical Sections
+### Etapa 3: Verificar seções críticas
 
-Based on `project_type`, determine if critical sections are mandatory:
+Segundo `project_type`, definir se seções críticas são obrigatórias:
 
-| Project Type      | Critical Sections Required                 |
-| ----------------- | ------------------------------------------ |
-| `payment`, `auth` | **Security Considerations** (MANDATORY)    |
-| All production    | **Monitoring & Observability** (MANDATORY) |
-| All production    | **Rollback Plan** (MANDATORY)              |
-| `integration`     | **Dependencies**, **Security**             |
-| All               | **Testing Strategy** (highly recommended)  |
+| Tipo de projeto   | Seções críticas necessárias                    |
+| ----------------- | ---------------------------------------------- |
+| `payment`, `auth` | **Considerações de segurança** (obrigatório)   |
+| Tudo em produção  | **Monitoramento e observabilidade** (obrig.)   |
+| Tudo em produção  | **Plano de rollback** (obrigatório)            |
+| `integration`     | **Dependências**, **Segurança**                |
+| Todos             | **Estratégia de testes** (altamente recomend.) |
 
-**If critical sections are missing, ASK IN THE USER'S LANGUAGE**:
+**Se faltarem seções críticas, PERGUNTE NO IDIOMA DO USUÁRIO**:
 
 **English**:
 
@@ -373,14 +373,14 @@ Este é um sistema de [pagamento/autenticação/produção]. Estas seções são
 ❗ **Plano de Rollback** - Obrigatório para reverter se algo falhar
 
 Você pode fornecer:
-1. Requisitos de segurança (autenticação, encriptação, tratamento de PII)?
+1. Requisitos de segurança (autenticação, criptografia, tratamento de PII)?
 2. Quais métricas você vai monitorar?
 3. Como você fará rollback se algo der errado?
 ```
 
-### Step 4: Offer Suggested Sections
+### Etapa 4: Oferecer seções sugeridas
 
-After mandatory sections are covered, **offer optional sections IN THE USER'S LANGUAGE**:
+Com as obrigatórias cobertas, **ofereça opções NO IDIOMA DO USUÁRIO**:
 
 **English**:
 
@@ -404,7 +404,7 @@ Também posso adicionar estas seções para tornar o TDD mais completo:
 
 📊 **Métricas de Sucesso** - Como você vai medir o sucesso?
 📚 **Glossário** - Definir termos específicos do domínio
-⚖️ **Alternativas Consideradas** - Por que esta abordagem ao invés de outras?
+⚖️ **Alternativas Consideradas** - Por que esta abordagem em vez de outras?
 🔗 **Dependências** - Serviços/times externos necessários
 ⚡ **Requisitos de Performance** - Latência, throughput, disponibilidade
 📋 **Questões em Aberto** - Rastrear decisões pendentes
@@ -412,13 +412,13 @@ Também posso adicionar estas seções para tornar o TDD mais completo:
 Gostaria que eu adicionasse alguma dessas agora? (Você pode adicionar depois)
 ```
 
-### Step 5: Generate Document
+### Etapa 5: Gerar o documento
 
-Generate the TDD in Markdown format following the templates below.
+Gere o TDD em Markdown seguindo os templates abaixo.
 
-### Step 6: Offer Confluence Integration
+### Etapa 6: Oferecer integração Confluence
 
-If user has Confluence Assistant skill available, **ask in their language**:
+Se a skill Confluence Assistant estiver disponível, **pergunte no idioma do usuário**:
 
 **English**:
 
@@ -436,9 +436,9 @@ Gostaria que eu publicasse este TDD no Confluence?
 - Ou atualizar uma página existente
 ```
 
-## Section Templates
+## Templates de seção
 
-### 1. Header & Metadata (MANDATORY)
+### 1. Cabeçalho e metadata (obrigatório)
 
 ```markdown
 # TDD - [Project/Feature Name]
@@ -455,11 +455,11 @@ Gostaria que eu publicasse este TDD no Confluence?
 | Last Updated    | YYYY-MM-DD                   |
 ```
 
-**If user doesn't provide**: Ask for Tech Lead, Team members, and Epic link.
+**Se o usuário não fornecer**: Peça Tech lead, membros do time e link do epic.
 
 ---
 
-### 2. Context (MANDATORY)
+### 2. Contexto (obrigatório)
 
 ```markdown
 ## Context
@@ -476,11 +476,11 @@ What business domain is this part of? (e.g., billing, authentication, content de
 Who cares about this project? (users, business, compliance, etc.)
 ```
 
-**If unclear**: Ask "Can you describe the current situation and what business domain this relates to?"
+**Se não estiver claro**: Pergunte se o usuário pode descrever a situação atual e em qual domínio de negócio isso se insere.
 
 ---
 
-### 3. Problem Statement & Motivation (MANDATORY)
+### 3. Problema e motivação (obrigatório)
 
 ```markdown
 ## Problem Statement & Motivation
@@ -505,11 +505,11 @@ Who cares about this project? (users, business, compliance, etc.)
 - **Users**: [poor experience, churn risk]
 ```
 
-**If user says "to integrate with X"**: Ask "What specific problems will this integration solve? Why is it important now? What happens if we don't do it?"
+**Se o usuário disser “integrar com X”**: Pergunte “Que problemas específicos esta integração resolve? Por que é importante agora? O que acontece se não fizermos?”
 
 ---
 
-### 4. Scope (MANDATORY)
+### 4. Escopo (obrigatório)
 
 ```markdown
 ## Scope
@@ -541,11 +541,11 @@ What might come later:
 - Feature B (after V1 validation)
 ```
 
-**If user doesn't define**: Ask "What are the must-haves for V1? What can wait for later versions?"
+**Se o usuário não definir**: Pergunte quais são os must-have do V1 e o que pode esperar versões futuras.
 
 ---
 
-### 5. Technical Solution (MANDATORY)
+### 5. Solução técnica (obrigatória)
 
 ````markdown
 ## Technical Solution
@@ -639,11 +639,11 @@ graph LR
 
 ````
 
-**If user provides vague description**: Ask "What are the main components? How does data flow through the system? What APIs will be created/modified?"
+**Se a descrição for vaga**: Pergunte quais são os componentes principais, como os dados fluem e quais APIs serão criadas ou alteradas.
 
 ---
 
-### 6. Risks (MANDATORY)
+### 6. Riscos (obrigatório)
 
 ```markdown
 ## Risks
@@ -661,11 +661,11 @@ graph LR
 - **Probability**: High (>50%) / Medium (20-50%) / Low (<20%)
 ````
 
-**If user provides < 3 risks**: Ask "What could go wrong? Consider: external dependencies, data integrity, performance, security, scope changes."
+**Se houver menos de 3 riscos**: Pergunte o que pode dar errado; considere dependências externas, integridade de dados, performance, segurança e mudança de escopo.
 
 ---
 
-### 7. Implementation Plan (MANDATORY)
+### 7. Plano de implementação (obrigatório)
 
 ```markdown
 ## Implementation Plan
@@ -692,11 +692,11 @@ graph LR
 - Security review required before Phase 5
 ```
 
-**If user provides vague plan**: Ask "Can you break this down into phases with specific tasks? Who will work on each part? What's the estimated timeline?"
+**Se o plano for vago**: Pergunte por fases com tarefas específicas, donos por parte e linha do tempo estimada.
 
 ---
 
-### 8. Security Considerations (CRITICAL for payments/auth/PII)
+### 8. Considerações de segurança (crítico para pagamento/auth/PII)
 
 ```markdown
 ## Security Considerations
@@ -757,11 +757,11 @@ graph LR
 - Log invalid signature attempts for security monitoring
 ```
 
-**If missing and project involves payments/auth**: Ask "This is a [payment/auth] system. I need security details: How will you handle authentication? What encryption will be used? What PII is collected? Any compliance requirements (GDPR, PCI DSS)?"
+**Se faltar e envolver pagamento/auth**: Pergunte "This is a [payment/auth] system. I need security details: How will you handle authentication? What encryption will be used? What PII is collected? Any compliance requirements (GDPR, PCI DSS)?"
 
 ---
 
-### 9. Testing Strategy (CRITICAL)
+### 9. Estratégia de testes (crítico)
 
 ```markdown
 ## Testing Strategy
@@ -812,11 +812,11 @@ graph LR
 - Use separate test database (never use production)
 ```
 
-**If missing**: Ask "How will you test this? What test types are needed (unit, integration, e2e)? What are critical test scenarios?"
+**Se faltar**: Pergunte "How will you test this? What test types are needed (unit, integration, e2e)? What are critical test scenarios?"
 
 ---
 
-### 10. Monitoring & Observability (CRITICAL for production)
+### 10. Monitoramento e observabilidade (crítico em produção)
 
 ````markdown
 ## Monitoring & Observability
@@ -893,11 +893,11 @@ graph LR
 
 ````
 
-**If missing for production system**: Ask "How will you monitor this in production? What metrics matter? What alerts do you need?"
+**Se faltar em sistema de produção**: Pergunte "How will you monitor this in production? What metrics matter? What alerts do you need?"
 
 ---
 
-### 11. Rollback Plan (CRITICAL for production)
+### 11. Plano de rollback (crítico em produção)
 
 ```markdown
 ## Rollback Plan
@@ -957,11 +957,11 @@ graph LR
 
 ````
 
-**If missing for production**: Ask "What happens if the deploy goes wrong? How will you rollback? What are the triggers for rollback?"
+**Se faltar em produção**: Pergunte "What happens if the deploy goes wrong? How will you rollback? What are the triggers for rollback?"
 
 ---
 
-### 12. Success Metrics (SUGGESTED)
+### 12. Métricas de sucesso (sugerido)
 
 ```markdown
 ## Success Metrics
@@ -989,7 +989,7 @@ graph LR
 
 ---
 
-### 13. Glossary & Domain Terms (SUGGESTED)
+### 13. Glossário e termos de domínio (sugerido)
 
 ```markdown
 ## Glossary
@@ -1014,7 +1014,7 @@ graph LR
 
 ---
 
-### 14. Alternatives Considered (SUGGESTED)
+### 14. Alternativas consideradas (sugerido)
 
 ```markdown
 ## Alternatives Considered
@@ -1042,7 +1042,7 @@ graph LR
 
 ---
 
-### 15. Dependencies (SUGGESTED)
+### 15. Dependências (sugerido)
 
 ```markdown
 ## Dependencies
@@ -1070,7 +1070,7 @@ graph LR
 
 ---
 
-### 16. Performance Requirements (SUGGESTED)
+### 16. Requisitos de performance (sugerido)
 
 ```markdown
 ## Performance Requirements
@@ -1099,7 +1099,7 @@ graph LR
 
 ---
 
-### 17. Migration Plan (SUGGESTED - if applicable)
+### 17. Plano de migração (sugerido — se aplicável)
 
 ```markdown
 ## Migration Plan
@@ -1148,7 +1148,7 @@ graph LR
 
 ---
 
-### 18. Open Questions (SUGGESTED)
+### 18. Questões em aberto (sugerido)
 
 ```markdown
 ## Open Questions
@@ -1170,7 +1170,7 @@ graph LR
 
 ---
 
-### 19. Roadmap / Timeline (SUGGESTED)
+### 19. Roadmap / linha do tempo (sugerido)
 
 ```markdown
 ## Roadmap / Timeline
@@ -1199,7 +1199,7 @@ Phase 0 → Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5 → Phase 6
 
 ---
 
-### 20. Approval & Sign-off (SUGGESTED)
+### 20. Aprovação e sign-off (sugerido)
 
 ```markdown
 ## Approval & Sign-off
@@ -1232,94 +1232,94 @@ Phase 0 → Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5 → Phase 6
 
 ---
 
-## Validation Rules
+## Regras de validação
 
-### Mandatory Section Checklist
+### Checklist de seções obrigatórias
 
-Before finalizing TDD, ensure:
+Antes de finalizar o TDD, garanta:
 
-- [ ] **Header**: Tech Lead, Team, Epic link present
-- [ ] **Context**: 2+ paragraphs describing background and domain
-- [ ] **Problem**: At least 2 specific problems identified with impact
-- [ ] **Scope**: Clear in-scope and out-of-scope items (min 3 each)
-- [ ] **Technical Solution**: Architecture diagram or description
-- [ ] **Technical Solution**: At least 1 API endpoint defined
+- [ ] **Cabeçalho**: Tech lead, time e link do epic informados
+- [ ] **Contexto**: 2+ parágrafos com fundo e domínio
+- [ ] **Problema**: Pelo menos 2 problemas específicos com impacto
+- [ ] **Escopo**: Dentro/fora claros (mín. 3 itens cada)
+- [ ] **Solução técnica**: Diagrama ou descrição de arquitetura
+- [ ] **Solução técnica**: Pelo menos 1 endpoint de API definido
 - [ ] **Risks**: At least 3 risks with impact/probability/mitigation
-- [ ] **Implementation Plan**: Broken into phases with estimates
+- [ ] **Plano de implementação**: Fases com estimativas
 
-### Critical Section Checklist (by project type)
+### Checklist de seções críticas (por tipo de projeto)
 
-**If Payment/Auth project**:
+**Se projeto de pagamento/auth**:
 
-- [ ] **Security**: Authentication method defined
-- [ ] **Security**: Encryption (at rest, in transit) specified
-- [ ] **Security**: PII handling approach documented
-- [ ] **Security**: Compliance requirements identified
+- [ ] **Segurança**: Método de autenticação definido
+- [ ] **Segurança**: Criptografia em repouso e em trânsito especificada
+- [ ] **Segurança**: Tratamento de PII documentado
+- [ ] **Segurança**: Requisitos de compliance identificados
 
-**If Production system**:
+**Se sistema em produção**:
 
-- [ ] **Monitoring**: At least 3 metrics defined with thresholds
-- [ ] **Monitoring**: Alerts configured
-- [ ] **Rollback**: Rollback triggers defined
-- [ ] **Rollback**: Rollback steps documented
+- [ ] **Monitoramento**: Pelo menos 3 métricas com limiares
+- [ ] **Monitoramento**: Alertas configurados
+- [ ] **Rollback**: Gatilhos de rollback definidos
+- [ ] **Rollback**: Passos documentados
 
-**All projects**:
+**Todos os projetos**:
 
-- [ ] **Testing**: At least 2 test types defined (unit, integration, e2e)
-- [ ] **Testing**: Critical test scenarios listed
+- [ ] **Testes**: Pelo menos 2 tipos definidos (unit, integração, e2e)
+- [ ] **Testes**: Cenários críticos listados
 
-## Output Format
+## Formato de saída
 
-### When Creating TDD
+### Ao criar o TDD
 
-1. **Generate Markdown document**
-2. **Validate against checklists above**
-3. **Highlight any missing critical sections**
-4. **Provide summary to user**:
-
-```
-✅ TDD Created: "[Project Name]"
-
-**Sections Included**:
-✅ Mandatory (7/7): All present
-✅ Critical (3/4): Security, Testing, Monitoring
-⚠️ Missing: Rollback Plan (recommended for production)
-
-**Suggested Next Steps**:
-- Add Rollback Plan section (critical for production)
-- Review Security section with InfoSec team
-- Create Epic in Jira and link in metadata
-- Schedule TDD review meeting with stakeholders
-
-Would you like me to:
-1. Add the missing Rollback Plan section?
-2. Publish this TDD to Confluence?
-3. Create a Jira Epic for this project?
-```
-
-### Confluence Integration
-
-If user wants to publish to Confluence:
+1. **Gere o documento Markdown**
+2. **Valide contra os checklists acima**
+3. **Destaque seções críticas faltantes**
+4. **Forneça resumo ao usuário**:
 
 ```
-I'll publish this TDD to Confluence.
+✅ TDD criado: "[Nome do projeto]"
 
-Which space should I use?
-- Personal space (~557058...)
-- Team space (provide space key)
+**Seções incluídas**:
+✅ Obrigatórias (7/7): Todas presentes
+✅ Críticas (3/4): Segurança, Testes, Monitoramento
+⚠️ Faltando: Plano de rollback (recomendado para produção)
 
-Should I:
-- Create a new page
-- Update existing page (provide page ID or URL)
+**Próximos passos sugeridos**:
+- Adicionar seção de rollback (crítica em produção)
+- Rever seção de segurança com o time InfoSec
+- Criar epic no Jira e link na metadata
+- Agendar revisão do TDD com stakeholders
+
+Deseja que eu:
+1. Adicione a seção de rollback faltante?
+2. Publique este TDD no Confluence?
+3. Crie um Epic no Jira para o projeto?
 ```
 
-Then use Confluence Assistant skill to publish.
+### Integração com Confluence
 
-## Common Anti-Patterns to Avoid
+Se o usuário quiser publicar no Confluence:
 
-### ❌ Vague Problem Statements
+```
+Vou publicar este TDD no Confluence.
 
-**BAD**:
+Qual espaço usar?
+- Espaço pessoal (~557058...)
+- Espaço do time (informe o space key)
+
+Devo:
+- Criar uma página nova
+- Atualizar página existente (ID ou URL)
+```
+
+Use então a skill Confluence Assistant para publicar.
+
+## Antipadrões comuns
+
+### ❌ Enunciados de problema vagos
+
+**RUIM**:
 
 ```
 
@@ -1327,7 +1327,7 @@ We need to integrate with Stripe.
 
 ```
 
-**GOOD**:
+**BOM**:
 
 ```
 
@@ -1339,9 +1339,9 @@ We need to integrate with Stripe.
 
 ```
 
-### ❌ Undefined Scope
+### ❌ Escopo indefinido
 
-**BAD**:
+**RUIM**:
 
 ```
 
@@ -1349,7 +1349,7 @@ Build payment integration with all features.
 
 ```
 
-**GOOD**:
+**BOM**:
 
 ```
 
@@ -1369,9 +1369,9 @@ Build payment integration with all features.
 
 ```
 
-### ❌ Missing Security for Payment Systems
+### ❌ Sem segurança em sistema de pagamento
 
-**BAD**:
+**RUIM**:
 
 ```
 
@@ -1379,7 +1379,7 @@ No security section for payment integration.
 
 ```
 
-**GOOD**:
+**BOM**:
 
 ```
 
@@ -1399,9 +1399,9 @@ No security section for payment integration.
 
 ```
 
-### ❌ No Rollback Plan
+### ❌ Sem plano de rollback
 
-**BAD**:
+**RUIM**:
 
 ```
 
@@ -1409,7 +1409,7 @@ We'll deploy and hope it works.
 
 ```
 
-**GOOD**:
+**BOM**:
 
 ```
 
@@ -1429,24 +1429,24 @@ We'll deploy and hope it works.
 
 ```
 
-## Important Notes
+## Notas importantes
 
-- **Respect user's language** - Automatically detect and generate TDD in the same language as user's request
-- **Focus on architecture, not implementation** - Document decisions and contracts, not code
-- **High-level examples only** - Show API contracts, data schemas, diagrams (not CLI commands or code snippets)
-- **Always validate mandatory sections** - Don't let user skip them
-- **For payments/auth** - Security section is MANDATORY
-- **For production** - Monitoring and Rollback are MANDATORY
-- **Ask clarifying questions** - Don't guess missing information (ask in user's language)
-- **Be thorough but pragmatic** - Small projects don't need all 20 sections
-- **Update the document** - TDDs should evolve as the project progresses
-- **Use industry standards** - Reference Google, Amazon, RFC patterns
-- **Think about compliance** - GDPR, PCI DSS, HIPAA where applicable
-- **Test for longevity** - If implementation framework changes, TDD should still be valid
+- **Respeite o idioma do usuário** — detecte e gere o TDD no mesmo idioma do pedido
+- **Foco em arquitetura, não implementação** — documente decisões e contratos, não código
+- **Só exemplos de alto nível** — contratos de API, esquemas, diagramas (não comandos CLI nem código)
+- **Sempre valide seções obrigatórias** — não permita pular por completo sem ciência
+- **Pagamentos/auth** — seção de segurança obrigatória
+- **Produção** — monitoramento e rollback obrigatórios
+- **Faça perguntas esclarecedoras** — não invente dados faltantes (no idioma do usuário)
+- **Rigor pragmático** — projetos pequenos não precisam das 20 seções
+- **Atualize o documento** — TDD evolui com o projeto
+- **Use padrões da indústria** — Google, Amazon, RFCs onde couber
+- **Pense em compliance** — GDPR, PCI DSS, HIPAA quando aplicável
+- **Pense durabilidade** — se mudar framework, o TDD segue válido
 
-## Example Prompts that Trigger This Skill
+## Exemplos de prompts que acionam esta skill
 
-### English
+### Inglês
 
 - "Create a TDD for Stripe integration"
 - "I need a technical design document for the new auth system"
@@ -1454,7 +1454,7 @@ We'll deploy and hope it works.
 - "Help me document the payment integration architecture"
 - "Create a tech spec for migrating to microservices"
 
-### Portuguese
+### Português
 
 - "Crie um TDD para integração com Stripe"
 - "Preciso de um documento de design técnico para o novo sistema de autenticação"
@@ -1462,7 +1462,7 @@ We'll deploy and hope it works.
 - "Me ajude a documentar a arquitetura de integração de pagamento"
 - "Crie uma especificação técnica para migração para microserviços"
 
-### Spanish
+### Espanhol
 
 - "Crea un TDD para integración con Stripe"
 - "Necesito un documento de diseño técnico para el nuevo sistema de autenticación"
@@ -1470,15 +1470,11 @@ We'll deploy and hope it works.
 - "Ayúdame a documentar la arquitectura de integración de pagos"
 - "Crea una especificación técnica para migración a microservicios"
 
-## References
+## Referências
 
-### Industry Standards
+### Padrões da indústria
 
 - [Google Engineering Practices](https://google.github.io/eng-practices/)
 - [Google SRE Book](https://sre.google/sre-book/table-of-contents/)
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/)
 - [Architecture Decision Records](https://adr.github.io/)
-
-```
-
-```

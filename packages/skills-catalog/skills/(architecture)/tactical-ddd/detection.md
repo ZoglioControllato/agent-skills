@@ -1,60 +1,61 @@
-# Anemia Detection
+# Detecção de anemia
 
-## Step 1 — Code Signals to Scan For
+## Etapa 1 — Sinais de código a serem verificados
 
-Search for these patterns. Each match is a potential anemia indicator:
+Procure esses padrões. Cada correspondência é um indicador potencial de anemia:
 
-| Signal | Pattern | Weight |
-|--------|---------|--------|
-| Public setter | `public set[A-Z]` | +2 |
-| Setter chain in caller | `entity.setA(); entity.setB()` | +3 |
-| Logic in Application/Service layer that mutates entity | `entity.setX(computedValue)` inside service method | +3 |
-| Class with only getters/setters, no domain methods | All methods match `get.*\|set.*\|is.*\|has.*` | +4 |
-| Primitive obsession instead of Value Objects | `string customerId`, `number amount` on Entity | +1 |
-| Coordinator pattern: service fetches + mutates | `repo.find()` then multiple `entity.setX()` | +2 |
-| Missing guards | Methods with no precondition checks | +1 |
+| Sinal                                                     | Padrão                                                      | Peso |
+| --------------------------------------------------------- | ----------------------------------------------------------- | ---- |
+| Setter público                                            | `conjunto público[AZ]`                                      | +2   |
+| Cadeia setter no chamador                                 | `entidade.setA(); entidade.setB()`                          | +3   |
+| Lógica na camada Aplicação/Serviço que altera entidade    | `entity.setX(computedValue)` dentro do método de serviço    | +3   |
+| Classe com apenas getters/setters, sem métodos de domínio | Todos os métodos correspondem a `get.*\|set.*\|is.*\|has.*` | +4   |
+| Obsessão primitiva em vez de objetos de valor             | `string                                                     |
 
-## Step 2 — Severity Score
+customerId`, `número valor`na Entidade | +1 |
+| Padrão de coordenador: buscas de serviço + alterações |`repo.find()`então vários`entity.setX()` | +2 |
+| Guardas desaparecidos | Métodos sem verificação de pré-condições | +1 |
 
-Sum the weights across all signals in the class:
+## Etapa 2 — Pontuação de gravidade
 
-| Score | Severity | Meaning |
-|-------|----------|---------|
-| 0 | None | Well-modelled |
-| 1–3 | Mild | Minor improvements; priorities elsewhere |
-| 4–6 | Moderate | Refactor; business logic is leaking |
-| 7+ | Severe | Full redesign; domain is just a DTO |
+Some os pesos de todos os sinais da classe:
 
-## Step 3 — Class-Level Checklist
+| Pontuação | Gravidade | Significado                                       |
+| --------- | --------- | ------------------------------------------------- |
+| 0         | Nenhum    | Bem modelado                                      |
+| 1–3       | Suave     | Pequenas melhorias; prioridades em outros lugares |
+| 4–6       | Moderado  | Refatorar; lógica de negócios está vazando        |
+| 7+        | Grave     | Redesenho completo; domínio é apenas um DTO       |
 
-For each class under review:
+## Etapa 3 — Lista de verificação em nível de turma
 
-- [ ] Does it have public setters for business-meaningful fields?
-- [ ] Do callers set multiple fields to perform a single operation?
-- [ ] Is the class used as a parameter bag by services that contain the real logic?
-- [ ] Are there zero methods that express domain intent?
-- [ ] Are IDs and measures stored as primitives instead of Value Objects?
-- [ ] Are there no Domain Events published after state changes?
+Para cada classe em análise:
 
-## Common Anemia Patterns
+- [ ] Possui setters públicos para campos significativos para os negócios?
+- [ ] Os chamadores definem vários campos para realizar uma única operação?
+- [ ] A classe é usada como saco de parâmetros por serviços que contêm a lógica real?
+- [] Não existem métodos que expressem a intenção do domínio?
+- [ ] Os IDs e medidas são armazenados como primitivos em vez de objetos de valor?
+- [ ] Não há Eventos de Domínio publicados após mudanças de estado?
 
-### The Coordinator Service
-```typescript
+## Padrões comuns de anemia
+
+### O Serviço do Coordenador```typescript
+
 // ❌ Logic lives outside the entity
 class OrderService {
-  confirm(orderId: string): void {
-    const order = this.repo.find(orderId);
-    order.setStatus('CONFIRMED');        // setter
-    order.setConfirmedAt(new Date());    // setter
-    order.setConfirmedBy(this.userId);  // setter
-    this.repo.save(order);
-  }
+confirm(orderId: string): void {
+const order = this.repo.find(orderId);
+order.setStatus('CONFIRMED'); // setter
+order.setConfirmedAt(new Date()); // setter
+order.setConfirmedBy(this.userId); // setter
+this.repo.save(order);
 }
-```
-**Signal**: Three setters to express one business operation.
+}
 
-### The Data Transfer Object Disguised as Entity
-```typescript
+````**Sinal**: Três setters para expressar uma operação comercial.
+
+### O objeto de transferência de dados disfarçado de entidade```typescript
 // ❌ Pure data bag
 class Product {
   getName(): string { return this.name; }
@@ -64,15 +65,13 @@ class Product {
   getStock(): number { return this.stock; }
   setStock(v: number) { this.stock = v; }
 }
-```
-**Signal**: Zero domain behaviour, all methods are accessors.
+```**Sinal**: comportamento de domínio zero, todos os métodos são acessadores.
 
-### Primitive Obsession
-```typescript
+### Obsessão Primitiva```typescript
 // ❌ Primitives lose domain meaning and validation
 class Order {
   customerId: string;   // Should be CustomerId VO
   totalAmount: number;  // Should be Money VO
   currency: string;     // Part of Money VO
 }
-```
+````

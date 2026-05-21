@@ -1,45 +1,45 @@
 ---
 name: cursor-subagent-creator
-description: Creates Cursor-specific AI subagents with isolated context for complex multi-step workflows. Use when creating subagents for Cursor editor specifically, following Cursor's patterns and directories (.cursor/agents/). Triggers on "cursor subagent", "cursor agent". Do NOT use for generic subagent creation outside Cursor (use subagent-creator instead).
+description: Cria subagentes de IA específicos do Cursor com contexto isolado para fluxos complexos multi-etapas. Use quando criar subagentes para o editor Cursor seguindo padrões e diretórios do Cursor (.cursor/agents/). Aciona em "cursor subagent", "cursor agent". NÃO use para subagentes genéricos fora do Cursor (use subagent-creator).
 ---
 
 # Cursor Subagent Creator
 
-You are an expert in creating Subagents following Cursor's best practices.
+Você é especialista em criar Subagents seguindo as melhores práticas do Cursor.
 
-## When to Use This Skill
+## Quando usar esta skill
 
-Use this skill when the user asks to:
+Use quando o usuário pedir:
 
-- Create a new subagent/agent
-- Create a specialized assistant
-- Implement a complex workflow with multiple steps
-- Create verifiers, auditors, or domain experts
-- Tasks that require isolated context and multiple steps
+- Criar novo subagent/agent
+- Criar assistente especializado
+- Implementar fluxo complexo com várias etapas
+- Criar verificadores, auditores ou experts de domínio
+- Tarefas que precisem de contexto isolado e vários passos
 
-**DO NOT use for simple, one-off tasks** - for those, use skills.
+**NÃO use para tarefas simples pontuais** — nesses casos use skills.
 
-## What are Subagents?
+## O que são subagentes?
 
-Subagents are specialized assistants that Cursor's Agent can delegate tasks to. Characteristics:
+Subagentes são assistentes especializados aos quais o Agent do Cursor delega tarefas. Características:
 
-- **Isolated context**: Each subagent has its own context window
-- **Parallel execution**: Multiple subagents can run simultaneously
-- **Specialization**: Configured with specific prompts and expertise
-- **Reusable**: Defined once, used in multiple contexts
+- **Contexto isolado**: cada subagente tem própria janela de contexto
+- **Execução paralela**: vários subagentes podem rodar simultaneamente
+- **Especialização**: prompts e expertise configurados
+- **Reutilizáveis**: definidos uma vez, usados em vários contextos
 
-### Foreground vs Background
+### Primeiro plano vs segundo plano
 
 | Mode           | Behavior                                          | Best for                                   |
 | -------------- | ------------------------------------------------- | ------------------------------------------ |
 | **Foreground** | Blocks until complete, returns result immediately | Sequential tasks where you need the output |
 | **Background** | Returns immediately, works independently          | Long-running tasks or parallel workstreams |
 
-## Subagent Structure
+## Estrutura do subagente
 
-A subagent is a markdown file in `.cursor/agents/` (project) or `~/.cursor/agents/` (user).
+Um subagente é um arquivo markdown em `.cursor/agents/` (projeto) ou `~/.cursor/agents/` (usuário).
 
-### File Format
+### Formato do arquivo
 
 ```markdown
 ---
@@ -66,58 +66,58 @@ Report [type of expected result]:
 - [Metrics or specific information]
 ```
 
-## Subagent Creation Process
+## Processo de criação
 
-### 1. Define the Purpose
+### 1. Definir o propósito
 
-- What specific responsibility does the subagent have?
-- Why does it need isolated context?
-- Does it involve multiple complex steps?
-- Does it require deep specialization?
+- Qual responsabilidade específica?
+- Por que precisa de contexto isolado?
+- Envolve várias etapas complexas?
+- Exige especialização profunda?
 
-### 2. Choose the Location
+### 2. Escolher o local
 
-- **Project**: `.cursor/agents/agent-name.md` - project-specific
-- **User**: `~/.cursor/agents/agent-name.md` - all projects
+- **Projeto**: `.cursor/agents/agent-name.md` — específico do projeto
+- **Usuário**: `~/.cursor/agents/agent-name.md` — todos os projetos
 
-**Naming convention:**
+**Convenção de nome:**
 
-- Use kebab-case (words-separated-by-hyphens)
-- Be descriptive of the specialization
-- Examples: `security-auditor`, `test-runner`, `debugger`, `verifier`
+- kebab-case (palavras-separadas-por-hífens)
+- Descritivo da especialização
+- Exemplos: `security-auditor`, `test-runner`, `debugger`, `verifier`
 
-### 3. Configure the Frontmatter
+### 3. Configurar o frontmatter
 
-#### name (optional)
+#### name (opcional)
 
-Unique identifier. If omitted, uses the filename.
+Identificador único. Se omitido, usa o nome do arquivo.
 
 ```yaml
 name: security-auditor
 ```
 
-#### description (optional but recommended)
+#### description (opcional mas recomendado)
 
-CRITICAL for automatic delegation. Explains when the Agent should use this subagent.
+CRÍTICO para delegação automática. Explica quando o Agent deve usar este subagente.
 
-**Good descriptions:**
+**Boas descriptions:**
 
 - "Security specialist. Use when implementing auth, payments, or handling sensitive data."
 - "Debugging specialist for errors and test failures. Use when encountering issues."
 - "Validates completed work. Use after tasks are marked done to confirm implementations are functional."
 
-**Phrases that encourage automatic delegation:**
+**Frases que incentivam delegação automática:**
 
 - "Use proactively when..."
 - "Always use for..."
 - "Automatically delegate when..."
 
-**Avoid:**
+**Evite:**
 
-- Vague descriptions: "Helps with general tasks"
-- No context of when to use
+- Descrições vagas: "Helps with general tasks"
+- Sem contexto de quando usar
 
-#### model (optional)
+#### model (opcional)
 
 ```yaml
 model: inherit  # Uses the same model as parent agent (default)
@@ -125,43 +125,43 @@ model: fast     # Uses fast model
 model: claude-3-5-sonnet-20250219  # Specific model
 ```
 
-**When to use each model:**
+**Quando usar cada model:**
 
-- `inherit`: Default, maintains consistency
-- `fast`: For quick checks, formatting, simple tasks
-- Specific model: When you need specific capabilities
+- `inherit`: padrão, mantém consistência
+- `fast`: checagens rápidas, formatação, tarefas simples
+- Modelo específico: quando precisar de capacidades específicas
 
-#### readonly (optional)
+#### readonly (opcional)
 
 ```yaml
 readonly: true # Restricts write permissions
 ```
 
-Use when the subagent should only read/analyze, not modify.
+Use quando o subagente deve só ler/analisar, não modificar.
 
-#### is_background (optional)
+#### is_background (opcional)
 
 ```yaml
 is_background: true # Executes in background
 ```
 
-Use for:
+Use para:
 
-- Long-running tasks
-- Continuous monitoring
-- When you don't need the result immediately
+- Tarefas longas
+- Monitoramento contínuo
+- Quando não precisar do resultado imediatamente
 
-### 4. Write the Subagent Prompt
+### 4. Escrever o prompt do subagente
 
-The prompt should define:
+O prompt deve definir:
 
-1. **Identity**: "You are an [expert]..."
-2. **When invoked**: Context of use
-3. **Process**: Specific steps to follow
-4. **Expected output**: Format and content of the result
-5. **Behavior**: Approach and philosophy
+1. **Identidade**: "You are an [expert]..."
+2. **When invoked**: contexto de uso
+3. **Process**: passos específicos
+4. **Expected output**: formato e conteúdo do resultado
+5. **Behavior**: abordagem e filosofia
 
-**Recommended structure:**
+**Estrutura recomendada:**
 
 ```markdown
 You are an [expert in X] specialized in [Y].
@@ -183,14 +183,14 @@ Report [type of result]:
 [Philosophy or principles to follow]
 ```
 
-### 5. Be Focused and Specific
+### 5. Foco e especificidade
 
-- **One clear responsibility**: Each subagent has one purpose
-- **Concise prompts**: Don't write 2000 words
-- **Actionable instructions**: Clear and testable steps
-- **Structured output**: Well-defined response format
+- **Uma responsabilidade clara**: um propósito por subagente
+- **Prompts concisos**: não escreva 2000 palavras
+- **Instruções acionáveis**: passos claros e testáveis
+- **Saída estruturada**: formato de resposta bem definido
 
-## Field Configuration
+## Configuração dos campos
 
 | Field           | Required | Default   | Description                                      |
 | --------------- | -------- | --------- | ------------------------------------------------ |
@@ -200,11 +200,11 @@ Report [type of result]:
 | `readonly`      | No       | `false`   | If true, write permissions restricted            |
 | `is_background` | No       | `false`   | If true, executes in background                  |
 
-## Common Subagent Patterns
+## Padrões comuns de subagente
 
-### 1. Verification Agent
+### 1. Agente de verificação
 
-**Purpose**: Independently validates that work declared as complete actually works.
+**Propósito**: valida independentemente que trabalho marcado como feito realmente funciona.
 
 ```markdown
 ---
@@ -231,15 +231,15 @@ Be thorough and skeptical. Report:
 Don't accept statements at face value. Test everything.
 ```
 
-**Use for:**
+**Use para:**
 
-- Validating features work end-to-end
-- Catching partially implemented functionality
-- Ensuring tests actually pass
+- Validar features ponta a ponta
+- Pegar implementação parcial
+- Garantir que testes realmente passam
 
 ### 2. Debugger
 
-**Purpose**: Expert in root cause analysis and error correction.
+**Propósito**: especialista em causa raiz e correção de erros.
 
 ```markdown
 ---
@@ -267,15 +267,15 @@ For each issue, provide:
 Focus on fixing the underlying issue, not symptoms.
 ```
 
-**Use for:**
+**Use para:**
 
-- Complex or obscure errors
-- Test failures that need investigation
-- Performance issues
+- Erros complexos ou obscuros
+- Falhas de teste que exigem investigação
+- Problemas de performance
 
-### 3. Security Auditor
+### 3. Auditor de segurança
 
-**Purpose**: Security expert auditing code.
+**Propósito**: especialista em segurança auditando código.
 
 ```markdown
 ---
@@ -308,16 +308,16 @@ For each finding, include:
 - Fix recommendation
 ```
 
-**Use for:**
+**Use para:**
 
-- Authentication/authorization implementations
-- Code handling payments
-- User inputs
-- External API integrations
+- Implementações de autenticação/autorização
+- Código de pagamentos
+- Entradas de usuário
+- Integrações com APIs externas
 
-### 4. Test Runner
+### 4. Test runner
 
-**Purpose**: Expert in test automation.
+**Propósito**: especialista em automação de testes.
 
 ```markdown
 ---
@@ -346,15 +346,15 @@ Report test results with:
 Never break existing tests without clear justification.
 ```
 
-**Use for:**
+**Use para:**
 
-- Running tests automatically after changes
-- Fixing test failures
-- Maintaining a healthy test suite
+- Rodar testes após mudanças
+- Corrigir falhas
+- Manter suite saudável
 
-### 5. Documentation Writer
+### 5. Escritor de documentação
 
-**Purpose**: Expert in creating clear documentation.
+**Propósito**: documentação clara.
 
 ```markdown
 ---
@@ -385,9 +385,9 @@ Documentation should include:
 Use formatted markdown, clear language, and concrete examples.
 ```
 
-### 6. Orchestrator
+### 6. Orquestrador
 
-**Purpose**: Coordinates multiple subagents in sequence.
+**Propósito**: coordena vários subagentes em sequência.
 
 ```markdown
 ---
@@ -418,25 +418,25 @@ For each handoff, include:
 - Clear success criteria
 ```
 
-## Using Subagents
+## Uso de subagentes
 
-### Automatic Delegation
+### Delegação automática
 
-The Agent delegates automatically based on:
+O Agent delega com base em:
 
-- Task complexity and scope
-- Custom subagent descriptions
-- Current context and available tools
+- Complexidade e escopo da tarefa
+- Descriptions dos subagentes personalizados
+- Contexto atual e ferramentas disponíveis
 
-**Encourage automatic delegation** using phrases in the description:
+**Incentive delegação automática** com frases na description:
 
 - "Use proactively when..."
 - "Always use for..."
 - "Automatically apply when..."
 
-### Explicit Invocation
+### Invocação explícita
 
-`/name` syntax:
+Sintaxe `/nome`:
 
 ```
 > /verifier confirm that the auth flow is complete
@@ -444,7 +444,7 @@ The Agent delegates automatically based on:
 > /security-auditor review the payment module
 ```
 
-Or natural mention:
+Ou menção natural:
 
 ```
 > Use the verifier subagent to confirm the auth flow is complete
@@ -452,61 +452,61 @@ Or natural mention:
 > Run the security-auditor subagent on the payment module
 ```
 
-### Parallel Execution
+### Execução paralela
 
-Launch multiple subagents simultaneously:
+Dispare vários subagentes ao mesmo tempo:
 
 ```
 > Review the API changes and update documentation in parallel
 ```
 
-The Agent sends multiple Task tool calls in a single message.
+O Agent envia várias chamadas Task numa única mensagem.
 
-## Resuming Subagents
+## Retomar subagentes
 
-Subagents can be resumed to continue previous conversations.
+Subagentes podem ser retomados para continuar conversas anteriores.
 
-Each execution returns an agent ID. Pass this ID to resume with preserved context:
+Cada execução devolve um ID de agente. Passe esse ID para retomar com contexto preservado:
 
 ```
 > Resume agent abc123 and analyze remaining test failures
 ```
 
-Background subagents write their state while executing in `~/.cursor/subagents/`.
+Subagentes em background gravam estado em `~/.cursor/subagents/` durante a execução.
 
-## Best Practices
+## Boas práticas
 
-### ✅ DO
+### ✅ FAÇA
 
-- **Write focused subagents**: One clear responsibility
-- **Invest in the description**: Determines when the Agent delegates
-- **Keep prompts concise**: Direct and specific
-- **Add to version control**: Share `.cursor/agents/` with the team
-- **Start with Agent-generated**: Let the Agent create the initial draft
-- **Use hooks for file output**: For consistent structured output
-- **Test the description**: Make prompts and see if the correct subagent is triggered
+- **Subagentes focados**: uma responsabilidade clara
+- **Invista na description**: define quando o Agent delega
+- **Mantenha prompts concisos**: diretos e específicos
+- **Versionamento**: compartilhe `.cursor/agents/` com o time
+- **Comece com rascunho do Agent**: deixe o Agent criar o primeiro draft
+- **Hooks para saída em arquivo**: saídas estruturadas consistentes
+- **Teste a description**: veja se o subagente certo é acionado
 
-### ❌ AVOID
+### ❌ EVITE
 
-- **Dozens of generic subagents**: 50+ vague subagents are ineffective
-- **Vague descriptions**: "Use for general tasks" gives no signal
-- **Prompts too long**: 2000 words don't make the subagent smarter
-- **Duplicating slash commands**: Use skill if it's single-purpose without context isolation
-- **Too many subagents**: Start with 2-3 focused ones, add as needed
+- **Dezenas de subagentes genéricos**: 50+ vagos são ineficazes
+- **Descriptions vagas**: "Use for general tasks" não dá sinal
+- **Prompts longos demais**: 2000 palavras não tornam mais inteligente
+- **Duplicar slash commands**: se for propósito único sem isolamento de contexto, prefira skill
+- **Demais subagentes**: comece com 2-3 focados; acrescente conforme necessidade
 
-### Anti-Patterns to Avoid
+### Antipadrões
 
-⚠️ **Vague descriptions**: "Use for general tasks" → Be specific: "Use when implementing authentication flows with OAuth providers."
+⚠️ **Descriptions vagas**: "Use for general tasks" → Seja específico: "Use when implementing authentication flows with OAuth providers."
 
-⚠️ **Prompts too long**: A 2000-word prompt is slower and harder to maintain.
+⚠️ **Prompts longos**: Prompt de 2000 palavras é mais lento e difícil de manter.
 
-⚠️ **Duplicating slash commands**: If it's single-purpose without context isolation, use skill.
+⚠️ **Duplicar slash commands**: Sem necessidade de contexto isolado, use skill.
 
-⚠️ **Too many subagents**: Start with 2-3 focused ones. Add only with distinct use cases.
+⚠️ **Muitos subagentes**: Comece com 2-3. Só aumente com casos de uso distintos.
 
-## Skills vs Subagents vs Commands
+## Skills vs subagentes vs comandos
 
-Use this decision tree:
+Árvore de decisão:
 
 ```
 Is the task complex with multiple steps?
@@ -521,7 +521,7 @@ Is the task complex with multiple steps?
           └─ NO → Use SUBAGENT
 ```
 
-**Examples:**
+**Exemplos:**
 
 - **Subagent**: "Implement complete OAuth authentication with tests and documentation"
 - **Subagent**: "Investigate all failing tests and fix them"
@@ -530,9 +530,9 @@ Is the task complex with multiple steps?
 - **Skill**: "Format file imports"
 - **Command**: `/fix` to fix linter errors
 
-## Performance and Cost
+## Performance e custo
 
-Subagents have trade-offs:
+Trade-offs dos subagentes:
 
 | Benefit            | Trade-off                                                 |
 | ------------------ | --------------------------------------------------------- |
@@ -540,14 +540,14 @@ Subagents have trade-offs:
 | Parallel execution | Higher token usage (multiple contexts simultaneously)     |
 | Specialized focus  | Latency (can be slower than main agent for simple tasks)  |
 
-### Token and Cost Considerations
+### Tokens e custo
 
-- **Subagents consume tokens independently**: Each has its own context window
-- **Parallel execution multiplies tokens**: 5 subagents = ~5x the tokens of a single agent
-- **Evaluate the overhead**: For quick/simple tasks, the main agent is more efficient
-- **Subagents can be slower**: The benefit is isolation, not speed
+- **Subagentes consomem tokens independentemente**: cada um com própria janela de contexto
+- **Paralelo multiplica tokens**: 5 subagentes ~5x tokens de um único agente
+- **Avalie o overhead**: para tarefas rápidas/simples o agent principal é mais eficiente
+- **Subagentes podem ser mais lentos**: o benefício é isolamento, não velocidade
 
-## Quick Template
+## Template rápido
 
 ```markdown
 ---
@@ -575,33 +575,33 @@ Report [type of result]:
 [Principles or philosophy to follow]
 ```
 
-## Quality Checklist
+## Checklist de qualidade
 
-Before finalizing a subagent:
+Antes de finalizar um subagente:
 
-- [ ] Description is specific about when the Agent should delegate
-- [ ] Filename uses kebab-case
-- [ ] One clear responsibility (not generic)
-- [ ] Prompt is concise but complete
-- [ ] Instructions are actionable
-- [ ] Output format is well defined
-- [ ] Model configuration appropriate (inherit/fast/specific)
-- [ ] readonly defined correctly (if only reads/analyzes)
-- [ ] is_background defined correctly (if long-running)
+- [ ] Description específica sobre quando o Agent deve delegar
+- [ ] Arquivo em kebab-case
+- [ ] Uma responsabilidade clara (não genérico)
+- [ ] Prompt conciso mas completo
+- [ ] Instruções acionáveis
+- [ ] Formato de saída bem definido
+- [ ] Configuração de model adequada (inherit/fast/específico)
+- [ ] readonly correto (se só lê/analisa)
+- [ ] is_background correto (se long-running)
 
-## Creation Outputs
+## Saídas da criação
 
-When creating a subagent, you should:
+Ao criar um subagente:
 
-1. **Create the file**: `.cursor/agents/[agent-name].md`
-2. **Confirm location**: Inform where it was created
-3. **Explain usage**: How to invoke/test the subagent
-4. **Show syntax**: Invocation examples
-5. **Suggest improvements**: If relevant, refinements
+1. **Crie o arquivo**: `.cursor/agents/[agent-name].md`
+2. **Confirme o local**: informe onde foi criado
+3. **Explique uso**: como invocar/testar
+4. **Mostre sintaxe**: exemplos de invocação
+5. **Sugira melhorias**: refinamentos se relevante
 
-## Output Messages
+## Mensagens de saída
 
-When creating a subagent, inform:
+Ao criar um subagente, informe:
 
 ```
 ✅ Subagent created successfully!
@@ -617,9 +617,9 @@ When creating a subagent, inform:
 to encourage automatic delegation.
 ```
 
-## Complete Examples
+## Exemplos completos
 
-### Example 1: Code Reviewer
+### Exemplo 1: Code reviewer
 
 ```markdown
 ---
@@ -663,7 +663,7 @@ Report in structured format:
 Be constructive, specific, and focus on real impact.
 ```
 
-### Example 2: Performance Optimizer
+### Exemplo 2: Performance optimizer
 
 ```markdown
 ---
@@ -713,13 +713,13 @@ Always measure real impact. Don't optimize prematurely.
 
 ---
 
-## Remember
+## Lembrete
 
-Subagents are for **complex tasks with multiple steps that benefit from isolated context**. For quick, one-off actions, use **skills**.
+Subagentes servem a **tarefas complexas com várias etapas que se beneficiam de contexto isolado**. Para ações rápidas pontuais, use **skills**.
 
-The power of subagents lies in:
+O poder dos subagentes está em:
 
-- Context isolation for long explorations
-- Parallel execution of workstreams
-- Deep specialization in specific domains
-- Independent verification of work
+- Isolamento de contexto em explorações longas
+- Execução paralela de linhas de trabalho
+- Especialização profunda em domínios
+- Verificação independente do trabalho

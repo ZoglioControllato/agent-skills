@@ -1,13 +1,13 @@
-# 🤝 Contributing to Agent Skills
+# 🤝 Contribuindo com o Agent Skills
 
-First of all, thank you for taking the time to contribute! 🎉
+Antes de tudo, obrigado por dedicar tempo para contribuir! 🎉
 
-> **Note**: This document provides all the necessary information to get your local environment set up, understand the architecture, create new skills, and safely submit your contributions.
+> **Nota**: Este documento reúne o necessário para configurar o ambiente local, entender a arquitetura, criar novas skills e enviar contribuições com segurança.
 
-## 🛠 Prerequisites
+## 🛠 Pré-requisitos
 
 - **Node.js** ≥ 22
-- **npm** (comes with Node.js)
+- **npm** (incluído com o Node.js)
 
 ## 🚀 Setup
 
@@ -18,182 +18,190 @@ npm ci
 npm run build
 ```
 
-## 💻 Development Commands
+## 💻 Comandos de desenvolvimento
 
-| Command                            | Description                        |
-| ---------------------------------- | ---------------------------------- |
-| `npm run start:dev:cli`            | Run CLI locally (interactive mode) |
-| `npm run start:dev:mcp`            | Build MCP and open Inspector       |
-| `npm run generate:skill <name>`    | Generate a new skill               |
-| `npm run validate`                 | Validate all skills                |
-| `npm run build`                    | Build all packages                 |
-| `npm run test`                     | Run all tests                      |
-| `npm run lint`                     | Lint codebase                      |
-| `npm run format`                   | Format code with Prettier          |
-| `npm run scan`                     | Run incremental security scan      |
-| `nx run marketplace:dev`           | Run marketplace locally            |
-| `nx run marketplace:generate-data` | Update marketplace skills data     |
+| Comando                            | Descrição                                 |
+| ---------------------------------- | ----------------------------------------- |
+| `npm run start:dev:cli`            | Executar CLI localmente (modo interativo) |
+| `npm run start:dev:mcp`            | Build do MCP e abrir o Inspector          |
+| `npm run generate:skill <name>`    | Gerar uma nova skill                      |
+| `npm run validate`                 | Validar todas as skills                   |
+| `npm run build`                    | Build de todos os pacotes                 |
+| `npm run test`                     | Executar todos os testes                  |
+| `npm run lint`                     | Lint do codebase                          |
+| `npm run format`                   | Formatar código com Prettier              |
+| `npm run scan`                     | Scan de segurança incremental             |
+| `nx run marketplace:dev`           | Executar marketplace localmente           |
+| `nx run marketplace:generate-data` | Atualizar dados de skills do marketplace  |
 
-## ⭐ Creating a New Skill
+## ⭐ Criando uma nova skill
 
-> **Important**: When creating a new skill or adding an external skill to the catalog, you **must** use the **`skill-architect`** skill to guide the process and ensure the skill follows our quality standards. If you're an AI agent, load the `skill-architect` skill before proceeding. If contributing manually, review the [Description Quality Standards](#description-quality-standards) below.
+> **Importante**: Ao criar uma skill nova ou adicionar uma skill externa ao catálogo, você **deve** usar a skill **`skill-architect`** para guiar o processo e garantir os padrões de qualidade. Se você é um agente de IA, carregue a skill `skill-architect` antes de prosseguir. Se contribuir manualmente, revise os [Padrões de qualidade da description](#padrões-de-qualidade-da-description) abaixo.
 
 ```bash
-# With category (recommended)
+# Com categoria (recomendado)
 nx g @tech-leads-club/skill-plugin:skill my-skill --category=development
 
-# Full options
+# Opções completas
 nx g @tech-leads-club/skill-plugin:skill my-skill \
-  --description="What my skill does" \
+  --description="O que minha skill faz" \
   --category=development \
   --author="github.com/username" \
   --skillVersion="1.0.0"
 ```
 
-The generator creates:
+O gerador cria:
 
 - `packages/skills-catalog/skills/(development)/my-skill/SKILL.md`
 
-After generating the scaffold, refine the `SKILL.md` content (especially the `description` field) following the quality standards below.
+Depois do scaffold, refine o conteúdo do `SKILL.md` (especialmente o campo `description`) seguindo os padrões abaixo.
 
-## 📁 Project Structure
+## 📁 Estrutura do projeto
 
 ```
 agent-skills/
 ├── packages/
-│   ├── cli/                      # @tech-leads-club/agent-skills CLI
-│   ├── marketplace/              # Next.js static site for the skill registry
-│   └── skills-catalog/           # Skills collection
-│       └── skills/               # All skill definitions
-│           ├── (category-name)/  # Categorized skills
-│           └── _category.json    # Category metadata
+│   ├── cli/                      # CLI @tech-leads-club/agent-skills
+│   ├── marketplace/              # Site estático Next.js do registry
+│   └── skills-catalog/           # Coleção de skills
+│       └── skills/               # Todas as definições de skills
+│           ├── (category-name)/  # Skills por categoria
+│           └── _category.json    # Metadados de categoria
 ├── tools/
-│   └── skill-plugin/             # Nx skill generator
-├── skills-registry.json          # Auto-generated catalog
+│   └── skill-plugin/             # Gerador Nx de skills
+├── skills-registry.json          # Catálogo gerado automaticamente
 ├── .github/
-│   └── workflows/                # CI/CD pipelines
-└── nx.json                       # Nx configuration
+│   └── workflows/                # Pipelines CI/CD
+└── nx.json                       # Configuração Nx
 ```
 
-## 📝 Skill Structure
+## 📝 Estrutura de uma skill
 
 ```
 packages/skills-catalog/skills/
-├── (category-name)/              # Category folder
-│   └── my-skill/                 # Skill folder
-│       ├── SKILL.md              # Required: main instructions
-│       ├── scripts/              # Optional: executable scripts
-│       ├── templates/            # Optional: file templates
-│       └── references/           # Optional: on-demand docs
-└── _category.json                # Category metadata
+├── (category-name)/              # Pasta da categoria
+│   └── my-skill/                 # Pasta da skill
+│       ├── SKILL.md              # Obrigatório: instruções principais
+│       ├── scripts/              # Opcional: scripts executáveis
+│       ├── templates/            # Opcional: templates de arquivos
+│       └── references/           # Opcional: docs sob demanda
+└── _category.json                # Metadados da categoria
 ```
 
-### SKILL.md Format
+### Formato do SKILL.md
 
 ```markdown
 ---
 name: my-skill
-description: What this skill does in one sentence. Use when user says "trigger phrase", "another trigger", or "third trigger". Do NOT use for things handled by other-skill.
+description: O que esta skill faz em uma frase. Use quando o usuário diz "frase gatilho", "outra frase", ou "terceira frase". NÃO use para o que outra-skill cobre.
 metadata:
   version: 1.0.0
   author: github.com/username
 ---
 
-# My Skill
+# Minha Skill
 
-Brief description.
+Descrição breve.
 
-## Process
+## Processo
 
-1. Step one
-2. Step two
+1. Primeiro passo
+2. Segundo passo
 ```
 
-### Category Metadata
+### Metadados de categoria
 
 `_category.json`:
 
 ```json
 {
   "(development)": {
-    "name": "Development",
-    "description": "Skills for software development",
+    "name": "Desenvolvimento",
+    "description": "Skills para desenvolvimento de software",
     "priority": 1
   }
 }
 ```
 
-### Best Practices
+### Boas práticas
 
-- **Keep SKILL.md under 500 lines** — use `references/` for detailed docs
-- **Write specific descriptions** — include trigger phrases
-- **Assume the agent is smart** — only add what it doesn't already know
-- **Prefer scripts over inline code** — reduces context window usage
-- **Use the `skill-architect` skill** — for creating new skills or validating existing ones
+- **Mantenha o SKILL.md com menos de 500 linhas** — use `references/` para documentação detalhada
+- **Escreva descriptions específicas** — inclua frases gatilho
+- **Assuma que o agente é inteligente** — adicione só o que ele ainda não sabe
+- **Prefira scripts a código inline** — reduz uso da janela de contexto
+- **Use a skill `skill-architect`** — para criar ou validar skills
 
-### Description Quality Standards
+### Padrões de qualidade da description
 
-Every skill description **must** follow this structure:
+Toda description **deve** seguir esta estrutura:
 
 ```
-[What it does] + [Use when ...] + [Do NOT use for ...]
+[O que faz] + [Use quando ...] + [NÃO use para ...]
 ```
 
-**Mandatory rules:**
+**Regras obrigatórias:**
 
-| Rule                                                | Example                                                   |
-| --------------------------------------------------- | --------------------------------------------------------- |
-| Include `Use when` with user-facing trigger phrases | `Use when user says "deploy my app", "push this live"`    |
-| Include `Do NOT use for` with negative triggers     | `Do NOT use for Netlify deployments (use netlify-deploy)` |
-| Under 1024 characters                               | Keep it concise but complete                              |
-| No XML angle brackets (`< >`) in YAML               | Use standard quotes instead                               |
-| User perspective, not internal jargon               | "fix my build" not "remediate CI pipeline failures"       |
+| Regra                                                       | Exemplo                                                            |
+| ----------------------------------------------------------- | ------------------------------------------------------------------ |
+| Incluir `Use quando` com frases gatilho voltadas ao usuário | `Use quando o usuário diz "faça deploy do app", "coloque no ar"`   |
+| Incluir `NÃO use para` com gatilhos negativos               | `NÃO use para deploy na Netlify (use netlify-deploy)`              |
+| Até 1024 caracteres                                         | Seja conciso, porém completo                                       |
+| Sem colchetes angulares XML (`< >`) no YAML                 | Use aspas normais                                                  |
+| Perspectiva do usuário, não jargão interno                  | "conserta meu build" em vez de "remediar falhas de pipeline de CI" |
 
-**Good example:**
+**Exemplo bom:**
 
 ```yaml
-description: Deploy applications to Vercel. Use when the user requests "deploy my app",
-  "push this live", or "create a preview deployment". Do NOT use for deploying to
-  Netlify, Cloudflare, or Render (use their respective skills).
+description: Faz deploy de aplicações na Vercel. Use quando o usuário pede "faça deploy do app",
+  "coloque no ar" ou "crie um preview deployment". NÃO use para deploy na
+  Netlify, Cloudflare ou Render (use as skills respectivas).
 ```
 
-**Bad example:**
+**Exemplo ruim:**
 
 ```yaml
-# ❌ Missing triggers and negative scope
-description: Helps with deployments.
+# ❌ Sem gatilhos nem escopo negativo
+description: Ajuda com deploys.
 ```
 
-## 🔒 Security Scan
+### Tradução e marca
 
-Every skill is scanned with [Snyk Agent Scan](https://github.com/snyk/agent-scan) before publishing. The scan is **incremental** — only skills whose content changed since the last run are re-scanned.
+Ao traduzir arquivos `.md` do repositório:
+
+- Substitua **Tech Leads Club** por **Controllato Club** em prosa, títulos e atribuições
+- **Não altere** slugs npm (`@tech-leads-club/...`), URLs GitHub (`github.com/tech-leads-club/...`) nem conteúdo dentro de blocos de código quando o identificador for técnico
+- Use `node tools/translate-markdown.mjs --file <caminho>` e o manifesto `tools/translation-manifest.json` para rastrear o progresso
+
+## 🔒 Scan de segurança
+
+Cada skill é analisada com [Snyk Agent Scan](https://github.com/snyk/agent-scan) antes da publicação. O scan é **incremental** — só skills cujo conteúdo mudou desde a última execução são reanalisadas.
 
 ```bash
-npm run scan              # Incremental (default); requires SNYK_TOKEN
-npm run scan -- --force   # Force full re-scan
+npm run scan              # Incremental (padrão); requer SNYK_TOKEN
+npm run scan -- --force   # Forçar re-scan completo
 ```
 
-### How it works
+### Como funciona
 
-Each skill has a SHA-256 content hash (computed from all its files). Results are cached in `.security-scan-cache.json` (gitignored). On the next run, skills whose hash hasn't changed skip re-scanning and load results from cache.
+Cada skill tem um hash de conteúdo SHA-256 (calculado a partir de todos os arquivos). Os resultados ficam em cache em `.security-scan-cache.json` (gitignored). Na próxima execução, skills cujo hash não mudou pulam o re-scan e carregam o cache.
 
 ```
-Content hash unchanged → load from cache (fast)
-Content hash changed   → re-scan with snyk-agent-scan
+Hash inalterado → carrega do cache (rápido)
+Hash alterado   → re-scan com snyk-agent-scan
 ```
 
-### When CI fails on Security Scan
+### Quando o CI falha no Security Scan
 
-1. **Open the run** → In the "CI Checks" job you’ll see a step **"Print scan failure summary"** (and/or **"Security Scan"**) with Critical/High counts and affected skills + codes (e.g. `frontend-design: W011`).
-2. **Same-repo PRs** → A bot comment on the PR lists the same findings and links to the run.
-3. **Fix it:**
-   - **Real issue** → Adjust the skill (remove or restrict the flagged behavior).
-   - **False positive** → Add an entry to `packages/skills-catalog/security-scan-allowlist.yaml` (see below). Match by `skill` + `code`; add a short `reason` and `allowedBy`/`allowedAt`.
-4. **Run locally** (optional): `SNYK_TOKEN=<your-token> npm run scan` to confirm before pushing. PRs from forks don’t run the scan in CI (no secrets); use Merge Queue or run the scan locally.
+1. **Abra a execução** → No job "CI Checks" haverá o passo **"Print scan failure summary"** (e/ou **"Security Scan"**) com contagens Critical/High e skills afetadas + códigos (ex.: `frontend-design: W011`).
+2. **PRs do mesmo repositório** → Um bot comenta no PR com os mesmos achados e link para a execução.
+3. **Corrija:**
+   - **Problema real** → Ajuste a skill (remova ou restrinja o comportamento sinalizado).
+   - **Falso positivo** → Adicione entrada em `packages/skills-catalog/security-scan-allowlist.yaml` (veja abaixo). Combine `skill` + `code`; inclua `reason` e `allowedBy`/`allowedAt`.
+4. **Execute localmente** (opcional): `SNYK_TOKEN=<seu-token> npm run scan` antes do push. PRs de forks não rodam o scan no CI (sem secrets); use Merge Queue ou rode o scan localmente.
 
-### Handling false positives
+### Falsos positivos
 
-If the scanner flags a finding that is intentional (e.g. a first-party MCP server integration), add it to the allowlist:
+Se o scanner sinalizar algo intencional (ex.: integração com servidor MCP first-party), adicione à allowlist:
 
 **`packages/skills-catalog/security-scan-allowlist.yaml`**
 
@@ -204,53 +212,53 @@ entries:
   - skill: my-skill
     code: W011
     reason: >
-      Fetches from trusted first-party API — expected behavior.
+      Busca API first-party confiável — comportamento esperado.
     allowedBy: github.com/username
     allowedAt: '2026-01-01'
-    expiresAt: '2027-01-01' # Optional but recommended
+    expiresAt: '2027-01-01' # Opcional, mas recomendado
 ```
 
-- Match is by `skill + code` — no re-scan needed after adding an entry
-- `expiresAt` is optional but recommended — forces periodic review
-- Expired entries re-activate the finding automatically
-- Use YAML for better readability, comments, and cleaner diffs
+- A correspondência é por `skill + code` — não precisa re-scan após adicionar a entrada
+- `expiresAt` é opcional, mas recomendado — força revisão periódica
+- Entradas expiradas reativam o achado automaticamente
+- Use YAML para legibilidade, comentários e diffs mais limpos
 
-The allowlist is committed to the repo and reviewable in PRs.
+A allowlist é versionada no repositório e revisável em PRs.
 
-## 🔄 Release Process
+## 🔄 Processo de release
 
-This project uses **Conventional Commits** for automated versioning:
+O projeto usa **Conventional Commits** para versionamento automatizado:
 
-| Commit Prefix | Version Bump  | Example                      |
-| ------------- | ------------- | ---------------------------- |
-| `feat:`       | Minor (0.X.0) | `feat: add new skill`        |
-| `fix:`        | Patch (0.0.X) | `fix: correct symlink path`  |
-| `feat!:`      | Major (X.0.0) | `feat!: breaking API change` |
-| `docs:`       | No bump       | `docs: update README`        |
-| `chore:`      | No bump       | `chore: update deps`         |
+| Prefixo do commit | Bump de versão | Exemplo                      |
+| ----------------- | -------------- | ---------------------------- |
+| `feat:`           | Minor (0.X.0)  | `feat: add new skill`        |
+| `fix:`            | Patch (0.0.X)  | `fix: correct symlink path`  |
+| `feat!:`          | Major (X.0.0)  | `feat!: breaking API change` |
+| `docs:`           | Sem bump       | `docs: update README`        |
+| `chore:`          | Sem bump       | `chore: update deps`         |
 
-Releases are automated via GitHub Actions when merging to `main`.
+Releases são automatizadas via GitHub Actions ao fazer merge em `main`.
 
-## 🛍️ Contributing to the Marketplace
+## 🛍️ Contribuindo com o Marketplace
 
-The Agent Skills Marketplace is a Next.js static site located in `packages/marketplace`. It serves as the frontend for browsing and discovering agent skills.
+O Agent Skills Marketplace é um site estático Next.js em `packages/marketplace`. É o frontend para navegar e descobrir skills.
 
-To work on the marketplace locally:
+Para trabalhar no marketplace localmente:
 
 ```bash
-# Parse SKILL.md files and generate the JSON data used by the UI
+# Analisa SKILL.md e gera o JSON usado pela UI
 nx run marketplace:generate-data
 
-# Start the development server (runs with production config matching static export)
+# Sobe o servidor de desenvolvimento (config de produção alinhada ao export estático)
 nx run marketplace:dev
 ```
 
-Open `http://localhost:3000` in your browser. For more details on the marketplace architecture, SEO optimization, and Next.js setup, see the [Marketplace README](packages/marketplace/README.md).
+Abra `http://localhost:3000` no navegador. Para arquitetura do marketplace, SEO e setup Next.js, veja o [README do Marketplace](packages/marketplace/README.md).
 
-## 🤝 Submitting Contributions
+## 🤝 Enviando contribuições
 
-1. **Fork** the repository
-2. **Create** a feature branch (`git checkout -b feat/amazing-skill`)
-3. **Commit** with conventional commits (`git commit -m "feat: add amazing skill"`)
-4. **Push** to your fork (`git push origin feat/amazing-skill`)
-5. **Open** a Pull Request
+1. **Fork** o repositório
+2. **Crie** um branch (`git checkout -b feat/minha-skill`)
+3. **Commit** com conventional commits (`git commit -m "feat: add amazing skill"`)
+4. **Push** para o fork (`git push origin feat/minha-skill`)
+5. **Abra** um Pull Request

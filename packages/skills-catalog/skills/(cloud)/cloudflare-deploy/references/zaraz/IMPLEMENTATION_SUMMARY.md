@@ -1,131 +1,132 @@
-# Zaraz Reference Implementation Summary
+# Resumo de implementação de referência do Zaraz
 
-## Files Created
+## Arquivos criados
 
-| File             | Lines     | Purpose                                       |
-| ---------------- | --------- | --------------------------------------------- |
-| README.md        | 111       | Navigation, decision tree, quick start        |
-| api.md           | 287       | Web API reference, Zaraz Context              |
-| configuration.md | 307       | Dashboard setup, triggers, tools, consent     |
-| patterns.md      | 430       | SPA, e-commerce, Worker integration           |
-| gotchas.md       | 317       | Troubleshooting, limits, tool-specific issues |
-| **Total**        | **1,452** | **vs 366 original**                           |
+| Arquivo         | Linhas    | Finalidade                                                         |
+| --------------- | --------- | ------------------------------------------------------------------ |
+| README.md       | 111       | Navegação, árvore de decisão, início rápido                        |
+| API.md          | 287       | Referência de API da Web, Contexto Zaraz                           |
+| configuração.md | 307       | Configuração do painel, gatilhos, ferramentas, consentimento       |
+| padrões.md      | 430       | SPA, e-commerce, Integração de trabalhadores                       |
+| pegadinhas.md   | 317       | Solução de problemas, limites, problemas específicos da ferramenta |
+| **Total**       | **1.452** | **contra 366 originais**                                           |
 
-## Key Improvements Applied
+## Principais melhorias aplicadas
 
-### Structure
+### Estrutura
 
-- ✅ Created 5-file progressive disclosure system
-- ✅ Added navigation table in README
-- ✅ Added decision tree for routing
-- ✅ Added "Reading Order by Task" guide
-- ✅ Cross-referenced files throughout
+- ✅ Criado sistema de divulgação progressiva de 5 arquivos
+- ✅ Adicionada tabela de navegação no README
+- ✅ Adicionada árvore de decisão para roteamento
+- ✅ Adicionado guia "Ordem de leitura por tarefa"
+- ✅ Arquivos com referência cruzada por toda parte
 
-### New Content Added
+### Novo conteúdo adicionado
 
-- ✅ Zaraz Context (system/client properties)
-- ✅ History Change trigger for SPA tracking
-- ✅ Context Enrichers pattern
-- ✅ Worker Variables pattern
-- ✅ Consent management deep dive
-- ✅ Tool-specific quirks (GA4, Facebook, Google Ads)
-- ✅ GTM migration guide
-- ✅ Comprehensive troubleshooting
-- ✅ "When NOT to use Zaraz" section
-- ✅ TypeScript type definitions
+- ✅ Contexto Zaraz (propriedades do sistema/cliente)
+- ✅ Gatilho de alteração de histórico para rastreamento de SPA
+- ✅ Padrão de enriquecedores de contexto
+- ✅ Padrão de variáveis de trabalho
+- ✅ Aprofundamento no gerenciamento de consentimento
+- ✅ peculiaridades específicas da ferramenta (GA4, Facebook, Google Ads)
+- ✅ Guia de migração GTM
+- ✅ Solução de problemas abrangente
+- ✅ Seção "Quando NÃO usar Zaraz"
+- ✅ Definições de tipo TypeScript
 
-### Preserved Content
+### Conteúdo preservado
 
-- ✅ All original API methods
-- ✅ E-commerce tracking examples
-- ✅ Consent management
-- ✅ Workers integration (expanded)
-- ✅ Common patterns (expanded)
-- ✅ Debugging tools
-- ✅ Reference links
+- ✅ Todos os métodos API originais
+- ✅ Exemplos de rastreamento de comércio eletrônico
+- ✅ Gerenciamento de consentimento
+- ✅ Integração de trabalhadores (ampliada)
+- ✅ Padrões comuns (expandidos)
+- ✅ Ferramentas de depuração
+- ✅ Links de referência
 
-## Progressive Disclosure Impact
+## Impacto de divulgação progressiva
 
-### Before (Monolithic)
+### Antes (Monolítico)
 
-All tasks loaded 366 lines regardless of need.
+Todas as tarefas carregaram 366 linhas independentemente da necessidade.
 
-### After (Progressive)
+### Depois (Progressivo)
 
-- **Track event task**: README (111) + api.md (287) = 398 lines
-- **Debug issue**: gotchas.md (317) = 317 lines (13% reduction)
-- **Configure tool**: configuration.md (307) = 307 lines (16% reduction)
-- **SPA tracking**: README + patterns.md (SPA section) ~180 lines (51% reduction)
+- **Rastrear tarefa de evento**: README (111) + api.md (287) = 398 linhas
+- **Problema de depuração**: gotchas.md (317) = 317 linhas (redução de 13%)
+- **Ferramenta de configuração**: configuration.md (307) = 307 linhas (redução de 16%)
+- **Rastreamento de SPA**: README + padrões.md (seção SPA) ~180 linhas (redução de 51%)
 
-**Net effect:** Task-specific loading reduces unnecessary content by 13-51% depending on use case.
+**Efeito líquido:** O carregamento específico da tarefa reduz o conteúdo desnecessário entre 13 e 51%, dependendo do caso de uso.
 
-## File Summary
+## Resumo do arquivo
 
-### README.md (111 lines)
+### README.md (111 linhas)
 
-- Overview and core concepts
-- Quick start guide
-- When to use Zaraz vs Workers
-- Navigation table
-- Reading order by task
-- Decision tree
+- Visão geral e conceitos básicos
+- Guia de início rápido
+- Quando usar Zaraz vs Trabalhadores
+- Tabela de navegação
+- Ordem de leitura por tarefa
+- Árvore de decisão
 
-### api.md (287 lines)
+### api.md (287 linhas)
 
-- zaraz.track()
-- zaraz.set()
-- zaraz.ecommerce()
-- Zaraz Context (system/client properties)
-- zaraz.consent API
-- zaraz.debug
-- Cookie methods
-- TypeScript definitions
+-zaraz.track()
+-zaraz.set()
+-zaraz.comércio eletrônico()
 
-### configuration.md (307 lines)
+- Contexto Zaraz (propriedades do sistema/cliente)
+- API zaraz.consent
+  -zaraz.debug
+- Métodos de cookies
+- Definições de TypeScript
 
-- Dashboard setup flow
-- Trigger types (including History Change)
-- Tool configuration (GA4, Facebook, Google Ads)
-- Actions and action rules
-- Selective loading
-- Consent management setup
-- Privacy features
-- Testing workflow
+### configuração.md (307 linhas)
 
-### patterns.md (430 lines)
+- Fluxo de configuração do painel
+- Tipos de gatilho (incluindo alteração no histórico)
+- Configuração de ferramentas (GA4, Facebook, Google Ads)
+- Ações e regras de ação
+- Carregamento seletivo
+- Configuração de gerenciamento de consentimento
+- Recursos de privacidade
+- Teste de fluxo de trabalho
 
-- SPA tracking (React, Vue, Next.js)
-- User identification flows
-- Complete e-commerce funnel
-- A/B testing
-- Worker integration (Context Enrichers, Worker Variables, HTML injection)
-- Multi-tool coordination
-- GTM migration
-- Best practices
+### padrões.md (430 linhas)
 
-### gotchas.md (317 lines)
+- Acompanhamento de SPA (React, Vue, Next.js)
+- Fluxos de identificação de usuários
+- Funil completo de comércio eletrônico
+- Teste A/B
+- Integração de Worker (Enriquecedores de Contexto, Variáveis de Worker, injeção de HTML)
+- Coordenação multiferramenta
+- Migração GTM
+- Melhores práticas
 
-- Events not firing (5-step debug process)
-- Consent issues
-- SPA tracking pitfalls
-- Performance issues
-- Tool-specific quirks
-- Data layer issues
-- Limits table
-- When NOT to use Zaraz
-- Debug checklist
+### gotchas.md (317 linhas)
 
-## Quality Metrics
+- Eventos não disparados (processo de depuração em 5 etapas)
+- Problemas de consentimento
+- Armadilhas de rastreamento de SPA
+- Problemas de desempenho
+- peculiaridades específicas da ferramenta
+- Problemas de camada de dados
+- Tabela de limites
+- Quando NÃO usar Zaraz
+- Lista de verificação de depuração
 
-- ✅ All files use consistent markdown formatting
-- ✅ Code examples include language tags
-- ✅ Tables for structured data (limits, parameters, comparisons)
-- ✅ Problem → Cause → Solution format in gotchas
-- ✅ Cross-references between files
-- ✅ No "see documentation" placeholders
-- ✅ Real, actionable examples throughout
-- ✅ Verified API syntax for Workers
+## Métricas de qualidade
 
-## Original Backup
+- ✅ Todos os arquivos usam formatação de redução consistente
+- ✅ Exemplos de código incluem tags de idioma
+- ✅ Tabelas para dados estruturados (limites, parâmetros, comparações)
+- ✅ Problema → Causa → Formato da solução em pegadinhas
+- ✅ Referências cruzadas entre arquivos
+- ✅ Sem espaços reservados para "ver documentação"
+- ✅ Exemplos reais e acionáveis
+- ✅ Sintaxe de API verificada para trabalhadores
 
-Original SKILL.md preserved as `_SKILL_old.md` for reference.
+## Backup Original
+
+SKILL.md original preservado como `_SKILL_old.md` para referência.

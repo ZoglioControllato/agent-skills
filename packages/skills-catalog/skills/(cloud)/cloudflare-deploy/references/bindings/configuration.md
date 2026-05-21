@@ -1,6 +1,6 @@
-# Binding Configuration Reference
+# Referência de configuração de bindings
 
-## Storage Bindings
+## Bindings de storage
 
 ```jsonc
 {
@@ -13,7 +13,7 @@
 }
 ```
 
-**Create commands:**
+**Comandos de criação:**
 
 ```bash
 npx wrangler kv namespace create MY_KV
@@ -30,7 +30,7 @@ npx wrangler vectorize list
 npx wrangler queues list
 ```
 
-## Compute Bindings
+## Bindings de compute
 
 ```jsonc
 {
@@ -47,13 +47,13 @@ npx wrangler queues list
 }
 ```
 
-**Create workflows:**
+**Criar workflows:**
 
 ```bash
 npx wrangler workflows create my-workflow
 ```
 
-## Platform Bindings
+## Bindings de plataforma
 
 ```jsonc
 {
@@ -66,7 +66,7 @@ npx wrangler workflows create my-workflow
 }
 ```
 
-## Configuration Bindings
+## Bindings de configuração
 
 ```jsonc
 {
@@ -80,13 +80,13 @@ npx wrangler workflows create my-workflow
 }
 ```
 
-**Secrets (never in config):**
+**Secrets (nunca no config):**
 
 ```bash
 npx wrangler secret put API_KEY
 ```
 
-## Environment-Specific Configuration
+## Configuração por ambiente
 
 ```jsonc
 {
@@ -110,7 +110,7 @@ npx wrangler deploy              # Production
 npx wrangler deploy --env staging
 ```
 
-## Local Development
+## Desenvolvimento local
 
 ```jsonc
 {
@@ -124,13 +124,13 @@ npx wrangler deploy --env staging
 }
 ```
 
-**Or use remote:**
+**Ou remoto:**
 
 ```bash
 npx wrangler dev --remote  # Uses production bindings
 ```
 
-## Complete Example
+## Exemplo completo
 
 ```jsonc
 {
@@ -148,9 +148,9 @@ npx wrangler dev --remote  # Uses production bindings
 }
 ```
 
-## Binding-Specific Configuration
+## Config específica
 
-### Durable Objects with Class Export
+### Durable Objects com export de classe
 
 ```jsonc
 {
@@ -161,7 +161,6 @@ npx wrangler dev --remote  # Uses production bindings
 ```
 
 ```typescript
-// In same Worker or script_name Worker
 export class Counter {
   constructor(
     private state: DurableObjectState,
@@ -173,7 +172,7 @@ export class Counter {
 }
 ```
 
-### Queue Consumers
+### Consumidores de fila
 
 ```jsonc
 {
@@ -184,17 +183,17 @@ export class Counter {
 }
 ```
 
-Queue consumer handler: `export default { async queue(batch, env) { /* process batch.messages */ } }`
+Handler: `export default { async queue(batch, env) { /* process batch.messages */ } }`
 
-## Key Points
+## Pontos-chave
 
-- **64 binding limit** (all types combined)
-- **Secrets**: Always use `wrangler secret put`, never commit
-- **Types**: Run `npx wrangler types` after config changes
-- **Environments**: Use `env` field for staging/production variants
-- **Development**: Use `preview_id` or `--remote` flag
-- **IDs vs Names**: Some bindings use `id` (KV, D1), others use `name` (R2, Queues)
+- **Limite de 64 bindings** (todos os tipos)
+- **Secrets:** sempre `wrangler secret put`, nunca commit
+- **Tipos:** `npx wrangler types` após mudanças
+- **Ambientes:** campo `env` para staging/produção
+- **Dev:** `preview_id` ou flag `--remote`
+- **IDs vs nomes:** alguns bindings usam `id` (KV, D1), outros `name` (R2, Queues)
 
-## See Also
+## Ver também
 
 - [Wrangler Configuration](https://developers.cloudflare.com/workers/wrangler/configuration/)

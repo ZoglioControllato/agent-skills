@@ -1,91 +1,90 @@
-# RealtimeKit Gotchas & Troubleshooting
+# Dicas e solução de problemas do RealtimeKit
 
-## Common Errors
+## Erros Comuns
 
-### "Cannot connect to meeting"
+### "Não é possível conectar-se à reunião"
 
-**Cause:** Auth token invalid/expired, API credentials lack permissions, or network blocks WebRTC
-**Solution:**
-Verify token validity, check API token has **Realtime / Realtime Admin** permissions, enable TURN service for restrictive networks
+**Causa:** Token de autenticação inválido/expirado, credenciais de API sem permissões ou rede bloqueando WebRTC
+**Solução:**
+Verifique a validade do token, verifique se o token da API tem permissões **Realtime/Realtime Admin**, ative o serviço TURN para redes restritivas
 
-### "No video/audio tracks"
+### "Sem faixas de vídeo/áudio"
 
-**Cause:** Browser permissions not granted, video/audio not enabled, device in use, or device unavailable
-**Solution:**
-Request browser permissions explicitly, verify initialization config, use `meeting.self.getAllDevices()` to debug, close other apps using device
+**Causa:** Permissões do navegador não concedidas, vídeo/áudio não ativados, dispositivo em uso ou dispositivo indisponível
+**Solução:**
+Solicite permissões do navegador explicitamente, verifique a configuração de inicialização, use `meeting.self.getAllDevices()` para depurar, feche outros aplicativos usando o dispositivo
 
-### "Participant count mismatched"
+### "Contagem de participantes incompatível"
 
-**Cause:** `meeting.participants` doesn't include `meeting.self`
-**Solution:** Total count = `meeting.participants.joined.size() + 1`
+**Causa:** `meeting.participants` não inclui `meeting.self`
+**Solução:** Contagem total = `meeting.participants.joined.size() + 1`
 
-### "Events not firing"
+### "Eventos não disparados"
 
-**Cause:** Listeners registered after actions, incorrect event name, or wrong namespace
-**Solution:**
-Register listeners before calling `meeting.join()`, check event names against docs, verify correct namespace
+**Causa:** Listeners registrados após ações, nome de evento incorreto ou namespace errado
+**Solução:**
+Registre ouvintes antes de chamar `meeting.join()`, verifique os nomes dos eventos em relação aos documentos, verifique o namespace correto
 
-### "CORS errors in API calls"
+### "Erros de CORS em chamadas de API"
 
-**Cause:** Making REST API calls from client-side
-**Solution:** All REST API calls **must** be server-side (Workers, backend). Never expose API tokens to clients.
+**Causa:** Fazendo chamadas de API REST do lado do cliente
+**Solução:** Todas as chamadas da API REST **devem** ser do lado do servidor (Workers, back-end). Nunca exponha tokens de API aos clientes.
 
-### "Preset not applying"
+### "Predefinição não aplicada"
 
-**Cause:** Preset doesn't exist, name mismatch (case-sensitive), or participant created before preset
-**Solution:**
-Verify preset exists via Dashboard or API, check exact spelling and case, create preset before adding participants
+**Causa:** A predefinição não existe, o nome não corresponde (diferencia maiúsculas de minúsculas) ou o participante foi criado antes da predefinição
+**Solução:**
+Verifique se a predefinição existe por meio do Dashboard ou API, verifique a ortografia exata e as maiúsculas e minúsculas, crie uma predefinição antes de adicionar participantes
 
-### "Token reuse error"
+### "Erro de reutilização de token"
 
-**Cause:** Reusing participant tokens across sessions
-**Solution:** Generate fresh token per session. Use refresh endpoint if token expires during session.
+**Causa:** Reutilização de tokens de participantes em sessões
+**Solução:** Gere um novo token por sessão. Use o endpoint de atualização se o token expirar durante a sessão.
 
-### "Video quality poor"
+### "Qualidade de vídeo ruim"
 
-**Cause:** Insufficient bandwidth, resolution/bitrate too high, or CPU overload
-**Solution:**
-Lower `mediaConfiguration.video` resolution/frameRate, monitor network conditions, reduce participant count or grid size
+**Causa:** Largura de banda insuficiente, resolução/taxa de bits muito alta ou sobrecarga da CPU
+**Solução:**
+Reduza a resolução/frameRate de `mediaConfiguration.video`, monitore as condições da rede, reduza a contagem de participantes ou o tamanho da grade
 
-### "Echo or audio feedback"
+### "Eco ou feedback de áudio"
 
-**Cause:** Multiple devices picking up same audio source
-**Solution:**
+**Causa:** vários dispositivos captando a mesma fonte de áudio
+**Solução:**
 
-- Lower `mediaConfiguration.video` resolution/frameRate
-- Monitor network conditions
-- Reduce participant count or grid size
+- Diminuir resolução/frameRate de `mediaConfiguration.video`
+- Monitorar as condições da rede
+- Reduza a contagem de participantes ou o tamanho da grade
 
-### Issue: Echo or audio feedback
+### Problema: eco ou feedback de áudio
 
-**Cause**: Multiple devices picking up same audio source
+**Causa**: vários dispositivos captando a mesma fonte de áudio
 
-**Solutions**:
-Enable `echoCancellation: true` in `mediaConfiguration.audio`, use headphones, mute when not speaking
+**Soluções**:
+Habilite `echoCancellation: true` em `mediaConfiguration.audio`, use fones de ouvido, silencie quando não estiver falando
 
-### "Screen share not working"
+### "Compartilhamento de tela não funciona"
 
-**Cause:** Browser doesn't support screen sharing API, permission denied, or wrong `displaySurface` config
-**Solution:**
-Use Chrome/Edge/Firefox (Safari limited support), check browser permissions, try different `displaySurface` values ('window', 'monitor', 'browser')
+**Causa:** o navegador não suporta API de compartilhamento de tela, permissão negada ou configuração `displaySurface` incorreta
+**Solução:**
+Use Chrome/Edge/Firefox (suporte limitado ao Safari), verifique as permissões do navegador, tente diferentes valores `displaySurface` ('janela', 'monitor', 'navegador')
 
-### "How do I schedule meetings?"
+### "Como faço para agendar reuniões?"
 
-**Cause:** RealtimeKit has no built-in scheduling system
-**Solution:**
-Store meeting IDs in your database with timestamps. Generate participant tokens only when user should join. Example:
-
-```typescript
+**Causa:** O RealtimeKit não possui sistema de agendamento integrado
+**Solução:**
+Armazene IDs de reuniões em seu banco de dados com carimbos de data/hora. Gere tokens de participante somente quando o usuário precisar ingressar. Exemplo:```typescript
 // Store in DB
 { meetingId: 'abc123', scheduledFor: '2026-02-15T10:00:00Z', userId: 'user456' }
 
 // Generate token when user clicks "Join" near scheduled time
 const response = await fetch('/api/join-meeting', {
-  method: 'POST',
-  body: JSON.stringify({ meetingId: 'abc123' })
+method: 'POST',
+body: JSON.stringify({ meetingId: 'abc123' })
 });
 const { authToken } = await response.json();
-```
+
+````
 
 ### "Recording not starting"
 
@@ -129,7 +128,7 @@ Enable for users behind restrictive firewalls/proxies:
   },
   // Set secret: wrangler secret put TURN_SERVICE_TOKEN
 }
-```
+````
 
 TURN automatically configured in SDK when enabled in account.
 
@@ -173,29 +172,29 @@ meeting.self.on('roomJoined', () =>
 meeting.chat.on('chatUpdate', (data) => console.log('[chat] chatUpdate:', data))
 ```
 
-## Security & Performance
+## Segurança e desempenho
 
-### Security: Do NOT
+### Segurança: NÃO
 
-- Expose `CLOUDFLARE_API_TOKEN` in client code, hardcode credentials in frontend
-- Reuse participant tokens, store tokens in localStorage without encryption
-- Allow client-side meeting creation
+- Expor `CLOUDFLARE_API_TOKEN` no código do cliente, credenciais de código fixo no frontend
+- Reutilize tokens de participantes, armazene tokens em localStorage sem criptografia
+- Permitir a criação de reuniões do lado do cliente
 
-### Security: DO
+### Segurança: FAÇA
 
-- Generate tokens server-side only, use HTTPS, implement rate limiting
-- Validate user auth before generating tokens, use `custom_participant_id` to map to your user system
-- Set appropriate preset permissions per user role, rotate API tokens regularly
+- Gere tokens apenas no lado do servidor, use HTTPS, implemente limitação de taxa
+- Valide a autenticação do usuário antes de gerar tokens, use `custom_participant_id` para mapear para o seu sistema de usuário
+- Defina permissões predefinidas apropriadas por função de usuário, alterne os tokens de API regularmente
 
-### Performance
+### Desempenho
 
-- **CPU**: Lower video resolution/frameRate, disable video for audio-only, use `meeting.participants.active` for large meetings, implement virtual scrolling
-- **Bandwidth**: Set max resolution in `mediaConfiguration`, disable screenshare audio if unneeded, use audio-only mode, implement adaptive bitrate
-- **Memory**: Clean up event listeners on unmount, call `meeting.leave()` when done, don't store large participant arrays
+- **CPU**: reduza a resolução/taxa de quadros de vídeo, desative o vídeo somente para áudio, use `meeting.participants.active` para reuniões grandes, implemente rolagem virtual
+- **Largura de banda**: Defina a resolução máxima em `mediaConfiguration`, desative o áudio do compartilhamento de tela se desnecessário, use o modo somente áudio, implemente taxa de bits adaptável
+- **Memória**: Limpe os ouvintes de eventos ao desmontar, chame `meeting.leave()` quando terminar, não armazene grandes matrizes de participantes
 
-## In This Reference
+## Nesta referência
 
-- [README.md](README.md) - Overview, core concepts, quick start
-- [configuration.md](configuration.md) - SDK config, presets, wrangler setup
-- [api.md](api.md) - Client SDK APIs, REST endpoints
-- [patterns.md](patterns.md) - Common patterns, React hooks, backend integration
+- [README.md](README.md) - Visão geral, conceitos básicos, início rápido
+- [configuration.md](configuration.md) - Configuração do SDK, predefinições, configuração do wrangler
+- [api.md](api.md) - APIs do SDK do cliente, endpoints REST
+- [patterns.md](patterns.md) - Padrões comuns, ganchos React, integração de back-end

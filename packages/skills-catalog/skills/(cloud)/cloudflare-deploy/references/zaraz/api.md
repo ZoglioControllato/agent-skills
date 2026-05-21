@@ -19,19 +19,18 @@ zaraz.set('userId', 'user_12345')
 zaraz.set({ email: '[email protected]', plan: 'premium', country: 'US' })
 ```
 
-Properties persist for page session. Use for user identification and segmentation.
+As propriedades persistem para a sessão da página. Use para identificação e segmentação de usuários.
 
-## zaraz.ecommerce()
-
-```javascript
+##zaraz.comércio eletrônico()```javascript
 zaraz.ecommerce('Product Viewed', { product_id: 'SKU123', name: 'Widget', price: 49.99 })
 zaraz.ecommerce('Product Added', { product_id: 'SKU123', quantity: 2, price: 49.99 })
 zaraz.ecommerce('Order Completed', {
-  order_id: 'ORD-789',
-  total: 149.98,
-  currency: 'USD',
-  products: [{ product_id: 'SKU123', quantity: 2, price: 49.99 }],
+order_id: 'ORD-789',
+total: 149.98,
+currency: 'USD',
+products: [{ product_id: 'SKU123', quantity: 2, price: 49.99 }],
 })
+
 ```
 
 **Events:** `Product Viewed`, `Product Added`, `Product Removed`, `Cart Viewed`, `Checkout Started`, `Order Completed`
@@ -41,10 +40,12 @@ Tools auto-map to GA4, Facebook CAPI, etc.
 ## System Properties (Triggers)
 
 ```
-{{system.page.url}}   {{system.page.title}}   {{system.page.referrer}}
-{{system.device.ip}}  {{system.device.userAgent}}  {{system.device.language}}
-{{system.cookies.name}}  {{client.__zarazTrack.userId}}
-```
+
+{{system.page.url}} {{system.page.title}} {{system.page.referrer}}
+{{system.device.ip}} {{system.device.userAgent}} {{system.device.language}}
+{{system.cookies.name}} {{client.__zarazTrack.userId}}
+
+````
 
 ## zaraz.consent
 
@@ -61,7 +62,7 @@ zaraz.consent.set('marketing', true)
 zaraz.consent.addEventListener('consentChanged', () => {
   if (zaraz.consent.getAll().marketing) zaraz.track('marketing_consent_granted')
 })
-```
+````
 
 **Flow:** Configure purposes in dashboard → Map tools to purposes → Show modal/set programmatically → Tools fire when allowed
 

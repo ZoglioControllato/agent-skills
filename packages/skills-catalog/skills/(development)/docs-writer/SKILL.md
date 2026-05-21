@@ -1,39 +1,39 @@
 ---
 name: docs-writer
-description: Write, review, and edit documentation files with consistent structure, tone, and technical accuracy. Use when creating docs, reviewing markdown files, writing READMEs, updating `/docs` directories, or when user says "write documentation", "review this doc", "improve this README", "create a guide", or "edit markdown". Do NOT use for code comments, inline JSDoc, or API reference generation.
+description: Escreve, revisa e edita documentação com estrutura, tom e precisão técnica consistentes. Use quando criar docs, revisar arquivos markdown, escrever READMEs, atualizar diretórios `/docs` ou quando o usuário disser "escrever documentação", "revisar este doc", "melhorar este README", "criar um guia" ou "editar markdown". NÃO use para comentários de código, JSDoc inline ou geração de referência de API.
 ---
 
-# `docs-writer` skill instructions
+# Instruções da skill `docs-writer`
 
-As an expert technical writer and editor, your goal is to produce and refine documentation that is accurate, clear, consistent, and easy for users to understand. You must adhere to the documentation contribution process outlined in `CONTRIBUTING.md`.
+Como escritor técnico e editor experiente, seu objetivo é produzir e refinar documentação precisa, clara, consistente e fácil de entender. Você deve seguir o processo de contribuição descrito em `CONTRIBUTING.md`.
 
-## Step 1: Understand the goal and create a plan
+## Etapa 1: Entender o objetivo e criar um plano
 
-1. **Clarify the request:** Fully understand the user's documentation request. Identify the core feature, command, or concept that needs work.
-2. **Differentiate the task:** Determine if the request is primarily for **writing** new content or **editing** existing content. If the request is ambiguous (e.g., "fix the docs"), ask the user for clarification.
-3. **Formulate a plan:** Create a clear, step-by-step plan for the required changes.
+1. **Esclareça o pedido:** Entenda por completo o que o usuário quer na documentação. Identifique a feature, comando ou conceito central.
+2. **Diferencie a tarefa:** Determine se o foco é **escrever** conteúdo novo ou **editar** o existente. Se for ambíguo (ex.: “arrumar a doc”), peça esclarecimento.
+3. **Formule um plano:** Crie um plano claro, passo a passo, para as mudanças necessárias.
 
-## Step 2: Investigate and gather information
+## Etapa 2: Investigar e reunir informações
 
-1. **Read the code:** Thoroughly examine the relevant codebase, primarily within the `packages/` directory, to ensure your work is backed by the implementation and to identify any gaps.
-2. **Identify files:** Locate the specific documentation files in the `docs/` directory that need to be modified. Always read the latest version of a file before you begin work.
-3. **Check for connections:** Consider related documentation. If you change a command's behavior, check for other pages that reference it. If you add a new page, check if `docs/sidebar.json` needs to be updated. Make sure all links are up to date.
+1. **Leia o código:** Examine o código relevante, principalmente em `packages/`, para fundamentar o texto e identificar lacunas.
+2. **Identifique arquivos:** Localize os arquivos em `docs/` que precisam mudar. Sempre leia a versão mais recente antes de começar.
+3. **Verifique conexões:** Considere documentação relacionada. Se alterar o comportamento de um comando, procure outras páginas que o citam. Se adicionar página, veja se `docs/sidebar.json` precisa atualizar. Garanta links atualizados.
 
-## Step 3: Write or edit the documentation
+## Etapa 3: Escrever ou editar a documentação
 
-1. **Follow the style guide:** Adhere to the rules in `references/style-guide.md`. Read this file to understand the project's documentation standards.
-2. Ensure the new documentation accurately reflects the features in the code.
-3. **Use `replace` and `write_file`:** Use file system tools to apply your planned changes. For small edits, `replace` is preferred. For new files or large rewrites, `write_file` is more appropriate.
+1. **Siga o guia de estilo:** Obedeça às regras em `references/style-guide.md`. Leia esse arquivo para entender os padrões do projeto.
+2. Garanta que a nova documentação reflita fielmente o que o código faz.
+3. **Use `replace` e `write_file`:** Use ferramentas de sistema de arquivos para aplicar mudanças. Para edições pequenas, prefira `replace`. Para arquivos novos ou reescritas grandes, `write_file` é mais adequado.
 
-### Sub-step: Editing existing documentation (as clarified in Step 1)
+### Subetapa: Editar documentação existente (conforme Etapa 1)
 
-- **Gaps:** Identify areas where the documentation is incomplete or no longer reflects existing code.
-- **Tone:** Ensure the tone is active and engaging, not passive.
-- **Clarity:** Correct awkward wording, spelling, and grammar. Rephrase sentences to make them easier for users to understand.
-- **Consistency:** Check for consistent terminology and style across all edited documents.
+- **Lacunas:** Onde a documentação está incompleta ou desatualizada em relação ao código.
+- **Tom:** Tom ativo e envolvente, não passivo.
+- **Clareza:** Corrija frases estranhas, ortografia e gramática. Reformule para facilitar a leitura.
+- **Consistência:** Terminologia e estilo uniformes entre os documentos editados.
 
-## Step 4: Verify and finalize
+## Etapa 4: Verificar e finalizar
 
-1. **Review your work:** After making changes, re-read the files to ensure the documentation is well-formatted, and the content is correct based on existing code.
-2. **Link verification:** Verify the validity of all links in the new content. Verify the validity of existing links leading to the page with the new content or deleted content.
-3. **Offer to run npm format:** Once all changes are complete, offer to run the project's formatting script to ensure consistency by proposing the command: `npm run format`
+1. **Revise o trabalho:** Depois das mudanças, releia os arquivos garantindo formatação e conteúdo alinhados ao código.
+2. **Verificação de links:** Confirme a validade dos links no conteúdo novo e dos que apontam para páginas alteradas ou removidas.
+3. **Ofereça rodar format:** Ao terminar, ofereça executar o script de formatação do projeto sugerindo: `npm run format`

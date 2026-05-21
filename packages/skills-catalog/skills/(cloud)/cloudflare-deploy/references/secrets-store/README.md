@@ -1,77 +1,77 @@
-# Cloudflare Secrets Store
+# Loja de segredos Cloudflare
 
-Account-level encrypted secret management for Workers and AI Gateway.
+Gerenciamento de segredos criptografados em nível de conta para Workers e AI Gateway.
 
-## Overview
+## Visão geral
 
-**Secrets Store**: Centralized, account-level secrets, reusable across Workers
-**Worker Secrets**: Per-Worker secrets (`wrangler secret put`)
+**Repositório de segredos**: segredos centralizados em nível de conta, reutilizáveis entre trabalhadores
+**Segredos do trabalhador**: segredos por trabalhador (`wrangler secret put`)
 
-### Architecture
+### Arquitetura
 
-- **Store**: Container (1/account in beta)
-- **Secret**: String ≤1024 bytes
-- **Scopes**: Permission boundaries controlling access
-  - `workers`: For Workers runtime access
-  - `ai-gateway`: For AI Gateway access
-  - Secrets must have correct scope for binding to work
-- **Bindings**: Connect secrets via `env` object
+- **Loja**: Container (1/conta em beta)
+- **Segredo**: String ≤1024 bytes
+- **Escopos**: limites de permissão que controlam o acesso
+- `workers`: Para acesso ao tempo de execução dos Workers
+- `ai-gateway`: Para acesso ao AI Gateway
+- Os segredos devem ter escopo correto para vinculação ao trabalho
+- **Bindings**: Conecte segredos por meio do objeto `env`
 
-**Regional Availability**: Global except China Network (unavailable)
+**Disponibilidade Regional**: Global, exceto Rede da China (indisponível)
 
-### Access Control
+### Controle de acesso
 
-- **Super Admin**: Full access
-- **Admin**: Create/edit/delete secrets, view metadata
-- **Deployer**: View metadata + bindings
-- **Reporter**: View metadata only
+- **Super Admin**: acesso total
+- **Administrador**: criar/editar/excluir segredos, visualizar metadados
+- **Implantador**: visualizar metadados + vinculações
+- **Repórter**: visualizar apenas metadados
 
-API Token permissions: `Account Secrets Store Edit/Read`
+Permissões de token de API: `Edição/leitura do armazenamento de segredos da conta`
 
-### Limits (Beta)
+### Limites (Beta)
 
-- 100 secrets/account
-- 1 store/account
-- 1024 bytes max/secret
-- Production secrets count toward limit
+- 100 segredos/conta
+- 1 loja/conta
+- 1024 bytes máximo/secreto
+- Segredos de produção contam até o limite
 
-## When to Use
+## Quando usar
 
-**Use Secrets Store when:**
+**Use o Secrets Store quando:**
 
-- Multiple Workers share same credential
-- Centralized management needed
-- Compliance requires audit trail
-- Team collaboration on secrets
+- Vários trabalhadores compartilham a mesma credencial
+- Gerenciamento centralizado necessário
+- Conformidade requer trilha de auditoria
+- Colaboração em equipe em segredos
 
-**Use Worker Secrets when:**
+**Use segredos de trabalho quando:**
 
-- Secret unique to one Worker
-- Simple single-Worker project
-- No cross-Worker sharing needed
+- Segredo exclusivo para um Worker
+- Projeto simples de trabalhador único
+- Não é necessário compartilhamento entre trabalhadores
 
-## In This Reference
+## Nesta referência
 
-### Reading Order by Task
+### Ordem de leitura por tarefa
 
-| Task                     | Start Here                   | Then Read        |
-| ------------------------ | ---------------------------- | ---------------- |
-| Quick overview           | README.md                    | -                |
-| First-time setup         | README.md → configuration.md | api.md           |
-| Add secret to Worker     | configuration.md             | api.md           |
-| Implement access pattern | api.md                       | patterns.md      |
-| Debug errors             | gotchas.md                   | api.md           |
-| Secret rotation          | patterns.md                  | configuration.md |
-| Best practices           | gotchas.md                   | patterns.md      |
+| Tarefa                       | Comece aqui                 | Então leia      |
+| ---------------------------- | --------------------------- | --------------- |
+| Visão geral rápida           | README.md                   | -               |
+| Configuração inicial         | README.md → configuração.md | API.md          |
+| Adicionar segredo ao Worker  | configuração.md             | API.md          |
+| Implementar padrão de acesso | API.md                      | padrões.md      |
+| Erros de depuração           | pegadinhas.md               | API.md          |
+| Rotação secreta              | padrões.md                  | configuração.md |
+| Melhores práticas            | pegadinhas.md               | padrões.md      |
 
-### Files
+### Arquivos
 
-- [configuration.md](./configuration.md) - Wrangler commands, binding config
-- [api.md](./api.md) - Binding API, get/put/delete operations
-- [patterns.md](./patterns.md) - Rotation, encryption, access control
-- [gotchas.md](./gotchas.md) - Security issues, limits, best practices
+- [configuration.md](./configuration.md) - Comandos do Wrangler, configuração de ligação
+- [api.md](./api.md) - API de vinculação, operações de obtenção/colocação/exclusão
+- [patterns.md](./patterns.md) - Rotação, criptografia, controle de acesso
+- [gotchas.md](./gotchas.md) - Problemas de segurança, limites, práticas recomendadas
 
-## See Also
+## Veja também
 
-- [workers](../workers/) - Worker bindings integration
-- [wrangler](../wrangler/) - CLI secret management commands
+- [workers](../workers/) - Integração de vinculações de trabalhadores
+- [wrangler](../wrangler/) - Comandos de gerenciamento de segredos CLI

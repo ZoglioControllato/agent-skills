@@ -1,20 +1,20 @@
 # Cloudflare Queues
 
-Flexible message queuing for async task processing with guaranteed at-least-once delivery and configurable batching.
+Filas de mensagens flexíveis para processamento assíncrono com entrega at-least-once garantida e lotes configuráveis.
 
-## Overview
+## Visão geral
 
-Queues provide:
+As Queues oferecem:
 
-- At-least-once delivery guarantee
-- Push-based (Worker) and pull-based (HTTP) consumers
-- Configurable batching and retries
+- Garantia de entrega at-least-once
+- Consumidores push (Worker) e pull (HTTP)
+- Lotes, retentativas e configuração flexíveis
 - Dead Letter Queues (DLQ)
-- Delays up to 12 hours
+- Atrasos de até 12 horas
 
-**Use cases:** Async processing, API buffering, rate limiting, event workflows, deferred jobs
+**Casos de uso:** processamento assíncrono, buffer de API, rate limiting, fluxos por eventos, jobs adiados
 
-## Quick Start
+## Início rápido
 
 ```bash
 wrangler queues create my-queue
@@ -40,60 +40,62 @@ export default {
 }
 ```
 
-## Critical Warnings
+## Avisos críticos
 
-**Before using Queues, understand these production mistakes:**
+**Antes de usar Queues, entenda estes erros comuns em produção:**
 
-1. **Uncaught errors retry ENTIRE batch** (not just failed message). Always use per-message try/catch.
-2. **Messages not ack'd/retry'd will auto-retry forever** until max_retries. Always explicitly handle each message.
+1. **Erros não tratados repetem o LOTE INTEIRO** (não só a mensagem com falha). Use sempre try/catch por mensagem.
+2. **Mensagens sem ack/retry explícito repetem automaticamente** até `max_retries`. Trate cada mensagem explicitamente.
 
-See [gotchas.md](./gotchas.md) for detailed solutions.
+Consulte [gotchas.md](./gotchas.md) para soluções detalhadas.
 
-## Core Operations
+## Operações principais
 
-| Operation                 | Purpose             | Limit           |
+| Operação                  | Finalidade          | Limite          |
 | ------------------------- | ------------------- | --------------- |
-| `send(body, options?)`    | Publish message     | 128 KB          |
-| `sendBatch(messages)`     | Bulk publish        | 100 msgs/256 KB |
-| `message.ack()`           | Acknowledge success | -               |
-| `message.retry(options?)` | Retry with delay    | -               |
-| `batch.ackAll()`          | Ack entire batch    | -               |
+| `send(body, options?)`    | Publicar mensagem   | 128 KB          |
+| `sendBatch(messages)`     | Publicação em lote  | 100 msgs/256 KB |
+| `message.ack()`           | Confirmar sucesso   | -               |
+| `message.retry(options?)` | Repetir com atraso  | -               |
+| `batch.ackAll()`          | Ack do lote inteiro | -               |
 
-## Architecture
+## Arquitetura
 
 ```
 [Producer Worker] → [Queue] → [Consumer Worker/HTTP] → [Processing]
 ```
 
-- Max 10,000 queues per account
-- 5,000 msgs/second per queue
-- 4-14 day retention (configurable)
+- Até 10.000 filas por conta
+- 5.000 msgs/segundo por fila
+- Retenção de 4 a 14 dias (configurável)
 
-## Reading Order
+## Ordem de leitura
 
-**New to Queues?** Start here:
+**Novo em Queues?** Comece aqui:
 
-1. [configuration.md](./configuration.md) - Set up queues, bindings, consumers
-2. [api.md](./api.md) - Send messages, handle batches, ack/retry patterns
-3. [patterns.md](./patterns.md) - Real-world examples and integrations
-4. [gotchas.md](./gotchas.md) - Critical warnings and troubleshooting
+1. [configuration.md](./configuration.md) — Configurar filas, bindings e consumidores
+2. [api.md](./api.md) — Enviar mensagens, tratar lotes, padrões ack/retry
+3. [patterns.md](./patterns.md) — Exemplos reais e integrações
+4. [gotchas.md](./gotchas.md) — Avisos críticos e resolução de problemas
 
-**Task-based routing:**
+**Roteamento por tarefa:**
 
-- Setup queue → [configuration.md](./configuration.md)
-- Send/receive messages → [api.md](./api.md)
-- Implement specific pattern → [patterns.md](./patterns.md)
-- Debug/troubleshoot → [gotchas.md](./gotchas.md)
+- Configurar fila → [configuration.md](./configuration.md)
+- Enviar/receber mensagens → [api.md](./api.md)
+- Implementar padrão específico → [patterns.md](./patterns.md)
+- Depurar → [gotchas.md](./gotchas.md)
 
-## In This Reference
+## Nesta referência
 
-- [configuration.md](./configuration.md) - wrangler.jsonc setup, producer/consumer config, DLQ, content types
-- [api.md](./api.md) - Send/batch methods, queue handler, ack/retry rules, type-safe patterns
-- [patterns.md](./patterns.md) - Async tasks, buffering, rate limiting, D1/Workflows/DO integrations
-- [gotchas.md](./gotchas.md) - Critical batch error handling, idempotency, error classification
+- [configuration.md](./configuration.md) — wrangler.jsonc, config de produtor/consumidor, DLQ, tipos de conteúdo
+- [api.md](./api.md) — Envio/lote, handler de fila, regras ack/retry, padrões type-safe
+- [patterns.md](./patterns.md) — Tarefas assíncronas, buffer, rate limiting, integrações D1/Workflows/DO
+- [gotchas.md](./gotchas.md) — Erros em lote, idempotência, classificação de erros
 
-## See Also
+## Ver também
 
-- [workers](../workers/) - Worker runtime for producers/consumers
-- [r2](../r2/) - Process R2 event notifications via queues
-- [d1](../d1/) - Batch write to D1 from queue consumers
+- [workers](../workers/) — Runtime dos Workers para produtores/consumidores
+- [r2](../r2/) — Processar notificações de eventos R2 via filas
+- [d1](../d1/) — Escrita em lote no D1 a partir de consumidores de fila
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

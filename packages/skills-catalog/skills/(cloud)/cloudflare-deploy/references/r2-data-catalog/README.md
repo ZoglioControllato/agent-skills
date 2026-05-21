@@ -1,157 +1,154 @@
-# Cloudflare R2 Data Catalog Skill Reference
+# Referência de habilidades do catálogo de dados Cloudflare R2
 
-Expert guidance for Cloudflare R2 Data Catalog - Apache Iceberg catalog built into R2 buckets.
+Orientação especializada para catálogo de dados Cloudflare R2 – catálogo Apache Iceberg integrado em buckets R2.
 
-## Reading Order
+## Ordem de leitura
 
-**New to R2 Data Catalog?** Start here:
+**Novo no catálogo de dados R2?** Comece aqui:
 
-1. Read "What is R2 Data Catalog?" and "When to Use" below
-2. [configuration.md](configuration.md) - Enable catalog, create tokens
-3. [patterns.md](patterns.md) - PyIceberg setup and common patterns
-4. [api.md](api.md) - REST API reference as needed
-5. [gotchas.md](gotchas.md) - Troubleshooting when issues arise
+1. Leia "O que é o Catálogo de Dados R2?" e "Quando usar" abaixo
+2. [configuration.md](configuration.md) - Habilitar catálogo, criar tokens
+3. [patterns.md](patterns.md) - Configuração do PyIceberg e padrões comuns
+4. [api.md](api.md) - referência da API REST conforme necessário
+5. [gotchas.md](gotchas.md) - Solução de problemas quando surgem problemas
 
-**Quick reference?** Jump to:
+**Referência rápida?** Vá para:
 
-- [Enable catalog on bucket](configuration.md#enable-catalog-on-bucket)
-- [PyIceberg connection pattern](patterns.md#pyiceberg-connection-pattern)
-- [Permission errors](gotchas.md#permission-errors)
+- [Ativar catálogo no bucket](configuration.md#enable-catalog-on-bucket)
+- [Padrão de conexão PyIceberg](patterns.md#pyiceberg-connection-pattern)
+- [Erros de permissão](gotchas.md#permission-errors)
 
-## What is R2 Data Catalog?
+## O que é o Catálogo de Dados R2?
 
-R2 Data Catalog is a **managed Apache Iceberg REST catalog** built directly into R2 buckets. It provides:
+O R2 Data Catalog é um **catálogo REST gerenciado do Apache Iceberg** integrado diretamente em buckets R2. Ele fornece:
 
-- **Apache Iceberg tables** - ACID transactions, schema evolution, time-travel queries
-- **Zero-egress costs** - Query from any cloud/region without data transfer fees
-- **Standard REST API** - Works with Spark, PyIceberg, Snowflake, Trino, DuckDB
-- **No infrastructure** - Fully managed, no catalog servers to run
-- **Public beta** - Available to all R2 subscribers, no extra cost beyond R2 storage
+- **Tabelas Apache Iceberg** - Transações ACID, evolução de esquema, consultas de viagem no tempo
+- **Custos de saída zero** - Consulta de qualquer nuvem/região sem taxas de transferência de dados
+- **API REST padrão** - Funciona com Spark, PyIceberg, Snowflake, Trino, DuckDB
+- **Sem infraestrutura** - Totalmente gerenciado, sem servidores de catálogo para executar
+- **Beta público** - Disponível para todos os assinantes R2, sem custo extra além do armazenamento R2
 
-### What is Apache Iceberg?
+### O que é Apache Iceberg?
 
-Open table format for analytics datasets in object storage. Features:
+Formato de tabela aberto para conjuntos de dados analíticos no armazenamento de objetos. Recursos:
 
-- **ACID transactions** - Safe concurrent reads/writes
-- **Metadata optimization** - Fast queries without full scans
-- **Schema evolution** - Add/rename/delete columns without rewrites
-- **Time-travel** - Query historical snapshots
-- **Partitioning** - Organize data for efficient queries
+- **Transações ACID** - Leituras/gravações simultâneas seguras
+- **Otimização de metadados** - Consultas rápidas sem verificações completas
+- **Evolução do esquema** - Adicionar/renomear/excluir colunas sem reescrever
+- **Viagem no tempo** - Consultar instantâneos históricos
+- **Particionamento** - Organize dados para consultas eficientes
 
-## When to Use
+## Quando usar
 
-**Use R2 Data Catalog for:**
+**Use o catálogo de dados R2 para:**
 
-- **Log analytics** - Store and query application/system logs
-- **Data lakes/warehouses** - Analytical datasets queried by multiple engines
-- **BI pipelines** - Aggregate data for dashboards and reports
-- **Multi-cloud analytics** - Share data across clouds without egress fees
-- **Time-series data** - Event streams, metrics, sensor data
+- **Análise de log** - Armazene e consulte logs de aplicativos/sistema
+- **Lagos/armazéns de dados** - Conjuntos de dados analíticos consultados por vários mecanismos
+- **Pipelines de BI** - Agregar dados para painéis e relatórios
+- **Análise multinuvem** - Compartilhe dados entre nuvens sem taxas de saída
+- **Dados de série temporal** - Fluxos de eventos, métricas, dados de sensores
 
-**Don't use for:**
+**Não use para:**
 
-- **Transactional workloads** - Use D1 or external database instead
-- **Sub-second latency** - Iceberg optimized for batch/analytical queries
-- **Small datasets (<1GB)** - Setup overhead not worth it
-- **Unstructured data** - Store files directly in R2, not as Iceberg tables
+- **Cargas de trabalho transacionais** - Use D1 ou banco de dados externo
+- **Latência inferior a um segundo** - Iceberg otimizado para consultas analíticas/em lote
+- **Conjuntos de dados pequenos (<1 GB)** - A sobrecarga de configuração não vale a pena
+- **Dados não estruturados** - Armazene arquivos diretamente no R2, não como tabelas Iceberg
 
-## Architecture
+## Arquitetura```
 
-```
 ┌─────────────────────────────────────────────────┐
-│  Query Engines                                  │
-│  (PyIceberg, Spark, Trino, Snowflake, DuckDB)  │
+│ Query Engines │
+│ (PyIceberg, Spark, Trino, Snowflake, DuckDB) │
 └────────────────┬────────────────────────────────┘
-                 │
-                 │ REST API (OAuth2 token)
-                 ▼
+│
+│ REST API (OAuth2 token)
+▼
 ┌─────────────────────────────────────────────────┐
-│  R2 Data Catalog (Managed Iceberg REST Catalog)│
-│  • Namespace/table metadata                     │
-│  • Transaction coordination                     │
-│  • Snapshot management                          │
+│ R2 Data Catalog (Managed Iceberg REST Catalog)│
+│ • Namespace/table metadata │
+│ • Transaction coordination │
+│ • Snapshot management │
 └────────────────┬────────────────────────────────┘
-                 │
-                 │ Vended credentials
-                 ▼
+│
+│ Vended credentials
+▼
 ┌─────────────────────────────────────────────────┐
-│  R2 Bucket Storage                              │
-│  • Parquet data files                           │
-│  • Metadata files                               │
-│  • Manifest files                               │
+│ R2 Bucket Storage │
+│ • Parquet data files │
+│ • Metadata files │
+│ • Manifest files │
 └─────────────────────────────────────────────────┘
-```
 
-**Key concepts:**
+````
+**Conceitos principais:**
 
-- **Catalog URI** - REST endpoint for catalog operations (e.g., `https://<account-id>.r2.cloudflarestorage.com/iceberg/<bucket>`)
-- **Warehouse** - Logical grouping of tables (typically same as bucket name)
-- **Namespace** - Schema/database containing tables (e.g., `logs`, `analytics`)
-- **Table** - Iceberg table with schema, data files, snapshots
-- **Vended credentials** - Temporary S3 credentials catalog provides for data access
+- **URI de catálogo** – endpoint REST para operações de catálogo (por exemplo, `https://<account-id>.r2.cloudflarestorage.com/iceberg/<bucket>`)
+- **Warehouse** – Agrupamento lógico de tabelas (normalmente igual ao nome do bucket)
+- **Namespace** - Esquema/banco de dados contendo tabelas (por exemplo, `logs`, `analytics`)
+- **Tabela** - Tabela Iceberg com esquema, arquivos de dados, instantâneos
+- **Credenciais vendidas** - O catálogo de credenciais temporárias do S3 fornece acesso a dados
 
-## Limits
+## Limites
 
-| Resource               | Limit                  | Notes                             |
+| Recurso | Limite | Notas |
 | ---------------------- | ---------------------- | --------------------------------- |
-| Namespaces per catalog | No hard limit          | Organize tables logically         |
-| Tables per namespace   | <10,000 recommended    | Performance degrades beyond this  |
-| Files per table        | <100,000 recommended   | Run compaction regularly          |
-| Snapshots per table    | Configurable retention | Expire >7 days old                |
-| Partitions per table   | 100-1,000 optimal      | Too many = slow metadata ops      |
-| Table size             | Same as R2 bucket      | 10GB-10TB+ common                 |
-| API rate limits        | Standard R2 API limits | Shared with R2 storage operations |
-| Target file size       | 128-512 MB             | After compaction                  |
+| Namespaces por catálogo | Sem limite rígido | Organize tabelas logicamente |
+| Tabelas por namespace | <10.000 recomendado | O desempenho degrada além disso |
+| Arquivos por tabela | <100.000 recomendado | Execute a compactação regularmente |
+| Instantâneos por mesa | Retenção configurável | Expira >7 dias |
+| Partições por tabela | 100-1.000 ideal | Muitos = operações lentas de metadados |
+| Tamanho da mesa | Igual ao balde R2 | 10GB-10TB+ comum |
+| Limites de taxa API | Limites da API R2 padrão | Compartilhado com operações de armazenamento R2 |
+| Tamanho do arquivo alvo | 128-512MB | Após compactação |
 
-## Current Status
+## Status atual
 
-**Public Beta** (as of Jan 2026)
+**Beta público** (em janeiro de 2026)
 
-- Available to all R2 subscribers
-- No extra cost beyond standard R2 storage/operations
-- Production-ready, but breaking changes possible
-- Supports: namespaces, tables, snapshots, compaction, time-travel, table maintenance
+- Disponível para todos os assinantes R2
+- Sem custo extra além do armazenamento/operações R2 padrão
+- Pronto para produção, mas são possíveis alterações significativas
+- Suporta: namespaces, tabelas, instantâneos, compactação, viagem no tempo, manutenção de tabelas
 
-## Decision Tree: Is R2 Data Catalog Right For You?
+## Árvore de decisão: o catálogo de dados R2 é ideal para você?```
+Iniciar → Precisa de análises de dados de armazenamento de objetos?
+│
+├─ Não → Use R2 diretamente para armazenamento de objetos
+│
+└─ Sim → Conjunto de dados >1GB com esquema estruturado?
+│
+├─ Não → Muito pequeno, use consultas R2 + ad-hoc
+│
+└─ Sim → Precisa de transações ACID ou evolução de esquema?
+│
+├─ Não → Considere soluções mais simples (Parquet em R2)
+│
+└─ Sim → Precisa de acesso multinuvem/multiferramentas?
+│
+├─ Não → D1 ou banco de dados externo pode ser mais simples
+│
+└─ Sim → ✅ Usar Catálogo de Dados R2
+````
 
-```
-Start → Need analytics on object storage data?
-         │
-         ├─ No → Use R2 directly for object storage
-         │
-         └─ Yes → Dataset >1GB with structured schema?
-                  │
-                  ├─ No → Too small, use R2 + ad-hoc queries
-                  │
-                  └─ Yes → Need ACID transactions or schema evolution?
-                           │
-                           ├─ No → Consider simpler solutions (Parquet on R2)
-                           │
-                           └─ Yes → Need multi-cloud/multi-tool access?
-                                    │
-                                    ├─ No → D1 or external DB may be simpler
-                                    │
-                                    └─ Yes → ✅ Use R2 Data Catalog
-```
+**Verificação rápida:** Se você responder "sim" a todos:
 
-**Quick check:** If you answer "yes" to all:
+- Conjunto de dados> 1 GB e crescendo
+- Dados estruturados/tabulares (logs, eventos, métricas)
+- Múltiplas ferramentas de consulta ou ambientes em nuvem
+- Precisa de controle de versão, alterações de esquema ou acesso simultâneo
 
-- Dataset >1GB and growing
-- Structured/tabular data (logs, events, metrics)
-- Multiple query tools or cloud environments
-- Need versioning, schema changes, or concurrent access
+→ O R2 Data Catalog é uma boa opção.
 
-→ R2 Data Catalog is a good fit.
+## Nesta referência
 
-## In This Reference
+- **[configuration.md](configuration.md)** - Habilitar catálogo, criar tokens de API, conectar clientes
+- **[api.md](api.md)** - Endpoints REST, operações, manutenção
+- **[patterns.md](patterns.md)** - Exemplos de PyIceberg, casos de uso comuns
+- **[gotchas.md](gotchas.md)** - Solução de problemas, práticas recomendadas, limitações
 
-- **[configuration.md](configuration.md)** - Enable catalog, create API tokens, connect clients
-- **[api.md](api.md)** - REST endpoints, operations, maintenance
-- **[patterns.md](patterns.md)** - PyIceberg examples, common use cases
-- **[gotchas.md](gotchas.md)** - Troubleshooting, best practices, limitations
+## Veja também
 
-## See Also
-
-- [Cloudflare R2 Data Catalog Docs](https://developers.cloudflare.com/r2/data-catalog/)
-- [Apache Iceberg Docs](https://iceberg.apache.org/)
-- [PyIceberg Docs](https://py.iceberg.apache.org/)
+- [Documentos do catálogo de dados Cloudflare R2](https://developers.cloudflare.com/r2/data-catalog/)
+- [Documentos do Apache Iceberg](https://iceberg.apache.org/)
+- [Documentos PyIceberg](https://py.iceberg.apache.org/)

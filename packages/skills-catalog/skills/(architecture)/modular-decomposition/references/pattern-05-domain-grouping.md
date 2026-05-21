@@ -1,21 +1,21 @@
-# Domain Identification and Grouping
+# Identificação e agrupamento de domínio
 
-This skill groups architectural components into logical domains (business areas) to prepare for creating domain services in a service-based architecture.
+Esta habilidade agrupa componentes arquitetônicos em domínios lógicos (áreas de negócios) para preparar a criação de serviços de domínio em uma arquitetura baseada em serviços.
 
-## How to Use
+## Como usar
 
-### Quick Start
+### Início rápido
 
-Request analysis of your codebase:
+Solicite análise da sua base de código:
 
-- **"Group components into logical domains"**
-- **"Identify component domains for service-based architecture"**
-- **"Create domain groupings from components"**
-- **"Analyze which components belong to which domains"**
+- **"Agrupar componentes em domínios lógicos"**
+- **"Identificar domínios de componentes para arquitetura baseada em serviços"**
+- **"Criar agrupamentos de domínio a partir de componentes"**
+- **"Analise quais componentes pertencem a quais domínios"**
 
-### Usage Examples
+### Exemplos de uso
 
-**Example 1: Domain Identification**
+**Exemplo 1: Identificação de Domínio**
 
 ```
 User: "Group components into logical domains"
@@ -28,7 +28,7 @@ The skill will:
 5. Suggest namespace refactoring for domain alignment
 ```
 
-**Example 2: Domain Analysis**
+**Exemplo 2: Análise de Domínio**
 
 ```
 User: "Which domain should the billing components belong to?"
@@ -40,7 +40,7 @@ The skill will:
 4. Recommend domain assignment
 ```
 
-**Example 3: Domain Refactoring**
+**Exemplo 3: Refatoração de Domínio**
 
 ```
 User: "What namespace refactoring is needed to align components with domains?"
@@ -52,107 +52,99 @@ The skill will:
 4. Create refactoring plan
 ```
 
-### Step-by-Step Process
+### Processo passo a passo
 
-1. **Identify Domains**: Analyze business capabilities and component relationships
-2. **Group Components**: Assign components to appropriate domains
-3. **Validate Groupings**: Ensure components fit well in their domains
-4. **Refactor Namespaces**: Align component namespaces with domains
-5. **Create Domain Map**: Visualize domain structure and component groupings
+1. **Identificar domínios**: analisar recursos de negócios e relacionamentos de componentes
+2. **Componentes do grupo**: atribua componentes aos domínios apropriados
+3. **Validar agrupamentos**: garantir que os componentes se encaixem bem em seus domínios
+4. **Refatorar Namespaces**: Alinhe namespaces de componentes com domínios
+5. **Criar mapa de domínio**: visualizar estrutura de domínio e agrupamentos de componentes
 
-## When to Use
+## Quando usar
 
-Apply this skill when:
+Aplique esta habilidade quando:
 
-- After identifying, sizing, and analyzing component dependencies
-- Before creating domain services (Pattern 6)
-- When planning service-based architecture migration
-- Analyzing component relationships and business alignment
-- Preparing for domain-driven design implementation
-- Grouping components for better organization
+- Depois de identificar, dimensionar e analisar dependências de componentes
+- Antes de criar serviços de domínio (Padrão 6)
+- Ao planejar a migração da arquitetura baseada em serviços
+- Analisar relacionamentos de componentes e alinhamento de negócios
+- Preparação para implementação de design orientado a domínio
+- Agrupamento de componentes para melhor organização
 
-## Core Concepts
+## Conceitos Básicos
 
-### Domain Definition
+### Definição de Domínio
 
-A **domain** is a logical grouping of components that:
+Um **domínio** é um agrupamento lógico de componentes que:
 
-- Represents a distinct business capability or area
-- Contains related components that work together
-- Has clear boundaries and responsibilities
-- Can become a domain service in service-based architecture
+- Representa uma capacidade ou área de negócios distinta
+- Contém componentes relacionados que funcionam juntos
+- Tem limites e responsabilidades claros
+- Pode se tornar um serviço de domínio em arquitetura baseada em serviços
 
-**Examples**:
+**Exemplos**:
 
-- **Customer Domain**: Customer profile, billing, support contracts
-- **Ticketing Domain**: Ticket creation, assignment, routing, completion
-- **Reporting Domain**: Ticket reports, expert reports, financial reports
+- **Domínio do cliente**: perfil do cliente, faturamento, contratos de suporte
+- **Domínio de emissão de tickets**: criação, atribuição, roteamento, conclusão de tickets
+- **Domínio de relatórios**: relatórios de tickets, relatórios de especialistas, relatórios financeiros
 
-### Component Domain Relationship
+### Relacionamento de domínio de componente
 
-**One-to-Many**: A single domain contains multiple components
-
-```
+**Um para muitos**: um único domínio contém vários componentes```
 Domain: Customer
 ├── Component: Customer Profile
 ├── Component: Billing Payment
 ├── Component: Billing History
 └── Component: Support Contract
-```
 
-### Domain Manifestation
+````
+### Manifestação de Domínio
 
-Domains are physically manifested through **namespace structure**:
+Os domínios são manifestados fisicamente por meio de **estrutura de namespace**:
 
-**Before Domain Alignment**:
-
-```
+**Antes do alinhamento do domínio**:```
 services/billing/payment
 services/billing/history
 services/customer/profile
 services/supportcontract
-```
+````
 
-**After Domain Alignment**:
-
-```
+**Após o alinhamento do domínio**:```
 services/customer/billing/payment
 services/customer/billing/history
 services/customer/profile
 services/customer/supportcontract
-```
 
-Notice how all customer-related functionality is grouped under `.customer` domain.
+````
+Observe como todas as funcionalidades relacionadas ao cliente estão agrupadas no domínio `.customer`.
 
-## Analysis Process
+## Processo de análise
 
-### Phase 1: Identify Business Domains
+### Fase 1: Identificar domínios de negócios
 
-Analyze the codebase to identify distinct business domains:
+Analise a base de código para identificar domínios de negócios distintos:
 
-1. **Examine Component Responsibilities**
-   - Read component names and descriptions
-   - Understand what each component does
-   - Identify business capabilities
+1. **Examine as responsabilidades dos componentes**
+   - Leia nomes e descrições de componentes
+   - Entenda o que cada componente faz
+   - Identificar capacidades de negócios
 
-2. **Look for Business Language**
-   - Group components by business vocabulary
-   - Example: "billing", "payment", "invoice" → Financial domain
-   - Example: "customer", "profile", "contract" → Customer domain
+2. **Procure por idioma comercial**
+   - Agrupar componentes por vocabulário de negócios
+   - Exemplo: “faturamento”, “pagamento”, “fatura” → Domínio financeiro
+   - Exemplo: “cliente”, “perfil”, “contrato” → Domínio do cliente
 
-3. **Identify Domain Boundaries**
-   - Where do business concepts change?
-   - What are the distinct business areas?
-   - How do components relate to business capabilities?
+3. **Identificar limites de domínio**
+   - Onde mudam os conceitos de negócios?
+   - Quais são as áreas de negócio distintas?
+   - Como os componentes se relacionam com as capacidades de negócios?
 
-4. **Collaborate with Business Stakeholders**
-   - Validate domain identification with product owners
-   - Ensure domains align with business understanding
-   - Get feedback on domain boundaries
+4. **Colabore com as partes interessadas do negócio**
+   - Validar a identificação do domínio com os proprietários do produto
+   - Garantir que os domínios estejam alinhados com o entendimento do negócio
+   - Obtenha feedback sobre os limites do domínio
 
-**Example Domain Identification**:
-
-```markdown
+**Exemplo de identificação de domínio**:```markdown
 ## Identified Domains
 
 1. **Ticketing Domain** (ss.ticket)
@@ -177,35 +169,34 @@ Analyze the codebase to identify distinct business domains:
 5. **Shared Domain** (ss.shared)
    - Login
    - Notification
-```
+````
 
-### Phase 2: Group Components into Domains
+### Fase 2: Agrupar componentes em domínios
 
-Assign each component to an appropriate domain:
+Atribua cada componente a um domínio apropriado:
 
-1. **Analyze Component Functionality**
-   - What business capability does it support?
-   - What domain vocabulary does it use?
-   - What other components does it relate to?
+1. **Analisar a funcionalidade do componente**
+   - Que capacidade de negócios ele suporta?
+   - Que vocabulário de domínio ele usa?
+   - A que outros componentes se refere?
 
-2. **Check Component Relationships**
-   - Which components are frequently used together?
-   - What are the dependencies between components?
-   - Do components share data or workflows?
+2. **Verifique as relações dos componentes**
+   - Quais componentes são frequentemente usados juntos?
+   - Quais são as dependências entre os componentes?
+   - Os componentes compartilham dados ou fluxos de trabalho?
 
-3. **Assign to Domain**
-   - Place component in domain that best fits its functionality
-   - Ensure component aligns with domain's business language
-   - Verify component relationships support domain grouping
+3. **Atribuir ao domínio**
+   - Coloque o componente no domínio que melhor se adapta à sua funcionalidade
+   - Garantir que o componente esteja alinhado com a linguagem comercial do domínio
+   - Verifique se os relacionamentos dos componentes suportam o agrupamento de domínios
 
-4. **Handle Edge Cases**
-   - Components that don't fit clearly: Analyze more deeply
-   - Components that fit multiple domains: Choose primary domain
-   - Shared components: May belong to Shared domain
+4. **Lidar com casos extremos**
+   - Componentes que não se ajustam claramente: Analise mais profundamente
+   - Componentes que cabem em vários domínios: escolha o domínio principal
+   - Componentes compartilhados: podem pertencer ao domínio compartilhado
 
-**Example Component Grouping**:
+**Exemplo de agrupamento de componentes**:```markdown
 
-```markdown
 ## Component Domain Assignment
 
 ### Ticketing Domain (ss.ticket)
@@ -232,67 +223,65 @@ Assign each component to an appropriate domain:
 - Ticket Reports (ss.reporting.tickets)
 - Expert Reports (ss.reporting.experts)
 - Financial Reports (ss.reporting.financial)
-```
 
-### Phase 3: Validate Domain Groupings
+````
+### Fase 3: Validar agrupamentos de domínios
 
-Ensure components fit well in their assigned domains:
+Certifique-se de que os componentes se ajustem bem aos domínios atribuídos:
 
-1. **Check Cohesion**
-   - Do components in domain share business language?
-   - Are components frequently used together?
-   - Do components have direct relationships?
+1. **Verifique a coesão**
+   - Os componentes do domínio compartilham a linguagem comercial?
+   - Os componentes são frequentemente usados ​​juntos?
+   - Os componentes têm relações diretas?
 
-2. **Verify Boundaries**
-   - Are domain boundaries clear?
-   - Do components belong to only one domain?
-   - Are there components that don't fit anywhere?
+2. **Verifique os limites**
+   - Os limites do domínio estão claros?
+   - Os componentes pertencem a apenas um domínio?
+   - Existem componentes que não cabem em lugar nenhum?
 
-3. **Assess Completeness**
-   - Are all components assigned to a domain?
-   - Are domains cohesive and well-formed?
-   - Do domains represent distinct business capabilities?
+3. **Avaliar a integridade**
+   - Todos os componentes estão atribuídos a um domínio?
+   - Os domínios são coesos e bem formados?
+   - Os domínios representam capacidades empresariais distintas?
 
-4. **Get Stakeholder Validation**
-   - Review domain groupings with product owners
-   - Ensure domains align with business understanding
-   - Get feedback on domain boundaries
+4. **Obter validação das partes interessadas**
+   - Revise agrupamentos de domínio com proprietários de produtos
+   - Garantir que os domínios estejam alinhados com o entendimento do negócio
+   - Obtenha feedback sobre os limites do domínio
 
-**Validation Checklist**:
+**Lista de verificação de validação**:
 
-- [ ] All components assigned to a domain
-- [ ] Domains have clear boundaries
-- [ ] Components fit well in their domains
-- [ ] Domains represent distinct business capabilities
-- [ ] Stakeholders validate domain groupings
+- [] Todos os componentes atribuídos a um domínio
+- [] Os domínios têm limites claros
+- [] Componentes se ajustam bem em seus domínios
+- [] Domínios representam capacidades de negócios distintas
+- [] As partes interessadas validam agrupamentos de domínios
 
-### Phase 4: Refactor Namespaces for Domain Alignment
+### Fase 4: Refatorar Namespaces para Alinhamento de Domínio
 
-Align component namespaces with identified domains:
+Alinhe os namespaces dos componentes com os domínios identificados:
 
-1. **Compare Current vs Target Namespaces**
-   - Current: `services/billing/payment`
-   - Target: `services/customer/billing/payment`
-   - Change: Add `.customer` domain node
+1. **Compare namespaces atuais e de destino**
+   - Atual: `serviços/faturamento/pagamento`
+   - Alvo: `serviços/cliente/faturamento/pagamento`
+   - Alteração: Adicionar nó de domínio `.customer`
 
-2. **Identify Refactoring Needed**
-   - Which components need namespace changes?
-   - What domain nodes need to be added?
-   - Are there components already aligned?
+2. **Identificar a refatoração necessária**
+   - Quais componentes precisam de alterações no namespace?
+   - Quais nós de domínio precisam ser adicionados?
+   - Existem componentes já alinhados?
 
-3. **Create Refactoring Plan**
-   - List components needing namespace changes
-   - Specify target namespace for each
-   - Prioritize refactoring work
+3. **Criar plano de refatoração**
+   - Listar componentes que precisam de alterações no namespace
+   - Especifique o namespace de destino para cada
+   - Priorizar o trabalho de refatoração
 
-4. **Execute Refactoring**
-   - Update component namespaces
-   - Update imports/references
-   - Verify all references updated
+4. **Executar refatoração**
+   - Atualizar namespaces de componentes
+   - Atualizar importações/referências
+   - Verifique todas as referências atualizadas
 
-**Example Namespace Refactoring**:
-
-```markdown
+**Exemplo de refatoração de namespace**:```markdown
 ## Namespace Refactoring Plan
 
 ### Customer Domain Alignment
@@ -311,58 +300,57 @@ Align component namespaces with identified domains:
 | KB Maintenance | ss.kb.maintenance | ss.ticket.kb.maintenance | Add .ticket |
 | KB Search      | ss.kb.search      | ss.ticket.kb.search      | Add .ticket |
 | Survey         | ss.survey         | ss.ticket.survey         | Add .ticket |
-```
+````
 
-### Phase 5: Create Domain Map
+### Fase 5: Criar Mapa de Domínio
 
-Visualize domain structure and component groupings:
+Visualize a estrutura do domínio e os agrupamentos de componentes:
 
-1. **Create Domain Diagram**
-   - Show domains as boxes
-   - Show components within each domain
-   - Show relationships between domains
+1. **Criar Diagrama de Domínio**
+   - Mostrar domínios como caixas
+   - Mostrar componentes dentro de cada domínio
+   - Mostrar relacionamentos entre domínios
 
-2. **Document Domain Structure**
-   - List domains and their components
-   - Describe domain responsibilities
-   - Note domain boundaries
+2. **Estrutura do Domínio do Documento**
+   - Listar domínios e seus componentes
+   - Descrever as responsabilidades do domínio
+   - Observe os limites do domínio
 
-3. **Create Domain Inventory**
-   - Table of domains and components
-   - Component counts per domain
-   - Size metrics per domain
+3. **Criar inventário de domínio**
+   - Tabela de domínios e componentes
+   - Contagens de componentes por domínio
+   - Métricas de tamanho por domínio
 
-**Example Domain Map**:
+**Exemplo de mapa de domínio**:```markdown
 
-```markdown
 ## Domain Map
-```
 
+`````
 ┌─────────────────────────────────────┐
-│ Ticketing Domain (ss.ticket) │
+│ Domínio de emissão de ingressos (ss.ticket) │
 ├─────────────────────────────────────┤
-│ • Ticket Shared │
-│ • Ticket Maintenance │
-│ • Ticket Completion │
-│ • Ticket Assign │
-│ • Ticket Route │
-│ • KB Maintenance │
-│ • KB Search │
-│ • Survey │
+│ • Bilhete Compartilhado │
+│ • Manutenção de tickets │
+│ • Conclusão do ticket │
+│ • Atribuição de ingressos │
+│ • Rota do ingresso │
+│ • Manutenção da KB │
+│ • Pesquisa de KB │
+│ • Pesquisa │
 └─────────────────────────────────────┘
 │
-│ uses
+│ usos
 ▼
 ┌─────────────────────────────────────┐
-│ Customer Domain (ss.customer) │
+│ Domínio do cliente (ss.customer) │
 ├─────────────────────────────────────┤
-│ • Customer Profile │
-│ • Billing Payment │
-│ • Billing History │
-│ • Support Contract │
-└─────────────────────────────────────┘
+│ • Cliente
 
-````
+Perfil │
+│ • Pagamento de cobrança │
+│ • Histórico de cobrança │
+│ • Contrato de Suporte │
+└─────────────────────────────────────┘````
 
 ## Output Format
 
@@ -393,11 +381,10 @@ Visualize domain structure and component groupings:
 - Clear separation from Ticketing domain
 - Clear separation from Reporting domain
 - Shared components (Notification) used by all domains
-````
+`````
 
-### Component Domain Assignment Table
+### Tabela de Atribuição de Domínio de Componente```markdown
 
-```markdown
 ## Component Domain Assignment
 
 | Component          | Current Namespace     | Assigned Domain | Target Namespace                  |
@@ -407,11 +394,9 @@ Visualize domain structure and component groupings:
 | Ticket Maintenance | ss.ticket.maintenance | Ticketing       | ss.ticket.maintenance (no change) |
 | KB Maintenance     | ss.kb.maintenance     | Ticketing       | ss.ticket.kb.maintenance          |
 | Reporting Shared   | ss.reporting.shared   | Reporting       | ss.reporting.shared (no change)   |
-```
 
-### Namespace Refactoring Plan
-
-```markdown
+````
+### Plano de refatoração de namespace```markdown
 ## Namespace Refactoring Plan
 
 ### Priority: High
@@ -437,115 +422,107 @@ Visualize domain structure and component groupings:
 - All customer-related components aligned under `.customer` domain
 - Clearer domain boundaries
 - Easier to identify domain components
-```
+````
 
-### Domain Map Visualization
+### Visualização do mapa de domínio```markdown
 
-```markdown
 ## Domain Map
 
 ### Domain Structure
-```
 
-Customer Domain (ss.customer)
-├── Customer Profile
-├── Billing Payment
-├── Billing History
-└── Support Contract
+````
+Domínio do cliente (ss.customer)
+├── Perfil do Cliente
+├── Pagamento de cobrança
+├── Histórico de cobrança
+└── Contrato de Suporte
 
-Ticketing Domain (ss.ticket)
-├── Ticket Shared
-├── Ticket Maintenance
-├── Ticket Completion
-├── Ticket Assign
-├── Ticket Route
-├── KB Maintenance
-├── KB Search
-└── Survey
+Domínio de emissão de ingressos (ss.ticket)
+├── Bilhete Compartilhado
+├── Manutenção de tíquetes
+├── Conclusão do tíquete
+├── Atribuição de ingresso
+├── Rota de ingressos
+├── Manutenção da KB
+├── Pesquisa de KB
+└── Pesquisa
 
-Reporting Domain (ss.reporting)
-├── Reporting Shared
-├── Ticket Reports
-├── Expert Reports
-└── Financial Reports
+Domínio de relatório (ss.reporting)
+├── Relatório Compartilhado
+├── Relatórios de ingressos
+├── Relatórios de especialistas
+└── Relatórios Financeiros
 
-Admin Domain (ss.admin)
-├── User Maintenance
-└── Expert Profile
+Domínio administrativo (ss.admin)
+├── Manutenção do usuário
+└── Perfil de Especialista
 
-Shared Domain (ss.shared)
-├── Login
-└── Notification
-
-```
+Domínio Compartilhado (ss.shared)
+├── Entrar
+└── Notificação```
 
 ### Domain Relationships
 
-```
+````
 
-Ticketing Domain
-│ uses
-├─→ Shared Domain (Login, Notification)
-└─→ Customer Domain (Customer Profile)
+Domínio de emissão de ingressos
+│ usos
+├─→ Domínio Compartilhado (Login, Notificação)
+└─→ Domínio do Cliente (Perfil do Cliente)
 
-Customer Domain
-│ uses
-└─→ Shared Domain (Login, Notification)
+Domínio do cliente
+│ usos
+└─→ Domínio Compartilhado (Login, Notificação)
 
-Reporting Domain
-│ uses
-├─→ Ticketing Domain (Ticket data)
-├─→ Customer Domain (Customer data)
-└─→ Shared Domain (Login)
+Domínio de relatório
+│ usos
+├─→ Domínio de ticket (dados do ticket)
+├─→ Domínio do Cliente (dados do cliente)
+└─→ Domínio Compartilhado (Login)```
 
-```
+````
+## Lista de verificação de análise
 
-```
+**Identificação do domínio**:
 
-## Analysis Checklist
+- [] Responsabilidades dos componentes analisados
+- [] Capacidades de negócios identificadas
+- [] Domínios de negócios distintos identificados
+- [ ] Domínios validados com stakeholders
 
-**Domain Identification**:
+**Agrupamento de Componentes**:
 
-- [ ] Analyzed component responsibilities
-- [ ] Identified business capabilities
-- [ ] Identified distinct business domains
-- [ ] Validated domains with stakeholders
+- [] Atribuiu cada componente a um domínio
+- [] Relacionamentos de componentes analisados
+- [] Componentes garantidos se ajustam ao vocabulário do domínio
+- [] Casos extremos tratados (componentes compartilhados, atribuições pouco claras)
 
-**Component Grouping**:
+**Validação de domínio**:
 
-- [ ] Assigned each component to a domain
-- [ ] Analyzed component relationships
-- [ ] Ensured components fit domain vocabulary
-- [ ] Handled edge cases (shared components, unclear assignments)
+- [] Coesão verificada dentro dos domínios
+- [] Os limites do domínio verificado são claros
+- [] Garantiu todos os componentes atribuídos
+- [ ] Validado com as partes interessadas
 
-**Domain Validation**:
+**Refatoração de namespace**:
 
-- [ ] Checked cohesion within domains
-- [ ] Verified domain boundaries are clear
-- [ ] Ensured all components assigned
-- [ ] Validated with stakeholders
+- [] Comparação de namespaces atuais e de destino
+- [] Componentes identificados que precisam de refatoração
+- [] Plano de refatoração criado
+- [] Trabalho de refatoração priorizado
 
-**Namespace Refactoring**:
+**Mapeamento de Domínio**:
 
-- [ ] Compared current vs target namespaces
-- [ ] Identified components needing refactoring
-- [ ] Created refactoring plan
-- [ ] Prioritized refactoring work
+- [] Diagrama de domínio criado
+- [] Estrutura de domínio documentada
+- [] Tabela de inventário de domínio criada
+- [] Relacionamentos de domínio documentados
 
-**Domain Mapping**:
+## Notas de implementação
 
-- [ ] Created domain diagram
-- [ ] Documented domain structure
-- [ ] Created domain inventory table
-- [ ] Documented domain relationships
+### Para aplicativos Node.js/Express
 
-## Implementation Notes
-
-### For Node.js/Express Applications
-
-Domains typically organized in `services/` directory:
-
-```
+Domínios normalmente organizados no diretório `services/`:```
 services/
 ├── customer/              ← Customer Domain
 │   ├── profile/
@@ -562,60 +539,56 @@ services/
     ├── shared/
     ├── tickets/
     └── experts/
-```
+````
 
-### For Java Applications
+### Para aplicativos Java
 
-Domains identified by package structure:
-
-```
-com.company.customer       ← Customer Domain
+Domínios identificados pela estrutura do pacote:```
+com.company.customer ← Customer Domain
 ├── profile
 ├── billing
-│   ├── payment
-│   └── history
+│ ├── payment
+│ └── history
 └── supportcontract
 
-com.company.ticket         ← Ticketing Domain
+com.company.ticket ← Ticketing Domain
 ├── shared
 ├── maintenance
 ├── assign
 └── route
-```
 
-### Domain Identification Strategies
+````
+### Estratégias de identificação de domínio
 
-**Strategy 1: Business Capability Analysis**
+**Estratégia 1: Análise de capacidade de negócios**
 
-- Identify what business capabilities the system provides
-- Group components by capability
-- Example: "Customer Management" capability → Customer Domain
+- Identificar quais recursos de negócios o sistema oferece
+- Agrupar componentes por capacidade
+- Exemplo: capacidade "Gestão de Clientes" → Domínio do Cliente
 
-**Strategy 2: Vocabulary Analysis**
+**Estratégia 2: Análise de Vocabulário**
 
-- Identify business vocabulary used by components
-- Group components sharing same vocabulary
-- Example: Components using "billing", "payment", "invoice" → Financial Domain
+- Identificar o vocabulário de negócios usado pelos componentes
+- Componentes do grupo compartilhando o mesmo vocabulário
+- Exemplo: Componentes utilizando “faturamento”, “pagamento”, “fatura” → Domínio Financeiro
 
-**Strategy 3: Relationship Analysis**
+**Estratégia 3: Análise de Relacionamento**
 
-- Identify components frequently used together
-- Group components with strong relationships
-- Example: Components that share data/workflows → Same Domain
+- Identificar componentes frequentemente usados juntos
+- Componentes do grupo com relacionamentos fortes
+- Exemplo: Componentes que compartilham dados/fluxos de trabalho → Mesmo Domínio
 
-**Strategy 4: Stakeholder Collaboration**
+**Estratégia 4: Colaboração das partes interessadas**
 
-- Work with product owners/business analysts
-- Use their understanding of business areas
-- Validate domain boundaries with them
+- Trabalhar com proprietários de produtos/analistas de negócios
+- Use sua compreensão das áreas de negócios
+- Valide os limites do domínio com eles
 
-## Fitness Functions
+## Funções de condicionamento físico
 
-After creating domains, create automated checks:
+Depois de criar domínios, crie verificações automatizadas:
 
-### Domain Namespace Governance
-
-```javascript
+### Governança de Namespace de Domínio```javascript
 // Ensure components belong to correct domain
 function validateDomainNamespaces(components, domainRules) {
   const violations = []
@@ -636,19 +609,18 @@ function validateDomainNamespaces(components, domainRules) {
 
   return violations
 }
-```
+````
 
-### Domain Boundary Enforcement
+### Aplicação de limite de domínio```javascript
 
-```javascript
 // Prevent components from accessing other domains directly
 function enforceDomainBoundaries(components) {
-  const violations = []
+const violations = []
 
-  components.forEach((comp) => {
-    comp.imports.forEach((imp) => {
-      const importedDomain = identifyDomain(imp)
-      const componentDomain = identifyDomain(comp.namespace)
+components.forEach((comp) => {
+comp.imports.forEach((imp) => {
+const importedDomain = identifyDomain(imp)
+const componentDomain = identifyDomain(comp.namespace)
 
       if (importedDomain !== componentDomain && importedDomain !== 'shared') {
         violations.push({
@@ -660,67 +632,69 @@ function enforceDomainBoundaries(components) {
         })
       }
     })
-  })
 
-  return violations
+})
+
+return violations
 }
+
 ```
+## Melhores práticas
 
-## Best Practices
+### O que fazer ✅
 
-### Do's ✅
+- Colaborar com as partes interessadas do negócio para identificar domínios
+- Agrupar componentes por capacidade de negócios, não por camadas técnicas
+- Garantir que os domínios representem áreas de negócios distintas
+- Validar limites de domínio com as partes interessadas
+- Refatorar namespaces para alinhar com domínios
+- Crie documentação de domínio clara
+- Use linguagem comercial em nomes de domínio
 
-- Collaborate with business stakeholders to identify domains
-- Group components by business capability, not technical layers
-- Ensure domains represent distinct business areas
-- Validate domain boundaries with stakeholders
-- Refactor namespaces to align with domains
-- Create clear domain documentation
-- Use business language in domain names
-
-### Don'ts ❌
+### O que não fazer ❌
 
 - Don't create domains based on technical layers (services, controllers, models)
-- Don't force components into domains where they don't fit
-- Don't skip stakeholder validation
-- Don't create too many small domains (aim for 3-7 domains)
-- Don't create domains that are too large (monolithic domains)
-- Don't ignore components that don't fit (analyze why)
-- Don't skip namespace refactoring (critical for clarity)
+- Não force componentes em domínios onde eles não cabem
+- Não pule a validação das partes interessadas
+- Não crie muitos domínios pequenos (tente de 3 a 7 domínios)
+- Não crie domínios muito grandes (domínios monolíticos)
+- Não ignore componentes que não cabem (analise porquê)
+- Não pule a refatoração do namespace (crítico para maior clareza)
 
-## Common Domain Patterns
+## Padrões de domínio comuns
 
-### Typical Domains in Business Applications
+### Domínios típicos em aplicativos de negócios
 
-- **Customer Domain**: Customer management, profiles, relationships
-- **Product Domain**: Product catalog, inventory, pricing
-- **Order Domain**: Order processing, fulfillment, shipping
-- **Billing Domain**: Invoicing, payments, financial transactions
-- **Reporting Domain**: Reports, analytics, dashboards
-- **Admin Domain**: User management, system configuration
-- **Shared Domain**: Common functionality (login, notification, utilities)
+- **Domínio do Cliente**: Gestão de clientes, perfis, relacionamentos
+- **Domínio do produto**: catálogo de produtos, estoque, preços
+- **Domínio do pedido**: processamento do pedido, atendimento, envio
+- **Domínio de cobrança**: faturamento, pagamentos, transações financeiras
+- **Domínio de relatórios**: relatórios, análises, painéis
+- **Domínio Admin**: gerenciamento de usuários, configuração do sistema
+- **Domínio Compartilhado**: Funcionalidades comuns (login, notificação, utilitários)
 
-### Domain Size Guidelines
+### Diretrizes de tamanho de domínio
 
-- **Small Domain**: 2-4 components
-- **Medium Domain**: 5-8 components
-- **Large Domain**: 9-15 components
-- **Too Large**: >15 components (consider splitting)
+- **Domínio Pequeno**: 2 a 4 componentes
+- **Domínio Médio**: 5-8 componentes
+- **Domínio Grande**: 9 a 15 componentes
+- **Muito grande**: >15 componentes (considere dividir)
 
-## Next Steps
+## Próximas etapas
 
-After creating component domains:
+Depois de criar domínios de componentes:
 
-1. **Apply Create Domain Services Pattern** - Extract domains to separate services
-2. **Plan Service Extraction** - Create migration plan for domain services
-3. **Implement Domain Services** - Move domains to separately deployed services
-4. **Monitor Domain Boundaries** - Use fitness functions to enforce boundaries
+1. **Aplicar Criar Padrão de Serviços de Domínio** – Extrair domínios para serviços separados
+2. **Plano de extração de serviço** – Crie um plano de migração para serviços de domínio
+3. **Implementar serviços de domínio** – Mova domínios para serviços implantados separadamente
+4. **Monitore limites de domínio** - Use funções de aptidão para impor limites
 
-## Notes
+## Notas
 
-- Domains should represent business capabilities, not technical layers
-- Domain identification requires collaboration with business stakeholders
-- Namespace refactoring is critical for domain clarity
-- Domains prepare the codebase for service-based architecture
-- Well-formed domains make service extraction easier
-- Domain boundaries should be clear and well-documented
+- Os domínios devem representar capacidades de negócios, não camadas técnicas
+- A identificação do domínio requer colaboração com as partes interessadas do negócio
+- A refatoração do namespace é crítica para a clareza do domínio
+- Os domínios preparam a base de código para a arquitetura baseada em serviços
+- Domínios bem formados facilitam a extração de serviços
+- Os limites do domínio devem ser claros e bem documentados
+```

@@ -1,6 +1,6 @@
-# Observability Patterns
+# Padrões de Observabilidade
 
-## Usage-Based Billing
+## Faturamento baseado no uso
 
 ```typescript
 env.ANALYTICS.writeDataPoint({
@@ -16,7 +16,7 @@ FROM api_usage WHERE timestamp >= DATE_TRUNC('month', NOW())
 GROUP BY customer_id
 ```
 
-## Performance Monitoring
+##Monitoramento de desempenho
 
 ```typescript
 const start = Date.now()
@@ -33,7 +33,7 @@ FROM fetch_metrics WHERE timestamp >= NOW() - INTERVAL '1' HOUR
 GROUP BY url
 ```
 
-## Error Tracking
+##Rastreamento de erros
 
 ```typescript
 env.ANALYTICS.writeDataPoint({
@@ -43,7 +43,7 @@ env.ANALYTICS.writeDataPoint({
 })
 ```
 
-## Multi-Tenant Tracking
+##Rastreamento multilocatário
 
 ```typescript
 env.ANALYTICS.writeDataPoint({
@@ -53,7 +53,7 @@ env.ANALYTICS.writeDataPoint({
 })
 ```
 
-## Tail Worker Log Filtering
+##Filtragem de log do trabalhador final
 
 ```typescript
 export default {
@@ -78,7 +78,7 @@ export default {
 }
 ```
 
-## OpenTelemetry Export
+##Exportação OpenTelemetry
 
 ```typescript
 export default {

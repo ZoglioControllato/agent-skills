@@ -1,79 +1,79 @@
-# Cloudflare Durable Objects Storage
+# Armazenamento de objetos duráveis Cloudflare
 
-Persistent storage API for Durable Objects with SQLite and KV backends, PITR, and automatic concurrency control.
+API de armazenamento persistente para objetos duráveis com backends SQLite e KV, PITR e controle automático de simultaneidade.
 
-## Overview
+## Visão geral
 
-DO Storage provides:
+O armazenamento DO fornece:
 
-- SQLite-backed (recommended) or KV-backed
-- SQL API + synchronous/async KV APIs
-- Automatic input/output gates (race-free)
-- 30-day point-in-time recovery (PITR)
-- Transactions and alarms
+- apoiado por SQLite (recomendado) ou apoiado por KV
+- API SQL + APIs KV síncronas/assíncronas
+- Portões automáticos de entrada/saída (sem corrida)
+- Recuperação pontual de 30 dias (PITR)
+- Transações e alarmes
 
-**Use cases:** Stateful coordination, real-time collaboration, counters, sessions, rate limiters
+**Casos de uso:** Coordenação com estado, colaboração em tempo real, contadores, sessões, limitadores de taxa
 
-**Billing:** Charged by request, GB-month storage, and rowsRead/rowsWritten for SQL operations
+**Faturamento:** Cobrado por solicitação, armazenamento em GB por mês e rowsRead/rowsWritten para operações SQL
 
-## Quick Start
+## Início rápido```typescript
 
-```typescript
 export class Counter extends DurableObject {
-  sql: SqlStorage
+sql: SqlStorage
 
-  constructor(ctx: DurableObjectState, env: Env) {
-    super(ctx, env)
-    this.sql = ctx.storage.sql
-    this.sql.exec('CREATE TABLE IF NOT EXISTS data(key TEXT PRIMARY KEY, value INTEGER)')
-  }
-
-  async increment(): Promise<number> {
-    const result = this.sql
-      .exec(
-        'INSERT INTO data VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = value + 1 RETURNING value',
-        'counter',
-        1,
-      )
-      .one()
-    return result?.value || 1
-  }
+constructor(ctx: DurableObjectState, env: Env) {
+super(ctx, env)
+this.sql = ctx.storage.sql
+this.sql.exec('CREATE TABLE IF NOT EXISTS data(key TEXT PRIMARY KEY, value INTEGER)')
 }
+
+async increment(): Promise<number> {
+const result = this.sql
+.exec(
+'INSERT INTO data VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = value + 1 RETURNING value',
+'counter',
+1,
+)
+.one()
+return result?.value || 1
+}
+}
+
 ```
+## Back-ends de armazenamento
 
-## Storage Backends
-
-| Backend              | Create Method        | APIs                     | PITR |
+| Back-end | Criar método | APIs | PITR |
 | -------------------- | -------------------- | ------------------------ | ---- |
-| SQLite (recommended) | `new_sqlite_classes` | SQL + sync KV + async KV | ✅   |
-| KV (legacy)          | `new_classes`        | async KV only            | ❌   |
+| SQLite (recomendado) | `new_sqlite_classes` | SQL + sincronização KV + assíncrona KV | ✅ |
+| KV (legado) | `novas_classes` | apenas KV assíncrono | ❌ |
 
-## Core APIs
+## APIs principais
 
-- **SQL API** (`ctx.storage.sql`): Full SQLite with extensions (FTS5, JSON, math)
-- **Sync KV** (`ctx.storage.kv`): Synchronous key-value (SQLite only)
-- **Async KV** (`ctx.storage`): Asynchronous key-value (both backends)
-- **Transactions** (`transactionSync()`, `transaction()`)
+- **API SQL** (`ctx.storage.sql`): SQLite completo com extensões (FTS5, JSON, matemática)
+- **Sync KV** (`ctx.storage.kv`): valor-chave síncrono (somente SQLite)
+- **Async KV** (`ctx.storage`): valor-chave assíncrono (ambos os backends)
+- **Transações** (`transactionSync()`, `transaction()`)
 - **PITR** (`getBookmarkForTime()`, `onNextSessionRestoreBookmark()`)
-- **Alarms** (`setAlarm()`, `alarm()` handler)
+- **Alarmes** (`setAlarm()`, manipulador `alarm()`)
 
-## Reading Order
+## Ordem de leitura
 
-**New to DO storage:** configuration.md → api.md → patterns.md → gotchas.md  
-**Building features:** patterns.md → api.md → gotchas.md  
-**Debugging issues:** gotchas.md → api.md  
-**Writing tests:** testing.md
+**Novo no armazenamento DO:** configuração.md → api.md → padrões.md → gotchas.md
+**Recursos de construção:** padrões.md → api.md → gotchas.md
+**Problemas de depuração:** gotchas.md → api.md
+**Escrita de testes:**testing.md
 
-## In This Reference
+## Nesta referência
 
-- [configuration.md](./configuration.md) - wrangler.jsonc migrations, SQLite vs KV setup, RPC binding
-- [api.md](./api.md) - SQL exec/cursors, KV methods, storage options, transactions, alarms, PITR
-- [patterns.md](./patterns.md) - Schema migrations, caching, rate limiting, batch processing, parent-child coordination
-- [gotchas.md](./gotchas.md) - Concurrency gates, INTEGER precision, transaction rules, SQL limits
-- [testing.md](./testing.md) - vitest-pool-workers setup, testing DOs with SQL/alarms/PITR
+- [configuration.md](./configuration.md) - migrações wrangler.jsonc, configuração SQLite vs KV, ligação RPC
+- [api.md](./api.md) - SQL exec/cursores, métodos KV, opções de armazenamento, transações, alarmes, PITR
+- [patterns.md](./patterns.md) - Migrações de esquema, cache, limitação de taxa, processamento em lote, coordenação pai-filho
+- [gotchas.md](./gotchas.md) - Portas de simultaneidade, precisão INTEGER, regras de transação, limites SQL
+- [testing.md](./testing.md) - configuração do vitest-pool-workers, testando DOs com SQL/alarms/PITR
 
-## See Also
+## Veja também
 
-- [durable-objects](../durable-objects/) - DO fundamentals and coordination patterns
-- [workers](../workers/) - Worker runtime for DO stubs
-- [d1](../d1/) - Shared database alternative to per-DO storage
+- [objetos duráveis](../objetos duráveis/) - Fundamentos de DO e padrões de coordenação
+- [workers](../workers/) - Tempo de execução do trabalhador para stubs DO
+- [d1](../d1/) - Alternativa de banco de dados compartilhado para armazenamento por DO
+```

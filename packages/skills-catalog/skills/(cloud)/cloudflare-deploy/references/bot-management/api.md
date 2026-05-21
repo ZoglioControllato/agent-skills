@@ -102,41 +102,41 @@ export default {
 }
 ```
 
-## Common Patterns
+## Padrões Comuns
 
-See [patterns.md](./patterns.md) for Workers examples: mobile app allowlisting, corporate proxy exemption, datacenter detection, conditional delay, and more.
+Consulte [patterns.md](./patterns.md) para exemplos de trabalhadores: lista de permissões de aplicativos móveis, isenção de proxy corporativo, detecção de datacenter, atraso condicional e muito mais.
 
-## Bot Analytics
+## Análise de bots
 
-### Access Locations
+### Locais de acesso
 
-- Dashboard: Security > Bots (old) or Security > Analytics > Bot analysis (new)
-- GraphQL API for programmatic access
-- Security Events & Security Analytics
+- Painel: Segurança > Bots (antigo) ou Segurança > Análise > Análise de bot (novo)
+- API GraphQL para acesso programático
+- Eventos de segurança e análises de segurança
 - Logpush/Logpull
 
-### Available Data
+### Dados disponíveis
 
-- **Enterprise BM**: Bot scores (1-99), bot score source, distribution
-- **Pro/Business**: Bot groupings (automated, likely automated, likely human)
-- Top attributes: IPs, paths, user agents, countries
-- Detection sources: Heuristics, ML, AD, JSD
-- Verified bot categories
+- **BM empresarial**: pontuações do bot (1-99), origem da pontuação do bot, distribuição
+- **Pro/Business**: agrupamentos de bots (automatizados, provavelmente automatizados, provavelmente humanos)
+- Principais atributos: IPs, caminhos, agentes de usuário, países
+- Fontes de detecção: Heurística, ML, AD, JSD
+- Categorias de bot verificadas
 
-### Time Ranges
+### Intervalos de tempo
 
-- **Enterprise BM**: Up to 1 week at a time, 30 days history
-- **Pro/Business**: Up to 72 hours at a time, 30 days history
-- Real-time in most cases, adaptive sampling (1-10% depending on volume)
+- **BM empresarial**: até 1 semana por vez, histórico de 30 dias
+- **Pro/Business**: até 72 horas por vez, histórico de 30 dias
+- Em tempo real na maioria dos casos, amostragem adaptativa (1-10% dependendo do volume)
 
-## Logpush Fields
+## Campos Logpush```txt
 
-```txt
-BotScore              # 1-99 or 0 if not computed
-BotScoreSrc           # Detection engine (ML, Heuristics, etc.)
-BotTags               # Classification tags
-BotDetectionIDs       # Heuristic detection IDs
-```
+BotScore # 1-99 or 0 if not computed
+BotScoreSrc # Detection engine (ML, Heuristics, etc.)
+BotTags # Classification tags
+BotDetectionIDs # Heuristic detection IDs
+
+````
 
 **BotScoreSrc values:**
 
@@ -170,6 +170,6 @@ import { getPlatformProxy } from 'wrangler'
 const { cf, dispose } = await getPlatformProxy()
 // cf.botManagement is frozen mock object
 expect(cf.botManagement.score).toBe(99)
-```
+````
 
 For custom test data, mock request.cf in your test setup.

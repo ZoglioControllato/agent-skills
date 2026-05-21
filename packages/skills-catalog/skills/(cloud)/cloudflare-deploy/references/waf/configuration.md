@@ -1,13 +1,13 @@
-# Configuration
+# Configuração
 
-## Prerequisites
+## Pré-requisitos
 
-**API Token**: Create at https://dash.cloudflare.com/profile/api-tokens
+**API Token:** crie em https://dash.cloudflare.com/profile/api-tokens
 
-- Permission: `Zone.WAF Edit` or `Zone.Firewall Services Edit`
-- Zone Resources: Include specific zones or all zones
+- Permissão: `Zone.WAF Edit` ou `Zone.Firewall Services Edit`
+- Recursos da zona: zonas específicas ou todas
 
-**Zone ID**: Found in dashboard > Overview > API section (right sidebar)
+**Zone ID:** no painel, Overview → seção API (barra lateral)
 
 ```bash
 # Set environment variables
@@ -15,7 +15,7 @@ export CF_API_TOKEN="your_api_token_here"
 export ZONE_ID="your_zone_id_here"
 ```
 
-## TypeScript SDK Usage
+## Uso do SDK TypeScript
 
 ```bash
 npm install cloudflare
@@ -72,7 +72,7 @@ await client.rulesets.create({
 })
 ```
 
-## Terraform Configuration
+## Configuração Terraform
 
 ```hcl
 provider "cloudflare" {
@@ -91,7 +91,7 @@ resource "cloudflare_ruleset" "waf_custom" {
 }
 ```
 
-**Managed Ruleset & Rate Limiting**:
+**Ruleset gerenciado e rate limiting:**
 
 ```hcl
 resource "cloudflare_ruleset" "waf_managed" {
@@ -132,7 +132,7 @@ resource "cloudflare_ruleset" "rate_limiting" {
 }
 ```
 
-## Pulumi Configuration
+## Configuração Pulumi
 
 ```typescript
 import * as cloudflare from '@pulumi/cloudflare'
@@ -181,28 +181,28 @@ const rateLimiting = new cloudflare.Ruleset('rate-limiting', {
 })
 ```
 
-## Dashboard Configuration
+## Configuração no painel
 
-1. Navigate to: **Security** > **WAF**
-2. Select tab:
-   - **Managed rules** - Deploy/configure managed rulesets
-   - **Custom rules** - Create custom rules
-   - **Rate limiting rules** - Configure rate limits
-3. Click **Deploy** or **Create rule**
+1. Acesse **Security** → **WAF**
+2. Aba:
+   - **Managed rules** — implantar/configurar rulesets
+   - **Custom rules** — criar regras
+   - **Rate limiting rules** — limites de taxa
+3. Clique em **Deploy** ou **Create rule**
 
-**Testing**: Use Security Events to test expressions before deploying.
+**Testes:** use Security Events para validar expressões antes de publicar.
 
-## Wrangler Integration
+## Integração Wrangler
 
-WAF configuration is zone-level (not Worker-specific). Configuration methods:
+O WAF é ao nível de zona (não específico do Worker). Formas de configurar:
 
-- Dashboard UI
-- Cloudflare API via SDK
+- UI do painel
+- API Cloudflare via SDK
 - Terraform/Pulumi (IaC)
 
-**Workers benefit from WAF automatically** - no Worker code changes needed.
+**Workers se beneficiam do WAF automaticamente** — sem mudança de código.
 
-**Example: Query WAF API from Worker**:
+**Exemplo: consultar API do WAF a partir de um Worker:**
 
 ```typescript
 export default {
@@ -213,3 +213,5 @@ export default {
   },
 }
 ```
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

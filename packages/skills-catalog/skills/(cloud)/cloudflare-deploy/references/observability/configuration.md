@@ -1,6 +1,6 @@
-## Configuration Patterns
+## Padrões de configuração
 
-### Enable Workers Logs
+### Habilitar registros de trabalho
 
 ```jsonc
 {
@@ -11,7 +11,7 @@
 }
 ```
 
-**Best Practice**: Use structured JSON logging for better indexing
+**Prática recomendada**: use registros JSON estruturados para melhor indexação
 
 ```typescript
 // Good - structured logging
@@ -26,7 +26,7 @@ console.log({
 console.log('user_id: 123 logged in successfully in 45ms')
 ```
 
-### Enable Workers Traces
+### Habilitar rastreamentos de trabalhadores
 
 ```jsonc
 {
@@ -39,11 +39,11 @@ console.log('user_id: 123 logged in successfully in 45ms')
 }
 ```
 
-**Note**: Default sampling is 100%. For high-traffic Workers, use lower sampling (0.01-0.1).
+**Observação**: A amostragem padrão é 100%. Para trabalhadores de alto tráfego, use amostragem mais baixa (0,01-0,1).
 
-### Configure Analytics Engine
+### Configurar mecanismo de análise
 
-**Bind to Worker**:
+**Vincular ao trabalhador**:
 
 ```toml
 # wrangler.toml
@@ -52,7 +52,7 @@ analytics_engine_datasets = [
 ]
 ```
 
-**Write Data Points**:
+**Escrever pontos de dados**:
 
 ```typescript
 export interface Env {
@@ -73,11 +73,11 @@ export default {
 }
 ```
 
-### Configure Tail Workers
+### Configurar trabalhadores finais
 
-Tail Workers receive logs/traces from other Workers for filtering, transformation, or export.
+Tail Workers recebem logs/rastreamentos de outros Workers para filtragem, transformação ou exportação.
 
-**Setup**:
+**Configurar**:
 
 ```toml
 # wrangler.toml
@@ -88,7 +88,7 @@ main = "src/tail.ts"
 service = "my-worker" # Worker to tail
 ```
 
-**Tail Worker Example**:
+**Exemplo de trabalhador de cauda**:
 
 ```typescript
 export default {
@@ -109,17 +109,17 @@ export default {
 }
 ```
 
-### Configure Logpush
+### Configurar Logpush
 
-Send logs to external storage (S3, R2, GCS, Azure, Datadog, etc.). Requires Business/Enterprise plan.
+Envie logs para armazenamento externo (S3, R2, GCS, Azure, Datadog, etc.). Requer plano Business/Enterprise.
 
-**Via Dashboard**:
+**Através do Painel**:
 
-1. Navigate to Analytics → Logs → Logpush
-2. Select destination type
-3. Provide credentials and bucket/endpoint
-4. Choose dataset (e.g., Workers Trace Events)
-5. Configure filters and fields
+1. Navegue até Analytics → Logs → Logpush
+2. Selecione o tipo de destino
+3. Forneça credenciais e bucket/endpoint
+4. Escolha o conjunto de dados (por exemplo, eventos de rastreamento de trabalhadores)
+5. Configure filtros e campos
 
 **Via API**:
 
@@ -137,9 +137,9 @@ curl -X POST "https://api.cloudflare.com/client/v4/accounts/{account_id}/logpush
   }'
 ```
 
-### Environment-Specific Configuration
+### Configuração específica do ambiente
 
-**Development** (verbose logs, full sampling):
+**Desenvolvimento** (registros detalhados, amostragem completa):
 
 ```jsonc
 // wrangler.dev.jsonc
@@ -154,9 +154,9 @@ curl -X POST "https://api.cloudflare.com/client/v4/accounts/{account_id}/logpush
 }
 ```
 
-**Production** (reduced sampling, structured logs):
+**Produção** (amostragem reduzida, registros estruturados):
 
-```jsonc
+````jsonc
 // wrangler.prod.jsonc
 {
   "observability": {
@@ -167,10 +167,7 @@ curl -X POST "https://api.cloudflare.com/client/v4/accounts/{account_id}/logpush
     },
   },
 }
-```
-
-Deploy with env-specific config:
-
+```Implante com configuração específica do ambiente:
 ```bash
 wrangler deploy --config wrangler.prod.jsonc --env production
-```
+````

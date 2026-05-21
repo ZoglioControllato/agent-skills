@@ -1,22 +1,22 @@
-# Browser Rendering API
+# API de renderização do navegador
 
-## REST API
+## API REST
 
 **Base:** `https://api.cloudflare.com/client/v4/accounts/{accountId}/browser-rendering`  
-**Auth:** `Authorization: Bearer <token>` (Browser Rendering - Edit permission)
+**Auth:** `Autorização: Bearer <token>` (Renderização do navegador - permissão de edição)
 
-### Endpoints
+### Pontos finais
 
-| Endpoint      | Description              | Key Options                                 |
-| ------------- | ------------------------ | ------------------------------------------- |
-| `/content`    | Get rendered HTML        | `url`, `waitUntil`                          |
-| `/screenshot` | Capture image            | `screenshotOptions: {type, fullPage, clip}` |
-| `/pdf`        | Generate PDF             | `pdfOptions: {format, landscape, margin}`   |
-| `/snapshot`   | HTML + inlined resources | `url`                                       |
-| `/scrape`     | Extract by selectors     | `selectors: ["h1", ".price"]`               |
-| `/json`       | AI-structured extraction | `schema: {name: "string", price: "number"}` |
-| `/links`      | Get all links            | `url`                                       |
-| `/markdown`   | Convert to markdown      | `url`                                       |
+| Ponto final        | Descrição                   | Opções principais                            |
+| ------------------ | --------------------------- | -------------------------------------------- |
+| `/conteúdo`        | Obtenha HTML renderizado    | `url`, `waitUntil`                           |
+| `/captura de tela` | Capturar imagem             | `screenshotOptions: {tipo, fullPage, clip}`  |
+| `/pdf`             | Gerar PDF                   | `pdfOptions: {formato, paisagem, margem}`    |
+| `/instantâneo`     | Recursos HTML + embutidos   | `url`                                        |
+| `/ raspar`         | Extrair por seletores       | `seletores: ["h1", ".price"]`                |
+| `/json`            | Extração estruturada por IA | `esquema: {nome: "string", preço: "número"}` |
+| `/links`           | Obtenha todos os links      | `url`                                        |
+| `/remarcação`      | Converter em redução        | `url`                                        |
 
 ```bash
 curl -X POST '.../browser-rendering/screenshot' \
@@ -24,14 +24,14 @@ curl -X POST '.../browser-rendering/screenshot' \
   -d '{"url":"https://example.com","screenshotOptions":{"fullPage":true}}'
 ```
 
-## Workers Binding
+##Vinculação de trabalhadores
 
 ```jsonc
 // wrangler.jsonc
 { "browser": { "binding": "MYBROWSER" } }
 ```
 
-## Puppeteer
+##Marionetista
 
 ```typescript
 import puppeteer from '@cloudflare/puppeteer'
@@ -60,7 +60,7 @@ const limits = await puppeteer.limits(env.MYBROWSER)
 await browser.close()
 ```
 
-## Playwright
+##Dramaturgo
 
 ```typescript
 import { launch, connect } from '@cloudflare/playwright'
@@ -84,7 +84,7 @@ const context = await browser.newContext({
 await browser.close()
 ```
 
-## Session Management
+##Gerenciamento de sessão
 
 ```typescript
 // List sessions
@@ -98,11 +98,11 @@ await puppeteer.limits(env.MYBROWSER)
 // { remaining: ms, total: ms, concurrent: n }
 ```
 
-## Key Options
+##Opções principais
 
-| Option            | Values                                                     |
-| ----------------- | ---------------------------------------------------------- |
-| `waitUntil`       | `load`, `domcontentloaded`, `networkidle0`, `networkidle2` |
-| `keep_alive`      | Max 600000ms (10 min)                                      |
-| `screenshot.type` | `png`, `jpeg`                                              |
-| `pdf.format`      | `A4`, `Letter`, `Legal`                                    |
+| Opção                  | Valores                                                        |
+| ---------------------- | -------------------------------------------------------------- |
+| `esperaaté`            | `carregar`, `domcontentloaded`, `networkidle0`, `networkidle2` |
+| `keep_alive`           | Máx. 600000 ms (10 min)                                        |
+| `captura de tela.type` | `png`, `jpeg`                                                  |
+| `pdf.formato`          | `A4`, `Carta`, `Ofício`                                        |

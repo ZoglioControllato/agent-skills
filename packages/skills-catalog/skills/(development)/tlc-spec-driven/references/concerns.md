@@ -1,45 +1,44 @@
-# Phase: Codebase Concerns
+# Fase: Preocupações com a base de código
 
-**Trigger:** Part of brownfield mapping, or explicitly "document concerns", "find tech debt", "what's risky in this codebase"
+**Acionador:** Parte do mapeamento brownfield ou explicitamente "documentar preocupações", "encontrar dívida tecnológica", "o que é arriscado nesta base de código"
 
-**Purpose:** Surface actionable warnings about the codebase. Focused on "what to watch out for when making changes." This is living documentation, not a complaint list.
+**Objetivo:** Apresentar avisos acionáveis sobre a base de código. Focado em "o que observar ao fazer alterações". Esta é uma documentação viva, não uma lista de reclamações.
 
-## When to Generate
+## Quando gerar
 
-CONCERNS.md is generated as part of the brownfield mapping flow (alongside STACK.md, ARCHITECTURE.md, etc.). It can also be created or updated independently when:
+CONCERNS.md é gerado como parte do fluxo de mapeamento brownfield (juntamente com STACK.md, ARCHITECTURE.md, etc.). Também pode ser criado ou atualizado de forma independente quando:
 
-- Exploring a new area of the codebase reveals risks
-- A bug investigation uncovers systemic issues
-- A feature implementation hits unexpected fragility
-- A dependency audit reveals risks
+- Explorar uma nova área da base de código revela riscos
+- Uma investigação de bug revela problemas sistêmicos
+- A implementação de um recurso atinge uma fragilidade inesperada
+- Uma auditoria de dependência revela riscos
 
-## Process
+## Processo
 
-### 1. Gather Evidence
+### 1. Reúna evidências
 
-During codebase exploration, look for concrete signals — not opinions. Evidence sources:
+Durante a exploração da base de código, procure sinais concretos – não opiniões. Fontes de evidências:
 
-- Code patterns that indicate shortcuts (TODO/FIXME/HACK comments, duplicated logic, missing error handling)
-- Test coverage gaps (untested critical paths, missing edge cases)
-- Dependency manifests (outdated packages, deprecated libraries, security advisories)
-- Performance indicators (N+1 queries, missing indexes, synchronous blocking calls)
-- Security patterns (client-side-only auth checks, unvalidated inputs, exposed secrets)
+- Padrões de código que indicam atalhos (comentários TODO/FIXME/HACK, lógica duplicada, falta de tratamento de erros)
+- Lacunas de cobertura de teste (caminhos críticos não testados, casos extremos ausentes)
+- Manifestos de dependência (pacotes desatualizados, bibliotecas obsoletas, avisos de segurança)
+- Indicadores de desempenho (consultas N+1, índices ausentes, bloqueio síncrono de chamadas)
+- Padrões de segurança (verificações de autenticação somente do lado do cliente, entradas não validadas, segredos expostos)
 
-### 2. Classify and Document
+### 2. Classificar e documentar
 
-Each concern must have: **what** the problem is, **where** it lives (file paths), **why** it matters (impact), and **how** to fix it (approach).
+Cada preocupação deve ter: **qual** é o problema, **onde** ele reside (caminhos de arquivo), **por que** é importante (impacto) e **como** corrigi-lo (abordagem).
 
-### 3. Prioritize by Risk
+### 3. Priorizar por risco
 
-Focus on concerns that could cause real damage — data loss, security breaches, user-facing failures, scaling walls. Minor style issues and normal TODOs do not belong here.
+Concentre-se nas preocupações que podem causar danos reais – perda de dados, violações de segurança, falhas enfrentadas pelo usuário, escalada de muros. Problemas menores de estilo e TODOs normais não pertencem aqui.
 
 ---
 
-## Template: `.specs/codebase/CONCERNS.md`
+## Modelo: `.specs/codebase/CONCERNS.md`
 
-**Size limit:** 5,000 tokens (~3,000 words)
+**Limite de tamanho:** 5.000 tokens (aproximadamente 3.000 palavras)```markdown
 
-```markdown
 # Codebase Concerns
 
 **Analysis Date:** [YYYY-MM-DD]
@@ -133,61 +132,63 @@ Focus on concerns that could cause real damage — data loss, security breaches,
 
 _Concerns audit: [date]_
 _Update as issues are fixed or new ones discovered_
+
 ```
 
-**Include only sections that have findings.** Empty sections should be omitted entirely.
+**Inclua apenas seções que contenham descobertas.** Seções vazias devem ser totalmente omitidas.
 
 ---
 
-## What Belongs vs. What Doesn't
+## O que pertence versus o que não pertence
 
-**Include:**
+**Incluir:**
 
-- Tech debt with clear impact and fix approach
-- Known bugs with reproduction steps
-- Security gaps and mitigation recommendations
-- Performance bottlenecks with measurements
-- Fragile code that breaks easily
-- Scaling limits with numbers
-- Dependencies that need attention
-- Missing features that block workflows
-- Test coverage gaps
+- Dívida tecnológica com impacto claro e abordagem de correção
+- Bugs conhecidos com etapas de reprodução
+- Lacunas de segurança e recomendações de mitigação
+- Gargalos de desempenho com medições
+- Código frágil que quebra facilmente
+- Limites de escala com números
+- Dependências que precisam de atenção
+- Recursos ausentes que bloqueiam fluxos de trabalho
+- Lacunas de cobertura de teste
 
-**Exclude:**
+**Excluir:**
 
-- Opinions without evidence ("code is messy")
-- Complaints without solutions ("auth sucks")
-- Future feature ideas (that's for product planning)
-- Normal TODOs (those live in code comments)
-- Architectural decisions that are working fine
-- Minor code style issues
-
----
-
-## Writing Guidelines
-
-- **Always include file paths** — Concerns without locations are not actionable. Use backticks: `src/file.ts`
-- Be specific with measurements ("500ms p95" not "slow")
-- Include reproduction steps for bugs
-- Suggest fix approaches, not just problems
-- Focus on actionable items
-- Prioritize by risk/impact
-
-**Tone:** Professional, not emotional. Solution-oriented. Risk-focused. Factual.
-
-- ✅ "N+1 query pattern in `app/api/courses/route.ts` — 1.2s p95 with 50+ courses"
-- ❌ "Terrible queries, everything is slow"
-- ✅ "Fix: add index on `user_id` in `subscriptions` table"
-- ❌ "Needs fixing"
+- Opiniões sem evidências (“o código é confuso”)
+- Reclamações sem soluções ("auth é uma merda")
+- Ideias de recursos futuros (para planejamento de produtos)
+- TODOs normais (aqueles que vivem em comentários de código)
+- Decisões arquitetônicas que estão funcionando bem
+- Pequenos problemas de estilo de código
 
 ---
 
-## How CONCERNS.md Gets Used
+## Diretrizes para redação
 
-- **Feature planning:** Check CONCERNS.md before designing features that touch flagged areas
-- **Risk estimation:** Use fragile areas and scaling limits to estimate change risk
-- **Onboarding new sessions:** Load CONCERNS.md to give context about what to watch out for
-- **Refactoring prioritization:** Use tech debt and test coverage gaps to plan improvement sprints
-- **Implementation phase:** Consult before modifying any flagged component
+- **Sempre inclua caminhos de arquivo** — Preocupações sem locais não são acionáveis. Use crases: `src/file.ts`
+- Seja específico com medições ("500ms p95" não "lento")
+- Inclui etapas de reprodução de bugs
+- Sugira abordagens de correção, não apenas problemas
+- Concentre-se em itens acionáveis
+- Priorizar por risco/impacto
 
-This is living documentation. Update as issues are fixed or new ones discovered during any workflow phase.
+**Tom:** Profissional, não emocional. Orientado para soluções. Focado no risco. Fato.
+
+- ✅ "Padrão de consulta N+1 em `app/api/courses/route.ts` — 1,2s p95 com mais de 50 cursos"
+- ❌ "Consultas terríveis, tudo lento"
+- ✅ "Correção: adicionar índice em `user_id` na tabela `subscriptions`"
+- ❌ "Precisa de conserto"
+
+---
+
+## Como CONCERNS.md é usado
+
+- **Planejamento de recursos:** Verifique CONCERNS.md antes de projetar recursos que afetem áreas sinalizadas
+- **Estimativa de risco:** use áreas frágeis e limites de escala para estimar o risco de mudança
+- **Integração de novas sessões:** Carregue CONCERNS.md para fornecer contexto sobre o que observar
+- **Priorização de refatoração:** Use dívidas tecnológicas e teste lacunas de cobertura para planejar sprints de melhoria
+- **Fase de implementação:** Consulte antes de modificar qualquer componente sinalizado
+
+Esta é uma documentação viva. Atualize à medida que os problemas são corrigidos ou novos são descobertos durante qualquer fase do fluxo de trabalho.
+```

@@ -46,26 +46,26 @@ const page1 = await browser.newPage()
 const page2 = await browser.newPage()
 ```
 
-## Common Errors
+## Erros Comuns
 
-| Error                         | Cause                                   | Fix                                           |
-| ----------------------------- | --------------------------------------- | --------------------------------------------- |
-| Session limit exceeded        | Too many concurrent                     | Close unused browsers, use pages not browsers |
-| Page navigation timeout       | Slow page or `networkidle` on busy page | Increase timeout, use `waitUntil: "load"`     |
-| Session not found             | Expired session                         | Catch error, launch new session               |
-| Evaluation failed             | DOM element missing                     | Use `?.` optional chaining                    |
-| Protocol error: Target closed | Page closed during operation            | Await all ops before closing                  |
+| Erro                                | Causa                                           | Correção                                                        |
+| ----------------------------------- | ----------------------------------------------- | --------------------------------------------------------------- |
+| Limite de sessão excedido           | Muitos simultâneos                              | Feche navegadores não utilizados, use páginas e não navegadores |
+| Tempo limite de navegação da página | Página lenta ou `networkidle` em página ocupada | Aumente o tempo limite, use `waitUntil: "load"`                 |
+| Sessão não encontrada               | Sessão expirada                                 | Capturar erro, iniciar nova sessão                              |
+| Avaliação falhou                    | Elemento DOM ausente                            | Use `?.` encadeamento opcional                                  |
+| Erro de protocolo: alvo fechado     | Página fechada durante operação                 | Aguarde todas as operações antes de fechar                      |
 
-## page.evaluate() Gotchas
+## page.evaluate() Pegadinhas```typescript
 
-```typescript
 // ❌ Outer scope not available
 const selector = 'h1'
 await page.evaluate(() => document.querySelector(selector))
 
 // ✅ Pass as argument
 await page.evaluate((sel) => document.querySelector(sel)?.textContent, selector)
-```
+
+````
 
 ## Performance
 
@@ -86,6 +86,6 @@ page.on('request', (req) => {
     req.continue()
   }
 })
-```
+````
 
 **Session reuse:** Cold start ~1-2s, warm connect ~100-200ms. Store sessionId in KV for reuse.

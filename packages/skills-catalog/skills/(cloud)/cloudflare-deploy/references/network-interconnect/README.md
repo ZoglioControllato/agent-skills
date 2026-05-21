@@ -1,104 +1,104 @@
-# Cloudflare Network Interconnect (CNI)
+# Interconexão de rede Cloudflare (CNI)
 
-Private, high-performance connectivity to Cloudflare's network. **Enterprise-only**.
+Conectividade privada e de alto desempenho com a rede da Cloudflare. **Somente para empresas**.
 
-## Connection Types
+## Tipos de conexão
 
-**Direct**: Physical fiber in shared datacenter. 10/100 Gbps. You order cross-connect.
+**Direto**: Fibra física em datacenter compartilhado. 10/100Gbps. Você solicita conexão cruzada.
 
-**Partner**: Virtual via Console Connect, Equinix, Megaport, etc. Managed via partner SDN.
+**Parceiro**: Virtual via Console Connect, Equinix, Megaport, etc. Gerenciado via parceiro SDN.
 
-**Cloud**: AWS Direct Connect or GCP Cloud Interconnect. Magic WAN only.
+**Nuvem**: AWS Direct Connect ou GCP Cloud Interconnect. Somente WAN mágico.
 
-## Dataplane Versions
+## Versões do plano de dados
 
-**v1 (Classic)**: GRE tunnel support, VLAN/BFD/LACP, asymmetric MTU (1500↓/1476↑), peering support.
+**v1 (Clássico)**: suporte a túnel GRE, VLAN/BFD/LACP, MTU assimétrico (1500↓/1476↑), suporte a peering.
 
-**v2 (Beta)**: No GRE, 1500 MTU both ways, no VLAN/BFD/LACP yet, ECMP instead.
+**v2 (Beta)**: Sem GRE, 1.500 MTU em ambos os sentidos, ainda sem VLAN/BFD/LACP, em vez disso, ECMP.
 
-## Use Cases
+## Casos de uso
 
-- **Magic Transit DSR**: DDoS protection, egress via ISP (v1/v2)
-- **Magic Transit + Egress**: DDoS + egress via CF (v1/v2)
-- **Magic WAN + Zero Trust**: Private backbone (v1 needs GRE, v2 native)
-- **Peering**: Public routes at PoP (v1 only)
-- **App Security**: WAF/Cache/LB (v1/v2 over Magic Transit)
+- **Magic Transit DSR**: proteção DDoS, saída via ISP (v1/v2)
+- **Trânsito Mágico + Saída**: DDoS + saída via CF (v1/v2)
+- **Magic WAN + Zero Trust**: backbone privado (v1 precisa de GRE, v2 nativo)
+- **Peering**: rotas públicas no PoP (somente v1)
+- **Segurança de aplicativos**: WAF/Cache/LB (v1/v2 sobre Magic Transit)
 
-## Prerequisites
+## Pré-requisitos
 
-- Enterprise plan
-- IPv4 /24+ or IPv6 /48+ prefixes
-- BGP ASN for v1
-- See [locations PDF](https://developers.cloudflare.com/network-interconnect/static/cni-locations-2026-01.pdf)
+- Plano empresarial
+- Prefixos IPv4 /24+ ou IPv6 /48+
+- BGP ASN para v1
+- Consulte [PDF de locais](https://developers.cloudflare.com/network-interconnect/static/cni-locations-2026-01.pdf)
 
-## Specs
+## Especificações
 
-- /31 point-to-point subnets
-- 10km max optical distance
-- 10G: 10GBASE-LR single-mode
-- 100G: 100GBASE-LR4 single-mode
-- **No SLA** (free service)
-- Backup Internet required
+- /31 sub-redes ponto a ponto
+- Distância óptica máxima de 10 km
+  10G: modo único 10GBASE LR
+  100G: modo único 100GBASE LR4
+- **Sem SLA** (serviço gratuito)
+- É necessário fazer backup da Internet
 
-## Throughput
+## Taxa de transferência
 
-| Direction               | 10G                  | 100G                 |
-| ----------------------- | -------------------- | -------------------- |
-| CF → Customer           | 10 Gbps              | 100 Gbps             |
-| Customer → CF (peering) | 10 Gbps              | 100 Gbps             |
-| Customer → CF (Magic)   | 1 Gbps/tunnel or CNI | 1 Gbps/tunnel or CNI |
+| Direção                | 10G                 | 100G                |
+| ---------------------- | ------------------- | ------------------- |
+| CF → Cliente           | 10 Gbps             | 100Gbps             |
+| Cliente → CF (peering) | 10 Gbps             | 100Gbps             |
+| Cliente → CF (Magia)   | 1 Gbps/túnel ou CNI | 1 Gbps/túnel ou CNI |
 
-## Timeline
+## Linha do tempo
 
-2-4 weeks typical. Steps: request → config review → order connection → configure → test → enable health checks → activate → monitor.
+2-4 semanas típicas. Etapas: solicitar → revisão de configuração → solicitar conexão → configurar → testar → habilitar verificações de integridade → ativar → monitorar.
 
-## In This Reference
+## Nesta referência
 
-- [configuration.md](./configuration.md) - BGP, routing, setup
-- [api.md](./api.md) - API endpoints, SDKs
-- [patterns.md](./patterns.md) - HA, hybrid cloud, failover
-- [gotchas.md](./gotchas.md) - Troubleshooting, limits
+- [configuration.md](./configuration.md) - BGP, roteamento, configuração
+- [api.md](./api.md) - endpoints de API, SDKs
+- [patterns.md](./patterns.md) - HA, nuvem híbrida, failover
+- [gotchas.md](./gotchas.md) - Solução de problemas, limites
 
-## Reading Order by Task
+## Ordem de leitura por tarefa
 
-| Task                        | Files to Load                      |
-| --------------------------- | ---------------------------------- |
-| Initial setup               | README → configuration.md → api.md |
-| Create interconnect via API | api.md → gotchas.md                |
-| Design HA architecture      | patterns.md → README               |
-| Troubleshoot connection     | gotchas.md → configuration.md      |
-| Cloud integration (AWS/GCP) | configuration.md → patterns.md     |
-| Monitor + alerts            | configuration.md                   |
+| Tarefa                          | Arquivos para carregar            |
+| ------------------------------- | --------------------------------- |
+| Configuração inicial            | README → configuração.md → api.md |
+| Criar interconexão via API      | api.md → pegadinhas.md            |
+| Projetar arquitetura HA         | padrões.md → LEIA-ME              |
+| Solucionar problemas de conexão | gotchas.md → configuração.md      |
+| Integração na nuvem (AWS/GCP)   | configuração.md → padrões.md      |
+| Monitorar + alertas             | configuração.md                   |
 
-## Automation Boundary
+## Limite de automação
 
-**API-Automatable:**
+**API-automatizável:**
 
-- List/create/delete interconnects (Direct, Partner)
-- List available slots
-- Get interconnect status
-- Download LOA PDF
-- Create/update CNI objects (BGP config)
-- Query settings
+- Listar/criar/excluir interconexões (Direto, Parceiro)
+- Listar slots disponíveis
+- Obtenha status de interconexão
+- Baixe o PDF da LOA
+- Criar/atualizar objetos CNI (configuração BGP)
+- Configurações de consulta
 
-**Requires Account Team:**
+**Requer equipe de conta:**
 
-- Initial request approval
-- AWS Direct Connect setup (send LOA+VLAN to CF)
-- GCP Cloud Interconnect final activation
-- Partner interconnect acceptance (Equinix, Megaport)
-- VLAN assignment (v1)
-- Configuration document generation (v1)
-- Escalations + troubleshooting support
+- Aprovação inicial da solicitação
+- Configuração do AWS Direct Connect (enviar LOA+VLAN para CF)
+- Ativação final do GCP Cloud Interconnect
+- Aceitação de interconexão de parceiros (Equinix, Megaport)
+- Atribuição de VLAN (v1)
+- Geração de documento de configuração (v1)
+- Escalações + suporte para solução de problemas
 
-**Cannot Be Automated:**
+**Não pode ser automatizado:**
 
-- Physical cross-connect installation (Direct)
-- Partner portal operations (virtual circuit ordering)
-- AWS/GCP portal operations
-- Maintenance window coordination
+- Instalação física de conexão cruzada (direta)
+- Operações do portal de parceiros (pedido de circuito virtual)
+- Operações do portal AWS/GCP
+- Coordenação da janela de manutenção
 
-## See Also
+## Veja também
 
-- [tunnel](../tunnel/) - Alternative for private network connectivity
-- [spectrum](../spectrum/) - Layer 4 proxy for TCP/UDP traffic
+- [tunnel](../tunnel/) - Alternativa para conectividade de rede privada
+- [spectrum](../spectrum/) - Proxy da camada 4 para tráfego TCP/UDP

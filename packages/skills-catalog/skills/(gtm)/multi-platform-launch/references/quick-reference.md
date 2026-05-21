@@ -1,35 +1,35 @@
-# Quick Reference & Questions to Ask
+# Referência rápida e perguntas a serem feitas
 
-## Quick Reference Checklists
+## Listas de verificação de referência rápida
 
-**2 Weeks Before:** Landing page + waitlist live, PH page drafted, BetaList submitted,
-asset library complete (logo, screenshots, video), 20-50 supporters briefed, social
-content calendar set, UTM tracking configured, X thread drafted, Show HN drafted,
-directory assets prepared.
+**2 semanas antes:** Página de destino + lista de espera ativa, página PH redigida, BetaList enviada,
+biblioteca de recursos completa (logotipo, capturas de tela, vídeo), 20 a 50 apoiadores informados, redes sociais
+conjunto de calendário de conteúdo, rastreamento UTM configurado, thread X elaborado, Mostrar HN elaborado,
+ativos de diretório preparados.
 
-**Launch Day:** PH live at 12:01 AM PT, Show HN at 8-10 AM PT, X thread published,
-LinkedIn posted, waitlist email sent, community posts shared, all PH/HN comments
-responded to within 30 min, evening progress update shared.
+**Dia de lançamento:** PH ao vivo às 12h01 PT, Show HN às 8h às 10h PT, tópico X publicado,
+LinkedIn postado, e-mail da lista de espera enviado, postagens da comunidade compartilhadas, todos os comentários de PH/HN
+respondido em 30 minutos, atualização noturna do progresso compartilhada.
 
-**Week +1:** YouTube demo published, launch retro blog post, podcast outreach sent
-(5-10 shows), G2/Capterra profiles created, review requests sent, remaining directories
-submitted, launch metrics compiled, 30-day action plan created.
+**Semana +1:** demonstração do YouTube publicada, postagem de blog retrô de lançamento, divulgação de podcast enviada
+(5 a 10 shows), perfis G2/Capterra criados, solicitações de revisão enviadas, diretórios restantes
+enviado, métricas de lançamento compiladas, plano de ação de 30 dias criado.
 
 ---
 
-## Questions to Ask
+## Perguntas a serem feitas
 
-When helping a user plan a multi-platform launch:
+Ao ajudar um usuário a planejar um lançamento multiplataforma:
 
-1. What does your product do, and who is the primary buyer?
-2. Do you have an existing audience (email list, social following, community)?
-3. What is your launch timeline - when do you want to go live?
-4. What is your budget for launch activities?
-5. Is this a first launch or a relaunch with significant updates?
-6. Do you have a working product or is this pre-MVP waitlist building?
-7. Are you targeting developers, business users, or consumers?
-8. Do you want to prioritize signups, revenue, press coverage, or all three?
-9. Have you launched on Product Hunt or Hacker News before?
-10. Do you have 20+ people who would support your launch on Day 0?
+1. O que o seu produto faz e quem é o comprador principal?
+2. Você já possui um público (lista de e-mail, seguidores sociais, comunidade)?
+3. Qual é o seu cronograma de lançamento - quando você deseja ir ao ar?
+4. Qual é o seu orçamento para atividades de lançamento?
+5. Este é um primeiro lançamento ou um relançamento com atualizações significativas?
+6. Você tem um produto funcional ou esta lista de espera pré-MVP está sendo construída?
+7. Você tem como alvo desenvolvedores, usuários empresariais ou consumidores?
+8.
+
+Você deseja priorizar inscrições, receita, cobertura da imprensa ou todos os três? 9. Você já lançou o Product Hunt ou o Hacker News antes? 10. Você tem mais de 20 pessoas que apoiariam seu lançamento no Dia 0?
 
 ---

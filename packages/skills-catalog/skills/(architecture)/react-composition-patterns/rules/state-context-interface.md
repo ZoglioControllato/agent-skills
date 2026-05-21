@@ -1,21 +1,21 @@
 ---
-title: Define Generic Context Interfaces for Dependency Injection
+title: Definir interfaces de contexto genéricas para injeção de dependência
 impact: HIGH
-impactDescription: enables dependency-injectable state across use-cases
+impactDescription: permite estado injetável de dependência em casos de uso
 tags: composition, context, state, typescript, dependency-injection
 ---
 
-## Define Generic Context Interfaces for Dependency Injection
+## Definir interfaces de contexto genéricas para injeção de dependência
 
-Define a **generic interface** for your component context with three parts:
-`state`, `actions`, and `meta`. This interface is a contract that any provider
-can implement—enabling the same UI components to work with completely different
-state implementations.
+Defina uma **interface genérica** para o contexto do seu componente com três partes:
+`estado`, `ações` e `meta`. Esta interface é um contrato que qualquer provedor
+pode implementar - permitindo que os mesmos componentes de UI funcionem com diferentes
+implementações estaduais.
 
-**Core principle:** Lift state, compose internals, make state
-dependency-injectable.
+**Princípio fundamental:** Elevar o estado, compor os internos, criar o estado
+injetável por dependência.
 
-**Incorrect (UI coupled to specific state implementation):**
+**Incorreto (IU acoplada à implementação de estado específico):**
 
 ```tsx
 function ComposerInput() {
@@ -25,7 +25,7 @@ function ComposerInput() {
 }
 ```
 
-**Correct (generic interface enables dependency injection):**
+**Correto (interface genérica permite injeção de dependência):**
 
 ```tsx
 // Define a GENERIC interface that any provider can implement
@@ -53,7 +53,7 @@ interface ComposerContextValue {
 const ComposerContext = createContext<ComposerContextValue | null>(null)
 ```
 
-**UI components consume the interface, not the implementation:**
+**Os componentes da UI consomem a interface, não a implementação:**
 
 ```tsx
 function ComposerInput() {
@@ -74,7 +74,7 @@ function ComposerInput() {
 }
 ```
 
-**Different providers implement the same interface:**
+**Provedores diferentes implementam a mesma interface:**
 
 ```tsx
 // Provider A: Local state for ephemeral forms
@@ -115,7 +115,7 @@ function ChannelProvider({ channelId, children }: Props) {
 }
 ```
 
-**The same composed UI works with both:**
+**A mesma IU composta funciona com ambos:**
 
 ```tsx
 // Works with ForwardMessageProvider (local state)
@@ -135,25 +135,23 @@ function ChannelProvider({ channelId, children }: Props) {
 </ChannelProvider>
 ```
 
-**Custom UI outside the component can access state and actions:**
+**A UI personalizada fora do componente pode acessar estados e ações:**
 
-The provider boundary is what matters—not the visual nesting. Components that
-need shared state don't have to be inside the `Composer.Frame`. They just need
-to be within the provider.
-
-```tsx
+O que importa é o limite do provedor, não o aninhamento visual. Componentes que
+precisa de estado compartilhado não precisa estar dentro do `Composer.Frame`. Eles só precisam
+estar dentro do provedor.```tsx
 function ForwardMessageDialog() {
-  return (
-    <ForwardMessageProvider>
-      <Dialog>
-        {/* The composer UI */}
-        <Composer.Frame>
-          <Composer.Input placeholder="Add a message, if you'd like." />
-          <Composer.Footer>
-            <Composer.Formatting />
-            <Composer.Emojis />
-          </Composer.Footer>
-        </Composer.Frame>
+return (
+<ForwardMessageProvider>
+<Dialog>
+{/_ The composer UI _/}
+<Composer.Frame>
+<Composer.Input placeholder="Add a message, if you'd like." />
+<Composer.Footer>
+<Composer.Formatting />
+<Composer.Emojis />
+</Composer.Footer>
+</Composer.Frame>
 
         {/* Custom UI OUTSIDE the composer, but INSIDE the provider */}
         <MessagePreview />
@@ -165,27 +163,29 @@ function ForwardMessageDialog() {
         </DialogActions>
       </Dialog>
     </ForwardMessageProvider>
-  )
+
+)
 }
 
 // This button lives OUTSIDE Composer.Frame but can still submit based on its context!
 function ForwardButton() {
-  const {
-    actions: { submit },
-  } = use(ComposerContext)
-  return <Button onPress={submit}>Forward</Button>
+const {
+actions: { submit },
+} = use(ComposerContext)
+return <Button onPress={submit}>Forward</Button>
 }
 
 // This preview lives OUTSIDE Composer.Frame but can read composer's state!
 function MessagePreview() {
-  const { state } = use(ComposerContext)
-  return <Preview message={state.input} attachments={state.attachments} />
+const { state } = use(ComposerContext)
+return <Preview message={state.input} attachments={state.attachments} />
 }
+
 ```
+O `ForwardButton` e `MessagePreview` não estão visualmente dentro do compositor
+caixa, mas eles ainda podem acessar seu estado e ações. Este é o poder de
+elevando o estado a provedores.
 
-The `ForwardButton` and `MessagePreview` are not visually inside the composer
-box, but they can still access its state and actions. This is the power of
-lifting state into providers.
-
-The UI is reusable bits you compose together. The state is dependency-injected
-by the provider. Swap the provider, keep the UI.
+A IU consiste em bits reutilizáveis ​​que você compõe juntos. O estado é injetado por dependência
+pelo provedor. Troque o provedor, mantenha a UI.
+```

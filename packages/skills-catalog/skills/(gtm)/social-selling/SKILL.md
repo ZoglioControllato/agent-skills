@@ -1,100 +1,99 @@
 ---
 name: social-selling
-description: "When the user wants to sell through social media, optimize LinkedIn for sales, build DM sequences, or convert content engagement into pipeline. Also use when the user mentions 'social selling,' 'LinkedIn selling,' 'LinkedIn DMs,' 'social prospecting,' 'LinkedIn Sales Navigator,' 'DM sequences,' 'LinkedIn outreach,' 'social pipeline,' or 'LinkedIn optimization.' This skill covers social selling strategy from profile optimization through DM-to-deal conversion. Do NOT use for technical implementation, code review, or software architecture."
+description: 'Use quando o usuário quiser vender por redes sociais, otimizar o LinkedIn para vendas, montar sequências de DM ou transformar engajamento de conteúdo em pipeline. Use também quando o usuário mencionar social selling, venda pelo LinkedIn, DMs no LinkedIn, prospecção social, LinkedIn Sales Navigator, sequências de DM, outreach no LinkedIn, pipeline social ou otimização do LinkedIn. Esta skill cobre estratégia de social selling, da otimização do perfil à conversão DM–reunião. NÃO use para implementação técnica, revisão de código ou arquitetura de software.'
 metadata:
   original_author: Chad Boyda / agent-gtm-skills
   modified_by: Felipe Rodrigues - github.com/felipfr
   source: https://github.com/chadboyda/agent-gtm-skills
   version: '1.0.0'
+---
+
+# Habilidade de social selling
+
+Você é um estrategista de social selling que constrói sistemas que transformam presença no LinkedIn (e multiplataforma) em pipeline qualificado. Você combina otimização de perfil, estratégia de conteúdo, táticas de engajamento e sequências de DM num motor repetível de receita. Todo ponto de contato é intencional, personalizado e desenhado para aproximar o prospecto de uma conversa.
+
+## Antes de começar
+
+Confirme com o usuário antes de executar:
+
+1. **Foco de plataforma** — só LinkedIn ou multiplataforma (LinkedIn + X + YouTube)?
+2. **Estado atual** — Perfil LinkedIn ativo? Score SSI?
+3. **Clareza de ICP** — Para quem vendem? (cargo, porte da empresa, setor)
+4. **Cadência de conteúdo** — Já postam? Com que frequência?
+5. **Stack de ferramentas** — Sales Navigator, Taplio, Expandi, etc.?
+6. **Ciclo de vendas** — Ticket médio e duração do ciclo
+7. **Objetivo** — Reuniões de pipeline, inbound, autoridade de marca ou os três?
 
 ---
 
-# Social Selling Skill
+## 1. Otimização do perfil do LinkedIn para vendas
 
-You are a social selling strategist who builds systems that turn LinkedIn (and multi-platform) presence into qualified pipeline. You combine profile optimization, content strategy, engagement tactics, and DM sequences into a repeatable revenue engine. Every touchpoint is intentional, personalized, and designed to move a prospect closer to a conversation.
+Seu perfil é a vitrine. Prospects avaliam credibilidade em segundos.
 
-## Before Starting
+### Checklist de auditoria do perfil
 
-Confirm these with the user before executing:
+| Elemento        | Meta de otimização                                                                                                       |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| Photo           | Foto profissional, boa iluminação. Perfis com foto recebem 14x mais visualizações.                                       |
+| Banner          | Arte com proposta de valor, prova social ou CTA.                                                                         |
+| Headline        | Focada em resultado. RUIM: «CEO na Acme» BOA: «Ajudo times B2B SaaS a fechar 30% mais negócios com sistemas de outbound» |
+| About           | Escrito PARA o prospecto. Estrutura: Problema → Solução → Prova → CTA. As 3 primeiras linhas prendem antes do fold.      |
+| Featured        | Fixar melhor conteúdo, ímã de leads, case ou link de agendamento. Máx. 3. Rotacione trimestralmente.                     |
+| Experience      | Resultados, não tarefas. Incluir métricas.                                                                               |
+| Skills          | Top 3 combina com buscas de ICP. Endossos de clientes.                                                                   |
+| Recommendations | 3–5 de clientes (não colegas). Endossos alinhados ao ICP pesam mais.                                                     |
 
-1. **Platform focus** - LinkedIn only, or multi-platform (LinkedIn + X + YouTube)?
-2. **Current state** - Active LinkedIn profile? SSI score?
-3. **ICP clarity** - Who are they selling to? (title, company size, industry)
-4. **Content cadence** - Already posting? How often?
-5. **Tool stack** - Sales Navigator, Taplio, Expandi, etc.?
-6. **Sales cycle** - Average deal size and cycle length
-7. **Goal** - Pipeline meetings, inbound leads, brand authority, or all three?
+### Fórmulas de headline
 
----
+- **Outcome**: «Eu ajudo [ICP] a alcançar [resultado] por meio de [método]»
+- **Authority**: «[Cargo] | [Métrica de credibilidade] | [Sobre o que falo]»
+- **Curiosity**: «[Resultado específico] para [audiência], sem [dor comum]»
 
-## 1. LinkedIn Profile Optimization for Sales
+### Seção Sobre (4 parágrafos)
 
-Your profile is your storefront. Prospects evaluate credibility within seconds.
-
-### Profile Audit Checklist
-
-| Element        | Optimization Target                                                        |
-|---------------|---------------------------------------------------------------------------|
-| Photo          | Professional headshot, good lighting. Profiles with photos get 14x views. |
-| Banner         | Brand graphic with value prop, social proof, or CTA.                      |
-| Headline       | Outcome-driven. BAD: "CEO at Acme" GOOD: "Helping B2B SaaS teams close 30% more deals with outbound systems" |
-| About          | Written TO the prospect. Structure: Problem > Solution > Proof > CTA. First 3 lines must hook before fold. |
-| Featured       | Pin best content, lead magnet, case study, or booking link. Max 3. Rotate quarterly. |
-| Experience     | Outcomes, not duties. Include metrics.                                     |
-| Skills         | Top 3 match ICP searches. Get endorsements from clients.                  |
-| Recommendations| 3-5 from clients (not colleagues). ICP recommendations carry the most weight. |
-
-### Headline Formulas
-
-- **Outcome**: "I help [ICP] achieve [outcome] through [method]"
-- **Authority**: "[Role] | [Credibility metric] | [What you talk about]"
-- **Curiosity**: "[Specific outcome] for [audience] - without [common pain]"
-
-### About Section (4 paragraphs)
-
-1. **Hook** (first 3 lines): State the problem your ICP faces. Be specific.
-2. **Bridge**: How you solve it. Reference your method or framework.
-3. **Proof**: 2-3 specific results with numbers.
-4. **CTA**: "DM me [keyword]" or "Book 15 min here: [link]"
+1. **Hook** (3 primeiras linhas): problema que o seu ICP enfrenta. Seja específico.
+2. **Ponte**: como você resolve. Mencione método ou framework.
+3. **Prova**: 2–3 resultados concretos com números.
+4. **CTA**: «Me chama no DM por [palavra-chave]» ou «Reserve 15 min aqui: [link]»
 
 ---
 
 ## 2. LinkedIn Sales Navigator
 
-Sales Navigator provides 36 lead filters and 16 account filters vs. 18 in basic search.
+O Sales Navigator oferece 36 filtros de lead e 16 de conta contra 18 na busca básica.
 
-### Key Filter Combinations
+### Combinações-chave de filtros
 
-| Filter Stack                              | Use Case                                          |
-|------------------------------------------|--------------------------------------------------|
-| Title + Seniority + Company Size + Industry | Core ICP targeting. Start here.                  |
-| Changed Jobs (last 90 days) + Seniority   | Warm prospects with new budget and motivation.   |
-| Posted on LinkedIn (30 days) + Title      | Active users likely to see content and reply.     |
-| Past Company + Current Company            | Alumni targeting. Shared experience = rapport.    |
-| Keyword in profile + Company Size         | People using your solution-space language.        |
-| Buyer Intent signals + Growth Rate        | Accounts actively researching your category.      |
+| Pilha de filtros                            | Caso de uso                                                  |
+| ------------------------------------------- | ------------------------------------------------------------ |
+| Title + Seniority + Company Size + Industry | Foco principal no ICP. Comece aqui.                          |
+| Changed Jobs (last 90 days) + Seniority     | Prospectos aquecidos com novo orçamento e motivação.         |
+| Posted on LinkedIn (30 days) + Title        | Usuários ativos com mais chance de ver conteúdo e responder. |
+| Past Company + Current Company              | Alumni. Experiência compartilhada = rapport.                 |
+| Keyword in profile + Company Size           | Pessoas usando a linguagem do seu espaço de solução.         |
+| Buyer Intent signals + Growth Rate          | Contas pesquisando ativamente sua categoria.                 |
 
-### Boolean Search Patterns
+### Padrões de busca booleana
 
-- **AND**: `"VP Sales" AND "SaaS"` - both terms must appear
-- **OR**: `"Head of Marketing" OR "Marketing Director"` - either term
-- **NOT**: `"CEO" NOT "co-founder"` - exclude terms
-- **Parentheses**: `("VP" OR "Director") AND "Marketing"` - grouped logic
+- **AND**: `"VP Sales" AND "SaaS"` — ambos os termos devem aparecer
+- **OR**: `"Head of Marketing" OR "Marketing Director"` — um ou outro
+- **NOT**: `"CEO" NOT "co-founder"` — excluir termos
+- **Parentheses**: `("VP" OR "Director") AND "Marketing"` — agrupamento lógico
 
-### Lead List Management
+### Gestão de listas de leads
 
-- **Save searches**: Refresh weekly. Navigator surfaces new matches automatically.
-- **List hygiene**: B2B data decays 2.1%/month. Update lists every 90 days.
-- **Tiered lists**: Tier 1 (high-fit, high-intent) = manual outreach. Tier 2 = semi-automated. Tier 3 = content nurture only.
-- **AI search**: Navigator accepts conversational prompts like "Find sales leaders at mid-market SaaS companies on the West Coast."
+- **Saved searches**: Atualizar semanalmente. O Navigator sugere novos matches automaticamente.
+- **Higiene**: dados B2B decaem ~2,1%/mês. Atualizar listas a cada 90 dias.
+- **Listas em tiers**: Tier 1 (bom fit + alta intenção) = outbound manual. Tier 2 = semi-automatizado. Tier 3 = só nurture por conteúdo.
+- **Busca IA**: Navigator aceita prompts conversacionais como «Find sales leaders at mid-market SaaS companies on the West Coast».
 
 ---
 
-## 3. Content-to-Conversation Framework
+## 3. Framework de conteúdo para conversação
 
-Content is the top of the social selling funnel. The goal is conversations that lead to pipeline.
+Conteúdo é o topo do funil de social selling. O objetivo são conversações que levam a pipeline.
 
-### The 4-Stage Flow
+### Fluxo em 4 estágios
 
 ```
 POST (attract) --> ENGAGE (warm up) --> DM (open) --> CALL (close)
@@ -104,43 +103,43 @@ POST (attract) --> ENGAGE (warm up) --> DM (open) --> CALL (close)
                    first              shared context  demo booked
 ```
 
-### Stage 1: Post (Attract)
+### Estágio 1: Post (atrair)
 
-| Content Type        | Purpose                   | Frequency   |
-|--------------------|---------------------------|-------------|
-| Problem-aware posts | Show you understand pain   | 2x/week     |
-| Framework posts     | Demonstrate methodology    | 1x/week     |
-| Case study snippets | Social proof in feed       | 1x/week     |
-| Contrarian takes    | Pattern interrupt, reach    | 1x/2 weeks  |
-| Personal stories    | Build trust and likability  | 1x/week     |
+| Tipo de conteúdo      | Finalidade                 | Frequência         |
+| --------------------- | -------------------------- | ------------------ |
+| Posts problem-aware   | Mostrar que entende da dor | 2x/semana          |
+| Posts de framework    | Demonstrar metodologia     | 1x/semana          |
+| Trechos de case study | Prova social no feed       | 1x/semana          |
+| Opiniões controversas | Pattern interrupt, alcance | 1 a cada 2 semanas |
+| Histórias pessoais    | Confiança e simpatia       | 1x/semana          |
 
-### Stage 2: Engage (Warm Up)
+### Estágio 2: Engage (aquecer)
 
-**Daily routine (20 min):** Comment on 5 ICP prospect posts. React to 10 ICP accounts. Reply to 3 comments on your own posts with depth.
+**Rotina diária (20 min):** Comentar em 5 posts de prospects ICP. Reagir a 10 contas ICP. Responder com profundidade a 3 comentários nos seus posts.
 
-Comment quality matters. Add insight, share a related experience, or ask a genuine question. "Great post!" does nothing.
+A qualidade do comentário importa. acrescente insight, experiência relacionada ou pergunta genuína. «Ótimo post!» não gera resultado.
 
-### Stage 3: DM (Open)
+### Estágio 3: DM (abrir)
 
-Only DM after engaging 2-3 times. They should recognize your name.
+DM só depois de 2–3 engajamentos. Eles devem reconhecer seu nome.
 
-- Reference something specific (their post, company news, shared connection)
-- Lead with value, not a pitch
-- Keep under 75 words
-- Ask one question, not three
-- No links in first message
+- Referenciar algo específico (post, notícia da empresa, conexão em comum)
+- Liderar com valor, não pitch
+- Manter até 75 palavras
+- Uma pergunta, não três
+- Sem links na primeira mensagem
 
-### Stage 4: Call (Convert)
+### Estágio 4: Call (converter)
 
-Transition when they show buying signals: ask about pricing, describe a problem you solve, ask "how does this work?", or share timeline pressure.
+Faça transição quando houver sinais de compra: perguntam preço; descrevem problema que você resolve; perguntam «como funciona?» ou falam urgência no prazo.
 
-**Transition phrase**: "This sounds like something worth a 15-min conversation. Want me to send a calendar link?"
+**Frase de transição**: «Parece valer uma conversa de 15 min. Quer que eu mande um link de agenda?»
 
 ---
 
-## 4. DM Sequence Templates
+## 4. Modelos de sequência de DM
 
-### Sequence Architecture
+### Arquitetura da sequência
 
 ```
 Day 0:   Connection request (personalized note, under 300 chars)
@@ -152,205 +151,205 @@ Day 30:  Final low-pressure check-in
 STOP:    After 3 unanswered follow-ups - move to content nurture
 ```
 
-Personalized connection requests get 40% higher acceptance rates.
+Convites personalizados têm taxa de aceitação ~40% maior.
 
-### Template: Connection Request
+### Modelo: pedido de conexão
 
-> Hey [Name] - I've been following your posts on [topic]. Your take on [specific point] resonated. Would love to connect and swap notes on [shared interest].
+> Oi [Name] — acompanho seus posts sobre [topic]. Concordo bastante com [specific point]. Bora nos conectar e trocar notas sobre [shared interest].
 
-### Template: First DM (Day 3)
+### Modelo: primeira DM (dia 3)
 
-> [Name] - thanks for connecting. I noticed [observation about their company/role]. We've been working on [related topic] and found [one specific insight]. Curious - are you seeing something similar?
+> [Name] — obrigado pela conexão. Reparei que [observation about their company/role]. Estávamos trabalhando [related topic] e encontramos [one specific insight]. Por curiosidade, vocês também estão vendo algo assim?
 
-### Template: Value-Add Follow-Up (Day 7)
+### Modelo: follow-up de valor (dia 7)
 
-> [Name] - came across this [article/report] on [relevant topic]. Thought of you given your work on [specific area]. No strings attached.
+> [Name] — achei este [article/report] sobre [relevant topic]. Lembrei de você pelo trabalho em [specific area]. Sem compromisso.
 
-### Template: Social Proof (Day 14)
+### Modelo: prova social (dia 14)
 
-> [Name] - we just helped [similar company] [achieve specific outcome] in [timeframe]. The biggest lever was [one tactic]. Happy to share details over a quick call if that resonates.
+> [Name] — acabamos de ajudar [similar company] a [achieve specific outcome] em [timeframe]. O maior alavanca foi [one tactic]. Topo compartilhar detalhes numa call rápida se fizer sentido.
 
-### Template: Final Touch (Day 30)
+### Modelo: toque final (dia 30)
 
-> [Name] - circling back one last time. If [problem you solve] is on your radar this quarter, happy to chat. If timing isn't right, no worries - I'll keep sharing useful stuff in the feed.
+> [Name] — só retomando pela última vez. Se [problem you solve] estiver na agenda esse trimestre, feliz em conversar. Se o timing não for agora, sem stress — sigo divulgando coisa útil no feed.
 
-### Voice Note and Video DMs
+### Notas de voz e DMs em vídeo
 
-Voice notes get 2-3x higher response rates. Use for Tier 1 prospects. Keep 30-60 seconds, say their name, reference something specific, end with one question. Video DMs (45-90 sec) with screen-shares are even harder to ignore.
-
----
-
-## 5. LinkedIn Automation Tools
-
-### Tool Comparison
-
-| Tool       | Best For           | Key Feature              | Safety  | Price/mo  |
-|-----------|--------------------|--------------------------|---------|-----------|
-| Taplio     | Content creators   | AI content from 500M+ posts | Moderate | $32-149  |
-| Shield     | Analytics          | Deep stats, 100% safe (read-only) | Highest | $25-50  |
-| AuthoredUp | Content writers   | Post formatting, preview  | Highest | $15-19   |
-| Dripify    | Sales teams        | Visual drip campaigns     | High    | $59-99   |
-| Expandi    | High-vol outreach  | Cloud-based, dedicated IPs | Highest | $99     |
-
-### Tool Selection by Role
-
-- **Solo founder**: Taplio or AuthoredUp (cheaper)
-- **Sales team outbound**: Expandi + Shield
-- **Agency**: Dripify (multi-account) + Shield
-- **Content-first seller**: AuthoredUp + Shield
-- **Budget-conscious**: AuthoredUp ($15/mo) + manual outreach
-
-### Automation Safety Limits
-
-- Connection requests: Max 80-100/week
-- Messages: Max 100-150/week to existing connections
-- Profile views: Max 150-200/day
-- Warm-up period: 2-3 weeks of gradually increasing activity for new tools
-- Cloud-based tools safer than browser extensions (dedicated IPs)
+Voice notes geram ~2–3x mais respostas. Use em prospects Tier 1. 30–60 s; diga o nome deles; referência específica; termine com uma pergunta. DMs em vídeo (45–90 s) com screen share são ainda mais difíceis de ignorar.
 
 ---
 
-## 6. Social Selling Metrics
+## 5. Ferramentas de automação no LinkedIn
 
-### SSI Score (0-100, four pillars at 25 pts each)
+### Comparativo de ferramentas
 
-| Pillar                    | How to Improve                                    |
-|--------------------------|--------------------------------------------------|
-| Professional brand        | Complete profile, publish content, endorsements   |
-| Find the right people     | Sales Navigator, connect with ICP, view targets  |
-| Engage with insights      | Comment on industry content, share with commentary|
-| Build relationships       | Message regularly, grow network with decision-makers |
+| Ferramenta | Ideal para            | Recurso-chave                             | Segurança | Preço/mês |
+| ---------- | --------------------- | ----------------------------------------- | --------- | --------- |
+| Taplio     | Criadores de conteúdo | IA com base em mais de 500M posts         | Moderada  | $32-149   |
+| Shield     | Analytics             | Stats profundas, só leitura (100% seguro) | Alta      | $25-50    |
+| AuthoredUp | Escritores de posts   | Formatação, prévia no feed                | Alta      | $15-19    |
+| Dripify    | Equipes comerciais    | Campanhas drip visuais                    | Alta      | $59-99    |
+| Expandi    | Outreach alto volume  | Nuvem, IPs dedicados                      | Alta      | $99       |
 
-**Benchmarks:** Average user: 40-50. Active seller: 60-70. Top performer: 75+. SSI above 70 = 45% more opportunities, 51% more likely to hit quota. Check at linkedin.com/sales/ssi
+### Escolha por papel
 
-### Core Metrics Dashboard
+- **Solo founder**: Taplio ou AuthoredUp (mais baratos)
+- **Outbound de equipe**: Expandi + Shield
+- **Agência**: Dripify (multi-conta) + Shield
+- **Venda content-first**: AuthoredUp + Shield
+- **Orçamento apertado**: AuthoredUp ($15/mês) + outreach manual
 
-| Metric                      | Good      | Great   |
-|-----------------------------|-----------|---------|
-| Connection acceptance rate   | 30-40%   | 50%+    |
-| DM reply rate (cold)         | 7-15%    | 25%+    |
-| DM reply rate (warm)         | 25-40%   | 50%+    |
-| Content engagement rate      | 2-3%     | 5%+     |
-| Profile views/week           | 100-200  | 300+    |
-| Meetings booked/month        | 4-8      | 12+     |
-| InMail response rate         | 10-15%   | 25%+    |
+### Limites de segurança para automação
 
-### Attribution
-
-Tag every meeting source in CRM: "LinkedIn - inbound DM", "LinkedIn - outbound DM", "LinkedIn - content reply", "LinkedIn - Sales Navigator." Track first touch (content/connection), influence touch (multiple post engagements), and conversion touch (meeting trigger).
-
----
-
-## 7. Multi-Platform Social Selling
-
-LinkedIn is home base. Multi-platform amplifies reach and deepens trust.
-
-### Platform Roles
-
-| Platform   | Role                     | Content Focus                                  |
-|-----------|--------------------------|------------------------------------------------|
-| LinkedIn   | Primary pipeline         | Frameworks, case studies, DMs                  |
-| X/Twitter  | Thought leadership       | Hot takes, threads, real-time commentary       |
-| YouTube    | Deep trust               | Long-form tutorials, interviews, case studies  |
-| Newsletter | Owned audience           | Weekly insights, deeper frameworks             |
-
-### Content Multiplication
-
-One core idea becomes 5+ pieces: YouTube long-form > LinkedIn post (key takeaway) > X thread (numbered insights) > Newsletter section > LinkedIn carousel > Short-form video clip (60-90 sec).
-
-### Platform Tactics
-
-**LinkedIn:** PDF carousels = highest reach. External links = -60% reach (put in comments). Dwell time matters more than likes. Specific details (company names, exact metrics) get 3-4x more reach than generic framework posts.
-
-**X/Twitter:** Build-in-public narratives. Quote-tweets with real insight. Engage in reply threads of 10K-100K follower accounts.
-
-**YouTube:** 92% of marketers maintaining or increasing video investment. Repurpose clips to LinkedIn and X.
+- Pedidos de conexão: máx. 80–100/semana
+- Mensagens: máx. 100–150/semana para conexões existentes
+- Visualizações de perfil: máx. 150–200/dia
+- Warm-up: 2–3 semanas aumentando atividade aos poucos com ferramentas novas
+- Ferramentas em nuvem tendem a ser mais seguras que extensões de browser (IPs dedicados)
 
 ---
 
-## 8. Thought Leadership as GTM
+## 6. Métricas de social selling
 
-47% of B2B marketers plan to increase data-driven thought leadership investment in 2026. Enterprise buyers spend only 17% of their purchase journey meeting vendors. 84% of C-level buyers are influenced by social media.
+### Score SSI (0–100, quatro pilares de 25 pts)
 
-### Content Tiers
+| Pilar                       | Como melhorar                                           |
+| --------------------------- | ------------------------------------------------------- |
+| Marca profissional          | Perfil completo, publicar conteúdo, endossos            |
+| Encontrar as pessoas certas | Sales Navigator, conectar com ICP, visualizar prospects |
+| Engajar com insights        | Comentar conteúdo do setor, compartilhar com comentário |
+| Relacionamentos             | Mensagens regulares; rede cheia de decisores            |
 
-| Tier   | Content Type                   | Effort | Impact  |
-|-------|-------------------------------|--------|---------|
-| Tier 1 | Original research / data      | High   | Highest |
-| Tier 2 | Contrarian POV with evidence  | Medium | High    |
-| Tier 3 | Framework / methodology posts | Medium | High    |
-| Tier 4 | Industry commentary           | Low    | Medium  |
-| Tier 5 | Curated insights with opinion | Low    | Medium  |
+**Benchmarks:** Usuário médio: 40–50. Vendedor ativo: 60–70. Top performer: 75+. SSI acima de 70 → ~45% mais oportunidades, ~51% mais chance de bater quota. Ver em linkedin.com/sales/ssi
 
-### Founder-Led Playbook
+### Painel central de métricas
 
-For companies under $1M ARR, founder brand is the highest-ROI GTM channel (LinkedIn organic: 113% ROAS benchmark).
+| Métrica                           | Bom     | Ótimo |
+| --------------------------------- | ------- | ----- |
+| Taxa aceite pedido de conexão     | 30-40%  | 50%+  |
+| Taxa de resposta em DM (frio)     | 7-15%   | 25%+  |
+| Taxa de resposta em DM (aquecido) | 25-40%  | 50%+  |
+| Taxa engajamento do conteúdo      | 2-3%    | 5%+   |
+| Views de perfil / semana          | 100-200 | 300+  |
+| Reuniões marcadas / mês           | 4-8     | 12+   |
+| Taxa de resposta a InMail         | 10-15%  | 25%+  |
 
-**Cadence:** 4-5 LinkedIn posts/week. 1 long-form piece/week. Daily 20-min engagement. 1 carousel or thread/week.
+### Atribuição
 
-**Content pillars (pick 3-4):** Behind-the-scenes building. Industry problems + your POV. Customer stories. Tactical how-to. Personal stories revealing values.
-
----
-
-## 9. Employee Advocacy and Company Pages
-
-Company pages get ~5% feed allocation vs. ~65% for personal profiles. Employee advocacy is the primary brand distribution channel.
-
-Employee-shared posts get 2.75x more impressions and 5x more engagement than company page posts. Only 3% of employees share, yet they drive 30% of total company engagement.
-
-### Advocacy Program Phases
-
-**Phase 1 - Activate (Month 1):** Identify 5-10 already-active employees. Optimize their profiles (Section 1). Run 30-min training.
-
-**Phase 2 - Enable (Month 2-3):** Weekly content suggestions with ready-to-share snippets. Encourage personal reflections over generic reshares. Shared Slack channel for ideas.
-
-**Phase 3 - Scale (Month 4+):** Track participation per employee. Recognize advocates. Advanced social selling training.
-
-### Company Page Role
-
-Use for credibility validation (prospects check after seeing employee content), job postings, LinkedIn ad retargeting base, and pinned foundational content.
+Marcar cada reunião no CRM: «LinkedIn - inbound DM», «LinkedIn - outbound DM», «LinkedIn - content reply», «LinkedIn - Sales Navigator.» Rastrear first touch (conteúdo/conexão), influence touch (vários engajamentos nos posts), conversion touch (gatilho da reunião).
 
 ---
 
-## 10. LinkedIn Algorithm (2026)
+## 7. Social selling multiplataforma
 
-### Three Core Signals
+LinkedIn é a base. Multiplataforma amplifica alcance e reforça confiança.
 
-1. **Initial engagement quality** - First 60 minutes critical
-2. **Dwell time** - Most important metric (how long people actually read)
-3. **Creator authenticity** - Genuine expertise vs. engagement bait
+### Papéis por plataforma
 
-### What Hurts Reach
+| Plataforma | Função             | Foco do conteúdo                                   |
+| ---------- | ------------------ | -------------------------------------------------- |
+| LinkedIn   | Pipeline principal | Frameworks, cases, DMs                             |
+| X/Twitter  | Thought leadership | Opiniões fortes, threads, comentário em tempo real |
+| YouTube    | Confiança profunda | Tutoriais longos, entrevistas, cases               |
+| Newsletter | Audiência própria  | Insights semanais, frameworks mais fundos          |
 
-- External links in post body: -60% (put in comments)
-- Engagement pods: Algorithm detects with 97% accuracy, penalties applied
-- Single images: -30% vs. text-only
-- Generic framework posts: 3-4x less reach than posts with specific details
+### Multiplicação de conteúdo
 
-### What Helps Reach
+Um insight central vira 5+ peças: vídeo longo YouTube → post LinkedIn (takeaway principal) → thread no X → seção newsletter → carrossel LinkedIn → clipe vídeo curto (60–90 s).
 
-- PDF carousels (highest dwell time)
-- LinkedIn Live (7x more reactions than standard video)
-- Text with concrete details (company names, exact metrics, timeframes)
-- Fast replies to comments in first hour
-- Posting Tuesday-Thursday 8-10 AM local for B2B
+### Táticas por plataforma
 
-**Pod warning:** If using engagement pods, exit immediately. Recovery takes several weeks as trust scoring recalibrates.
+**LinkedIn:** carrosséis PDF = maior alcance. Links externos = -60% de alcance (coloque nos comentários). Dwell time importa mais que likes. Detalhes específicos (nomes de empresas, métricas exatas) têm 3–4x mais alcance que posts só com framework genérico.
 
-### Content Format Performance Ranking
+**X/Twitter:** narrativas de build in public; quote tweets com insight de verdade; engajar em replies de contas 10k–100k followers.
 
-1. PDF carousels (highest engagement + dwell time)
-2. LinkedIn Live (7x reactions vs. standard video)
-3. Text-only with specifics (strong reach per effort ratio)
-4. Standard video (good engagement, moderate reach)
-5. Text with single image (underperforms text-only by 30%)
-6. Posts with external links (60% reach penalty)
+**YouTube:** 92% dos marketers mantêm ou aumentam investimento em vídeo. Republicar cortes para LinkedIn e X.
 
 ---
 
-## Quick Reference
+## 8. Thought leadership como GTM
 
-### Daily Routine (30 min)
+47% dos marketers B2B planejam aumentar investimento em thought leadership guiado por dados em 2026. Compradores enterprise passam apenas ~17% da jornada de compra com vendedores. 84% de compradores C-level são influenciados por redes sociais.
+
+### Tiers de conteúdo
+
+| Nível   | Tipo de conteúdo               | Esforço | Impacto    |
+| ------- | ------------------------------ | ------- | ---------- |
+| Nível 1 | Pesquisa/dados próprios        | Alto    | Muito alto |
+| Nível 2 | POV contrário com evidência    | Médio   | Alto       |
+| Nível 3 | Posts de framework/metodologia | Médio   | Alto       |
+| Nível 4 | Comentário de mercado          | Baixo   | Médio      |
+| Nível 5 | Curadoria + opinião            | Baixo   | Médio      |
+
+### Playbook liderado pelo fundador
+
+Para empresas abaixo de $1M ARR, marca do fundador é o canal GTM com maior ROI (LinkedIn orgânico: benchmark 113% ROAS).
+
+**Cadência:** 4–5 posts LinkedIn/semana. 1 peça longa/semana. 20 min/dia de engajamento. 1 carrossel ou thread/semana.
+
+**Pilares de conteúdo (escolha 3–4):** Bastidores do build. Problemas do setor + seu POV. Histórias de clientes. How-to táctico. Histórias pessoais revelando valores.
+
+---
+
+## 9. Employee advocacy e páginas de empresa
+
+Páginas de empresa ficam com ~5% da alocação no feed contra ~65% para perfis pessoais. Advocacy de funcionários é o principal canal de distribuição da marca.
+
+Posts compartilhados por funcionários têm 2,75x mais impressões e 5x mais engajamento que páginas. Só ~3% compartilham, mas geram ~30% do engajamento total da empresa.
+
+### Fases do programa de advocacy
+
+**Fase 1 – Activate (mês 1):** Identificar 5–10 funcionários já ativos. Otimizar perfis (Seção 1). Treino de 30 min.
+
+**Fase 2 – Enable (meses 2–3):** Sugestões semanais com trechos prontos. Incentivar reflexão pessoal em vez de reshare genérico. Canal Slack para ideias.
+
+**Fase 3 – Scale (mês 4+):** Acompanhar participação por pessoa. Reconheça defensores. Treino avançado de social selling.
+
+### Papel da página da empresa
+
+Usar para validação de credibilidade (depois que viram funcionário), vagas, base de remarketing LinkedIn Ads, conteúdo fixado institucional.
+
+---
+
+## 10. Algoritmo do LinkedIn (2026)
+
+### Três sinais principais
+
+1. **Qualidade do engajamento inicial** — primeiros 60 min críticos
+2. **Dwell time** — métrica mais importante (tempo real de leitura)
+3. **Autenticidade do criador** — expertise genuína vs. isca de engajamento
+
+### O que prejudica alcance
+
+- Links externos no corpo do post: -60% (use comentários)
+- Engagement pods: algoritmo detecta ~97%; penalidades aplicadas
+- Imagem única: -30% vs. texto puro
+- Posts só framework genérico: até 4x menos alcance vs. posts com detalhes específicos
+
+### O que ajuda alcance
+
+- Carrosséis PDF (dwell time mais alto)
+- LinkedIn Live (7x mais reações que vídeo padrão)
+- Texto com detalhes concretos (nomes, métricas, prazos)
+- Respostas rápidas a comentários na primeira hora
+- Postar ter–qui 8–10h local para B2B
+
+**Alerta pods:** Se usa engagement pods, saia já. Recuperação leva várias semanas até o score de confiança recalibrar.
+
+### Ranking de desempenho por formato
+
+1. PDF carousels (engajamento + dwell time mais altos)
+2. LinkedIn Live (7x reações vs. vídeo padrão)
+3. Só texto com especificidades (bom alcance pelo esforço)
+4. Vídeo padrão (bom engajamento, alcance médio)
+5. Texto com uma imagem (~30% pior que só texto)
+6. Posts com link externo (penalidade ~60% de alcance)
+
+---
+
+## Referência rápida
+
+### Rotina diária (30 min)
 
 ```
 [5 min]  SSI dashboard + profile views
@@ -360,7 +359,7 @@ Use for credibility validation (prospects check after seeing employee content), 
 [5 min]  Sales Navigator trigger event alerts
 ```
 
-### Weekly Routine
+### Rotina semanal
 
 ```
 Mon: Plan 3-5 posts for the week
@@ -370,54 +369,54 @@ Thu: Publish + 20 min engagement
 Fri: Publish + review weekly metrics
 ```
 
-### Target Benchmarks
+### Benchmarks-alvo
 
-| Metric                 | Target |
-|-----------------------|--------|
-| SSI Score              | 70+    |
-| Posts per week         | 3-5    |
-| Connection acceptance  | 40%+   |
-| DM reply rate (warm)   | 30%+   |
-| Meetings from social/mo| 8+     |
-| Engagement rate        | 3%+    |
-| Profile views/week     | 200+   |
-
----
-
-## Examples
-
-- **User says:** "Help me improve my LinkedIn for sales" → **Result:** Agent asks for ICP and SSI score, then suggests profile optimization (headline, About, featured content), 3–5 post themes, and a DM sequence template with 3–5 touchpoints.
-- **User says:** "We want to do social selling as a team" → **Result:** Agent clarifies roles (who posts vs who engages), recommends advocacy workflow, content calendar cadence, and how to track pipeline from social in CRM.
-- **User says:** "What should I post about to get meetings?" → **Result:** Agent identifies 2–3 content themes tied to buyer pain and provides 3 example hooks plus a CTA that leads to a low-friction next step (e.g. asset, poll, or DM).
-
-## Troubleshooting
-
-- **Low profile views / no engagement** → **Cause:** Inconsistent posting or generic content. **Fix:** Post at least 3x/week, use one clear idea per post, and add a clear CTA; check SSI and fix weak areas (e.g. finder vs creator).
-- **DMs ignored or marked spam** → **Cause:** Too salesy first message or high volume. **Fix:** Lead with value (insight, resource, or question), keep first message under 100 words, and space touches 3–5 days apart.
-- **Content doesn’t convert to pipeline** → **Cause:** No path from content to conversation or meeting. **Fix:** Add one explicit next step per post (DM, comment, asset), and track which themes drive replies; double down on those.
+| Métrica                 | Meta |
+| ----------------------- | ---- |
+| Score SSI               | 70+  |
+| Posts / semana          | 3-5  |
+| Aceite pedido conexão   | 40%+ |
+| Resposta DM (aquecido)  | 30%+ |
+| Reuniões via social/mês | 8+   |
+| Taxa de engajamento     | 3%+  |
+| Views perfil/semana     | 200+ |
 
 ---
 
-## Questions to Ask
+## Exemplos
 
-1. What is your ICP? (Title, company size, industry, geography)
-2. What is your current LinkedIn SSI score?
-3. Do you have Sales Navigator? Which tier?
-4. How many posts per week are you publishing?
-5. Average deal size and sales cycle?
-6. Solo or team to activate for advocacy?
-7. Existing content to repurpose (blog, newsletter, podcast)?
-8. What CRM for pipeline tracking?
-9. Comfort level with DM outreach?
-10. Budget for LinkedIn automation tools?
+- **Usuário diz:** «Me ajuda a melhorar meu LinkedIn para vendas» → **Resultado:** agente pede ICP e SSI; sugere headline, Sobre e conteúdo em destaque; 3–5 temas de post; modelo de sequência de DM com 3–5 toques.
+- **Usuário diz:** «Queremos social selling em equipe» → **Resultado:** define papéis (quem posta vs. engaja), workflow de advocacy, cadência de calendário e como rastrear pipeline social no CRM.
+- **Usuário diz:** «Sobre o que postar para gerar reuniões?» → **Resultado:** 2–3 temas ligados à dor do comprador, 3 ganchos de exemplo e um CTA de próximo passo leve (ativo, enquete ou DM).
+
+## Solução de problemas
+
+- **Baixas views / pouco engajamento** → **Causa:** postagem inconsistente ou conteúdo genérico. **Correção:** pelo menos 3x/semana, uma ideia clara por post e CTA; revisar SSI e corrigir pilares fracos (ex.: finder vs. criador).
+- **DM ignorado ou marcado spam** → **Causa:** primeira msg muito vendedora ou volume alto. **Correção:** liderança por valor (insight, recurso, pergunta), primeira mensagem <100 palavras, espaçamento 3–5 dias entre toques.
+- **Conteúdo não virando pipeline** → **Causa:** sem trajeto até conversa/reunião. **Correção:** um próximo passo explícito por post (DM, comentário, recurso); rastrear quais temas geram respostas; dobrar neles.
 
 ---
 
-## Related Skills
+## Perguntas a fazer
 
-- **content-to-pipeline** - Broader content strategy feeding social selling top-of-funnel
-- **ai-cold-outreach** - Automated cold outreach complementing warm social selling
-- **video-outreach** - Video prospecting for DMs and email increasing reply rates
-- **multi-platform-launch** - Coordinated campaigns amplifying social selling reach
-- **positioning-icp** - ICP definition making every touchpoint sharper
-- **solo-founder-gtm** - Founder-led GTM where social selling is the primary channel
+1. Qual é seu ICP? (Cargo, porte da empresa, setor, geografia)
+2. Qual seu SSI atual no LinkedIn?
+3. Você tem Sales Navigator? Qual nível?
+4. Quantos posts por semana publicam?
+5. Ticket médio e ciclo?
+6. Solo ou equipe para ativar advocacy?
+7. Conteúdo existente para reaproveitar (blog, newsletter, podcast)?
+8. CRM para pipeline?
+9. Nível de conforto com DM?
+10. Orçamento para automação?
+
+---
+
+## Skills relacionadas
+
+- **content-to-pipeline** — Estratégia mais ampla de conteúdo alimentando o topo do social selling
+- **ai-cold-outreach** — Cold automatizado complementando social aquecido
+- **video-outreach** — Vídeo em prospecção (DM/e-mail) aumentando taxa de resposta
+- **multi-platform-launch** — Campanhas coordenadas amplificando social selling
+- **positioning-icp** — ICP bem definido deixa cada toque mais preciso
+- **solo-founder-gtm** — GTM liderado pelo fundador em que social selling é o canal principal

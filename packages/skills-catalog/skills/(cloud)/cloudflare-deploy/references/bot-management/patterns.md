@@ -1,22 +1,22 @@
-# Bot Management Patterns
+# Padrões de gerenciamento de bots
 
-## E-commerce Protection
-
-```txt
-# High security for checkout
-(cf.bot_management.score lt 50 and http.request.uri.path in {"/checkout" "/cart/add"} and not cf.bot_management.verified_bot and not cf.bot_management.corporate_proxy)
-Action: Managed Challenge
-```
-
-## API Protection
+## Proteção de comércio eletrônico
 
 ```txt
-# Protect API with JS detection + score
-(http.request.uri.path matches "^/api/" and (cf.bot_management.score lt 30 or not cf.bot_management.js_detection.passed) and not cf.bot_management.verified_bot)
-Action: Block
+# Alta segurança para checkout
+(cf.bot_management.score lt 50 e http.request.uri.path em {"/checkout" "/cart/add"} e não cf.bot_management.verified_bot e não cf.bot_management.corporate_proxy)
+Ação: Desafio Gerenciado
 ```
 
-## SEO-Friendly Bot Handling
+##Proteção de API
+
+```txt
+# Proteger API com detecção JS + pontuação
+(http.request.uri.path corresponde a "^/api/" e (cf.bot_management.score lt 30 ou não cf.bot_management.js_detection.passed) e não cf.bot_management.verified_bot)
+Ação: Bloquear
+```
+
+##Manipulação de bot amigável para SEO
 
 ```txt
 # Allow search engine crawlers
@@ -24,7 +24,7 @@ Action: Block
 Action: Managed Challenge
 ```
 
-## Block AI Scrapers
+##Bloquear raspadores de IA
 
 ```txt
 # Block training crawlers only (allow AI assistants/search)
@@ -42,7 +42,7 @@ Action: Block
 # Or use dashboard: Security > Settings > Bot Management > Block AI Bots
 ```
 
-## Rate Limiting by Bot Score
+##Limitação de taxa por pontuação do bot
 
 ```txt
 # Stricter limits for suspicious traffic
@@ -53,7 +53,7 @@ Rate: 10 requests per 10 seconds
 Rate: 100 requests per 10 seconds
 ```
 
-## Mobile App Allowlisting
+##Lista de permissões de aplicativos móveis
 
 ```txt
 # Identify mobile app by JA3/JA4
@@ -61,7 +61,7 @@ Rate: 100 requests per 10 seconds
 Action: Skip (all remaining rules)
 ```
 
-## Datacenter Detection
+##Detecção de datacenter
 
 ```typescript
 import type { IncomingRequestCfProperties } from '@cloudflare/workers-types'
@@ -81,7 +81,7 @@ export default {
 }
 ```
 
-## Conditional Delay (Tarpit)
+##Atraso Condicional (Tarpit)
 
 ```typescript
 import type { IncomingRequestCfProperties } from '@cloudflare/workers-types'
@@ -103,7 +103,7 @@ export default {
 }
 ```
 
-## Layered Defense
+##Defesa em camadas
 
 ```txt
 1. Bot Management (score-based)
@@ -112,7 +112,7 @@ export default {
 4. WAF Managed Rules (OWASP, etc.)
 ```
 
-## Progressive Enhancement
+##Aprimoramento Progressivo
 
 ```txt
 Public content: High threshold (score < 10)
@@ -120,7 +120,7 @@ Authenticated: Medium threshold (score < 30)
 Sensitive: Low threshold (score < 50) + JSD
 ```
 
-## Zero Trust for Bots
+##Confiança Zero para Bots
 
 ```txt
 1. Default deny (all scores < 30)
@@ -130,7 +130,7 @@ Sensitive: Low threshold (score < 50) + JSD
 5. Allowlist static resources
 ```
 
-## Workers: Score + JS Detection
+##Trabalhadores: Pontuação + Detecção JS
 
 ```typescript
 import type { IncomingRequestCfProperties } from '@cloudflare/workers-types'
@@ -158,7 +158,7 @@ export default {
 }
 ```
 
-## Rate Limiting by JWT Claim + Bot Score
+##Limitação de taxa por reivindicação JWT + pontuação do bot
 
 ```txt
 # Enterprise: Combine bot score with JWT validation
@@ -168,14 +168,14 @@ Rate limiting > Custom rules
 - Additional condition: cf.bot_management.score lt 50
 ```
 
-## WAF Integration Points
+##Pontos de Integração WAF
 
-- **WAF Custom Rules**: Primary enforcement mechanism
-- **Rate Limiting Rules**: Bot score as dimension, stricter limits for low scores
-- **Transform Rules**: Pass score to origin via custom header
-- **Workers**: Programmatic bot logic, custom scoring algorithms
-- **Page Rules / Configuration Rules**: Zone-level overrides, path-specific settings
+- **Regras personalizadas do WAF**: mecanismo primário de aplicação
+- **Regras de limitação de taxa**: pontuação do bot como dimensão, limites mais rígidos para pontuações baixas
+- **Regras de transformação**: passe a pontuação para a origem por meio de cabeçalho personalizado
+- **Workers**: lógica de bot programática, algoritmos de pontuação personalizados
+- **Regras de página/regras de configuração**: substituições em nível de zona, configurações específicas de caminho
 
-## See Also
+## Veja também
 
-- [gotchas.md](./gotchas.md) - Common errors, false positives/negatives, limitations
+- [gotchas.md](./gotchas.md) - Erros comuns, falsos positivos/negativos, limitações

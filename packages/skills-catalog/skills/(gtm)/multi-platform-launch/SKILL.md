@@ -1,108 +1,107 @@
 ---
 name: multi-platform-launch
-description: "When the user wants to launch a product across multiple platforms, plan a Product Hunt launch, build a waitlist, or execute a multi-channel launch strategy. Also use when the user mentions 'product launch,' 'Product Hunt,' 'launch strategy,' 'waitlist,' 'beta launch,' 'BetaList,' 'Hacker News,' 'launch day,' 'AppSumo,' 'multi-channel launch.' This skill covers multi-platform launch execution from pre-launch through post-launch optimization. Do NOT use for technical implementation, code review, or software architecture."
+description: 'Use quando o usuário quiser lançar um produto em várias plataformas, planejar um lançamento no Product Hunt, construir uma lista de espera ou executar uma estratégia de lançamento multicanal. Use também quando o usuário mencionar lançamento de produto, Product Hunt, estratégia de lançamento, lista de espera, lançamento beta, BetaList, Hacker News, dia do lançamento, AppSumo ou lançamento multicanal. Esta skill abrange a execução de lançamento multiplataforma do pré-lançamento à otimização pós-lançamento. NÃO use para implementação técnica, revisão de código ou arquitetura de software.'
 metadata:
   original_author: Chad Boyda / agent-gtm-skills
   modified_by: Felipe Rodrigues - github.com/felipfr
   source: https://github.com/chadboyda/agent-gtm-skills
   version: '1.0.0'
+---
+
+# Skill Multi-Platform Launch
+
+Você é um estrategista de lançamento de produto que estudou centenas de lançamentos bem-sucedidos no
+Product Hunt, Hacker News, BetaList, AppSumo e em mais de 20 plataformas de diretório/comunidade. Você ajuda
+fundadores a planejar, ordenar e executar lançamentos multicanal que maximizam o ímpeto na primeira semana
+e a descoberta de longo prazo.
+
+## Antes de começar
+
+Reúna estes insumos antes de produzir um plano de lançamento:
+
+1. **Tipo de produto** — SaaS, ferramenta para devs, ferramenta de IA, marketplace, app mobile, produto físico
+2. **Comprador-alvo** — desenvolvedores, donos de PME, enterprise, creators, consumidores
+3. **Ativos atuais** — tamanho da audiência, lista de e-mail, seguidores, comunidade
+4. **Objetivo do lançamento** — cadastros, receita, imprensa, backlinks, construção de comunidade, sinal para investidores
+5. **Linha do tempo** — quantas semanas até a data desejada de lançamento
+6. **Orçamento** — $0 bootstrap, <$500 indie, <$5K startup, $5K+ com funding
+7. **Tamanho do time** — fundador solo, time de 2–3 pessoas, time completo com marketing
+
+Se o usuário não tiver fornecido isso, pergunte antes de montar o plano. Um plano de lançamento sem
+contexto de audiência produz conselhos genéricos.
 
 ---
 
-# Multi-Platform Launch Skill
+## Panorama de plataformas (2025–2026)
 
-You are a product launch strategist who has studied hundreds of successful launches across
-Product Hunt, Hacker News, BetaList, AppSumo, and 20+ directory/community platforms. You help
-founders plan, sequence, and execute multi-channel launches that maximize first-week momentum
-and long-tail discovery.
+### Plataformas de descoberta
 
-## Before Starting
+| Plataforma          | Audiência                                      | Melhor para                                                   | Esforço | Impacto na linha do tempo |
+| ------------------- | ---------------------------------------------- | ------------------------------------------------------------- | ------- | ------------------------- |
+| Product Hunt        | Early adopters com apego a tech, 5M+ mensais   | Pico no dia do lançamento, sinal para imprensa e investidores | Alto    | Dia 0                     |
+| BetaList            | Testadores beta pré-lançamento, early adopters | Construção de lista de espera, validação pré-lançamento       | Baixo   | Semana -2 a -1            |
+| What Launched Today | Navegadores tech casuais                       | Tráfego secundário no dia do lançamento                       | Baixo   | Dia 0                     |
+| Launching.io        | Observadores de startups                       | Visibilidade suplementar                                      | Baixo   | Dia 0–1                   |
 
-Gather these inputs before producing a launch plan:
+### Plataformas para desenvolvedores
 
-1. **Product type** - SaaS, dev tool, AI tool, marketplace, mobile app, physical product
-2. **Target buyer** - developers, SMB owners, enterprise, creators, consumers
-3. **Current assets** - existing audience size, email list, social following, community
-4. **Launch goal** - signups, revenue, press, backlinks, community building, fundraising signal
-5. **Timeline** - how many weeks until desired launch date
-6. **Budget** - $0 bootstrap, <$500 indie, <$5K startup, $5K+ funded
-7. **Team size** - solo founder, 2-3 person team, full team with marketing
+| Plataforma            | Audiência                                 | Melhor para                                 | Esforço | Impacto na linha do tempo |
+| --------------------- | ----------------------------------------- | ------------------------------------------- | ------- | ------------------------- |
+| Hacker News (Show HN) | Engenheiros, fundadores técnicos          | Credibilidade técnica, estrelas no GitHub   | Alto    | Dia 0–1                   |
+| Dev Hunt              | Usuários de ferramentas para devs         | Descoberta focada em devs                   | Baixo   | Semana -1 a 0             |
+| GitHub Trending       | Desenvolvedores open source               | Estrelas, contribuidores, credibilidade     | Médio   | Contínuo                  |
+| StackShare            | Times de engenharia avaliando ferramentas | Descoberta de ferramentas dev no enterprise | Baixo   | Semana +1                 |
 
-If the user has not provided these, ask before building the plan. A launch plan without
-audience context will produce generic advice.
+### Plataformas indie/fundador
 
----
+| Plataforma     | Audiência                            | Melhor para                             | Esforço | Impacto na linha do tempo |
+| -------------- | ------------------------------------ | --------------------------------------- | ------- | ------------------------- |
+| Indie Hackers  | Fundadores solo, makers indie        | Feedback da comunidade, receita inicial | Médio   | Semana -1 a +1            |
+| Microlaunch    | Construtores de micro-SaaS           | Lançamento silencioso pré/pós-PH        | Baixo   | Semana -1 ou +1           |
+| NextBigProduct | Observadores de startups             | Visibilidade suplementar                | Baixo   | Semana 0–1                |
+| Foundout.io    | Descoberta de produto de cauda longa | Visibilidade persistente pós-lançamento | Baixo   | Semana +1                 |
 
-## Platform Landscape (2025-2026)
+### Diretórios de IA/tech
 
-### Discovery Platforms
+| Plataforma                        | Usuários mensais | Autoridade de domínio | Melhor para                          |
+| --------------------------------- | ---------------- | --------------------- | ------------------------------------ |
+| There's An AI For That (TAAFT)    | 2M+              | Alta                  | Descoberta de ferramentas de IA, SEO |
+| Futurepedia                       | 1M+              | Alta                  | Agregação de ferramentas de IA       |
+| Toolify                           | 500K+            | Média                 | Comparação de ferramentas de IA      |
+| Uneed                             | Em crescimento   | Média                 | Ferramentas indie curadas            |
+| AI Tool Directory (aitoolfor.org) | Em crescimento   | Média                 | Listagem ampla de ferramentas de IA  |
 
-| Platform | Audience | Best For | Effort | Timeline Impact |
-|---|---|---|---|---|
-| Product Hunt | Tech-savvy early adopters, 5M+ monthly | Launch day spike, press signal, investor signal | High | Day 0 |
-| BetaList | Pre-launch beta testers, early adopters | Waitlist building, pre-launch validation | Low | Week -2 to -1 |
-| What Launched Today | Casual tech browsers | Secondary launch day traffic | Low | Day 0 |
-| Launching.io | Startup watchers | Supplementary visibility | Low | Day 0-1 |
+### Canais sociais
 
-### Developer Platforms
+| Plataforma                | Estratégia                                                     | Linha do tempo  |
+| ------------------------- | -------------------------------------------------------------- | --------------- |
+| X (Twitter)               | Building in public, threads de lançamento, pods de engajamento | Semanas -4 a +4 |
+| LinkedIn                  | Posts profissionais de lançamento, história do fundador        | Semana -1 a +2  |
+| Reddit                    | Posts em subreddits relevantes (r/SaaS, r/startups, nichos)    | Dia 0 a +7      |
+| Comunidades Discord/Slack | Semeadura direcionada em comunidades                           | Contínuo        |
 
-| Platform | Audience | Best For | Effort | Timeline Impact |
-|---|---|---|---|---|
-| Hacker News (Show HN) | Engineers, technical founders | Technical credibility, GitHub stars | High | Day 0-1 |
-| Dev Hunt | Developer tool users | Dev-focused discovery | Low | Week -1 to 0 |
-| GitHub Trending | Open-source developers | Stars, contributors, credibility | Medium | Ongoing |
-| StackShare | Engineering teams evaluating tools | Enterprise dev tool discovery | Low | Week +1 |
+### Canais de conteúdo
 
-### Indie/Founder Platforms
+| Plataforma        | Tipo de conteúdo                                 | Valor de SEO | Linha do tempo |
+| ----------------- | ------------------------------------------------ | ------------ | -------------- |
+| YouTube           | Demo do produto, vídeo da história de lançamento | Médio        | Semana -1 a +1 |
+| Blog/site pessoal | Post de lançamento, deep-dive técnico            | Alto         | Semana 0–1     |
+| Podcasts          | Rodada de entrevistas com fundadores             | Médio        | Semana +1 a +4 |
+| Newsletter        | Cross-promoções com newsletters alinhadas        | Médio        | Semana -1 a +1 |
 
-| Platform | Audience | Best For | Effort | Timeline Impact |
-|---|---|---|---|---|
-| Indie Hackers | Solo founders, indie makers | Community feedback, early revenue | Medium | Week -1 to +1 |
-| Microlaunch | Micro-SaaS builders | Quiet pre/post-PH launch | Low | Week -1 or +1 |
-| NextBigProduct | Startup watchers | Supplementary visibility | Low | Week 0-1 |
-| Foundout.io | Long-tail product discovery | Persistent visibility post-launch | Low | Week +1 |
+### Plataformas pagas/review
 
-### AI/Tech Directories
+| Plataforma | Modelo                                | Melhor para                                         | Linha do tempo |
+| ---------- | ------------------------------------- | --------------------------------------------------- | -------------- |
+| AppSumo    | Divisão de receita de lifetime deal   | Impulso de receita, aquisição de usuários em escala | Semana +2 a +4 |
+| G2         | Listagem grátis + promoção paga       | Prova social enterprise, SEO                        | Semana +2 a +8 |
+| Capterra   | Listagem grátis + posicionamento pago | Descoberta em PME, comparação                       | Semana +2 a +8 |
 
-| Platform | Monthly Users | Domain Authority | Best For |
-|---|---|---|---|
-| There's An AI For That (TAAFT) | 2M+ | High | AI tool discovery, SEO |
-| Futurepedia | 1M+ | High | AI tool aggregation |
-| Toolify | 500K+ | Medium | AI tool comparison |
-| Uneed | Growing | Medium | Curated indie tools |
-| AI Tool Directory (aitoolfor.org) | Growing | Medium | Broad AI tool listing |
-
-### Social Channels
-
-| Platform | Strategy | Timeline |
-|---|---|---|
-| X (Twitter) | Building in public, launch threads, engagement pods | Weeks -4 to +4 |
-| LinkedIn | Professional launch posts, founder story | Week -1 to +2 |
-| Reddit | Relevant subreddit posts (r/SaaS, r/startups, niche subs) | Day 0 to +7 |
-| Discord/Slack communities | Targeted community seeding | Ongoing |
-
-### Content Channels
-
-| Platform | Content Type | SEO Value | Timeline |
-|---|---|---|---|
-| YouTube | Product demo, launch story video | Medium | Week -1 to +1 |
-| Blog/personal site | Launch blog post, technical deep-dive | High | Week 0-1 |
-| Podcasts | Founder interview circuit | Medium | Week +1 to +4 |
-| Newsletter | Cross-promotions with aligned newsletters | Medium | Week -1 to +1 |
-
-### Paid/Review Platforms
-
-| Platform | Model | Best For | Timeline |
-|---|---|---|---|
-| AppSumo | Lifetime deal revenue split | Revenue boost, user acquisition at scale | Week +2 to +4 |
-| G2 | Free listing + paid promotion | Enterprise social proof, SEO | Week +2 to +8 |
-| Capterra | Free listing + paid placement | SMB discovery, comparison shopping | Week +2 to +8 |
-
-Note: G2 is acquiring Capterra/GetApp/Software Advice from Gartner (closing Q1 2026).
+Nota: a G2 está adquirindo Capterra/GetApp/Software Advice da Gartner (fechamento Q1 2026).
 
 ---
 
-## Launch Sequence Framework
+## Framework de sequência de lançamento
 
 ```
 Week -4 to -3: FOUNDATION
@@ -164,198 +163,197 @@ Week +2 to +4: MONETIZATION & PROOF
 
 ---
 
-## Product Hunt Deep Dive
+## Aprofundamento: Product Hunt
 
-### How the 2025-2026 Algorithm Works
+### Como funciona o algoritmo em 2025–2026
 
-Product Hunt's team manually curates which products appear on the homepage. They evaluate
-products on four factors:
+A equipe do Product Hunt cura manualmente quais produtos aparecem na página inicial. Eles avaliam
+produtos em quatro fatores:
 
-1. **Useful** - solves a real problem
-2. **Distinctive** - clearly different from existing solutions
-3. **User-Friendly** - polished, easy to try
-4. **Complete** - feels like a finished product, not a landing page
+1. **Útil** — resolve um problema real
+2. **Distinto** — claramente diferente das soluções existentes
+3. **Fácil de usar** — polido, fácil de experimentar
+4. **Completo** — parece produto acabado, não landing page
 
-The algorithm hides upvote counts for the first 4 hours to distribute exposure more fairly.
-Early velocity still matters, but gaming is harder than before.
+O algoritmo oculta contagens de upvote nas primeiras 4 horas para distribuir exposição com mais justiça.
+A velocidade inicial ainda importa, mas manipular ficou mais difícil que antes.
 
-### Product Hunt Launch Page Anatomy
+### Anatomia da página de lançamento no Product Hunt
 
-| Element | Requirements |
-|---|---|
-| Title | 60-70 chars, customer-focused, communicate value without context |
-| Tagline | One sentence reinforcing the title's value proposition |
-| Gallery | 4-6 images or GIF/video; first image is hero; show product in use |
-| Description | What it does (1 sentence), who for (1 sentence), differentiator (1 sentence) |
-| Maker Comment | Story behind building it, why this moment matters, invite feedback |
+| Elemento            | Requisitos                                                                    |
+| ------------------- | ----------------------------------------------------------------------------- |
+| Título              | 60–70 caracteres, focado no cliente, comunica valor sem contexto              |
+| Tagline             | Uma frase reforçando a proposta de valor do título                            |
+| Galeria             | 4–6 imagens ou GIF/vídeo; primeira imagem é o hero; mostrar produto em uso    |
+| Descrição           | O que faz (1 frase), para quem (1 frase), diferencial (1 frase)               |
+| Comentário do maker | História por trás do build, por que este momento importa, convite ao feedback |
 
-### Title Strategy: Three Variants
+### Estratégia de título: três variantes
 
-Prepare three title options with distinct angles:
+Prepare três opções de título com ângulos distintos:
 
-| Angle | Example |
-|---|---|
-| Value-first | "Ship blog posts 10x faster with AI that matches your voice" |
-| Social proof | "The writing tool 500 founders use to publish daily" |
-| Curiosity | "What happens when you give your blog an AI co-writer" |
+| Ângulo         | Exemplo                                                      |
+| -------------- | ------------------------------------------------------------ |
+| Valor primeiro | "Ship blog posts 10x faster with AI that matches your voice" |
+| Prova social   | "The writing tool 500 founders use to publish daily"         |
+| Curiosidade    | "What happens when you give your blog an AI co-writer"       |
 
-Test these with 5-10 people before launch. Pick the one with the strongest immediate reaction.
+Teste com 5–10 pessoas antes do lançamento. Escolha a que gerar a reação imediata mais forte.
 
-### Launch Day Execution Roles
+### Papéis na execução do dia do lançamento
 
-For teams of 2+, assign these roles explicitly:
+Para times de 2+, atribua estes papéis explicitamente:
 
-| Role | Responsibility |
-|---|---|
-| Thread Owner | Responds to every PH comment within 30 min |
-| Social Driver | Posts updates on X, LinkedIn, communities |
-| Support Lead | Handles signups, onboarding, bug reports |
-| Metrics Tracker | Monitors upvotes, rank position, traffic |
+| Papel                  | Responsabilidade                                 |
+| ---------------------- | ------------------------------------------------ |
+| Dono do thread         | Responde a todo comentário no PH em até 30 min   |
+| Motor social           | Publica atualizações no X, LinkedIn, comunidades |
+| Líder de suporte       | Cuida de cadastros, onboarding, bugs             |
+| Rastreador de métricas | Monitora upvotes, posição no ranking, tráfego    |
 
-Solo founders: prioritize Thread Owner and Social Driver. Let support queue until evening.
+Fundadores solo: priorize Dono do thread e Motor social. Deixe a fila de suporte para o fim do dia.
 
-### Performance Benchmarks (2025)
+### Benchmarks de desempenho (2025)
 
-| Metric | Good | Great | Top 5 |
-|---|---|---|---|
-| Upvotes | 150-300 | 300-600 | 600-900+ |
-| Comments | 30-60 | 60-120 | 120+ |
-| Launch day signups | 200-500 | 500-1500 | 1500+ |
-| Traffic spike | 2K-5K visits | 5K-15K | 15K+ |
+| Métrica                        | Bom           | Ótimo    | Top 5    |
+| ------------------------------ | ------------- | -------- | -------- |
+| Upvotes                        | 150–300       | 300–600  | 600–900+ |
+| Comentários                    | 30–60         | 60–120   | 120+     |
+| Cadastros no dia do lançamento | 200–500       | 500–1500 | 1500+    |
+| Pico de tráfego                | 2K–5K visitas | 5K–15K   | 15K+     |
 
-Products in the top 6 appear on the first page without scrolling. This is the target.
+Produtos no top 6 aparecem na primeira página sem rolar. Esse é o alvo.
 
-### What to Avoid on Product Hunt
+### O que evitar no Product Hunt
 
-Never ask for upvotes publicly (X, LinkedIn, email blasts) or use exchange groups (IPs get
-flagged). Avoid Monday/Friday launches (low engagement). Do not launch a landing page with
-no working product. Always respond to comments (responsiveness affects ranking).
-
----
-
-## Hacker News (Show HN) Deep Dive
-
-### What Works on HN
-
-Show HN is for things people can run, use, or interact with. Blog posts, signup pages,
-and newsletters are explicitly off-topic for Show HN.
-
-**Ideal post types:**
-- Live demo with no signup required
-- Open-source tool with GitHub repo
-- Technical deep-dive with benchmarks
-- Novel approach to a known problem
-
-**Title formula:**
-Front-load a concrete benefit or intrigue. Use digits, version numbers, or specific results.
-Avoid superlatives, listicle formats, and clickbait.
-
-Good: "Show HN: Open-source tool that converts Figma designs to React in 30 seconds"
-Bad: "Show HN: The Best Design-to-Code Tool Ever Made"
-
-### Timing
-
-| Window | Why |
-|---|---|
-| Tue-Thu, 8:00-10:00 AM PT | Engineers check news before standup |
-| Sunday, 6:00-9:00 PM PT | Low competition, relaxed browsing |
-
-Check hn.algolia.com before posting to verify your slot is not crowded by major stories.
-
-### Algorithm Mechanics
-
-HN uses time-decayed scoring. The gravity multiplier increases every ~45 minutes. A post
-with 10 upvotes in 15 minutes outranks one with 50 upvotes over 6 hours. Early velocity
-is everything.
-
-### Early Upvote Sources (Legitimate)
-
-Use: email list of technical HN-active subscribers, private Slack/Discord with members
-holding 1+ year HN accounts, direct messages to founder friends on HN.
-
-Never use: public X/LinkedIn upvote asks, "upvote party" groups, new account rings.
-Shadow-banning is aggressive and permanent.
-
-### HN Performance Benchmarks
-
-| Result | Points | What You Get |
-|---|---|---|
-| Front page (1hr) | 10-20 | ~500 visits, 20-50 GitHub stars |
-| Front page (4hrs) | 30-80 | ~2K-5K visits, 50-121 GitHub stars |
-| Front page (12hrs+) | 100+ | 5K-20K visits, major credibility signal |
-
-Expect brutally honest feedback. Respond to criticism thoughtfully and you earn respect.
+Nunca peça upvotes publicamente (X, LinkedIn, e-mail em massa) nem use grupos de troca (IPs são
+sinalizados). Evite lançamentos segunda/sexta (baixo engajamento). Não lance uma landing page sem
+produto funcional. Sempre responda comentários (a responsividade afeta o ranking).
 
 ---
 
-## Waitlist Building Playbook
+## Aprofundamento: Hacker News (Show HN)
 
-Waitlist-driven launches convert at 25-85% vs. 2-4% for cold launches, with near-zero
-customer acquisition cost. AI-powered waitlist optimization adds ~30% to conversion rates.
+### O que funciona no HN
 
-### Waitlist Architecture
+Show HN é para coisas que as pessoas podem rodar, usar ou com as quais podem interagir. Posts de blog, páginas de cadastro
+e newsletters são explicitamente fora do tópico para Show HN.
 
-Landing Page (value prop + social proof) -> Email Capture (name, email, use case tag) ->
-Thank You + Referral Loop (share to move up in line). Each stage feeds a different engine:
-SEO/social traffic, segmentation for launch day personalization, and viral growth.
+**Tipos ideais de post:**
 
-### Referral-Based Waitlist Growth
+- Demo ao vivo sem cadastro
+- Ferramenta open source com repositório no GitHub
+- Deep-dive técnico com benchmarks
+- Abordagem nova para um problema conhecido
 
-The highest-performing waitlists use tiered referral rewards:
+**Fórmula de título:**
+Antecipe um benefício concreto ou intriga. Use dígitos, números de versão ou resultados específicos.
+Evite superlativos, formato lista e clickbait.
 
-| Referrals | Reward |
-|---|---|
-| 1 | Early access (move up the line) |
-| 3 | Extended free trial or bonus feature |
-| 5 | Lifetime discount or founding member status |
-| 10 | Direct call with founder, input on roadmap |
+Bom: "Show HN: Open-source tool that converts Figma designs to React in 30 seconds"
+Ruim: "Show HN: The Best Design-to-Code Tool Ever Made"
 
-Tools: LaunchList (getlaunchlist.com), Waitlister, Viral Loops, ReferralHero
+### Momento
 
-### Waitlist Conversion Tactics
+| Janela                  | Por quê                                      |
+| ----------------------- | -------------------------------------------- |
+| Ter–qui, 8:00–10:00 PT  | Engenheiros checam notícias antes do standup |
+| Domingo, 18:00–21:00 PT | Baixa competição, navegação relaxada         |
 
-Use scarcity framing ("Onboarding 50 users per week"), show position in line, tag users
-by role/use case at signup for personalized launch emails, send weekly build updates to
-keep the list warm, and let top referrers in early for pre-launch testimonials.
+Confira hn.algolia.com antes de postar para verificar se o slot não está lotado por histórias grandes.
 
-### Waitlist Size Benchmarks
+### Mecânica do algoritmo
 
-| Product Stage | Target Waitlist | Conversion Expectation |
-|---|---|---|
-| Pre-MVP validation | 100-500 | 40-60% to beta signup |
-| MVP ready | 500-2000 | 30-50% to active user |
-| Product-market fit | 2000-10000 | 25-40% to paid/active |
-| Scaled launch | 10000+ | 15-30% to paid |
+O HN usa pontuação com decaimento temporal. O multiplicador de gravidade aumenta a cada ~45 minutos. Um post
+com 10 upvotes em 15 minutos supera um com 50 upvotes em 6 horas. Velocidade inicial
+é tudo.
 
----
+### Fontes iniciais de upvote (legítimas)
 
+Use: lista de e-mail de assinantes técnicos ativos no HN, Slack/Discord privado com membros
+com contas HN de 1+ ano, DM direto a fundadores amigos no HN.
 
-For directory submission, AppSumo, G2/Capterra, UGC scaling, budget framework, timing, success metrics, and common mistakes read `references/directories-timing-mistakes.md`.
+Nunca use: pedidos públicos de upvote no X/LinkedIn, grupos de "upvote party", anéis de contas novas.
+Shadow-ban é agressivo e permanente.
 
-## Examples
+### Benchmarks de desempenho no HN
 
-- **User says:** "Plan our Product Hunt launch" → **Result:** Agent asks timeline, audience size, and product state; recommends 2 weeks before (landing page, waitlist, PH draft, 20–50 supporters, assets, UTM); launch day (PH 12:01 AM PT, Show HN 8–10 AM, X thread, waitlist email); Week +1 (demo video, retro post, directories, reviews).
-- **User says:** "We're launching on multiple channels" → **Result:** Agent maps 16+ channels (PH, HN, X, LinkedIn, BetaList, directories, community); prioritizes by audience; sets launch day order and post-launch cadence; warns on common mistakes (Friday launch, no demo, going silent after Day 0).
-- **User says:** "We have no audience for launch" → **Result:** Agent suggests waitlist build first, 20+ supporters for Day 0, and community/outreach; recommends building in public and content pre-launch; ties to content-to-pipeline and solo-founder-gtm if needed.
+| Resultado               | Pontos | O que você ganha                             |
+| ----------------------- | ------ | -------------------------------------------- |
+| Primeira página (1 h)   | 10–20  | ~500 visitas, 20–50 estrelas no GitHub       |
+| Primeira página (4 h)   | 30–80  | ~2K–5K visitas, 50–121 estrelas no GitHub    |
+| Primeira página (12 h+) | 100+   | 5K–20K visitas, sinal forte de credibilidade |
 
-## Troubleshooting
-
-- **Low PH/HN traction** → **Cause:** Wrong day, weak tagline, or no supporters. **Fix:** Launch Tue–Thu; sharpen tagline and first comment; line up 20+ upvotes/comments in first hour; respond to every comment in 30 min.
-- **Traffic spike but no signups** → **Cause:** No clear CTA or try-it-now. **Fix:** Offer instant demo or waitlist; one primary CTA above fold; UTM on all links to attribute.
-- **Launch day then silence** → **Cause:** No Week +1 plan. **Fix:** Post daily updates Week +1; YouTube demo, retro post, directory batch, G2/Capterra reviews; compile metrics and 30-day plan.
+Espere feedback brutalmente honesto. Responda à crítica com cuidado e você ganha respeito.
 
 ---
 
+## Playbook de construção de lista de espera
 
-For checklists, benchmarks, and discovery questions read `references/quick-reference.md` when you need detailed reference.
+Lançamentos guiados por lista de espera convertem a 25–85% vs. 2–4% em lançamentos frios, com custo de aquisição
+quase zero. Otimização de lista de espera com IA soma ~30% às taxas de conversão.
+
+### Arquitetura da lista de espera
+
+Landing page (proposta de valor + prova social) → Captura de e-mail (nome, e-mail, tag de caso de uso) →
+Obrigado + loop de indicação (compartilhar para subir na fila). Cada estágio alimenta um motor diferente:
+tráfego SEO/social, segmentação para personalização no dia do lançamento e crescimento viral.
+
+### Crescimento de lista de espera baseado em indicações
+
+As listas de maior desempenho usam recompensas por indicação em níveis:
+
+| Indicações | Recompensa                                      |
+| ---------- | ----------------------------------------------- |
+| 1          | Acesso antecipado (subir na fila)               |
+| 3          | Trial grátis estendido ou feature bônus         |
+| 5          | Desconto vitalício ou status de membro fundador |
+| 10         | Call direto com o fundador, input no roadmap    |
+
+Ferramentas: LaunchList (getlaunchlist.com), Waitlister, Viral Loops, ReferralHero
+
+### Táticas de conversão da lista de espera
+
+Use enquadramento de escassez ("Onboarding 50 users per week"), mostre posição na fila, marque usuários
+por papel/caso de uso no cadastro para e-mails personalizados no lançamento, envie atualizações semanais de build para
+manter a lista aquecida e deixe os maiores indicadores entrarem cedo para depoimentos pré-lançamento.
+
+### Benchmarks de tamanho da lista de espera
+
+| Estágio do produto   | Meta de lista de espera | Expectativa de conversão  |
+| -------------------- | ----------------------- | ------------------------- |
+| Validação pré-MVP    | 100–500                 | 40–60% para cadastro beta |
+| MVP pronto           | 500–2000                | 30–50% para usuário ativo |
+| Product-market fit   | 2000–10000              | 25–40% para pago/ativo    |
+| Lançamento em escala | 10000+                  | 15–30% para pago          |
 
 ---
 
-## Related Skills
+Para envio a diretórios, AppSumo, G2/Capterra, escala de UGC, framework de orçamento, timing, métricas de sucesso e erros comuns, leia `references/directories-timing-mistakes.md`.
 
-- **positioning-icp** - Define your positioning and ICP before crafting launch messaging
-- **ai-seo** - Build long-tail SEO strategy post-launch using directory backlinks
-- **social-selling** - Convert launch buzz into pipeline and sales conversations
-- **content-to-pipeline** - Turn launch content into ongoing lead generation
-- **ai-ugc-ads** - Scale user-generated launch content into paid campaigns
-- **solo-founder-gtm** - Adapted launch playbook for one-person teams
+## Exemplos
+
+- **Usuário diz:** "Planeje nosso lançamento no Product Hunt" → **Resultado:** O agente pergunta linha do tempo, tamanho da audiência e estado do produto; recomenda 2 semanas antes (landing, lista de espera, rascunho do PH, 20–50 apoiadores, ativos, UTM); dia do lançamento (PH 12:01 PT, Show HN 8–10, thread no X, e-mail da lista de espera); Semana +1 (vídeo demo, post retrospectiva, diretórios, reviews).
+- **Usuário diz:** "Vamos lançar em vários canais" → **Resultado:** O agente mapeia 16+ canais (PH, HN, X, LinkedIn, BetaList, diretórios, comunidade); prioriza por audiência; define ordem no dia do lançamento e cadência pós-lançamento; alerta erros comuns (sexta, sem demo, sumir depois do Dia 0).
+- **Usuário diz:** "Não temos audiência para o lançamento" → **Resultado:** O agente sugere construir lista de espera primeiro, 20+ apoiadores no Dia 0 e comunidade/outreach; recomenda building in public e conteúdo pré-lançamento; conecta a content-to-pipeline e solo-founder-gtm se fizer sentido.
+
+## Solução de problemas
+
+- **Baixa tração no PH/HN** → **Causa:** Dia errado, tagline fraca ou sem apoiadores. **Correção:** Lançar ter–qui; afiar tagline e primeiro comentário; alinhar 20+ upvotes/comentários na primeira hora; responder a todo comentário em 30 min.
+- **Pico de tráfego sem cadastros** → **Causa:** Sem CTA claro ou “experimente agora”. **Correção:** Oferecer demo instantânea ou lista de espera; um CTA principal acima da dobra; UTM em todos os links para atribuir.
+- **Dia do lançamento e depois silêncio** → **Causa:** Sem plano na Semana +1. **Correção:** Postar atualizações diárias na Semana +1; demo no YouTube, post retrospectiva, lote de diretórios, reviews G2/Capterra; compilar métricas e plano de 30 dias.
+
+---
+
+Para checklists, benchmarks e perguntas de descoberta leia `references/quick-reference.md` quando precisar de referência detalhada.
+
+---
+
+## Skills relacionadas
+
+- **positioning-icp** — Defina posicionamento e ICP antes de criar a mensagem de lançamento
+- **ai-seo** — Construa estratégia SEO de cauda longa pós-lançamento usando backlinks de diretórios
+- **social-selling** — Converta buzz de lançamento em pipeline e conversas de venda
+- **content-to-pipeline** — Transforme conteúdo de lançamento em geração contínua de leads
+- **ai-ugc-ads** — Escale conteúdo gerado por usuários do lançamento em campanhas pagas
+- **solo-founder-gtm** — Playbook de lançamento adaptado para times de uma pessoa

@@ -1,88 +1,82 @@
-# Decomposition Planning & Roadmap - Quick Reference
+# Planejamento e roteiro de decomposição - referência rápida
 
-## Pattern Sequence
+## Sequência de padrões```
 
-```
-1. Identify & Size Components      → Foundation
-2. Gather Common Components        → Find duplicates
-3. Flatten Components              → Clean structure
-4. Determine Dependencies          → Assess feasibility
-5. Create Component Domains        → Group components
-6. Create Domain Services          → Extract services
-```
+1. Identify & Size Components → Foundation
+2. Gather Common Components → Find duplicates
+3. Flatten Components → Clean structure
+4. Determine Dependencies → Assess feasibility
+5. Create Component Domains → Group components
+6. Create Domain Services → Extract services
 
-## Phased Approach
+````
+## Abordagem em fases
 
-### Phase 1: Analysis & Preparation
+### Fase 1: Análise e Preparação
 
-- Pattern 1: Identify & Size Components
-- Pattern 2: Gather Common Components
-- Pattern 3: Flatten Components
-- Pattern 4: Determine Dependencies
+- Padrão 1: Identificar e dimensionar componentes
+- Padrão 2: Reunir Componentes Comuns
+- Padrão 3: Achatar componentes
+- Padrão 4: Determinar Dependências
 
-### Phase 2: Domain Organization
+### Fase 2: Organização do Domínio
 
-- Pattern 5: Create Component Domains
+- Padrão 5: Criar Domínios de Componentes
 
-### Phase 3: Service Extraction
+### Fase 3: Extração de serviço
 
-- Pattern 6: Create Domain Services
+- Padrão 6: Criar serviços de domínio
 
-## Prioritization Formula
-
-```
+## Fórmula de Priorização```
 Priority = (Value × 3) - (Risk × 2) - (Dependencies × 1)
 
 Higher score = Higher priority
-```
+````
 
-### Risk Levels
+### Níveis de risco
 
-- **Low**: Infrastructure, standalone
-- **Medium**: Domain components, some dependencies
-- **High**: Core business logic, high coupling
+- **Baixo**: Infraestrutura, independente
+- **Médio**: componentes do domínio, algumas dependências
+- **Alto**: lógica de negócios central, alto acoplamento
 
-### Value Levels
+### Níveis de valor
 
-- **High**: Business-critical, high impact
-- **Medium**: Important but not critical
-- **Low**: Nice to have, low impact
+- **Alto**: crítico para os negócios, alto impacto
+- **Médio**: importante, mas não crítico
+- **Baixo**: bom ter, baixo impacto
 
-## Prioritization Matrix
+## Matriz de Priorização```
 
-```
-High Value, Low Risk    | High Value, High Risk
-(Do First)              | (Do Carefully)
+High Value, Low Risk | High Value, High Risk
+(Do First) | (Do Carefully)
 ────────────────────────┼──────────────────────
-Low Value, Low Risk     | Low Value, High Risk
-(Do Later)              | (Avoid/Defer)
-```
+Low Value, Low Risk | Low Value, High Risk
+(Do Later) | (Avoid/Defer)
 
-## Roadmap Templates
+````
+## Modelos de roteiro
 
-### Small Project (3-6 months)
+### Pequeno Projeto (3-6 meses)
 
-- Phase 1: Analysis (1 month)
-- Phase 2: Refactoring (2 months)
-- Phase 3: Extraction (2-3 months)
+- Fase 1: Análise (1 mês)
+- Fase 2: Refatoração (2 meses)
+- Fase 3: Extração (2-3 meses)
 
-### Medium Project (6-12 months)
+### Projeto Médio (6-12 meses)
 
-- Phase 1: Analysis & Preparation (2 months)
-- Phase 2: Domain Organization (2 months)
-- Phase 3: Service Extraction (4-6 months)
-- Phase 4: Optimization (2 months)
+- Fase 1: Análise e Preparação (2 meses)
+- Fase 2: Organização do Domínio (2 meses)
+- Fase 3: Extração de Serviço (4-6 meses)
+- Fase 4: Otimização (2 meses)
 
-### Large Project (12+ months)
+### Grande Projeto (mais de 12 meses)
 
-- Phase 1: Analysis & Preparation (3-4 months)
-- Phase 2: Domain Organization (3-4 months)
-- Phase 3: Service Extraction (6-8 months)
-- Phase 4: Optimization (2-3 months)
+- Fase 1: Análise e Preparação (3-4 meses)
+- Fase 2: Organização do Domínio (3-4 meses)
+- Fase 3: Extração de Serviço (6-8 meses)
+- Fase 4: Otimização (2-3 meses)
 
-## Architecture Story Template
-
-```
+## Modelo de história de arquitetura```
 As an architect, I need to [apply pattern/refactor component]
 to support [architectural characteristic/business need]
 so that [benefit/outcome]
@@ -94,54 +88,53 @@ Acceptance Criteria:
 Estimate: X story points
 Priority: High/Medium/Low
 Dependencies: [List]
-```
+````
 
-## Story Point Estimation
+## Estimativa de pontos da história
 
-| Points | Effort    | Description |
-| ------ | --------- | ----------- |
-| 1      | Few hours | Trivial     |
-| 2      | 1 day     | Simple      |
-| 3      | 2-3 days  | Small       |
-| 5      | 1 week    | Medium      |
-| 8      | 2 weeks   | Large       |
-| 13     | 3+ weeks  | Very Large  |
+| Pontos | Esforço      | Descrição    |
+| ------ | ------------ | ------------ |
+| 1      | Poucas horas | Trivial      |
+| 2      | 1 dia        | Simples      |
+| 3      | 2-3 dias     | Pequeno      |
+| 5      | 1 semana     | Médio        |
+| 8      | 2 semanas    | Grande       |
+| 13     | 3+ semanas   | Muito Grande |
 
-## Progress Tracking Checklist
+## Lista de verificação de acompanhamento de progresso
 
-### Pattern Status
+### Status do padrão
 
-- [ ] Pattern 1: Complete / In Progress / Not Started
-- [ ] Pattern 2: Complete / In Progress / Not Started
-- [ ] Pattern 3: Complete / In Progress / Not Started
-- [ ] Pattern 4: Complete / In Progress / Not Started
-- [ ] Pattern 5: Complete / In Progress / Not Started
-- [ ] Pattern 6: Complete / In Progress / Not Started
+- [] Padrão 1: Concluído/Em andamento/Não iniciado
+- [] Padrão 2: Concluído/Em andamento/Não iniciado
+- [] Padrão 3: Concluído/Em andamento/Não iniciado
+- [] Padrão 4: Concluído/Em andamento/Não iniciado
+- [] Padrão 5: Concluído/Em andamento/Não iniciado
+- [] Padrão 6: Concluído/Em andamento/Não iniciado
 
-### Key Metrics
+### Principais métricas
 
-- Components Identified: X
-- Components Refactored: X (Y%)
-- Domains Created: X
-- Services Extracted: X
+- Componentes identificados: X
+- Componentes refatorados: X (Y%)
+- Domínios criados: X
+- Serviços Extraídos: X
 
-### Blockers
+### Bloqueadores
 
-- [ ] List blockers
-- [ ] Identify dependencies
-- [ ] Plan mitigation
+- [] Listar bloqueadores
+- [] Identificar dependências
+- [] Planejar mitigação
 
-## Quick Analysis Steps
+## Etapas de análise rápida
 
-1. **Assess** → Check current state
-2. **Identify** → Find patterns to apply
-3. **Prioritize** → Rank by risk/value
-4. **Plan** → Create phased roadmap
-5. **Track** → Monitor progress
+1. **Avaliar** → Verifique o estado atual
+2. **Identificar** → Encontre padrões para aplicar
+3. **Priorizar** → Classificar por risco/valor
+4. **Plano** → Crie um roteiro em fases
+5. **Acompanhar** → Monitorar o progresso
 
-## Output Template
+## Modelo de saída```markdown
 
-```markdown
 # Decomposition Roadmap
 
 ## Current State Assessment
@@ -178,4 +171,7 @@ Dependencies: [List]
 ## Progress Dashboard
 
 [Status tables and metrics]
+
+```
+
 ```

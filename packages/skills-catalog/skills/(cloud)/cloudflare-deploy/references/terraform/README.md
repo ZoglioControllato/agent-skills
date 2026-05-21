@@ -1,27 +1,27 @@
-# Cloudflare Terraform Provider
+# Provedor Terraform da Cloudflare
 
-**Expert guidance for Cloudflare Terraform Provider - infrastructure as code for Cloudflare resources.**
+**Guia para o Cloudflare Terraform Provider — infraestrutura como código para recursos Cloudflare.**
 
-## Core Principles
+## Princípios centrais
 
-- **Provider-first**: Use Terraform provider for ALL infrastructure - never mix with wrangler.jsonc for the same resources
-- **State management**: Always use remote state (S3, Terraform Cloud, etc.) for team environments
-- **Modular architecture**: Create reusable modules for common patterns (zones, workers, pages)
-- **Version pinning**: Always pin provider version with `~>` for predictable upgrades
-- **Secret management**: Use variables + environment vars for sensitive data - never hardcode API tokens
+- **Provider primeiro**: use o provedor Terraform para TODA a infraestrutura — não misture com wrangler.jsonc para os mesmos recursos
+- **Gestão de state**: use sempre state remoto (S3, Terraform Cloud, etc.) em ambientes de equipe
+- **Arquitetura modular**: crie módulos reutilizáveis para padrões comuns (zonas, workers, pages)
+- **Versão fixa**: fixe a versão do provider com `~>` para upgrades previsíveis
+- **Gestão de segredos**: use variáveis + variáveis de ambiente para dados sensíveis — nunca hardcode tokens de API
 
-## Provider Version
+## Versão do provider
 
-| Version | Status  | Notes                                                 |
-| ------- | ------- | ----------------------------------------------------- |
-| 5.x     | Current | Auto-generated from OpenAPI, breaking changes from v4 |
-| 4.x     | Legacy  | Manual maintenance, deprecated                        |
+| Versão | Status | Observações                                                   |
+| ------ | ------ | ------------------------------------------------------------- |
+| 5.x    | Atual  | Gerado a partir de OpenAPI; breaking changes em relação ao v4 |
+| 4.x    | Legado | Manutenção manual, em desuso                                  |
 
-**Critical:** v5 renamed many resources (`cloudflare_record` → `cloudflare_dns_record`, `cloudflare_worker_*` → `cloudflare_workers_*`). See [gotchas.md](./gotchas.md#v5-breaking-changes) for migration details.
+**Crítico:** o v5 renomeou muitos recursos (`cloudflare_record` → `cloudflare_dns_record`, `cloudflare_worker_*` → `cloudflare_workers_*`). Veja [gotchas.md](./gotchas.md#v5-breaking-changes) para migrar.
 
-## Provider Setup
+## Configuração do provider
 
-### Basic Configuration
+### Configuração básica
 
 ```hcl
 terraform {
@@ -40,16 +40,16 @@ provider "cloudflare" {
 }
 ```
 
-### Authentication Methods (priority order)
+### Métodos de autenticação (ordem de prioridade)
 
-1. **API Token** (RECOMMENDED): `api_token` or `CLOUDFLARE_API_TOKEN`
-   - Create: Dashboard → My Profile → API Tokens
-   - Scope to specific accounts/zones for security
-2. **Global API Key** (LEGACY): `api_key` + `api_email` or `CLOUDFLARE_API_KEY` + `CLOUDFLARE_EMAIL`
-   - Less secure, use tokens instead
-3. **User Service Key**: `user_service_key` for Origin CA certificates
+1. **Token de API** (RECOMENDADO): `api_token` ou `CLOUDFLARE_API_TOKEN`
+   - Criação: Dashboard → My Profile → API Tokens
+   - Escopo por contas/zonas específicas
+2. **Global API Key** (LEGADO): `api_key` + `api_email` ou `CLOUDFLARE_API_KEY` + `CLOUDFLARE_EMAIL`
+   - Menos seguro; prefira tokens
+3. **User Service Key**: `user_service_key` para certificados Origin CA
 
-## Quick Reference: Common Commands
+## Referência rápida: comandos comuns
 
 ```bash
 terraform init          # Initialize provider
@@ -63,9 +63,9 @@ terraform fmt -recursive  # Format code
 terraform validate      # Validate configuration
 ```
 
-## Import Existing Resources
+## Importar recursos existentes
 
-Use cf-terraforming to generate configs from existing Cloudflare resources:
+Use cf-terraforming para gerar configs a partir de recursos Cloudflare existentes:
 
 ```bash
 # Install
@@ -78,23 +78,25 @@ cf-terraforming generate --resource-type cloudflare_dns_record --zone <zone-id>
 cf-terraforming import --resource-type cloudflare_dns_record --zone <zone-id>
 ```
 
-## Reading Order
+## Ordem de leitura
 
-1. Start with [README.md](./README.md) for provider setup and authentication
-2. Review [configuration.md](./configuration.md) for resource configurations
-3. Check [api.md](./api.md) for data sources and existing resource queries
-4. See [patterns.md](./patterns.md) for multi-environment and CI/CD patterns
-5. Read [gotchas.md](./gotchas.md) for state drift, v5 breaking changes, and troubleshooting
+1. Comece por [README.md](./README.md) para setup e autenticação
+2. Revise [configuration.md](./configuration.md) para configurações de recursos
+3. Consulte [api.md](./api.md) para data sources e consultas
+4. Veja [patterns.md](./patterns.md) para multiambiente e CI/CD
+5. Leia [gotchas.md](./gotchas.md) para drift de state, breaking changes v5 e resolução de problemas
 
-## In This Reference
+## Nesta referência
 
-- [configuration.md](./configuration.md) - Resources for zones, DNS, workers, KV, R2, D1, Pages, rulesets
-- [api.md](./api.md) - Data sources for existing resources
-- [patterns.md](./patterns.md) - Architecture patterns, multi-env setup, CI/CD integration
-- [gotchas.md](./gotchas.md) - Common issues, security, best practices
+- [configuration.md](./configuration.md) — Recursos para zonas, DNS, workers, KV, R2, D1, Pages, rulesets
+- [api.md](./api.md) — Data sources para recursos existentes
+- [patterns.md](./patterns.md) — Padrões de arquitetura, multiambiente, integração CI/CD
+- [gotchas.md](./gotchas.md) — Problemas comuns, segurança, boas práticas
 
-## See Also
+## Ver também
 
-- [pulumi](../pulumi/) - Alternative IaC tool for Cloudflare
-- [wrangler](../wrangler/) - CLI deployment alternative
-- [workers](../workers/) - Worker runtime documentation
+- [pulumi](../pulumi/) — Ferramenta IaC alternativa para Cloudflare
+- [wrangler](../wrangler/) — Alternativa de deploy via CLI
+- [workers](../workers/) — Documentação do runtime dos Workers
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

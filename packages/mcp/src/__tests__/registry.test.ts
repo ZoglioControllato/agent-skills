@@ -85,6 +85,48 @@ describe('trigger extraction (via buildIndexes)', () => {
     expect(results.length).toBeGreaterThan(0)
     expect(results[0].item.triggers).toBe('')
   })
+
+  it('should extract "Aciona em" keywords (PT)', () => {
+    const registry = createRegistry([
+      {
+        name: 'aws-advisor',
+        description: 'Consultor AWS especializado. Aciona em AWS, Lambda, S3, EC2. Mais detalhes aqui.',
+      },
+    ])
+    const indexes = buildIndexes(registry)
+    const results = indexes.fuse.search('aws')
+    expect(results.length).toBeGreaterThan(0)
+    expect(results[0].item.triggers).toContain('AWS')
+    expect(results[0].item.triggers).toContain('Lambda')
+  })
+
+  it('should extract "Use quando" keywords (PT)', () => {
+    const registry = createRegistry([
+      {
+        name: 'accessibility',
+        description:
+          'Audita acessibilidade web. Use quando o usuário pede "melhore a acessibilidade", "auditoria a11y", "conformidade WCAG". Cobertura inclui formulários.',
+      },
+    ])
+    const indexes = buildIndexes(registry)
+    const results = indexes.fuse.search('a11y')
+    expect(results.length).toBeGreaterThan(0)
+    expect(results[0].item.triggers).not.toContain('"')
+    expect(results[0].item.triggers).toContain('melhore a acessibilidade')
+  })
+
+  it('should extract "Palavras-chave -" patterns (PT)', () => {
+    const registry = createRegistry([
+      {
+        name: 'nx-workspace',
+        description: 'Configura workspaces Nx. Palavras-chave - nx, monorepo, workspace, targets. Info extra.',
+      },
+    ])
+    const indexes = buildIndexes(registry)
+    const results = indexes.fuse.search('monorepo')
+    expect(results.length).toBeGreaterThan(0)
+    expect(results[0].item.triggers).toContain('monorepo')
+  })
 })
 
 describe('usage_hint extraction (via buildIndexes)', () => {
@@ -107,6 +149,18 @@ describe('usage_hint extraction (via buildIndexes)', () => {
     const indexes = buildIndexes(registry)
     const results = indexes.fuse.search('test-skill')
     expect(results[0].item.usage_hint).toBe('Expert AWS Cloud Advisor')
+  })
+
+  it('should extract text before "Use quando" (PT)', () => {
+    const registry = createRegistry([
+      {
+        name: 'test-skill',
+        description: 'Audita acessibilidade web conforme WCAG 2.1. Use quando o usuário pede melhorar acessibilidade.',
+      },
+    ])
+    const indexes = buildIndexes(registry)
+    const results = indexes.fuse.search('test-skill')
+    expect(results[0].item.usage_hint).toBe('Audita acessibilidade web conforme WCAG 2.1.')
   })
 })
 

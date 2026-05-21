@@ -1,11 +1,11 @@
 # core
 
-This library was generated with [Nx](https://nx.dev).
+Biblioteca compartilhada gerada com [Nx](https://nx.dev).
 
-## Building
+## Build
 
-Run `nx build core` to build the library.
+Execute `nx build core` para compilar a biblioteca.
 
-## Running unit tests
+## Testes unitários
 
-Run `nx test core` to execute the unit tests via [Jest](https://jestjs.io).
+Execute `nx test core` para rodar os testes com [Jest](https://jestjs.io).

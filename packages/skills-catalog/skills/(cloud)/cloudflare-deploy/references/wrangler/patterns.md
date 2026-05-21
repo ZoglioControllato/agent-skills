@@ -1,8 +1,8 @@
-# Wrangler Development Patterns
+# Padrões de desenvolvimento com Wrangler
 
-Common workflows and best practices.
+Fluxos comuns e boas práticas.
 
-## New Worker Project
+## Novo projeto Worker
 
 ```bash
 wrangler init my-worker && cd my-worker
@@ -10,7 +10,7 @@ wrangler dev              # Develop locally
 wrangler deploy           # Deploy
 ```
 
-## Local Development
+## Desenvolvimento local
 
 ```bash
 wrangler dev              # Local mode (fast, simulated)
@@ -19,7 +19,7 @@ wrangler dev --env staging --port 8787
 wrangler dev --inspector-port 9229  # Enable debugging
 ```
 
-Debug: chrome://inspect → Configure → localhost:9229
+Depuração: chrome://inspect → Configure → localhost:9229
 
 ## Secrets
 
@@ -31,7 +31,7 @@ echo "secret-value" | wrangler secret put SECRET_KEY
 # SECRET_KEY=local-dev-key
 ```
 
-## Adding KV
+## Adicionar KV
 
 ```bash
 wrangler kv namespace create MY_KV
@@ -40,7 +40,7 @@ wrangler kv namespace create MY_KV --preview
 wrangler deploy
 ```
 
-## Adding D1
+## Adicionar D1
 
 ```bash
 wrangler d1 create my-db
@@ -54,7 +54,7 @@ wrangler d1 migrations apply my-db --remote
 wrangler d1 time-travel restore my-db --timestamp 2025-01-01T12:00:00Z
 ```
 
-## Multi-Environment
+## Multiambiente
 
 ```bash
 wrangler deploy --env staging
@@ -65,9 +65,9 @@ wrangler deploy --env production
 { "env": { "staging": { "vars": { "ENV": "staging" } } } }
 ```
 
-## Testing
+## Testes
 
-### Integration Tests with Node.js Test Runner
+### Testes de integração com o test runner do Node.js
 
 ```typescript
 import { startWorker } from 'wrangler'
@@ -96,9 +96,9 @@ describe('API', () => {
 })
 ```
 
-### Testing with Vitest
+### Testes com Vitest
 
-Install: `npm install -D vitest @cloudflare/vitest-pool-workers`
+Instalação: `npm install -D vitest @cloudflare/vitest-pool-workers`
 
 **vitest.config.ts:**
 
@@ -126,7 +126,7 @@ it('uses bindings', async () => {
 })
 ```
 
-### Multi-Worker Development (Service Bindings)
+### Desenvolvimento multi-Worker (service bindings)
 
 ```typescript
 const authWorker = await startWorker({ config: './auth/wrangler.jsonc' })
@@ -141,7 +141,7 @@ await authWorker.dispose()
 await apiWorker.dispose()
 ```
 
-### Mock External APIs
+### Mock de APIs externas
 
 ```typescript
 const worker = await startWorker({
@@ -162,7 +162,7 @@ const response = await worker.fetch('http://example.com/proxy')
 // Worker internally fetches api.external.com - gets mocked response
 ```
 
-## Monitoring & Versions
+## Monitoramento e versões
 
 ```bash
 wrangler tail                 # Real-time logs
@@ -203,9 +203,11 @@ export default {
 }
 ```
 
-## See Also
+## Ver também
 
-- [README.md](./README.md) - Commands
-- [configuration.md](./configuration.md) - Config
-- [api.md](./api.md) - Programmatic API
-- [gotchas.md](./gotchas.md) - Issues
+- [README.md](./README.md) — Comandos
+- [configuration.md](./configuration.md) — Configuração
+- [api.md](./api.md) — API programática
+- [gotchas.md](./gotchas.md) — Problemas
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

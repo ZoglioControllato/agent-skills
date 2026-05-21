@@ -76,23 +76,25 @@ npx wrangler pipelines create my-pipeline \
   --sql "INSERT INTO my_sink SELECT * FROM my_stream WHERE event_type = 'purchase'"
 ```
 
-**⚠️ Pipelines are immutable** - cannot modify SQL. Must delete/recreate.
+**⚠️ Pipelines são imutáveis** – não podem modificar SQL. Deve excluir/recriar.
 
-## Credentials
+## Credenciais
 
-| Type              | Permission            | Get From                           |
-| ----------------- | --------------------- | ---------------------------------- |
-| Catalog token     | R2 Admin Read & Write | Dashboard → R2 → API tokens        |
-| R2 credentials    | Object Read & Write   | `wrangler r2 bucket create` output |
-| HTTP ingest token | Workers Pipeline Send | Dashboard → Workers → API tokens   |
+| Tipo                   | Permissão                              | Obter de                               |
+| ---------------------- | -------------------------------------- | -------------------------------------- |
+| Token de catálogo      | Leitura e gravação do administrador R2 | Painel → R2 → Tokens de API            |
+| Credenciais R2         | Leitura e gravação de objetos          | Saída `wrangler r2 bucket create`      |
+| Token de ingestão HTTP | Envio de pipeline de trabalhadores     | Painel → Trabalhadores → Tokens de API |
 
-## Complete Example
+## Exemplo completo```bash
 
-```bash
 npx wrangler r2 bucket create my-bucket
 npx wrangler r2 bucket catalog enable my-bucket
 npx wrangler pipelines streams create my-stream --schema-file schema.json
 npx wrangler pipelines sinks create my-sink --type r2-data-catalog --bucket my-bucket ...
-npx wrangler pipelines create my-pipeline --sql "INSERT INTO my_sink SELECT * FROM my_stream"
+npx wrangler pipelines create my-pipeline --sql "INSERT INTO my_sink SELECT \* FROM my_stream"
 npx wrangler deploy
+
+```
+
 ```

@@ -1,86 +1,86 @@
-# Cloudflare Bindings Skill Reference
+# Referência da skill Cloudflare Bindings
 
-Expert guidance on Cloudflare Workers Bindings - the runtime APIs that connect Workers to Cloudflare platform resources.
+Orientação especializada sobre Cloudflare Workers Bindings — as APIs de runtime que conectam Workers a recursos da plataforma.
 
-## What Are Bindings?
+## O que são bindings?
 
-Bindings are how Workers access Cloudflare resources (storage, compute, services) via the `env` object. They're configured in `wrangler.jsonc`, type-safe via TypeScript, and zero-overhead at runtime.
+Bindings são como Workers acessam recursos Cloudflare (storage, compute, serviços) via o objeto `env`. Configurados em `wrangler.jsonc`, tipados com TypeScript e sem overhead extra em runtime.
 
-## Reading Order
+## Ordem de leitura
 
-1. **This file** - Binding catalog and selection guide
-2. **[api.md](api.md)** - TypeScript types and env access patterns
-3. **[configuration.md](configuration.md)** - Complete wrangler.jsonc examples
-4. **[patterns.md](patterns.md)** - Best practices and common patterns
-5. **[gotchas.md](gotchas.md)** - Critical pitfalls and troubleshooting
+1. **Este arquivo** — catálogo e guia de escolha
+2. **[api.md](api.md)** — tipos TypeScript e padrões de acesso
+3. **[configuration.md](configuration.md)** — exemplos completos de wrangler.jsonc
+4. **[patterns.md](patterns.md)** — boas práticas e padrões comuns
+5. **[gotchas.md](gotchas.md)** — armadilhas e troubleshooting
 
-## Binding Catalog
+## Catálogo de bindings
 
-### Storage Bindings
+### Storage
 
-| Binding             | Use Case                          | Access Pattern                |
-| ------------------- | --------------------------------- | ----------------------------- |
-| **KV**              | Key-value cache, CDN-backed reads | `env.MY_KV.get(key)`          |
-| **R2**              | Object storage (S3-compatible)    | `env.MY_BUCKET.get(key)`      |
-| **D1**              | SQL database (SQLite)             | `env.DB.prepare(sql).all()`   |
-| **Durable Objects** | Coordination, real-time state     | `env.MY_DO.get(id)`           |
-| **Vectorize**       | Vector embeddings search          | `env.VECTORIZE.query(vector)` |
-| **Queues**          | Async message processing          | `env.MY_QUEUE.send(msg)`      |
+| Binding             | Caso de uso                    | Acesso                        |
+| ------------------- | ------------------------------ | ----------------------------- |
+| **KV**              | Cache KV, leituras CDN         | `env.MY_KV.get(key)`          |
+| **R2**              | Objetos (compatível S3)        | `env.MY_BUCKET.get(key)`      |
+| **D1**              | SQL (SQLite)                   | `env.DB.prepare(sql).all()`   |
+| **Durable Objects** | Coordenação, estado tempo real | `env.MY_DO.get(id)`           |
+| **Vectorize**       | Busca em embeddings            | `env.VECTORIZE.query(vector)` |
+| **Queues**          | Processamento assíncrono       | `env.MY_QUEUE.send(msg)`      |
 
-### Compute Bindings
+### Compute
 
-| Binding               | Use Case             | Access Pattern              |
-| --------------------- | -------------------- | --------------------------- |
-| **Service**           | Worker-to-Worker RPC | `env.MY_SERVICE.fetch(req)` |
-| **Workers AI**        | LLM inference        | `env.AI.run(model, input)`  |
-| **Browser Rendering** | Headless Chrome      | `env.BROWSER.fetch(url)`    |
+| Binding               | Caso de uso       | Acesso                      |
+| --------------------- | ----------------- | --------------------------- |
+| **Service**           | RPC Worker–Worker | `env.MY_SERVICE.fetch(req)` |
+| **Workers AI**        | Inferência LLM    | `env.AI.run(model, input)`  |
+| **Browser Rendering** | Chrome headless   | `env.BROWSER.fetch(url)`    |
 
-### Platform Bindings
+### Plataforma
 
-| Binding              | Use Case               | Access Pattern                       |
-| -------------------- | ---------------------- | ------------------------------------ |
-| **Analytics Engine** | Custom metrics         | `env.ANALYTICS.writeDataPoint(data)` |
-| **mTLS**             | Client certificates    | `env.MY_CERT` (string)               |
-| **Hyperdrive**       | Database pooling       | `env.HYPERDRIVE.connectionString`    |
-| **Rate Limiting**    | Request throttling     | `env.RATE_LIMITER.limit(id)`         |
-| **Workflows**        | Long-running workflows | `env.MY_WORKFLOW.create()`           |
+| Binding              | Caso de uso          | Acesso                               |
+| -------------------- | -------------------- | ------------------------------------ |
+| **Analytics Engine** | Métricas custom      | `env.ANALYTICS.writeDataPoint(data)` |
+| **mTLS**             | Certificados cliente | `env.MY_CERT` (string)               |
+| **Hyperdrive**       | Pool de banco        | `env.HYPERDRIVE.connectionString`    |
+| **Rate Limiting**    | Throttle             | `env.RATE_LIMITER.limit(id)`         |
+| **Workflows**        | Fluxos longos        | `env.MY_WORKFLOW.create()`           |
 
-### Configuration Bindings
+### Configuração
 
-| Binding                   | Use Case             | Access Pattern                     |
-| ------------------------- | -------------------- | ---------------------------------- |
-| **Environment Variables** | Non-sensitive config | `env.API_URL` (string)             |
-| **Secrets**               | Sensitive values     | `env.API_KEY` (string)             |
-| **Text/Data Blobs**       | Static files         | `env.MY_BLOB` (string)             |
-| **WASM**                  | WebAssembly modules  | `env.MY_WASM` (WebAssembly.Module) |
+| Binding                   | Caso de uso         | Acesso                             |
+| ------------------------- | ------------------- | ---------------------------------- |
+| **Variáveis de ambiente** | Config não sensível | `env.API_URL` (string)             |
+| **Secrets**               | Valores sensíveis   | `env.API_KEY` (string)             |
+| **Text/Data Blobs**       | Arquivos estáticos  | `env.MY_BLOB` (string)             |
+| **WASM**                  | Módulos WebAssembly | `env.MY_WASM` (WebAssembly.Module) |
 
-## Quick Selection Guide
+## Guia rápido de escolha
 
-**Need persistent storage?**
+**Precisa de persistência?**
 
-- Key-value < 25MB → **KV**
-- Files/objects → **R2**
-- Relational data → **D1**
-- Real-time coordination → **Durable Objects**
+- Chave-valor < 25MB → **KV**
+- Arquivos/objetos → **R2**
+- Dados relacionais → **D1**
+- Coordenação tempo real → **Durable Objects**
 
-**Need AI/compute?**
+**Precisa de AI/compute?**
 
-- LLM inference → **Workers AI**
-- Scraping/PDFs → **Browser Rendering**
-- Call another Worker → **Service binding**
+- LLM → **Workers AI**
+- Scraping/PDF → **Browser Rendering**
+- Chamar outro Worker → **Service binding**
 
-**Need async processing?**
+**Processamento assíncrono?**
 
-- Background jobs → **Queues**
+- Jobs em segundo plano → **Queues**
 
-**Need config?**
+**Config?**
 
-- Public values → **Environment Variables**
-- Secrets → **Secrets** (never commit)
+- Valores públicos → **Variáveis de ambiente**
+- Segredos → **Secrets** (nunca commit)
 
-## Quick Start
+## Início rápido
 
-1. **Add binding to wrangler.jsonc:**
+1. **Adicione binding no wrangler.jsonc:**
 
 ```jsonc
 {
@@ -88,13 +88,13 @@ Bindings are how Workers access Cloudflare resources (storage, compute, services
 }
 ```
 
-2. **Generate types:**
+2. **Gere tipos:**
 
 ```bash
 npx wrangler types
 ```
 
-3. **Access in Worker:**
+3. **Acesse no Worker:**
 
 ```typescript
 export default {
@@ -105,23 +105,23 @@ export default {
 }
 ```
 
-## Type Safety
+## Tipagem
 
-Bindings are fully typed via `wrangler types`. See [api.md](api.md) for details.
+Bindings totalmente tipados com `wrangler types`. Veja [api.md](api.md).
 
-## Limits
+## Limites
 
-- 64 bindings max per Worker (all types combined)
-- See [gotchas.md](gotchas.md) for per-binding limits
+- Máximo 64 bindings por Worker (todos os tipos)
+- Detalhes em [gotchas.md](gotchas.md)
 
-## Key Concepts
+## Conceitos-chave
 
-**Zero-overhead access:** Bindings compiled into Worker, no network calls to access
-**Type-safe:** Full TypeScript support via `wrangler types`
-**Per-environment:** Different IDs for dev/staging/production
-**Secrets vs Vars:** Secrets encrypted at rest, never in config files
+**Acesso zero-overhead:** compilado no Worker, sem rede para acessar  
+**Tipado:** TypeScript completo via `wrangler types`  
+**Por ambiente:** IDs distintos dev/staging/produção  
+**Secrets vs vars:** secrets cifrados em repouso, nunca em arquivos de config
 
-## See Also
+## Ver também
 
 - [Cloudflare Docs: Bindings](https://developers.cloudflare.com/workers/runtime-apis/bindings/)
 - [Wrangler Configuration](https://developers.cloudflare.com/workers/wrangler/configuration/)

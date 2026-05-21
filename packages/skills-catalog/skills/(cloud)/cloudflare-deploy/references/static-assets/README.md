@@ -1,20 +1,20 @@
-# Cloudflare Static Assets Skill Reference
+# Referência de habilidade de ativos estáticos da Cloudflare
 
-Expert guidance for deploying and configuring static assets with Cloudflare Workers. This skill covers configuration patterns, routing architectures, asset binding usage, and best practices for SPAs, SSG sites, and full-stack applications.
+Orientação especializada para implantar e configurar ativos estáticos com Cloudflare Workers. Esta habilidade abrange padrões de configuração, arquiteturas de roteamento, uso de vinculação de ativos e práticas recomendadas para SPAs, sites SSG e aplicativos full-stack.
 
-## Quick Start
+## Início rápido```jsonc
 
-```jsonc
 // wrangler.jsonc
 {
-  "name": "my-app",
-  "main": "src/index.ts",
-  "compatibility_date": "2025-01-01",
-  "assets": {
-    "directory": "./dist",
-  },
+"name": "my-app",
+"main": "src/index.ts",
+"compatibility_date": "2025-01-01",
+"assets": {
+"directory": "./dist",
+},
 }
-```
+
+````
 
 ```typescript
 // src/index.ts
@@ -23,43 +23,43 @@ export default {
     return env.ASSETS.fetch(request)
   },
 }
-```
+````
 
-Deploy: `wrangler deploy`
+Implantar: `implantação do wrangler`
 
-## When to Use Workers Static Assets vs Pages
+## Quando usar ativos estáticos de trabalhadores versus páginas
 
-| Factor              | Workers Static Assets              | Cloudflare Pages         |
-| ------------------- | ---------------------------------- | ------------------------ |
-| **Use case**        | Hybrid apps (static + dynamic API) | Static sites, SSG        |
-| **Worker control**  | Full control over routing          | Limited (Functions)      |
-| **Configuration**   | Code-first, flexible               | Git-based, opinionated   |
-| **Dynamic routing** | Worker-first patterns              | Functions (\_functions/) |
-| **Best for**        | Full-stack apps, SPAs with APIs    | Jamstack, static docs    |
+| Fator                       | Ativos estáticos de trabalhadores              | Páginas Cloudflare             |
+| --------------------------- | ---------------------------------------------- | ------------------------------ |
+| **Caso de uso**             | Aplicativos híbridos (API estática + dinâmica) | Sites estáticos, SSG           |
+| **Controle do trabalhador** | Controle total sobre roteamento                | Limitado (Funções)             |
+| **Configuração**            | Código primeiro, flexível                      | Baseado em Git, opinativo      |
+| **Roteamento dinâmico**     | Padrões que priorizam o trabalhador            | Funções (\_funções/)           |
+| **Melhor para**             | Aplicativos full-stack, SPAs com APIs          | Jamstack, documentos estáticos |
 
-**Decision tree:**
+**Árvore de decisão:**
 
-- Need custom routing logic? → Workers Static Assets
-- Pure static site or SSG? → Pages
-- API routes + SPA? → Workers Static Assets
-- Framework (Next, Nuxt, Remix)? → Pages
+- Precisa de lógica de roteamento personalizada? → Ativos estáticos de trabalhadores
+- Site estático puro ou SSG? → Páginas
+- Rotas API + SPA? → Ativos estáticos de trabalhadores
+- Framework (Next, Nuxt, Remix)? → Páginas
 
-## Reading Order
+## Ordem de leitura
 
-1. **configuration.md** - Setup, wrangler.jsonc options, routing patterns
-2. **api.md** - ASSETS binding API, request/response handling
-3. **patterns.md** - Common patterns (SPA, API routes, auth, A/B testing)
-4. **gotchas.md** - Limits, errors, performance tips
+1. **configuration.md** - Configuração, opções wrangler.jsonc, padrões de roteamento
+2. **api.md** - API de vinculação de ASSETS, tratamento de solicitação/resposta
+3. **patterns.md** - Padrões comuns (SPA, rotas de API, autenticação, testes A/B)
+4. **gotchas.md** - Limites, erros, dicas de desempenho
 
-## In This Reference
+## Nesta referência
 
-- **[configuration.md](configuration.md)** - Setup, deployment, configuration
-- **[api.md](api.md)** - API endpoints, methods, interfaces
-- **[patterns.md](patterns.md)** - Common patterns, use cases, examples
-- **[gotchas.md](gotchas.md)** - Troubleshooting, best practices, limitations
+- **[configuration.md](configuration.md)** - Instalação, implantação, configuração
+- **[api.md](api.md)** - endpoints de API, métodos, interfaces
+- **[patterns.md](patterns.md)** - Padrões comuns, casos de uso, exemplos
+- **[gotchas.md](gotchas.md)** - Solução de problemas, práticas recomendadas, limitações
 
-## See Also
+## Veja também
 
-- [Cloudflare Workers Docs](https://developers.cloudflare.com/workers/)
-- [Static Assets Docs](https://developers.cloudflare.com/workers/static-assets/)
-- [Cloudflare Pages](https://developers.cloudflare.com/pages/)
+- [Documentos do Cloudflare Workers](https://developers.cloudflare.com/workers/)
+- [Documentos sobre ativos estáticos](https://developers.cloudflare.com/workers/static-assets/)
+- [Páginas Cloudflare](https://developers.cloudflare.com/pages/)

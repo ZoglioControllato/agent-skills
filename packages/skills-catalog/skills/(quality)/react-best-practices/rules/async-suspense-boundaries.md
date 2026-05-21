@@ -1,20 +1,20 @@
 ---
-title: Strategic Suspense Boundaries
+title: Limites de Suspense Estratégico
 impact: HIGH
-impactDescription: faster initial paint
+impactDescription: pintura inicial mais rápida
 tags: async, suspense, streaming, layout-shift
 ---
 
-## Strategic Suspense Boundaries
+## Limites de Suspense Estratégico
 
-Instead of awaiting data in async components before returning JSX, use Suspense boundaries to show the wrapper UI faster while data loads.
+Ao aguardar dados em componentes assíncronos antes de retornar JSX, use limites de Suspense para exibir o wrapper da interface mais rápido enquanto os dados carregam.
 
-**Incorrect (wrapper blocked by data fetching):**
+**Incorreto (wrapper bloqueado pela busca de dados):**
 
 ```tsx
 async function Page() {
   const data = await fetchData() // Blocks entire page
-  
+
   return (
     <div>
       <div>Sidebar</div>
@@ -28,9 +28,9 @@ async function Page() {
 }
 ```
 
-The entire layout waits for data even though only the middle section needs it.
+Todo o layout espera os dados, embora seja apenas uma seção do meio preciso deles.
 
-**Correct (wrapper shows immediately, data streams in):**
+**Correto (wrapper aparece na hora; dados fluem depois):**
 
 ```tsx
 function Page() {
@@ -54,15 +54,15 @@ async function DataDisplay() {
 }
 ```
 
-Sidebar, Header, and Footer render immediately. Only DataDisplay waits for data.
+Barra lateral, cabeçalho e rodapé são renderizados na hora. Só o DataDisplay espera pelos dados.
 
-**Alternative (share promise across components):**
+**Alternativa (compartilhar promessa entre componentes):**
 
 ```tsx
 function Page() {
   // Start fetch immediately, but don't await
   const dataPromise = fetchData()
-  
+
   return (
     <div>
       <div>Sidebar</div>
@@ -87,13 +87,13 @@ function DataSummary({ dataPromise }: { dataPromise: Promise<Data> }) {
 }
 ```
 
-Both components share the same promise, so only one fetch occurs. Layout renders immediately while both components wait together.
+Os dois componentes compartilham a mesma promessa, então só ocorre uma busca. O layout renderiza na hora enquanto ambos aguardam juntos.
 
-**When NOT to use this pattern:**
+**Quando NÃO usar este padrão:**
 
-- Critical data needed for layout decisions (affects positioning)
-- SEO-critical content above the fold
-- Small, fast queries where suspense overhead isn't worth it
-- When you want to avoid layout shift (loading → content jump)
+- Dados críticos para decisões de layout (afetam posicionamento)
+- Conteúdo crítico para SEO acima da dobra
+- Consultas pequenas e rápidas em que o overhead do Suspense não vale a pena
+- Quando você quiser evitar mudança de layout (salto de carregamento → conteúdo)
 
-**Trade-off:** Faster initial paint vs potential layout shift. Choose based on your UX priorities.
+**Compromisso:** pintura inicial mais rápida versus possível mudança de layout. Escolha conforme as prioridades de UX.

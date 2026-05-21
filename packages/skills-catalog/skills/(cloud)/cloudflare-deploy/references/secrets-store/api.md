@@ -1,12 +1,12 @@
-# API Reference
+# Referência de API
 
-## Binding API
+## API de vinculação
 
-### Basic Access
+### Acesso Básico
 
-**CRITICAL**: Async `.get()` required - secrets NOT directly available.
+**CRÍTICO**: `.get()` assíncrono necessário - segredos NÃO disponíveis diretamente.
 
-**`.get()` throws on error** - does NOT return null. Always use try/catch.
+**`.get()` gera erro** - NÃO retorna nulo. Sempre use try/catch.
 
 ```typescript
 interface Env {
@@ -23,7 +23,7 @@ export default {
 }
 ```
 
-### Error Handling
+### Tratamento de erros
 
 ```typescript
 export default {
@@ -41,7 +41,7 @@ export default {
 }
 ```
 
-### Multiple Secrets & Patterns
+### Vários segredos e padrões
 
 ```typescript
 // Parallel fetch
@@ -57,18 +57,18 @@ const CACHED_KEY = await env.API_KEY.get() // Fails
 const key = await env.API_KEY.get() // OK - reuse within request
 ```
 
-## REST API
+##API REST
 
 Base: `https://api.cloudflare.com/client/v4`
 
-### Auth
+### Autenticação
 
 ```bash
 curl -H "Authorization: Bearer $CF_TOKEN" \
   https://api.cloudflare.com/client/v4/accounts/$ACCOUNT_ID/secrets_store/stores
 ```
 
-### Store Operations
+### Operações da loja
 
 ```bash
 # List
@@ -82,7 +82,7 @@ POST /accounts/{account_id}/secrets_store/stores
 DELETE /accounts/{account_id}/secrets_store/stores/{store_id}
 ```
 
-### Secret Operations
+### Operações Secretas
 
 ```bash
 # List
@@ -126,11 +126,11 @@ POST /accounts/{account_id}/secrets_store/stores/{store_id}/secrets/{secret_id}/
 GET /accounts/{account_id}/secrets_store/quota
 ```
 
-### Responses
+### Respostas
 
-Success:
+Sucesso:
 
-```json
+````json
 {
   "success": true,
   "result": {
@@ -140,22 +140,19 @@ Success:
     "scopes": ["workers"]
   }
 }
-```
-
-Error:
-
+```Erro:
 ```json
 {
   "success": false,
   "errors": [{ "code": 10000, "message": "Name exists" }]
 }
-```
+````
 
-## TypeScript Helpers
+##Ajudantes TypeScript
 
-Official types available via `@cloudflare/workers-types`:
+Tipos oficiais disponíveis via `@cloudflare/workers-types`:
 
-```typescript
+````typescript
 import type { SecretsStoreSecret } from '@cloudflare/workers-types'
 
 interface Env {
@@ -163,10 +160,7 @@ interface Env {
   DATABASE_URL: SecretsStoreSecret
   WORKER_SECRET: string // Regular Worker secret (direct access)
 }
-```
-
-Custom helper type:
-
+```Tipo de auxiliar personalizado:
 ```typescript
 interface SecretsStoreBinding {
   get(): Promise<string>
@@ -187,6 +181,5 @@ async function getAllSecrets(secrets: Record<string, SecretsStoreBinding>): Prom
   const entries = await Promise.all(Object.entries(secrets).map(async ([k, v]) => [k, await v.get()]))
   return Object.fromEntries(entries)
 }
-```
-
-See: [configuration.md](./configuration.md), [patterns.md](./patterns.md), [gotchas.md](./gotchas.md)
+```Veja: [configuration.md](./configuration.md), [patterns.md](./patterns.md), [gotchas.md](./gotchas.md)
+````

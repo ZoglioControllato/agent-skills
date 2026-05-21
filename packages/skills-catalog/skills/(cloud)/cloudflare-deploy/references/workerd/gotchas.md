@@ -23,129 +23,128 @@ const worker :Workerd.Worker = (
 )
 ```
 
-### Wrong Binding Type
+### Tipo de ligação errado
 
-**Problem:** JSON not parsed
-**Cause:** Using `text = '{"key":"value"}'` instead of `json`
-**Solution:** Use `json = '{"key":"value"}'` for parsed objects
+**Problema:** JSON não analisado
+**Causa:** Usando `text = '{"key":"value"}'` em vez de `json`
+**Solução:** Use `json = '{"key":"value"}'` para objetos analisados
 
-### Service vs Namespace
+### Serviço vs Namespace
 
-**Problem:** Cannot create DO instance
-**Cause:** Using `service = "room-service"` for Durable Object
-**Solution:** Use `durableObjectNamespace = "Room"` for DO bindings
+**Problema:** Não é possível criar instância DO
+**Causa:** Uso de `service = "room-service"` para Objeto Durável
+**Solução:** Use `durableObjectNamespace = "Room"` para ligações DO
 
-### Module Name Mismatch
+### Incompatibilidade de nome do módulo
 
-**Problem:** Import fails
-**Cause:** Module name includes path: `name = "src/index.js"`
-**Solution:** Use simple names: `name = "index.js"`, embed with path
+**Problema:** Falha na importação
+**Causa:** O nome do módulo inclui o caminho: `name = "src/index.js"`
+**Solução:** Use nomes simples: `name = "index.js"`, incorpore com caminho
 
-## Network Access
+## Acesso à rede
 
-**Problem:** Fetch fails with network error
-**Cause:** No network service configured (workerd has no global fetch)
-**Solution:** Add network service binding:
-
-```capnp
+**Problema:** A busca falha com erro de rede
+**Causa:** Nenhum serviço de rede configurado (workerd não tem busca global)
+**Solução:** adicione vinculação de serviço de rede:```capnp
 services = [(name = "internet", network = (allow = ["public"]))]
 bindings = [(name = "NET", service = "internet")]
-```
+
+````
 
 Or external service:
 
 ```capnp
 bindings = [(name = "API", service = (external = (address = "api.com:443", http = (style = tls))))]
-```
+````
 
-### "Worker not responding"
+### "Trabalhador não responde"
 
-**Cause:** Socket misconfigured, no fetch handler, or port unavailable
-**Solution:** Verify socket `address` matches, worker exports `fetch()`, port available
+**Causa:** Soquete configurado incorretamente, nenhum manipulador de busca ou porta indisponível
+**Solução:** Verifique se o `address` do soquete corresponde, o trabalhador exporta `fetch()`, porta disponível
 
-### "Binding not found"
+### "Vinculação não encontrada"
 
-**Cause:** Name mismatch or service doesn't exist
-**Solution:** Check binding name in config matches code (`env.BINDING` for ES modules)
+**Causa:** Nome incompatível ou serviço não existe
+**Solução:** Verifique o nome da ligação na configuração que corresponde ao código (`env.BINDING` para módulos ES)
 
-### "Module not found"
+### "Módulo não encontrado"
 
-**Cause:** Module name doesn't match import or bad embed path
-**Solution:** Module `name` must match import path exactly, verify `embed` path
+**Causa:** O nome do módulo não corresponde à importação ou ao caminho de incorporação incorreto
+**Solução:** O módulo `name` deve corresponder exatamente ao caminho de importação, verifique o caminho `embed`
 
-### "Compatibility error"
+### "Erro de compatibilidade"
 
-**Cause:** Date not set or API unavailable on that date
-**Solution:** Set `compatibilityDate`, verify API available on that date
+**Causa:** Data não definida ou API indisponível nessa data
+**Solução:** Defina `compatibilityDate`, verifique a API disponível nessa data
 
-## Performance Issues
+## Problemas de desempenho
 
-**Problem:** High memory usage
-**Cause:** Large caches or many isolates
-**Solution:** Set cache limits, reduce isolate count, or use V8 flags (caution)
+**Problema:** Alto uso de memória
+**Causa:** Caches grandes ou muitos isolados
+**Solução:** defina limites de cache, reduza a contagem de isolados ou use sinalizadores V8 (cuidado)
 
-**Problem:** Slow startup
-**Cause:** Many modules or complex config
-**Solution:** Compile to binary (`workerd compile`), reduce imports
+**Problema:** Inicialização lenta
+**Causa:** Muitos módulos ou configurações complexas
+**Solução:** Compilar para binário (`workerd compile`), reduzir importações
 
-**Problem:** Request timeouts
-**Cause:** External service issues or DNS problems
-**Solution:** Check connectivity, DNS resolution, TLS handshake
+**Problema:** Tempo limite de solicitação
+**Causa:** problemas de serviço externo ou problemas de DNS
+**Solução:** verifique a conectividade, resolução de DNS, handshake TLS
 
-## Build Issues
+## Problemas de compilação
 
-**Problem:** Cap'n Proto syntax errors
-**Cause:** Invalid config or missing schema
-**Solution:** Install capnproto tools, validate: `capnp compile -I. config.capnp`
+**Problema:** Erros de sintaxe do Cap'n Proto
+**Causa:** Configuração inválida ou esquema ausente
+**Solução:** Instale ferramentas capnproto, valide: `capnp compile -I. config.capnp`
 
-**Problem:** Embed path not found
-**Cause:** Path relative to config file
-**Solution:** Use correct relative path or absolute path
+**Problema:** Caminho de incorporação não encontrado
+**Causa:** Caminho relativo ao arquivo de configuração
+**Solução:** Use o caminho relativo correto ou o caminho absoluto
 
-**Problem:** V8 flags cause crashes
-**Cause:** Unsafe V8 flags
-**Solution:** ⚠️ V8 flags unsupported in production. Test thoroughly before use.
+**Problema:** Flags V8 causam travamentos
+**Causa:** Sinalizadores V8 inseguros
+**Solução:** ⚠️ Sinalizadores V8 sem suporte na produção. Teste completamente antes de usar.
 
-## Security Issues
+## Problemas de segurança
 
-**Problem:** Hardcoded secrets in config
-**Cause:** `text` binding with secret value
-**Solution:** Use `fromEnvironment` to load from env vars
+**Problema:** Segredos codificados na configuração
+**Causa:** ligação `text` com valor secreto
+**Solução:** Use `fromEnvironment` para carregar de env vars
 
-**Problem:** Overly broad network access
-**Cause:** `network = (allow = ["*"])`
-**Solution:** Restrict to `allow = ["public"]` or specific hosts
+**Problema:** Acesso à rede excessivamente amplo
+**Causa:** `rede = (permitir = ["*"])`
+**Solução:** Restrinja a `allow = ["public"]` ou hosts específicos
 
-**Problem:** Extractable crypto keys
-**Cause:** `cryptoKey = (extractable = true, ...)`
-**Solution:** Set `extractable = false` unless export required
+**Problema:** Chaves criptográficas extraíveis
+**Causa:** `cryptoKey = (extraível = verdadeiro, ...)`
+**Solução:** Defina `extractable = false` a menos que a exportação seja necessária
 
-## Compatibility Changes
+## Mudanças de compatibilidade
 
-**Problem:** Breaking changes after compat date update
-**Cause:** New flags enabled between dates
-**Solution:** Review [compat dates docs](https://developers.cloudflare.com/workers/configuration/compatibility-dates/), test locally first
+**Problema:** Alterações importantes após a atualização da data de compatibilidade
+**Causa:** Novos sinalizadores ativados entre datas
+**Solução:** revise [documentos de datas de compatibilidade](https://developers.cloudflare.com/workers/configuration/compatibility-dates/), teste localmente primeiro
 
-**Problem:** "Compatibility date not supported"
-**Cause:** Workerd version older than compat date
-**Solution:** Update workerd binary (version = max compat date supported)
+**Problema:** "Data de compatibilidade não suportada"
+**Causa:** Versão do Workerd anterior à data de compatibilidade
+**Solução:** Atualizar o binário do trabalhador (versão = data máxima de compatibilidade suportada)
 
-## Limits
+## Limites
 
-| Resource/Limit     | Value                      | Notes              |
-| ------------------ | -------------------------- | ------------------ |
-| V8 flags           | Unsupported in production  | Use with caution   |
-| Compatibility date | Must match workerd version | Update if mismatch |
-| Module count       | Affects startup time       | Many imports slow  |
+| Recurso/Limite          | Valor                                     | Notas                         |
+| ----------------------- | ----------------------------------------- | ----------------------------- |
+| Bandeiras V8            | Sem suporte na produção                   | Use com cuidado               |
+| Data de compatibilidade | Deve corresponder à versão do trabalhador | Atualizar se não corresponder |
+| Contagem de módulos     | Afeta o tempo de inicialização            | Muitas importações diminuem   |
 
-## Troubleshooting Steps
+## Etapas de solução de problemas
 
-1. **Enable verbose logging**: `workerd serve config.capnp --verbose`
-2. **Check logs**: Look for error messages, stack traces
-3. **Validate config**: `capnp compile -I. config.capnp`
-4. **Test bindings**: Log `Object.keys(env)` to verify
-5. **Check versions**: Workerd version vs compat date
-6. **Isolate issue**: Minimal repro config
-7. **Review schema**: [workerd.capnp](https://github.com/cloudflare/workerd/blob/main/src/workerd/server/workerd.capnp)
+1. **Ativar registro detalhado**: `workerd serve config.capnp --verbose`
+2. **Verificar logs**: procure mensagens de erro e rastreamentos de pilha
+3. **Validar configuração**: `capnp compile -I. config.capnp`
+4. **Ligações de teste**: Registre `Object.keys(env)` para verificar
+5. **Verificar versões**: versão do Workerd vs data de compatibilidade
+6. **Problema isolado**: configuração de reprodução mínima
+7. **Revisar esquema**: [workerd.capnp](https://github.com/cloudflare/workerd/blob/main/src/workerd/server/workerd.capnp)
 
-See [configuration.md](./configuration.md) for config details, [patterns.md](./patterns.md) for working examples, [api.md](./api.md) for runtime APIs.
+Consulte [configuration.md](./configuration.md) para detalhes de configuração, [patterns.md](./patterns.md) para exemplos de trabalho, [api.md](./api.md) para APIs de tempo de execução.

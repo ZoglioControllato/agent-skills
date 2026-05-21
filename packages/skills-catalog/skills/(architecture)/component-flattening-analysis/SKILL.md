@@ -1,26 +1,26 @@
 ---
 name: component-flattening-analysis
-description: Detects misplaced classes and fixes component hierarchy problems — finds code that should belong inside a component but sits at the root level. Use when asking "clean up component structure", "find orphaned classes", "fix module hierarchy", "flatten nested components", or analyzing why namespaces have misplaced code. Do NOT use for dependency analysis (use coupling-analysis) or domain grouping (use domain-identification-grouping).
+description: Detecta classes fora do lugar e corrige hierarquia de componentes — encontra código que deveria estar dentro do componente mas fica na raiz do namespace. Use quando pedir para "organizar estrutura de componentes", "achar classes órfãs", "consertar hierarquia", "achatar componentes aninhados" ou entender código mal posicionado em namespaces. Aciona em problemas de hierarquia e código em nós intermediários. NÃO use para análise de dependências (use coupling-analysis) nem agrupamento em domínios (use domain-identification-grouping).
 ---
 
-# Component Flattening Analysis
+# Análise de achatamento (flattening) de componentes
 
-This skill identifies component hierarchy issues and ensures components exist only as leaf nodes in directory/namespace structures, removing orphaned classes from root namespaces.
+Esta skill identifica problemas de hierarquia de componentes e garante que componentes existam **apenas** como leaf nodes em diretório/namespace, removendo classes órfãs de namespaces raiz estendidos.
 
-## How to Use
+## Como usar
 
-### Quick Start
+### Quick start
 
-Request analysis of your codebase:
+Peça:
 
 - **"Find orphaned classes in root namespaces"**
 - **"Flatten component hierarchies"**
 - **"Identify components that need flattening"**
 - **"Analyze component structure for hierarchy issues"**
 
-### Usage Examples
+### Exemplos
 
-**Example 1: Find Orphaned Classes**
+**Ex. 1: classes órfãs**
 
 ```
 User: "Find orphaned classes in root namespaces"
@@ -33,7 +33,7 @@ The skill will:
 5. Create refactoring plan
 ```
 
-**Example 2: Flatten Components**
+**Ex. 2: flatten**
 
 ```
 User: "Flatten component hierarchies in this codebase"
@@ -46,7 +46,7 @@ The skill will:
 5. Estimate effort
 ```
 
-**Example 3: Component Structure Analysis**
+**Ex. 3: análise de estrutura**
 
 ```
 User: "Analyze component structure for hierarchy issues"
@@ -59,109 +59,61 @@ The skill will:
 5. Provide recommendations
 ```
 
-### Step-by-Step Process
+### Passos
 
-1. **Scan Structure**: Map component namespace hierarchies
-2. **Identify Issues**: Find orphaned classes and component nesting
-3. **Analyze Options**: Determine flattening strategy (consolidate vs split)
-4. **Create Plan**: Generate refactoring plan with steps
-5. **Execute**: Refactor components to remove hierarchy
+1. **Mapear estrutura**
+2. **Achar orphans e nesting ilegítimos**
+3. **Escolher estratégia** (fundir/subir código vs partir em novos leafs)
+4. **Plano**
+5. **Executar refactoring**
 
-## When to Use
+## Quando usar
 
-Apply this skill when:
+- Após Pattern 2 (domínios comuns) quando reorganizar pastas faz sentido
+- Antes de Pattern 4 (deps/acoplamento) com namespaces limpos
+- Há nesting confuso/arquivos no meio da árvore
+- Você encontrou orphans em namespaces estendidos
+- Prepara domínios com paths coerentes
+- Quer apenas leaf como “component”
 
-- After gathering common domain components (Pattern 2)
-- Before determining component dependencies (Pattern 4)
-- When components have nested structures
-- Finding orphaned classes in root namespaces
-- Preparing for domain grouping
-- Cleaning up component structure
-- Ensuring components are leaf nodes only
+## Conceitos
 
-## Core Concepts
+### Componente
 
-### Component Definition
+Identificado pelo **leaf** que contém código:
 
-A **component** is identified by a **leaf node** in directory/namespace structure:
+- Leaf = diretório mais profundo com fontes efetivamente “do componente”
+- Raiz entre leafs só serve como **subdomain** organizacional quando tem filhos também com código próprio estruturalmente falando conforme suas regras de modelagem aqui definidas — documente assim que for o caso do projeto
 
-- **Leaf Node**: The deepest directory containing source files
-- **Component**: Source code files in leaf node namespace
-- **Subdomain**: Parent namespace that has been extended
+**Regra**: componente válido ⇒ leaf com fontes principais isoladas semanticamente segundo regra do projeto; se namespace intermediário também tem arquivo solto ⇒ orphan problem.
 
-**Key Rule**: Components exist only as leaf nodes. If a namespace is extended, the parent becomes a subdomain, not a component.
+### Root namespace estendido
 
-### Root Namespace
+Namespace que **tem sub-namespace** sob ele carregando mais código:
 
-A **root namespace** is a namespace node that has been extended:
+### Classes órfãs
 
-- **Extended**: Another namespace node added below it
-- **Example**: `ss.survey` extended to `ss.survey.templates`
-- **Result**: `ss.survey` becomes a root namespace (subdomain)
+Fonte em nível intermediário (não-final) onde a convenção espera apenas pastas/componentes folha.
 
-### Orphaned Classes
+### Estratégias
 
-**Orphaned classes** are source files in root namespaces:
+**Consolidar para cima**: trazer leaves para o pai ⇒ pai vira único leaf conceitual
 
-- **Location**: Root namespace (non-leaf node)
-- **Problem**: No definable component associated with them
-- **Solution**: Move to leaf node namespace (component)
+**Partir para baixo**: mover fontes intermediárias para novos subtrees dedicados ⇒ novos leafs claros
 
-**Example**:
+**Shared dedicado**: trecho realmente multi-uso ⇒ `.shared`/pacote próprio conforme modelo de domínio
 
-```
-ss.survey/              ← Root namespace (extended by .templates)
-├── Survey.js           ← Orphaned class (in root namespace)
-└── templates/          ← Component (leaf node)
-    └── Template.js
-```
+## Processo de análise
 
-### Flattening Strategies
+### Fase 1: Mapa da estrutura
 
-**Strategy 1: Consolidate Down**
+Varredura típica:
 
-- Move code from leaf nodes into root namespace
-- Makes root namespace the component
-- Example: Move `ss.survey.templates` → `ss.survey`
+1. Árvore de namespaces
+2. Nós marcados como “raiz extendida”
+3. Onde ficam `.js`/`.java`… fora das folhas esperadas
 
-**Strategy 2: Split Up**
-
-- Move code from root namespace into new leaf nodes
-- Creates new components from root namespace
-- Example: Split `ss.survey` → `ss.survey.create` + `ss.survey.process`
-
-**Strategy 3: Move Shared Code**
-
-- Move shared code to dedicated component
-- Creates `.shared` component
-- Example: `ss.survey` shared code → `ss.survey.shared`
-
-## Analysis Process
-
-### Phase 1: Map Component Structure
-
-Scan directory/namespace structure to identify hierarchy:
-
-1. **Map Namespace Tree**
-   - Build tree of all namespaces
-   - Identify parent-child relationships
-   - Mark leaf nodes (components)
-
-2. **Identify Root Namespaces**
-   - Find namespaces that have been extended
-   - Mark as root namespaces (subdomains)
-   - Note which namespaces extend them
-
-3. **Locate Source Files**
-   - Find all source files in each namespace
-   - Map files to their namespace location
-   - Identify files in root namespaces
-
-**Example Structure Mapping**:
-
-```markdown
-## Component Structure Map
-```
+**Exemplo**:
 
 ss.survey/ ← Root namespace (extended)
 ├── Survey.js ← Orphaned class
@@ -181,26 +133,15 @@ ss.ticket/ ← Root namespace (extended)
 
 ```
 
-### Phase 2: Identify Orphaned Classes
+### Fase 2: Identificar classes órfãs
 
-Find source files in root namespaces:
+Arquivos-fonte em namespaces “raiz” estendidos (não-folha com ambos: arquivos próprios **e** filhos com código):
 
-1. **Scan Root Namespaces**
-   - Check each root namespace for source files
-   - Identify files that are orphaned
-   - Count orphaned files per root namespace
+1. **Varredura** conta arquivos órfãos
+2. **Classificação** Shared / Domain / Mixed
+3. **Impacto**: volume, responsabilidade, quem importa
 
-2. **Classify Orphaned Classes**
-   - **Shared Code**: Common utilities, interfaces, abstract classes
-   - **Domain Code**: Business logic that should be in component
-   - **Mixed**: Combination of shared and domain code
-
-3. **Assess Impact**
-   - How many files are orphaned?
-   - What functionality do they contain?
-   - What components depend on them?
-
-**Example Orphaned Class Detection**:
+**Exemplo de relatório**:
 
 ```markdown
 ## Orphaned Classes Found
@@ -223,26 +164,15 @@ Find source files in root namespaces:
 **Dependencies**: Used by ss.survey.templates component
 ```
 
-### Phase 3: Analyze Flattening Options
+### Fase 3: Avaliar opções de flattening
 
-Determine best flattening strategy for each root namespace:
+Por namespace raiz:
 
-1. **Option 1: Consolidate Down**
-   - Move leaf node code into root namespace
-   - Makes root namespace the component
-   - **Use when**: Leaf nodes are small, related functionality
+1. **Consolidar para baixo** quando children pequenos/coerentes com o pai
+2. **Partir para cima** quando o raiz mistura responsabilidades grandes e distintas
+3. **Shared** quando quase tudo é cross-cutting local daquele subtree
 
-2. **Option 2: Split Up**
-   - Move root namespace code into new leaf nodes
-   - Creates multiple components from root
-   - **Use when**: Root namespace has distinct functional areas
-
-3. **Option 3: Move Shared Code**
-   - Extract shared code to `.shared` component
-   - Keep domain code in root or split
-   - **Use when**: Root namespace has shared utilities
-
-**Example Flattening Analysis**:
+**Análise exemplo**:
 
 ```markdown
 ## Flattening Options Analysis
@@ -279,25 +209,13 @@ Determine best flattening strategy for each root namespace:
 - Rationale: Separates shared from domain, but still has hierarchy
 ```
 
-### Phase 4: Create Flattening Plan
+### Fase 4: Plano de flattening
 
-Generate refactoring plan for each root namespace:
+1. **Escolha** da opção vencedora por namespace
+2. **Passos** arquivo a arquivo + atualização de imports
+3. **Esforço/risco/testes**
 
-1. **Select Strategy**
-   - Choose best flattening option
-   - Consider effort, complexity, maintainability
-
-2. **Plan Refactoring Steps**
-   - List files to move
-   - Identify target namespaces
-   - Note dependencies to update
-
-3. **Estimate Effort**
-   - Time to refactor
-   - Risk assessment
-   - Testing requirements
-
-**Example Flattening Plan**:
+**Exemplo**:
 
 ```markdown
 ## Flattening Plan
@@ -330,27 +248,13 @@ Generate refactoring plan for each root namespace:
 **Dependencies**: None
 ```
 
-### Phase 5: Execute Flattening
+### Fase 5: Execução
 
-Perform the refactoring:
+Mover/atualizar referências declarar novo layout executar suites de teste regressivo.
 
-1. **Move Files**
-   - Move source files to target namespace
-   - Update file paths and imports
+## Formato de saída
 
-2. **Update References**
-   - Update imports in dependent components
-   - Update namespace declarations
-   - Update directory structure
-
-3. **Verify Changes**
-   - Run tests
-   - Check for broken references
-   - Validate component structure
-
-## Output Format
-
-### Orphaned Classes Report
+### Relatório de órfãos
 
 ```markdown
 ## Orphaned Classes Analysis
@@ -376,7 +280,7 @@ Perform the refactoring:
 **Recommendation**: Consolidate templates into root namespace
 ```
 
-### Component Hierarchy Issues
+### Problemas de hierarquia
 
 ```markdown
 ## Component Hierarchy Issues
@@ -388,7 +292,7 @@ Perform the refactoring:
 | ss.reporting   | 0              | 3 (tickets, experts, financial) | No issue             | ✅ OK            |
 ```
 
-### Flattening Plan
+### Plano de flattening (template)
 
 ```markdown
 ## Flattening Plan
@@ -412,46 +316,43 @@ Perform the refactoring:
 - Risk: Medium
 ```
 
-## Analysis Checklist
+## Checklist de análise
 
-**Structure Mapping**:
+**Mapeamento estrutural**:
 
-- [ ] Mapped all namespace hierarchies
-- [ ] Identified root namespaces
-- [ ] Located all source files
-- [ ] Marked leaf nodes (components)
+- [ ] Mapeadas hierarquias de namespace/path
+- [ ] Identificados namespaces raiz estendidos
+- [ ] Localizados todos arquivos fonte
+- [ ] Folhas marcadas como componentes
 
-**Orphaned Class Detection**:
+**Detecção de órfãos**:
 
-- [ ] Scanned root namespaces for source files
-- [ ] Identified orphaned classes
-- [ ] Classified orphaned classes (shared/domain/mixed)
-- [ ] Assessed impact and dependencies
+- [ ] Varredura de raizes com arquivo solto no meio
+- [ ] Órfãos listados/classificados
+- [ ] Dependências avaliadas
 
-**Flattening Analysis**:
+**Análise de flatten**:
 
-- [ ] Analyzed consolidation option
-- [ ] Analyzed splitting option
-- [ ] Analyzed shared code extraction option
-- [ ] Selected best strategy for each root namespace
+- [ ] Opção consolidate considerada
+- [ ] Split considerado
+- [ ] Extração `.shared`/equivalente considerada
+- [ ] Escolha final por subtree
 
-**Plan Creation**:
+**Plano**:
 
-- [ ] Selected flattening strategy
-- [ ] Created refactoring steps
-- [ ] Estimated effort and risk
-- [ ] Prioritized work
+- [ ] Passos arquivo a arquivo quando possível
+- [ ] Esforço/risco
+- [ ] Prioridade
 
-**Execution**:
+**Execução**:
 
-- [ ] Moved files to target namespaces
-- [ ] Updated imports and references
-- [ ] Updated namespace declarations
-- [ ] Verified changes with tests
+- [ ] Movimentação feita atomizadamente
+- [ ] Imports/refs atualizados
+- [ ] Testes regressivos rodados
 
-## Implementation Notes
+## Notas de implementação
 
-### For Node.js/Express Applications
+### Node.js/Express
 
 Components typically in `services/` directory:
 
@@ -469,7 +370,7 @@ services/
 - Split: Create `survey/create/` and `survey/process/`
 - Shared: Create `survey/shared/` for utilities
 
-### For Java Applications
+### Java
 
 Components identified by package structure:
 
@@ -486,7 +387,7 @@ com.company.survey       ← Root package (extended)
 - Split: Create `survey.create` and `survey.process` packages
 - Shared: Create `survey.shared` package
 
-### Detection Strategies
+### Detecção algorítmica (pseudo)
 
 **Find Root Namespaces with Code**:
 
@@ -527,11 +428,11 @@ function findOrphanedClasses(rootNamespaces, sourceFiles) {
 }
 ```
 
-## Fitness Functions
+## Fitness functions
 
-After flattening components, create automated checks:
+Após saneamento, automatize invariantes tipo:
 
-### No Source Code in Root Namespaces
+### Sem arquivo solto entre raiz extendida esperada apenas como pacote grupo
 
 ```javascript
 // Alert if source code exists in root namespace
@@ -560,7 +461,7 @@ function checkRootNamespaceCode(namespaces, sourceFiles) {
 }
 ```
 
-### Components Only as Leaf Nodes
+### Todo fonte apenas em leafs aceitos
 
 ```javascript
 // Ensure components exist only as leaf nodes
@@ -587,34 +488,26 @@ function validateComponentStructure(namespaces, sourceFiles) {
 }
 ```
 
-## Best Practices
+## Boas práticas
 
-### Do's ✅
+### Faça ✅
 
-- Ensure components exist only as leaf nodes
-- Remove orphaned classes from root namespaces
-- Choose flattening strategy based on functionality
-- Consolidate when functionality is related
-- Split when functionality is distinct
-- Extract shared code to `.shared` components
-- Update all references after flattening
-- Verify changes with tests
+- Preserve leaf-only como invariante onde adotarem este modelo mental
+- Remova orphans dos intermediários sempre que possível
+- Escolha estratégia por coesão funcional real
+- Atualize CI/linter path rules se aplicável ao repo
 
-### Don'ts ❌
+### Evite ❌
 
-- Don't leave orphaned classes in root namespaces
-- Don't create components on top of other components
-- Don't skip updating imports after moving files
-- Don't flatten without analyzing impact
-- Don't mix flattening strategies inconsistently
-- Don't ignore shared code when flattening
-- Don't skip testing after refactoring
+- Pastas “meio-componente” vagas indefinidamente
+- Imports quebrados pós-move
+- Mix incoerente consolidate vs split no mesmo subtree sem rationale
 
-## Common Patterns
+## Patterns frequentes catalogados pela skill
 
-### Pattern 1: Simple Consolidation
+### Pattern 1: Consolidação simples
 
-**Before**:
+**Antes**:
 
 ```
 ss.survey/
@@ -623,7 +516,7 @@ ss.survey/
     └── Template.js
 ```
 
-**After**:
+**Depois**:
 
 ```
 ss.survey/              ← Component (leaf node)
@@ -631,9 +524,9 @@ ss.survey/              ← Component (leaf node)
 └── Template.js
 ```
 
-### Pattern 2: Functional Split
+### Pattern 2: Split funcional
 
-**Before**:
+**Antes**:
 
 ```
 ss.ticket/              ← Root namespace
@@ -642,7 +535,7 @@ ss.ticket/              ← Root namespace
 └── route/              ← Component
 ```
 
-**After**:
+**Depois**:
 
 ```
 ss.ticket/              ← Subdomain
@@ -654,9 +547,9 @@ ss.ticket/              ← Subdomain
 └── route/              ← Component
 ```
 
-### Pattern 3: Shared Code Extraction
+### Pattern 3: Extração de código compartilhado
 
-**Before**:
+**Antes**:
 
 ```
 ss.survey/              ← Root namespace
@@ -665,7 +558,7 @@ ss.survey/              ← Root namespace
 └── templates/          ← Component
 ```
 
-**After**:
+**Depois**:
 
 ```
 ss.survey/              ← Component
@@ -674,20 +567,12 @@ ss.survey/              ← Component
     └── SurveyValidator.js
 ```
 
-## Next Steps
+## Próximos passos
 
-After flattening components:
+Pós-estrutura limpa aplicar coupling-analysis e domínios/serviços conforme Patterns seguintes neste playbook do monorepo.
 
-1. **Apply Determine Component Dependencies Pattern** - Analyze coupling
-2. **Create Component Domains** - Group components into domains
-3. **Create Domain Services** - Extract domains to services
+## Notas
 
-## Notes
-
-- Components must exist only as leaf nodes
-- Root namespaces with code are problematic
-- Flattening improves component clarity
-- Choose flattening strategy based on functionality
-- Shared code should be in dedicated components
-- Always update references after moving files
-- Test thoroughly after flattening
+- Leaf-only melhora navegabilidade mental do repo
+- Reorganizar paths tem custo político/org — comunicar stakeholder técnico
+- Compartilhados precisam de boundary claro mesmo após mover

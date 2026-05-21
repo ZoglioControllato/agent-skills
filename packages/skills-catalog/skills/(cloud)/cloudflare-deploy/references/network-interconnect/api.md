@@ -1,6 +1,6 @@
-# CNI API Reference
+# Referência da API CNI
 
-See [README.md](README.md) for overview.
+Consulte [README.md](README.md) para obter uma visão geral.
 
 ## Base
 
@@ -9,9 +9,9 @@ https://api.cloudflare.com/client/v4
 Auth: Authorization: Bearer <token>
 ```
 
-## SDK Namespaces
+##Namespaces do SDK
 
-**Primary (recommended):**
+**Primário (recomendado):**
 
 ```typescript
 client.networkInterconnects.interconnects.*
@@ -19,16 +19,13 @@ client.networkInterconnects.cnis.*
 client.networkInterconnects.slots.*
 ```
 
-**Alternate (deprecated):**
+**Alternativo (obsoleto):**
 
-```typescript
+````typescript
 client.magicTransit.cfInterconnects.*
-```
+```Use o namespace `networkInterconnects` para todos os novos códigos.
 
-Use `networkInterconnects` namespace for all new code.
-
-## Interconnects
-
+## Interconexões
 ```http
 GET    /accounts/{account_id}/cni/interconnects              # Query: page, per_page
 POST   /accounts/{account_id}/cni/interconnects              # Query: validate_only=true (optional)
@@ -36,12 +33,12 @@ GET    /accounts/{account_id}/cni/interconnects/{icon}
 GET    /accounts/{account_id}/cni/interconnects/{icon}/status
 GET    /accounts/{account_id}/cni/interconnects/{icon}/loa   # Returns PDF
 DELETE /accounts/{account_id}/cni/interconnects/{icon}
-```
+````
 
-**Create Body:** `account`, `slot_id`, `type`, `facility`, `speed`, `name`, `description`  
-**Status Values:** `active` | `healthy` | `unhealthy` | `pending` | `down`
+**Criar corpo:** `account`, `slot_id`, `type`, `facility`, `speed`, `name`, `description`  
+**Valores de status:** `ativo` | `saudável` | `insalubre` | `pendente` | `para baixo`
 
-**Response Example:**
+**Exemplo de resposta:**
 
 ```json
 {
@@ -51,50 +48,38 @@ DELETE /accounts/{account_id}/cni/interconnects/{icon}
 }
 ```
 
-## CNI Objects (BGP config)
+##Objetos CNI (configuração BGP)
 
-```http
+````http
 GET    /accounts/{account_id}/cni/cnis
 POST   /accounts/{account_id}/cni/cnis
 GET    /accounts/{account_id}/cni/cnis/{cni}
 PUT    /accounts/{account_id}/cni/cnis/{cni}
 DELETE /accounts/{account_id}/cni/cnis/{cni}
-```
+```Corpo: `account`, `cust_ip`, `cf_ip`, `bgp_asn`, `bgp_password`, `vlan`
 
-Body: `account`, `cust_ip`, `cf_ip`, `bgp_asn`, `bgp_password`, `vlan`
-
-## Slots
-
+## caça-níqueis
 ```http
 GET /accounts/{account_id}/cni/slots
 GET /accounts/{account_id}/cni/slots/{slot}
-```
+```Consulta: `instalação`, `ocupado`, `velocidade`
 
-Query: `facility`, `occupied`, `speed`
+## Verificações de integridade
 
-## Health Checks
-
-Configure via Magic Transit/WAN tunnel endpoints (CNI v2).
-
+Configure por meio de endpoints de túnel Magic Transit/WAN (CNI v2).
 ```typescript
 await client.magicTransit.tunnels.update(accountId, tunnelId, {
   health_check: { enabled: true, target: '192.0.2.1', rate: 'high', type: 'request' },
 })
-```
+```Taxas: `altas` | `médio` | `baixo`. Tipos: `solicitação` | `responder`. Consulte [documentos do Magic Transit](https://developers.cloudflare.com/magic-transit/how-to/configure-tunnel-endpoints/#add-tunnels).
 
-Rates: `high` | `medium` | `low`. Types: `request` | `reply`. See [Magic Transit docs](https://developers.cloudflare.com/magic-transit/how-to/configure-tunnel-endpoints/#add-tunnels).
-
-## Settings
-
+## Configurações
 ```http
 GET /accounts/{account_id}/cni/settings
 PUT /accounts/{account_id}/cni/settings
-```
+```Corpo: `default_asn`
 
-Body: `default_asn`
-
-## TypeScript SDK
-
+## SDK TypeScript
 ```typescript
 import Cloudflare from 'cloudflare'
 
@@ -156,9 +141,9 @@ await client.networkInterconnects.slots.list({
   facility: 'EWR1',
   speed: '10G',
 })
-```
+````
 
-## Python SDK
+##Python SDK
 
 ```python
 from cloudflare import Cloudflare
@@ -175,7 +160,7 @@ client.network_interconnects.cnis.create(account_id=id, cust_ip="192.0.2.1/31", 
 client.network_interconnects.slots.list(account_id=id, occupied=False)
 ```
 
-## cURL
+## curl
 
 ```bash
 # List interconnects
@@ -192,19 +177,19 @@ curl "https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/cni/interconne
   -H "Authorization: Bearer ${CF_TOKEN}" --output loa.pdf
 ```
 
-## Not Available via API
+##Não disponível via API
 
-**Missing Capabilities:**
+**Capacidades ausentes:**
 
-- BGP session state query (use Dashboard or BGP logs)
-- Bandwidth utilization metrics (use external monitoring)
-- Traffic statistics per interconnect
-- Historical uptime/downtime data
-- Light level readings (contact account team)
-- Maintenance window scheduling (notifications only)
+- Consulta de estado da sessão BGP (use logs do Dashboard ou BGP)
+- Métricas de utilização de largura de banda (use monitoramento externo)
+- Estatísticas de tráfego por interconexão
+- Dados históricos de tempo de atividade/inatividade
+- Leituras de nível leve (entre em contato com a equipe de conta)
+- Agendamento da janela de manutenção (apenas notificações)
 
-## Resources
+## Recursos
 
-- [API Docs](https://developers.cloudflare.com/api/resources/network_interconnects/)
-- [TypeScript SDK](https://github.com/cloudflare/cloudflare-typescript)
-- [Python SDK](https://github.com/cloudflare/cloudflare-python)
+- [Documentos da API](https://developers.cloudflare.com/api/resources/network_interconnects/)
+- [SDK TypeScript](https://github.com/cloudflare/cloudflare-typescript)
+- [SDK Python](https://github.com/cloudflare/cloudflare-python)

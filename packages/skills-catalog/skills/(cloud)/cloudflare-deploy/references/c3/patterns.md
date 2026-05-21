@@ -1,6 +1,6 @@
-# C3 Usage Patterns
+# Padrões de uso C3
 
-## Quick Workflows
+## Fluxos de trabalho rápidos
 
 ```bash
 # TypeScript API Worker
@@ -13,7 +13,7 @@ npm create cloudflare@latest my-app -- --type=web-app --framework=next --platfor
 npm create cloudflare@latest my-blog -- --type=web-app --framework=astro --platform=pages --ts
 ```
 
-## CI/CD (GitHub Actions)
+##CI/CD (ações do GitHub)
 
 ```yaml
 - name: Deploy
@@ -23,7 +23,7 @@ npm create cloudflare@latest my-blog -- --type=web-app --framework=astro --platf
     CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 ```
 
-**Non-interactive requires:**
+**Não interativo requer:**
 
 ```bash
 --type=<value>       # Required
@@ -35,14 +35,14 @@ npm create cloudflare@latest my-blog -- --type=web-app --framework=astro --platf
 
 ## Monorepo
 
-C3 detects workspace config (`package.json` workspaces or `pnpm-workspace.yaml`).
+C3 detecta a configuração do espaço de trabalho (espaços de trabalho `package.json` ou `pnpm-workspace.yaml`).
 
 ```bash
 cd packages/
 npm create cloudflare@latest my-worker -- --type=hello-world --lang=ts --no-deploy
 ```
 
-## Custom Templates
+##Modelos personalizados
 
 ```bash
 # GitHub repo
@@ -53,7 +53,7 @@ npm create cloudflare@latest -- --template=cloudflare/templates/worker-openapi
 npm create cloudflare@latest my-app -- --template=../my-template
 ```
 
-**Template requires `c3.config.json`:**
+**O modelo requer `c3.config.json`:**
 
 ```json
 {
@@ -64,7 +64,7 @@ npm create cloudflare@latest my-app -- --template=../my-template
 }
 ```
 
-## Existing Projects
+##Projetos Existentes
 
 ```bash
 # Add Cloudflare to existing Worker
@@ -74,11 +74,11 @@ npm create cloudflare@latest . -- --type=pre-existing --existing-script=./dist/i
 npm create cloudflare@latest . -- --type=web-app --framework=next --platform=pages --ts
 ```
 
-## Post-Creation Checklist
+##Lista de verificação pós-criação
 
-1. Review `wrangler.jsonc` - set `compatibility_date`, verify `name`
-2. Create bindings: `wrangler kv namespace create`, `wrangler d1 create`, `wrangler r2 bucket create`
-3. Generate types: `npm run cf-typegen`
-4. Test: `npm run dev`
-5. Deploy: `npm run deploy`
-6. Set secrets: `wrangler secret put SECRET_NAME`
+1. Revise `wrangler.jsonc` - defina `compatibility_date`, verifique `name`
+2. Crie ligações: `wrangler kv namespace create`, `wrangler d1 create`, `wrangler r2 bucket create`
+3. Gere tipos: `npm run cf-typegen`
+4. Teste: `npm run dev`
+5. Implantar: `npm run deploy`
+6. Defina segredos: `wrangler secret put SECRET_NAME`

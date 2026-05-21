@@ -46,31 +46,30 @@ const iceServers = await getTURNConfig()
 const peerConnection = new RTCPeerConnection({ iceServers })
 ```
 
-## Port Selection Strategy
+## Estratégia de seleção de portas
 
-Recommended order for browser clients:
+Ordem recomendada para clientes de navegador:
 
-1. **3478/udp** (primary, lowest latency)
-2. **3478/tcp** (fallback for UDP-blocked networks)
-3. **5349/tls** (corporate firewalls, most reliable)
-4. **443/tls** (alternate TLS port, firewall-friendly)
+1. **3478/udp** (primário, latência mais baixa)
+2. **3478/tcp** (substituição para redes bloqueadas por UDP)
+3. **5349/tls** (firewalls corporativos, mais confiáveis)
+4. **443/tls** (porta TLS alternativa, compatível com firewall)
 
-**Avoid port 53**—blocked by Chrome and Firefox.
-
-```typescript
+**Evite a porta 53** — bloqueada pelo Chrome e Firefox.```typescript
 function filterICEServersForBrowser(urls: string[]): string[] {
-  return urls
-    .filter((url) => !url.includes(':53')) // Remove port 53
-    .sort((a, b) => {
-      // Prioritize UDP over TCP over TLS
-      if (a.includes('transport=udp')) return -1
-      if (b.includes('transport=udp')) return 1
-      if (a.includes('transport=tcp') && !a.startsWith('turns:')) return -1
-      if (b.includes('transport=tcp') && !b.startsWith('turns:')) return 1
-      return 0
-    })
+return urls
+.filter((url) => !url.includes(':53')) // Remove port 53
+.sort((a, b) => {
+// Prioritize UDP over TCP over TLS
+if (a.includes('transport=udp')) return -1
+if (b.includes('transport=udp')) return 1
+if (a.includes('transport=tcp') && !a.startsWith('turns:')) return -1
+if (b.includes('transport=tcp') && !b.startsWith('turns:')) return 1
+return 0
+})
 }
-```
+
+````
 
 ## Credential Refresh (Mid-Session)
 
@@ -90,7 +89,7 @@ async function refreshTURNCredentials(pc: RTCPeerConnection): Promise<void> {
 setInterval(async () => {
   await refreshTURNCredentials(peerConnection)
 }, 3000000) // 50 minutes if TTL is 1 hour
-```
+````
 
 ## ICE Restart Pattern
 

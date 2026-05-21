@@ -1,47 +1,47 @@
-# API Reference
+# Referência de API
 
-R2 Data Catalog exposes standard [Apache Iceberg REST Catalog API](https://github.com/apache/iceberg/blob/main/open-api/rest-catalog-open-api.yaml).
+O Catálogo de Dados R2 expõe o padrão [API do Catálogo REST do Apache Iceberg](https://github.com/apache/iceberg/blob/main/open-api/rest-catalog-open-api.yaml).
 
-## Quick Reference
+## Referência rápida
 
-**Most common operations:**
+**Operações mais comuns:**
 
-| Task             | PyIceberg Code                                                    |
-| ---------------- | ----------------------------------------------------------------- |
-| Connect          | `RestCatalog(name="r2", warehouse=bucket, uri=uri, token=token)`  |
-| List namespaces  | `catalog.list_namespaces()`                                       |
-| Create namespace | `catalog.create_namespace("logs")`                                |
-| Create table     | `catalog.create_table(("ns", "table"), schema=schema)`            |
-| Load table       | `catalog.load_table(("ns", "table"))`                             |
-| Append data      | `table.append(pyarrow_table)`                                     |
-| Query data       | `table.scan().to_pandas()`                                        |
-| Compact files    | `table.rewrite_data_files(target_file_size_bytes=128*1024*1024)`  |
-| Expire snapshots | `table.expire_snapshots(older_than=timestamp_ms, retain_last=10)` |
+| Tarefa                 | Código PyIceberg                                                  |
+| ---------------------- | ----------------------------------------------------------------- |
+| Conectar               | `RestCatalog(name="r2", warehouse=bucket, uri=uri, token=token)`  |
+| Listar namespaces      | `catalog.list_namespaces()`                                       |
+| Criar espaço para nome | `catalog.create_namespace("logs")`                                |
+| Criar tabela           | `catalog.create_table(("ns", "tabela"), esquema=esquema)`         |
+| Tabela de carga        | `catalog.load_table(("ns", "tabela"))`                            |
+| Anexar dados           | `tabela.append(pyarrow_table)`                                    |
+| Consultar dados        | `table.scan().to_pandas()`                                        |
+| Arquivos compactos     | `tabela.rewrite_data_files(target_file_size_bytes=128*1024*1024)` |
+| Expirar instantâneos   | `table.expire_snapshots(older_than=timestamp_ms, reter_last=10)`  |
 
-## REST Endpoints
+## Terminais REST
 
 Base: `https://<account-id>.r2.cloudflarestorage.com/iceberg/<bucket-name>`
 
-| Operation        | Method | Path                                 |
-| ---------------- | ------ | ------------------------------------ |
-| Catalog config   | GET    | `/v1/config`                         |
-| List namespaces  | GET    | `/v1/namespaces`                     |
-| Create namespace | POST   | `/v1/namespaces`                     |
-| Delete namespace | DELETE | `/v1/namespaces/{ns}`                |
-| List tables      | GET    | `/v1/namespaces/{ns}/tables`         |
-| Create table     | POST   | `/v1/namespaces/{ns}/tables`         |
-| Load table       | GET    | `/v1/namespaces/{ns}/tables/{table}` |
-| Update table     | POST   | `/v1/namespaces/{ns}/tables/{table}` |
-| Delete table     | DELETE | `/v1/namespaces/{ns}/tables/{table}` |
-| Rename table     | POST   | `/v1/tables/rename`                  |
+| Operação                 | Método  | Caminho                                |
+| ------------------------ | ------- | -------------------------------------- |
+| Configuração do catálogo | OBTER   | `/v1/config`                           |
+| Listar namespaces        | OBTER   | `/v1/namespaces`                       |
+| Criar espaço para nome   | POSTAR  | `/v1/namespaces`                       |
+| Excluir espaço para nome | EXCLUIR | `/v1/namespaces/{ns}`                  |
+| Listar tabelas           | OBTER   | `/v1/namespaces/{ns}/tabelas`          |
+| Criar tabela             | POSTAR  | `/v1/namespaces/{ns}/tabelas`          |
+| Tabela de carga          | OBTER   | `/v1/namespaces/{ns}/tabelas/{tabela}` |
+| Atualizar tabela         | POSTAR  | `/v1/namespaces/{ns}/tabelas/{tabela}` |
+| Excluir tabela           | EXCLUIR | `/v1/namespaces/{ns}/tabelas/{tabela}` |
+| Renomear tabela          | POSTAR  | `/v1/tabelas/renomear`                 |
 
-**Authentication:** Bearer token in header: `Authorization: Bearer <token>`
+**Autenticação:** Token do portador no cabeçalho: `Autorização: Portador <token>`
 
-## PyIceberg Client API
+## API do cliente PyIceberg
 
-Most users use PyIceberg, not raw REST.
+A maioria dos usuários usa PyIceberg, não REST bruto.
 
-### Connection
+### Conexão
 
 ```python
 from pyiceberg.catalog.rest import RestCatalog
@@ -54,7 +54,7 @@ catalog = RestCatalog(
 )
 ```
 
-### Namespace Operations
+### Operações de namespace
 
 ```python
 from pyiceberg.exceptions import NamespaceAlreadyExistsError
@@ -64,7 +64,7 @@ catalog.create_namespace("logs", properties={"owner": "team"})
 catalog.drop_namespace("logs")  # Must be empty
 ```
 
-### Table Operations
+### Operações de Tabela
 
 ```python
 from pyiceberg.schema import Schema
@@ -80,7 +80,7 @@ table = catalog.load_table(("logs", "app_logs"))
 catalog.rename_table(("logs", "old"), ("logs", "new"))
 ```
 
-### Data Operations
+### Operações de dados
 
 ```python
 import pyarrow as pa
@@ -94,7 +94,7 @@ scan = table.scan(row_filter="id > 100", selected_fields=["id", "name"])
 df = scan.to_pandas()
 ```
 
-### Schema Evolution
+### Evolução do esquema
 
 ```python
 from pyiceberg.types import IntegerType, LongType
@@ -106,7 +106,7 @@ with table.update_schema() as update:
     update.update_column("id", field_type=LongType())  # int→long only
 ```
 
-### Time-Travel
+### Viagem no tempo
 
 ```python
 from datetime import datetime, timedelta
@@ -117,7 +117,7 @@ yesterday_ms = int((datetime.now() - timedelta(days=1)).timestamp() * 1000)
 scan = table.scan(as_of_timestamp=yesterday_ms)
 ```
 
-### Partitioning
+### Particionamento
 
 ```python
 from pyiceberg.partitioning import PartitionSpec, PartitionField
@@ -131,9 +131,9 @@ table = catalog.create_table(("events", "actions"), schema=schema, partition_spe
 scan = table.scan(row_filter="day = '2026-01-27'")  # Prunes partitions
 ```
 
-## Table Maintenance
+##Manutenção de Tabela
 
-### Compaction
+### Compactação
 
 ```python
 files = table.scan().plan_files()
@@ -143,9 +143,9 @@ print(f"Files: {len(files)}, Avg: {avg_mb:.1f} MB")
 table.rewrite_data_files(target_file_size_bytes=128 * 1024 * 1024)
 ```
 
-**When:** Avg <10MB or >1000 files. **Frequency:** High-write daily, medium weekly.
+**Quando:** Média <10 MB ou >1.000 arquivos. **Frequência:** Gravações diárias altas, semanais médias.
 
-### Snapshot Expiration
+### Expiração do instantâneo
 
 ```python
 from datetime import datetime, timedelta
@@ -154,19 +154,16 @@ seven_days_ms = int((datetime.now() - timedelta(days=7)).timestamp() * 1000)
 table.expire_snapshots(older_than=seven_days_ms, retain_last=10)
 ```
 
-**Retention:** Production 7-30d, dev 1-7d, audit 90+d.
+**Retenção:** Produção 7-30d, desenvolvimento 1-7d, auditoria 90+d.
 
-### Orphan Cleanup
+### Limpeza Órfã
 
-```python
+````python
 three_days_ms = int((datetime.now() - timedelta(days=3)).timestamp() * 1000)
 table.delete_orphan_files(older_than=three_days_ms)
-```
+```⚠️ Sempre expire os snapshots primeiro, use o limite de mais de 3 dias, execute durante tráfego baixo.
 
-⚠️ Always expire snapshots first, use 3+ day threshold, run during low traffic.
-
-### Full Maintenance
-
+### Manutenção Completa
 ```python
 # Compact → Expire → Cleanup (in order)
 if len(table.scan().plan_files()) > 1000:
@@ -175,9 +172,9 @@ seven_days_ms = int((datetime.now() - timedelta(days=7)).timestamp() * 1000)
 table.expire_snapshots(older_than=seven_days_ms, retain_last=10)
 three_days_ms = int((datetime.now() - timedelta(days=3)).timestamp() * 1000)
 table.delete_orphan_files(older_than=three_days_ms)
-```
+````
 
-## Metadata Inspection
+##Inspeção de metadados
 
 ```python
 table = catalog.load_table(("logs", "app_logs"))
@@ -187,13 +184,13 @@ print(table.properties)
 print(f"Files: {len(table.scan().plan_files())}")
 ```
 
-## Error Codes
+##Códigos de erro
 
-| Code | Meaning      | Common Causes                                |
-| ---- | ------------ | -------------------------------------------- |
-| 401  | Unauthorized | Invalid/missing token                        |
-| 404  | Not Found    | Catalog not enabled, namespace/table missing |
-| 409  | Conflict     | Already exists, concurrent update            |
-| 422  | Validation   | Invalid schema, incompatible type            |
+| Código | Significado    | Causas Comuns                                  |
+| ------ | -------------- | ---------------------------------------------- |
+| 401    | Não autorizado | Token inválido/ausente                         |
+| 404    | Não encontrado | Catálogo não ativado, namespace/tabela ausente |
+| 409    | Conflito       | Já existe, atualização simultânea              |
+| 422    | Validação      | Esquema inválido, tipo incompatível            |
 
-See [gotchas.md](gotchas.md) for detailed troubleshooting.
+Consulte [gotchas.md](gotchas.md) para solução de problemas detalhada.

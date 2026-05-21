@@ -1,85 +1,85 @@
 <p align="center">
-  <img src=".github/assets/logo.png" alt="Tech Leads Club" width="400" />
+  <img src=".github/assets/logo.png" alt="Controllato Club" width="400" />
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/npm/v/@tech-leads-club/agent-skills?style=flat-square&color=blue" alt="npm version" />
-  <img src="https://img.shields.io/npm/dt/@tech-leads-club/agent-skills?style=flat-square&color=blue" alt="total downloads" />
-  <img src="https://img.shields.io/npm/dm/@tech-leads-club/agent-skills?style=flat-square&color=blue" alt="monthly downloads" />
-  <img src="https://img.shields.io/github/license/tech-leads-club/agent-skills?style=flat-square" alt="license" />
-  <img src="https://img.shields.io/github/actions/workflow/status/tech-leads-club/agent-skills/release.yml?style=flat-square" alt="build status" />
+  <img src="https://img.shields.io/npm/v/@tech-leads-club/agent-skills?style=flat-square&color=blue" alt="versão npm" />
+  <img src="https://img.shields.io/npm/dt/@tech-leads-club/agent-skills?style=flat-square&color=blue" alt="downloads totais" />
+  <img src="https://img.shields.io/npm/dm/@tech-leads-club/agent-skills?style=flat-square&color=blue" alt="downloads mensais" />
+  <img src="https://img.shields.io/github/license/tech-leads-club/agent-skills?style=flat-square" alt="licença" />
+  <img src="https://img.shields.io/github/actions/workflow/status/tech-leads-club/agent-skills/release.yml?style=flat-square" alt="status do build" />
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/node-%3E%3D22-brightgreen?style=flat-square&logo=node.js" alt="node version" />
+  <img src="https://img.shields.io/badge/node-%3E%3D22-brightgreen?style=flat-square&logo=node.js" alt="versão do node" />
   <img src="https://img.shields.io/badge/TypeScript-100%25-blue?style=flat-square&logo=typescript" alt="typescript" />
   <img src="https://img.shields.io/badge/Nx%20Cloud-Enabled-blue?style=flat-square&logo=nx" alt="nx cloud" />
   <img src="https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg?style=flat-square" alt="semantic-release" />
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/github/stars/tech-leads-club/agent-skills?style=flat-square&color=yellow" alt="github stars" />
-  <img src="https://img.shields.io/github/contributors/tech-leads-club/agent-skills?style=flat-square&color=orange" alt="contributors" />
-  <img src="https://img.shields.io/github/last-commit/tech-leads-club/agent-skills?style=flat-square" alt="last commit" />
-  <img src="https://img.shields.io/badge/AI-Powered%20Skills-purple?style=flat-square&logo=openai" alt="ai powered" />
+  <img src="https://img.shields.io/github/stars/tech-leads-club/agent-skills?style=flat-square&color=yellow" alt="estrelas no GitHub" />
+  <img src="https://img.shields.io/github/contributors/tech-leads-club/agent-skills?style=flat-square&color=orange" alt="contribuidores" />
+  <img src="https://img.shields.io/github/last-commit/tech-leads-club/agent-skills?style=flat-square" alt="último commit" />
+  <img src="https://img.shields.io/badge/AI-Powered%20Skills-purple?style=flat-square&logo=openai" alt="skills com IA" />
 </p>
 
 <h1 align="center">🧠 Agent Skills</h1>
 
 <p align="center">
-  <strong>The secure, validated skill registry for professional AI coding agents</strong>
+  <strong>O registry seguro e validado de skills para agentes profissionais de codificação com IA</strong>
 </p>
 
 <p align="center">
-  In an ecosystem where <a href="https://github.com/snyk/agent-scan/blob/main/.github/reports/skills-report.pdf">over 13% of marketplace skills contain critical vulnerabilities</a>,
-  <b>Agent Skills</b> stands apart as a hardened library of <b>verified</b>, <b>tested</b>, and <b>safe</b> capabilities.
-  Extend <b>Antigravity</b>, <b>Claude Code</b>, <b>Cursor</b>, and more with absolute confidence.
+  Num ecossistema em que <a href="https://github.com/snyk/agent-scan/blob/main/.github/reports/skills-report.pdf">mais de 13% das skills de marketplaces têm vulnerabilidades críticas</a>,
+  o <b>Agent Skills</b> se diferencia como uma biblioteca endurecida de capacidades <b>verificadas</b>, <b>testadas</b> e <b>seguras</b>.
+  Estenda <b>Antigravity</b>, <b>Claude Code</b>, <b>Cursor</b> e outros com alta confiança.
 </p>
 
 <p align="center">
   <a href="https://tech-leads-club.github.io/agent-skills/" target="_blank">https://tech-leads-club.github.io/agent-skills/</a>
 </p>
 
-## 📖 Table of Contents
+## 📖 Índice
 
-- [✨ What are Skills?](#-what-are-skills)
-- [🛡️ Security & Trust](#️-security--trust)
-- [🤖 Supported Agents](#-supported-agents)
-- [🌟 Featured Skills](#-featured-skills)
-- [🚀 Quick Start](#-quick-start)
-- [⚡ How It Works](#-how-it-works)
-- [🔌 MCP Server](#-mcp-server)
-- [🤝 Contributing](#-contributing)
-- [🛡️ Content & Authorship](#️-content--authorship)
-- [📄 License and Attribution](#-license-and-attribution)
+- [✨ O que são Skills?](#-o-que-são-skills)
+- [🛡️ Segurança e confiança](#️-segurança-e-confiança)
+- [🤖 Agentes suportados](#-agentes-suportados)
+- [🌟 Skills em destaque](#-skills-em-destaque)
+- [🚀 Início rápido](#-início-rápido)
+- [⚡ Como funciona](#-como-funciona)
+- [🔌 Servidor MCP](#-servidor-mcp)
+- [🤝 Contribuindo](#-contribuindo)
+- [🛡️ Conteúdo e autoria](#️-conteúdo-e-autoria)
+- [📄 Licença e atribuição](#-licença-e-atribuição)
 
-## ✨ What are Skills?
+## ✨ O que são Skills?
 
-Skills are packaged instructions and resources that extend AI agent capabilities. Think of them as **plugins for your AI assistant** — they teach your agent new workflows, patterns, and specialized knowledge.
+Skills são instruções e recursos empacotados que ampliam o que um agente de IA consegue fazer. Pense nelas como **plugins para seu assistente de IA** — ensinam fluxos de trabalho, padrões e conhecimento especializado.
 
 ```
 packages/skills-catalog/skills/
-  (category-name)/
+  (nome-da-categoria)/
     skill/
-      SKILL.md          ← Main instructions
-      templates/        ← File templates
-      references/       ← On-demand documentation
+      SKILL.md          ← Instruções principais
+      templates/        ← Templates de arquivo
+      references/       ← Documentação sob demanda
 ```
 
-## 🛡️ Security & Trust
+## 🛡️ Segurança e confiança
 
-Your environment's safety is our top priority. Unlike open marketplaces where **13.4% of skills contain critical issues**, `agent-skills` is a managed, hardened library: 100% open source (no binaries), static analysis in CI/CD, immutable integrity via lockfiles and content hashing, and human-curated prompts. The CLI uses defense-in-depth (sanitization, path isolation, symlink guards, atomic lockfile, audit trail); every skill is scanned with [Snyk Agent Scan](https://github.com/snyk/agent-scan) (formerly mcp-scan) before publishing.
+A segurança do seu ambiente é prioridade. Ao contrário de marketplaces abertos onde **13,4% das skills apresentam problemas críticos**, `agent-skills` é uma biblioteca gerenciada e endurecida: 100% código aberto (sem binários), análise estática em CI/CD, integridade imutável com lockfiles e hash de conteúdo e prompts curados manualmente. A CLI usa defesa em profundidade (higienização, isolamento de caminhos, proteção contra symlinks, lockfile atômico e trilho de auditoria); cada skill é analisada com [Snyk Agent Scan](https://github.com/snyk/agent-scan) (antes mcp-scan) antes da publicação.
 
-→ **Full threat model, implementation details, and vulnerability reporting:** [SECURITY.md](SECURITY.md)
+→ **Modelo de ameaças completo, detalhes de implementação e relatório de vulnerabilidades:** [SECURITY.md](SECURITY.md)
 
-## 🤖 Supported Agents
+## 🤖 Agentes suportados
 
-Install skills to any of these AI coding agents:
+Instale skills em qualquer um destes agentes de codificação com IA:
 
 <div align="center">
 <br />
 
-|                     Tier 1 (Popular)                      |                            Tier 2 (Rising)                             |                   Tier 3 (Enterprise)                   |
+|                    Tier 1 (populares)                     |                            Tier 2 (em alta)                            |                   Tier 3 (enterprise)                   |
 | :-------------------------------------------------------: | :--------------------------------------------------------------------: | :-----------------------------------------------------: |
 |         **[Claude Code](https://claude.ai/code)**         |                    **[Aider](https://aider.chat)**                     |   **[Amazon Q](https://aws.amazon.com/q/developer/)**   |
 |        **[Cline](https://github.com/cline/cline)**        |               **[Antigravity](https://idx.google.com)**                |       **[Augment](https://www.augmentcode.com)**        |
@@ -93,152 +93,152 @@ Install skills to any of these AI coding agents:
 </div>
 
 <p align="center">
-  <sub>Missing your favorite agent? <a href="https://github.com/tech-leads-club/agent-skills/issues/new"><strong>Open an issue</strong></a> and we'll add support!</sub>
+  <sub>Falta o seu agente favorito? <a href="https://github.com/tech-leads-club/agent-skills/issues/new"><strong>Abra uma issue</strong></a> e adicionamos suporte!</sub>
 </p>
 
-## 🌟 Featured Skills
+## 🌟 Skills em destaque
 
-A glimpse of what's available in our growing catalog:
+Uma amostra do que há no catálogo em crescimento:
 
-| Skill                                                                                              | Category    | Description                                                                                                                                                                        |
+| Skill                                                                                              | Categoria   | Descrição                                                                                                                                                                          |
 | -------------------------------------------------------------------------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **[tlc-spec-driven](<packages/skills-catalog/skills/(development)/tlc-spec-driven>)**              | Development | Project and feature planning with 4 phases: Specify → Design → Tasks → Implement. Creates atomic tasks with verification criteria and maintains persistent memory across sessions. |
-| **[aws-advisor](<packages/skills-catalog/skills/(cloud)/aws-advisor>)**                            | Cloud       | Expert AWS Cloud Advisor for architecture design, security review, and implementation guidance. Leverages AWS MCP tools for documentation-backed answers.                          |
-| **[playwright-skill](<packages/skills-catalog/skills/(web-automation)/playwright-skill>)**         | Automation  | Complete browser automation with Playwright. Test pages, fill forms, take screenshots, validate UX, and automate any browser task.                                                 |
-| **[figma](<packages/skills-catalog/skills/(design)/figma>)**                                       | Design      | Fetch design context from Figma and translate nodes into production code. Design-to-code implementation with MCP integration.                                                      |
-| **[security-best-practices](<packages/skills-catalog/skills/(security)/security-best-practices>)** | Security    | Language and framework-specific security reviews. Detect vulnerabilities, generate reports, and suggest secure-by-default fixes.                                                   |
+| **[tlc-spec-driven](<packages/skills-catalog/skills/(development)/tlc-spec-driven>)**              | Development | Planejamento de projeto e feature em 4 fases: Specify → Design → Tasks → Implement. Gera tarefas atômicas com critérios de verificação e mantém memória persistente entre sessões. |
+| **[aws-advisor](<packages/skills-catalog/skills/(cloud)/aws-advisor>)**                            | Cloud       | Consultoria especializada em AWS para arquitetura, segurança e implementação. Usa ferramentas MCP da AWS com respostas apoiadas em documentação.                                   |
+| **[playwright-skill](<packages/skills-catalog/skills/(web-automation)/playwright-skill>)**         | Automation  | Automação completa no navegador com Playwright. Testa páginas, preenche formulários, tira screenshots, valida UX e automatiza fluxos web.                                          |
+| **[figma](<packages/skills-catalog/skills/(design)/figma>)**                                       | Design      | Obtém contexto de design no Figma e traduz nós em código de produção. Implementação design-to-code com integração MCP.                                                             |
+| **[security-best-practices](<packages/skills-catalog/skills/(security)/security-best-practices>)** | Security    | Revisões de segurança por linguagem e framework. Detecta vulnerabilidades, gera relatórios e sugere correções seguras por padrão.                                                  |
 
 <p align="center">
-  <a href="#-quick-start"><strong>→ Browse all skills</strong></a>
+  <a href="#-início-rápido"><strong>→ Ver todas as skills</strong></a>
 </p>
 
-## 🚀 Quick Start
+## 🚀 Início rápido
 
-### Install Skills in Your Project
+### Instalar skills no seu projeto
 
 ```bash
 npx @tech-leads-club/agent-skills
 ```
 
-This launches an interactive wizard:
+Abre um assistente interativo:
 
-1. **Choose Action** — "Install skills" or "Update installed skills"
-2. **Browse & Select** — Filter by category or search
-3. **Choose agents** — Pick target agents (Cursor, Claude Code, etc.)
-4. **Installation method** — Copy (recommended) or Symlink
-5. **Scope** — Global (user home) or Local (project only)
+1. **Escolher ação** — "Instalar skills" ou "Atualizar skills instaladas"
+2. **Navegar e selecionar** — Filtrar por categoria ou buscar
+3. **Escolher agentes** — Cursor, Claude Code etc.
+4. **Método de instalação** — Copiar (recomendado) ou symlink
+5. **Escopo** — Global (~) ou apenas no projeto
 
-Each step shows a **← Back** option to return and revise your choices.
+Cada etapa oferece **← Voltar** para revisar.
 
-### CLI Options
+### Opções da CLI
 
-> **Note**: You can use either `npx @tech-leads-club/agent-skills` or install globally and use `agent-skills` directly.
+> **Nota:** Você pode usar `npx @tech-leads-club/agent-skills` ou instalar globalmente e chamar `agent-skills`.
 
 ```bash
-# Interactive mode (default)
+# Modo interativo (padrão)
 npx @tech-leads-club/agent-skills
-# or: agent-skills (if installed globally)
+# ou: agent-skills (se instalado globalmente)
 
-# List available skills
+# Listar skills disponíveis
 agent-skills list
 agent-skills ls        # Alias
 
-# Install one skill
+# Instalar uma skill
 agent-skills install -s tlc-spec-driven
 
-# Install multiple skills at once
+# Instalar várias skills de uma vez
 agent-skills install -s aws-advisor coding-guidelines docs-writer
 
-# Install to specific agents
+# Instalar em agentes específicos
 agent-skills install -s my-skill -a cursor claude-code
 
-# Install multiple skills to multiple agents
+# Várias skills em vários agentes
 agent-skills install -s aws-advisor nx-workspace -a cursor windsurf cline
 
-# Install globally (to ~/.gemini, ~/.claude, etc.)
+# Instalação global (~/.gemini, ~/.claude, etc.)
 agent-skills install -s my-skill -g
 
-# Use symlink instead of copy
+# Usar symlink em vez de cópia
 agent-skills install -s my-skill --symlink
 
-# Force re-download (bypass cache)
+# Forçar novo download (ignora cache)
 agent-skills install -s my-skill --force
 
-# Update a specific skill
+# Atualizar uma skill específica
 agent-skills update -s my-skill
 
-# Update all installed skills
+# Atualizar todas as instaladas
 agent-skills update
 
-# Remove one skill
+# Remover uma skill
 agent-skills remove -s my-skill
 
-# Remove multiple skills at once
+# Remover várias de uma vez
 agent-skills remove -s skill1 skill2 skill3
 agent-skills rm -s my-skill    # Alias
 
-# Remove from specific agents
+# Remover de agentes específicos
 agent-skills remove -s my-skill -a cursor windsurf
 
-# Force removal (bypass lockfile check)
+# Forçar remoção (ignora verificação do lockfile)
 agent-skills remove -s my-skill --force
 
-# Manage cache
-agent-skills cache --clear           # Clear all cache
-agent-skills cache --clear-registry  # Clear only registry
-agent-skills cache --path            # Show cache location
+# Gerenciar cache
+agent-skills cache --clear           # Limpa todo o cache
+agent-skills cache --clear-registry  # Só o registry
+agent-skills cache --path            # Mostra onde fica o cache
 
-# View audit log
-agent-skills audit                   # Show recent operations
-agent-skills audit -n 20             # Show last 20 entries
-agent-skills audit --path            # Show audit log location
+# Ver registro de auditoria
+agent-skills audit                   # Operações recentes
+agent-skills audit -n 20             # Últimas 20 entradas
+agent-skills audit --path           # Local do arquivo de auditoria
 
-# Show contributors and credits
+# Contribuidores e créditos
 agent-skills credits
 
-# Show help
+# Ajuda
 agent-skills --help
 ```
 
-### Global Installation (Optional)
+### Instalação global (opcional)
 
 ```bash
 npm install -g @tech-leads-club/agent-skills
-agent-skills  # Use 'agent-skills' instead of 'npx @tech-leads-club/agent-skills'
+agent-skills  # Use 'agent-skills' em vez de npx @tech-leads-club/agent-skills
 ```
 
-## ⚡ How It Works
+## ⚡ Como funciona
 
-The CLI fetches skills **on-demand** from our CDN:
+A CLI busca skills **sob demanda** no CDN:
 
-1. **Browse** — The CLI fetches the skills catalog (~45KB)
-2. **Select** — You choose the skills you need
-3. **Download** — Selected skills are downloaded and cached locally
-4. **Install** — Skills are installed to your agent's configuration
+1. **Navegar** — Busca o catálogo (~45 KB)
+2. **Selecionar** — Você escolhe as skills
+3. **Baixar** — Download e cache local
+4. **Instalar** — Instalação na configuração do agente
 
-### Caching
+### Cache
 
-Downloaded skills are cached in `~/.cache/agent-skills/` for offline use.
+As skills baixadas ficam em `~/.cache/agent-skills/` para uso offline.
 
 ```bash
-# Clear the cache
+# Limpar cache
 rm -rf ~/.cache/agent-skills
 ```
 
-## 🔌 MCP Server
+## 🔌 Servidor MCP
 
-`@tech-leads-club/agent-skills-mcp` is an MCP server that exposes the skills catalog directly to AI agents via **progressive disclosure** — search first, then fetch only what's needed.
+`@tech-leads-club/agent-skills-mcp` é um servidor MCP que expõe o catálogo aos agentes com **divulgação progressiva** — buscar primeiro e só depois obter o necessário.
 
-| Tool                | Purpose                              |
-| :------------------ | :----------------------------------- |
-| `list_skills`       | Browse all skills by category        |
-| `search_skills`     | Find skills by intent (fuzzy search) |
-| `read_skill`        | Load a skill's main instructions     |
-| `fetch_skill_files` | Fetch specific reference files       |
+| Ferramenta          | Finalidade                                       |
+| :------------------ | :----------------------------------------------- |
+| `list_skills`       | Listar todas as skills por categoria             |
+| `search_skills`     | Encontrar skills por intenção (busca aproximada) |
+| `read_skill`        | Carregar as instruções principais da skill       |
+| `fetch_skill_files` | Obter arquivos de referência específicos         |
 
-`list_skills` should be called only when the user explicitly asks to browse/list the catalog.
+Chame `list_skills` somente quando o usuário pedir explicitamente para listar/navegar no catálogo.
 
-**Quick install** (works with any MCP-compatible client):
+**Instalação rápida** (qualquer cliente compatível com MCP):
 
 ```json
 {
@@ -251,36 +251,36 @@ rm -rf ~/.cache/agent-skills
 }
 ```
 
-→ Full setup for all clients (Cursor, Claude Code, VS Code, etc.), caching, and error reference: **[packages/mcp/README.md](packages/mcp/README.md)**
+→ Configuração completa para todos os clientes (Cursor, Claude Code, VS Code etc.), cache e erros: **[packages/mcp/README.md](packages/mcp/README.md)**
 
-## 🤝 Contributing
+## 🤝 Contribuindo
 
-We welcome contributions! Please see our [CONTRIBUTING.md](CONTRIBUTING.md) file for detailed guidelines on how to set up your local environment, create new skills, contribute to the marketplace, and follow our release processes.
+Contribuições são bem-vindas! Veja [CONTRIBUTING.md](CONTRIBUTING.md) para ambiente local, novas skills, marketplace e release.
 
-## 🛡️ Content & Authorship
+## 🛡️ Conteúdo e autoria
 
-This repository is a collection of curated skills intended to benefit the community. We deeply respect the intellectual property and wishes of all creators.
+Este repositório reúne skills curadas para a comunidade. Respeitamos a propriedade intelectual e os desejos dos autores.
 
-If you are the author of any content included here and would like it **removed** or **updated**, please [open an issue](https://github.com/tech-leads-club/agent-skills/issues/new) or contact the maintainers.
+Se você é autor de algum conteúdo aqui e quer **remoção** ou **atualização**, [abra uma issue](https://github.com/tech-leads-club/agent-skills/issues/new) ou fale com os mantenedores.
 
-## 📄 License and Attribution
+## 📄 Licença e atribuição
 
-- **Software Engine:** The application source code (CLI, scripts, tools) is licensed under the **[MIT License](LICENSE)**.
-- **Tech Leads Club Skills:** Unless otherwise stated, all skill files (`SKILL.md`) authored by the repository maintainers are licensed under the **[Creative Commons Attribution 4.0 International License (CC-BY-4.0)](https://creativecommons.org/licenses/by/4.0/)**.
-- **Third-Party Skills:** Some skills included in this catalog are created by the community or original authors. These skills retain their original licenses and copyrights. Please check the individual `SKILL.md` files for specific licensing and author attribution.
+- **Motor de software:** O código da aplicação (CLI, scripts, ferramentas) está sob **[MIT License](LICENSE)**.
+- **Skills do Controllato Club:** Salvo indicação em contrário, os arquivos de skill (`SKILL.md`) dos mantenedores estão sob **[Creative Commons Attribution 4.0 International (CC-BY-4.0)](https://creativecommons.org/licenses/by/4.0/)**.
+- **Skills de terceiros:** Algumas skills são da comunidade ou dos autores originais e mantêm licenças e direitos próprios. Consulte cada `SKILL.md`.
 
-_If you use our skills catalog, you **must** provide attribution to Tech Leads Club, regardless of how it is used._
+_Se usar nosso catálogo, você **deve** atribuir o Controllato Club, independentemente do uso._
 
-## ⭐ Star History
+## ⭐ Histórico de estrelas
 
 <p align="center">
   <a href="https://star-history.com/#tech-leads-club/agent-skills&Date">
-    <img src="https://api.star-history.com/svg?repos=tech-leads-club/agent-skills&type=Date" alt="Star History Chart" />
+    <img src="https://api.star-history.com/svg?repos=tech-leads-club/agent-skills&type=Date" alt="Gráfico de histórico de estrelas" />
   </a>
 </p>
 
 ---
 
 <p align="center">
-  <sub>Built with ❤️ by the Tech Leads Club community</sub>
+  <sub>Feito com ❤️ pela comunidade Controllato Club</sub>
 </p>

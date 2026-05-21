@@ -1,25 +1,25 @@
-# Cloudflare Pipelines
+# Pipelines Cloudflare
 
-ETL streaming platform for ingesting, transforming, and loading data into R2 with SQL transformations.
+Plataforma de streaming ETL para ingestão, transformação e carregamento de dados em R2 com transformações SQL.
 
-## Overview
+## Visão geral
 
-Pipelines provides:
+Pipelines fornece:
 
-- **Streams**: Durable event buffers (HTTP/Workers ingestion)
-- **Pipelines**: SQL-based transformations
-- **Sinks**: R2 destinations (Iceberg tables or Parquet/JSON files)
+- **Streams**: buffers de eventos duráveis (ingestão de HTTP/Workers)
+- **Pipelines**: transformações baseadas em SQL
+- **Sinks**: destinos R2 (tabelas Iceberg ou arquivos Parquet/JSON)
 
-**Status**: Open beta (Workers Paid plan)  
-**Pricing**: No charge beyond standard R2 storage/operations
+**Status**: Beta aberto (plano Workers Paid)
+**Preço**: sem cobrança além do armazenamento/operações R2 padrão
 
-## Architecture
+## Arquitetura```
 
-```
 Data Sources → Streams → Pipelines (SQL) → Sinks → R2
-                 ↑          ↓                ↓
-            HTTP/Workers  Transform     Iceberg/Parquet
-```
+↑ ↓ ↓
+HTTP/Workers Transform Iceberg/Parquet
+
+````
 
 | Component | Purpose            | Key Feature                            |
 | --------- | ------------------ | -------------------------------------- |
@@ -32,7 +32,7 @@ Data Sources → Streams → Pipelines (SQL) → Sinks → R2
 ```bash
 # Interactive setup (recommended)
 npx wrangler pipelines setup
-```
+````
 
 **Minimal Worker example:**
 
@@ -56,54 +56,54 @@ export default {
 ## Which Sink Type?
 
 ```
-Need SQL queries on data?
-  → R2 Data Catalog (Iceberg)
-    ✅ ACID transactions, time-travel, schema evolution
-    ❌ More setup complexity (namespace, table, catalog token)
+Precisa de consultas SQL em dados?
+→ Catálogo de dados R2 (Iceberg)
+✅ Transações ACID, viagem no tempo, evolução de esquema
+❌ Mais complexidade de configuração (namespace, tabela, token de catálogo)
 
-Just file storage/archival?
-  → R2 Storage (Parquet)
-    ✅ Simple, direct file access
-    ❌ No built-in SQL queries
+Apenas armazenamento/arquivamento de arquivos?
+→ Armazenamento R2 (Parquet)
+✅ Acesso simples e direto aos arquivos
+❌ Sem consultas SQL integradas
 
-Using external tools (Spark/Athena)?
-  → R2 Storage (Parquet with partitioning)
-    ✅ Standard format, partition pruning for performance
-    ❌ Must manage schema compatibility yourself
+Usando ferramentas externas (Spark/Athena)?
+→ Armazenamento R2 (Parquet com particionamento)
+✅ Formato padrão, remoção de partição para desempenho
+❌ Você mesmo deve gerenciar a compatibilidade do esquema
 ```
 
-## Common Use Cases
+## Casos de uso comuns
 
-- **Analytics pipelines**: Clickstream, telemetry, server logs
-- **Data warehousing**: ETL into queryable Iceberg tables
-- **Event processing**: Mobile/IoT with enrichment
-- **Ecommerce analytics**: User events, purchases, views
+- **Pipelines de análise**: fluxo de cliques, telemetria, registros do servidor
+- **Armazenamento de dados**: ETL em tabelas Iceberg consultáveis
+- **Processamento de eventos**: Mobile/IoT com enriquecimento
+- **Análise de comércio eletrônico**: eventos de usuários, compras, visualizações
 
-## Reading Order
+## Ordem de leitura
 
-**New to Pipelines?** Start here:
+**Novo no Pipelines?** Comece aqui:
 
-1. [configuration.md](./configuration.md) - Setup streams, sinks, pipelines
-2. [api.md](./api.md) - Send events, TypeScript types, SQL functions
-3. [patterns.md](./patterns.md) - Best practices, integrations, complete example
-4. [gotchas.md](./gotchas.md) - Critical warnings, troubleshooting
+1. [configuration.md](./configuration.md) - Configurar streams, coletores, pipelines
+2. [api.md](./api.md) - Enviar eventos, tipos TypeScript, funções SQL
+3. [patterns.md](./patterns.md) - Melhores práticas, integrações, exemplo completo
+4. [gotchas.md](./gotchas.md) - Avisos críticos, solução de problemas
 
-**Task-based routing:**
+**Roteamento baseado em tarefas:**
 
-- Setup pipeline → [configuration.md](./configuration.md)
-- Send/query data → [api.md](./api.md)
-- Implement pattern → [patterns.md](./patterns.md)
-- Debug issue → [gotchas.md](./gotchas.md)
+- Pipeline de configuração → [configuration.md](./configuration.md)
+- Enviar/consultar dados → [api.md](./api.md)
+- Implementar padrão → [patterns.md](./patterns.md)
+- Problema de depuração → [gotchas.md](./gotchas.md)
 
-## In This Reference
+## Nesta referência
 
-- [configuration.md](./configuration.md) - wrangler.jsonc bindings, schema definition, sink options, CLI commands
-- [api.md](./api.md) - Pipeline binding interface, send() method, HTTP ingest, SQL function reference
-- [patterns.md](./patterns.md) - Fire-and-forget, schema validation with Zod, integrations, performance tuning
-- [gotchas.md](./gotchas.md) - Silent validation failures, immutable pipelines, latency expectations, limits
+- [configuration.md](./configuration.md) - ligações wrangler.jsonc, definição de esquema, opções de coletor, comandos CLI
+- [api.md](./api.md) - Interface de vinculação de pipeline, método send(), ingestão HTTP, referência de função SQL
+- [patterns.md](./patterns.md) - Disparar e esquecer, validação de esquema com Zod, integrações, ajuste de desempenho
+- [gotchas.md](./gotchas.md) - Falhas de validação silenciosas, pipelines imutáveis, expectativas de latência, limites
 
-## See Also
+## Veja também
 
-- [r2](../r2/) - R2 storage backend for sinks
-- [queues](../queues/) - Compare with Queues for async processing
-- [workers](../workers/) - Worker runtime for event ingestion
+- [r2](../r2/) - back-end de armazenamento R2 para coletores
+- [queues](../queues/) - Compare com Filas para processamento assíncrono
+- [workers](../workers/) - Tempo de execução do trabalhador para ingestão de eventos

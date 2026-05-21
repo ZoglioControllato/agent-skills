@@ -1,19 +1,18 @@
-# Workers Playground Gotchas
+# Pegadinhas no Playground dos Trabalhadores
 
-## Platform Limitations
+## Limitações da plataforma
 
-| Limitation             | Impact               | Workaround                     |
-| ---------------------- | -------------------- | ------------------------------ |
-| Safari broken          | Preview fails        | Use Chrome/Firefox/Edge        |
-| TypeScript unsupported | TS syntax errors     | Write plain JS or use JSDoc    |
-| No bindings            | `env` always `{}`    | Mock data or use external APIs |
-| No env vars            | Can't access secrets | Hardcode for testing           |
+| Limitação                | Impacto                         | Solução alternativa               |
+| ------------------------ | ------------------------------- | --------------------------------- |
+| Safári quebrado          | A visualização falha            | Usar Chrome/Firefox/Edge          |
+| TypeScript não suportado | Erros de sintaxe TS             | Escreva JS simples ou use JSDoc   |
+| Sem ligações             | `env` sempre `{}`               | Simule dados ou use APIs externas |
+| Nenhum ambiente vars     | Não é possível acessar segredos | Código rígido para teste          |
 
-## Common Runtime Errors
+## Erros comuns de tempo de execução
 
-### "Response body already read"
+### "Corpo da resposta já lido"```javascript
 
-```javascript
 // ❌ Body consumed twice
 const body = await request.text()
 await fetch(url, { body: request.body }) // Error!
@@ -22,7 +21,8 @@ await fetch(url, { body: request.body }) // Error!
 const clone = request.clone()
 const body = await request.text()
 await fetch(url, { body: clone.body })
-```
+
+````
 
 ### "Worker exceeded CPU time"
 
@@ -32,7 +32,7 @@ await fetch(url, { body: clone.body })
 // ✅ Move slow work to background
 ctx.waitUntil(fetch('https://analytics.example.com', {...}));
 return new Response('OK'); // Return immediately
-```
+````
 
 ### "Too many subrequests"
 

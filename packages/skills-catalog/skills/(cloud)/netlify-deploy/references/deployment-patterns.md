@@ -1,40 +1,37 @@
-# Netlify Deployment Patterns
+# Padrões de implantação do Netlify
 
-Common deployment scenarios and best practices for the Netlify skill.
+Cenários de implantação comuns e práticas recomendadas para a habilidade Netlify.
 
-## Deployment Decision Tree
+## Árvore de decisão de implantação```
 
-```
 Is user authenticated?
 ├─ No → Run `netlify login`
 └─ Yes → Is site linked?
-    ├─ No → Is it a Git repo?
-    │   ├─ Yes → Try `netlify link --git-remote-url`
-    │   │   ├─ Success → Continue to deploy
-    │   │   └─ Fail → Run `netlify init`
-    │   └─ No → Run `netlify init`
-    └─ Yes → Is this first deploy or existing site?
-        ├─ First deploy/new site → `netlify deploy --prod`
-        └─ Existing site → `netlify deploy` (preview)
-```
+├─ No → Is it a Git repo?
+│ ├─ Yes → Try `netlify link --git-remote-url`
+│ │ ├─ Success → Continue to deploy
+│ │ └─ Fail → Run `netlify init`
+│ └─ No → Run `netlify init`
+└─ Yes → Is this first deploy or existing site?
+├─ First deploy/new site → `netlify deploy --prod`
+└─ Existing site → `netlify deploy` (preview)
 
-## Scenario 1: First-Time Deployment (New Project)
+````
+## Cenário 1: implantação inicial (novo projeto)
 
-**Context**: User has a project that has never been deployed to Netlify.
+**Contexto**: o usuário tem um projeto que nunca foi implantado no Netlify.
 
-**Steps**:
+**Etapas**:
 
-1. Check authentication: `npx netlify status`
-2. If not authenticated: `npx netlify login`
-3. Initialize new site: `npx netlify init`
-   - This guides user through setup
-   - Creates netlify.toml if needed
-4. Install dependencies: `npm install`
-5. Deploy to production: `npx netlify deploy --prod`
+1. Verifique a autenticação: `npx netlify status`
+2. Se não for autenticado: `npx netlify login`
+3. Inicialize o novo site: `npx netlify init`
+   - Isso orienta o usuário durante a configuração
+   - Cria netlify.toml se necessário
+4. Instale dependências: `npm install`
+5. Implante na produção: `npx netlify deploy --prod`
 
-**Example**:
-
-```bash
+**Exemplo**:```bash
 npx netlify status
 # Not linked to a site
 
@@ -46,46 +43,45 @@ npx netlify init
 
 npm install
 npx netlify deploy --prod
-```
+````
 
-## Scenario 2: Linking Existing Git Repository to Existing Site
+## Cenário 2: vinculando o repositório Git existente ao site existente
 
-**Context**: User has a site already on Netlify and wants to link their local repo.
+**Contexto**: O usuário já possui um site no Netlify e deseja vincular seu repositório local.
 
-**Steps**:
+**Etapas**:
 
-1. Check authentication: `npx netlify status`
-2. Get Git remote: `git remote show origin`
-3. Extract URL (e.g., `https://github.com/user/repo.git`)
-4. Link by remote: `npx netlify link --git-remote-url <URL>`
-5. If found, linked. If not, run `netlify init`
+1. Verifique a autenticação: `npx netlify status`
+2. Obtenha o Git remoto: `git remote show origin`
+3. Extraia o URL (por exemplo, `https://github.com/user/repo.git`)
+4. Link por controle remoto: `npx netlify link --git-remote-url <URL>`
+5. Se encontrado, vinculado. Caso contrário, execute `netlify init`
 
-**Example**:
-
-```bash
+**Exemplo**:```bash
 git remote show origin
-# * remote origin
-#   Fetch URL: https://github.com/user/my-app.git
+
+# \* remote origin
+
+# Fetch URL: https://github.com/user/my-app.git
 
 npx netlify link --git-remote-url https://github.com/user/my-app.git
+
 # Site linked successfully
-```
 
-## Scenario 3: Preview Deployment (Testing Changes)
+````
+## Cenário 3: Pré-visualização da implantação (teste de alterações)
 
-**Context**: User wants to test changes before pushing to production.
+**Contexto**: o usuário deseja testar as alterações antes de enviar para produção.
 
-**Steps**:
+**Etapas**:
 
-1. Ensure site is linked: `npx netlify status`
-2. Make code changes
-3. Deploy preview: `npx netlify deploy`
-4. Review preview URL
-5. If approved, deploy to prod: `npx netlify deploy --prod`
+1. Certifique-se de que o site esteja vinculado: `npx netlify status`
+2. Faça alterações no código
+3. Visualização da implantação: `npx netlify deploy`
+4. Revise o URL de visualização
+5. Se aprovado, implante no prod: `npx netlify deploy --prod`
 
-**Example**:
-
-```bash
+**Exemplo**:```bash
 # Make changes to code
 
 npx netlify deploy
@@ -93,25 +89,26 @@ npx netlify deploy
 
 # Test the preview, then:
 npx netlify deploy --prod
-```
+````
 
-## Scenario 4: Framework-Specific Deployments
+## Cenário 4: implantações específicas da estrutura
 
-### Next.js
+### Próximo.js```bash
 
-```bash
 # Next.js typically uses .next as output
+
 npx netlify deploy --prod
 
 # netlify.toml should have:
+
 # [build]
-#   command = "npm run build"
-#   publish = ".next"
-```
 
-### React (Vite)
+# command = "npm run build"
 
-```bash
+# publish = ".next"
+
+````
+### Reagir (Vite)```bash
 # Vite outputs to dist by default
 npm run build
 npx netlify deploy --dir=dist --prod
@@ -120,79 +117,80 @@ npx netlify deploy --dir=dist --prod
 # [build]
 #   command = "npm run build"
 #   publish = "dist"
-```
+````
 
-### Static HTML
+### HTML estático```bash
 
-```bash
 # No build step needed
+
 npx netlify deploy --dir=. --prod
-```
 
-## Scenario 5: Monorepo Deployment
+````
+## Cenário 5: implantação do Monorepo
 
-**Context**: Project is in a subdirectory of a monorepo.
+**Contexto**: o projeto está em um subdiretório de um monorepo.
 
-**Steps**:
+**Etapas**:
 
-1. Navigate to project subdirectory: `cd packages/frontend`
-2. Or set base in netlify.toml:
+1. Navegue até o subdiretório do projeto: `cd packages/frontend`
+2. Ou defina a base em netlify.toml:
    ```toml
-   [build]
-     base = "packages/frontend"
-     command = "npm run build"
-     publish = "dist"
-   ```
-3. Deploy normally: `npx netlify deploy --prod`
+   [construir]
+     base = "pacotes/frontend"
+     comando = "npm executar compilação"
+     publicar = "dist"
+````
 
-## Scenario 6: Environment Variables
+3. Implante normalmente: `npx netlify deploy --prod`
 
-**Context**: Project needs secrets or environment-specific config.
+## Cenário 6: Variáveis de Ambiente
 
-**Steps**:
+**Contexto**: o projeto precisa de segredos ou configuração específica do ambiente.
 
-1. Never commit secrets to Git
-2. Set in Netlify dashboard or CLI:
+**Etapas**:
+
+1. Nunca comprometa segredos com o Git
+2. Defina no painel Netlify ou CLI:
    ```bash
-   npx netlify env:set API_KEY "secret_value"
-   npx netlify env:set NODE_ENV "production"
+   npx netlify env:set API_KEY "valor_secreto"
+   npx netlify env:set NODE_ENV "produção"
    ```
-3. Access in code: `process.env.API_KEY`
-4. Deploy: `npx netlify deploy --prod`
+3. Acesso no código: `process.env.API_KEY`
+4. Implantar: `npx netlify implantar --prod`
 
-## Scenario 7: Custom Domain Setup
+## Cenário 7: Configuração de domínio personalizado
 
-**Context**: User wants to use a custom domain.
+**Contexto**: o usuário deseja usar um domínio personalizado.
 
-**Steps**:
+**Passos**:
 
-1. Deploy site first: `npx netlify deploy --prod`
-2. Add domain via dashboard or CLI:
+1. Implante o site primeiro: `npx netlify deploy --prod`
+2. Adicione domínio via painel ou CLI:
    ```bash
-   npx netlify open:admin
-   # Navigate to Domain settings
+   npx netlify aberto:admin
+   # Navegue até as configurações do domínio
    ```
-3. Update DNS records as instructed by Netlify
-4. Wait for DNS propagation (can take up to 48 hours)
+3. Atualize os registros DNS conforme instruções do Netlify
+4. Aguarde a propagação do DNS (pode levar até 48 horas)
 
-## Best Practices
+## Melhores práticas
 
-### 1. Always Preview First
+### 1. Sempre visualize primeiro```bash
 
-```bash
 # Deploy preview
+
 npx netlify deploy
 
 # Test thoroughly
+
 # Then deploy to production
+
 npx netlify deploy --prod
-```
 
-### 2. Use netlify.toml for Consistency
+````
+### 2. Use netlify.toml para consistência
 
-Create a `netlify.toml` file in your repo root:
-
-```toml
+Crie um arquivo `netlify.toml` na raiz do seu repositório:```toml
 [build]
   command = "npm run build"
   publish = "dist"
@@ -201,119 +199,112 @@ Create a `netlify.toml` file in your repo root:
   from = "/*"
   to = "/index.html"
   status = 200
-```
+````
 
-This ensures consistent builds across all deployments.
+Isso garante construções consistentes em todas as implantações.
 
-### 3. Framework Detection
+### 3. Detecção de estrutura
 
-Let Netlify auto-detect when possible. Only specify build settings if:
+Deixe o Netlify detectar automaticamente quando possível. Especifique as configurações de compilação apenas se:
 
-- Netlify can't detect your framework
-- You need custom build commands
-- Your project has a non-standard structure
+- Netlify não consegue detectar sua estrutura
+- Você precisa de comandos de construção personalizados
+- Seu projeto possui uma estrutura fora do padrão
 
-### 4. Dependency Installation
+### 4. Instalação de dependência
 
-Always ensure dependencies are installed before deploying:
-
-```bash
-npm install  # or yarn install, pnpm install
+Certifique-se sempre de que as dependências estejam instaladas antes da implantação:```bash
+npm install # or yarn install, pnpm install
 npx netlify deploy
-```
 
-### 5. Build Locally First
+````
+### 5. Construa primeiro localmente
 
-Test builds locally before deploying:
-
-```bash
+Teste as compilações localmente antes de implantar:```bash
 npm run build
 # Check that build output exists
 
 npx netlify deploy --dir=dist
-```
+````
 
-### 6. Use Deploy Messages
+### 6. Use mensagens de implantação
 
-Add context to deployments:
-
-```bash
+Adicione contexto às implantações:```bash
 npx netlify deploy --prod --message="Fix login bug"
-```
 
-## Error Recovery Patterns
+````
+## Padrões de recuperação de erros
 
-### "Publish directory not found"
+### "Diretório de publicação não encontrado"
 
-**Cause**: Build command didn't create expected output directory.
+**Causa**: o comando Build não criou o diretório de saída esperado.
 
-**Fix**:
+**Corrigir**:
 
-1. Run build locally: `npm run build`
-2. Check output directory name
-3. Update netlify.toml or CLI prompts with correct path
+1. Execute build localmente: `npm run build`
+2. Verifique o nome do diretório de saída
+3. Atualize os prompts netlify.toml ou CLI com o caminho correto
 
-### "Command failed with exit code 1"
+### "Comando falhou com código de saída 1"
 
-**Cause**: Build command failed.
+**Causa**: Falha no comando de compilação.
 
-**Fix**:
+**Consertar**:
 
-1. Check build logs for specific error
-2. Run build locally to reproduce: `npm run build`
-3. Fix the build error
-4. Deploy again
+1. Verifique os logs de construção em busca de erros específicos
+2. Execute build localmente para reproduzir: `npm run build`
+3. Corrija o erro de construção
+4. Implante novamente
 
-### "Not logged in"
+### "Não logado"
 
-**Cause**: Authentication token expired or missing.
+**Causa**: O token de autenticação expirou ou está ausente.
 
-**Fix**:
-
-```bash
+**Consertar**:```bash
 npx netlify logout
 npx netlify login
-```
+````
 
-### "No site linked"
+### "Nenhum site vinculado"
 
-**Cause**: Project not connected to a Netlify site.
+**Causa**: Projeto não conectado a um site Netlify.
 
-**Fix**:
+**Consertar**:```bash
 
-```bash
 # Try linking to existing site
+
 npx netlify link
 
 # Or create new site
+
 npx netlify init
-```
 
-## Performance Tips
+````
+## Dicas de desempenho
 
-1. **Enable processing** in netlify.toml for auto-optimization:
+1. **Ativar processamento** em netlify.toml para otimização automática:
 
    ```toml
    [build.processing.css]
-     bundle = true
-     minify = true
-   ```
+     pacote = verdadeiro
+     minificar = verdadeiro
+````
 
-2. **Use caching headers** for static assets:
+2. **Use cabeçalhos de cache** para ativos estáticos:
 
    ```toml
-   [[headers]]
-     for = "/assets/*"
-     [headers.values]
-       Cache-Control = "public, max-age=31536000, immutable"
+   [[cabeçalhos]]
+     for = "/ativos/*"
+     [cabeçalhos.valores]
+       Cache-Control = "público, idade máxima = 31536000, imutável"
    ```
 
-3. **Optimize images** before deploying or use Netlify Image CDN
+3. **Otimize imagens** antes de implantar ou usar Netlify Image CDN
 
-4. **Use Netlify Functions** for serverless backend (avoid external API calls when possible)
+4. **Use funções Netlify** para back-end sem servidor (evite chamadas de API externas quando possível)
 
-## Resources
+## Recursos
 
-- Netlify CLI Documentation: https://docs.netlify.com/cli/get-started/
-- Framework Integration Guides: https://docs.netlify.com/frameworks/
-- Build Configuration: https://docs.netlify.com/configure-builds/
+- Documentação CLI do Netlify: https://docs.netlify.com/cli/get-started/
+- Guias de integração de estrutura: https://docs.netlify.com/frameworks/
+- Configuração de compilação: https://docs.netlify.com/configure-builds/

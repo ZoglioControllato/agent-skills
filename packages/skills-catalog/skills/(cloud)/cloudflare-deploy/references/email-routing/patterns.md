@@ -1,6 +1,6 @@
-# Common Patterns
+# Padrões Comuns
 
-## 1. Allowlist/Blocklist
+## 1. Lista de permissões/lista de bloqueios
 
 ```typescript
 // Allowlist
@@ -12,7 +12,7 @@ if (!allowed.includes(message.from)) {
 await message.forward('inbox@corp.com')
 ```
 
-## 2. Parse Email Body
+##2. Analisar corpo do e-mail
 
 ```typescript
 import PostalMime from 'postal-mime'
@@ -38,7 +38,7 @@ export default {
 } satisfies ExportedHandler
 ```
 
-## 3. Spam Filter
+##3. Filtro de Spam
 
 ```typescript
 const score = parseFloat(message.headers.get('x-cf-spamh-score') || '0')
@@ -49,7 +49,7 @@ if (score > 5) {
 await message.forward('inbox@corp.com')
 ```
 
-## 4. Archive to R2
+##4. Arquivar em R2
 
 ```typescript
 interface Env {
@@ -70,7 +70,7 @@ export default {
 } satisfies ExportedHandler<Env>
 ```
 
-## 5. Store Metadata in KV
+##5. Armazene metadados em KV
 
 ```typescript
 import PostalMime from 'postal-mime'
@@ -98,7 +98,7 @@ export default {
 } satisfies ExportedHandler<Env>
 ```
 
-## 6. Subject-Based Routing
+##6. Roteamento baseado em assunto
 
 ```typescript
 export default {
@@ -118,7 +118,7 @@ export default {
 } satisfies ExportedHandler
 ```
 
-## 7. Auto-Reply
+##7. Resposta automática
 
 ```typescript
 interface Env {
@@ -152,7 +152,7 @@ export default {
 } satisfies ExportedHandler<Env>
 ```
 
-## 8. Extract Attachments
+##8. Extrair anexos
 
 ```typescript
 import PostalMime from 'postal-mime'
@@ -178,7 +178,7 @@ export default {
 } satisfies ExportedHandler<Env>
 ```
 
-## 9. Log to D1
+##9. Faça logon em D1
 
 ```typescript
 import PostalMime from 'postal-mime'
@@ -203,7 +203,7 @@ export default {
 } satisfies ExportedHandler<Env>
 ```
 
-## 10. Multi-Tenant
+##10. Multi-inquilino
 
 ```typescript
 interface Env {
@@ -225,17 +225,17 @@ export default {
 } satisfies ExportedHandler<Env>
 ```
 
-## Summary
+##Resumo
 
-| Pattern       | Use Case         | Storage |
-| ------------- | ---------------- | ------- |
-| Allowlist     | Security         | None    |
-| Parse         | Body/attachments | None    |
-| Spam Filter   | Reduce spam      | None    |
-| R2 Archive    | Email storage    | R2      |
-| KV Meta       | Analytics        | KV      |
-| Subject Route | Dept routing     | None    |
-| Auto-Reply    | Support          | KV      |
-| Attachments   | Doc mgmt         | R2      |
-| D1 Log        | Audit trail      | D1      |
-| Multi-Tenant  | SaaS             | KV      |
+| Padrão              | Caso de uso                 | Armazenamento |
+| ------------------- | --------------------------- | ------------- |
+| Lista de permissões | Segurança                   | Nenhum        |
+| Analisar            | Corpo/anexos                | Nenhum        |
+| Filtro de Spam      | Reduzir spam                | Nenhum        |
+| Arquivo R2          | Armazenamento de e-mail     | R2            |
+| KVMeta              | Análise                     | KV            |
+| Rota do Assunto     | Roteamento de departamento  | Nenhum        |
+| Resposta automática | Suporte                     | KV            |
+| Anexos              | Gerenciamento de documentos | R2            |
+| Registro D1         | Trilha de auditoria         | D1            |
+| Multilocatário      | SaaS                        | KV            |

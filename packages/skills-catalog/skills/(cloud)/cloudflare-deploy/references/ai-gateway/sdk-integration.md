@@ -1,6 +1,6 @@
-# AI Gateway SDK Integration
+# Integração com SDK do AI Gateway
 
-## Vercel AI SDK (Recommended)
+## Vercel AI SDK (recomendado)
 
 ```typescript
 import { createAiGateway } from 'ai-gateway-provider'
@@ -10,31 +10,31 @@ import { generateText } from 'ai'
 const gateway = createAiGateway({
   accountId: process.env.CF_ACCOUNT_ID,
   gateway: process.env.CF_GATEWAY_ID,
-  apiKey: process.env.CF_API_TOKEN, // Optional for auth gateways
+  apiKey: process.env.CF_API_TOKEN, // Opcional para gateways autenticados
 })
 
 const openai = createOpenAI({ apiKey: process.env.OPENAI_API_KEY })
 
-// Single model
+// Modelo único
 const { text } = await generateText({
   model: gateway(openai('gpt-4o')),
   prompt: 'Hello',
 })
 
-// Automatic fallback array
+// Array de fallback automático
 const { text } = await generateText({
   model: gateway([openai('gpt-4o'), anthropic('claude-sonnet-4-5'), openai('gpt-4o-mini')]),
   prompt: 'Complex task',
 })
 ```
 
-### Options
+### Opções
 
 ```typescript
 model: gateway(openai('gpt-4o'), {
   cacheKey: 'my-key',
   cacheTtl: 3600,
-  metadata: { userId: 'u123', team: 'eng' }, // Max 5 entries
+  metadata: { userId: 'u123', team: 'eng' }, // Máx. 5 entradas
   retries: { maxAttempts: 3, backoff: 'exponential' },
 })
 ```
@@ -48,8 +48,8 @@ const client = new OpenAI({
   defaultHeaders: { 'cf-aig-authorization': `Bearer ${cfToken}` },
 })
 
-// Unified API - switch providers via model name
-model: 'openai/gpt-4o' // or 'anthropic/claude-sonnet-4-5'
+// API unificada — troque provedor via nome do modelo
+model: 'openai/gpt-4o' // ou 'anthropic/claude-sonnet-4-5'
 ```
 
 ## Anthropic SDK
@@ -62,7 +62,7 @@ const client = new Anthropic({
 })
 ```
 
-## Workers AI Binding
+## Binding Workers AI
 
 ```toml
 # wrangler.toml
@@ -82,7 +82,7 @@ await env.AI.run('@cf/meta/llama-3-8b-instruct',
 ## LangChain / LlamaIndex
 
 ```typescript
-// Use OpenAI SDK pattern with custom baseURL
+// Padrão OpenAI SDK com baseURL custom
 new ChatOpenAI({
   configuration: {
     baseURL: `https://gateway.ai.cloudflare.com/v1/${accountId}/${gatewayId}/openai`,
@@ -100,11 +100,11 @@ curl https://gateway.ai.cloudflare.com/v1/{account}/{gateway}/openai/chat/comple
   -d '{"model":"gpt-4o","messages":[...]}'
 ```
 
-## Headers Reference
+## Referência de headers
 
-| Header                 | Purpose                  |
-| ---------------------- | ------------------------ |
-| `cf-aig-authorization` | Gateway auth token       |
-| `cf-aig-metadata`      | JSON object (max 5 keys) |
-| `cf-aig-cache-ttl`     | Cache TTL in seconds     |
-| `cf-aig-skip-cache`    | `true` to bypass cache   |
+| Header                 | Finalidade                  |
+| ---------------------- | --------------------------- |
+| `cf-aig-authorization` | Token de auth do gateway    |
+| `cf-aig-metadata`      | Objeto JSON (máx. 5 chaves) |
+| `cf-aig-cache-ttl`     | TTL do cache em segundos    |
+| `cf-aig-skip-cache`    | `true` para ignorar cache   |

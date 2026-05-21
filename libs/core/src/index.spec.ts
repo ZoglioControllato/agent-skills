@@ -39,7 +39,6 @@ import {
   type AgentType,
   type CorePorts,
   type InstallOptions,
-  type PathsPort,
 } from './index'
 
 import * as core from './index'
@@ -87,8 +86,9 @@ describe('core library', () => {
       skills: [],
     }
     const ports = {} as CorePorts
-    
+
     // Runtime validation that the types work correctly
+    expect(ports).toBeDefined()
     expect(agent).toBe('cursor')
     expect(options.method).toBe('copy')
     expect(options.global).toBe(false)

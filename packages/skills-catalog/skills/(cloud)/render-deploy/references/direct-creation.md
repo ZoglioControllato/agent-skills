@@ -1,16 +1,16 @@
-# Direct Creation (MCP) Details
+# Detalhes de criação direta (MCP)
 
-Use this reference for MCP direct-creation examples and follow-on configuration.
+Use esta referência para exemplos de criação direta de MCP e configuração subsequente.
 
-## Direct Creation Workflow
+## Fluxo de trabalho de criação direta
 
-### Step 1: Analyze Codebase
+### Etapa 1: Analisar a base de código
 
-Use [codebase-analysis.md](codebase-analysis.md) to determine runtime, build/start commands, env vars, and datastores.
+Use [codebase-análise.md](codebase-análise.md) para determinar o tempo de execução, comandos de construção/inicialização, env vars e armazenamentos de dados.
 
-### Step 2: Create Resources via MCP
+### Etapa 2: Criar recursos via MCP
 
-**Create a Web Service:**
+**Crie um serviço web:**
 
 ```
 create_web_service(
@@ -28,7 +28,7 @@ create_web_service(
 )
 ```
 
-**Create a Static Site:**
+**Crie um site estático:**
 
 ```
 create_static_site(
@@ -43,7 +43,7 @@ create_static_site(
 )
 ```
 
-**Create a Cron Job:**
+**Crie um Cron Job:**
 
 ```
 create_cron_job(
@@ -57,7 +57,7 @@ create_cron_job(
 )
 ```
 
-**Create a PostgreSQL Database:**
+**Crie um banco de dados PostgreSQL:**
 
 ```
 create_postgres(
@@ -67,7 +67,7 @@ create_postgres(
 )
 ```
 
-**Create a Key-Value Store (Redis):**
+**Crie um armazenamento de valor-chave (Redis):**
 
 ```
 create_key_value(
@@ -78,44 +78,51 @@ create_key_value(
 )
 ```
 
-### Step 3: Configure Environment Variables
+### Etapa 3: Configurar variáveis de ambiente
 
-After creating services, add environment variables:
-
-```
+Após criar os serviços, adicione variáveis de ambiente:```
 update_environment_variables(
-  serviceId: "<service-id-from-creation>",
-  envVars: [
-    {"key": "DATABASE_URL", "value": "<connection-string>"},
-    {"key": "JWT_SECRET", "value": "<secret-value>"},
-    {"key": "API_KEY", "value": "<api-key>"}
-  ]
+serviceId: "<service-id-from-creation>",
+envVars: [
+{"key": "DATABASE_URL", "value": "<connection-string>"},
+{"key": "JWT_SECRET", "value": "<secret-value>"},
+{"key": "API_KEY", "value": "<api-key>"}
+]
 )
-```
-
-**Note:** For database connection strings, get the internal URL from the database details in Dashboard or via `get_postgres(postgresId: "<id>")`.
-
-### Step 4: Verify Deployment
-
-Services with `autoDeploy: "yes"` (default) will deploy automatically when created.
-
-**Check deployment status:**
 
 ```
+
+**Observação:** Para strings de conexão de banco de dados, obtenha a URL interna dos detalhes do banco de dados no Dashboard ou via `get_postgres(postgresId: "<id>")`.
+
+### Etapa 4: verificar a implantação
+
+Serviços com `autoDeploy: "yes"` (padrão) serão implantados automaticamente quando criados.
+
+**Verifique o status da implantação:**
+
+```
+
 list_deploys(serviceId: "<service-id>", limit: 1)
-```
-
-**Monitor logs for errors:**
 
 ```
+
+**Monitore registros em busca de erros:**
+
+```
+
 list_logs(resource: ["<service-id>"], level: ["error"], limit: 50)
-```
-
-**Check health metrics:**
 
 ```
+
+**Verifique as métricas de saúde:**
+
+```
+
 get_metrics(
-  resourceId: "<service-id>",
-  metricTypes: ["http_request_count", "cpu_usage", "memory_usage"]
+resourceId: "<service-id>",
+metricTypes: ["http_request_count", "cpu_usage", "memory_usage"]
 )
+
+```
+
 ```

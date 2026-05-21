@@ -1,132 +1,132 @@
-# Gotchas & Troubleshooting
+# Dicas e solução de problemas
 
-## Common Errors
+## Erros Comuns
 
-### "Schema Validation 2.0 not working after migration"
+### "Validação de esquema 2.0 não funciona após a migração"
 
-**Cause:** Classic rules still active, conflicting with new system
-**Solution:**
+**Causa:** Regras clássicas ainda ativas, em conflito com o novo sistema
+**Solução:**
 
-1. Delete ALL Classic schema validation rules
-2. Clear Cloudflare cache (wait 5 min)
-3. Re-upload schema via new Schema Validation 2.0 interface
-4. Verify in Security > Events
-5. Check action is set (Log/Block)
+1. Exclua TODAS as regras de validação de esquema clássico
+2. Limpe o cache do Cloudflare (espere 5 minutos)
+3. Reenvie o esquema por meio da nova interface Schema Validation 2.0
+4. Verifique em Segurança > Eventos
+5. Verifique se a ação está definida (Log/Bloqueio)
 
-### "Schema validation blocking valid requests"
+### "Validação de esquema bloqueando solicitações válidas"
 
-**Cause:** Schema too restrictive, missing fields, or incorrect types
-**Solution:**
+**Causa:** Esquema muito restritivo, campos ausentes ou tipos incorretos
+**Solução:**
 
-1. Check Firewall Events for violation details
-2. Review schema in Settings
-3. Test schema in Swagger Editor
-4. Use Log mode to validate before blocking
-5. Update schema with correct specifications
-6. Ensure Schema Validation 2.0 (not Classic)
+1. Verifique os eventos de firewall para obter detalhes de violação
+2. Revise o esquema em Configurações
+3. Teste o esquema no Swagger Editor
+4. Use o modo Log para validar antes de bloquear
+5. Atualize o esquema com especificações corretas
+6. Garanta a validação do esquema 2.0 (não clássico)
 
-### "JWT validation failing"
+### "Falha na validação do JWT"
 
-**Cause:** JWKS mismatch with IdP, expired token, wrong header/cookie name, or clock skew
-**Solution:**
+**Causa:** incompatibilidade de JWKS com IdP, token expirado, nome de cabeçalho/cookie incorreto ou distorção de relógio
+**Solução:**
 
-1. Verify JWKS matches IdP configuration
-2. Check token `exp` claim is valid
-3. Confirm header/cookie name matches config
-4. Test token at jwt.io
-5. Account for clock skew (±5 min tolerance)
-6. Use modern syntax: `is_jwt_valid(http.request.jwt.payload["{config_id}"][0])`
+1. Verifique se o JWKS corresponde à configuração do IdP
+2. Verifique se a reivindicação `exp` do token é válida
+3. Confirme se o nome do cabeçalho/cookie corresponde à configuração
+4. Token de teste em jwt.io
+5. Considere a distorção do relógio (tolerância de ± 5 min)
+6. Use sintaxe moderna: `is_jwt_valid(http.request.jwt.payload["{config_id}"][0])`
 
-### "BOLA detection false positives"
+### "Falsos positivos de detecção BOLA"
 
-**Cause:** Legitimate sequential access patterns, bulk operations, or sensitivity too high
-**Solution:**
+**Causa:** padrões de acesso sequencial legítimos, operações em massa ou sensibilidade muito alta
+**Solução:**
 
-1. Review BOLA events in Security > Events
-2. Lower sensitivity threshold (High → Medium → Low)
-3. Exclude legitimate bulk operations from detection
-4. Ensure session identifiers uniquely identify users
-5. Verify minimum traffic requirements met (1000+ req/day)
+1. Revise os eventos BOLA em Segurança > Eventos
+2. Limite de sensibilidade inferior (Alto → Médio → Baixo)
+3. Excluir operações em massa legítimas da detecção
+4. Garanta que os identificadores de sessão identifiquem os usuários de maneira exclusiva
+5. Verifique os requisitos mínimos de tráfego atendidos (mais de 1.000 solicitações/dia)
 
-### "Risk labels not appearing in firewall rules"
+### "Rótulos de risco não aparecem nas regras de firewall"
 
-**Cause:** Feature not enabled, insufficient traffic, or missing session identifiers
-**Solution:**
+**Causa:** Recurso não ativado, tráfego insuficiente ou identificadores de sessão ausentes
+**Solução:**
 
-1. Verify Schema Validation 2.0 enabled
-2. Enable BOLA Detection in schema settings
-3. Configure session identifiers (required for BOLA)
-4. Wait 24-48h for ML model training
-5. Check minimum traffic thresholds met
+1. Verifique a validação de esquema 2.0 habilitada
+2. Habilite a detecção BOLA nas configurações do esquema
+3. Configure identificadores de sessão (obrigatórios para BOLA)
+4. Aguarde 24 a 48 horas pelo treinamento do modelo de ML
+5. Verifique os limites mínimos de tráfego atendidos
 
-### "Endpoint discovery not finding APIs"
+### "Descoberta de endpoint não encontra APIs"
 
-**Cause:** Insufficient traffic (<500 reqs/10d), non-2xx responses, Worker direct requests, or incorrect session ID config
-**Solution:** Ensure 500+ requests in 10 days, 2xx responses from edge (not Workers direct), configure session IDs correctly. ML updates daily.
+**Causa:** Tráfego insuficiente (<500 reqs/10d), respostas diferentes de 2xx, solicitações diretas do trabalhador ou configuração de ID de sessão incorreta
+**Solução:** Garanta mais de 500 solicitações em 10 dias, 2xx respostas da borda (não diretas dos trabalhadores), configure IDs de sessão corretamente. O ML é atualizado diariamente.
 
-### "Sequence detection false positives"
+### "Falsos positivos de detecção de sequência"
 
-**Cause:** Lookback window issues, non-unique session IDs, or model sensitivity
-**Solution:**
+**Causa:** problemas na janela de lookback, IDs de sessão não exclusivos ou sensibilidade do modelo
+**Solução:**
 
-1. Review lookback settings (10 reqs to managed endpoints, 10min window)
-2. Ensure session ID uniqueness per user (not shared tokens)
-3. Adjust positive/negative model balance
-4. Exclude legitimate workflows from detection
+1. Revise as configurações de lookback (10 solicitações para endpoints gerenciados, janela de 10 minutos)
+2. Garanta a exclusividade do ID da sessão por usuário (não tokens compartilhados)
+3. Ajuste o equilíbrio do modelo positivo/negativo
+4. Excluir fluxos de trabalho legítimos da detecção
 
-### "GraphQL protection blocking valid queries"
+### "Proteção GraphQL bloqueando consultas válidas"
 
-**Cause:** Query depth/size limits too restrictive, complex but legitimate queries
-**Solution:**
+**Causa:** Limites de profundidade/tamanho da consulta são muito restritivos, complexos, mas legítimos
+**Solução:**
 
-1. Review blocked query patterns in Security > Events
-2. Increase max_depth (default: 10) if needed
-3. Increase max_size (default: 100KB) for complex queries
-4. Whitelist specific query signatures
-5. Use Log mode to tune before blocking
+1. Revise os padrões de consulta bloqueados em Segurança > Eventos
+2. Aumente max_profundidade (padrão: 10) se necessário
+3. Aumente max_size (padrão: 100 KB) para consultas complexas
+4. Lista de permissões de assinaturas de consulta específicas
+5. Use o modo Log para ajustar antes de bloquear
 
-### "Token invalid"
+### "Token inválido"
 
-**Cause:** Configuration error, JWKS mismatch, or expired token
-**Solution:** Verify config matches IdP, update JWKS, check token expiration
+**Causa:** Erro de configuração, incompatibilidade de JWKS ou token expirado
+**Solução:** verifique se a configuração corresponde ao IdP, atualize o JWKS, verifique a expiração do token
 
-### "Schema violation"
+### "Violação de esquema"
 
-**Cause:** Missing required fields, wrong data types, or spec mismatch
-**Solution:** Review schema against actual requests, ensure all required fields present, validate types match spec
+**Causa:** Campos obrigatórios ausentes, tipos de dados incorretos ou incompatibilidade de especificações
+**Solução:** revise o esquema em relação às solicitações reais, verifique se todos os campos obrigatórios estão presentes e valide os tipos que correspondem às especificações
 
-### "Fallthrough"
+### "Desastre"
 
-**Cause:** Unknown endpoint or pattern mismatch
-**Solution:** Update schema with all endpoints, check path pattern matching
+**Causa:** Endpoint desconhecido ou incompatibilidade de padrão
+**Solução:** atualize o esquema com todos os endpoints, verifique a correspondência do padrão de caminho
 
-### "mTLS failed"
+### "mTLS falhou"
 
-**Cause:** Certificate untrusted/expired or wrong CA
-**Solution:** Verify cert chain, check expiration, confirm correct CA uploaded
+**Causa:** Certificado não confiável/expirado ou CA errado
+**Solução:** verifique a cadeia de certificados, verifique a expiração, confirme o upload da CA correta
 
-## Limits (2026)
+## Limites (2026)
 
-| Resource/Limit            | Value                   | Notes                              |
-| ------------------------- | ----------------------- | ---------------------------------- |
-| OpenAPI version           | v3.0.x only             | No external refs, must be valid    |
-| Schema operations         | 10K (Enterprise)        | Contact for higher limits          |
-| JWT validation sources    | Headers/cookies only    | No query params/body               |
-| Endpoint discovery        | 500+ reqs/10d           | Minimum for ML model               |
-| Path normalization        | Automatic               | `/profile/238` → `/profile/{var1}` |
-| Schema parameters         | No `content` field      | No object param validation         |
-| BOLA detection            | 1000+ reqs/day/endpoint | Per-endpoint minimum               |
-| Session ID uniqueness     | Required                | BOLA/Sequence need unique IDs      |
-| GraphQL max depth         | 1-50                    | Default: 10                        |
-| GraphQL max size          | 1KB-1MB                 | Default: 100KB                     |
-| JWT claim nesting         | 10 levels max           | Use dot notation                   |
-| mTLS CA certificates      | 5 custom max            | CF-managed unlimited               |
-| Schema upload size        | 5MB max                 | Compressed OpenAPI spec            |
-| Volumetric abuse baseline | 7 days training         | Initial ML period                  |
-| Auth Posture refresh      | Daily                   | Updated nightly                    |
+| Recurso/Limite                         | Valor                                   | Notas                                       |
+| -------------------------------------- | --------------------------------------- | ------------------------------------------- |
+| Versão OpenAPI                         | somente v3.0.x                          | Nenhuma referência externa, deve ser válida |
+| Operações de esquema                   | 10K (Empresa)                           | Contato para limites maiores                |
+| Fontes de validação JWT                | Somente cabeçalhos/cookies              | Sem parâmetros/corpo de consulta            |
+| Descoberta de endpoint                 | Mais de 500 solicitações/10d            | Mínimo para modelo ML                       |
+| Normalização de caminho                | Automático                              | `/perfil/238` → `/perfil/{var1}`            |
+| Parâmetros do esquema                  | Nenhum campo `content`                  | Nenhuma validação de parâmetro de objeto    |
+| Detecção BOLA                          | Mais de 1.000 solicitações/dia/endpoint | Mínimo por ponto de extremidade             |
+| Exclusividade do ID de sessão          | Obrigatório                             | BOLA/Sequência precisa de IDs exclusivos    |
+| Profundidade máxima do GraphQL         | 1-50                                    | Padrão: 10                                  |
+| Tamanho máximo do GraphQL              | 1 KB-1 MB                               | Padrão: 100 KB                              |
+| Aninhamento de declaração JWT          | 10 níveis no máximo                     | Use notação de ponto                        |
+| Certificados CA mTLS                   | 5 máximo personalizado                  | Gerenciado por CF ilimitado                 |
+| Tamanho de upload do esquema           | Máximo de 5 MB                          | Especificação OpenAPI compactada            |
+| Linha de base do abuso volumétrico     | 7 dias de treinamento                   | Período inicial de ML                       |
+| Atualização de postura de autenticação | Diariamente                             | Atualizado todas as noites                  |
 
-## See Also
+## Veja também
 
-- [configuration.md](configuration.md) - Setup guides to avoid common issues
-- [patterns.md](patterns.md) - Best practices and progressive rollout
-- [API Shield Docs](https://developers.cloudflare.com/api-shield/)
+- [configuration.md](configuration.md) - Guias de configuração para evitar problemas comuns
+- [patterns.md](patterns.md) – Melhores práticas e implementação progressiva
+- [Documentos do API Shield](https://developers.cloudflare.com/api-shield/)

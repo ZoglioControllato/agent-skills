@@ -156,4 +156,4 @@ export default {
 } satisfies ExportedHandler<Env>
 ```
 
-**See also:** [configuration.md](./configuration.md) for TypeScript setup and wrangler.jsonc | [patterns.md](./patterns.md) for middleware and auth patterns
+**Veja também:** [configuration.md](./configuration.md) para configuração do TypeScript e wrangler.jsonc | [patterns.md](./patterns.md) para padrões de middleware e autenticação

@@ -1,15 +1,15 @@
 ---
-title: Use Loop for Min/Max Instead of Sort
+title: Use loop para min/max em vez de sort
 impact: LOW
-impactDescription: O(n) instead of O(n log n)
+impactDescription: O(n) em vez de O(n log n)
 tags: javascript, arrays, performance, sorting, algorithms
 ---
 
-## Use Loop for Min/Max Instead of Sort
+## Use loop para min/max em vez de sort
 
-Finding the smallest or largest element only requires a single pass through the array. Sorting is wasteful and slower.
+Encontrar o menor ou maior elemento exige apenas uma passagem no array. Ordenar é desperdício e mais lento.
 
-**Incorrect (O(n log n) - sort to find latest):**
+**Incorreto (O(n log n) — ordena para achar o mais recente):**
 
 ```typescript
 interface Project {
@@ -24,9 +24,9 @@ function getLatestProject(projects: Project[]) {
 }
 ```
 
-Sorts the entire array just to find the maximum value.
+Ordene o array inteiro só para achar o máximo.
 
-**Incorrect (O(n log n) - sort for oldest and newest):**
+**Incorreto (O(n log n) — ordena para o mais velho e o mais novo):**
 
 ```typescript
 function getOldestAndNewest(projects: Project[]) {
@@ -35,43 +35,43 @@ function getOldestAndNewest(projects: Project[]) {
 }
 ```
 
-Still sorts unnecessarily when only min/max are needed.
+Ainda ordena sem necessidade quando só min/max importam.
 
-**Correct (O(n) - single loop):**
+**Correto (O(n) — um único loop):**
 
 ```typescript
 function getLatestProject(projects: Project[]) {
   if (projects.length === 0) return null
-  
+
   let latest = projects[0]
-  
+
   for (let i = 1; i < projects.length; i++) {
     if (projects[i].updatedAt > latest.updatedAt) {
       latest = projects[i]
     }
   }
-  
+
   return latest
 }
 
 function getOldestAndNewest(projects: Project[]) {
   if (projects.length === 0) return { oldest: null, newest: null }
-  
+
   let oldest = projects[0]
   let newest = projects[0]
-  
+
   for (let i = 1; i < projects.length; i++) {
     if (projects[i].updatedAt < oldest.updatedAt) oldest = projects[i]
     if (projects[i].updatedAt > newest.updatedAt) newest = projects[i]
   }
-  
+
   return { oldest, newest }
 }
 ```
 
-Single pass through the array, no copying, no sorting.
+Uma passagem, sem cópia e sem ordenação.
 
-**Alternative (Math.min/Math.max for small arrays):**
+**Alternativa (Math.min/Math.max para arrays pequenos):**
 
 ```typescript
 const numbers = [5, 2, 8, 1, 9]
@@ -79,4 +79,4 @@ const min = Math.min(...numbers)
 const max = Math.max(...numbers)
 ```
 
-This works for small arrays, but can be slower or just throw an error for very large arrays due to spread operator limitations. Maximal array length is approximately 124000 in Chrome 143 and 638000 in Safari 18; exact numbers may vary - see [the fiddle](https://jsfiddle.net/qw1jabsx/4/). Use the loop approach for reliability.
+Funciona em arrays pequenos, mas pode ser mais lento ou lançar erros em arrays muito grandes por limitações do spread. O comprimento máximo do array é aproximadamente 124000 no Chrome 143 e 638000 no Safari 18; os valores exatos podem variar — veja [the fiddle](https://jsfiddle.net/qw1jabsx/4/). Para robustez, use o loop.

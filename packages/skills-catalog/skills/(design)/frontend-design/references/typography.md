@@ -1,100 +1,98 @@
-# Typography
+# Tipografia
 
-## Classic Typography Principles
+## Princípios de Tipografia Clássica
 
-### Vertical Rhythm
+### Ritmo vertical
 
-Your line-height should be the base unit for ALL vertical spacing. If body text has `line-height: 1.5` on `16px` type (= 24px), spacing values should be multiples of 24px. This creates subconscious harmony—text and space share a mathematical foundation.
+A altura da linha deve ser a unidade base para TODOS os espaçamentos verticais. Se o corpo do texto tiver `line-height: 1.5` no tipo `16px` (= 24px), os valores de espaçamento deverão ser múltiplos de 24px. Isso cria harmonia subconsciente – texto e espaço compartilham uma base matemática.
 
-### Modular Scale & Hierarchy
+### Escala Modular e Hierarquia
 
-The common mistake: too many font sizes that are too close together (14px, 15px, 16px, 18px...). This creates muddy hierarchy.
+O erro comum: muitos tamanhos de fonte muito próximos (14px, 15px, 16px, 18px...). Isso cria uma hierarquia turva.
 
-**Use fewer sizes with more contrast.** A 5-size system covers most needs:
+**Use menos tamanhos com mais contraste.** Um sistema de 5 tamanhos atende à maioria das necessidades:
 
-| Role | Typical Ratio | Use Case |
-|------|---------------|----------|
-| xs | 0.75rem | Captions, legal |
-| sm | 0.875rem | Secondary UI, metadata |
-| base | 1rem | Body text |
-| lg | 1.25-1.5rem | Subheadings, lead text |
-| xl+ | 2-4rem | Headlines, hero text |
+| Função | Razão típica | Caso de uso                 |
+| ------ | ------------ | --------------------------- |
+| xs     | 0,75rem      | Legendas legais             |
+| sm     | 0,875rem     | UI secundária, metadados    |
+| base   | 1rem         | Corpo do texto              |
+| lg     | 1,25-1,5rem  | Subtítulos, texto principal |
+| xl+    | 2-4rem       | Manchetes, texto heróico    |
 
-Popular ratios: 1.25 (major third), 1.333 (perfect fourth), 1.5 (perfect fifth). Pick one and commit.
+Razões populares: 1,25 (terço maior), 1,333 (quarto perfeito), 1,5 (quinto perfeito). Escolha um e comprometa-se.
 
-### Readability & Measure
+### Legibilidade e medida
 
-Use `ch` units for character-based measure (`max-width: 65ch`). Line-height scales inversely with line length—narrow columns need tighter leading, wide columns need more.
+Use unidades `ch` para medida baseada em caracteres (`max-width: 65ch`). A altura da linha é dimensionada inversamente ao comprimento da linha – colunas estreitas precisam de entrelinhamento mais estreito, colunas largas precisam de mais.
 
-**Non-obvious**: Increase line-height for light text on dark backgrounds. The perceived weight is lighter, so text needs more breathing room. Add 0.05-0.1 to your normal line-height.
+**Não óbvio**: Aumente a altura da linha para texto claro em fundos escuros. O peso percebido é mais leve, então o texto precisa de mais espaço para respirar. Adicione 0,05-0,1 à altura normal da linha.
 
-## Font Selection & Pairing
+## Seleção e emparelhamento de fontes
 
-### Choosing Distinctive Fonts
+### Escolhendo fontes distintas
 
-**Avoid the invisible defaults**: Inter, Roboto, Open Sans, Lato, Montserrat. These are everywhere, making your design feel generic. They're fine for documentation or tools where personality isn't the goal—but if you want distinctive design, look elsewhere.
+**Evite os padrões invisíveis**: Inter, Roboto, Open Sans, Lato, Montserrat. Eles estão por toda parte, fazendo com que seu design pareça genérico. Eles são ótimos para documentação ou ferramentas onde a personalidade não é o objetivo – mas se você quiser um design diferenciado, procure outro lugar.
 
-**Better Google Fonts alternatives**:
-- Instead of Inter → **Instrument Sans**, **Plus Jakarta Sans**, **Outfit**
-- Instead of Roboto → **Onest**, **Figtree**, **Urbanist**
-- Instead of Open Sans → **Source Sans 3**, **Nunito Sans**, **DM Sans**
-- For editorial/premium feel → **Fraunces**, **Newsreader**, **Lora**
+**Melhores alternativas de fontes do Google**:
 
-**System fonts are underrated**: `-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui` looks native, loads instantly, and is highly readable. Consider this for apps where performance > personality.
+- Em vez de Inter → **Instrument Sans**, **Plus Jakarta Sans**, **Outfit**
+- Em vez de Roboto → **Onest**, **Figtree**, **Urbanista**
+- Em vez de Open Sans → **Source Sans 3**, **Nunito Sans**, **DM Sans**
+- Para sensação editorial/premium → **Fraunces**, **Newsreader**, **Lora**
 
-### Pairing Principles
+**As fontes do sistema são subestimadas**: `-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui` parece nativa, carrega instantaneamente e é altamente legível. Considere isso para aplicativos onde desempenho > personalidade.
 
-**The non-obvious truth**: You often don't need a second font. One well-chosen font family in multiple weights creates cleaner hierarchy than two competing typefaces. Only add a second font when you need genuine contrast (e.g., display headlines + body serif).
+### Princípios de emparelhamento
 
-When pairing, contrast on multiple axes:
-- Serif + Sans (structure contrast)
-- Geometric + Humanist (personality contrast)
-- Condensed display + Wide body (proportion contrast)
+**A verdade não óbvia**: muitas vezes você não precisa de uma segunda fonte. Uma família de fontes bem escolhida com pesos múltiplos cria uma hierarquia mais limpa do que duas fontes concorrentes. Adicione apenas uma segunda fonte quando precisar de contraste genuíno (por exemplo, exibir títulos + corpo serifado).
 
-**Never pair fonts that are similar but not identical** (e.g., two geometric sans-serifs). They create visual tension without clear hierarchy.
+Ao emparelhar, contraste em vários eixos:
 
-### Web Font Loading
+- Serif + Sans (contraste da estrutura)
+- Geométrico + Humanista (contraste de personalidade)
+- Tela condensada + Corpo amplo (contraste proporcional)
 
-The layout shift problem: fonts load late, text reflows, and users see content jump. Here's the fix:
+**Nunca combine fontes semelhantes, mas não idênticas** (por exemplo, duas sans-serifs geométricas). Eles criam tensão visual sem hierarquia clara.
 
-```css
-/* 1. Use font-display: swap for visibility */
+### Carregamento de fontes da Web
+
+O problema da mudança de layout: as fontes carregam tarde, o texto reflui e os usuários veem o conteúdo saltar. Aqui está a solução:```css
+/_ 1. Use font-display: swap for visibility _/
 @font-face {
-  font-family: 'CustomFont';
-  src: url('font.woff2') format('woff2');
-  font-display: swap;
+font-family: 'CustomFont';
+src: url('font.woff2') format('woff2');
+font-display: swap;
 }
 
-/* 2. Match fallback metrics to minimize shift */
+/_ 2. Match fallback metrics to minimize shift _/
 @font-face {
-  font-family: 'CustomFont-Fallback';
-  src: local('Arial');
-  size-adjust: 105%;        /* Scale to match x-height */
-  ascent-override: 90%;     /* Match ascender height */
-  descent-override: 20%;    /* Match descender depth */
-  line-gap-override: 10%;   /* Match line spacing */
+font-family: 'CustomFont-Fallback';
+src: local('Arial');
+size-adjust: 105%; /_ Scale to match x-height _/
+ascent-override: 90%; /_ Match ascender height _/
+descent-override: 20%; /_ Match descender depth _/
+line-gap-override: 10%; /_ Match line spacing _/
 }
 
 body {
-  font-family: 'CustomFont', 'CustomFont-Fallback', sans-serif;
+font-family: 'CustomFont', 'CustomFont-Fallback', sans-serif;
 }
-```
 
-Tools like [Fontaine](https://github.com/unjs/fontaine) calculate these overrides automatically.
+````
+Ferramentas como [Fontaine](https://github.com/unjs/fontaine) calculam essas substituições automaticamente.
 
-## Modern Web Typography
+## Tipografia da Web Moderna
 
-### Fluid Type
+### Tipo de fluido
 
-Use `clamp(min, preferred, max)` for fluid typography. The middle value (e.g., `5vw + 1rem`) controls scaling rate—higher vw = faster scaling. Add a rem offset so it doesn't collapse to 0 on small screens.
+Use `clamp(min, preferencial, max)` para tipografia fluida. O valor médio (por exemplo, `5vw + 1rem`) controla a taxa de escalonamento – vw mais alto = escalonamento mais rápido. Adicione um deslocamento rem para que não caia para 0 em telas pequenas.
 
-**When NOT to use fluid type**: Button text, labels, UI elements (should be consistent), very short text, or when you need precise breakpoint control.
+**Quando NÃO usar tipo fluido**: texto de botão, rótulos, elementos de interface do usuário (devem ser consistentes), texto muito curto ou quando você precisar de controle preciso de pontos de interrupção.
 
-### OpenType Features
+### Recursos OpenType
 
-Most developers don't know these exist. Use them for polish:
-
-```css
+A maioria dos desenvolvedores não sabe que eles existem. Use-os para polir:```css
 /* Tabular numbers for data alignment */
 .data-table { font-variant-numeric: tabular-nums; }
 
@@ -109,23 +107,23 @@ code { font-variant-ligatures: none; }
 
 /* Enable kerning (usually on by default, but be explicit) */
 body { font-kerning: normal; }
-```
+````
 
-Check what features your font supports at [Wakamai Fondue](https://wakamaifondue.com/).
+Verifique quais recursos sua fonte suporta em [Wakamai Fondue](https://wakamaifondue.com/).
 
-## Typography System Architecture
+## Arquitetura do sistema de tipografia
 
-Name tokens semantically (`--text-body`, `--text-heading`), not by value (`--font-size-16`). Include font stacks, size scale, weights, line-heights, and letter-spacing in your token system.
+Nomeie os tokens semanticamente (`--text-body`, `--text-heading`), não por valor (`--font-size-16`). Inclua pilhas de fontes, escala de tamanho, pesos, alturas de linha e espaçamento entre letras em seu sistema de token.
 
-## Accessibility Considerations
+## Considerações sobre acessibilidade
 
-Beyond contrast ratios (which are well-documented), consider:
+Além das taxas de contraste (que estão bem documentadas), considere:
 
-- **Never disable zoom**: `user-scalable=no` breaks accessibility. If your layout breaks at 200% zoom, fix the layout.
-- **Use rem/em for font sizes**: This respects user browser settings. Never `px` for body text.
-- **Minimum 16px body text**: Smaller than this strains eyes and fails WCAG on mobile.
-- **Adequate touch targets**: Text links need padding or line-height that creates 44px+ tap targets.
+- **Nunca desative o zoom**: `user-scalable=no` quebra a acessibilidade. Se o seu layout quebrar com zoom de 200%, corrija o layout.
+- **Use rem/em para tamanhos de fonte**: Isso respeita as configurações do navegador do usuário. Nunca `px` para o corpo do texto.
+- **Corpo de texto mínimo de 16px**: Menor que isso cansa os olhos e falha nas WCAG em dispositivos móveis.
+- **Alvos de toque adequados**: os links de texto precisam de preenchimento ou altura de linha que crie alvos de toque de mais de 44 pixels.
 
 ---
 
-**Avoid**: More than 2-3 font families per project. Skipping fallback font definitions. Ignoring font loading performance (FOUT/FOIT). Using decorative fonts for body text.
+**Evitar**: Mais de 2 a 3 famílias de fontes por projeto. Ignorando definições de fontes substitutas. Ignorando o desempenho de carregamento de fontes (FOUT/FOIT). Usando fontes decorativas para o corpo do texto.

@@ -1,8 +1,8 @@
-# Workerd APIs
+# APIs de trabalho
 
-## Worker Code (JS/TS)
+## Código do Trabalhador (JS/TS)
 
-### ES Modules (Recommended)
+### Módulos ES (recomendado)
 
 ```javascript
 export default {
@@ -24,15 +24,15 @@ export default {
 }
 ```
 
-### TypeScript Types
+### Tipos TypeScript
 
-**Generate from wrangler.toml (Recommended):**
+**Gerar a partir de wrangler.toml (recomendado):**
 
 ```bash
 wrangler types  # Output: worker-configuration.d.ts
 ```
 
-**Manual types:**
+**Tipos manuais:**
 
 ```typescript
 interface Env {
@@ -50,7 +50,7 @@ export default {
 }
 ```
 
-**Setup:**
+**Configurar:**
 
 ```bash
 npm install -D @cloudflare/workers-types
@@ -61,7 +61,7 @@ npm install -D @cloudflare/workers-types
 { "compilerOptions": { "types": ["@cloudflare/workers-types"] } }
 ```
 
-### Service Worker Syntax (Legacy)
+### Sintaxe do Service Worker (Legado)
 
 ```javascript
 addEventListener('fetch', (event) => {
@@ -74,7 +74,7 @@ async function handleRequest(request) {
 }
 ```
 
-### Durable Objects
+### Objetos Duráveis
 
 ```javascript
 export class Room {
@@ -95,7 +95,7 @@ export class Room {
 }
 ```
 
-### RPC Between Services
+### RPC entre serviços
 
 ```javascript
 // Caller: env.AUTH.validateToken(token) returns structured data
@@ -109,35 +109,35 @@ export default {
 }
 ```
 
-## Web Platform APIs
+##APIs da plataforma web
 
-### Fetch
+### Buscar
 
-- `fetch()`, `Request`, `Response`, `Headers`
+- `fetch()`, `Solicitação`, `Resposta`, `Cabeçalhos`
 - `AbortController`, `AbortSignal`
 
-### Streams
+### Transmissões
 
 - `ReadableStream`, `WritableStream`, `TransformStream`
-- Byte streams, BYOB readers
+- Fluxos de bytes, leitores Traga sua própria bebida
 
-### Web Crypto
+### Criptografia da Web
 
-- `crypto.subtle` (encrypt/decrypt/sign/verify)
+- `crypto.subtle` (criptografar/descriptografar/assinar/verificar)
 - `crypto.randomUUID()`, `crypto.getRandomValues()`
 
-### Encoding
+### Codificação
 
 - `TextEncoder`, `TextDecoder`
 - `atob()`, `btoa()`
 
-### Web Standards
+### Padrões da Web
 
 - `URL`, `URLSearchParams`
-- `Blob`, `File`, `FormData`
+- `Blob`, `Arquivo`, `FormData`
 - `WebSocket`
 
-### Server-Sent Events (EventSource)
+### Eventos enviados pelo servidor (EventSource)
 
 ```javascript
 // Server-side SSE
@@ -147,7 +147,7 @@ writer.write(new TextEncoder().encode('data: Hello\n\n'))
 return new Response(readable, { headers: { 'Content-Type': 'text/event-stream' } })
 ```
 
-### HTMLRewriter (HTML Parsing/Transformation)
+### HTMLRewriter (análise/transformação de HTML)
 
 ```javascript
 const response = await fetch('https://example.com')
@@ -165,7 +165,7 @@ return new HTMLRewriter()
   .transform(response)
 ```
 
-### TCP Sockets (Experimental)
+### Soquetes TCP (Experimental)
 
 ```javascript
 const socket = await connect({ hostname: 'example.com', port: 80 })
@@ -176,16 +176,16 @@ const { value } = await reader.read()
 return new Response(value)
 ```
 
-### Performance
+### Desempenho
 
-- `performance.now()`, `performance.timeOrigin`
+- `desempenho.now()`, `desempenho.timeOrigin`
 - `setTimeout()`, `setInterval()`, `queueMicrotask()`
 
 ### Console
 
 - `console.log()`, `console.error()`, `console.warn()`
 
-### Node.js Compat (`nodejs_compat` flag)
+### Compatibilidade com Node.js (sinalizador `nodejs_compat`)
 
 ```javascript
 import { Buffer } from 'node:buffer'
@@ -195,10 +195,10 @@ const buf = Buffer.from('Hello')
 const random = randomBytes(16)
 ```
 
-**Available:** `node:buffer`, `node:crypto`, `node:stream`, `node:util`, `node:events`, `node:assert`, `node:path`, `node:querystring`, `node:url`
-**NOT available:** `node:fs`, `node:http`, `node:net`, `node:child_process`
+**Disponível:** `node:buffer`, `node:crypto`, `node:stream`, `node:util`, `node:events`, `node:assert`, `node:path`, `node:querystring`, `node:url`
+**NÃO disponível:** `node:fs`, `node:http`, `node:net`, `node:child_process`
 
-## CLI Commands
+## Comandos CLI
 
 ```bash
 workerd serve config.capnp [constantName]          # Start server
@@ -207,13 +207,12 @@ workerd compile config.capnp constantName -o binary  # Compile to binary
 workerd test config.capnp [--test-only=test.js]    # Run tests
 ```
 
-## Wrangler Integration
+##Integração com Wrangler
 
-Use Wrangler for development:
+Use o Wrangler para desenvolvimento:
 
-```bash
+````bash
 wrangler dev     # Uses workerd internally
 wrangler types   # Generate TypeScript types from wrangler.toml
-```
-
-See [patterns.md](./patterns.md) for usage examples, [configuration.md](./configuration.md) for config details.
+```Consulte [patterns.md](./patterns.md) para exemplos de uso, [configuration.md](./configuration.md) para detalhes de configuração.
+````

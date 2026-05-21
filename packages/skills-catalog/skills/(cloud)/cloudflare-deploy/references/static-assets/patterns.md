@@ -1,6 +1,6 @@
-### Common Patterns
+### Padrões Comuns
 
-**1. Forward request to assets:**
+**1. Encaminhar solicitação para ativos:**
 
 ```typescript
 export default {
@@ -10,13 +10,13 @@ export default {
 }
 ```
 
-**2. Fetch specific asset by path:**
+**2. Busque ativo específico por caminho:**
 
 ```typescript
 const response = await env.ASSETS.fetch('https://assets.local/logo.png')
 ```
 
-**3. Modify request before fetching asset:**
+**3. Modifique a solicitação antes de buscar o ativo:**
 
 ```typescript
 const url = new URL(request.url)
@@ -24,7 +24,7 @@ url.pathname = '/index.html'
 return env.ASSETS.fetch(new Request(url, request))
 ```
 
-**4. Transform asset response:**
+**4. Transformar resposta de ativos:**
 
 ```typescript
 const response = await env.ASSETS.fetch(request)
@@ -34,7 +34,7 @@ modifiedResponse.headers.set('Cache-Control', 'public, max-age=3600')
 return modifiedResponse
 ```
 
-**5. Conditional asset serving:**
+**5. Veiculação condicional de recursos:**
 
 ```typescript
 export default {
@@ -48,9 +48,9 @@ export default {
 }
 ```
 
-**6. SPA with API routes:**
+**6. SPA com rotas API:**
 
-Most common full-stack pattern - static SPA with backend API:
+Padrão full-stack mais comum – SPA estático com API backend:
 
 ```typescript
 export default {
@@ -70,9 +70,9 @@ async function handleAPI(request: Request, env: Env): Promise<Response> {
 }
 ```
 
-**Config:** Set `run_worker_first: ["/api/*"]` (see configuration.md:66-106)
+**Configuração:** Defina `run_worker_first: ["/api/*"]` (consulte configuração.md:66-106)
 
-**7. Auth gating for protected assets:**
+**7. Autenticação para ativos protegidos:**
 
 ```typescript
 export default {
@@ -89,9 +89,9 @@ export default {
 }
 ```
 
-**Config:** Set `run_worker_first: ["/admin/*"]`
+**Configuração:** Defina `run_worker_first: ["/admin/*"]`
 
-**8. Custom headers for security:**
+**8. Cabeçalhos personalizados para segurança:**
 
 ```typescript
 export default {
@@ -106,7 +106,7 @@ export default {
 }
 ```
 
-**9. A/B testing via cookies:**
+**9. Teste A/B via cookies:**
 
 ```typescript
 export default {
@@ -122,7 +122,7 @@ export default {
 }
 ```
 
-**10. Locale-based routing:**
+**10. Roteamento baseado em localidade:**
 
 ```typescript
 export default {
@@ -140,7 +140,7 @@ export default {
 }
 ```
 
-**11. OAuth callback handling:**
+**11. Tratamento de retorno de chamada OAuth:**
 
 ```typescript
 export default {
@@ -164,9 +164,9 @@ export default {
 }
 ```
 
-**Config:** Set `run_worker_first: ["/auth/*"]`
+**Configuração:** Defina `run_worker_first: ["/auth/*"]`
 
-**12. Cache control override:**
+**12. Substituição de controle de cache:**
 
 ```typescript
 export default {

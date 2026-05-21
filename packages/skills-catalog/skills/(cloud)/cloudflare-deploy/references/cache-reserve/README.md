@@ -1,108 +1,107 @@
-# Cloudflare Cache Reserve
+# Reserva de Cache Cloudflare
 
-**Persistent cache storage built on R2 for long-term content retention**
+**Armazenamento em cache persistente baseado em R2 para retenção de conteúdo de longo prazo**
 
-## Smart Shield Integration
+## Integração com escudo inteligente
 
-Cache Reserve is part of **Smart Shield**, Cloudflare's comprehensive security and performance suite:
+A Reserva de Cache faz parte do **Smart Shield**, o pacote abrangente de segurança e desempenho da Cloudflare:
 
-- **Smart Shield Advanced tier**: Includes 2TB Cache Reserve storage
-- **Standalone purchase**: Available separately if not using Smart Shield
-- **Migration**: Existing standalone customers can migrate to Smart Shield bundles
+- **Nível Smart Shield Advanced**: inclui armazenamento de reserva de cache de 2 TB
+- **Compra independente**: Disponível separadamente se não estiver usando o Smart Shield
+- **Migração**: clientes autônomos existentes podem migrar para pacotes Smart Shield
 
-**Decision**: Already on Smart Shield Advanced? Cache Reserve is included. Otherwise evaluate standalone purchase vs Smart Shield upgrade.
+**Decisão**: Já usa o Smart Shield Advanced? A Reserva de Cache está incluída. Caso contrário, avalie a compra independente versus a atualização do Smart Shield.
 
-## Overview
+## Visão geral
 
-Cache Reserve is Cloudflare's persistent, large-scale cache storage layer built on R2. It acts as the ultimate upper-tier cache, storing cacheable content for extended periods (30+ days) to maximize cache hits, reduce origin egress fees, and shield origins from repeated requests for long-tail content.
+Cache Reserve é a camada de armazenamento de cache persistente e em grande escala da Cloudflare construída em R2. Ele atua como o cache de nível superior definitivo, armazenando conteúdo armazenável em cache por longos períodos (mais de 30 dias) para maximizar os acessos ao cache, reduzir taxas de saída de origem e proteger as origens de solicitações repetidas de conteúdo de cauda longa.
 
-## Core Concepts
+## Conceitos Básicos
 
-### What is Cache Reserve?
+### O que é Reserva de Cache?
 
-- **Persistent storage layer**: Built on R2, sits above tiered cache hierarchy
-- **Long-term retention**: 30-day default retention, extended on each access
-- **Automatic operation**: Works seamlessly with existing CDN, no code changes required
-- **Origin shielding**: Dramatically reduces origin egress by serving cached content longer
-- **Usage-based pricing**: Pay only for storage + read/write operations
+- **Camada de armazenamento persistente**: construída em R2, fica acima da hierarquia de cache em camadas
+- **Retenção de longo prazo**: retenção padrão de 30 dias, estendida em cada acesso
+- **Operação automática**: Funciona perfeitamente com CDN existente, sem necessidade de alterações de código
+- **Blindagem de origem**: reduz drasticamente a saída de origem ao veicular conteúdo em cache por mais tempo
+- **Preços baseados no uso**: pague apenas pelo armazenamento + operações de leitura/gravação
 
-### Cache Hierarchy
+### Hierarquia de cache```
 
-```
 Visitor Request
-    ↓
+↓
 Lower-Tier Cache (closest to visitor)
-    ↓ (on miss)
+↓ (on miss)
 Upper-Tier Cache (closest to origin)
-    ↓ (on miss)
+↓ (on miss)
 Cache Reserve (R2 persistent storage)
-    ↓ (on miss)
+↓ (on miss)
 Origin Server
-```
 
-### How It Works
+````
+### Como funciona
 
-1. **On cache miss**: Content fetched from origin �� written to Cache Reserve + edge caches simultaneously
-2. **On edge eviction**: Content may be evicted from edge cache but remains in Cache Reserve
-3. **On subsequent request**: If edge cache misses but Cache Reserve hits → content restored to edge caches
-4. **Retention**: Assets remain in Cache Reserve for 30 days since last access (configurable via TTL)
+1. **On cache miss**: conteúdo obtido da origem �� gravado na reserva de cache + caches de borda simultaneamente
+2. **Remoção na borda**: o conteúdo pode ser removido do cache de borda, mas permanece na Reserva de Cache
+3. **Na solicitação subsequente**: Se o cache de borda falhar, mas a reserva de cache for atingida → conteúdo restaurado para caches de borda
+4. **Retenção**: Os ativos permanecem na Reserva de Cache por 30 dias desde o último acesso (configurável via TTL)
 
-## When to Use Cache Reserve
+## Quando usar a reserva de cache```
+Precisa de cache persistente?
+├─ Altos custos de saída de origem → Reserva de Cache ✓
+├─ Conteúdo de cauda longa (arquivos, bibliotecas de mídia) → Reserva de cache ✓
+├─ Já usando Smart Shield Advanced → Incluído! ✓
+├─ Streaming de vídeo com busca (solicitações de intervalo) → ✗ Não suportado
+├─ Conteúdo dinâmico/personalizado → ✗ Use apenas cache de borda
+├─ Precisa de controle de cache por solicitação dos Trabalhadores → ✗ Use R2 diretamente
+└─ Conteúdo atualizado com frequência (<10 horas de vida) → ✗ Não elegível
+````
 
-```
-Need persistent caching?
-├─ High origin egress costs → Cache Reserve ✓
-├─ Long-tail content (archives, media libraries) → Cache Reserve ✓
-├─ Already using Smart Shield Advanced → Included! ✓
-├─ Video streaming with seeking (range requests) → ✗ Not supported
-├─ Dynamic/personalized content → ✗ Use edge cache only
-├─ Need per-request cache control from Workers → ✗ Use R2 directly
-└─ Frequently updated content (< 10hr lifetime) → ✗ Not eligible
-```
+## Elegibilidade de ativos
 
-## Asset Eligibility
+A Reserva de Cache armazena apenas ativos que atendem a **TODOS** critérios:
 
-Cache Reserve only stores assets meeting **ALL** criteria:
+- Armazenável em cache de acordo com as regras padrão da Cloudflare
+- TTL mínimo de 10 horas (36.000 segundos)
+- Cabeçalho `Content-Length` presente
+- Somente arquivos originais (não imagens transformadas)
 
-- Cacheable per Cloudflare's standard rules
-- Minimum 10-hour TTL (36000 seconds)
-- `Content-Length` header present
-- Original files only (not transformed images)
+### Lista de verificação de elegibilidade
 
-### Eligibility Checklist
+Use esta lista de verificação para verificar se um ativo é elegível:
 
-Use this checklist to verify if an asset is eligible:
+- [ ] Zona tem Reserva de Cache habilitada
+- [] A zona tem cache em camadas ativado (obrigatório)
+- [] TTL do ativo ≥ 10 horas (36.000 segundos)
+- [] Cabeçalho `Content-Length` presente na resposta de origem
+- [] Sem cabeçalho `Set-Cookie` (ou usa diretiva privada)
+- [] O cabeçalho `Vary` NÃO é `*` (pode ser `Accept-Encoding`)
+- [] Não é uma variante de transformação de imagem (imagens originais OK)
+- [] Não é uma solicitação de intervalo (sem suporte HTTP 206)
+- [] Não é solicitação com proxy O2O (laranja para laranja)
 
-- [ ] Zone has Cache Reserve enabled
-- [ ] Zone has Tiered Cache enabled (required)
-- [ ] Asset TTL ≥ 10 hours (36,000 seconds)
-- [ ] `Content-Length` header present on origin response
-- [ ] No `Set-Cookie` header (or uses private directive)
-- [ ] `Vary` header is NOT `*` (can be `Accept-Encoding`)
-- [ ] Not an image transformation variant (original images OK)
-- [ ] Not a range request (no HTTP 206 support)
-- [ ] Not O2O (Orange-to-Orange) proxied request
+**Todas as caixas devem ser marcadas para elegibilidade da Reserva de Cache.**
 
-**All boxes must be checked for Cache Reserve eligibility.**
+### Não elegível
 
-### Not Eligible
+- Ativos com TTL < 10 horas
+- Respostas sem cabeçalho `Content-Length`
+- Variantes de transformação de imagem (imagens originais são elegíveis)
+- Respostas com cabeçalhos `Set-Cookie`
+- Respostas com cabeçalho `Vary: *`
+- Ativos de buckets públicos R2 na mesma zona
+- Solicitações de configuração O2O (laranja para laranja)
+- **Solicitações de intervalo** (busca de vídeo, downloads parciais de conteúdo)
 
-- Assets with TTL < 10 hours
-- Responses without `Content-Length` header
-- Image transformation variants (original images are eligible)
-- Responses with `Set-Cookie` headers
-- Responses with `Vary: *` header
-- Assets from R2 public buckets on same zone
-- O2O (Orange-to-Orange) setup requests
-- **Range requests** (video seeking, partial content downloads)
+## Início rápido```bash
 
-## Quick Start
-
-```bash
 # Enable via Dashboard
+
 https://dash.cloudflare.com/caching/cache-reserve
+
 # Click "Enable Storage Sync" or "Purchase" button
-```
+
+````
 
 **Prerequisites:**
 
@@ -124,27 +123,27 @@ curl -X PATCH "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/cache/cache_r
 
 # Check asset cache status
 curl -I https://example.com/asset.jpg | grep -i cache
-```
+````
 
-## In This Reference
+## Nesta referência
 
-| Task                                                  | Files                                                     |
-| ----------------------------------------------------- | --------------------------------------------------------- |
-| Evaluate if Cache Reserve fits your use case          | README.md (this file)                                     |
-| Enable Cache Reserve for your zone                    | README.md + [configuration.md](./configuration.md)        |
-| Use with Workers (understand limitations)             | [api.md](./api.md)                                        |
-| Setup via SDKs or IaC (TypeScript, Python, Terraform) | [configuration.md](./configuration.md)                    |
-| Optimize costs and debug issues                       | [patterns.md](./patterns.md) + [gotchas.md](./gotchas.md) |
-| Understand eligibility and troubleshoot               | [gotchas.md](./gotchas.md) → [patterns.md](./patterns.md) |
+| Tarefa                                                       | Arquivos                                                  |
+| ------------------------------------------------------------ | --------------------------------------------------------- |
+| Avalie se a Reserva de Cache se adapta ao seu caso de uso    | README.md (este arquivo)                                  |
+| Habilite a reserva de cache para sua zona                    | README.md + [configuration.md](./configuration.md)        |
+| Use com trabalhadores (entenda as limitações)                | [api.md](./api.md)                                        |
+| Configuração via SDKs ou IaC (TypeScript, Python, Terraform) | [configuração.md](./configuration.md)                     |
+| Otimize custos e depure problemas                            | [padrões.md](./patterns.md) + [gotchas.md](./gotchas.md)  |
+| Entenda a elegibilidade e solucione problemas                | [gotchas.md](./gotchas.md) → [patterns.md](./patterns.md) |
 
-**Files:**
+**Arquivos:**
 
-- [configuration.md](./configuration.md) - Setup, API, SDKs, and Cache Rules
-- [api.md](./api.md) - Purging, monitoring, Workers integration
-- [patterns.md](./patterns.md) - Best practices, cost optimization, debugging
-- [gotchas.md](./gotchas.md) - Common issues, limitations, troubleshooting
+- [configuration.md](./configuration.md) - Configuração, API, SDKs e regras de cache
+- [api.md](./api.md) - Limpeza, monitoramento, integração de trabalhadores
+- [patterns.md](./patterns.md) - Melhores práticas, otimização de custos, depuração
+- [gotchas.md](./gotchas.md) - Problemas comuns, limitações, solução de problemas
 
-## See Also
+## Veja também
 
-- [r2](../r2/) - Cache Reserve built on R2 storage
-- [workers](../workers/) - Workers integration with Cache API
+- [r2](../r2/) - Reserva de cache construída no armazenamento R2
+- [workers](../workers/) - Integração de trabalhadores com API Cache

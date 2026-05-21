@@ -44,17 +44,16 @@ export default {
 wrangler dev --remote  # --remote required for browser binding
 ```
 
-**Local mode does NOT support Browser Rendering** - must use `--remote`.
+**O modo local NÃO suporta renderização de navegador** - deve usar `--remote`.
 
-## REST API
+## API REST
 
-No wrangler config needed. Get API token with "Browser Rendering - Edit" permission.
-
-```bash
+Nenhuma configuração do wrangler é necessária. Obtenha o token da API com permissão "Renderização do navegador - Editar".```bash
 curl -X POST \
-  'https://api.cloudflare.com/client/v4/accounts/{accountId}/browser-rendering/screenshot' \
-  -H 'Authorization: Bearer TOKEN' \
-  -d '{"url": "https://example.com"}' --output screenshot.png
+ 'https://api.cloudflare.com/client/v4/accounts/{accountId}/browser-rendering/screenshot' \
+ -H 'Authorization: Bearer TOKEN' \
+ -d '{"url": "https://example.com"}' --output screenshot.png
+
 ```
 
 ## Requirements
@@ -76,3 +75,4 @@ curl -X POST \
 | `nodejs_compat not enabled`       | Add to `compatibility_flags`        |
 | `Module not found`                | `npm install @cloudflare/puppeteer` |
 | `Browser Rendering not available` | Enable in dashboard                 |
+```

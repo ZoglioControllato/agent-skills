@@ -1,44 +1,44 @@
 ---
 name: sentry
-description: Inspect Sentry issues, summarize production errors, and pull health data via the Sentry API (read-only). Use when user says "check Sentry", "what errors in production?", "summarize Sentry issues", "recent crashes", or "production error report". Requires SENTRY_AUTH_TOKEN. Do NOT use for setting up Sentry SDK, configuring alerts, or non-Sentry error monitoring.
+description: Inspeciona issues no Sentry, resume erros de produção e obtém dados de saúde via API do Sentry (somente leitura). Use quando o usuário disser "ver Sentry", "quais erros em produção", "resume issues do Sentry", "crashes recentes" ou "relatório de erro em produção". Exige SENTRY_AUTH_TOKEN. NÃO use para configurar SDK do Sentry, alertas ou monitoramento de erros fora do Sentry.
 metadata:
   author: github.com/openai/skills
   version: '1.0.0'
 ---
 
-# Sentry (Read-only Observability)
+# Sentry (observabilidade somente leitura)
 
-## Quick start
+## Início rápido
 
-- If not already authenticated, ask the user to provide a valid `SENTRY_AUTH_TOKEN` (read-only scopes such as `project:read`, `event:read`) or to log in and create one before running commands.
-- Set `SENTRY_AUTH_TOKEN` as an env var.
-- Optional defaults: `SENTRY_ORG`, `SENTRY_PROJECT`, `SENTRY_BASE_URL`.
-- Defaults: org/project `{your-org}`/`{your-project}`, time range `24h`, environment `prod`, limit 20 (max 50).
-- Always call the Sentry API (no heuristics, no caching).
+- Se ainda não estiver autenticado, peça ao usuário um `SENTRY_AUTH_TOKEN` válido (escopos somente leitura como `project:read`, `event:read`) ou que faça login e crie um antes de rodar comandos.
+- Defina `SENTRY_AUTH_TOKEN` como variável de ambiente.
+- Padrões opcionais: `SENTRY_ORG`, `SENTRY_PROJECT`, `SENTRY_BASE_URL`.
+- Padrões: org/projeto `{your-org}`/`{your-project}`, intervalo `24h`, ambiente `prod`, limite 20 (máx. 50).
+- Sempre chame a API do Sentry (sem heurísticas, sem cache).
 
-If the token is missing, give the user these steps:
+Se o token estiver ausente, oriente o usuário:
 
-1. Create a Sentry auth token: <https://sentry.io/settings/account/api/auth-tokens/>
-2. Create a token with read-only scopes such as `project:read`, `event:read`, and `org:read`.
-3. Set `SENTRY_AUTH_TOKEN` as an environment variable in their system.
-4. Offer to guide them through setting the environment variable for their OS/shell if needed.
+1. Criar token em <https://sentry.io/settings/account/api/auth-tokens/>
+2. Criar token com escopos somente leitura como `project:read`, `event:read`, `org:read`.
+3. Definir `SENTRY_AUTH_TOKEN` no ambiente.
+4. Oferecer ajuda para configurar a variável no SO/shell se precisar.
 
-- Never ask the user to paste the full token in chat. Ask them to set it locally and confirm when ready.
+- Nunca peça para colar o token completo no chat. Peça para definir localmente e confirmar quando pronto.
 
-## Core tasks (use bundled script)
+## Tarefas principais (use o script incluído)
 
-Use `scripts/sentry_api.py` for deterministic API calls. It handles pagination and retries once on transient errors.
+Use `scripts/sentry_api.py` para chamadas determinísticas à API. Ele trata paginação e repete uma vez em erros transitórios.
 
-## Skill path (set once)
+## Caminho da skill (defina uma vez)
 
 ```bash
 export AGENT_SKILLS_HOME="${AGENT_SKILLS_HOME:-$HOME/.agent-skills}"
 export SENTRY_API="$AGENT_SKILLS_HOME/skills/sentry/scripts/sentry_api.py"
 ```
 
-User-scoped skills install under `$AGENT_SKILLS_HOME/skills` (default: `~/.agent-skills/skills`).
+Skills instaladas no escopo do usuário ficam em `$AGENT_SKILLS_HOME/skills` (padrão: `~/.agent-skills/skills`).
 
-### 1) List issues (ordered by most recent)
+### 1) Listar issues (mais recentes primeiro)
 
 ```bash
 python3 "$SENTRY_API" \
@@ -51,7 +51,7 @@ python3 "$SENTRY_API" \
   --query "is:unresolved"
 ```
 
-### 2) Resolve an issue short ID to issue ID
+### 2) Resolver short ID de issue para issue ID
 
 ```bash
 python3 "$SENTRY_API" \
@@ -62,9 +62,9 @@ python3 "$SENTRY_API" \
   --limit 1
 ```
 
-Use the returned `id` for issue detail or events.
+Use o `id` retornado para detalhe da issue ou eventos.
 
-### 3) Issue detail
+### 3) Detalhe da issue
 
 ```bash
 python3 "$SENTRY_API" \
@@ -72,7 +72,7 @@ python3 "$SENTRY_API" \
   1234567890
 ```
 
-### 4) Issue events
+### 4) Eventos da issue
 
 ```bash
 python3 "$SENTRY_API" \
@@ -81,7 +81,7 @@ python3 "$SENTRY_API" \
   --limit 20
 ```
 
-### 5) Event detail (no stack traces by default)
+### 5) Detalhe do evento (sem stack traces por padrão)
 
 ```bash
 python3 "$SENTRY_API" \
@@ -91,37 +91,37 @@ python3 "$SENTRY_API" \
   abcdef1234567890
 ```
 
-## API requirements
+## Requisitos da API
 
-Always use these endpoints (GET only):
+Sempre estes endpoints (apenas GET):
 
-- List issues: `/api/0/projects/{org_slug}/{project_slug}/issues/`
-- Issue detail: `/api/0/issues/{issue_id}/`
-- Events for issue: `/api/0/issues/{issue_id}/events/`
-- Event detail: `/api/0/projects/{org_slug}/{project_slug}/events/{event_id}/`
+- Listar issues: `/api/0/projects/{org_slug}/{project_slug}/issues/`
+- Detalhe da issue: `/api/0/issues/{issue_id}/`
+- Eventos da issue: `/api/0/issues/{issue_id}/events/`
+- Detalhe do evento: `/api/0/projects/{org_slug}/{project_slug}/events/{event_id}/`
 
-## Inputs and defaults
+## Entradas e padrões
 
-- `org_slug`, `project_slug`: default to `{your-org}`/`{your-project}` (avoid non-prod orgs).
-- `time_range`: default `24h` (pass as `statsPeriod`).
-- `environment`: default `prod`.
-- `limit`: default 20, max 50 (paginate until limit reached).
-- `search_query`: optional `query` parameter.
-- `issue_short_id`: resolve via list-issues query first.
+- `org_slug`, `project_slug`: padrão `{your-org}`/`{your-project}` (evite orgs que não sejam produção).
+- `time_range`: padrão `24h` (envie como `statsPeriod`).
+- `environment`: padrão `prod`.
+- `limit`: padrão 20, máx. 50 (paginar até o limite).
+- `search_query`: parâmetro `query` opcional.
+- `issue_short_id`: resolva primeiro com list-issues e query.
 
-## Output formatting rules
+## Regras de formatação da saída
 
-- Issue list: show title, short_id, status, first_seen, last_seen, count, environments, top_tags; order by most recent.
-- Event detail: include culprit, timestamp, environment, release, url.
-- If no results, state explicitly.
-- Redact PII in output (emails, IPs). Do not print raw stack traces.
-- Never echo auth tokens.
+- Lista de issues: mostrar title, short_id, status, first_seen, last_seen, count, environments, top_tags; ordenar por mais recente.
+- Detalhe do evento: incluir culprit, timestamp, environment, release, url.
+- Se não houver resultados, declare explicitamente.
+- Ofusque ou omita PII na saída (e-mails, IPs). Não imprima stack traces brutos.
+- Nunca ecoar tokens de autenticação.
 
-## Golden test inputs
+## Entradas de teste golden
 
 - Org: `{your-org}`
-- Project: `{your-project}`
-- Issue short ID: `{ABC-123}`
+- Projeto: `{your-project}`
+- Short ID da issue: `{ABC-123}`
 
-Example prompt: “List the top 10 open issues for prod in the last 24h.”
-Expected: ordered list with titles, short IDs, counts, last seen.
+Exemplo de prompt: “Liste as 10 principais issues abertas de prod nas últimas 24h.”
+Esperado: lista ordenada com títulos, short IDs, contagens, last seen.

@@ -1,6 +1,6 @@
-# Vectorize Patterns
+# Padrões com Vectorize
 
-## Workers AI Integration
+## Integração com Workers AI
 
 ```typescript
 // Generate embedding + query
@@ -8,20 +8,20 @@ const result = await env.AI.run('@cf/baai/bge-base-en-v1.5', { text: [query] })
 const matches = await env.VECTORIZE.query(result.data[0], { topK: 5 }) // Pass data[0]!
 ```
 
-| Model                        | Dimensions        |
+| Modelo                       | Dimensões         |
 | ---------------------------- | ----------------- |
 | `@cf/baai/bge-small-en-v1.5` | 384               |
-| `@cf/baai/bge-base-en-v1.5`  | 768 (recommended) |
+| `@cf/baai/bge-base-en-v1.5`  | 768 (recomendado) |
 | `@cf/baai/bge-large-en-v1.5` | 1024              |
 
-## OpenAI Integration
+## Integração com OpenAI
 
 ```typescript
 const response = await openai.embeddings.create({ model: 'text-embedding-ada-002', input: query })
 const matches = await env.VECTORIZE.query(response.data[0].embedding, { topK: 5 })
 ```
 
-## RAG Pattern
+## Padrão RAG
 
 ```typescript
 // 1. Embed query
@@ -39,16 +39,16 @@ const answer = await env.AI.run('@cf/meta/llama-3-8b-instruct', {
 })
 ```
 
-## Multi-Tenant
+## Multi-inquilino
 
-### Namespaces (< 50K tenants, fastest)
+### Namespaces (< 50K inquilinos, mais rápido)
 
 ```typescript
 await env.VECTORIZE.upsert([{ id: '1', values: emb, namespace: `tenant-${id}` }])
 await env.VECTORIZE.query(vec, { namespace: `tenant-${id}`, topK: 10 })
 ```
 
-### Metadata Filter (> 50K tenants)
+### Filtro por metadados (> 50K inquilinos)
 
 ```bash
 wrangler vectorize create-metadata-index my-index --property-name=tenantId --type=string
@@ -59,7 +59,7 @@ await env.VECTORIZE.upsert([{ id: '1', values: emb, metadata: { tenantId: id } }
 await env.VECTORIZE.query(vec, { filter: { tenantId: id }, topK: 10 })
 ```
 
-## Hybrid Search
+## Busca híbrida
 
 ```typescript
 const matches = await env.VECTORIZE.query(vec, {
@@ -71,7 +71,7 @@ const matches = await env.VECTORIZE.query(vec, {
 })
 ```
 
-## Batch Ingestion
+## Ingestão em lote
 
 ```typescript
 const BATCH = 500
@@ -80,11 +80,13 @@ for (let i = 0; i < vectors.length; i += BATCH) {
 }
 ```
 
-## Best Practices
+## Boas práticas
 
-1. **Pass `data[0]`** not `data` or full response
-2. **Batch 500** vectors per upsert
-3. **Create metadata indexes** before inserting
-4. **Use namespaces** for tenant isolation (faster than filters)
-5. **`returnMetadata: "indexed"`** for best speed/data balance
-6. **Handle 5-10s mutation delay** in async operations
+1. Passe **`data[0]`**, não `data` nem a resposta completa
+2. **Lotes de 500** vetores por upsert
+3. **Crie índices de metadados** antes de inserir
+4. **Use namespaces** para isolamento por inquilino (mais rápido que filtros)
+5. **`returnMetadata: "indexed"`** para melhor equilíbrio velocidade/dados
+6. **Considere atraso de 5–10s** em mutações assíncronas
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

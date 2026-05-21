@@ -1,4 +1,4 @@
-# Workers AI Configuration
+# Configuração de IA de trabalhadores
 
 ## wrangler.jsonc
 
@@ -13,7 +13,7 @@
 }
 ```
 
-## TypeScript
+##TypeScript
 
 ```bash
 npm install --save-dev @cloudflare/workers-types
@@ -34,15 +34,15 @@ export default {
 }
 ```
 
-## Local Development
+##Desenvolvimento Local
 
 ```bash
 wrangler dev --remote  # Required for AI - no local inference
 ```
 
-## REST API
+##API REST
 
-```typescript
+````typescript
 const response = await fetch(
   `https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/ai/run/@cf/meta/llama-3.1-8b-instruct`,
   {
@@ -51,23 +51,20 @@ const response = await fetch(
     body: JSON.stringify({ messages: [{ role: 'user', content: 'Hello' }] }),
   },
 )
-```
+```Crie um token de API em: dash.cloudflare.com/profile/api-tokens (Workers AI – permissão de leitura)
 
-Create API token at: dash.cloudflare.com/profile/api-tokens (Workers AI - Read permission)
+## Compatibilidade com SDK
 
-## SDK Compatibility
-
-**OpenAI SDK:**
-
+**SDK OpenAI:**
 ```typescript
 import OpenAI from 'openai'
 const client = new OpenAI({
   apiKey: env.CLOUDFLARE_API_TOKEN,
   baseURL: `https://api.cloudflare.com/client/v4/accounts/${env.ACCOUNT_ID}/ai/v1`,
 })
-```
+````
 
-## Multi-Model Setup
+##Configuração de vários modelos
 
 ```typescript
 const MODELS = {
@@ -77,7 +74,7 @@ const MODELS = {
 }
 ```
 
-## RAG Setup (with Vectorize)
+##Configuração RAG (com vetorização)
 
 ```jsonc
 {
@@ -88,11 +85,11 @@ const MODELS = {
 }
 ```
 
-## Troubleshooting
+##Solução de problemas
 
-| Error                        | Fix                                  |
-| ---------------------------- | ------------------------------------ |
-| `env.AI is undefined`        | Check `ai` binding in wrangler.jsonc |
-| Local AI doesn't work        | Use `wrangler dev --remote`          |
-| Type 'Ai' not found          | Install `@cloudflare/workers-types`  |
-| @cloudflare/ai package error | Don't install - use native binding   |
+| Erro                          | Correção                                   |
+| ----------------------------- | ------------------------------------------ |
+| `env.AI é indefinido`         | Verifique a ligação `ai` em wrangler.jsonc |
+| IA local não funciona         | Use `wrangler dev --remote`                |
+| Tipo 'Ai' não encontrado      | Instale `@cloudflare/workers-types`        |
+| Erro de pacote @cloudflare/ai | Não instale - use ligação nativa           |

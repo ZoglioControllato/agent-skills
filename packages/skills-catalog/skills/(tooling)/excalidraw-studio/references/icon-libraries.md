@@ -1,39 +1,36 @@
-# Icon Libraries
+# Bibliotecas de ícones
 
-Read this file when the user requests diagrams with service icons (AWS, GCP, Azure, Kubernetes, etc.) or asks for professional architecture diagrams.
+Leia este arquivo quando o usuário solicitar diagramas com ícones de serviço (AWS, GCP, Azure, Kubernetes, etc.) ou solicitar diagramas de arquitetura profissional.
 
-## How It Works
+## Como funciona
 
-Excalidraw supports icon libraries (`.excalidrawlib` files) that provide professional, standardized icons. This skill can use pre-split icon libraries to create polished architecture diagrams.
+Excalidraw oferece suporte a bibliotecas de ícones (arquivos `.excalidrawlib`) que fornecem ícones padronizados e profissionais. Esta habilidade pode usar bibliotecas de ícones pré-divididos para criar diagramas de arquitetura sofisticados.
 
-## Checking for Available Libraries
+## Verificando bibliotecas disponíveis```
 
-```
 Look for: libraries/<library-name>/reference.md
-```
 
-If `reference.md` exists, the library is ready. It contains a lookup table of all available icon names.
+````
+Se `reference.md` existir, a biblioteca está pronta. Ele contém uma tabela de consulta de todos os nomes de ícones disponíveis.
 
-If no libraries are set up, offer two options:
+Se nenhuma biblioteca estiver configurada, ofereça duas opções:
 
-1. Create the diagram using basic shapes (rectangles, ellipses) with labels — still functional, just less visually polished
-2. Guide the user through library setup (see below)
+1. Crie o diagrama usando formas básicas (retângulos, elipses) com rótulos – ainda funcionais, apenas menos polidos visualmente
+2. Oriente o usuário na configuração da biblioteca (veja abaixo)
 
-## Using Icons (Python Scripts — Recommended)
+## Usando ícones (scripts Python - recomendado)
 
-The repository includes Python scripts that handle icon integration without consuming AI context tokens:
+O repositório inclui scripts Python que lidam com a integração de ícones sem consumir tokens de contexto de IA:
 
-### Adding icons to a diagram
-
-```bash
+### Adicionando ícones a um diagrama```bash
 python scripts/add-icon-to-diagram.py \
   <diagram-path> <icon-name> <x> <y> \
   [--label "Text"] [--library-path PATH]
-```
+````
 
-The `--label` flag adds a text label below the icon. Edit via `.excalidraw.edit` is enabled by default; pass `--no-use-edit-suffix` to disable.
+O sinalizador `--label` adiciona um rótulo de texto abaixo do ícone. Editar via `.excalidraw.edit` está habilitado por padrão; passe `--no-use-edit-suffix` para desabilitar.
 
-**Examples:**
+**Exemplos:**
 
 ```bash
 # Add EC2 icon at position (400, 300) with label
@@ -44,15 +41,15 @@ python scripts/add-icon-to-diagram.py diagram.excalidraw Compute-Engine 500 200 
   --library-path libraries/gcp-icons --label "API Server"
 ```
 
-### Adding connecting arrows
+### Adicionando setas de conexão```bash
 
-```bash
 python scripts/add-arrow.py \
-  <diagram-path> <from-x> <from-y> <to-x> <to-y> \
-  [--label "Text"] [--style solid|dashed|dotted] [--color HEX]
-```
+ <diagram-path> <from-x> <from-y> <to-x> <to-y> \
+ [--label "Text"] [--style solid|dashed|dotted] [--color HEX]
 
-**Examples:**
+````
+
+**Exemplos:**
 
 ```bash
 # Simple arrow
@@ -61,18 +58,20 @@ python scripts/add-arrow.py diagram.excalidraw 300 250 500 300
 # Arrow with label and custom style
 python scripts/add-arrow.py diagram.excalidraw 400 350 600 400 \
   --label "HTTPS" --style dashed --color "#7950f2"
-```
+````
 
-### Complete workflow
+### Fluxo de trabalho completo```bash
 
-```bash
 # 1. Create base diagram with title and structure
-#    (Create .excalidraw file with basic elements: title text, region rectangles)
+
+# (Create .excalidraw file with basic elements: title text, region rectangles)
 
 # 2. Check icon availability
-#    Read: libraries/aws-architecture-icons/reference.md
+
+# Read: libraries/aws-architecture-icons/reference.md
 
 # 3. Add icons with labels
+
 python scripts/add-icon-to-diagram.py my-diagram.excalidraw "Internet-gateway" 200 150 --label "Internet Gateway"
 python scripts/add-icon-to-diagram.py my-diagram.excalidraw VPC 250 250
 python scripts/add-icon-to-diagram.py my-diagram.excalidraw ELB 350 300 --label "Load Balancer"
@@ -80,47 +79,44 @@ python scripts/add-icon-to-diagram.py my-diagram.excalidraw EC2 450 350 --label 
 python scripts/add-icon-to-diagram.py my-diagram.excalidraw RDS 550 400 --label "Database"
 
 # 4. Add connecting arrows
+
 python scripts/add-arrow.py my-diagram.excalidraw 250 200 300 250 --label "traffic"
 python scripts/add-arrow.py my-diagram.excalidraw 300 300 400 300
 python scripts/add-arrow.py my-diagram.excalidraw 500 380 600 400 --label "SQL" --style dashed
-```
 
-**Why use scripts:**
+````
 
-- ✅ No token consumption — icon JSON data (200-1000 lines each) never enters AI context
-- ✅ Accurate coordinates — calculations handled deterministically
-- ✅ Automatic ID management — no risk of collision
-- ✅ Fast and reusable — works with any Excalidraw library
+**Por que usar scripts:**
 
-## Setting Up a Library
+- ✅ Sem consumo de token – os dados JSON do ícone (200-1000 linhas cada) nunca entram no contexto da IA
+- ✅ Coordenadas precisas — cálculos tratados de forma determinística
+- ✅ Gerenciamento automático de ID – sem risco de colisão
+- ✅ Rápido e reutilizável — funciona com qualquer biblioteca Excalidraw
 
-Guide the user through these steps:
+## Configurando uma biblioteca
 
-### Step 1: Create library directory
+Oriente o usuário através destas etapas:
 
-```bash
+### Etapa 1: Criar diretório de biblioteca```bash
 mkdir -p skills/excalidraw-studio/libraries/<library-name>
-```
+````
 
-### Step 2: Download library
+### Etapa 2: Baixe a biblioteca
 
-- Visit: <https://libraries.excalidraw.com/>
-- Search for the desired icon set (e.g., "AWS Architecture Icons")
-- Click download to get the `.excalidrawlib` file
-- Place it in the directory from Step 1
+- Visite: <https://libraries.excalidraw.com/>
+- Procure o conjunto de ícones desejado (por exemplo, "Ícones de arquitetura AWS")
+- Clique em download para obter o arquivo `.excalidrawlib`
+- Coloque-o no diretório da Etapa 1
 
-### Step 3: Run splitter script
+### Etapa 3: execute o script divisor```bash
 
-```bash
 python skills/excalidraw-studio/scripts/split-excalidraw-library.py \
-  skills/excalidraw-studio/libraries/<library-name>/
-```
+ skills/excalidraw-studio/libraries/<library-name>/
 
-### Step 4: Verify
+````
+### Etapa 4: verificar
 
-After running the script, this structure should exist:
-
-```
+Depois de executar o script, esta estrutura deverá existir:```
 libraries/<library-name>/
   <library-name>.excalidrawlib  (original)
   reference.md                  (generated — icon lookup table)
@@ -130,32 +126,32 @@ libraries/<library-name>/
     Lambda.json
     S3.json
     ...
-```
+````
 
-## Manual Icon Integration (Fallback)
+## Integração manual de ícones (substituto)
 
-Only use this if Python scripts are unavailable. This approach is token-expensive and error-prone.
+Use isto apenas se os scripts Python não estiverem disponíveis. Essa abordagem é cara e propensa a erros.
 
-1. Read `libraries/<library-name>/reference.md` to find icon names
-2. Read individual icon JSON files from `icons/` (200-1000 lines each)
-3. Extract elements array, calculate bounding box, apply coordinate offset
-4. Generate new unique IDs, update groupIds references
-5. Copy transformed elements into the diagram
+1. Leia `libraries/<library-name>/reference.md` para encontrar nomes de ícones
+2. Leia arquivos JSON de ícones individuais em `icons/` (200-1000 linhas cada)
+3. Extraia a matriz de elementos, calcule a caixa delimitadora, aplique o deslocamento de coordenadas
+4. Gere novos IDs exclusivos, atualize referências de groupIds
+5. Copie os elementos transformados no diagrama
 
-**Challenges:**
+**Desafios:**
 
-- ⚠️ High token consumption (200-1000 lines per icon)
-- ⚠️ Complex coordinate transformation
-- ⚠️ Risk of ID collision
-- ⚠️ Time-consuming for many icons
+- ⚠️ Alto consumo de tokens (200-1000 linhas por ícone)
+- ⚠️ Transformação de coordenadas complexas
+- ⚠️ Risco de colisão de identidade
+- ⚠️ Demorado para muitos ícones
 
-## Supported Libraries
+## Bibliotecas Suportadas
 
-This workflow works with any valid `.excalidrawlib` file from <https://libraries.excalidraw.com/>. Common categories:
+Este fluxo de trabalho funciona com qualquer arquivo `.excalidrawlib` válido de <https://libraries.excalidraw.com/>. Categorias comuns:
 
-- Cloud service icons (AWS, GCP, Azure)
-- Kubernetes / infrastructure icons
-- UI / Material icons
-- Network diagram icons
+- Ícones de serviço em nuvem (AWS, GCP, Azure)
+- Ícones Kubernetes/infraestrutura
+- Ícones de interface do usuário / materiais
+- Ícones de diagrama de rede
 
-Availability and naming vary; verify on the site before recommending to users.
+A disponibilidade e os nomes variam; verifique no site antes de recomendar aos usuários.

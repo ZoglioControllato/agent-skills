@@ -1,55 +1,55 @@
 ---
 name: subagent-creator
-description: Guide for creating AI subagents with isolated context for complex multi-step workflows. Use when users want to create a subagent, specialized agent, verifier, debugger, or orchestrator that requires isolated context and deep specialization. Works with any agent that supports subagent delegation. Triggers on "create subagent", "new agent", "specialized assistant", "create verifier". Do NOT use for Cursor-specific subagents (use cursor-subagent-creator instead).
+description: Guia para criar subagentes de IA com contexto isolado em fluxos complexos multi-etapas. Use quando usuários quiserem criar subagente, agente especializado, verificador, debugger ou orquestrador que exija contexto isolado e especialização profunda. Funciona em qualquer agente com delegação a subagentes. Aciona em "criar subagente", "novo agente", "assistente especializado", "criar verificador". NÃO use para subagentes específicos do Cursor (use cursor-subagent-creator).
 ---
 
 # Subagent Creator
 
-This skill provides guidance for creating effective, agent-agnostic subagents.
+Esta skill orienta criação de subagentes eficazes e agnósticos de plataforma.
 
-## What are Subagents?
+## O que são subagentes?
 
-Subagents are specialized assistants that an AI agent can delegate tasks to. Characteristics:
+Subagentes são assistentes especializados aos quais um agente de IA delega tarefas. Características:
 
-- **Isolated context**: Each subagent has its own context window
-- **Parallel execution**: Multiple subagents can run simultaneously
-- **Specialization**: Configured with specific prompts and expertise
-- **Reusable**: Defined once, used in multiple contexts
+- **Contexto isolado**: cada subagente tem sua própria janela de contexto
+- **Execução paralela**: vários subagentes podem rodar ao mesmo tempo
+- **Especialização**: configurados com prompts e expertise específicos
+- **Reutilizáveis**: definidos uma vez, usados em vários contextos
 
-### When to Use Subagents vs Skills
+### Quando usar subagentes vs skills
 
 ```
-Is the task complex with multiple steps?
-├─ YES → Does it require isolated context?
-│         ├─ YES → Use SUBAGENT
-│         └─ NO → Use SKILL
+A tarefa é complexa com várias etapas?
+├─ SIM → Exige contexto isolado?
+│         ├─ SIM → Use SUBAGENTE
+│         └─ NÃO → Use SKILL
 │
-└─ NO → Use SKILL
+└─ NÃO → Use SKILL
 ```
 
-**Use Subagents for:**
+**Use subagentes para:**
 
-- Complex workflows requiring isolated context
-- Long-running tasks that benefit from specialization
-- Verification and auditing (independent perspective)
-- Parallel workstreams
+- Fluxos complexos que precisam de contexto isolado
+- Tarefas longas que beneficiam especialização
+- Verificação e auditoria (perspectiva independente)
+- Linhas de trabalho paralelas
 
-**Use Skills for:**
+**Use skills para:**
 
-- Quick, one-off actions
-- Domain knowledge without context isolation
-- Reusable procedures that don't need isolation
+- Ações rápidas e pontuais
+- Conhecimento de domínio sem isolamento de contexto
+- Procedimentos reutilizáveis que não precisam de isolamento
 
-## Subagent Structure
+## Estrutura do subagente
 
-A subagent is typically a markdown file with frontmatter metadata:
+Tipicamente um arquivo markdown com frontmatter:
 
 ```markdown
 ---
 name: agent-name
-description: Description of when to use this subagent.
-model: inherit # or fast, or specific model ID
-readonly: false # true to restrict write permissions
+description: Descrição de quando usar este subagente.
+model: inherit # ou fast, ou ID de modelo específico
+readonly: false # true para restringir escrita
 ---
 
 You are an [expert in X].
@@ -68,62 +68,62 @@ Report [type of expected result]:
 - [Metrics or specific information]
 ```
 
-## Subagent Creation Process
+## Processo de criação
 
-### 1. Define the Purpose
+### 1. Definir o propósito
 
-- What specific responsibility does the subagent have?
-- Why does it need isolated context?
-- Does it involve multiple complex steps?
-- Does it require deep specialization?
+- Qual responsabilidade específica?
+- Por que precisa de contexto isolado?
+- Envolve várias etapas complexas?
+- Exige especialização profunda?
 
-### 2. Configure the Metadata
+### 2. Configurar metadata
 
-#### name (required)
+#### name (obrigatório)
 
-Unique identifier. Use kebab-case.
+Identificador único. Use kebab-case.
 
 ```yaml
 name: security-auditor
 ```
 
-#### description (critical)
+#### description (crítico)
 
-CRITICAL for automatic delegation. Explains when to use this subagent.
+CRÍTICO para delegação automática. Explica quando usar o subagente.
 
-**Good descriptions:**
+**Boas descrições:**
 
 - "Security specialist. Use when implementing auth, payments, or handling sensitive data."
 - "Debugging specialist for errors and test failures. Use when encountering issues."
 - "Validates completed work. Use after tasks are marked done."
 
-**Phrases that encourage automatic delegation:**
+**Frases que incentivam delegação automática:**
 
 - "Use proactively when..."
 - "Always use for..."
 - "Automatically delegate when..."
 
-#### model (optional)
+#### model (opcional)
 
 ```yaml
-model: inherit  # Uses same model as parent (default)
-model: fast     # Uses fast model for quick tasks
+model: inherit  # mesmo modelo do pai (padrão)
+model: fast     # modelo rápido para tarefas leves
 ```
 
-#### readonly (optional)
+#### readonly (opcional)
 
 ```yaml
-readonly: true # Restricts write permissions
+readonly: true # restringe permissões de escrita
 ```
 
-### 3. Write the Subagent Prompt
+### 3. Escrever o prompt do subagente
 
-Define:
+Defina:
 
-1. **Identity**: "You are an [expert]..."
-2. **When invoked**: Context of use
-3. **Process**: Specific steps to follow
-4. **Expected output**: Format and content
+1. **Identidade**: "You are an [expert]..."
+2. **When invoked**: contexto de uso
+3. **Process**: passos específicos
+4. **Expected output**: formato e conteúdo
 
 **Template:**
 
@@ -147,11 +147,11 @@ Report [type of result]:
 [Philosophy or principles to follow]
 ```
 
-## Common Subagent Patterns
+## Padrões comuns
 
-### 1. Verification Agent
+### 1. Agente de verificação
 
-**Purpose**: Independently validates that completed work actually works.
+**Propósito**: valida independentemente que o trabalho concluído funciona.
 
 ```markdown
 ---
@@ -165,7 +165,7 @@ You are a skeptical validator.
 When invoked:
 
 1. Identify what was declared as complete
-2. Verify the implementation exists and is functional
+2. Verify that the implementation exists and is functional
 3. Execute tests or relevant verification steps
 4. Look for edge cases that may have been missed
 
@@ -178,7 +178,7 @@ Be thorough. Report:
 
 ### 2. Debugger
 
-**Purpose**: Expert in root cause analysis.
+**Propósito**: especialista em causa raiz.
 
 ```markdown
 ---
@@ -194,7 +194,7 @@ When invoked:
 2. Identify reproduction steps
 3. Isolate the failure location
 4. Implement minimal fix
-5. Verify the solution works
+5. Verify that the solution works
 
 For each issue, provide:
 
@@ -204,9 +204,9 @@ For each issue, provide:
 - Testing approach
 ```
 
-### 3. Security Auditor
+### 3. Auditor de segurança
 
-**Purpose**: Security expert auditing code.
+**Propósito**: segurança no código.
 
 ```markdown
 ---
@@ -231,9 +231,9 @@ Report findings by severity:
 - **Low** (suggestions)
 ```
 
-### 4. Code Reviewer
+### 4. Code reviewer
 
-**Purpose**: Code review with focus on quality.
+**Propósito**: revisão focada em qualidade.
 
 ```markdown
 ---
@@ -259,37 +259,37 @@ Report:
   - Suggestion: [How to fix]
 ```
 
-## Best Practices
+## Boas práticas
 
-### ✅ DO
+### ✅ FAÇA
 
-- **Write focused subagents**: One clear responsibility
-- **Invest in the description**: Determines when to delegate
-- **Keep prompts concise**: Direct and specific
-- **Share with team**: Version control subagent definitions
-- **Test the description**: Check correct subagent is triggered
+- **Subagentes focados**: uma responsabilidade clara
+- **Invista na description**: define quando delegar
+- **Prompts concisos**: diretos e específicos
+- **Compartilhe com o time**: versione definições
+- **Teste a description**: confira se aciona o subagente correto
 
-### ❌ AVOID
+### ❌ EVITE
 
-- **Vague descriptions**: "Use for general tasks" gives no signal
-- **Prompts too long**: 2000 words don't make it smarter
-- **Too many subagents**: Start with 2-3 focused ones
+- **Descriptions vagas**: "Use for general tasks" não sinaliza nada
+- **Prompts longos**: 2000 linhas não tornam mais inteligente
+- **Muitos subagentes**: comece com 2-3 focados
 
-## Quality Checklist
+## Checklist de qualidade
 
-Before finalizing:
+Antes de finalizar:
 
-- [ ] Description is specific about when to delegate
-- [ ] Name uses kebab-case
-- [ ] One clear responsibility (not generic)
-- [ ] Prompt is concise but complete
-- [ ] Instructions are actionable
-- [ ] Output format is well defined
-- [ ] Model configuration appropriate
+- [ ] Description diz claramente quando delegar
+- [ ] Name em kebab-case
+- [ ] Uma responsabilidade clara (não genérico)
+- [ ] Prompt conciso mas completo
+- [ ] Instruções acionáveis
+- [ ] Formato de saída bem definido
+- [ ] Model adequado
 
-## Output Messages
+## Mensagens de saída
 
-When creating a subagent:
+Ao criar um subagente:
 
 ```
 ✅ Subagent created successfully!

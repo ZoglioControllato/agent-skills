@@ -1,8 +1,8 @@
-# Email Workers Gotchas
+# Dicas para funcionários de e-mail
 
-## Critical Issues
+## Questões Críticas
 
-### ReadableStream Single-Use
+### ReadableStream de uso único
 
 ```typescript
 // ❌ WRONG: Stream consumed twice
@@ -15,7 +15,7 @@ const email = await PostalMime.parse(buffer)
 const rawText = new TextDecoder().decode(buffer)
 ```
 
-### ctx.waitUntil() Errors Silent
+### ctx.waitUntil() Erros silenciosos
 
 ```typescript
 // ❌ Errors dropped silently
@@ -29,9 +29,9 @@ ctx.waitUntil(
 )
 ```
 
-## Security
+##Segurança
 
-### Envelope vs Header From (Spoofing)
+### Envelope vs cabeçalho de (falsificação)
 
 ```typescript
 const envelopeFrom = message.from // SMTP MAIL FROM (trusted)
@@ -39,7 +39,7 @@ const headerFrom = (await PostalMime.parse(buffer)).from?.address // (untrusted)
 // Use envelope for security decisions
 ```
 
-### Input Validation
+### Validação de entrada
 
 ```typescript
 if (message.rawSize > 5_000_000) {
@@ -52,13 +52,13 @@ if ((message.headers.get('Subject') || '').length > 1000) {
 }
 ```
 
-### DMARC for Replies
+### DMARC para respostas
 
-Replies fail silently without DMARC. Verify: `dig TXT _dmarc.example.com`
+As respostas falham silenciosamente sem DMARC. Verifique: `dig TXT _dmarc.example.com`
 
-## Parsing
+## Análise
 
-### Address Parsing
+### Análise de endereço
 
 ```typescript
 const email = await PostalMime.parse(buffer)
@@ -66,13 +66,13 @@ const fromAddress = email.from?.address || 'unknown'
 const toAddresses = Array.isArray(email.to) ? email.to.map((t) => t.address) : [email.to?.address]
 ```
 
-### Character Encoding
+### Codificação de caracteres
 
-Let postal-mime handle decoding - `email.subject`, `email.text`, `email.html` are UTF-8.
+Deixe o postal-mime lidar com a decodificação - `email.subject`, `email.text`, `email.html` são UTF-8.
 
-## API Behavior
+## Comportamento da API
 
-### setReject() vs throw
+### setReject() vs lançar
 
 ```typescript
 // setReject() for SMTP rejection
@@ -85,14 +85,14 @@ if (blockList.includes(message.from)) {
 if (!env.KV) throw new Error('KV not configured')
 ```
 
-### forward() Only X-\* Headers
+### forward() Apenas X-\* Cabeçalhos
 
 ```typescript
 headers.set('X-Processed-By', 'worker') // ✅ Works
 headers.set('Subject', 'Modified') // ❌ Dropped
 ```
 
-### Reply Requires Verified Domain
+### A resposta requer domínio verificado
 
 ```typescript
 // Use same domain as receiving address
@@ -100,34 +100,33 @@ const receivingDomain = message.to.split('@')[1]
 await message.reply(new EmailMessage(`noreply@${receivingDomain}`, message.from, rawMime))
 ```
 
-## Performance
+##Desempenho
 
-### CPU Limit
+### Limite de CPU
 
-```typescript
+````typescript
 // Skip parsing large emails
 if (message.rawSize > 5_000_000) {
   await message.forward('inbox@example.com')
   return
 }
-```
+```Monitor: `npx wrangler tail`
 
-Monitor: `npx wrangler tail`
+## Limites
 
-## Limits
-
-| Limit                | Value       |
+| Limite | Valor |
 | -------------------- | ----------- |
-| Max message size     | 25 MiB      |
-| Max rules/zone       | 200         |
-| CPU time (free/paid) | 10ms / 50ms |
-| Reply References     | 100         |
+| Tamanho máximo da mensagem | 25 MiB |
+| Máximo de regras/zona | 200 |
+| Tempo de CPU (gratuito/pago) | 10ms / 50ms |
+| Referências de resposta | 100 |
 
-## Common Errors
+## Erros Comuns
 
-| Error                  | Fix                              |
+| Erro | Correção |
 | ---------------------- | -------------------------------- |
-| "Address not verified" | Add in Email Routing dashboard   |
-| "Exceeded CPU time"    | Use `ctx.waitUntil()` or upgrade |
-| "Stream is locked"     | Buffer `message.raw` first       |
-| Silent reply failure   | Check DMARC records              |
+| “Endereço não verificado” | Adicionar painel de roteamento de e-mail |
+| "Tempo de CPU excedido" | Use `ctx.waitUntil()` ou atualize |
+| "A transmissão está bloqueada" | Buffer `message.raw` primeiro |
+| Falha na resposta silenciosa | Verifique os registros DMARC |
+````

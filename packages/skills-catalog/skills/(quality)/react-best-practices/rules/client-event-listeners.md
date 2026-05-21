@@ -1,15 +1,15 @@
 ---
-title: Deduplicate Global Event Listeners
+title: Desduplicar ouvintes globais de evento
 impact: LOW
-impactDescription: single listener for N components
+impactDescription: um listener para N componentes
 tags: client, swr, event-listeners, subscription
 ---
 
-## Deduplicate Global Event Listeners
+## Desduplicar ouvintes globais de evento
 
-Use `useSWRSubscription()` to share global event listeners across component instances.
+Use `useSWRSubscription()` para compartilhar ouvintes globais entre instâncias de componentes.
 
-**Incorrect (N instances = N listeners):**
+**Incorreto (N instâncias = N ouvintes):**
 
 ```tsx
 function useKeyboardShortcut(key: string, callback: () => void) {
@@ -25,9 +25,9 @@ function useKeyboardShortcut(key: string, callback: () => void) {
 }
 ```
 
-When using the `useKeyboardShortcut` hook multiple times, each instance will register a new listener.
+Ao usar o gancho `useKeyboardShortcut` várias vezes, cada instância registra um novo ouvinte.
 
-**Correct (N instances = 1 listener):**
+**Correto (N instâncias = 1 ouvinte):**
 
 ```tsx
 import useSWRSubscription from 'swr/subscription'
@@ -57,7 +57,7 @@ function useKeyboardShortcut(key: string, callback: () => void) {
   useSWRSubscription('global-keydown', () => {
     const handler = (e: KeyboardEvent) => {
       if (e.metaKey && keyCallbacks.has(e.key)) {
-        keyCallbacks.get(e.key)!.forEach(cb => cb())
+        keyCallbacks.get(e.key)!.forEach((cb) => cb())
       }
     }
     window.addEventListener('keydown', handler)
@@ -67,8 +67,12 @@ function useKeyboardShortcut(key: string, callback: () => void) {
 
 function Profile() {
   // Multiple shortcuts will share the same listener
-  useKeyboardShortcut('p', () => { /* ... */ }) 
-  useKeyboardShortcut('k', () => { /* ... */ })
+  useKeyboardShortcut('p', () => {
+    /* ... */
+  })
+  useKeyboardShortcut('k', () => {
+    /* ... */
+  })
   // ...
 }
 ```

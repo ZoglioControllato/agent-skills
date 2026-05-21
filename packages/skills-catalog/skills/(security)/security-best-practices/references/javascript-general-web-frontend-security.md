@@ -1,725 +1,768 @@
-# Frontend JavaScript/TypeScript Web Security Spec (Vanilla Browser JS/TS, Modern Browsers)
+# Especificação de segurança da Web Frontend JavaScript/TypeScript (navegador Vanilla JS/TS, navegadores modernos)
 
-This document is designed as a **security spec** that supports:
+Este documento foi concebido como uma **especificação de segurança** que oferece suporte a:
 
-1. **Secure-by-default code generation** for new frontend JavaScript/TypeScript (no specific framework assumed).
-2. **Security review / vulnerability hunting** in existing frontend code (passive “notice issues while working” and active “scan the repo and report findings”).
+1. **Geração de código seguro por padrão** para novo front-end JavaScript/TypeScript (nenhuma estrutura específica assumida).
+2. **Revisão de segurança/caça de vulnerabilidades** no código de front-end existente (passivo “notificar problemas durante o trabalho” e ativo “verificar o repositório e relatar descobertas”).
 
-It is intentionally written as a set of **normative requirements** (“MUST/SHOULD/MAY”) plus **audit rules** (what bad patterns look like, how to detect them, and how to fix/mitigate them).
-
----
-
-## 0) Safety, boundaries, and anti-abuse constraints (MUST FOLLOW)
-
-- MUST NOT request, output, log, hard-code, or commit secrets (API keys intended to be secret, private keys, passwords, OAuth refresh tokens, session tokens, cookies).
-  Notes:
-  - Frontend code is inherently observable by end users. If a value must remain secret, it must not be in browser-delivered code.
-  - If the project uses “public” keys (e.g., publishable analytics keys), they MUST be treated as non-secret and scoped accordingly.
-
-- MUST NOT “fix” security by disabling protections (e.g., weakening CSP with `unsafe-inline`/`unsafe-eval` without justification, removing origin checks for `postMessage`, switching to `innerHTML` for convenience, accepting arbitrary redirects/URLs, or turning off sanitization).
-
-- MUST provide **evidence-based findings** during audits: cite file paths, code snippets, and relevant HTML/CSP/config values that justify the claim.
-
-- MUST treat uncertainty honestly:
-  - Security headers (CSP, frame-ancestors, etc.) might be set by server/edge/CDN rather than in repo code. If not visible, report as “not visible here; verify at runtime/edge config.” (Also note that `<meta http-equiv=...>` only simulates a subset of headers; don’t assume other security headers exist just because a meta tag exists.) ([MDN Web Docs][1])
+Ele é intencionalmente escrito como um conjunto de **requisitos normativos** (“DEVE/DEVE/PODE”) mais **regras de auditoria** (como são os padrões ruins, como detectá-los e como corrigi-los/mitigá-los).
 
 ---
 
-## 1) Operating modes
+## 0) Segurança, limites e restrições antiabuso (DEVE SEGUIR)
 
-### 1.1 Generation mode (default)
+- NÃO DEVE solicitar, gerar, registrar, codificar ou confirmar segredos (chaves de API destinadas a serem secretas, chaves privadas, senhas, tokens de atualização OAuth, tokens de sessão, cookies).
+  Notas:
+  - O código frontend é inerentemente observável pelos usuários finais. Se um valor precisar permanecer secreto, ele não deverá estar no código entregue pelo navegador.
+  - Se o projeto usar chaves “públicas” (por exemplo, chaves analíticas publicáveis), elas DEVEM ser tratadas como não secretas e com escopo definido de acordo.
 
-When asked to write new frontend JS/TS code or modify existing code:
+- NÃO DEVE “consertar” a segurança desabilitando proteções (por exemplo, enfraquecendo o CSP com `unsafe-inline`/`unsafe-eval` sem justificativa, removendo verificações de origem para `postMessage`, mudando para `innerHTML` por conveniência, aceitando redirecionamentos/URLs arbitrários ou desativando a higienização).
 
-- MUST follow every **MUST** requirement in this spec.
-- SHOULD follow every **SHOULD** requirement unless the user explicitly says otherwise.
-- MUST prefer safe-by-default browser APIs and proven libraries over custom security code (especially for HTML sanitization).
-- MUST avoid introducing new risky sinks (DOM XSS injection sinks like `innerHTML`, navigation to `javascript:` URLs, dynamic code execution via `eval`/`Function`, unsafe `postMessage`, unsafe third-party script loading, etc.). ([OWASP Cheat Sheet Series][2])
+- DEVE fornecer **descobertas baseadas em evidências** durante as auditorias: citar caminhos de arquivos, trechos de código e valores HTML/CSP/config relevantes que justifiquem a reivindicação.
 
-### 1.2 Passive review mode (always on while editing)
-
-While working anywhere in a frontend repo (even if the user did not ask for a security scan):
-
-- MUST “notice” violations of this spec in touched/nearby code.
-- SHOULD mention issues as they come up, with a brief explanation + safe fix.
-
-### 1.3 Active audit mode (explicit scan request)
-
-When the user asks to “scan”, “audit”, or “hunt for vulns”:
-
-- MUST systematically search the codebase for violations of this spec.
-- MUST output findings in a structured format (see §2.3).
-
-Recommended audit order:
-
-1. HTML entrypoints (`index.html`, server-rendered templates), script/style includes, and any CSP delivery (header vs meta). ([W3C][3])
-2. DOM XSS sinks (`innerHTML`, `document.write`, `insertAdjacentHTML`, event-handler attributes) and their data sources (URL params/hash, storage, postMessage, API responses). ([OWASP Cheat Sheet Series][2])
-3. Navigation/redirect handling (`window.location*`, link targets, URL allowlists) including `javascript:` URL hazards. ([MDN Web Docs][4])
-4. Cross-origin communication (`postMessage`, iframe embed patterns, sandboxing). ([MDN Web Docs][5])
-5. Storage of sensitive data (localStorage/sessionStorage) and assumptions about trust. ([OWASP Cheat Sheet Series][6])
-6. Third-party scripts / tag managers / CDNs, and integrity controls (SRI) and policy controls (CSP). ([OWASP Cheat Sheet Series][7])
-7. DOM clobbering gadgets and unsafe reliance on `window`/`document` named properties. ([OWASP Cheat Sheet Series][8])
+- DEVE tratar a incerteza com honestidade:
+  - Cabeçalhos de segurança (CSP, ancestrais de quadros, etc.) podem ser definidos por servidor/borda/CDN em vez de no código do repositório. Se não estiver visível, relate como “não visível aqui; verifique na configuração de tempo de execução/edge”. (Observe também que `<meta http-equiv=...>` apenas simula um subconjunto de cabeçalhos; não presuma que outros cabeçalhos de segurança existem apenas porque existe uma meta tag.) ([MDN Web Docs][1])
 
 ---
 
-## 2) Definitions and review guidance
+## 1) Modos de operação
 
-### 2.1 Untrusted input (treat as attacker-controlled unless proven otherwise)
+### 1.1 Modo de geração (padrão)
 
-Examples include:
+Quando solicitado a escrever um novo código JS/TS de frontend ou modificar o código existente:
 
-- URL-derived data: `location.href`, `location.search`, `location.hash`, `document.baseURI`, `new URLSearchParams(location.search)`, routing fragments. ([OWASP Cheat Sheet Series][2])
-- DOM content that may include user-controlled markup (comments, profiles, CMS content, markdown-to-HTML output, etc.), especially if inserted dynamically. ([OWASP Cheat Sheet Series][2])
-- `postMessage` event data (`event.data`) and metadata (`event.origin`) from other windows/frames. ([MDN Web Docs][5])
-- Browser storage: `localStorage`, `sessionStorage`, IndexedDB (contents can be attacker-influenced via XSS or local machine access; never treat as “trusted”). ([OWASP Cheat Sheet Series][6])
-- Any data returned from network calls (even if from “your API”), because it may contain stored attacker content that becomes dangerous only when inserted into the DOM. ([OWASP Cheat Sheet Series][2])
+- DEVE seguir todos os requisitos **DEVE** nesta especificação.
+- DEVE seguir todos os requisitos **DEVE**, a menos que o usuário diga explicitamente o contrário.
+- DEVE preferir APIs de navegador seguras por padrão e bibliotecas comprovadas em vez de código de segurança personalizado (especialmente para higienização de HTML).
+- DEVE evitar a introdução de novos coletores de risco (sumidouros de injeção DOM XSS como `innerHTML`, navegação para URLs `javascript:`, execução dinâmica de código via `eval`/`Function`, `postMessa inseguro
 
-### 2.2 Dangerous sink (DOM XSS / code execution sink)
+ge`, carregamento inseguro de scripts de terceiros, etc.). ([Série de folhas de dicas OWASP] [2])
 
-A sink is any API/operation that can execute script or interpret attacker-controlled strings as HTML/JS/URL in a security-sensitive way. High-signal sinks include:
+### 1.2 Modo de revisão passiva (sempre ativado durante a edição)
 
-- HTML parsing / insertion: `innerHTML`, `outerHTML`, `insertAdjacentHTML`, `document.write`, `document.writeln`. ([OWASP Cheat Sheet Series][2])
-- Dynamic code execution: `eval`, `new Function`, `setTimeout("...")`, `setInterval("...")`. ([MDN Web Docs][10])
-- Navigation to script-bearing URLs (e.g., `javascript:`) via setters like `Location.href`/`window.location` (and via link `href` if attacker-controlled). ([MDN Web Docs][4])
-- Setting event handler attributes from strings, e.g. `setAttribute("onclick", "...")`. ([OWASP Cheat Sheet Series][2])
+Ao trabalhar em qualquer lugar em um repositório de front-end (mesmo que o usuário não tenha solicitado uma verificação de segurança):
 
-### 2.3 Required audit finding format
+- DEVE “notar” violações desta especificação no código tocado/próximo.
+- DEVE mencionar os problemas à medida que surgem, com uma breve explicação + solução segura.
 
-For each issue found, output:
+### 1.3 Modo de auditoria ativo (solicitação de verificação explícita)
 
-- Rule ID:
-- Severity: Critical / High / Medium / Low
-- Location: file path + function/class/module + line(s)
-- Evidence: the exact code/config snippet
-- Impact: what could go wrong, who can exploit it
-- Fix: safe change (prefer minimal diff)
-- Mitigation: defense-in-depth if immediate fix is hard
-- False positive notes: what to verify if uncertain
+Quando o usuário pede para “verificar”, “auditar” ou “caçar vulnerabilidades”:
 
----
+- DEVE pesquisar sistematicamente a base de código em busca de violações desta especificação.
+- DEVE apresentar os resultados num formato estruturado (ver §2.3).
 
-## 3) Secure baseline: minimum production configuration (MUST in production)
+Ordem de auditoria recomendada:
 
-This is the smallest baseline that prevents common frontend JS/TS security misconfigurations. Some items are “in repo” (HTML/JS) and some may live at the server/edge.
+1. Pontos de entrada HTML (`index.html`, modelos renderizados pelo servidor), inclusões de script/estilo e qualquer entrega CSP (cabeçalho vs meta). ([W3C][3])
+2. Coletores DOM XSS (`innerHTML`, `document.write`, `insertAdjacentHTML`, atributos do manipulador de eventos) e suas fontes de dados (parâmetros/hash de URL, armazenamento, postMessage, respostas de API). ([Série de folhas de dicas OWASP] [2])
+3. Tratamento de navegação/redirecionamento (`window.location*`, destinos de link, listas de permissões de URL), incluindo `javascript:`
 
-### 3.1 Content Security Policy (CSP) baseline (SHOULD; MUST for high-risk apps)
+Perigos de URL. ([Documentos da Web MDN] [4]) 4. Comunicação entre origens (`postMessage`, padrões de incorporação de iframe, sandboxing). ([Documentos da Web MDN] [5]) 5. Armazenamento de dados confidenciais (localStorage/sessionStorage) e suposições sobre confiança. ([Série de folhas de dicas OWASP] [6]) 6. Scripts/gerenciadores de tags/CDNs de terceiros e controles de integridade (SRI) e controles de política (CSP). ([Série de folhas de dicas OWASP] [7]) 7. DOM derrotando gadgets e dependência insegura de `window`/`d
 
-- SHOULD deliver CSP via HTTP response headers when possible.
-- MAY deliver CSP via an HTML `<meta http-equiv="Content-Security-Policy" ...>` tag when you cannot set headers (e.g., purely static hosting constraints). ([MDN Web Docs][1])
-- If using CSP via `<meta http-equiv>`, MUST understand the limitations:
-  - The policy only applies to content that follows the meta element (so it must appear very early, before any scripts/resources you want governed). ([W3C][3])
-  - The following directives are **not supported** in a meta-delivered policy and will be ignored: `report-uri`, `frame-ancestors`, and `sandbox`. ([W3C][3])
-  - “Report-only” CSP cannot be set via a meta element. ([W3C][3])
-
-Practical baseline goals:
-
-- Avoid script sources `unsafe-inline` and `unsafe-eval` (they significantly weaken CSP’s value against XSS). ([MDN Web Docs][10])
-- Prefer nonce- or hash-based script policies if you need inline scripts. ([MDN Web Docs][10])
-- Consider enabling Trusted Types enforcement where feasible. ([MDN Web Docs][11])
-
-### 3.2 Third-party scripts baseline (SHOULD)
-
-- SHOULD minimize third-party script execution and treat it as equivalent privilege to first-party JS (it runs with your origin’s privileges). ([OWASP Cheat Sheet Series][7])
-- SHOULD use Subresource Integrity (SRI) for third-party scripts/styles loaded from CDNs. ([MDN Web Docs][12])
-
-### 3.3 Cross-window communication baseline (SHOULD)
-
-- SHOULD restrict `postMessage` communications to explicit origins, and validate both origin and message shape. ([MDN Web Docs][5])
+document` propriedades nomeadas. ([Série de folhas de dicas OWASP] [8])
 
 ---
 
-## 4) Rules (generation + audit)
+## 2) Definições e orientações de revisão
 
-Each rule contains: required practice, insecure patterns, detection hints, and remediation.
+### 2.1 Entrada não confiável (tratada como controlada pelo invasor, salvo prova em contrário)
 
-### JS-XSS-001: Do not inject untrusted HTML into the DOM (avoid `innerHTML` and friends)
+Os exemplos incluem:
 
-Severity: Critical if you can prove attacker-controlled input can reach these APIs; otherwise Medium
+- Dados derivados de URL: `location.href`, `location.search`, `location.hash`, `document.baseURI`, `new URLSearchParams(location.search)`, fragmentos de roteamento. ([Série de folhas de dicas OWASP] [2])
+- Conteúdo DOM que pode incluir marcação controlada pelo usuário (comentários, perfis, conteúdo CMS, saída de marcação para HTML, etc.), especialmente se inserido dinamicamente. ([Série de folhas de dicas OWASP] [2])
+- dados do evento `postMessage` (`event.data`) e metadados (`event.origin`) de o
 
-Required:
+outras janelas/molduras. ([Documentos da Web MDN] [5])
 
-- MUST treat `innerHTML`, `outerHTML`, and `insertAdjacentHTML` as dangerous sinks when their input can contain untrusted data. ([OWASP Cheat Sheet Series][2])
-- MUST prefer safe DOM APIs that do not parse HTML:
-  - `textContent` for text. ([OWASP Cheat Sheet Series][2])
-  - `document.createElement`, `appendChild`, `setAttribute` for non-event-handler attributes. ([OWASP Cheat Sheet Series][2])
+- Armazenamento do navegador: `localStorage`, `sessionStorage`, IndexedDB (o conteúdo pode ser influenciado pelo invasor via XSS ou acesso à máquina local; nunca trate como “confiável”). ([Série de folhas de dicas OWASP] [6])
+- Quaisquer dados retornados de chamadas de rede (mesmo que sejam de “sua API”), pois podem conter conteúdo armazenado do invasor que se torna perigoso somente quando inserido no DOM. ([Série de folhas de dicas OWASP] [2])
 
-- If HTML insertion is truly required, SHOULD sanitize with a well-reviewed HTML sanitizer and strongly consider enforcing Trusted Types to confine usage to audited code paths. ([MDN Web Docs][11])
+### 2.2 Coletor perigoso (DOM XSS/coletor de execução de código)
 
-Insecure patterns:
+Um coletor é qualquer API/operação que pode executar script ou interpretar strings controladas pelo invasor como HTML/JS/URL de maneira sensível à segurança. Os coletores de alto sinal incluem:
 
-- `el.innerHTML = userInput`
+- Análise / inserção de HTML: `innerHTML`, `outerHTML`, `insertAdjacentHTML`, `document.write`, `document.writeln`. ([Série de folhas de dicas OWASP] [2])
+- Execução dinâmica de código: `eval`, `new Function`, `setTimeout("...")`, `setInterval("...")`. ([Documentos da Web MDN] [10])
+- Navegação para URLs contendo scripts (por exemplo, `javascript:`) por meio de setters como `Location.href`/`window.location` (e via link `href` se for controlado por um invasor). ([Documentos da Web MDN] [4])
+- Configuração de evento
+
+atributos de manipulador de strings, por ex. `setAttribute("onclick", "...")`. ([Série de folhas de dicas OWASP] [2])
+
+### 2.3 Formato de descoberta de auditoria necessário
+
+Para cada problema encontrado, produza:
+
+- ID da regra:
+- Gravidade: Crítica / Alta / Média / Baixa
+- Localização: caminho do arquivo + função/classe/módulo + linha(s)
+- Evidência: o trecho de código/configuração exato
+- Impacto: o que pode dar errado, quem pode explorar
+- Correção: mudança segura (prefira diferença mínima)
+- Mitigação: defesa profunda se a solução imediata for difícil
+- Notas falso-positivas: o que verificar em caso de incerteza
+
+---
+
+## 3) Linha de base segura: configuração mínima de produção (DEVE em produção)
+
+Esta é a menor linha de base que evita configurações incorretas comuns de segurança JS/TS de front-end. Alguns itens estão “no repositório” (HTML/JS) e alguns podem residir no servidor/borda.
+
+### 3.1 Linha de base da Política de Segurança de Conteúdo (CSP) (DEVE; OBRIGATÓRIA para aplicativos de alto risco)
+
+- DEVE entregar CSP através de cabeçalhos de resposta HTTP quando possível.
+- PODE entregar CSP por meio de uma tag HTML `<meta http-equiv="Content-Security-Policy" ...>` quando você não pode definir cabeçalhos (por exemplo, restrições de hospedagem puramente estáticas). ([Documentos da Web MDN] [1])
+- Se estiver usando CSP via `<meta http-equiv>`, DEVE entender as limitações:
+  - A política se aplica apenas ao conteúdo que segue o elemento meta (portanto, deve aparecer bem cedo, antes de qualquer script/recurso que você queira ir
+
+vernado). ([W3C][3])
+
+- As seguintes diretivas **não são suportadas** em uma política meta-entregue e serão ignoradas: `report-uri`, `frame-ancestors` e `sandbox`. ([W3C][3])
+- O CSP “somente relatório” não pode ser definido por meio de um metaelemento. ([W3C][3])
+
+Metas básicas práticas:
+
+- Evite fontes de script `unsafe-inline` e `unsafe-eval` (elas enfraquecem significativamente o valor do CSP em relação ao XSS). ([Documentos da Web MDN] [10])
+- Prefira políticas de script baseadas em nonce ou hash se precisar de scripts embutidos. ([Documentos da Web MDN] [10])
+- Considere ativar a aplicação de tipos confiáveis sempre que possível. ([Documentos da Web MDN] [11])
+
+### 3.2 Linha de base de scripts de terceiros (DEVE)
+
+- DEVE minimizar a execução de scripts de terceiros e tratá-lo como privilégio equivalente ao JS primário (ele é executado com os privilégios de sua origem). ([Série de folhas de dicas OWASP] [7])
+- DEVE usar Subresource Integrity (SRI) para scripts/estilos de terceiros carregados de CDNs. ([Documentos da Web MDN] [12])
+
+### 3.3 Linha de base de comunicação entre janelas (DEVE)
+
+- DEVE restringir as comunicações `postMessage` a origens explícitas e validar a origem e o formato da mensagem. ([Documentos da Web MDN] [5])
+
+---
+
+## 4) Regras (geração + auditoria)
+
+Cada regra contém: práticas necessárias, padrões inseguros, dicas de detecção e correção.
+
+### JS-XSS-001: Não injete HTML não confiável no DOM (evite `innerHTML` e amigos)
+
+Gravidade: Crítica se você puder provar que a entrada controlada pelo invasor pode alcançar essas APIs; caso contrário, Médio
+
+Obrigatório:
+
+- DEVE tratar `innerHTML`, `outerHTML` e `insertAdjacentHTML` como coletores perigosos quando sua entrada pode conter dados não confiáveis. ([Série de folhas de dicas OWASP] [2])
+- DEVE preferir APIs DOM seguras que não analisem HTML:
+  - `textContent` para texto. ([Série de folhas de dicas OWASP] [2])
+  - `document.createElement`, `appendChild`, `setAttribute` para atributos que não são manipuladores de eventos. ([Série de folhas de dicas OWASP] [2])
+
+- Se a inserção de HTML for realmente necessária, DEVE higienizar com um sanitizador de HTML bem revisado e considerar fortemente a aplicação de Tipos Confiáveis ​​para limitar o uso a caminhos de código auditados. ([Documentos da Web MDN] [11])
+
+Padrões inseguros:
+
+- `el.innerHTML=userInput`
 - `el.insertAdjacentHTML('beforeend', userInput)`
 - `el.outerHTML = userInput`
 
-Detection hints:
+Dicas de detecção:
 
-- Search for: `.innerHTML`, `.outerHTML`, `insertAdjacentHTML(`.
-- Trace the origin of inserted string: URL params/hash, postMessage, storage, API responses, DOM attributes. ([OWASP Cheat Sheet Series][2])
+- Procure por: `.innerHTML`, `.outerHTML`, `insertAdjacentHTML(`.
+- Rastreie a origem da string inserida: parâmetros/hash de URL, postMessage, armazenamento, respostas de API, atributos DOM. ([Série de folhas de dicas OWASP] [2])
 
-Fix:
+Correção:
 
-- Replace with `textContent` for plain text. ([OWASP Cheat Sheet Series][2])
-- For structured UI, build DOM nodes explicitly.
-- For “rich text” requirements:
-  - Sanitize using an allowlist-based sanitizer.
-  - Prefer returning safe “components” instead of arbitrary HTML strings.
-  - Use Trusted Types enforcement to ensure only `TrustedHTML` reaches sinks where supported. ([MDN Web Docs][11])
+- Substitua por `textContent` para texto simples. ([Série de folhas de dicas OWASP] [2])
+- Para UI estruturada, crie nós DOM explicitamente.
+- Para requisitos de “rich text”:
+  - Higienize usando um desinfetante baseado em lista de permissões.
+  - Prefira retornar “componentes” seguros em vez de strings HTML arbitrárias.
+  - Use a aplicação de tipos confiáveis ​​para garantir que apenas `TrustedHTML` alcance coletores onde houver suporte. ([Documentos da Web MDN] [11])
 
-Mitigation:
+Mitigação:
 
-- Deploy a strict CSP and consider Trusted Types enforcement (`require-trusted-types-for 'script'`). ([MDN Web Docs][10])
+- Implante um CSP estrito e considere a aplicação de tipos confiáveis ​​(`require-trusted-types-for 'script'`). ([Documentos da Web MDN] [10])
 
-False positive notes:
+Notas falsas positivas:
 
-- If the string is provably constant or fully generated from trusted constants, it may be safe. Still prefer safer APIs.
+- Se a string for comprovadamente constante ou totalmente gerada a partir de constantes confiáveis, ela pode ser segura. Ainda prefiro APIs mais seguras.
 
 ---
 
-### JS-XSS-002: Avoid `document.write` / `document.writeln` (XSS + document clobbering hazards)
+### JS-XSS-002: Evite `document.write` / `document.writeln` (XSS + riscos de destruição de documentos)
 
-Severity: Critical if you can prove attacker-controlled input can reach these APIs; otherwise Medium
+Gravidade: Crítica se você puder provar que a entrada controlada pelo invasor pode alcançar essas APIs; caso contrário, Médio
 
-Required:
+Obrigatório:
 
-- MUST avoid `document.write()` and `document.writeln()` in production code (they are XSS vectors and can be abused with crafted HTML even if some browsers block injected `<script>` in certain situations). ([MDN Web Docs][13])
-- If legacy use is unavoidable, MUST ensure no untrusted input reaches these APIs and SHOULD enforce Trusted Types (`TrustedHTML`) where supported. ([MDN Web Docs][14])
+- DEVE evitar `document.write()` e `document.writeln()` no código de produção (eles são vetores XSS e podem ser abusados ​​com HTML criado mesmo se alguns navegadores bloquearem `<script>` injetado em certas situações). ([Documentos da Web MDN] [13])
+- Se o uso legado for inevitável, DEVE garantir que nenhuma entrada não confiável chegue a essas APIs e DEVE impor Tipos Confiáveis (`TrustedHTML`) quando suportados. ([Documentos da Web MDN] [14])
 
-Insecure patterns:
+Padrões inseguros:
 
 - `document.write(userInput)`
 - `document.writeln(getParam('q'))`
 
-Detection hints:
+Dicas de detecção:
 
-- Search for `document.write(`, `document.writeln(`. ([OWASP Cheat Sheet Series][2])
+- Procure por `document.write(`, `document.writeln(`. ([Série de folhas de dicas OWASP][2])
 
-Fix:
+Correção:
 
-- Replace with DOM manipulation (`createElement`, `appendChild`) or safe text insertion (`textContent`). ([OWASP Cheat Sheet Series][2])
+- Substitua por manipulação de DOM (`createElement`, `appendChild`) ou inserção segura de texto (`textContent`). ([Série de folhas de dicas OWASP] [2])
 
-Mitigation:
+Mitigação:
 
-- Strict CSP + Trusted Types enforcement reduces blast radius if a sink remains. ([MDN Web Docs][10])
+- A aplicação estrita de CSP + tipos confiáveis reduz o raio de explosão se um coletor permanecer. ([Documentos da Web MDN] [10])
 
 ---
 
-### JS-XSS-003: Do not use string-to-code execution (`eval`, `new Function`, string timeouts)
+### JS-XSS-003: Não use execução de string para código (`eval`, `new Function`, tempos limite de string)
 
-Severity: Critical if you can prove attacker-controlled input can reach these APIs; otherwise Medium
+Gravidade: Crítica se você puder provar que a entrada controlada pelo invasor pode alcançar essas APIs; caso contrário, Médio
 
-Required:
+Obrigatório:
 
-- MUST NOT pass untrusted data to:
+- NÃO DEVE passar dados não confiáveis para:
   - `eval()`
-  - `new Function(...)`
-  - `setTimeout("...")` / `setInterval("...")` with string arguments ([MDN Web Docs][10])
+  - `nova função (...)`
+  - `setTimeout("...")` / `setInterval("...")` com argumentos de string ([MDN Web Docs][10])
 
-- SHOULD avoid these APIs entirely in modern frontend code; refactor to non-eval logic. ([MDN Web Docs][10])
-- MUST NOT “fix CSP breakage” by adding `unsafe-eval` unless there is a documented, reviewed justification and compensating controls. ([MDN Web Docs][10])
+- DEVE evitar essas APIs inteiramente no código frontend moderno; refatorar para lógica sem avaliação. ([Documentos da Web MDN] [10])
+- NÃO DEVE “consertar quebras de CSP” adicionando `unsafe-eval` a menos que haja uma justificativa documentada e revisada e controles de compensação. ([Documentos da Web MDN] [10])
 
-Insecure patterns:
+Padrões inseguros:
 
 - `eval(userInput)`
-- `new Function("return " + userInput)()`
-- `setTimeout(userInput, 0)` where userInput is a string
+- `nova Função("return " + userInput)()`
+- `setTimeout(userInput, 0)` onde userInput é uma string
 
-Detection hints:
+Dicas de detecção:
 
-- Search for `eval(`, `new Function`, `setTimeout("`, `setInterval("`.
-- Also search for construction of code strings used later.
+- Procure por `eval(`, `nova Função`, `setTimeout("`, `setInterval("`.
+- Pesquise também a construção de strings de código usadas posteriormente.
 
-Fix:
+Correção:
 
-- Replace dynamic code with:
-  - structured data + explicit branching/handlers,
-  - JSON parsing (`JSON.parse`) instead of `eval` for JSON. ([OWASP Cheat Sheet Series][2])
+- Substitua o código dinâmico por:
+  - dados estruturados + ramificações/manipuladores explícitos,
+  - Análise JSON (`JSON.parse`) em vez de `eval` para JSON. ([Série de folhas de dicas OWASP] [2])
 
-Mitigation:
+Mitigação:
 
-- CSP that blocks `eval()`-like APIs by default, and avoid `unsafe-eval`. ([MDN Web Docs][10])
-- Consider Trusted Types for controlled cases, but treat it as a hardening layer, not a license to keep eval patterns. ([MDN Web Docs][10])
+- CSP que bloqueia APIs do tipo `eval()` por padrão e evita `unsafe-eval`. ([Documentos da Web MDN] [10])
+- Considere tipos confiáveis para casos controlados, mas trate-os como uma camada de proteção, não como uma licença para manter padrões de avaliação. ([Documentos da Web MDN] [10])
 
 ---
 
-### JS-XSS-004: Do not set event handler attributes from strings (e.g., `setAttribute("onclick", "...")`)
+### JS-XSS-004: Não defina atributos do manipulador de eventos a partir de strings (por exemplo, `setAttribute("onclick", "...")`)
 
-Severity: High
+Gravidade: Alta
 
-Required:
+Obrigatório:
 
-- MUST NOT use `setAttribute("on…", string)` or similar patterns with untrusted data; this coerces strings into executable code in the event-handler context. ([OWASP Cheat Sheet Series][2])
-- SHOULD prefer `addEventListener` with function references.
+- NÃO DEVE usar `setAttribute("on…", string)` ou padrões similares com dados não confiáveis; isso força as strings em código executável no contexto do manipulador de eventos. ([Série de folhas de dicas OWASP] [2])
+- DEVE preferir `addEventListener` com referências de função.
 
-Insecure patterns:
+Padrões inseguros:
 
 - `el.setAttribute("onclick", userInput)`
-- `el.onclick = userControlledString` (string assignment)
+- `el.onclick = userControlledString` (atribuição de string)
 
-Detection hints:
+Dicas de detecção:
 
-- Search for `.setAttribute("on`, `.onclick =`, `.onmouseover =`, etc.
-- Trace whether RHS can be influenced by URL/hash/storage/postMessage. ([OWASP Cheat Sheet Series][2])
+- Procure por `.setAttribute("on`, `.onclick =`, `.onmouseover =`, etc.
+- Rastreie se o RHS pode ser influenciado por URL/hash/storage/postMessage. ([Série de folhas de dicas OWASP] [2])
 
-Fix:
+Correção:
 
-- Replace with `addEventListener("click", () => { ... })`.
-- If dynamic dispatch is needed, use an allowlisted mapping from identifiers to functions (no string eval). ([OWASP Cheat Sheet Series][2])
+- Substitua por `addEventListener("click", () => { ... })`.
+- Se for necessário despacho dinâmico, use um mapeamento permitido de identificadores para funções (sem avaliação de string). ([Série de folhas de dicas OWASP] [2])
 
 ---
 
-### JS-URL-001: Sanitize and allowlist URLs before navigation (especially `window.location` / `location.replace`)
+### JS-URL-001: Sanitizar e permitir URLs antes da navegação (especialmente `window.location` / `location.replace`)
 
-Severity: Low (High if you can prove an attacker can fully control the URL)
+Gravidade: Baixa (Alta se você puder provar que um invasor pode controlar totalmente o URL)
 
-IMPORTANT: This can cause a lot of false positives. Please perform extra analysis to determine if the url is fully attacker controlled. If not fully attacker controlled, then this is informational at best.
+IMPORTANTE: Isso pode causar muitos falsos positivos. Execute uma análise extra para determinar se o URL é totalmente controlado pelo invasor. Se não for totalmente controlado pelo invasor, isso será, na melhor das hipóteses, informativo.
 
-NOTE: It may be important functionality to be able to redirect to any given url. If that is the goal of the feature, then at a minimum, ensure it checks the schema even if the origin is allowed to be anything.
+NOTA: Pode ser uma funcionalidade importante poder redirecionar para qualquer URL. Se esse for o objetivo do recurso, no mínimo, certifique-se de que ele verifique o esquema, mesmo que a origem possa ser qualquer coisa.
 
-Required:
+Obrigatório:
 
-- MUST treat any assignment to navigation targets as security-sensitive:
-  - `window.location = ...`
-  - `location.href = ...`
-  - `location.assign(...)`
+- DEVE tratar qualquer atribuição a alvos de navegação como sensível à segurança:
+  - `janela.localização = ...`
+  - `localização.href = ...`
+  - `localização.assign(...)`
   - `location.replace(...)` ([MDN Web Docs][4])
 
-- MUST prevent navigation to `javascript:` URLs (and generally other script-bearing/active schemes), especially when input is derived from URL params, storage, or messages. ([MDN Web Docs][4]). Only allow `http:` and `https:`.
-- SHOULD validate/allowlist the destination. A safe baseline is:
-  - Allow only same-origin relative paths, OR
-  - Allow only a strict allowlist of origins and protocols (typically `https:` and optionally `http:` for localhost dev). ([OWASP Cheat Sheet Series][8])
+- DEVE impedir a navegação para URLs `javascript:` (e geralmente outros esquemas ativos/com script), especialmente quando a entrada é derivada de parâmetros de URL, armazenamento ou mensagens. ([Documentos da Web MDN] [4]). Permitir apenas `http:` e `https:`.
+- DEVE validar/permitir o destino. Uma linha de base segura é:
+  - Permitir apenas caminhos relativos de mesma origem, OU
+  - Permitir apenas uma lista de permissões estrita de origens e protocolos (normalmente `https:` e opcionalmente `http:` para localh
 
-Insecure patterns:
+ost dev). ([Série de folhas de dicas OWASP] [8])
 
-- `location.replace(getParam("next"))`
+Padrões inseguros:
+
+- `localização.replace(getParam("próximo"))`
 - `window.location = userSuppliedUrl`
-- `location.assign(window.redirectTo || "/")` where `redirectTo` can be clobbered or attacker-set ([OWASP Cheat Sheet Series][8])
+- `location.assign(window.redirectTo || "/")` onde `redirectTo` pode ser derrotado ou definido por um invasor ([OWASP Cheat Sheet Series][8])
 
-Detection hints:
+Dicas de detecção:
 
-- Search for `window.location`, `location.href`, `location.assign`, `location.replace`.
-- Search for common redirect parameters: `next`, `returnTo`, `redirect`, `url`, `continue`.
-- Search for `javascript:` literal usage. ([MDN Web Docs][4])
+- Procure por `window.location`, `location.href`, `location.assign`, `location.replace`.
+- Pesquise parâmetros de redirecionamento comuns: `next`, `returnTo`, `redirect`, `url`, `continue`.
+- Procure por `javascript:` uso literal. ([Documentos da Web MDN] [4])
 
-Fix:
+Correção:
 
-- Parse and validate with `new URL(value, location.origin)` and then enforce:
-  - `url.protocol` in `{ "https:" }` (and only include `http:` in explicit dev-only code paths),
-  - `url.origin` equals `location.origin` for internal redirects, or in a strict allowlist for external redirects,
-  - optionally allow only specific path prefixes. ([MDN Web Docs][4])
+- Analise e valide com `new URL(value, location.origin)` e, em seguida, aplique:
+  - `url.protocol` em `{ "https:" }` (e inclua apenas `http:` em caminhos de código explícitos somente para desenvolvedores),
+  - `url.origin` é igual a `location.origin` para redirecionamentos internos ou em uma lista de permissões estrita para redirecionamentos externos,
+  - opcionalmente permite apenas prefixos de caminho específicos. ([Documentos da Web MDN] [4])
 
-- If validation fails, navigate to a safe default (home/dashboard).
+- Se a validação falhar, navegue até um padrão seguro (home/dashboard).
 
-Mitigation:
+Mitigação:
 
-- Deploy strict CSP and Trusted Types enforcement to reduce the impact of DOM XSS sinks, but note that Trusted Types do not prevent every possible unsafe navigation scenario on their own. ([W3C][15])
+- Implemente a aplicação estrita de CSP e tipos confiáveis ​​para reduzir o impacto dos coletores DOM XSS, mas observe que os tipos confiáveis ​​não evitam todos os possíveis cenários de navegação inseguros por conta própria. ([W3C][15])
 
-False positive notes:
+Notas falsas positivas:
 
-IMPORTANT: This can cause a lot of false positives. Please perform extra analysis to determine if the url is fully attacker controlled. If not fully attacker controlled, then this is informational at best.
+IMPORTANTE: Isso pode causar muitos falsos positivos. Execute uma análise extra para determinar se o URL é totalmente controlado pelo invasor. Se não for totalmente controlado pelo invasor, isso será, na melhor das hipóteses, informativo.
 
-- Some apps intentionally support external redirects (SSO, payment flows). Those MUST be allowlisted and documented.
+- Alguns aplicativos suportam intencionalmente redirecionamentos externos (SSO, fluxos de pagamento). Eles DEVEM estar na lista de permissões e documentados.
 
 ---
 
-### JS-URL-002: Sanitize URLs before inserting into DOM URL contexts (`href`, `src`, etc.)
+### JS-URL-002: Limpe URLs antes de inseri-las em contextos de URL DOM (`href`, `src`, etc.)
 
-Severity: Low (High if you can prove an attacker can fully control the URL)
+Gravidade: Baixa (Alta se você puder provar que um invasor pode controlar totalmente o URL)
 
-IMPORTANT: This can cause a lot of false positives. Please perform extra analysis to determine if the url is fully attacker controlled. If not fully attacker controlled, then this is informational at best.
+IMPORTANTE: Isso pode causar muitos falsos positivos. Execute uma análise extra para determinar se o URL é totalmente controlado pelo invasor. Se não for totalmente controlado pelo invasor, isso será, na melhor das hipóteses, informativo.
 
-Required:
+Obrigatório:
 
-- MUST treat setting URL-bearing DOM attributes/properties as security-sensitive, especially:
+- DEVE tratar a configuração de atributos/propriedades DOM contendo URL como sensíveis à segurança, especialmente:
   - `a.href`, `img.src`, `script.src`, `iframe.src`, `form.action`, `link.href`.
 
-- MUST prevent script-bearing schemes (`javascript:` and other active schemes) when values can be attacker-influenced. ([MDN Web Docs][4])
-- SHOULD prefer setting properties (e.g., `a.href = url.toString()`) after parsing and validation, rather than string concatenation.
+- DEVE evitar esquemas contendo scripts (`javascript:` e outros esquemas ativos) quando os valores podem ser influenciados pelo invasor. ([Documentos da Web MDN] [4])
+- DEVE preferir definir propriedades (por exemplo, `a.href = url.toString()`) após análise e validação, em vez de concatenação de strings.
 
-Insecure patterns:
+Padrões inseguros:
 
 - `link.href = getParam("u")`
-- `el.setAttribute("href", userInput)` without validation
-- constructing URLs via concatenation with untrusted pieces
+- `el.setAttribute("href", userInput)` sem validação
+- construção de URLs via concatenação com partes não confiáveis
 
-Detection hints:
+Dicas de detecção:
 
-- Search for `.href =`, `.src =`, `.action =`, `setAttribute("href"`, `setAttribute("src"`.
-- Search for `javascript:` / `data:` usage in URLs. ([MDN Web Docs][4])
+- Procure por `.href =`, `.src =`, `.action =`, `setAttribute("href"`, `setAttribute("src"`.
+- Pesquise o uso de `javascript:` / `data:` em URLs. ([Documentos da Web MDN] [4])
 
-IMPORTANT: This can cause a lot of false positives. Please perform extra analysis to determine if the url is fully attacker controlled. If not fully attacker controlled, then this is informational at best.
+IMPORTANTE: Isso pode causar muitos falsos positivos. Execute uma análise extra para determinar se o URL é totalmente controlado pelo invasor. Se não for totalmente controlado pelo invasor, isso será, na melhor das hipóteses, informativo.
 
-Fix:
+Correção:
 
-- Use `new URL(...)` and validate:
-  - protocol allowlist
-  - avoid passing user-provided values into `<script src>` at all (treat as code execution). ([OWASP Cheat Sheet Series][8])
-
----
-
-### JS-CSP-001: Use CSP; meta delivery is allowed
-
-Severity: Medium to High (depends on threat model; High when handling untrusted content)
-
-NOTE: It is most important to set the CSP's script-src. All other directives are not as important and can generally be excluded for the ease of development.
-
-Required:
-
-- SHOULD deploy a CSP as a major defense-in-depth against XSS. ([MDN Web Docs][10])
-- MAY provide CSP via `<meta http-equiv="Content-Security-Policy" ...>` when headers are not available. ([MDN Web Docs][1])
-- If CSP is delivered via meta, MUST:
-  - place it early (before scripts/resources you want governed), and
-  - not rely on unsupported directives in meta policies (`report-uri`, `frame-ancestors`, `sandbox`). ([W3C][3])
-
-- MUST avoid adding `unsafe-inline` as a “quick fix” for CSP issues unless explicitly required and reviewed (it defeats much of CSP’s purpose). ([MDN Web Docs][10])
-- MUST avoid adding `unsafe-eval` unless explicitly required and reviewed (it allows eval-like APIs that are commonly abused). ([MDN Web Docs][10])
-
-Insecure patterns:
-
-- No CSP present anywhere (repo HTML or server/edge) for an app that renders untrusted content.
-- CSP includes `script-src 'unsafe-inline'` and/or `script-src 'unsafe-eval'` without strong justification. ([MDN Web Docs][10])
-- CSP delivered via meta but includes `frame-ancestors` (it will be ignored in meta). ([W3C][3])
-
-Detection hints:
-
-- Search HTML for `<meta http-equiv="Content-Security-Policy"`.
-- Search server/edge configs for `Content-Security-Policy` header.
-- If CSP is only in meta, check it appears before any `<script>` tags you want governed. ([W3C][3])
-
-Fix:
-
-- Prefer header-delivered CSP at the server/edge.
-- If constrained to meta, keep a strong allowlist CSP and document the limitations; implement clickjacking protections (e.g., `frame-ancestors`) at the server/edge, not in meta. ([W3C][3])
+- Use `new URL(...)` e valide:
+  - lista de permissões de protocolo
+  - evite passar valores fornecidos pelo usuário para `<script src>` (trate como execução de código). ([Série de folhas de dicas OWASP] [8])
 
 ---
 
-### JS-CSP-002: Prefer strict CSP (nonces/hashes); avoid inline/eval patterns in code
+### JS-CSP-001: Usar CSP; meta entrega é permitida
 
-Severity: Medium
+Gravidade: Média a Alta (depende do modelo de ameaça; Alta ao lidar com conteúdo não confiável)
 
-NOTE: It is most important to set the CSP's script-src. All other directives are not as important and can generally be excluded for the ease of development.
+NOTA: É muito importante definir o script-src do CSP. Todas as outras directivas não são tão importantes e geralmente podem ser excluídas para facilitar o desenvolvimento.
 
-Required:
+Obrigatório:
 
-- SHOULD design frontend code to work under a strict CSP:
-  - avoid inline scripts and inline event handlers,
-  - avoid eval-like APIs (see JS-XSS-003),
-  - allow scripts via nonce or hash when needed. ([MDN Web Docs][10])
+- DEVE implantar um CSP como uma importante defesa profunda contra o XSS. ([Documentos da Web MDN] [10])
+- PODE fornecer CSP via `<meta http-equiv="Content-Security-Policy" ...>` quando os cabeçalhos não estiverem disponíveis. ([Documentos da Web MDN] [1])
+- Se o CSP for entregue via meta, DEVE:
+  - coloque-o antecipadamente (antes dos scripts/recursos que você deseja controlar) e
+  - não confiar em diretivas não suportadas em metapolíticas (`report-uri`, `frame-ancestors`, `sandbox`). ([W3C][3])
 
-Insecure patterns:
+- DEVE evitar adicionar `unsafe-inline` como uma “solução rápida” para problemas de CSP, a menos que explicitamente exigido e revisado (isso vai contra grande parte do propósito do CSP). ([Documentos da Web MDN] [10])
+- DEVE evitar adicionar `unsafe-eval`, a menos que seja explicitamente solicitado e revisado (permite APIs do tipo eval que são comumente abusadas). ([Documentos da Web MDN] [10])
 
-- Large amounts of inline script blocks and inline `onclick="..."` handlers.
-- Libraries that require `unsafe-eval`.
+Padrões inseguros:
 
-Detection hints:
+- Nenhum CSP presente em qualquer lugar (repo HTML ou servidor/edge) para um aplicativo que renderiza conteúdo não confiável.
+- CSP inclui `script-src 'unsafe-inline'` e/ou `script-src 'unsafe-eval'` sem forte justificativa. ([Documentos da Web MDN] [10])
+- CSP entregue via meta, mas inclui `frame-ancestors` (será ignorado no meta). ([W3C][3])
 
-- Search for `<script>` blocks with inline code, `onclick="`, `onload="`, etc.
-- Search for CSP directives containing `unsafe-inline` or `unsafe-eval`. ([MDN Web Docs][10])
+Dicas de detecção:
 
-Fix:
+- Pesquise em HTML por `<meta http-equiv="Content-Security-Policy"`.
+- Pesquise configurações de servidor/borda para o cabeçalho `Content-Security-Policy`.
+- Se CSP estiver apenas em meta, verifique se ele aparece antes de qualquer tag `<script>` que você deseja controlar. ([W3C][3])
 
-- Move inline scripts into external JS files (same-origin).
-- Use nonces/hashes for any unavoidable inline blocks. ([MDN Web Docs][10])
+Correção:
 
----
-
-### JS-TT-001: Use Trusted Types to reduce DOM XSS attack surface (where supported)
-
-Severity: Low
-
-Required:
-
-- SHOULD consider enabling Trusted Types enforcement with CSP `require-trusted-types-for 'script'` to make many DOM XSS sinks reject raw strings. ([MDN Web Docs][11])
-- If using Trusted Types, SHOULD also use the CSP `trusted-types` directive to restrict which policies can be created (reduces policy sprawl and improves auditability). ([MDN Web Docs][16])
-- MUST keep Trusted Types policy code small, heavily reviewed, and used as the only path to produce trusted values for sinks. ([W3C][15])
-
-Insecure patterns:
-
-- “Trusted Types enabled” but policy simply returns input unchanged (no sanitization/validation).
-- Many ad-hoc policies created across the codebase without restriction.
-- Belief that Trusted Types alone prevents all unsafe navigations or all XSS classes. (It targets DOM injection sinks; it is not a universal sandbox.) ([W3C][15])
-
-Detection hints:
-
-- Search for CSP directives: `require-trusted-types-for` and `trusted-types`.
-- Search code for `trustedTypes.createPolicy(` and inspect policy implementations. ([MDN Web Docs][11])
-
-Fix:
-
-- Add a small set of well-reviewed policies (e.g., `createHTML` that sanitizes).
-- Restrict allowed policies via `trusted-types <policyName...>`.
-- Migrate sinks to require `TrustedHTML` / `TrustedScriptURL` as appropriate. ([MDN Web Docs][11])
+- Prefira CSP entregue por cabeçalho no servidor/borda.
+- Se estiver restrito ao meta, mantenha um CSP forte na lista de permissões e documente as limitações; implementar proteções contra clickjacking (por exemplo, `frame-ancestors`) no servidor/borda, não no meta. ([W3C][3])
 
 ---
 
-### JS-MSG-001: `postMessage` must use strict origin validation and explicit targetOrigin
+### JS-CSP-002: Prefira CSP estrito (nonces/hashes); evite padrões inline/eval no código
 
-Severity: Medium (High if dangerous behavior can be triggered via postMessage)
+Gravidade: Média
 
-Required:
+NOTA: É muito importante definir o script-src do CSP. Todas as outras directivas não são tão importantes e geralmente podem ser excluídas para facilitar o desenvolvimento.
 
-- When sending messages, MUST set an explicit `targetOrigin` (not `*`) to avoid sending data to an unexpected origin after redirects or window origin changes. ([MDN Web Docs][5])
-- When receiving messages, MUST:
-  - Validate `event.origin` exactly against an allowlist of expected origins (no substring matching). ([OWASP Cheat Sheet Series][6])
-  - Consider validating `event.source` (expected window reference) when applicable. ([MDN Web Docs][5])
-  - Validate `event.data` structure (schema/shape) and treat it purely as data (never evaluate it as code and never insert into DOM with `innerHTML`). ([OWASP Cheat Sheet Series][6])
+Obrigatório:
 
-Insecure patterns:
+- DEVE projetar o código frontend para funcionar sob um CSP estrito:
+  - evite scripts embutidos e manipuladores de eventos embutidos,
+  - evite APIs do tipo eval (consulte JS-XSS-003),
+  - permitir scripts via nonce ou hash quando necessário. ([Documentos da Web MDN] [10])
 
-- `otherWindow.postMessage(payload, "*")`
-- `window.addEventListener("message", (e) => { doSomething(e.data) })` with no `origin` check
-- `if (e.origin.includes("trusted.com"))` (substring checks)
-- `el.innerHTML = e.data` ([OWASP Cheat Sheet Series][6])
+Padrões inseguros:
 
-Detection hints:
+- Grandes quantidades de blocos de script embutidos e manipuladores `onclick="..."` embutidos.
+- Bibliotecas que requerem `unsafe-eval`.
 
-- Search for `postMessage(`, `addEventListener("message"`, `onmessage =`.
-- Audit all handlers for explicit allowlist checks on `event.origin`. ([OWASP Cheat Sheet Series][6])
+Dicas de detecção:
 
-Fix:
+- Procure por blocos `<script>` com código embutido, `onclick="`, `onload="`, etc.
+- Procure por diretivas CSP contendo `unsafe-inline` ou `unsafe-eval`. ([Documentos da Web MDN] [10])
 
-- Define an allowlist:
+Correção:
+
+- Mova scripts embutidos para arquivos JS externos (mesma origem).
+- Use nonces/hashes para quaisquer blocos inline inevitáveis. ([Documentos da Web MDN] [10])
+
+---
+
+### JS-TT-001: Use tipos confiáveis para reduzir a superfície de ataque DOM XSS (quando houver suporte)
+
+Gravidade: Baixa
+
+Obrigatório:
+
+- DEVE considerar habilitar a aplicação de tipos confiáveis ​​com CSP `require-trusted-types-for 'script'` para fazer com que muitos coletores DOM XSS rejeitem strings brutas. ([Documentos da Web MDN] [11])
+- Se estiver usando tipos confiáveis, DEVE também usar a diretiva `trusted-types` do CSP para restringir quais políticas podem ser criadas (reduz a expansão de políticas e melhora a auditabilidade). ([Documentos da Web MDN] [16])
+- DEVE manter o código de política de tipos confiáveis pequeno, altamente revisado e usado como o único caminho para p
+
+produzir valores confiáveis ​​para coletores. ([W3C][15])
+
+Padrões inseguros:
+
+- “Tipos confiáveis habilitados”, mas a política simplesmente retorna a entrada inalterada (sem higienização/validação).
+- Muitas políticas ad hoc criadas em toda a base de código sem restrições.
+- Crença de que os tipos confiáveis ​​por si só impedem todas as navegações inseguras ou todas as classes XSS. (Ele tem como alvo coletores de injeção DOM; não é uma sandbox universal.) ([W3C][15])
+
+Dicas de detecção:
+
+- Procure por diretivas CSP: `require-trusted-types-for` e `trusted-types`.
+- Pesquise o código para `trustedTypes.createPolicy(` e inspecione as implementações de políticas. ([MDN Web Docs][11])
+
+Correção:
+
+- Adicione um pequeno conjunto de políticas bem revisadas (por exemplo, `createHTML` que higieniza).
+- Restringir políticas permitidas através de `trusted-types <policyName...>`.
+- Migrar coletores para exigir `TrustedHTML` / `TrustedScriptURL` conforme apropriado. ([Documentos da Web MDN] [11])
+
+---
+
+### JS-MSG-001: `postMessage` deve usar validação de origem estrita e targetOrigin explícito
+
+Gravidade: Média (alta se comportamento perigoso puder ser acionado via postMessage)
+
+Obrigatório:
+
+- Ao enviar mensagens, DEVE definir um `targetOrigin` explícito (não `*`) para evitar o envio de dados para uma origem inesperada após redirecionamentos ou alterações na origem da janela. ([Documentos da Web MDN] [5])
+- Ao receber mensagens, DEVE:
+  - Valide `event.origin` exatamente em relação a uma lista de permissões de origens esperadas (sem correspondência de substring). ([Série de folhas de dicas OWASP] [6])
+  - Considere validar `event.source` (referência de janela esperada) quando aplicável. ([Documentos da Web MDN] [5])
+
+- Valide a estrutura `event.data` (esquema/forma) e trate-a puramente como dados (nunca avalie-a como código e nunca insira no DOM com `innerHTML`). ([Série de folhas de dicas OWASP] [6])
+
+Padrões inseguros:
+
+- `otherWindow.postMessage(carga útil, "*")`
+- `window.addEventListener("message", (e) => { doSomething(e.data) })` sem verificação de `origin`
+- `if (e.origin.includes("trusted.com"))` (verificações de substring)
+- `el.innerHTML = e.data` ([Série de folhas de dicas OWASP] [6])
+
+Dicas de detecção:
+
+- Procure por `postMessage(`, `addEventListener("message"`, `onmessage =`.
+- Audite todos os manipuladores para verificações explícitas da lista de permissões em `event.origin`. ([Série de folhas de dicas OWASP] [6])
+
+Correção:
+
+- Definir uma lista de permissões:
   - `const ALLOWED = new Set(["https://app.example.com", "https://accounts.example.com"]);`
-    NOTE: For ease of development, you can use the current page's origin `window.location.origin` as a safe default origin.
+    NOTA: Para facilitar o desenvolvimento, você pode usar a origem da página atual `window.location.origin` como uma origem padrão segura.
 
-- On receive:
+- Ao receber:
   - `if (!ALLOWED.has(event.origin)) return;`
-  - Validate `event.data` with a strict schema and reject unknown/extra fields.
+  - Valide `event.data` com um esquema estrito e rejeite campos desconhecidos/extras.
 
-- On send:
-  - use the exact expected origin string as `targetOrigin`. ([OWASP Cheat Sheet Series][6])
+- Ao enviar:
+  - use a string de origem exata esperada como `targetOrigin`. ([Série de folhas de dicas OWASP] [6])
 
-Mitigation:
+Mitigação:
 
-- Combine with a strict CSP and avoid DOM sinks in message paths. ([MDN Web Docs][10])
-
----
-
-### JS-STORAGE-001: Web Storage is not a safe place for secrets (and is attacker-influencable)
-
-Severity: Low
-
-Required:
-
-- MUST NOT store sensitive secrets or session identifiers in `localStorage` (or `sessionStorage`) if compromise would matter; a single XSS can exfiltrate everything in storage. ([OWASP Cheat Sheet Series][6])
-- MUST treat values read from storage as untrusted input (attackers can load malicious values into storage via XSS). ([OWASP Cheat Sheet Series][6])
-- SHOULD prefer server-set cookies with `HttpOnly` for session identifiers (JS cannot set `HttpOnly`, so avoid storing session IDs in JS-accessible storage). ([OWASP Cheat Sheet Series][6])
-- SHOULD avoid hosting multiple unrelated apps on the same origin if they rely on storage separation (storage is origin-wide). ([OWASP Cheat Sheet Series][6])
-
-Insecure patterns:
-
-- `localStorage.setItem("access_token", token)`
-- `localStorage.setItem("session", sessionId)`
-- Assuming `localStorage` is “trusted because same-origin.”
-
-Detection hints:
-
-- Search for `localStorage.getItem`, `localStorage.setItem`, `sessionStorage.*`.
-- Flag storage keys named `token`, `jwt`, `session`, `auth`, `refresh`. ([OWASP Cheat Sheet Series][6])
-
-Fix:
-
-- Use server-managed sessions or short-lived tokens delivered and rotated securely, with careful XSS defenses (CSP/Trusted Types) and minimal JS exposure.
-- If storage must be used for non-sensitive state, keep it non-auth and validate/escape before use.
+- Combine com um CSP estrito e evite coletores de DOM em caminhos de mensagens. ([Documentos da Web MDN] [10])
 
 ---
 
-### JS-SUPPLY-001: Third-party JavaScript is a major supply-chain risk; minimize and control it
+### JS-STORAGE-001: O armazenamento na Web não é um local seguro para segredos (e pode ser influenciado por invasores)
 
-Severity: Low
+Gravidade: Baixa
 
-Required:
+Obrigatório:
 
-- MUST treat third-party JS as equivalent to first-party JS in privilege (it can execute arbitrary code in your origin and access DOM data). ([OWASP Cheat Sheet Series][7])
-- SHOULD minimize third-party scripts and prefer:
-  - self-hosting / script mirroring,
-  - strict CSP allowlists,
-  - SRI for any CDN-hosted scripts,
-  - ongoing monitoring for unexpected changes. ([OWASP Cheat Sheet Series][7])
+- NÃO DEVE armazenar segredos confidenciais ou identificadores de sessão em `localStorage` (ou `sessionStorage`) se o comprometimento for importante; um único XSS pode exfiltrar tudo no armazenamento. ([Série de folhas de dicas OWASP] [6])
+- DEVE tratar os valores lidos do armazenamento como entrada não confiável (os invasores podem carregar valores maliciosos no armazenamento via XSS). ([Série de folhas de dicas OWASP] [6])
+- DEVE preferir cookies definidos pelo servidor com `HttpOnly` para identificadores de sessão (JS não pode definir `H
 
-Insecure patterns:
+ttpOnly`, portanto evite armazenar IDs de sessão em armazenamento acessível por JS). ([Série de folhas de dicas OWASP] [6])
 
-- Loading arbitrary remote scripts from many vendors without review.
-- Using tag managers that can dynamically inject scripts with no integrity controls.
-- Allowing scripts from broad wildcards in CSP (e.g., `script-src *`). ([MDN Web Docs][10])
+- DEVE evitar hospedar vários aplicativos não relacionados na mesma origem se eles dependerem da separação de armazenamento (o armazenamento abrange toda a origem). ([Série de folhas de dicas OWASP] [6])
 
-Detection hints:
+Padrões inseguros:
 
-- Search HTML for `<script src="https://...">` and `tag manager` snippets.
-- Search CSP `script-src` sources for wildcards or overly broad domains.
-- Search for dynamic script injection: `document.createElement("script")`, `script.src = ...`, `appendChild(script)`. ([OWASP Cheat Sheet Series][8])
+- `localStorage.setItem("token_acesso", token)`
+- `localStorage.setItem("sessão", sessionId)`
+- Supondo que `localStorage` seja “confiável porque é de mesma origem”.
 
-Fix:
+Dicas de detecção:
 
-- Remove unnecessary third-party tags.
-- Self-host or mirror scripts where possible.
-- Lock down CSP `script-src` to the smallest set of trusted sources.
-- Add SRI for CDN scripts/styles. ([OWASP Cheat Sheet Series][7])
+- Procure por `localStorage.getItem`, `localStorage.setItem`, `sessionStorage.*`.
+- Sinalize chaves de armazenamento denominadas `token`, `jwt`, `session`, `auth`, `refresh`. ([Série de folhas de dicas OWASP] [6])
+
+Correção:
+
+- Use sessões gerenciadas por servidor ou tokens de curta duração entregues e rotacionados com segurança, com defesas XSS cuidadosas (CSP/Tipos confiáveis) e exposição mínima a JS.
+- Se o armazenamento precisar ser usado para um estado não confidencial, mantenha-o sem autenticação e valide/escape antes de usar.
 
 ---
 
-### JS-SRI-001: Use Subresource Integrity (SRI) for third-party scripts/styles
+### JS-SUPPLY-001: JavaScript de terceiros é um grande risco para a cadeia de suprimentos; minimizar e controlá-lo
 
-Severity: Low
+Gravidade: Baixa
 
-Required:
+Obrigatório:
 
-- SHOULD use SRI to ensure browsers only load third-party resources if they match an expected cryptographic hash. ([MDN Web Docs][12])
-- MUST update SRI hashes whenever the underlying resource changes (pin versions; avoid “latest” URLs).
+- DEVE tratar JS de terceiros como equivalente ao JS primário em privilégio (ele pode executar código arbitrário em sua origem e acessar dados DOM). ([Série de folhas de dicas OWASP] [7])
+- DEVE minimizar scripts de terceiros e preferir:
+  - auto-hospedagem/espelhamento de script,
+  - listas de permissões rigorosas de CSP,
+  - SRI para qualquer script hospedado em CDN,
+  - monitoramento contínuo de mudanças inesperadas. ([Série de folhas de dicas OWASP] [7])
 
-Insecure patterns:
+Padrões inseguros:
 
-- `<script src="https://cdn.example.com/lib.js"></script>` with no `integrity`.
-- Loading `latest` or unpinned third-party resources.
+- Carregar scripts remotos arbitrários de muitos fornecedores sem revisão.
+- Usando gerenciadores de tags que podem injetar scripts dinamicamente sem controles de integridade.
+- Permitir scripts de curingas amplos em CSP (por exemplo, `script-src *`). ([Documentos da Web MDN] [10])
 
-Detection hints:
+Dicas de detecção:
 
-- Search for `<script src="https://` and `<link rel="stylesheet" href="https://` without `integrity=`.
-- Check whether `integrity` is present and uses strong hashes (sha256/384/512 are typical). ([MDN Web Docs][12])
+- Pesquise em HTML os trechos `<script src="https://...">` e `tag manager`.
+- Pesquise fontes `script-src` do CSP em busca de curingas ou domínios excessivamente amplos.
+- Procure por injeção dinâmica de script: `document.createElement("script")`, `script.src = ...`, `appendChild(script)`. ([Série de folhas de dicas OWASP] [8])
 
-Fix:
+Correção:
 
-- Add `integrity="sha384-..."` (or appropriate) and ensure proper CORS mode where needed.
-- Prefer self-hosting critical libraries.
-
----
-
-### FS-DOMC-001: Prevent DOM clobbering (avoid relying on `window`/`document` named properties)
-
-Severity: Medium to High (can become Critical if it enables script loading or `javascript:` navigation)
-
-Required:
-
-- MUST NOT rely on implicit global variables or `window.someName` / `document.someName` lookups that can be clobbered by injected HTML elements with matching `id`/`name`. ([OWASP Cheat Sheet Series][8])
-- MUST avoid patterns like `let x = window.redirectTo || "/safe"; location.assign(x);` where `redirectTo` could be clobbered to an `<a>` element whose `href` is attacker-controlled (including `javascript:`). ([OWASP Cheat Sheet Series][8])
-- SHOULD use explicit variable declarations, local scope, and explicit DOM queries (`getElementById`) rather than named property access. ([OWASP Cheat Sheet Series][8])
-- If the app inserts user-controlled markup (even sanitized), SHOULD ensure sanitization strategies consider `id`/`name` collisions. ([OWASP Cheat Sheet Series][8])
-
-Insecure patterns:
-
-- `const cfg = window.config || {};` used for security-sensitive URLs.
-- `const redirect = window.redirectTo || "/"; location.assign(redirect);` ([OWASP Cheat Sheet Series][8])
-- Loading scripts from `window.*` config values without strict validation.
-
-Detection hints:
-
-- Search for `window.` and `document.` used as config stores (especially `||` fallback patterns).
-- Search for usage of `location.assign/replace` with variables that come from `window`/`document` properties.
-- Search for dynamic script creation (`createElement('script')`) where `.src` comes from a non-local variable. ([OWASP Cheat Sheet Series][8])
-
-Fix:
-
-- Store config in module-scoped constants (not on `window`/`document`) and pass it explicitly.
-- Validate any URL-like config with protocol/origin allowlists (see FEJS-URL-001). ([OWASP Cheat Sheet Series][8])
-- Consider hardening: sanitization, CSP, and (in limited cases) freezing sensitive objects, but treat these as defense-in-depth, not a substitute for safe coding patterns. ([OWASP Cheat Sheet Series][8])
+- Remova tags desnecessárias de terceiros.
+- Scripts de auto-hospedagem ou espelho sempre que possível.
+- Bloqueie o CSP `script-src` para o menor conjunto de fontes confiáveis.
+- Adicione SRI para scripts/estilos CDN. ([Série de folhas de dicas OWASP] [7])
 
 ---
 
-## 5) Practical scanning heuristics (how to “hunt”)
+### JS-SRI-001: Use integridade de sub-recursos (SRI) para scripts/estilos de terceiros
 
-When actively scanning, use these high-signal patterns:
+Gravidade: Baixa
 
-- DOM XSS sinks:
+Obrigatório:
+
+- DEVE usar SRI para garantir que os navegadores só carreguem recursos de terceiros se eles corresponderem a um hash criptográfico esperado. ([Documentos da Web MDN] [12])
+- DEVE atualizar os hashes SRI sempre que o recurso subjacente for alterado (pin versões; evite URLs “mais recentes”).
+
+Padrões inseguros:
+
+- `<script src="https://cdn.example.com/lib.js"></script>` sem `integridade`.
+- Carregando recursos de terceiros `mais recentes` ou não fixados.
+
+Dicas de detecção:
+
+- Procure por `<script src="https://` e `<link rel="stylesheet" href="https://` sem `integrity=`.
+- Verifique se a `integridade` está presente e usa hashes fortes (sha256/384/512 são típicos). ([Documentos da Web MDN] [12])
+
+Correção:
+
+- Adicione `integrity="sha384-..."` (ou apropriado) e garanta o modo CORS adequado quando necessário.
+- Prefira bibliotecas críticas auto-hospedadas.
+
+---
+
+### FS-DOMC-001: Evita a destruição do DOM (evite depender de propriedades nomeadas `window`/`document`)
+
+Gravidade: Média a Alta (pode se tornar Crítica se ativar o carregamento de script ou a navegação `javascript:`)
+
+Obrigatório:
+
+- NÃO DEVE confiar em variáveis ​​globais implícitas ou pesquisas `window.someName` / `document.someName` que podem ser derrotadas por elementos HTML injetados com `id`/`name` correspondentes. ([Série de folhas de dicas OWASP] [8])
+- DEVE evitar padrões como `let x = window.redirectTo || "/seguro"; location.assign(x);` onde `redirectTo` pode ser transferido para um elemento `<a>` cujo `href` é controlado pelo invasor (incluindo `javascript:`). ([Série de folhas de dicas OWASP] [8])
+- DEVE
+
+D use declarações explícitas de variáveis, escopo local e consultas DOM explícitas (`getElementById`) em vez de acesso a propriedades nomeadas. ([Série de folhas de dicas OWASP] [8])
+
+- Se o aplicativo inserir marcação controlada pelo usuário (mesmo higienizada), DEVE garantir que as estratégias de higienização considerem colisões `id`/`name`. ([Série de folhas de dicas OWASP] [8])
+
+Padrões inseguros:
+
+- `const cfg = window.config || {};` usado para URLs sensíveis à segurança.
+- `const redirecionamento = window.redirectTo || "/"; location.assign (redirect);` ([Série de folhas de dicas OWASP] [8])
+- Carregando scripts de valores de configuração `window.*` sem validação estrita.
+
+Dicas de detecção:
+
+- Procure por `window.` e `document.` usados ​​como armazenamentos de configuração (especialmente padrões de fallback `||`).
+- Pesquise o uso de `location.assign/replace` com variáveis ​​que vêm das propriedades `window`/`document`.
+- Procure por criação de script dinâmico (`createElement('script')`) onde `.src` vem de uma variável não local. ([Série de folhas de dicas OWASP] [8])
+
+Correção:
+
+- Armazene a configuração em constantes com escopo de módulo (não em `window`/`document`) e passe-a explicitamente.
+- Valide qualquer configuração semelhante a URL com listas de permissões de protocolo/origem (consulte FEJS-URL-001). ([Série de folhas de dicas OWASP] [8])
+- Considere o endurecimento: higienização, CSP e (em casos limitados) congelamento de objetos sensíveis, mas trate-os como uma defesa profunda e não como um substituto para padrões de codificação seguros. ([Série de folhas de dicas OWASP] [8])
+
+---
+
+## 5) Heurísticas práticas de varredura (como “caçar”)
+
+Ao digitalizar ativamente, use estes padrões de sinal alto:
+
+- coletores DOM XSS:
   - `.innerHTML`, `.outerHTML`, `insertAdjacentHTML(`
-  - `document.write(`, `document.writeln(` ([OWASP Cheat Sheet Series][2])
+  - `document.write(`, `document.writeln(` ([Série de folhas de dicas OWASP][2])
 
-- Dangerous navigation / URL sinks:
+- Navegação perigosa/sumidouros de URL:
   - `window.location`, `location.href`, `location.assign`, `location.replace`
-  - `javascript:` literals (and other suspicious schemes like `data:text/html`) ([MDN Web Docs][4])
+  - `javascript:` literais (e outros esquemas suspeitos como `data:text/html`) ([MDN Web Docs][4])
 
-- String-to-code execution:
-  - `eval(`, `new Function`, `setTimeout("`, `setInterval("` ([MDN Web Docs][10])
+- Execução de string para código:
+  - `eval(`, `nova Função`, `setTimeout("`, `setInterval("` ([MDN Web Docs][10])
 
-- Event-handler string injection:
-  - `.setAttribute("on`, `.onclick =`, `.onload =` with strings ([OWASP Cheat Sheet Series][2])
+- Injeção de string do manipulador de eventos:
+  - `.setAttribute("on`, `.onclick =`, `.onload =` com strings ([OWASP Cheat Sheet Series][2])
 
 - `postMessage`:
-  - `postMessage(` with `"*"` as targetOrigin
-  - `addEventListener("message"` without strict `event.origin` allowlist checks ([MDN Web Docs][5])
+  - `postMessage(` com `"*"` como targetOrigin
+  - `addEventListener("message"` sem verificações estritas da lista de permissões `event.origin` ([MDN Web Docs][5])
 
-- Storage:
+- Armazenamento:
   - `localStorage.setItem(` / `getItem(`, `sessionStorage.*`
-  - keys containing `token`, `jwt`, `session`, `auth`, `refresh` ([OWASP Cheat Sheet Series][6])
+  - chaves contendo `token`, `jwt`, `session`, `auth`, `refresh` ([OWASP Cheat Sheet Series][6])
 
-- CSP and related:
-  - `Content-Security-Policy` header config (server/edge)
-  - `<meta http-equiv="Content-Security-Policy" ...>`
-  - CSP containing `unsafe-inline` or `unsafe-eval`
-  - `require-trusted-types-for` / `trusted-types` directives ([MDN Web Docs][1])
+- CSP e relacionados:
+  - Configuração do cabeçalho `Content-Security-Policy` (servidor/borda)
+  - `<meta http-equiv="Política de segurança de conteúdo" ...>`
+  - CSP contendo `unsafe-inline` ou `unsafe-eval`
+  - Diretivas `require-trusted-types-for` / `trusted-types` ([MDN Web Docs][1])
 
-- Third-party scripts:
-  - `<script src="https://...">` without `integrity=`
-  - Tag manager snippets and dynamic script injection code paths ([MDN Web Docs][12])
+- Scripts de terceiros:
+  - `<script src="https://...">` sem `integridade=`
+  - Snippets do gerenciador de tags e caminhos de código de injeção de script dinâmico ([MDN Web Docs][12])
 
-- DOM clobbering gadgets:
-  - `window.<name> || ...` and `document.<name> || ...` patterns
-  - security-sensitive usage of `window`/`document` properties as config sources ([OWASP Cheat Sheet Series][8])
+- Dispositivos de destruição de DOM:
+  - `janela.<nome> || ...` e `documento.<nome> || ...` padrões
+  - uso sensível à segurança de propriedades `window`/`document` como fontes de configuração ([OWASP Cheat Sheet Series][8])
 
-Always try to confirm:
+Sempre tente confirmar:
 
-- data origin (untrusted vs trusted),
-- sink type (HTML parse, navigation, code execution, message handling, storage),
-- protective controls present (CSP, Trusted Types, sanitizers, strict allowlists, schema validation).
+- origem dos dados (não confiável versus confiável),
+- tipo de coletor (análise de HTML, navegação, execução de código, manipulação de mensagens, armazenamento),
+- controles de proteção presentes (CSP, tipos confiáveis, desinfetantes, listas de permissões estritas, validação de esquema).
 
 ---
 
-## 6) Sources (accessed 2026-01-27)
+## 6) Fontes (acessado em 27/01/2026)
 
-Primary standards / platform docs:
+Padrões primários/documentos de plataforma:
 
-- W3C Content Security Policy Level 2 (HTML `<meta>` delivery restrictions; unsupported directives in meta CSP): `https://www.w3.org/TR/CSP2/` ([W3C][3])
-- MDN: CSP Guide (strict CSP, nonces/hashes, `unsafe-inline`/`unsafe-eval`, eval blocking): `https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP` ([MDN Web Docs][10])
-- MDN: `<meta http-equiv>` (CSP via meta and warning about meta-based security headers): `https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/meta/http-equiv` ([MDN Web Docs][1])
-- MDN: `frame-ancestors` (and note it’s not supported in `<meta>`): `https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/frame-ancestors` ([MDN Web Docs][18])
+- Política de segurança de conteúdo W3C nível 2 (restrições de entrega HTML `<meta>`; diretivas não suportadas em meta CSP): `https://www.w3.org/TR/CSP2/` ([W3C][3])
+- MDN: Guia CSP (CSP estrito, nonces/hashes, `unsafe-inline`/`unsafe-eval`, bloqueio de avaliação): `https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP` ([MDN Web Docs][10])
+- MDN: `<meta http-equiv>` (CSP via meta e aviso sobre cabeçalhos de segurança baseados em meta): `https://developer.mozilla.org/
 
-DOM XSS and dangerous sinks:
+en-US/docs/Web/HTML/Reference/Elements/meta/http-equiv` ([MDN Web Docs][1])
 
-- OWASP: DOM Based XSS Prevention Cheat Sheet (dangerous sinks + safe patterns like `textContent`): `https://cheatsheetseries.owasp.org/cheatsheets/DOM_based_XSS_Prevention_Cheat_Sheet.html` ([OWASP Cheat Sheet Series][2])
-- MDN: `innerHTML` (security considerations): `https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML` ([MDN Web Docs][19])
-- MDN: `insertAdjacentHTML` (security considerations): `https://developer.mozilla.org/en-US/docs/Web/API/Element/insertAdjacentHTML` ([MDN Web Docs][20])
-- MDN: `document.write()` / `document.writeln()` (security considerations): `https://developer.mozilla.org/en-US/docs/Web/API/Document/write` and `https://developer.mozilla.org/en-US/docs/Web/API/Document/writeln` ([MDN Web Docs][13])
+- MDN: `frame-ancestors` (e observe que não é suportado em `<meta>`): `https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/frame-ancestors` ([MDN Web Docs][18])
 
-URL scheme hazards:
+DOM XSS e coletores perigosos:
 
-- MDN: `javascript:` URLs (execution on navigation; discouraged; references `window.location`): `https://developer.mozilla.org/en-US/docs/Web/URI/Reference/Schemes/javascript` ([MDN Web Docs][4])
+- OWASP: Folha de dicas de prevenção XSS baseada em DOM (sumidouros perigosos + padrões seguros como `textContent`): `https://cheatsheetseries.owasp.org/cheatsheets/DOM_based_XSS_Prevention_Cheat_Sheet.html` ([Série de folhas de dicas OWASP] [2])
+- MDN: `innerHTML` (considerações de segurança): `https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML` ([MDN Web Docs][19])
+- MDN: `insertAdjacentHTML` (considerações de segurança): `https://developer.mozilla.org/en-US
 
-Trusted Types:
+/docs/Web/API/Element/insertAdjacentHTML` ([MDN Web Docs][20])
 
-- W3C: Trusted Types spec (DOM XSS sinks include `Element.innerHTML` and `Location.href` setters; goals and limitations): `https://www.w3.org/TR/trusted-types/` ([W3C][15])
-- MDN: `require-trusted-types-for` directive: `https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/require-trusted-types-for` ([MDN Web Docs][11])
-- MDN: `trusted-types` directive: `https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/trusted-types` ([MDN Web Docs][16])
+- MDN: `document.write()` / `document.writeln()` (considerações de segurança): `https://developer.mozilla.org/en-US/docs/Web/API/Document/write` e `https://developer.mozilla.org/en-US/docs/Web/API/Document/writeln` ([MDN Web Docs][13])
 
-Cross-window messaging:
+Perigos do esquema de URL:
 
-- MDN: `window.postMessage` (security guidance: specify targetOrigin; validate origin): `https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage` ([MDN Web Docs][5])
-- OWASP: HTML5 Security Cheat Sheet (Web Messaging guidance: explicit origin, strict checks, no `innerHTML`): `https://cheatsheetseries.owasp.org/cheatsheets/HTML5_Security_Cheat_Sheet.html` ([OWASP Cheat Sheet Series][6])
+- MDN: `javascript:` URLs (execução na navegação; desencorajado; referências `window.location`): `https://developer.mozilla.org/en-US/docs/Web/URI/Reference/Schemes/javascript` ([MDN Web Docs][4])
 
-Third-party scripts and integrity:
+Tipos confiáveis:
 
-- OWASP: Third Party JavaScript Management Cheat Sheet (risks and mitigations including SRI/mirroring): `https://cheatsheetseries.owasp.org/cheatsheets/Third_Party_Javascript_Management_Cheat_Sheet.html` ([OWASP Cheat Sheet Series][7])
-- MDN: Subresource Integrity overview: `https://developer.mozilla.org/en-US/docs/Web/Security/Defenses/Subresource_Integrity` ([MDN Web Docs][12])
-- W3C: Subresource Integrity spec: `https://www.w3.org/TR/sri-2/` ([W3C][21])
+- W3C: Especificação de tipos confiáveis (os coletores DOM XSS incluem setters `Element.innerHTML` e `Location.href`; objetivos e limitações): `https://www.w3.org/TR/trusted-types/` ([W3C][15])
+- MDN: diretiva `require-trusted-types-for`: `https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/require-trusted-types-for` ([MDN Web Docs][11])
+- MDN: diretiva `trusted-types`: `https://developer.mozilla.org/en-US/docs/Web/HTTP/Refer
 
-DOM clobbering:
+ence/Headers/Content-Security-Policy/trusted-types` ([MDN Web Docs][16])
 
-- OWASP: DOM Clobbering Prevention Cheat Sheet (named property access risk; example attacks involving `location.assign` and `javascript:`): `https://cheatsheetseries.owasp.org/cheatsheets/DOM_Clobbering_Prevention_Cheat_Sheet.html` ([OWASP Cheat Sheet Series][8])
+Mensagens entre janelas:
+
+- MDN: `window.postMessage` (orientação de segurança: especificar targetOrigin; validar origem): `https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage` ([MDN Web Docs][5])
+- OWASP: Folha de dicas de segurança HTML5 (orientação sobre mensagens da Web: origem explícita, verificações rigorosas, sem `innerHTML`): `https://cheatsheetseries.owasp.org/cheatsheets/HTML5_Security_Cheat_Sheet.html` ([Série de folhas de dicas OWASP] [6])
+
+Scripts de terceiros e integridade:
+
+- OWASP: Folha de referências de gerenciamento de JavaScript de terceiros (riscos e mitigações, incluindo SRI/espelhamento): `https://cheatsheetseries.owasp.org/cheatsheets/Third_Party_Javascript_Management_Cheat_Sheet.html` ([Série de folhas de referências OWASP] [7])
+- MDN: visão geral da integridade dos sub-recursos: `https://developer.mozilla.org/en-US/docs/Web/Security/Defenses/Subresource_Integrity` ([MDN Web Docs][12])
+- W3C: Especificação de integridade de sub-recursos: `https://www.w3.org/TR/sri-2/` (
+
+[W3C][21])
+
+Derrota de DOM:
+
+- OWASP: DOM Clobbering Prevention Cheat Sheet (nomeado risco de acesso à propriedade; exemplos de ataques envolvendo `location.assign` e `javascript:`): `https://cheatsheetseries.owasp.org/cheatsheets/DOM_Clobbering_Prevention_Cheat_Sheet.html` ([OWASP Cheat Sheet Series][8])
 
 [1]: https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/meta/http-equiv 'https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/meta/http-equiv'
 [2]: https://cheatsheetseries.owasp.org/cheatsheets/DOM_based_XSS_Prevention_Cheat_Sheet.html 'https://cheatsheetseries.owasp.org/cheatsheets/DOM_based_XSS_Prevention_Cheat_Sheet.html'
-[3]: https://www.w3.org/TR/CSP2/ 'Content Security Policy Level 2'
-[4]: https://developer.mozilla.org/en-US/docs/Web/URI/Reference/Schemes/javascript 'javascript: URLs - URIs | MDN'
+[3]: https://www.w3.org/TR/CSP2/ 'Política de segurança de conteúdo nível 2'
+[4]: https://desenvolver
+
+r.mozilla.org/en-US/docs/Web/URI/Reference/Schemes/javascript 'javascript: URLs - URIs | MDN'
 [5]: https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage 'https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage'
 [6]: https://cheatsheetseries.owasp.org/cheatsheets/HTML5_Security_Cheat_Sheet.html 'https://cheatsheetseries.owasp.org/cheatsheets/HTML5_Security_Cheat_Sheet.html'
-[7]: https://cheatsheetseries.owasp.org/cheatsheets/Third_Party_Javascript_Management_Cheat_Sheet.html 'https://cheatsheetseries.owasp.org/cheatsheets/Third_Party_Javascript_Management_Cheat_Sheet.html'
+[7]: https://cheatsheetseries.owasp.org/cheatshe
+
+ets/Third_Party_Javascript_Management_Cheat_Sheet.html 'https://cheatsheetseries.owasp.org/cheatsheets/Third_Party_Javascript_Management_Cheat_Sheet.html'
 [8]: https://cheatsheetseries.owasp.org/cheatsheets/DOM_Clobbering_Prevention_Cheat_Sheet.html 'https://cheatsheetseries.owasp.org/cheatsheets/DOM_Clobbering_Prevention_Cheat_Sheet.html'
-[9]: https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/rel/noopener 'https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/rel/noopener'
+[9]: https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/rel/noopener 'https://developer.
+
+mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/rel/noopener'
 [10]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP 'https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP'
 [11]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/require-trusted-types-for 'https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/require-trusted-types-for'
-[12]: https://developer.mozilla.org/en-US/docs/Web/Security/Defenses/Subresource_Integrity 'https://developer.mozilla.org/en-US/docs/Web/Security/Defenses/Subresource_Integrity'
+[12]: http
+
+ps://developer.mozilla.org/en-US/docs/Web/Security/Defenses/Subresource_Integrity 'https://developer.mozilla.org/en-US/docs/Web/Security/Defenses/Subresource_Integrity'
 [13]: https://developer.mozilla.org/en-US/docs/Web/API/Document/write 'https://developer.mozilla.org/en-US/docs/Web/API/Document/write'
 [14]: https://developer.mozilla.org/en-US/docs/Web/API/Document/writeln 'https://developer.mozilla.org/en-US/docs/Web/API/Document/writeln'
-[15]: https://www.w3.org/TR/trusted-types/ 'https://www.w3.org/TR/trusted-types/'
+[15]:
+
+https://www.w3.org/TR/trusted-types/ 'https://www.w3.org/TR/trusted-types/'
 [16]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/trusted-types 'https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/trusted-types'
-[18]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/frame-ancestors 'https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/frame-ancestors'
+[18]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/frame-ancestors 'https://developer.mozilla.org/en-US/do
+
+cs/Web/HTTP/Referência/Cabeçalhos/Content-Security-Policy/frame-ancestors'
 [19]: https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML 'https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML'
 [20]: https://developer.mozilla.org/en-US/docs/Web/API/Element/insertAdjacentHTML 'https://developer.mozilla.org/en-US/docs/Web/API/Element/insertAdjacentHTML'
 [21]: https://www.w3.org/TR/sri-2/ 'https://www.w3.org/TR/sri-2/'

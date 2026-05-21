@@ -1,75 +1,72 @@
-# State Isolation
+# Isolamento de estado
 
-## Table of Contents
+## Índice
 
-1. Entity Naming Conventions (line ~10)
-2. Prisma Schema Isolation (line ~50)
-3. Duplicate Entity Detection (line ~110)
-4. Anti-Patterns Detection (line ~150)
-5. Pre-Commit Hook (line ~190)
+1. Convenções de nomenclatura de entidades (linha ~10)
+2. Isolamento do esquema Prisma (linha ~ 50)
+3. Detecção de entidade duplicada (linha ~110)
+4. Detecção de antipadrões (linha ~150)
+5. Gancho de pré-confirmação (linha ~ 190)
 
 ---
 
-## 1. Entity Naming Conventions
+## 1. Convenções de nomenclatura de entidades
 
-**Critical rule:** Every entity MUST be prefixed with its module name. Generic names like `User`, `Plan`, `Item` cause collisions across modules and make it impossible to know which module owns the data.
+**Regra crítica:** Cada entidade DEVE ser prefixada com o nome do seu módulo. Nomes genéricos como `User`, `Plan`, `Item` causam colisões entre módulos e tornam impossível saber qual módulo possui os dados.
 
-### Correct Entity Naming
+### Nomenclatura correta da entidade
 
-| Module   | Entity Name           | Database Table          |
-| -------- | --------------------- | ----------------------- |
-| Identity | `IdentityUser`        | `identity_users`        |
-| Identity | `IdentityProfile`     | `identity_profiles`     |
-| Billing  | `BillingPlan`         | `billing_plans`         |
-| Billing  | `BillingSubscription` | `billing_subscriptions` |
-| Orders   | `OrderItem`           | `order_items`           |
-| Content  | `ContentArticle`      | `content_articles`      |
+| Módulo      | Nome da Entidade            | Tabela de banco de dados |
+| ----------- | --------------------------- | ------------------------ |
+| Identidade  | `IdentidadeUsuário`         | `identidade_usuários`    |
+| Identidade  | `Perfil de identidade`      | `identity_profiles`      |
+| Faturamento | `Plano de Faturamento`      | `planos_de faturamento`  |
+| Faturamento | `Assinatura de faturamento` | `billing_subscriptions`  |
+| Encomendas  | `PedidoItem`                | `order_items`            |
+| Conteúdo    | `ConteúdoArtigo`            | `content_articles`       |
 
-### Wrong Entity Naming
+### Nome de entidade errado
 
-| ❌ Name   | Problem                                |
-| --------- | -------------------------------------- |
-| `User`    | Which module? Identity? Billing?       |
-| `Plan`    | Billing plan? Subscription plan?       |
-| `Item`    | Order item? Cart item? Inventory item? |
-| `Profile` | User profile? Company profile?         |
+| ❌ Nome   | Problema                                                 |
+| --------- | -------------------------------------------------------- |
+| `Usuário` | Qual módulo? Identidade? Cobrança?                       |
+| `Plano`   | Plano de faturamento? Plano de assinatura?               |
+| `Item`    | Encomendar artigo? Item do carrinho? Item de inventário? |
+| `Perfil`  | Perfil de usuário? Perfil de companhia?                  |
 
-### Prisma Model Naming
+### Nomenclatura do modelo Prisma```prisma
 
-```prisma
 // ✅ Correct: Module-prefixed with explicit table mapping
 model IdentityUser {
-  id    String @id @default(cuid())
-  email String @unique
-  name  String
-  // ...
-  @@map("identity_users")
+id String @id @default(cuid())
+email String @unique
+name String
+// ...
+@@map("identity_users")
 }
 
 model BillingPlan {
-  id           String @id @default(cuid())
-  name         String
-  priceInCents Int
-  // ...
-  @@map("billing_plans")
+id String @id @default(cuid())
+name String
+priceInCents Int
+// ...
+@@map("billing_plans")
 }
 
 // ❌ Wrong: Generic names without module prefix
 model User {
-  // ...
-  @@map("users")  // Which module owns this?
+// ...
+@@map("users") // Which module owns this?
 }
-```
 
+````
 ---
 
-## 2. Prisma Schema Isolation
+## 2. Isolamento do esquema Prisma
 
-### Option A: Single Schema, Module Prefixes
+### Opção A: esquema único, prefixos de módulo
 
-All models live in one `schema.prisma` but are clearly prefixed and grouped.
-
-```prisma
+Todos os modelos vivem em um `schema.prisma`, mas são claramente prefixados e agrupados.```prisma
 // prisma/schema.prisma
 generator client {
   provider = "prisma-client-js"
@@ -158,138 +155,132 @@ enum OrderStatus {
   DELIVERED
   CANCELLED
 }
-```
+````
 
-**Key rule:** Cross-module references use `userId String` (just the ID), NOT `user IdentityUser @relation(...)`. Foreign key relations should only exist WITHIN a module.
+**Regra principal:** Referências entre módulos usam `userId String` (apenas o ID), NÃO `user IdentityUser @relation(...)`. As relações de chave estrangeira só devem existir DENTRO de um módulo.
 
-### Option B: Multi-Schema (Prisma 5.15+)
+### Opção B: Multi-esquema (Prisma 5.15+)
 
-For larger projects, use Prisma's multi-schema support:
-
-```prisma
+Para projetos maiores, use o suporte multiesquema do Prisma:```prisma
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-  schemas  = ["identity", "billing", "orders"]
+provider = "postgresql"
+url = env("DATABASE_URL")
+schemas = ["identity", "billing", "orders"]
 }
 
 model IdentityUser {
-  id    String @id @default(cuid())
-  email String @unique
-  @@schema("identity")
-  @@map("users")
+id String @id @default(cuid())
+email String @unique
+@@schema("identity")
+@@map("users")
 }
 
 model BillingPlan {
-  id   String @id @default(cuid())
-  name String
-  @@schema("billing")
-  @@map("plans")
+id String @id @default(cuid())
+name String
+@@schema("billing")
+@@map("plans")
 }
-```
 
+````
 ---
 
-## 3. Duplicate Entity Detection
+## 3. Detecção de entidade duplicada
 
-Run these checks before every commit or PR merge.
+Execute essas verificações antes de cada commit ou mesclagem de PR.
 
-### Find Duplicate Entity Names
-
-```bash
+### Encontre nomes de entidades duplicados```bash
 # For Prisma schemas — find duplicate model names
 grep -r "^model " prisma/ | awk '{print $2}' | sort | uniq -d
-```
+````
 
-### Find Duplicate Table Mappings
+### Encontre mapeamentos de tabelas duplicados```bash
 
-```bash
 # Find duplicate @@map values
-grep -r '@@map(' prisma/ | grep -o '"[^"]*"' | sort | uniq -d
-```
 
-### Find Cross-Module Foreign Key Relations
+grep -r '@@map(' prisma/ | grep -o '"[^"]\*"' | sort | uniq -d
 
-```bash
+````
+### Encontre relações de chave estrangeira entre módulos```bash
 # These should NOT exist — only within-module relations are allowed
 grep -rn '@relation' prisma/schema.prisma | while read line; do
   echo "CHECK: $line"
   echo "  → Verify this relation is WITHIN a single module"
 done
-```
+````
 
 ---
 
-## 4. Anti-Patterns Detection
+## 4. Detecção de antipadrões
 
-### Detect Shared Mutable State
+### Detectar estado mutável compartilhado```bash
 
-```bash
 # Exported mutable singletons — should not exist
+
 grep -r "export.*=.*new" libs/ | grep -v test | grep -v node_modules
-```
 
-### Detect Direct Cross-Module Imports
-
-```bash
+````
+### Detectar importações diretas entre módulos```bash
 # Modules should only import from @project/[module] (index barrel), never from deep paths
 grep -rn "from '@project/" libs/ | grep -v "/index" | grep -v "shared" | grep -v node_modules | grep -v ".spec."
-```
+````
 
-### Detect Synchronous Cross-Module Calls
+### Detectar chamadas síncronas entre módulos```bash
 
-```bash
 # Direct service calls across modules — should use events instead
-grep -rn "await.*Service\." libs/ | grep -v "this\." | grep -v test | grep -v node_modules
-```
 
-### Detect Missing Module Prefixes in Entities
+grep -rn "await.\*Service\." libs/ | grep -v "this\." | grep -v test | grep -v node_modules
 
-```bash
+````
+### Detectar prefixos de módulos ausentes em entidades```bash
 # Entities/models with generic single-word names (potential violations)
 grep -rn "^export class [A-Z][a-z]*\b " libs/*/domain/ | grep -v "Error\|Exception\|Event\|Command\|Query\|Handler\|Dto\|Module\|Guard\|Filter"
-```
+````
 
 ---
 
-## 5. Pre-Commit Hook
+## 5. Gancho de pré-confirmação
 
-Add this to `.husky/pre-commit` or equivalent. For a more comprehensive version, use `scripts/validate-isolation.sh` included in this skill.
-
-```bash
+Adicione isto a `.husky/pre-commit` ou equivalente. Para uma versão mais abrangente, use `scripts/validate-isolation.sh` incluído nesta habilidade.```bash
 #!/bin/bash
 echo "🔍 Running state isolation checks..."
 
 ERRORS=0
 
 # Check 1: Duplicate Prisma model names
+
 DUPES=$(grep -r "^model " prisma/ 2>/dev/null | awk '{print $2}' | sort | uniq -d)
 if [ -n "$DUPES" ]; then
-  echo "❌ Duplicate model names found: $DUPES"
+echo "❌ Duplicate model names found: $DUPES"
   echo "   Fix: Prefix each model with its module name (e.g., BillingPlan)"
   ERRORS=$((ERRORS + 1))
 fi
 
 # Check 2: Duplicate table mappings
+
 MAP_DUPES=$(grep -r '@@map(' prisma/ 2>/dev/null | grep -o '"[^"]*"' | sort | uniq -d)
 if [ -n "$MAP_DUPES" ]; then
-  echo "❌ Duplicate table mappings found: $MAP_DUPES"
+echo "❌ Duplicate table mappings found: $MAP_DUPES"
   ERRORS=$((ERRORS + 1))
 fi
 
 # Check 3: Direct cross-module imports (non-barrel)
+
 CROSS_IMPORTS=$(grep -rn "from '@project/" libs/ 2>/dev/null | grep -v "/index" | grep -v "shared" | grep -v node_modules | grep -v ".spec.")
 if [ -n "$CROSS_IMPORTS" ]; then
-  echo "⚠️  Direct cross-module imports detected:"
-  echo "$CROSS_IMPORTS"
+echo "⚠️ Direct cross-module imports detected:"
+echo "$CROSS_IMPORTS"
   echo "   Fix: Import only from module barrel (@project/module-name)"
   ERRORS=$((ERRORS + 1))
 fi
 
 if [ $ERRORS -gt 0 ]; then
-  echo "❌ State isolation check failed with $ERRORS error(s). Fix issues before committing."
-  exit 1
+echo "❌ State isolation check failed with $ERRORS error(s). Fix issues before committing."
+exit 1
 fi
 
 echo "✅ State isolation checks passed."
+
+```
+
 ```

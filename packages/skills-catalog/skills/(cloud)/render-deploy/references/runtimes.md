@@ -1,42 +1,41 @@
-# Render Runtime Options
+# Opções de tempo de execução de renderização
 
-Complete guide to available runtimes on Render, including versions, configuration, and best practices for each language.
+Guia completo para tempos de execução disponíveis no Render, incluindo versões, configuração e práticas recomendadas para cada linguagem.
 
-## Native Language Runtimes
+## Tempos de execução em idioma nativo
 
-### Node.js (`runtime: node`)
+### Node.js (`tempo de execução: nó`)
 
-**Supported Versions:** 14, 16, 18, 20, 21
-**Default Version:** 20
+**Versões suportadas:** 14, 16, 18, 20, 21
+**Versão padrão:** 20
 
-**Version Specification:**
+**Especificação da versão:**
 
-Specify Node version in `package.json`:
-
-```json
+Especifique a versão do Node em `package.json`:```json
 {
-  "engines": {
-    "node": "20.x"
-  }
+"engines": {
+"node": "20.x"
 }
-```
+}
 
-**Package Managers:**
+````
 
-- **npm**: Default, uses `package-lock.json`
-- **Yarn**: Auto-detected if `yarn.lock` exists
-- **pnpm**: Auto-detected if `pnpm-lock.yaml` exists
+**Gerenciadores de pacotes:**
 
-**Common Build Commands:**
+- **npm**: Padrão, usa `package-lock.json`
+- **Yarn**: detectado automaticamente se `yarn.lock` existir
+- **pnpm**: detectado automaticamente se `pnpm-lock.yaml` existir
+
+**Comandos de compilação comuns:**
 
 ```bash
 npm ci                          # Recommended (faster, reproducible)
 npm ci && npm run build         # Build step included
 yarn install --frozen-lockfile  # Yarn equivalent
 pnpm install --frozen-lockfile  # pnpm equivalent
-```
+````
 
-**Common Start Commands:**
+**Comandos de início comuns:**
 
 ```bash
 npm start                       # Uses "start" script in package.json
@@ -44,15 +43,15 @@ node server.js                  # Direct file execution
 node dist/main.js               # Built output
 ```
 
-**Popular Frameworks:**
+**Estruturas populares:**
 
 - Express.js, Fastify, Koa (APIs)
-- Next.js (full-stack React)
-- Nest.js (enterprise TypeScript)
-- Remix (full-stack React)
-- Nuxt.js (full-stack Vue)
+- Next.js (reação de pilha completa)
+- Nest.js (TypeScript corporativo)
+- Remix (Reação full-stack)
+- Nuxt.js (Vue de pilha completa)
 
-**Example Configuration:**
+**Exemplo de configuração:**
 
 ```yaml
 type: web
@@ -64,33 +63,29 @@ startCommand: npm start
 
 ---
 
-### Python (`runtime: python`)
+### Python (`tempo de execução: python`)
 
-**Supported Versions:** 3.8, 3.9, 3.10, 3.11, 3.12
-**Default Version:** 3.11
+**Versões suportadas:** 3.8, 3.9, 3.10, 3.11, 3.12
+**Versão padrão:** 3.11
 
-**Version Specification:**
+**Especificação da versão:**
 
-Option 1 - `runtime.txt`:
-
-```
+Opção 1 - `runtime.txt`:```
 python-3.11.5
-```
 
-Option 2 - `Pipfile`:
-
-```toml
+````
+Opção 2 - `Pipfile`:```toml
 [requires]
 python_version = "3.11"
-```
+````
 
-**Package Managers:**
+**Gerenciadores de pacotes:**
 
-- **pip**: Default, uses `requirements.txt`
-- **Poetry**: Auto-detected if `pyproject.toml` exists
-- **Pipenv**: Auto-detected if `Pipfile` exists
+- **pip**: Padrão, usa `requirements.txt`
+- **Poesia**: detectado automaticamente se `pyproject.toml` existir
+- **Pipenv**: detectado automaticamente se `Pipfile` existir
 
-**Common Build Commands:**
+**Comandos de compilação comuns:**
 
 ```bash
 pip install -r requirements.txt
@@ -99,7 +94,7 @@ poetry install --no-dev
 pipenv install --deploy
 ```
 
-**Common Start Commands:**
+**Comandos de início comuns:**
 
 ```bash
 gunicorn app:app                                    # Flask
@@ -108,14 +103,14 @@ uvicorn main:app --host 0.0.0.0 --port $PORT       # FastAPI
 celery -A tasks worker                              # Celery worker
 ```
 
-**Popular Frameworks:**
+**Estruturas populares:**
 
-- Django (full-stack web framework)
-- Flask (microframework)
-- FastAPI (modern async API framework)
-- Celery (task queue)
+- Django (framework web full-stack)
+- Frasco (microestrutura)
+- FastAPI (estrutura moderna de API assíncrona)
+- Aipo (fila de tarefas)
 
-**Example Configuration:**
+**Exemplo de configuração:**
 
 ```yaml
 type: web
@@ -127,48 +122,47 @@ startCommand: gunicorn app:app --bind 0.0.0.0:$PORT
 
 ---
 
-### Go (`runtime: go`)
+### Vá (`tempo de execução: vá`)
 
-**Supported Versions:** 1.20, 1.21, 1.22, 1.23
-**Default Version:** Latest stable
+**Versões suportadas:** 1.20, 1.21, 1.22, 1.23
+**Versão padrão:** Última versão estável
 
-**Version Specification:**
+**Especificação da versão:**
 
-Specify in `go.mod`:
-
-```go
+Especifique em `go.mod`:```go
 module myapp
 
 go 1.22
-```
 
-**Build System:** Uses Go modules
+````
 
-**Common Build Commands:**
+**Build System:** usa módulos Go
+
+**Comandos de compilação comuns:**
 
 ```bash
 go build -o bin/app .
 go build -o bin/app cmd/server/main.go
 go build -tags netgo -ldflags '-s -w' -o bin/app
-```
+````
 
-**Common Start Commands:**
+**Comandos de início comuns:**
 
 ```bash
 ./bin/app
 ./bin/server
 ```
 
-**Popular Frameworks:**
+**Estruturas populares:**
 
-- net/http (standard library)
-- Gin (fast web framework)
-- Echo (high performance framework)
-- Chi (lightweight router)
-- Fiber (Express-inspired framework)
-- Gorilla Mux (powerful router)
+- net/http (biblioteca padrão)
+- Gin (framework web rápido)
+- Echo (estrutura de alto desempenho)
+- Chi (roteador leve)
+- Fibra (estrutura inspirada no Express)
+- Gorilla Mux (roteador poderoso)
 
-**Example Configuration:**
+**Exemplo de configuração:**
 
 ```yaml
 type: web
@@ -180,35 +174,31 @@ startCommand: ./bin/app
 
 ---
 
-### Ruby (`runtime: ruby`)
+### Ruby (`tempo de execução: ruby`)
 
-**Supported Versions:** 3.0, 3.1, 3.2, 3.3
-**Default Version:** 3.3
+**Versões suportadas:** 3.0, 3.1, 3.2, 3.3
+**Versão padrão:** 3.3
 
-**Version Specification:**
+**Especificação da versão:**
 
-Option 1 - `.ruby-version`:
-
-```
+Opção 1 - `.ruby-version`:```
 3.3.0
-```
 
-Option 2 - `Gemfile`:
-
-```ruby
+````
+Opção 2 - `Gemfile`:```ruby
 ruby '3.3.0'
-```
+````
 
-**Package Manager:** Bundler (uses `Gemfile` and `Gemfile.lock`)
+**Gerenciador de Pacotes:** Bundler (usa `Gemfile` e `Gemfile.lock`)
 
-**Common Build Commands:**
+**Comandos de compilação comuns:**
 
 ```bash
 bundle install --jobs=4 --retry=3
 bundle install && bundle exec rails assets:precompile
 ```
 
-**Common Start Commands:**
+**Comandos de início comuns:**
 
 ```bash
 bundle exec rails server -b 0.0.0.0 -p $PORT
@@ -217,13 +207,13 @@ bundle exec rackup -o 0.0.0.0 -p $PORT
 bundle exec sidekiq                                  # Worker
 ```
 
-**Popular Frameworks:**
+**Estruturas populares:**
 
-- Ruby on Rails (full-stack framework)
-- Sinatra (microframework)
-- Sidekiq (background jobs)
+- Ruby on Rails (framework fullstack)
+- Sinatra (microestrutura)
+- Sidekiq (trabalhos em segundo plano)
 
-**Example Configuration:**
+**Exemplo de configuração:**
 
 ```yaml
 type: web
@@ -235,34 +225,34 @@ startCommand: bundle exec puma -C config/puma.rb
 
 ---
 
-### Rust (`runtime: rust`)
+### Ferrugem (`tempo de execução: ferrugem`)
 
-**Supported Versions:** Latest stable
-**Default Version:** Latest stable
+**Versões suportadas:** Última versão estável
+**Versão padrão:** Última versão estável
 
-**Build System:** Cargo
+**Sistema de construção:** Carga
 
-**Common Build Commands:**
+**Comandos de compilação comuns:**
 
 ```bash
 cargo build --release
 cargo build --release --locked
 ```
 
-**Common Start Commands:**
+**Comandos de início comuns:**
 
 ```bash
 ./target/release/myapp
 ```
 
-**Popular Frameworks:**
+**Estruturas populares:**
 
-- Actix Web (powerful, performant)
-- Rocket (web framework with focus on usability)
-- Axum (modern, ergonomic framework)
-- Warp (composable web framework)
+- Actix Web (poderoso, de alto desempenho)
+- Rocket (framework web com foco em usabilidade)
+- Axum (estrutura moderna e ergonômica)
+- Warp (framework web combinável)
 
-**Example Configuration:**
+**Exemplo de configuração:**
 
 ```yaml
 type: web
@@ -274,14 +264,14 @@ startCommand: ./target/release/myapp
 
 ---
 
-### Elixir (`runtime: elixir`)
+### Elixir (`tempo de execução: elixir`)
 
-**Supported Versions:** Latest stable
-**Default Version:** Latest stable
+**Versões suportadas:** Última versão estável
+**Versão padrão:** Última versão estável
 
-**Build System:** Mix
+**Sistema de construção:** Mistura
 
-**Common Build Commands:**
+**Comandos de compilação comuns:**
 
 ```bash
 mix deps.get --only prod
@@ -289,19 +279,19 @@ mix deps.get && mix compile
 mix do deps.get, compile, assets.deploy
 ```
 
-**Common Start Commands:**
+**Comandos de início comuns:**
 
 ```bash
 mix phx.server
 elixir --name myapp -S mix phx.server
 ```
 
-**Popular Frameworks:**
+**Estruturas populares:**
 
-- Phoenix (full-stack web framework)
-- Phoenix LiveView (real-time applications)
+- Phoenix (framework web full-stack)
+- Phoenix LiveView (aplicativos em tempo real)
 
-**Example Configuration:**
+**Exemplo de configuração:**
 
 ```yaml
 type: web
@@ -313,18 +303,18 @@ startCommand: mix phx.server
 
 ---
 
-## Container Runtimes
+## Tempos de execução do contêiner
 
-### Docker (`runtime: docker`)
+### Docker (`tempo de execução: docker`)
 
-Build your application from a Dockerfile in your repository.
+Crie seu aplicativo a partir de um Dockerfile em seu repositório.
 
-**Additional Configuration:**
+**Configuração Adicional:**
 
-- `dockerfilePath`: Path to Dockerfile (default: `./Dockerfile`)
-- `dockerContext`: Build context directory (default: `.`)
+- `dockerfilePath`: Caminho para Dockerfile (padrão: `./Dockerfile`)
+- `dockerContext`: Construa o diretório de contexto (padrão: `.`)
 
-**Example Configuration:**
+**Exemplo de configuração:**
 
 ```yaml
 type: web
@@ -334,7 +324,7 @@ dockerfilePath: ./Dockerfile
 dockerContext: .
 ```
 
-**Multi-stage Dockerfile Example:**
+**Exemplo de Dockerfile de vários estágios:**
 
 ```dockerfile
 # Build stage
@@ -355,26 +345,26 @@ EXPOSE 10000
 CMD ["node", "dist/main.js"]
 ```
 
-**Best Practices:**
+**Práticas recomendadas:**
 
-- Use multi-stage builds to reduce image size
-- Copy `package.json` before source code (better caching)
-- Use `.dockerignore` to exclude unnecessary files
-- Expose port dynamically via `$PORT` environment variable
-- Run as non-root user for security
+- Use compilações de vários estágios para reduzir o tamanho da imagem
+- Copie `package.json` antes do código-fonte (melhor armazenamento em cache)
+- Use `.dockerignore` para excluir arquivos desnecessários
+- Expor a porta dinamicamente através da variável de ambiente `$PORT`
+- Execute como usuário não root para segurança
 
 ---
 
-### Pre-built Image (`runtime: image`)
+### Imagem pré-construída (`runtime: image`)
 
-Deploy pre-built Docker images from a container registry.
+Implante imagens Docker pré-criadas a partir de um registro de contêiner.
 
-**Additional Configuration:**
+**Configuração Adicional:**
 
-- `image`: Full image URL with tag or digest
-- `registryCredential`: Credentials for private registries
+- `image`: URL completo da imagem com tag ou resumo
+- `registryCredential`: Credenciais para registros privados
 
-**Example with Public Image:**
+**Exemplo com imagem pública:**
 
 ```yaml
 type: web
@@ -383,7 +373,7 @@ runtime: image
 image: ghcr.io/myorg/myapp:v1.2.3
 ```
 
-**Example with Private Registry:**
+**Exemplo com Registro Privado:**
 
 ```yaml
 type: web
@@ -396,40 +386,40 @@ registryCredential:
     sync: false # User provides in Dashboard
 ```
 
-**Use Cases:**
+**Casos de uso:**
 
-- Deploy images built in CI/CD pipeline
-- Use images from container registries
-- Deploy Docker Hub images
-- Use private registry images
+- Implantar imagens criadas em pipeline de CI/CD
+- Use imagens de registros de contêineres
+- Implantar imagens Docker Hub
+- Use imagens de registro privado
 
 ---
 
-## Static Runtime (`runtime: static`)
+## Tempo de execução estático (`tempo de execução: estático`)
 
-Serve pre-built static files without a backend runtime. Files are served via CDN.
+Sirva arquivos estáticos pré-construídos sem tempo de execução de back-end. Os arquivos são servidos via CDN.
 
-**Additional Configuration:**
+**Configuração Adicional:**
 
-- `staticPublishPath`: Directory containing built files (e.g., `./dist`, `./build`)
+- `staticPublishPath`: Diretório contendo arquivos compilados (por exemplo, `./dist`, `./build`)
 
-**Common Build Commands by Framework:**
+**Comandos de compilação comuns por Framework:**
 
-**React (Create React App):**
+**Reagir (criar aplicativo React):**
 
 ```bash
 npm ci && npm run build
 # Outputs to: ./build
 ```
 
-**Vue:**
+**Ver:**
 
 ```bash
 npm ci && npm run build
 # Outputs to: ./dist
 ```
 
-**Next.js (Static Export):**
+**Next.js (exportação estática):**
 
 ```bash
 npm ci && npm run build && npm run export
@@ -443,14 +433,14 @@ npm ci && npm run build
 # Outputs to: ./public
 ```
 
-**Vite:**
+**Visite:**
 
 ```bash
 npm ci && npm run build
 # Outputs to: ./dist
 ```
 
-**Example Configuration:**
+**Exemplo de configuração:**
 
 ```yaml
 type: web
@@ -462,66 +452,68 @@ staticPublishPath: ./build
 
 ---
 
-## Runtime Comparison
+## Comparação de tempo de execução
 
-| Runtime | Build Speed | Cold Start | Best For                       |
-| ------- | ----------- | ---------- | ------------------------------ |
-| Node.js | Fast        | Fast       | APIs, full-stack apps          |
-| Python  | Medium      | Medium     | Data apps, APIs, web           |
-| Go      | Fast        | Very Fast  | High performance APIs          |
-| Ruby    | Slow        | Medium     | Rails apps, traditional web    |
-| Rust    | Very Slow   | Very Fast  | Performance-critical services  |
-| Elixir  | Medium      | Fast       | Real-time, concurrent apps     |
-| Docker  | Varies      | Medium     | Any language, custom setup     |
-| Static  | Very Fast   | N/A        | SPAs, documentation, marketing |
+| Tempo de execução | Velocidade de construção | Início a frio | Melhor para                        |
+| ----------------- | ------------------------ | ------------- | ---------------------------------- |
+| Node.js           | Rápido                   | Rápido        | APIs, aplicativos full-stack       |
+| Pitão             | Médio                    | Médio         | Aplicativos de dados, APIs, web    |
+| Vá                | Rápido                   | Muito rápido  | APIs de alto desempenho            |
+| Rubi              | Lento                    | Médio         | Aplicativos Rails, web tradicional |
+| Ferrugem          | Muito S                  |
+
+baixo | Muito rápido | Serviços de desempenho crítico |
+| Elixir | Médio | Rápido | Aplicativos simultâneos em tempo real |
+| Docker | Varia | Médio | Qualquer idioma, configuração personalizada |
+| Estático | Muito rápido | N/A | SPAs, documentação, marketing |
 
 ---
 
-## Choosing the Right Runtime
+## Escolhendo o tempo de execução correto
 
-**Choose Node.js when:**
+**Escolha Node.js quando:**
 
-- Building JavaScript-based applications
-- Need rich npm ecosystem
-- Want fast iteration and deployment
-- Building full-stack applications (Next.js, Remix)
+- Construindo aplicativos baseados em JavaScript
+- Precisa de um ecossistema npm rico
+- Deseja iteração e implantação rápidas
+- Construção de aplicações full-stack (Next.js, Remix)
 
-**Choose Python when:**
+**Escolha Python quando:**
 
-- Building data-heavy applications
-- Need machine learning libraries
-- Django or Flask expertise
-- Data processing pipelines
+- Criação de aplicativos com muitos dados
+- Precisa de bibliotecas de aprendizado de máquina
+- Experiência em Django ou Flask
+- Pipelines de processamento de dados
 
-**Choose Go when:**
+**Escolha Ir quando:**
 
-- Need high performance and low resource usage
-- Building microservices
-- Want simple deployment (single binary)
-- Handling high concurrency
+- Precisa de alto desempenho e baixo uso de recursos
+- Construindo microsserviços
+- Deseja implantação simples (binário único)
+- Lidando com alta simultaneidade
 
-**Choose Ruby when:**
+**Escolha Ruby quando:**
 
-- Building traditional web applications
-- Ruby on Rails expertise
-- Rapid development priority
+- Construindo aplicações web tradicionais
+- Experiência em Ruby on Rails
+- Prioridade de desenvolvimento rápido
 
-**Choose Rust when:**
+**Escolha Ferrugem quando:**
 
-- Maximum performance required
-- Systems programming
-- Resource-constrained environments
+- Desempenho máximo necessário
+- Programação de sistemas
+- Ambientes com recursos limitados
 
-**Choose Docker when:**
+**Escolha o Docker quando:**
 
-- Need custom system dependencies
-- Multi-language application
-- Existing Dockerfile
-- Need full control over environment
+- Precisa de dependências de sistema personalizadas
+- Aplicativo multilíngue
+- Dockerfile existente
+- Precisa de controle total sobre o ambiente
 
-**Choose Static when:**
+**Escolha Estático quando:**
 
-- Building SPAs or static sites
-- No backend processing needed
-- Want CDN caching and fast delivery
-- Documentation or marketing sites
+- Construção de SPAs ou sites estáticos
+- Não é necessário processamento de back-end
+- Deseja cache CDN e entrega rápida
+- Documentação ou sites de marketing

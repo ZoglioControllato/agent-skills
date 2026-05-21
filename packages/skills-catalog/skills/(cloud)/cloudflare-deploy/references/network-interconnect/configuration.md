@@ -1,34 +1,36 @@
-# CNI Configuration
+#Configuração CNI
 
-See [README.md](README.md) for overview.
+Consulte [README.md](README.md) para obter uma visão geral.
 
-## Workflow (2-4 weeks)
+## Fluxo de trabalho (2 a 4 semanas)
 
-1. **Submit request** (Week 1): Contact account team, provide type/location/use case
-2. **Review config** (Week 1-2, v1 only): Approve IP/VLAN/spec doc
-3. **Order connection** (Week 2-3):
-   - **Direct**: Get LOA, order cross-connect from facility
-   - **Partner**: Order virtual circuit in partner portal
-   - **Cloud**: Order Direct Connect/Cloud Interconnect, send LOA+VLAN to CF
-4. **Configure** (Week 3): Both sides configure per doc
-5. **Test** (Week 3-4): Ping, verify BGP, check routes
-6. **Health checks** (Week 4): Configure [Magic Transit](https://developers.cloudflare.com/magic-transit/how-to/configure-tunnel-endpoints/#add-tunnels) or [Magic WAN](https://developers.cloudflare.com/magic-wan/configuration/manually/how-to/configure-tunnel-endpoints/#add-tunnels) health checks
-7. **Activate** (Week 4): Route traffic, verify flow
-8. **Monitor**: Enable [maintenance notifications](https://developers.cloudflare.com/network-interconnect/monitoring-and-alerts/#enable-cloudflare-status-maintenance-notification)
+1. **Enviar solicitação** (Semana 1): entre em contato com a equipe da conta e forneça o tipo/local/caso de uso
+2. **Revisar configuração** (somente semana 1-2, v1): Aprovar documento IP/VLAN/especificação
+3. **Conexão do pedido** (Semana 2-3):
 
-## BGP Configuration
+- **Direto**: Obtenha LOA, solicite conexão cruzada da instalação
+- **Parceiro**: Solicite circuito virtual no portal do parceiro
+- **Nuvem**: Solicite Direct Connect/Cloud Interconnect, envie LOA+VLAN para CF
 
-**v1 Requirements:**
+4. **Configurar** (Semana 3): configuração de ambos os lados por documento
+5. **Teste** (Semanas 3 a 4): Ping, verificação de BGP, verificação de rotas
+6. **Verificações de integridade** (Semana 4): Configure [Magic Transit](https://developers.cloudflare.com/magic-transit/how-to/configure-tunnel-endpoints/#add-tunnels) ou [Magic WAN](https://developers.cloudflare.com/magic-wan/configuration/manually/how-to/configure-tunnel-endpoints/#add-tunnels) verificações de integridade
+7. **Ativar** (Semana 4): rotear o tráfego, verificar o fluxo
+8. **Monitor**: ative [notificações de manutenção](https://developers.cloudflare.com/network-interconnect/monitoring-and-alerts/#enable-cloudflare-status-maintenance-notification)
 
-- BGP ASN (provide during setup)
-- /31 subnet for peering
-- Optional: BGP password
+##Configuração BGP
 
-**v2:** Simplified, less BGP config needed.
+**Requisitos v1:**
 
-**BGP over CNI (Dec 2024):** Magic WAN/Transit can now peer BGP directly over CNI v2 (no GRE tunnel required).
+- BGP ASN (fornecido durante a configuração)
+- /31 sub-rede para peering
+- Opcional: senha BGP
 
-**Example v1 BGP:**
+**v2:** Simplificado, menos configuração de BGP necessária.
+
+**BGP sobre CNI (dezembro de 2024):** Magic WAN/Transit agora pode peering BGP diretamente sobre CNI v2 (não é necessário túnel GRE).
+
+**Exemplo de BGP v1:**
 
 ```
 Router ID: 192.0.2.1
@@ -39,56 +41,55 @@ Password: [optional]
 VLAN: 100
 ```
 
-## Cloud Interconnect Setup
+## Configuração do Cloud Interconnect
 
-### AWS Direct Connect (Beta)
+### AWS Direct Connect (beta)
 
-**Requirements:** Magic WAN, AWS Dedicated Direct Connect 1/10 Gbps.
+**Requisitos:** Magic WAN, AWS Dedicated Direct Connect 1/10 Gbps.
 
-**Process:**
+**Processo:**
 
-1. Contact CF account team
-2. Choose location
-3. Order in AWS portal
-4. AWS provides LOA + VLAN ID
-5. Send to CF account team
-6. Wait ~4 weeks
+1. Entre em contato com a equipe de conta CF
+2. Escolha o local
+3. Faça o pedido no portal AWS
+4. AWS fornece LOA + VLAN ID
+5. Envie para a equipe de conta CF
+6. Espere cerca de 4 semanas
 
-**Post-setup:** Add [static routes](https://developers.cloudflare.com/magic-wan/configuration/manually/how-to/configure-routes/#configure-static-routes) to Magic WAN. Enable [bidirectional health checks](https://developers.cloudflare.com/magic-wan/configuration/manually/how-to/configure-tunnel-endpoints/#legacy-bidirectional-health-checks).
+**Pós-configuração:** Adicione [rotas estáticas](https://developers.cloudflare.com/magic-wan/configuration/manually/how-to/configure-routes/#configure-static-routes) ao Magic WAN. Ative [verificações de integridade bidirecionais](https://developers.cloudflare.com/magic-wan/configuration/manually/how-to/configure-tunnel-endpoints/#legacy-bidirecional-health-checks).
 
-### GCP Cloud Interconnect (Beta)
+### Interconexão em nuvem do GCP (Beta)
 
-**Setup via Dashboard:**
+**Configuração via Painel:**
 
-1. Interconnects → Create → Cloud Interconnect → Google
-2. Provide name, MTU (match GCP VLAN attachment), speed (50M-50G granular options available for partner interconnects)
-3. Enter VLAN attachment pairing key
-4. Confirm order
+1. Interconexões → Criar → Cloud Interconnect → Google
+2. Forneça nome, MTU (corresponde ao anexo VLAN do GCP), velocidade (opções granulares de 50M-50G disponíveis para interconexões de parceiros)
+3. Insira a chave de emparelhamento do anexo VLAN
+4. Confirme o pedido
 
-**Routing to GCP:** Add [static routes](https://developers.cloudflare.com/magic-wan/configuration/manually/how-to/configure-routes/#configure-static-routes). BGP routes from GCP Cloud Router **ignored**.
+**Roteamento para o GCP:** adicione [rotas estáticas](https://developers.cloudflare.com/magic-wan/configuration/manually/how-to/configure-routes/#configure-static-routes). Rotas BGP do GCP Cloud Router **ignoradas**.
 
-**Routing to CF:** Configure [custom learned routes](https://cloud.google.com/network-connectivity/docs/router/how-to/configure-custom-learned-routes) in Cloud Router. Request prefixes from CF account team.
+**Roteamento para CF:** configure [rotas aprendidas personalizadas](https://cloud.google.com/network-connectivity/docs/router/how-to/configure-custom-learned-routes) no Cloud Router. Solicite prefixos à equipe de conta CF.
 
-## Monitoring
+## Monitoramento
 
-**Dashboard Status:**
+**Status do painel:**
 
-| Status        | Meaning                                                      |
-| ------------- | ------------------------------------------------------------ |
-| **Healthy**   | Link operational, traffic flowing, health checks passing     |
-| **Active**    | Link up, sufficient light, Ethernet negotiated               |
-| **Unhealthy** | Link down, no/low light (<-20 dBm), can't negotiate          |
-| **Pending**   | Cross-connect incomplete, device unresponsive, RX/TX swapped |
-| **Down**      | Physical link down, no connectivity                          |
+| Estado         | Significado                                                          |
+| -------------- | -------------------------------------------------------------------- |
+| **Saudável**   | Link operacional, tráfego fluindo, exames de saúde aprovados         |
+| **Ativo**      | Link up, luz suficiente, Ethernet negociada                          |
+| **Insalubre**  | Link desativado, sem/pouca luz (<-20 dBm), não é possível negociar   |
+| **Pendente**   | Conexão cruzada incompleta, dispositivo sem resposta, troca de RX/TX |
+| **Para baixo** | Link físico desativado, sem conectividade                            |
 
-**Alerts:**
+**Alertas:**
 
-**CNI Connection Maintenance** (Magic Networking only):
-
-```
+**Manutenção de conexão CNI** (somente Magic Networking):```
 Dashboard → Notifications → Add
 Product: Cloudflare Network Interconnect
 Type: Connection Maintenance Alert
+
 ```
 
 Warnings up to 2 weeks advance. 6hr delay for new additions.
@@ -96,28 +97,32 @@ Warnings up to 2 weeks advance. 6hr delay for new additions.
 **Cloudflare Status Maintenance** (entire PoP):
 
 ```
+
 Dashboard → Notifications → Add
 Product: Cloudflare Status
 Filter PoPs: gru,fra,lhr
+
 ```
 
 **Find PoP code:**
 
 ```
+
 Dashboard → Magic Transit/WAN → Configuration → Interconnects
 Select CNI → Note Data Center (e.g., "gru-b")
 Use first 3 letters: "gru"
+
 ```
+## Melhores práticas
 
-## Best Practices
+**Práticas críticas específicas de configuração:**
 
-**Critical config-specific practices:**
+- /31 sub-redes necessárias para BGP
+- Senhas BGP recomendadas
+- BFD para failover rápido (somente v1)
+- Teste a conectividade do ping antes do BGP
+- Habilite notificações de manutenção imediatamente após a ativação
+- Monitore o status programaticamente via API
 
-- /31 subnets required for BGP
-- BGP passwords recommended
-- BFD for fast failover (v1 only)
-- Test ping connectivity before BGP
-- Enable maintenance notifications immediately after activation
-- Monitor status programmatically via API
-
-For design patterns, HA architecture, and security best practices, see [patterns.md](./patterns.md).
+Para padrões de design, arquitetura de alta disponibilidade e práticas recomendadas de segurança, consulte [patterns.md](./patterns.md).
+```

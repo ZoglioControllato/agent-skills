@@ -58,30 +58,34 @@ await Promise.all([
 ])
 ```
 
-| Need                           | Use             |
-| ------------------------------ | --------------- |
-| Long-term storage, SQL queries | Pipelines       |
-| Immediate processing, retries  | Queues          |
-| Both                           | Fan-out pattern |
+| Necessidade                                 | Usar            |
+| ------------------------------------------- | --------------- |
+| Armazenamento de longo prazo, consultas SQL | Oleodutos       |
+| Processamento imediato, novas tentativas    | Filas           |
+| Ambos                                       | Padrão de leque |
 
-## Performance Tuning
+## Ajuste de desempenho
 
-| Goal              | Config                                   |
-| ----------------- | ---------------------------------------- |
-| Low latency       | `--roll-interval 10`                     |
-| Query performance | `--roll-interval 300 --roll-size 100`    |
-| Cost optimal      | `--compression zstd --roll-interval 300` |
+| Meta                   | Configuração                            |
+| ---------------------- | --------------------------------------- |
+| Baixa latência         | `--roll-intervalo 10`                   |
+| Desempenho de consulta | `--roll-interval 300 --roll-size 100`   |
+| Custo ideal            | `--compressão zstd --roll-interval 300` |
 
-## Schema Evolution
+## Evolução do esquema
 
-Pipelines are immutable. Use versioning:
+Pipelines são imutáveis. Use o versionamento:```bash
 
-```bash
 # Create v2 stream/sink/pipeline
+
 npx wrangler pipelines streams create events-v2 --schema-file v2.json
 
 # Dual-write during transition
+
 await Promise.all([env.EVENTS_V1.send([event]), env.EVENTS_V2.send([event])]);
 
 # Query across versions with UNION ALL
+
+```
+
 ```

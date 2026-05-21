@@ -1,26 +1,26 @@
-# Gotchas & Best Practices
+# Armadilhas e boas práticas
 
-## Common Errors
+## Erros comuns
 
-### "setState() not syncing"
+### "setState() não sincroniza"
 
-**Cause:** Mutating state directly or not calling `setState()` after modifications  
-**Solution:** Always use `setState()` with immutable updates:
+**Causa:** mutar estado diretamente ou não chamar `setState()` após alterações  
+**Solução:** use sempre `setState()` com atualizações imutáveis:
 
 ```ts
 // ❌ this.state.count++
 // ✅ this.setState({...this.state, count: this.state.count + 1})
 ```
 
-### "Message history grows unbounded (AIChatAgent)"
+### "Histórico de mensagens cresce sem limite (AIChatAgent)"
 
-**Cause:** `this.messages` in `AIChatAgent` accumulates all messages indefinitely  
-**Solution:** Manually trim old messages periodically:
+**Causa:** `this.messages` no `AIChatAgent` acumula todas as mensagens indefinidamente  
+**Solução:** aparar mensagens antigas manualmente com periodicidade:
 
 ```ts
 export class ChatAgent extends AIChatAgent<Env> {
   async onChatMessage(onFinish) {
-    // Keep only last 50 messages
+    // Manter só as últimas 50 mensagens
     if (this.messages.length > 50) {
       this.messages = this.messages.slice(-50)
     }
@@ -30,38 +30,38 @@ export class ChatAgent extends AIChatAgent<Env> {
 }
 ```
 
-### "SQL injection vulnerability"
+### "Vulnerabilidade a SQL injection"
 
-**Cause:** Direct string interpolation in SQL queries
-**Solution:** Use parameterized queries:
+**Causa:** interpolação direta de strings em consultas SQL  
+**Solução:** use consultas parametrizadas:
 
 ```ts
 // ❌ this.sql`...WHERE id = '${userId}'`
 // ✅ this.sql`...WHERE id = ${userId}`
 ```
 
-### "WebSocket connection timeout"
+### "Timeout de conexão WebSocket"
 
-**Cause:** Not calling `conn.accept()` in `onConnect`
-**Solution:** Always accept connections:
+**Causa:** não chamar `conn.accept()` em `onConnect`  
+**Solução:** aceite sempre as conexões:
 
 ```ts
 async onConnect(conn: Connection, ctx: ConnectionContext) { conn.accept(); conn.setState({userId: "123"}); }
 ```
 
-### "Schedule limit exceeded"
+### "Limite de agendamentos excedido"
 
-**Cause:** More than 1000 scheduled tasks per agent
-**Solution:** Clean up old schedules and limit creation rate:
+**Causa:** mais de 1000 tarefas agendadas por agente  
+**Solução:** limpe agendamentos antigos e limite a taxa de criação:
 
 ```ts
 async checkSchedules() { if ((await this.getSchedules()).length > 800) console.warn("Near limit!"); }
 ```
 
-### "AI Gateway unavailable"
+### "AI Gateway indisponível"
 
-**Cause:** AI service timeout or quota exceeded  
-**Solution:** Add error handling and fallbacks:
+**Causa:** timeout do serviço de IA ou cota excedida  
+**Solução:** trate erros e use fallbacks:
 
 ```ts
 try {
@@ -72,102 +72,102 @@ try {
 }
 ```
 
-### "@callable method returns undefined"
+### "Método @callable retorna undefined"
 
-**Cause:** Method doesn't return JSON-serializable value, or has non-serializable types  
-**Solution:** Ensure return values are plain objects/arrays/primitives:
+**Causa:** o método não retorna valor serializável em JSON, ou usa tipos não serializáveis  
+**Solução:** garanta retornos como objetos/array/primitivos simples:
 
 ```ts
-// ❌ Returns class instance
+// ❌ Retorna instância de classe
 @callable()
 async getData() { return new Date(); }
 
-// ✅ Returns serializable object
+// ✅ Retorna objeto serializável
 @callable()
 async getData() { return { timestamp: Date.now() }; }
 ```
 
-### "Resumable stream not resuming"
+### "Stream retomável não retoma"
 
-**Cause:** Stream ID must be deterministic for resumption to work  
-**Solution:** Use AIChatAgent (automatic) or ensure consistent stream IDs:
+**Causa:** o ID do stream precisa ser determinístico para a retomada funcionar  
+**Solução:** use `AIChatAgent` (automático) ou garanta IDs de stream consistentes:
 
 ```ts
-// AIChatAgent handles this automatically
+// AIChatAgent cuida disso automaticamente
 export class ChatAgent extends AIChatAgent<Env> {
-  // Resumption works out of the box
+  // Retomada funciona out of the box
 }
 ```
 
-### "MCP connection loss on hibernation"
+### "Perda de conexão MCP na hibernação"
 
-**Cause:** MCP server connections don't survive hibernation  
-**Solution:** Re-register servers in `onStart()` or check connection status:
+**Causa:** conexões com servidor MCP não sobrevivem à hibernação  
+**Solução:** re-registre servidores em `onStart()` ou verifique o status da conexão:
 
 ```ts
 onStart() {
-  // Re-register MCP servers after hibernation
+  // Re-registrar servidores MCP após hibernação
   await this.mcp.registerServer("github", { url: env.MCP_URL, auth: {...} });
 }
 ```
 
 ### "Agent not found"
 
-**Cause:** Durable Object binding missing or incorrect class name  
-**Solution:** Verify DO binding in wrangler.jsonc and class name matches
+**Causa:** binding de Durable Object ausente ou nome de classe incorreto  
+**Solução:** confira o binding no wrangler.jsonc e se o nome da classe bate
 
-## Rate Limits & Quotas
+## Limites e cotas
 
-| Resource/Limit          | Value                 | Notes                                        |
-| ----------------------- | --------------------- | -------------------------------------------- |
-| CPU per request         | 30s (std), 300s (max) | Set in wrangler.jsonc                        |
-| Memory per instance     | 128MB                 | Shared with WebSockets                       |
-| Storage per agent       | 10GB                  | SQLite storage                               |
-| Scheduled tasks         | 1000 per agent        | Monitor with `getSchedules()`                |
-| WebSocket connections   | Unlimited             | Within memory limits                         |
-| SQL columns             | 100                   | Per table                                    |
-| SQL row size            | 2MB                   | Key + value                                  |
-| WebSocket message       | 32MiB                 | Max size                                     |
-| DO requests/sec         | ~1000                 | Per unique DO instance; rate limit if needed |
-| AI Gateway (Workers AI) | Model-specific        | Check dashboard for limits                   |
-| MCP requests            | Depends on server     | Implement retry/backoff                      |
+| Recurso/limite           | Valor                     | Notas                                              |
+| ------------------------ | ------------------------- | -------------------------------------------------- |
+| CPU por requisição       | 30s (padrão), 300s (máx.) | Definido em wrangler.jsonc                         |
+| Memória por instância    | 128MB                     | Compartilhada com WebSockets                       |
+| Armazenamento por agente | 10GB                      | Armazenamento SQLite                               |
+| Tarefas agendadas        | 1000 por agente           | Monitore com `getSchedules()`                      |
+| Conexões WebSocket       | Ilimitado                 | Dentro dos limites de memória                      |
+| Colunas SQL              | 100                       | Por tabela                                         |
+| Tamanho de linha SQL     | 2MB                       | Chave + valor                                      |
+| Mensagem WebSocket       | 32MiB                     | Tamanho máximo                                     |
+| Requisições DO/s         | ~1000                     | Por instância DO única; faça rate limit se preciso |
+| AI Gateway (Workers AI)  | Por modelo                | Veja limites no dashboard                          |
+| Requisições MCP          | Depende do servidor       | Implemente retry/backoff                           |
 
-## Best Practices
+## Boas práticas
 
-### State Management
+### Gerenciamento de estado
 
-- Use immutable updates: `setState({...this.state, key: newValue})`
-- Trim unbounded arrays (messages, logs) periodically
-- Store large data in SQL, not state
+- Use atualizações imutáveis: `setState({...this.state, key: newValue})`
+- Aparar arrays sem limite (mensagens, logs) periodicamente
+- Guarde dados grandes em SQL, não no state
 
-### SQL Usage
+### Uso de SQL
 
-- Create tables in `onStart()`, not `onRequest()`
-- Use parameterized queries: `` sql`WHERE id = ${id}` `` (NOT `` sql`WHERE id = '${id}'` ``)
-- Index frequently queried columns
+- Crie tabelas em `onStart()`, não em `onRequest()`
+- Use consultas parametrizadas: `` sql`WHERE id = ${id}` `` (NÃO `` sql`WHERE id = '${id}'` ``)
+- Indexe colunas muito consultadas
 
-### Scheduling
+### Agendamento
 
-- Monitor schedule count: `await this.getSchedules()`
-- Cancel completed tasks to stay under 1000 limit
-- Use cron strings for recurring tasks
+- Monitore a contagem: `await this.getSchedules()`
+- Cancele tarefas concluídas para ficar abaixo de 1000
+- Use strings cron para tarefas recorrentes
 
 ### WebSockets
 
-- Always call `conn.accept()` in `onConnect()`
-- Handle client disconnects gracefully
-- Broadcast to `this.connections` efficiently
+- Sempre chame `conn.accept()` em `onConnect()`
+- Trate desconexões do cliente com cuidado
+- Faça broadcast para `this.connections` de forma eficiente
 
-### AI Integration
+### Integração com IA
 
-- Use `AIChatAgent` for chat interfaces (auto-streaming, resumption)
-- Trim message history to avoid token limits
-- Handle AI errors with try/catch and fallbacks
+- Use `AIChatAgent` para interfaces de chat (stream e retomada automáticos)
+- Aparar histórico para evitar estourar limites de tokens
+- Trate erros de IA com try/catch e fallbacks
 
-### Production Deployment
+### Deploy em produção
 
-- **Rate limiting:** Implement request throttling for high-traffic agents (>1000 req/s)
-- **Monitoring:** Log critical errors, track schedule count, monitor storage usage
-- **Graceful degradation:** Handle AI service outages with fallbacks
-- **Message trimming:** Enforce max history length (e.g., 100 messages) in AIChatAgent
-- **MCP reliability:** Re-register servers on hibernation, implement retry logic
+- **Rate limiting:** implemente throttling para agentes de alto tráfego (>1000 req/s)
+- **Monitoramento:** registre erros críticos, acompanhe contagem de agendamentos e uso de armazenamento
+- **Degradação elegante:** trate indisponibilidade do serviço de IA com fallbacks
+- **Aparo de mensagens:** imponha tamanho máximo do histórico (ex.: 100 mensagens) no AIChatAgent
+- **Confiabilidade MCP:** re-registre servidores após hibernação e implemente retry

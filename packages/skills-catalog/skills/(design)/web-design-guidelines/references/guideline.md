@@ -1,159 +1,167 @@
-# Web Interface Guidelines
+# Diretrizes para interface da Web
 
-Review these files for compliance: $ARGUMENTS
+Revise estes arquivos para conformidade: $ARGUMENTS
 
-Read files, check against rules below. Output concise but comprehensive—sacrifice grammar for brevity. High signal-to-noise.
+Leia os arquivos e verifique as regras abaixo. Resultado conciso, mas abrangente – sacrifique a gramática pela brevidade. Alto sinal-ruído.
 
-## Rules
+## Regras
 
-### Accessibility
+### Acessibilidade
 
-- Icon-only buttons need `aria-label`
-- Form controls need `<label>` or `aria-label`
-- Interactive elements need keyboard handlers (`onKeyDown`/`onKeyUp`)
-- `<button>` for actions, `<a>`/`<Link>` for navigation (not `<div onClick>`)
-- Images need `alt` (or `alt=""` if decorative)
-- Decorative icons need `aria-hidden="true"`
-- Async updates (toasts, validation) need `aria-live="polite"`
-- Use semantic HTML (`<button>`, `<a>`, `<label>`, `<table>`) before ARIA
-- Headings hierarchical `<h1>`–`<h6>`; include skip link for main content
-- `scroll-margin-top` on heading anchors
+- Botões somente de ícone precisam de `aria-label`
+- Os controles do formulário precisam de `<label>` ou `aria-label`
+- Elementos interativos precisam de manipuladores de teclado (`onKeyDown`/`onKeyUp`)
+- `<button>` para ações, `<a>`/`<Link>` para navegação (não `<div onClick>`)
+- As imagens precisam de `alt` (ou `alt=""` se forem decorativas)
+- Ícones decorativos precisam de `aria-hidden="true"`
+- Atualizações assíncronas (brindes, validação) precisam de `aria-live="polite"`
+- Use HTML semântico (`<button>`, `<a>`, `<label>`, `<table>`)
 
-### Focus States
+antes de ARIA
 
-- Interactive elements need visible focus: `focus-visible:ring-*` or equivalent
-- Never `outline-none` / `outline: none` without focus replacement
-- Use `:focus-visible` over `:focus` (avoid focus ring on click)
-- Group focus with `:focus-within` for compound controls
+- Cabeçalhos hierárquicos `<h1>`–`<h6>`; incluir link para pular para o conteúdo principal
+- `scroll-margin-top` nas âncoras de rumo
 
-### Forms
+### Estados de foco
 
-- Inputs need `autocomplete` and meaningful `name`
-- Use correct `type` (`email`, `tel`, `url`, `number`) and `inputmode`
-- Never block paste (`onPaste` + `preventDefault`)
-- Labels clickable (`htmlFor` or wrapping control)
-- Disable spellcheck on emails, codes, usernames (`spellCheck={false}`)
-- Checkboxes/radios: label + control share single hit target (no dead zones)
-- Submit button stays enabled until request starts; spinner during request
-- Errors inline next to fields; focus first error on submit
-- Placeholders end with `…` and show example pattern
-- `autocomplete="off"` on non-auth fields to avoid password manager triggers
-- Warn before navigation with unsaved changes (`beforeunload` or router guard)
+- Elementos interativos precisam de foco visível: `focus-visible:ring-*` ou equivalente
+- Nunca `outline-none` / `outline: none` sem substituição de foco
+- Use `:focus-visible` em vez de `:focus` (evite o anel de foco ao clicar)
+- Foco de grupo com `:focus-within` para controles compostos
 
-### Animation
+### Formulários
 
-- Honor `prefers-reduced-motion` (provide reduced variant or disable)
-- Animate `transform`/`opacity` only (compositor-friendly)
-- Never `transition: all`—list properties explicitly
-- Set correct `transform-origin`
-- SVG: transforms on `<g>` wrapper with `transform-box: fill-box; transform-origin: center`
-- Animations interruptible—respond to user input mid-animation
+- As entradas precisam de `preenchimento automático` e um `nome` significativo
+- Use `type` (`email`, `tel`, `url`, `number`) e `inputmode` corretos
+- Nunca bloqueie a colagem (`onPaste` + `preventDefault`)
+- Etiquetas clicáveis (`htmlFor` ou controle de quebra automática)
+- Desative a verificação ortográfica em e-mails, códigos, nomes de usuário (`spellCheck={false}`)
+- Caixas de seleção/rádios: rótulo + controle compartilha alvo de acerto único (sem zonas mortas)
+- O botão enviar permanece habilitado até o início da solicitação; spinner durante a solicitação
+-
 
-### Typography
+Erros embutidos ao lado dos campos; concentre o primeiro erro no envio
 
-- `…` not `...`
-- Curly quotes `"` `"` not straight `"`
-- Non-breaking spaces: `10&nbsp;MB`, `⌘&nbsp;K`, brand names
-- Loading states end with `…`: `"Loading…"`, `"Saving…"`
-- `font-variant-numeric: tabular-nums` for number columns/comparisons
-- Use `text-wrap: balance` or `text-pretty` on headings (prevents widows)
+- Os espaços reservados terminam com `…` e mostram um padrão de exemplo
+- `autocomplete="off"` em campos não-auth para evitar gatilhos do gerenciador de senhas
+- Avisar antes da navegação com alterações não salvas (`beforeunload` ou proteção do roteador)
 
-### Content Handling
+### Animação
 
-- Text containers handle long content: `truncate`, `line-clamp-*`, or `break-words`
-- Flex children need `min-w-0` to allow text truncation
-- Handle empty states—don't render broken UI for empty strings/arrays
-- User-generated content: anticipate short, average, and very long inputs
+- Honre `prefers-reduced-motion` (forneça variante reduzida ou desative)
+- Animar apenas `transform`/`opacity` (amigável ao compositor)
+- Nunca `transition: all`—lista propriedades explicitamente
+- Definir `transform-origin` correto
+- SVG: transforma no wrapper `<g>` com `transform-box: fill-box; origem da transformação: centro`
+- Animações interrompíveis – responda à entrada do usuário no meio da animação
 
-### Images
+### Tipografia
 
-- `<img>` needs explicit `width` and `height` (prevents CLS)
-- Below-fold images: `loading="lazy"`
-- Above-fold critical images: `priority` or `fetchpriority="high"`
+- `…` não `...`
+- Aspas curvas `"` `"` não retas `"`
+- Espaços inseparáveis: `10 MB`, `⌘ K`, nomes de marcas
+- Os estados de carregamento terminam com `…`: `"Carregando…"`, `"Salvando…"`
+- `font-variant-numeric: tabular-nums` para colunas/comparações numéricas
+- Use `text-wrap: balance` ou `text-pretty` nos títulos (evita viúvas)
 
-### Performance
+### Manipulação de conteúdo
 
-- Large lists (>50 items): virtualize (`virtua`, `content-visibility: auto`)
-- No layout reads in render (`getBoundingClientRect`, `offsetHeight`, `offsetWidth`, `scrollTop`)
-- Batch DOM reads/writes; avoid interleaving
-- Prefer uncontrolled inputs; controlled inputs must be cheap per keystroke
-- Add `<link rel="preconnect">` for CDN/asset domains
-- Critical fonts: `<link rel="preload" as="font">` with `font-display: swap`
+- Contêineres de texto lidam com conteúdo longo: `truncate`, `line-clamp-*` ou `break-words`
+- Os filhos flexíveis precisam de `min-w-0` para permitir o truncamento de texto
+- Lidar com estados vazios – não renderize UI quebrada para strings/matrizes vazias
+- Conteúdo gerado pelo usuário: antecipe entradas curtas, médias e muito longas
 
-### Navigation & State
+### Imagens
 
-- URL reflects state—filters, tabs, pagination, expanded panels in query params
-- Links use `<a>`/`<Link>` (Cmd/Ctrl+click, middle-click support)
-- Deep-link all stateful UI (if uses `useState`, consider URL sync via nuqs or similar)
-- Destructive actions need confirmation modal or undo window—never immediate
+- `<img>` precisa de `width` e `height` explícitos (evita CLS)
+- Imagens abaixo da dobra: `loading="lazy"`
+- Imagens críticas acima da dobra: `priority` ou `fetchpriority="high"`
 
-### Touch & Interaction
+### Desempenho
 
-- `touch-action: manipulation` (prevents double-tap zoom delay)
-- `-webkit-tap-highlight-color` set intentionally
-- `overscroll-behavior: contain` in modals/drawers/sheets
-- During drag: disable text selection, `inert` on dragged elements
-- `autoFocus` sparingly—desktop only, single primary input; avoid on mobile
+- Listas grandes (>50 itens): virtualize (`virtua`, `content-visibility: auto`)
+- Nenhuma leitura de layout na renderização (`getBoundingClientRect`, `offsetHeight`, `offsetWidth`, `scrollTop`)
+- Leituras/gravações em lote DOM; evite intercalar
+- Prefira entradas não controladas; entradas controladas devem ser baratas por pressionamento de tecla
+- Adicionar `<link rel="preconnect">` para domínios CDN/ativos
+- Fontes críticas: `<link rel="preload" as="font">` com `font-display: swap`
 
-### Safe Areas & Layout
+### Navegação e Estado
 
-- Full-bleed layouts need `env(safe-area-inset-*)` for notches
-- Avoid unwanted scrollbars: `overflow-x-hidden` on containers, fix content overflow
-- Flex/grid over JS measurement for layout
+- O URL reflete o estado: filtros, guias, paginação, painéis expandidos em parâmetros de consulta
+- Links usam `<a>`/`<Link>` (Cmd/Ctrl+clique, suporte para clique do meio)
+- Link direto para todas as interfaces de usuário com estado (se usar `useState`, considere a sincronização de URL via nuqs ou similar)
+- Ações destrutivas precisam de confirmação modal ou janela de desfazer – nunca imediata
 
-### Dark Mode & Theming
+### Toque e interação
 
-- `color-scheme: dark` on `<html>` for dark themes (fixes scrollbar, inputs)
-- `<meta name="theme-color">` matches page background
-- Native `<select>`: explicit `background-color` and `color` (Windows dark mode)
+- `touch-action: manipulação` (evita atraso de zoom com toque duplo)
+- `-webkit-tap-highlight-color` definido intencionalmente
+- `comportamento de rolagem: contém` em modais/gavetas/folhas
+- Durante arrastar: desative a seleção de texto, `inerte` nos elementos arrastados
+- `autoFocus` com moderação - somente desktop, entrada primária única; evite no celular
 
-### Locale & i18n
+### Áreas Seguras e Layout
 
-- Dates/times: use `Intl.DateTimeFormat` not hardcoded formats
-- Numbers/currency: use `Intl.NumberFormat` not hardcoded formats
-- Detect language via `Accept-Language` / `navigator.languages`, not IP
+- Layouts sem margens precisam de `env(safe-area-inset-*)` para entalhes
+- Evite barras de rolagem indesejadas: `overflow-x-hidden` em contêineres, corrija o estouro de conteúdo
+- Medição Flex/grid sobre JS para layout
 
-### Hydration Safety
+### Modo escuro e temas
 
-- Inputs with `value` need `onChange` (or use `defaultValue` for uncontrolled)
-- Date/time rendering: guard against hydration mismatch (server vs client)
-- `suppressHydrationWarning` only where truly needed
+- `color-scheme: dark` em `<html>` para temas escuros (corrige barra de rolagem, entradas)
+- `<meta name="theme-color">` corresponde ao plano de fundo da página
+- Nativo `<select>`: `background-color` e `color` explícitos (modo escuro do Windows)
 
-### Hover & Interactive States
+### Local e i18n
 
-- Buttons/links need `hover:` state (visual feedback)
-- Interactive states increase contrast: hover/active/focus more prominent than rest
+- Datas/horas: use `Intl.DateTimeFormat` e não formatos codificados
+- Números/moeda: use `Intl.NumberFormat` e não formatos codificados
+- Detectar idioma via `Accept-Language` / `navigator.languages`, não IP
 
-### Content & Copy
+### Hidratação Segurança
 
-- Active voice: "Install the CLI" not "The CLI will be installed"
-- Title Case for headings/buttons (Chicago style)
-- Numerals for counts: "8 deployments" not "eight"
-- Specific button labels: "Save API Key" not "Continue"
-- Error messages include fix/next step, not just problem
-- Second person; avoid first person
-- `&` over "and" where space-constrained
+- Entradas com `value` precisam de `onChange` (ou use `defaultValue` para não controladas)
+- Renderização de data/hora: proteção contra incompatibilidade de hidratação (servidor x cliente)
+- `suppressHydrationWarning` somente onde for realmente necessário
 
-### Anti-patterns (flag these)
+### Hover e estados interativos
 
-- `user-scalable=no` or `maximum-scale=1` disabling zoom
-- `onPaste` with `preventDefault`
-- `transition: all`
-- `outline-none` without focus-visible replacement
-- Inline `onClick` navigation without `<a>`
-- `<div>` or `<span>` with click handlers (should be `<button>`)
-- Images without dimensions
-- Large arrays `.map()` without virtualization
-- Form inputs without labels
-- Icon buttons without `aria-label`
-- Hardcoded date/number formats (use `Intl.*`)
-- `autoFocus` without clear justification
+- Botões/links precisam do estado `hover:` (feedback visual)
+- Estados interativos aumentam o contraste: pairar/ativo/foco mais proeminente que o repouso
 
-## Output Format
+### Conteúdo e cópia
 
-Group by file. Use `file:line` format (VS Code clickable). Terse findings.
+- Voz ativa: "Instalar a CLI" e não "A CLI será instalada"
+- Caixa de título para títulos/botões (estilo Chicago)
+- Números para contagens: "8 implantações" e não "oito"
+- Rótulos de botão específicos: "Salvar chave de API" e não "Continuar"
+- As mensagens de erro incluem correção/próxima etapa, não apenas problema
+- Segunda pessoa; evite a primeira pessoa
+- `&` sobre "e" onde há espaço limitado
 
-```text
+### Antipadrões (sinalize-os)
+
+- `user-scalable=no` ou `maximum-scale=1` desativando o zoom
+- `onPaste` com `preventDefault`
+- `transição: todos`
+- `outline-none` sem substituição visível de foco
+- Navegação `onClick` inline sem `<a>`
+- `<div>` ou `<span>` com manipuladores de clique (deve ser `<button>`)
+- Imagens sem dimensões
+- Grandes arrays `.map()` sem virtualização
+- Entradas de formulário sem rótulos
+- Botões de ícone sem `aria-label`
+- Formatos de data/número codificados (use `I
+
+ntl.\*`)
+
+- `autoFocus` sem justificativa clara
+
+## Formato de saída
+
+Agrupar por arquivo. Use o formato `file:line` (Código VS clicável). Descobertas concisas.```text
+
 ## src/Button.tsx
 
 src/Button.tsx:42 - icon button missing aria-label
@@ -169,6 +177,7 @@ src/Modal.tsx:34 - "..." → "…"
 ## src/Card.tsx
 
 ✓ pass
-```
 
-State issue + location. Skip explanation unless fix non-obvious. No preamble.
+```
+Questão de estado + localização. Ignore a explicação, a menos que corrija o que não é óbvio. Sem preâmbulo.
+```

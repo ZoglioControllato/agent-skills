@@ -1,28 +1,28 @@
-# Zaraz Configuration
+#Configuração do Zaraz
 
-## Dashboard Setup
+## Configuração do painel
 
-1. Domain → Zaraz → Start setup
-2. Add tool (e.g., Google Analytics 4)
-3. Enter credentials (GA4: `G-XXXXXXXXXX`)
-4. Configure triggers
-5. Save and Publish
+1. Domínio → Zaraz → Iniciar configuração
+2. Adicionar ferramenta (por exemplo, Google Analytics 4)
+3. Insira as credenciais (GA4: `G-XXXXXXXXXX`)
+4. Configure gatilhos
+5. Salve e publique
 
-## Triggers
+## Gatilhos
 
-| Type            | When              | Use Case           |
-| --------------- | ----------------- | ------------------ |
-| Pageview        | Page load         | Track page views   |
-| Click           | Element clicked   | Button tracking    |
-| Form Submission | Form submitted    | Lead capture       |
-| History Change  | URL changes (SPA) | React/Vue routing  |
-| Variable Match  | Custom condition  | Conditional firing |
+| Tipo                     | Quando                  | Caso de uso                       |
+| ------------------------ | ----------------------- | --------------------------------- |
+| Visualização de página   | Carregamento de página  | Rastrear visualizações de páginas |
+| Clique                   | Elemento clicado        | Rastreamento de botão             |
+| Envio de formulário      | Formulário enviado      | Captura de leads                  |
+| Mudança de história      | Alterações de URL (SPA) | Roteamento React/Vue              |
+| Correspondência variável | Condição personalizada  | Disparo condicional               |
 
-### History Change (SPA)
+### Mudança de histórico (SPA)```
 
-```
 Type: History Change
 Event: pageview
+
 ```
 
 Fires on `pushState`, `replaceState`, hash changes. **No manual tracking needed.**
@@ -30,11 +30,13 @@ Fires on `pushState`, `replaceState`, hash changes. **No manual tracking needed.
 ### Click Trigger
 
 ```
+
 Type: Click
 CSS Selector: .buy-button
 Event: purchase_intent
 Properties:
-  button_text: {{system.clickElement.text}}
+button_text: {{system.clickElement.text}}
+
 ```
 
 ## Tool Configuration
@@ -42,23 +44,29 @@ Properties:
 **GA4:**
 
 ```
+
 Measurement ID: G-XXXXXXXXXX
 Events: page_view, purchase, user_engagement
+
 ```
 
 **Facebook Pixel:**
 
 ```
+
 Pixel ID: 1234567890123456
 Events: PageView, Purchase, AddToCart
+
 ```
 
 **Google Ads:**
 
 ```
+
 Conversion ID: AW-XXXXXXXXX
 Conversion Label: YYYYYYYYYY
-```
+
+````
 
 ## Consent Management
 
@@ -70,7 +78,7 @@ Conversion Label: YYYYYYYYYY
 
 ```javascript
 zaraz.consent.setAll({ analytics: true, marketing: true })
-```
+````
 
 ## Privacy Features
 

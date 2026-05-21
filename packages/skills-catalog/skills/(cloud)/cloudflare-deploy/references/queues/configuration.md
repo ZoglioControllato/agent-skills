@@ -1,6 +1,6 @@
-# Queues Configuration
+# Configuração de Queues
 
-## Create Queue
+## Criar fila
 
 ```bash
 wrangler queues create my-queue
@@ -8,7 +8,7 @@ wrangler queues create my-queue --retention-period-hours=336  # 14 days
 wrangler queues create my-queue --delivery-delay-secs=300
 ```
 
-## Producer Binding
+## Binding de produtor
 
 **wrangler.jsonc:**
 
@@ -26,7 +26,7 @@ wrangler queues create my-queue --delivery-delay-secs=300
 }
 ```
 
-## Consumer Configuration (Push-based)
+## Configuração do consumidor (push)
 
 **wrangler.jsonc:**
 
@@ -47,7 +47,7 @@ wrangler queues create my-queue --delivery-delay-secs=300
 }
 ```
 
-## Consumer Configuration (Pull-based)
+## Configuração do consumidor (pull)
 
 **wrangler.jsonc:**
 
@@ -67,7 +67,7 @@ wrangler queues create my-queue --delivery-delay-secs=300
 }
 ```
 
-## TypeScript Types
+## Tipos TypeScript
 
 ```typescript
 interface Env {
@@ -91,23 +91,23 @@ export default {
 } satisfies ExportedHandler<Env>
 ```
 
-## Content Type Selection
+## Escolha do tipo de conteúdo
 
-Choose content type based on consumer type and data requirements:
+Escolha o tipo conforme o consumidor e os dados:
 
-| Content Type | Use When                                             | Readable By               | Supports                             | Size     |
-| ------------ | ---------------------------------------------------- | ------------------------- | ------------------------------------ | -------- |
-| `json`       | Pull consumers, dashboard visibility, simple objects | All (push/pull/dashboard) | JSON-serializable types only         | Medium   |
-| `v8`         | Push consumers only, complex JS objects              | Push consumers only       | Date, Map, Set, BigInt, typed arrays | Small    |
-| `text`       | String-only payloads                                 | All                       | Strings only                         | Smallest |
-| `bytes`      | Binary data (images, files)                          | All                       | ArrayBuffer, Uint8Array              | Variable |
+| Tipo de conteúdo | Use quando                                             | Legível por                 | Suporta                              | Tamanho  |
+| ---------------- | ------------------------------------------------------ | --------------------------- | ------------------------------------ | -------- |
+| `json`           | Consumidores pull, visão no dashboard, objetos simples | Todos (push/pull/dashboard) | Apenas tipos serializáveis em JSON   | Médio    |
+| `v8`             | Somente consumidores push, objetos JS complexos        | Somente consumidores push   | Date, Map, Set, BigInt, typed arrays | Pequeno  |
+| `text`           | Apenas strings                                         | Todos                       | Somente strings                      | Menor    |
+| `bytes`          | Dados binários (imagens, arquivos)                     | Todos                       | ArrayBuffer, Uint8Array              | Variável |
 
-**Decision tree:**
+**Árvore de decisão:**
 
-1. Need to view in dashboard or use pull consumer? → Use `json`
-2. Need Date, Map, Set, or other V8 types? → Use `v8` (push consumers only)
-3. Just strings? → Use `text`
-4. Binary data? → Use `bytes`
+1. Precisa ver no dashboard ou usar consumidor pull? → Use `json`
+2. Precisa de Date, Map, Set ou outros tipos V8? → Use `v8` (somente consumidores push)
+3. Só strings? → Use `text`
+4. Dados binários? → Use `bytes`
 
 ```typescript
 // JSON: Good for simple objects, pull consumers, dashboard visibility
@@ -129,11 +129,11 @@ await env.QUEUE.send('process-user-123', { contentType: 'text' })
 await env.QUEUE.send(imageBuffer, { contentType: 'bytes' })
 ```
 
-**Default behavior:** If not specified, Cloudflare auto-selects `json` for JSON-serializable objects and `v8` for complex types.
+**Comportamento padrão:** Se não especificado, a Cloudflare escolhe automaticamente `json` para objetos serializáveis em JSON e `v8` para tipos complexos.
 
-**IMPORTANT:** `v8` messages cannot be read by pull consumers or viewed in the dashboard. Use `json` if you need visibility or pull-based consumption.
+**IMPORTANTE:** Mensagens `v8` não podem ser lidas por consumidores pull nem visualizadas no dashboard. Use `json` se precisar de visibilidade ou consumo via pull.
 
-## CLI Commands
+## Comandos da CLI
 
 ```bash
 # Consumer management
@@ -149,3 +149,5 @@ wrangler queues resume my-queue
 wrangler queues purge my-queue
 wrangler queues delete my-queue
 ```
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

@@ -159,33 +159,33 @@ export default {
 }
 ```
 
-## Best Practices
+## Melhores práticas
 
-1. **Use ES modules** over service worker syntax
-2. **Explicit bindings** - no global namespace assumptions
-3. **Type safety** - define `Env` interfaces (use `wrangler types`)
-4. **Service isolation** - split concerns into multiple services
-5. **Pin compat date** in production after testing
-6. **Use ctx.waitUntil()** for background tasks
-7. **Handle errors gracefully** with try/catch
-8. **Configure resource limits** on caches/storage
+1. **Use módulos ES** em vez da sintaxe do service worker
+2. **Vinculações explícitas** - sem suposições de namespace global
+3. **Tipo de segurança** - defina interfaces `Env` (use `wrangler types`)
+4. **Isolamento de serviço** – divida as preocupações em vários serviços
+5. **Pin data de compatibilidade** em produção após teste
+6. **Use ctx.waitUntil()** para tarefas em segundo plano
+7. **Trate de erros normalmente** com try/catch
+8. **Configurar limites de recursos** em caches/armazenamento
 
-## Common Patterns
+## Padrões Comuns
 
-### Error Handling
+### Tratamento de erros```javascript
 
-```javascript
 export default {
-  async fetch(request, env, ctx) {
-    try {
-      return await handleRequest(request, env)
-    } catch (error) {
-      console.error('Request failed', error)
-      return new Response('Internal Error', { status: 500 })
-    }
-  },
+async fetch(request, env, ctx) {
+try {
+return await handleRequest(request, env)
+} catch (error) {
+console.error('Request failed', error)
+return new Response('Internal Error', { status: 500 })
 }
-```
+},
+}
+
+````
 
 ### Background Tasks
 
@@ -200,6 +200,6 @@ export default {
     return response
   },
 }
-```
+````
 
-See [configuration.md](./configuration.md) for config syntax, [api.md](./api.md) for runtime APIs, [gotchas.md](./gotchas.md) for common errors.
+Consulte [configuration.md](./configuration.md) para sintaxe de configuração, [api.md](./api.md) para APIs de tempo de execução, [gotchas.md](./gotchas.md) para erros comuns.

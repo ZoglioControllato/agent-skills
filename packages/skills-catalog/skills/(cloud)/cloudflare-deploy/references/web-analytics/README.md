@@ -1,66 +1,65 @@
-# Cloudflare Web Analytics
+# Análise da Web Cloudflare
 
-Privacy-first web analytics providing Core Web Vitals, traffic metrics, and user insights without compromising visitor privacy.
+Análise da web com foco na privacidade, fornecendo Core Web Vitals, métricas de tráfego e insights do usuário sem comprometer a privacidade do visitante.
 
-## Overview
+## Visão geral
 
-Cloudflare Web Analytics provides:
+O Cloudflare Web Analytics oferece:
 
-- **Core Web Vitals** - LCP, FID, CLS, INP, TTFB monitoring
-- **Page views & visits** - Traffic patterns without cookies
-- **Referrers & paths** - Traffic sources and popular pages
-- **Device & browser data** - User agent breakdown
-- **Geographic data** - Country-level visitor distribution
-- **Privacy-first** - No cookies, fingerprinting, or PII collection
-- **Free** - No cost, unlimited pageviews
+- **Core Web Vitals** - Monitoramento LCP, FID, CLS, INP, TTFB
+- **Visualizações e visitas de página** - Padrões de tráfego sem cookies
+- **Referenciadores e caminhos** - Origens de tráfego e páginas populares
+- **Dados do dispositivo e do navegador** - Detalhamento do agente do usuário
+- **Dados geográficos** - Distribuição de visitantes em nível de país
+- **Privacidade em primeiro lugar** - Sem cookies, impressões digitais ou coleta de PII
+- **Grátis** - Sem custo, visualizações de página ilimitadas
 
-**Important:** Web Analytics is **dashboard-only**. No API exists for programmatic data access.
+**Importante:** Web Analytics é **somente painel**. Não existe API para acesso programático a dados.
 
-## Quick Start Decision Tree
+## Árvore de decisão de início rápido```
 
-```
-Is your site proxied through Cloudflare?
-├─ YES → Use automatic injection (configuration.md)
-│   ├─ Enable auto-injection in dashboard
-│   └─ No code changes needed (unless Cache-Control: no-transform)
+O proxy do seu site é feito pela Cloudflare?
+├─ SIM → Usar injeção automática (configuration.md)
+│ ├─ Habilitar injeção automática no painel
+│ └─ Nenhuma alteração de código necessária (a menos que Cache-Control: no-transform)
 │
-└─ NO → Use manual beacon integration (integration.md)
-    ├─ Add JS snippet to HTML
-    ├─ Use spa: true for React/Vue/Next.js
-    └─ Configure CSP if needed
-```
+└─ NÃO → Use integração manual de beacon (integration.md)
+├─ Adicionar trecho JS ao HTML
+├─ Use spa: true para React/Vue/Next.js
+└─ Configure o CSP se necessário
 
-## Reading Order
+````
+## Ordem de leitura
 
-1. **[configuration.md](configuration.md)** - Setup for proxied vs non-proxied sites
-2. **[integration.md](integration.md)** - Framework-specific beacon integration (React, Next.js, Vue, Nuxt, etc.)
-3. **[patterns.md](patterns.md)** - Common use cases (performance monitoring, GDPR consent, multi-site tracking)
-4. **[gotchas.md](gotchas.md)** - Troubleshooting (SPA tracking, CSP issues, hash routing limitations)
+1. **[configuration.md](configuration.md)** - Configuração para sites com proxy e sem proxy
+2. **[integration.md](integration.md)** - Integração de beacon específica da estrutura (React, Next.js, Vue, Nuxt, etc.)
+3. **[patterns.md](patterns.md)** - Casos de uso comuns (monitoramento de desempenho, consentimento do GDPR, rastreamento de vários sites)
+4. **[gotchas.md](gotchas.md)** - Solução de problemas (rastreamento de SPA, problemas de CSP, limitações de roteamento de hash)
 
-## When to Use Each File
+## Quando usar cada arquivo
 
-- **Setting up for first time?** → Start with configuration.md
-- **Using React/Next.js/Vue/Nuxt?** → Go to integration.md for framework code
-- **Need GDPR consent loading?** → See patterns.md
-- **Beacon not loading or no data?** → Check gotchas.md
-- **SPA not tracking navigation?** → See integration.md for `spa: true` config
+- **Configurando pela primeira vez?** → Comece com configuration.md
+- **Usando React/Next.js/Vue/Nuxt?** → Vá para integração.md para obter o código da estrutura
+- **Precisa de carregamento de consentimento do GDPR?** → Veja padrões.md
+- **Beacon não carrega ou não há dados?** → Verifique gotchas.md
+- **SPA não rastreia a navegação?** → Veja integração.md para configuração `spa: true`
 
-## Key Concepts
+## Conceitos-chave
 
-### Proxied vs Non-Proxied Sites
+### Sites com proxy e sem proxy
 
-| Type            | Description                           | Beacon Injection    | Limit        |
+| Tipo | Descrição | Injeção de farol | Limite |
 | --------------- | ------------------------------------- | ------------------- | ------------ |
-| **Proxied**     | DNS through Cloudflare (orange cloud) | Automatic or manual | Unlimited    |
-| **Non-proxied** | External hosting, manual beacon       | Manual only         | 10 sites max |
+| **Procurado** | DNS através do Cloudflare (nuvem laranja) | Automático ou manual | Ilimitado |
+| **Sem proxy** | Hospedagem externa, beacon manual | Somente manual | Máximo de 10 sites |
 
-### SPA Mode
+### Modo SPA
 
-**Critical for modern frameworks:**
+**Crítico para estruturas modernas:**
 
 ```json
 { "token": "YOUR_TOKEN", "spa": true }
-```
+````
 
 Without `spa: true`, client-side navigation (React Router, Vue Router, Next.js routing) will NOT be tracked. Only initial page loads will register.
 
@@ -72,77 +71,77 @@ If using Content Security Policy, allow both domains:
 script-src https://static.cloudflareinsights.com https://cloudflareinsights.com;
 ```
 
-## Features
+## Recursos
 
-### Core Web Vitals Debugging
+### Depuração do Core Web Vitals
 
-- **LCP (Largest Contentful Paint)** - Identifies slow-loading hero images/elements
-- **FID (First Input Delay)** - Interaction responsiveness (legacy metric)
-- **INP (Interaction to Next Paint)** - Modern interaction responsiveness metric
-- **CLS (Cumulative Layout Shift)** - Visual stability issues
-- **TTFB (Time to First Byte)** - Server response performance
+- **LCP (Largest Contentful Paint)** - Identifica imagens/elementos de herói de carregamento lento
+- **FID (atraso na primeira entrada)** - Capacidade de resposta da interação (métrica herdada)
+- **INP (Interaction to Next Paint)** - Métrica moderna de capacidade de resposta de interação
+- **CLS (mudança cumulativa de layout)** - Problemas de estabilidade visual
+- **TTFB (tempo até o primeiro byte)** - Desempenho de resposta do servidor
 
-Dashboard shows top 5 problematic elements with CSS selectors for debugging.
+O painel mostra os 5 principais elementos problemáticos com seletores CSS para depuração.
 
-### Traffic Filters
+### Filtros de tráfego
 
-- **Bot filtering** - Exclude automated traffic from metrics
-- **Date ranges** - Custom time period analysis
-- **Geographic** - Country-level filtering
-- **Device type** - Desktop, mobile, tablet breakdown
-- **Browser/OS** - User agent filtering
+- **Filtragem de bots** - Excluir tráfego automatizado das métricas
+- **Intervalos de datas** - Análise de período de tempo personalizado
+- **Geográfico** - Filtragem em nível de país
+- **Tipo de dispositivo** - Detalhamento de computadores, celulares e tablets
+- **Navegador/SO** - Filtragem de agente de usuário
 
-### Rules (Advanced - Plan-dependent)
+### Regras (Avançado - Dependente do plano)
 
-Create custom tracking rules for advanced configurations:
+Crie regras de rastreamento personalizadas para configurações avançadas:
 
-**Sample Rate Rules:**
+**Regras de taxa de amostra:**
 
-- Reduce data collection percentage for high-traffic sites
-- Example: Track only 50% of visitors to reduce volume
+- Reduza a porcentagem de coleta de dados para sites de alto tráfego
+- Exemplo: Rastreie apenas 50% dos visitantes para reduzir o volume
 
-**Path-Based Rules:**
+**Regras baseadas em caminho:**
 
-- Different behavior per route
-- Example: Exclude `/admin/*` or `/internal/*` from tracking
+- Comportamento diferente por rota
+- Exemplo: excluir `/admin/*` ou `/internal/*` do rastreamento
 
-**Host-Based Rules:**
+**Regras baseadas em host:**
 
-- Multi-domain configurations
-- Example: Separate tracking for staging vs production subdomains
+- Configurações de vários domínios
+- Exemplo: rastreamento separado para subdomínios de teste versus subdomínios de produção
 
-**Availability:** Rules feature depends on your Cloudflare plan. Check dashboard under Web Analytics → Rules to see if available. Free plans may have limited or no access.
+**Disponibilidade:** O recurso de regras depende do seu plano Cloudflare. Verifique o painel em Web Analytics → Regras para ver se está disponível. Os planos gratuitos podem ter acesso limitado ou nenhum acesso.
 
-## Plan Limits
+## Limites do plano
 
-| Feature           | Free           | Notes                  |
-| ----------------- | -------------- | ---------------------- |
-| Proxied sites     | Unlimited      | DNS through Cloudflare |
-| Non-proxied sites | 10             | External hosting       |
-| Pageviews         | Unlimited      | No volume limits       |
-| Data retention    | 6 months       | Rolling window         |
-| Rules             | Plan-dependent | Check dashboard        |
+| Recurso                 | Grátis              | Notas                     |
+| ----------------------- | ------------------- | ------------------------- |
+| Sites proxy             | Ilimitado           | DNS através do Cloudflare |
+| Sites sem proxy         | 10                  | Hospedagem externa        |
+| Visualizações de página | Ilimitado           | Sem limites de volume     |
+| Retenção de dados       | 6 meses             | Janela rolante            |
+| Regras                  | Dependente do plano | Verifique o painel        |
 
-## Privacy & Compliance
+## Privacidade e conformidade
 
-- **No cookies** - Zero client-side storage
-- **No fingerprinting** - No tracking across sites
-- **No PII** - IP addresses not stored
-- **GDPR-friendly** - Minimal data collection
-- **CCPA-compliant** - No personal data sale
+- **Sem cookies** - Zero armazenamento do lado do cliente
+- **Sem impressão digital** - Sem rastreamento entre sites
+- **Sem PII** - Endereços IP não armazenados
+- **Compatível com GDPR** - Coleta mínima de dados
+- **Compatível com CCPA** - Sem venda de dados pessoais
 
-**EU opt-out:** Dashboard option to exclude EU visitor data entirely.
+**Desativação da UE:** Opção de painel para excluir totalmente os dados de visitantes da UE.
 
-## Limitations
+## Limitações
 
-- **Dashboard-only** - No API for programmatic access
-- **No real-time** - 5-10 minute data delay
-- **No custom events** - Automatic pageview/navigation tracking only
-- **History API only** - Hash-based routing (`#/path`) not supported
-- **No session replay** - Metrics only, no user recordings
-- **No form tracking** - Page navigation tracking only
+- **Somente painel** - Sem API para acesso programático
+- **Sem tempo real** - Atraso de dados de 5 a 10 minutos
+- **Sem eventos personalizados** - Apenas visualização automática de página/rastreamento de navegação
+- **Somente API de histórico** - Roteamento baseado em hash (`#/path`) não suportado
+- **Sem repetição da sessão** - Somente métricas, sem gravações do usuário
+- **Sem rastreamento de formulário** - Somente rastreamento de navegação de página
 
-## See Also
+## Veja também
 
-- [Cloudflare Web Analytics Docs](https://developers.cloudflare.com/analytics/web-analytics/)
-- [Core Web Vitals Guide](https://web.dev/vitals/)
+- [Documentos do Cloudflare Web Analytics](https://developers.cloudflare.com/analytics/web-analytics/)
+- [Guia Core Web Vitals](https://web.dev/vitals/)

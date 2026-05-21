@@ -1,20 +1,19 @@
-# Configuration
+#Configuração
 
-Setup and configuration for TCP Sockets in Cloudflare Workers.
+Instalação e configuração de soquetes TCP em Cloudflare Workers.
 
-## Wrangler Configuration
+## Configuração do Wrangler
 
-### Basic Setup
+### Configuração básica
 
-TCP Sockets are available by default in Workers runtime. No special configuration required in `wrangler.jsonc`:
-
-```jsonc
+Os soquetes TCP estão disponíveis por padrão no tempo de execução dos Workers. Nenhuma configuração especial necessária em `wrangler.jsonc`:```jsonc
 {
-  "name": "private-network-worker",
-  "main": "src/index.ts",
-  "compatibility_date": "2025-01-01",
+"name": "private-network-worker",
+"main": "src/index.ts",
+"compatibility_date": "2025-01-01",
 }
-```
+
+````
 
 ### Environment Variables
 
@@ -24,7 +23,7 @@ Store connection details as env vars:
 {
   "vars": { "DB_HOST": "10.0.1.50", "DB_PORT": "5432" },
 }
-```
+````
 
 ```typescript
 interface Env {
@@ -106,18 +105,17 @@ Store sensitive credentials as secrets (not in wrangler.jsonc):
 wrangler secret put DB_PASSWORD  # Enter value when prompted
 ```
 
-Access in Worker via `env.DB_PASSWORD`. Use in protocol handshake or authentication.
+Acesso no Worker via `env.DB_PASSWORD`. Use em handshake de protocolo ou autenticação.
 
-## Local Development
+## Desenvolvimento Local
 
-Test with `wrangler dev`. Note: Local mode may not access private networks. Use public endpoints or mock servers for development:
-
-```typescript
+Teste com `wrangler dev`. Nota: O modo local pode não acessar redes privadas. Use endpoints públicos ou servidores simulados para desenvolvimento:```typescript
 const config =
-  process.env.NODE_ENV === 'dev'
-    ? { hostname: 'localhost', port: 5432 } // Mock
-    : { hostname: 'db.internal.example.com', port: 5432 } // Production
-```
+process.env.NODE_ENV === 'dev'
+? { hostname: 'localhost', port: 5432 } // Mock
+: { hostname: 'db.internal.example.com', port: 5432 } // Production
+
+````
 
 ## Connection String Patterns
 
@@ -128,7 +126,7 @@ function parseConnectionString(connStr: string): SocketAddress {
   const url = new URL(connStr) // e.g., "postgres://10.0.1.50:5432/mydb"
   return { hostname: url.hostname, port: parseInt(url.port) || 5432 }
 }
-```
+````
 
 ## Hyperdrive Integration
 

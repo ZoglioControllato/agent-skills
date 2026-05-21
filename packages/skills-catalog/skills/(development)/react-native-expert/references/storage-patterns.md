@@ -1,20 +1,20 @@
-# Storage Patterns
+# Padrões de armazenamento
 
-Patterns for persisting data in React Native applications.
+Padrões para persistência de dados em aplicativos React Native.
 
-## Storage Decision Guide
+## Guia de decisão de armazenamento
 
-| Storage      | Speed     | Async     | When to Use                                            |
-| ------------ | --------- | --------- | ------------------------------------------------------ |
-| MMKV         | Very fast | No (sync) | Default choice. Key-value data, settings, cached state |
-| SecureStore  | Medium    | Yes       | Sensitive data: tokens, passwords, credentials         |
-| AsyncStorage | Slow      | Yes       | Legacy apps. Migrate to MMKV when possible             |
+| Armazenamento            | Velocidade   | Assíncrono          | Quando usar                                                          |
+| ------------------------ | ------------ | ------------------- | -------------------------------------------------------------------- |
+| MMKV                     | Muito rápido | Não (sincronização) | Escolha padrão. Dados de valor-chave, configurações, estado em cache |
+| Loja Segura              | Médio        | Sim                 | Dados confidenciais: tokens, senhas, credenciais                     |
+| Armazenamento assíncrono | Lento        | Sim                 | Aplicativos legados. Migrar                                          |
 
-## MMKV (Primary Storage)
+comi para MMKV quando possível |
 
-MMKV is synchronous and significantly faster than AsyncStorage.
+## MMKV (armazenamento primário)
 
-```tsx
+MMKV é síncrono e significativamente mais rápido que AsyncStorage.```tsx
 import { MMKV } from 'react-native-mmkv'
 
 const storage = new MMKV()
@@ -36,11 +36,9 @@ const user = JSON.parse(storage.getString('user') || '{}')
 // Cleanup
 storage.delete('user.name')
 storage.clearAll()
-```
 
-### MMKV React Hooks
-
-```tsx
+````
+### Ganchos de reação MMKV```tsx
 import { useMMKVString, useMMKVNumber, useMMKVBoolean } from 'react-native-mmkv'
 
 function Settings() {
@@ -56,11 +54,10 @@ function Settings() {
     </>
   )
 }
-```
+````
 
-## Zustand with MMKV Persistence
+## Zustand com persistência MMKV```tsx
 
-```tsx
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 import { MMKV } from 'react-native-mmkv'
@@ -68,35 +65,33 @@ import { MMKV } from 'react-native-mmkv'
 const storage = new MMKV()
 
 const mmkvStorage = {
-  getItem: (name: string) => storage.getString(name) ?? null,
-  setItem: (name: string, value: string) => storage.set(name, value),
-  removeItem: (name: string) => storage.delete(name),
+getItem: (name: string) => storage.getString(name) ?? null,
+setItem: (name: string, value: string) => storage.set(name, value),
+removeItem: (name: string) => storage.delete(name),
 }
 
 interface SettingsStore {
-  theme: 'light' | 'dark'
-  setTheme: (theme: 'light' | 'dark') => void
+theme: 'light' | 'dark'
+setTheme: (theme: 'light' | 'dark') => void
 }
 
 const useSettingsStore = create<SettingsStore>()(
-  persist(
-    (set) => ({
-      theme: 'light',
-      setTheme: (theme) => set({ theme }),
-    }),
-    {
-      name: 'settings-storage',
-      storage: createJSONStorage(() => mmkvStorage),
-    },
-  ),
+persist(
+(set) => ({
+theme: 'light',
+setTheme: (theme) => set({ theme }),
+}),
+{
+name: 'settings-storage',
+storage: createJSONStorage(() => mmkvStorage),
+},
+),
 )
-```
 
-## Jotai with MMKV Persistence
+````
+## Jotai com Persistência MMKV
 
-Jotai's atomic model works naturally with MMKV for persistence:
-
-```tsx
+O modelo atômico de Jotai funciona naturalmente com MMKV para persistência:```tsx
 import { atom } from 'jotai'
 import { atomWithStorage, createJSONStorage } from 'jotai/utils'
 import { MMKV } from 'react-native-mmkv'
@@ -115,7 +110,7 @@ const fontSizeAtom = atomWithStorage('fontSize', 16, mmkvStorage)
 
 // Derived atom (recomputes automatically)
 const isDarkModeAtom = atom((get) => get(themeAtom) === 'dark')
-```
+````
 
 ```tsx
 import { useAtom, useAtomValue } from 'jotai'
@@ -128,12 +123,10 @@ function Settings() {
 }
 ```
 
-## SecureStore (Sensitive Data)
+## SecureStore (dados confidenciais)
 
-Use `expo-secure-store` for tokens, passwords, and credentials. Data is encrypted using the device keychain/keystore.
-
-```tsx
-import * as SecureStore from 'expo-secure-store'
+Use `expo-secure-store` para tokens, senhas e credenciais. Os dados são criptografados usando o keychain/keystore do dispositivo.```tsx
+import \* as SecureStore from 'expo-secure-store'
 
 // Store sensitive data
 await SecureStore.setItemAsync('auth_token', token)
@@ -143,11 +136,9 @@ const token = await SecureStore.getItemAsync('auth_token')
 
 // Delete
 await SecureStore.deleteItemAsync('auth_token')
-```
 
-### Auth Token Hook
-
-```tsx
+````
+### Gancho de token de autenticação```tsx
 import { useState, useEffect, useCallback } from 'react'
 import * as SecureStore from 'expo-secure-store'
 
@@ -173,11 +164,10 @@ function useAuthToken() {
 
   return { token, loading, saveToken, clearToken }
 }
-```
+````
 
-## TanStack Query with Persistence
+## Consulta TanStack com Persistência```tsx
 
-```tsx
 import { QueryClient } from '@tanstack/react-query'
 import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister'
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
@@ -186,37 +176,40 @@ import { MMKV } from 'react-native-mmkv'
 const storage = new MMKV({ id: 'query-cache' })
 
 const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      gcTime: 1000 * 60 * 60 * 24, // 24 hours
-    },
-  },
+defaultOptions: {
+queries: {
+gcTime: 1000 _ 60 _ 60 \* 24, // 24 hours
+},
+},
 })
 
 const persister = createSyncStoragePersister({
-  storage: {
-    getItem: (key: string) => storage.getString(key) ?? null,
-    setItem: (key: string, value: string) => storage.set(key, value),
-    removeItem: (key: string) => storage.delete(key),
-  },
+storage: {
+getItem: (key: string) => storage.getString(key) ?? null,
+setItem: (key: string, value: string) => storage.set(key, value),
+removeItem: (key: string) => storage.delete(key),
+},
 })
 
 function App() {
-  return (
-    <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
-      <Navigation />
-    </PersistQueryClientProvider>
-  )
+return (
+<PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
+<Navigation />
+</PersistQueryClientProvider>
+)
 }
+
 ```
+## Referência rápida
 
-## Quick Reference
-
-| Hook/API                     | Returns                   | Storage           |
+| Gancho/API | Devoluções | Armazenamento |
 | ---------------------------- | ------------------------- | ----------------- |
-| `useMMKVString()`            | `[value, setValue]`       | MMKV              |
-| `useMMKVNumber()`            | `[value, setValue]`       | MMKV              |
-| `useMMKVBoolean()`           | `[value, setValue]`       | MMKV              |
-| `SecureStore.getItemAsync()` | `Promise<string \| null>` | Keychain/Keystore |
-| `atomWithStorage()`          | Jotai atom                | Configurable      |
-| `zustand/persist`            | Zustand middleware        | Configurable      |
+| `useMMKVString()` | `[valor, setValue]` | MMKV |
+| `useMMKVNumber()` | `[valor, setValue]` | MMKV |
+| `useMMKVBoolean()` | `[valor, setValue]` | MMKV |
+| `SecureStore.getItemAsync()` | `Promessa<str
+
+sendo \| nulo>` | Chaveiro/Keystore |
+| `atomWithStorage()` | Átomo Jotai | Configurável |
+| `zustand/persistir` | Middleware Zustand | Configurável |
+```

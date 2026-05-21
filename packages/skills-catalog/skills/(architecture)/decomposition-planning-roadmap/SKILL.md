@@ -1,17 +1,17 @@
 ---
 name: decomposition-planning-roadmap
-description: Creates step-by-step decomposition plans and migration roadmaps for breaking apart monolithic applications. Use when asking "what order should I extract services?", "plan my migration", "create a decomposition roadmap", "prioritize what to split", "monolith to microservices strategy", or tracking decomposition progress. Do NOT use for domain analysis (use domain-analysis) or component sizing (use component-identification-sizing).
+description: Cria planos de decomposição passo a passo e roadmaps de migração para partir aplicações monolíticas. Use quando perguntar em que ordem extrair serviços, planejar migração, criar roadmap de decomposição, priorizar o que dividir ou estratégia monólito-microserviços ou acompanhar progresso da decomposição. Aciona em planejamento sequenciado após ou junto à análise estrutural. NÃO use para apenas mapear domínios conceituais desde zero (use domain-analysis) nem dimensionamento físico de componentes (use component-identification-sizing).
 ---
 
-# Decomposition Planning and Roadmap
+# Planejamento de Decomposição e Roadmap
 
-This skill creates structured decomposition plans and roadmaps to guide the migration from monolithic to distributed architectures, prioritizing work and tracking progress through decomposition patterns.
+Esta skill cria planos e roadmaps estruturados de decomposição para guiar a migração de monólito para arquiteturas distribuídas, priorizando trabalho e rastreando progresso através dos patterns de decomposição.
 
-## How to Use
+## Como usar
 
-### Quick Start
+### Quick start
 
-Request creation of a decomposition plan:
+Peça criação de um plano de decomposição:
 
 - **"Create a decomposition roadmap for this codebase"**
 - **"Plan the decomposition migration strategy"**
@@ -20,7 +20,7 @@ Request creation of a decomposition plan:
 
 ### Usage Examples
 
-**Example 1: Complete Roadmap**
+**Exemplo 1: roadmap completo**
 
 ```
 User: "Create a decomposition roadmap for this codebase"
@@ -34,7 +34,7 @@ The skill will:
 6. Estimate effort and dependencies
 ```
 
-**Example 2: Prioritized Plan**
+**Exemplo 2: plano priorizado**
 
 ```
 User: "Prioritize decomposition work based on component analysis"
@@ -46,7 +46,7 @@ The skill will:
 4. Create prioritized work plan
 ```
 
-**Example 3: Phase Planning**
+**Exemplo 3: planejamento por fase**
 
 ```
 User: "Create a phased decomposition plan"
@@ -58,155 +58,155 @@ The skill will:
 4. Define phase success criteria
 ```
 
-### Step-by-Step Process
+### Processo passo a passo
 
-1. **Assess Current State**: Analyze codebase and identify what's been done
-2. **Identify Patterns**: Determine which decomposition patterns to apply
-3. **Prioritize Work**: Rank patterns by risk, value, and dependencies
-4. **Create Roadmap**: Build phased plan with milestones
-5. **Generate Stories**: Create architecture stories for tracking
-6. **Track Progress**: Monitor progress through decomposition phases
+1. **Avaliar estado atual**: Analisar codebase e identificar o que já foi feito
+2. **Identificar patterns**: Determinar quais patterns de decomposição aplicar
+3. **Priorizar trabalho**: Classificar patterns por risco, valor e dependências
+4. **Criar roadmap**: Montar plano faseado com marcos
+5. **Gerar stories**: Criar histórias de arquitetura para acompanhamento
+6. **Acompanhar progresso**: Monitorar nas fases da decomposição
 
-## When to Use
+## Quando usar
 
-Apply this skill when:
+Aplique esta skill quando:
 
-- Starting a decomposition effort
-- Planning migration from monolith to distributed architecture
-- Prioritizing decomposition work
-- Creating architecture stories for decomposition
-- Tracking progress through decomposition patterns
-- Need structured approach to decomposition
-- Want to estimate effort and dependencies
+- Iniciar esforço de decomposição
+- Planejar migração de monólito para arquitetura distribuída
+- Priorizar trabalho de decomposição
+- Criar histórias de arquitetura para decomposição
+- Acompanhar progresso através dos patterns de decomposição
+- Precisar de abordagem estruturada à decomposição
+- Quiser estimar esforço e dependências
 
-## Core Concepts
+## Conceitos centrais
 
-### Decomposition Pattern Sequence
+### Sequência dos patterns de decomposição
 
-The six component-based decomposition patterns should be applied in sequence:
+Os seis patterns orientados a componente devem ser aplicados em sequência:
 
-1. **Identify and Size Components** - Understand what you have
-2. **Gather Common Domain Components** - Find duplicates
-3. **Flatten Components** - Remove orphaned classes
-4. **Determine Component Dependencies** - Assess coupling
-5. **Create Component Domains** - Group into domains
-6. **Create Domain Services** - Extract to services
+1. **Identify and Size Components** — Entender o que você tem
+2. **Gather Common Domain Components** — Encontrar duplicações
+3. **Flatten Components** — Remover classes órfãs
+4. **Determine Component Dependencies** — Avaliar acoplamento
+5. **Create Component Domains** — Agrupar em domínios
+6. **Create Domain Services** — Extrair como serviços
 
-### Phased Approach
+### Abordagem faseada
 
-Decomposition typically follows phases:
+A decomposição costuma seguir fases:
 
-**Phase 1: Analysis & Preparation** (Patterns 1-4)
+**Fase 1: Analysis & Preparation** (Patterns 1–4)
 
-- Component identification and sizing
-- Common component detection
-- Component flattening
-- Dependency analysis
+- Identificação e dimensionamento de componentes
+- Detecção de componentes em comum
+- Achatamento de componentes
+- Análise de dependências
 
-**Phase 2: Domain Organization** (Pattern 5)
+**Fase 2: Domain Organization** (Pattern 5)
 
-- Domain identification
-- Component grouping
-- Namespace refactoring
+- Identificação de domínios
+- Agrupamento de componentes
+- Refactoring de namespaces
 
-**Phase 3: Service Extraction** (Pattern 6)
+**Fase 3: Service Extraction** (Pattern 6)
 
-- Domain service creation
-- Service extraction
-- API boundary definition
+- Criação de serviços de domínio
+- Extração incremental
+- Definição de limites de API
 
-### Prioritization Factors
+### Fatores de priorização
 
-When prioritizing decomposition work, consider:
+Ao priorizar trabalho de decomposição, considere:
 
-- **Risk**: Low risk = easier to extract, fewer dependencies
-- **Value**: High value = business-critical, high impact
-- **Dependencies**: Can this be done independently?
-- **Complexity**: Simple = fewer components, clear boundaries
-- **Coupling**: Low coupling = easier to extract
+- **Risk**: baixo = mais fácil extrair, menos dependências
+- **Value**: alto = crítico ao negócio, alto impacto
+- **Dependencies**: Pode ser feito de forma independente?
+- **Complexity**: simples = menos componentes, fronteiras claras
+- **Coupling**: baixo = mais fácil extrair
 
-## Analysis Process
+## Processo de análise
 
-### Phase 1: Assess Current State
+### Fase 1: Avaliar estado atual
 
-Analyze what's already been done:
+Analise o que já foi feito:
 
-1. **Check Component Inventory**
-   - Have components been identified and sized?
-   - Is there a component inventory document?
-   - Are oversized components identified?
+1. **Checar inventário de componentes**
+   - Componentes já foram identificados e dimensionados?
+   - Existe documento de inventário?
+   - Componentes grandes demais estão marcados?
 
-2. **Check Common Component Analysis**
-   - Have common domain components been identified?
-   - Are consolidation opportunities documented?
-   - Has coupling impact been analyzed?
+2. **Checar análise de componentes comuns**
+   - Domínio comum já foi identificado?
+   - Oportunidades de consolidação documentadas?
+   - Impacto em acoplamento analisado?
 
-3. **Check Component Structure**
-   - Have components been flattened?
-   - Are there orphaned classes?
-   - Is component structure clean?
+3. **Checar estrutura de componentes**
+   - Componentes já foram achatados?
+   - Há classes órfãs?
+   - Estrutura está limpa?
 
-4. **Check Dependency Analysis**
-   - Have component dependencies been mapped?
-   - Is coupling analysis complete?
-   - Is feasibility assessed?
+4. **Checar análise de dependências**
+   - Dependências foram mapeadas?
+   - Análise de acoplamento concluída?
+   - Viabilidade avaliada?
 
-5. **Check Domain Identification**
-   - Have domains been identified?
-   - Are components grouped into domains?
-   - Are namespaces aligned with domains?
+5. **Checar identificação de domínios**
+   - Domínios identificados?
+   - Componentes agrupados por domínio?
+   - Namespaces alinhados?
 
-6. **Check Service Extraction**
-   - Have any services been extracted?
-   - Are domain services created?
-   - Is service-based architecture in place?
+6. **Checar extração de serviços**
+   - Algum serviço já foi extraído?
+   - Serviços de domínio criados?
+   - Arquitetura baseada em serviços em uso?
 
-**Output**: Current state assessment showing what's done and what's remaining
+**Saída**: Avaliação do estado atual indicando o que está feito e o que falta
 
-### Phase 2: Identify Patterns to Apply
+### Fase 2: Identificar patterns a aplicar
 
-Determine which decomposition patterns need to be applied:
+Determine quais patterns ainda precisam ser aplicados:
 
-1. **Review Pattern Prerequisites**
-   - Pattern 1: Always needed (foundation)
-   - Pattern 2: Needed if common components exist
-   - Pattern 3: Needed if components have hierarchy
-   - Pattern 4: Always needed (feasibility check)
-   - Pattern 5: Needed before service extraction
-   - Pattern 6: Final step (service extraction)
+1. **Rever pré-requisitos**
+   - Pattern 1: sempre (fundação)
+   - Pattern 2: se há componentes em comum
+   - Pattern 3: se há hierarquia de componentes
+   - Pattern 4: sempre (checagem de viabilidade)
+   - Pattern 5: antes da extração
+   - Pattern 6: passo final
 
-2. **Check Pattern Completion**
-   - Which patterns are complete?
-   - Which patterns are in progress?
-   - Which patterns haven't started?
+2. **Checar completude**
+   - Quais concluídos?
+   - Quais em progresso?
+   - Quais não iniciados?
 
-3. **Identify Missing Patterns**
-   - What patterns still need to be applied?
-   - What's blocking pattern application?
-   - What dependencies exist?
+3. **Identificar lacunas**
+   - O que ainda falta aplicar?
+   - O que bloqueia?
+   - Quais dependências?
 
-**Output**: List of patterns to apply with status
+**Saída**: Lista de patterns com status
 
-### Phase 3: Prioritize Work
+### Fase 3: Priorizar trabalho
 
-Prioritize decomposition patterns and work items:
+Priorize patterns e itens:
 
-1. **Assess Risk**
-   - Low Risk: Infrastructure components, standalone functionality
-   - Medium Risk: Domain components with some dependencies
-   - High Risk: Core business logic, high coupling
+1. **Risco**
+   - Baixo: infra, funcionalidade isolada
+   - Médio: domínio com algumas dependências
+   - Alto: core de negócio, alto acoplamento
 
-2. **Assess Value**
-   - High Value: Business-critical, high impact, frequent changes
-   - Medium Value: Important but not critical
-   - Low Value: Nice to have, low impact
+2. **Valor**
+   - Alto: crítico, impacto grande, mudanças frequentes
+   - Médio: importante, não crítico
+   - Baixo: nice-to-have, baixo impacto
 
-3. **Assess Dependencies**
-   - Independent: Can be done without other work
-   - Dependent: Requires other patterns/work first
-   - Blocking: Blocks other work from proceeding
+3. **Dependências**
+   - Independent: sem outro trabalho prévio
+   - Dependent: exige outros patterns antes
+   - Blocking: impede outros
 
-4. **Calculate Priority Score**
+4. **Calcular pontuação de prioridade**
 
    ```
    Priority = (Value × 3) - (Risk × 2) - (Dependencies × 1)
@@ -214,40 +214,40 @@ Prioritize decomposition patterns and work items:
    Higher score = Higher priority
    ```
 
-**Output**: Prioritized list of patterns and work items
+**Saída**: Lista priorizada de patterns e trabalhos
 
-### Phase 4: Create Phased Roadmap
+### Fase 4: Criar roadmap faseado
 
-Build a phased roadmap with milestones:
+Monte roadmap com marcos:
 
-1. **Define Phases**
-   - Phase 1: Analysis & Preparation
-   - Phase 2: Domain Organization
-   - Phase 3: Service Extraction
-   - Phase 4: Optimization & Refinement
+1. **Definir fases**
+   - Fase 1: Analysis & Preparation
+   - Fase 2: Domain Organization
+   - Fase 3: Service Extraction
+   - Fase 4: Optimization & Refinement
 
-2. **Assign Patterns to Phases**
-   - Which patterns belong in which phase?
-   - What's the sequence within each phase?
-   - What are the phase dependencies?
+2. **Atribuir patterns às fases**
+   - Qual pattern em qual fase?
+   - Sequência dentro da fase?
+   - Dependências entre fases?
 
-3. **Set Milestones**
-   - What marks completion of each phase?
-   - What are the success criteria?
-   - What deliverables are expected?
+3. **Definir marcos**
+   - O que completa cada fase?
+   - Critérios de sucesso?
+   - Entregas esperadas?
 
-4. **Estimate Timeline**
-   - How long will each phase take?
-   - What are the dependencies?
-   - What's the critical path?
+4. **Estimar cronograma**
+   - Duração de cada fase?
+   - Dependências?
+   - Caminho crítico?
 
-**Output**: Phased roadmap with timeline and milestones
+**Saída**: Roadmap faseado com linha do tempo e marcos
 
-### Phase 5: Generate Architecture Stories
+### Fase 5: Gerar histórias de arquitetura
 
-Create architecture stories for tracking work:
+Crie histórias para rastrear trabalho:
 
-1. **Create Story Template**
+1. **Modelo de story**
 
    ```
    As an architect, I need to [apply pattern/refactor component]
@@ -255,53 +255,37 @@ Create architecture stories for tracking work:
    so that [benefit/outcome]
    ```
 
-2. **Break Down Work**
-   - One story per pattern application
-   - One story per major refactoring
-   - One story per domain grouping
+2. **Decompor trabalho**
+   - Uma story por aplicação de pattern
+   - Uma por refactoring maior
+   - Uma por agrupamento em domínio
 
-3. **Add Acceptance Criteria**
-   - What defines "done"?
-   - What metrics validate success?
-   - What tests verify completion?
+3. **Critérios de aceite**
+   - O que é “done”?
+   - Métricas de validação?
+   - Testes de conclusão?
 
-4. **Estimate Effort**
-   - Story points or time estimates
-   - Complexity assessment
-   - Risk factors
+4. **Estimar esforço**
+   - Story points ou tempo
+   - Complexidade
+   - Riscos
 
-**Output**: List of architecture stories with estimates
+**Saída**: Lista de stories com estimativas
 
-### Phase 6: Track Progress
+### Fase 6: Acompanhar progresso
 
-Monitor progress through decomposition:
+Monitorar decomposição:
 
-1. **Track Pattern Completion**
-   - Which patterns are complete?
-   - Which are in progress?
-   - Which are blocked?
+1. **Completude de patterns**
+2. **Completude de stories**
+3. **Métricas**: componentes, domínios, serviços
+4. **Bloqueios**
 
-2. **Track Story Completion**
-   - Stories completed
-   - Stories in progress
-   - Stories not started
+**Saída**: Dashboard e relatório de status
 
-3. **Track Metrics**
-   - Components identified
-   - Components refactored
-   - Domains created
-   - Services extracted
+## Formato de saída
 
-4. **Identify Blockers**
-   - What's blocking progress?
-   - What dependencies are missing?
-   - What risks have emerged?
-
-**Output**: Progress dashboard and status report
-
-## Output Format
-
-### Decomposition Roadmap
+### Roadmap de decomposição
 
 ```markdown
 # Decomposition Roadmap
@@ -492,7 +476,7 @@ so that components can be extracted to domain services.
 - Services Extracted: 0
 ```
 
-## Analysis Checklist
+## Checklist de análise
 
 **Current State Assessment**:
 
@@ -538,26 +522,26 @@ so that components can be extracted to domain services.
 - [ ] Created dashboard
 - [ ] Identified blockers
 
-## Implementation Notes
+## Notas de implementação
 
-### Roadmap Templates
+### Modelos de roadmap
 
-**Simple Roadmap** (for small projects):
+**Roadmap simples** (projetos pequenos):
 
 - Phase 1: Analysis (2-4 weeks)
 - Phase 2: Refactoring (4-6 weeks)
 - Phase 3: Extraction (8-12 weeks)
 
-**Detailed Roadmap** (for large projects):
+**Roadmap detalhado** (projetos grandes):
 
 - Phase 1: Analysis & Preparation (4-8 weeks)
 - Phase 2: Domain Organization (4-6 weeks)
 - Phase 3: Service Extraction (12-16 weeks)
 - Phase 4: Optimization (4-8 weeks)
 
-### Prioritization Matrix
+### Matriz de priorização
 
-Use a 2x2 matrix for prioritization:
+Matriz 2×2 para priorização:
 
 ```
 High Value, Low Risk    | High Value, High Risk
@@ -567,74 +551,72 @@ Low Value, Low Risk     | Low Value, High Risk
 (Do Later)              | (Avoid/Defer)
 ```
 
-### Story Estimation
-
-Use story points or time estimates:
+### Estimativa de stories
 
 **Story Points** (Fibonacci):
 
-- 1: Trivial (few hours)
-- 2: Simple (1 day)
-- 3: Small (2-3 days)
-- 5: Medium (1 week)
-- 8: Large (2 weeks)
-- 13: Very Large (3+ weeks)
+- 1: trivial (poucas horas)
+- 2: simples (1 dia)
+- 3: pequeno (2–3 dias)
+- 5: médio (1 semana)
+- 8: grande (2 semanas)
+- 13: muito grande (3+ semanas)
 
-**Time Estimates**:
+**Estimativas de tempo**:
 
-- Small: 1-3 days
-- Medium: 1-2 weeks
-- Large: 2-4 weeks
-- Very Large: 1+ month
+- Small: 1–3 dias
+- Medium: 1–2 semanas
+- Large: 2–4 semanas
+- Very Large: 1+ mês
 
-## Best Practices
+## Boas práticas
 
-### Do's ✅
+### Faça ✅
 
-- Start with analysis patterns (Patterns 1-4)
-- Prioritize low-risk, high-value work
-- Create architecture stories for tracking
-- Set clear milestones and success criteria
-- Track progress regularly
-- Adjust roadmap based on learnings
-- Collaborate with stakeholders on priorities
+- Começar pelos patterns de análise (1–4)
+- Priorizar trabalho baixo risco / alto valor
+- Criar histórias de arquitetura
+- Marcos e critérios de sucesso claros
+- Acompanhar progresso com regularidade
+- Ajustar roadmap com aprendizados
+- Alinhar prioridades com stakeholders
 
-### Don'ts ❌
+### Evite ❌
 
-- Don't skip analysis patterns
-- Don't start service extraction too early
-- Don't ignore dependencies between patterns
-- Don't create unrealistic timelines
-- Don't skip progress tracking
-- Don't forget to validate with stakeholders
-- Don't proceed without feasibility assessment
+- Não pule patterns de análise
+- Não inicie extração de serviço cedo demais
+- Não ignore dependências entre patterns
+- Não crie prazos irreais
+- Não omita tracking
+- Não deixe de validar com stakeholders
+- Não avance sem avaliação de viabilidade
 
-## Integration with Other Skills
+## Integração com outras skills
 
-This skill coordinates the use of other decomposition skills:
+Coordena uso de skills de decomposição:
 
-1. **Component Identification & Sizing** → Foundation for planning
-2. **Common Domain Component Detection** → Identifies consolidation work
-3. **Component Flattening** → Prepares for domain grouping
-4. **Component Dependency Analysis** → Validates feasibility
-5. **Domain Identification & Grouping** → Enables service extraction
-6. **Decomposition Planning & Roadmap** (this skill) → Coordinates everything
+1. **Component Identification & Sizing** → base do planejamento
+2. **Common Domain Component Detection** → trabalho de consolidação
+3. **Component Flattening** → preparação para agrupar domínios
+4. **Component Dependency Analysis** → valida viabilidade
+5. **Domain Identification & Grouping** → habilita extração
+6. **Decomposition Planning & Roadmap** (esta skill) → coordena tudo
 
-## Next Steps
+## Próximos passos
 
-After creating the roadmap:
+Após criar o roadmap:
 
-1. **Review with Stakeholders** - Get buy-in on plan
-2. **Start Phase 1** - Begin with analysis patterns
-3. **Track Progress** - Monitor completion and blockers
-4. **Adjust as Needed** - Update roadmap based on learnings
-5. **Celebrate Milestones** - Recognize progress
+1. **Review with Stakeholders** — alinhamento do plano
+2. **Start Phase 1** — patterns de análise primeiro
+3. **Track Progress** — conclusão e bloqueios
+4. **Adjust as Needed** — atualizar com aprendizado
+5. **Celebrate Milestones** — reconhecer progresso
 
-## Notes
+## Notas
 
-- Roadmaps should be living documents, updated regularly
-- Prioritization may change as you learn more
-- Dependencies between patterns must be respected
-- Feasibility assessment is critical before proceeding
-- Stakeholder collaboration is essential for success
-- Progress tracking helps identify issues early
+- Roadmaps devem ser documentos vivos, atualizados com frequência
+- Priorização pode mudar conforme se aprende mais
+- Dependências entre patterns precisam ser respeitadas
+- Avaliação de viabilidade é crítica antes de avançar
+- Colaboração com stakeholders é essencial
+- Tracking ajuda a achar problemas cedo

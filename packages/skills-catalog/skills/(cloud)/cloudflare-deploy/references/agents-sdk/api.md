@@ -1,10 +1,10 @@
-# API Reference
+# Referência de API
 
-## Agent Classes
+## Classes Agent
 
 ### AIChatAgent
 
-For AI chat with auto-streaming, message history, tools, resumable streaming.
+Para chat com IA com stream automático, histórico de mensagens, ferramentas e stream retomável.
 
 ```ts
 import { AIChatAgent } from 'agents'
@@ -14,7 +14,7 @@ export class ChatAgent extends AIChatAgent<Env> {
   async onChatMessage(onFinish) {
     return this.streamText({
       model: openai('gpt-4'),
-      messages: this.messages, // Auto-managed message history
+      messages: this.messages, // Histórico gerenciado automaticamente
       tools: {
         getWeather: {
           description: 'Get weather',
@@ -22,27 +22,27 @@ export class ChatAgent extends AIChatAgent<Env> {
           execute: async ({ city }) => `Sunny, 72°F in ${city}`,
         },
       },
-      onFinish, // Persist response to this.messages
+      onFinish, // Persiste resposta em this.messages
     })
   }
 }
 ```
 
-### Agent (Base Class)
+### Agent (classe base)
 
-Full control for custom logic, WebSockets, email, and SQL.
+Controle total para lógica customizada, WebSockets, e-mail e SQL.
 
 ```ts
 import { Agent } from 'agents'
 
 export class MyAgent extends Agent<Env, State> {
-  // Lifecycle methods below
+  // Métodos de ciclo de vida abaixo
 }
 ```
 
-**Type params:** `Agent<Env, State, ConnState>` - Env bindings, agent state, connection state
+**Parâmetros de tipo:** `Agent<Env, State, ConnState>` — bindings de ambiente, estado do agente e estado da conexão
 
-## Lifecycle Hooks
+## Hooks de ciclo de vida
 
 ```ts
 onStart() { // Init/restart
@@ -61,37 +61,37 @@ async onConnect(conn: Connection<ConnState>, ctx: ConnectionContext) { // WebSoc
   conn.send(JSON.stringify({type: "connected", state: this.state}));
 }
 
-async onMessage(conn: Connection<ConnState>, msg: WSMessage) { // WS messages
+async onMessage(conn: Connection<ConnState>, msg: WSMessage) { // Mensagens WS
   const m = JSON.parse(msg as string);
   this.setState({messages: [...this.state.messages, m]});
   this.connections.forEach(c => c.send(JSON.stringify(m)));
 }
 
-async onEmail(email: AgentEmail) { // Email routing
+async onEmail(email: AgentEmail) { // Roteamento de e-mail
   this.sql`INSERT INTO emails (from_addr,subject,body) VALUES (${email.from},${email.headers.get("subject")},${await email.text()})`;
 }
 ```
 
-## State, SQL, Scheduling
+## Estado, SQL e agendamento
 
 ```ts
-// State
-this.setState({ count: 42 }) // Auto-syncs
+// Estado
+this.setState({ count: 42 }) // Sincroniza automaticamente
 this.setState({ ...this.state, count: this.state.count + 1 })
 
-// SQL (parameterized queries prevent injection)
+// SQL (consultas parametrizadas evitam injection)
 this.sql`CREATE TABLE IF NOT EXISTS users (id TEXT PRIMARY KEY, name TEXT)`
 this.sql`INSERT INTO users (id,name) VALUES (${userId},${name})`
 const users = this.sql<{ id; name }>`SELECT * FROM users WHERE id = ${userId}`
 
-// Scheduling
-await this.schedule(new Date('2026-12-25'), 'sendGreeting', { msg: 'Hi' }) // Date
-await this.schedule(60, 'checkStatus', {}) // Delay (sec)
+// Agendamento
+await this.schedule(new Date('2026-12-25'), 'sendGreeting', { msg: 'Hi' }) // Data
+await this.schedule(60, 'checkStatus', {}) // Atraso (s)
 await this.schedule('0 0 * * *', 'dailyCleanup', {}) // Cron
 await this.cancelSchedule(scheduleId)
 ```
 
-## RPC Methods (@callable)
+## Métodos RPC (@callable)
 
 ```ts
 import { Agent, callable } from 'agents'
@@ -102,14 +102,14 @@ export class MyAgent extends Agent<Env> {
     return { result: await this.env.AI.run('@cf/meta/llama-3.1-8b-instruct', { prompt: input.text }) }
   }
 }
-// Client: const result = await agent.processTask({ text: "Hello" });
-// Must return JSON-serializable values
+// Cliente: const result = await agent.processTask({ text: "Hello" });
+// Retornos precisam ser serializáveis em JSON
 ```
 
-## Connections & AI
+## Conexões e IA
 
 ```ts
-// Connections (type: Agent<Env, State, ConnState>)
+// Conexões (tipo: Agent<Env, State, ConnState>)
 this.connections.forEach((c) => c.send(JSON.stringify(msg))) // Broadcast
 conn.setState({ userId: '123' })
 conn.close(1000, 'Goodbye')
@@ -117,19 +117,19 @@ conn.close(1000, 'Goodbye')
 // Workers AI
 const r = await this.env.AI.run('@cf/meta/llama-3.1-8b-instruct', { prompt })
 
-// Manual streaming (prefer AIChatAgent)
+// Stream manual (prefira AIChatAgent)
 const stream = await client.chat.completions.create({ model: 'gpt-4', messages, stream: true })
 for await (const chunk of stream) conn.send(JSON.stringify({ chunk: chunk.choices[0].delta.content }))
 ```
 
-**Type-safe state:** `Agent<Env, State, ConnState>` - third param types `conn.state`
+**Estado tipado:** `Agent<Env, State, ConnState>` — o terceiro parâmetro tipa `conn.state`
 
-## MCP Integration
+## Integração MCP
 
-Model Context Protocol for exposing tools:
+Model Context Protocol para expor ferramentas:
 
 ```ts
-// Register & use MCP server
+// Registrar e usar servidor MCP
 await this.mcp.registerServer('github', {
   url: env.MCP_SERVER_URL,
   auth: { type: 'oauth', clientId: env.GITHUB_CLIENT_ID, clientSecret: env.GITHUB_CLIENT_SECRET },
@@ -138,51 +138,51 @@ const tools = await this.mcp.getAITools(['github'])
 return this.streamText({ model: openai('gpt-4'), messages: this.messages, tools, onFinish })
 ```
 
-## Task Queue
+## Fila de tarefas
 
 ```ts
-await this.queue('processVideo', { videoId: 'abc123' }) // Add task
-const tasks = await this.dequeue(10) // Process up to 10
+await this.queue('processVideo', { videoId: 'abc123' }) // Adiciona tarefa
+const tasks = await this.dequeue(10) // Processa até 10
 ```
 
-## Context & Cleanup
+## Contexto e limpeza
 
 ```ts
-const agent = getCurrentAgent<MyAgent>(); // Get current instance
-async destroy() { /* cleanup before agent destroyed */ }
+const agent = getCurrentAgent<MyAgent>(); // Instância atual
+async destroy() { /* limpeza antes do agente ser destruído */ }
 ```
 
-## AI Integration
+## Integração com IA
 
 ```ts
 // Workers AI
 const r = await this.env.AI.run('@cf/meta/llama-3.1-8b-instruct', { prompt })
 
-// Manual streaming (prefer AIChatAgent for auto-streaming)
+// Stream manual (prefira AIChatAgent para stream automático)
 const stream = await client.chat.completions.create({ model: 'gpt-4', messages, stream: true })
 for await (const chunk of stream) {
   if (chunk.choices[0]?.delta?.content) conn.send(JSON.stringify({ chunk: chunk.choices[0].delta.content }))
 }
 ```
 
-## Client Hooks (React)
+## Hooks no cliente (React)
 
 ```ts
-// useAgent() - WebSocket connection + RPC
+// useAgent() — conexão WebSocket + RPC
 import { useAgent } from 'agents/react'
-const agent = useAgent({ agent: 'MyAgent', name: 'user-123' }) // name for idFromName
-const result = await agent.processTask({ text: 'Hello' }) // Call @callable methods
+const agent = useAgent({ agent: 'MyAgent', name: 'user-123' }) // name para idFromName
+const result = await agent.processTask({ text: 'Hello' }) // Chama métodos @callable
 // agent.readyState: 0=CONNECTING, 1=OPEN, 2=CLOSING, 3=CLOSED
 
-// useAgentChat() - AI chat UI
+// useAgentChat() — UI de chat com IA
 import { useAgentChat } from 'agents/ai-react'
 const agent = useAgent({ agent: 'ChatAgent' })
 const { messages, input, handleInputChange, handleSubmit, isLoading, stop, clearHistory } = useAgentChat({
   agent,
-  maxSteps: 5, // Max tool iterations
-  resume: true, // Auto-resume on disconnect
+  maxSteps: 5, // Máx. iterações de ferramentas
+  resume: true, // Retoma automaticamente ao desconectar
   onToolCall: async (toolCall) => {
-    // Client tools (human-in-the-loop)
+    // Ferramentas no cliente (human-in-the-loop)
     if (toolCall.toolName === 'confirm') return { ok: window.confirm('Proceed?') }
   },
 })

@@ -131,32 +131,32 @@ pc.addEventListener('iceconnectionstatechange', async () => {
 })
 ```
 
-Reference: [RFC 8445 Section 2.4](https://datatracker.ietf.org/doc/html/rfc8445#section-2.4)
+Referência: [RFC 8445 Seção 2.4](https://datatracker.ietf.org/doc/html/rfc8445#section-2.4)
 
-## Security Checklist
+## Lista de verificação de segurança
 
-- [ ] Credentials generated server-side only (never client-side)
-- [ ] TURN_KEY_SECRET in wrangler secrets, not vars
-- [ ] TTL ≤ expected session duration (and ≤ 48 hours)
-- [ ] Rate limiting on credential generation endpoint
-- [ ] Client authentication before issuing credentials
-- [ ] Credential revocation API for compromised sessions
-- [ ] No hardcoded IPs (or DNS monitoring in place)
-- [ ] Port 53 filtered for browser clients
+- [] Credenciais geradas apenas no lado do servidor (nunca no lado do cliente)
+- [] TURN_KEY_SECRET em segredos do wrangler, não em vars
+- [ ] TTL ≤ duração esperada da sessão (e ≤ 48 horas)
+- [] Limitação de taxa no endpoint de geração de credenciais
+- [] Autenticação do cliente antes de emitir credenciais
+- [] API de revogação de credenciais para sessões comprometidas
+- [] Nenhum IP codificado (ou monitoramento de DNS em vigor)
+- [] Porta 53 filtrada para clientes de navegador
 
-## Troubleshooting
+## Solução de problemas
 
-### Issue: TURN credentials not working
+### Problema: as credenciais do TURN não funcionam
 
-**Check:**
+**Verificar:**
 
-- Key ID and secret are correct
-- Credentials haven't expired (check TTL)
-- TTL doesn't exceed 172800 seconds (48 hours)
-- Server can reach rtc.live.cloudflare.com
-- Network allows outbound HTTPS
+- ID da chave e segredo estão corretos
+- As credenciais não expiraram (verifique o TTL)
+- TTL não excede 172.800 segundos (48 horas)
+- O servidor pode acessar rtc.live.cloudflare.com
+- Rede permite HTTPS de saída
 
-**Solution:**
+**Solução:**
 
 ```typescript
 // Validate before using
@@ -165,41 +165,40 @@ if (ttl > 172800) {
 }
 ```
 
-### Issue: Slow connection establishment
+### Problema: estabelecimento lento de conexão
 
-**Solutions:**
+**Soluções:**
 
-- Ensure proper ICE candidate gathering
-- Check network latency to Cloudflare edge
-- Verify firewall allows WebRTC ports (3478, 5349, 443)
-- Consider using TURN over TLS (port 443) for corporate networks
+- Garantir a reunião adequada de candidatos do ICE
+- Verifique a latência da rede até a borda do Cloudflare
+- Verifique se o firewall permite portas WebRTC (3478, 5349, 443)
+- Considere usar TURN over TLS (porta 443) para redes corporativas
 
-### Issue: High packet loss
+### Problema: Alta perda de pacotes
 
-**Check:**
+**Verificar:**
 
-- Not exceeding rate limits (5-10k pps)
-- Not exceeding bandwidth limits (50-100 Mbps)
-- Not connecting to too many unique IPs (>5/sec)
-- Client network quality
+- Não excedendo os limites de taxa (5-10k pps)
+- Não excedendo os limites de largura de banda (50-100 Mbps)
+- Não conectar a muitos IPs exclusivos (>5/seg)
+- Qualidade da rede do cliente
 
-### Issue: Connection drops after ~48 hours
+### Problema: a conexão cai após aproximadamente 48 horas
 
-**Cause**: Credentials expired (48hr max)
+**Causa**: as credenciais expiraram (48 horas no máximo)
 
-**Solution**:
+**Solução**:
 
-- Set TTL to expected session duration
-- Implement credential refresh with setConfiguration()
-- Use ICE restart if connection fails
-
-```typescript
-// Refresh credentials before expiry
-const refreshInterval = ttl * 1000 - 60000 // 1 min early
-setInterval(async () => {
+- Defina o TTL para a duração esperada da sessão
+- Implementar atualização de credenciais com setConfiguration()
+- Use a reinicialização do ICE se a conexão falhar```typescript
+  // Refresh credentials before expiry
+  const refreshInterval = ttl \* 1000 - 60000 // 1 min early
+  setInterval(async () => {
   await refreshTURNCredentials(pc)
-}, refreshInterval)
-```
+  }, refreshInterval)
+
+````
 
 ### Issue: Port 53 URLs in browser fail silently
 
@@ -209,28 +208,28 @@ setInterval(async () => {
 
 ```typescript
 const filtered = urls.filter((url) => !url.includes(':53'))
-```
+````
 
-### Issue: Hardcoded IPs stop working
+### Problema: IPs codificados param de funcionar
 
-**Cause**: Cloudflare changed IP addresses (14-day notice)
+**Causa**: a Cloudflare alterou os endereços IP (aviso com 14 dias de antecedência)
 
-**Solution**:
+**Solução**:
 
-- Use DNS hostnames (`turn.cloudflare.com`)
-- Monitor DNS changes with automated alerts
-- Update allowlists within 14 days if using IP allowlisting
+- Use nomes de host DNS (`turn.cloudflare.com`)
+- Monitore alterações de DNS com alertas automatizados
+- Atualize as listas de permissões dentro de 14 dias se estiver usando a lista de permissões de IP
 
-## Cost Optimization
+## Otimização de custos
 
-1. Use appropriate TTLs (don't over-provision)
-2. Implement credential caching
-3. Set `iceTransportPolicy: 'all'` to try direct first (use `'relay'` only when necessary)
-4. Monitor bandwidth usage
-5. Free when used with Cloudflare Calls SFU
+1. Use TTLs apropriados (não provisione demais)
+2. Implementar cache de credenciais
+3. Defina `'iceTransportPolicy: 'all'` para tentar direto primeiro (use `'relay'` somente quando necessário)
+4. Monitore o uso da largura de banda
+5. Gratuito quando usado com Cloudflare Calls SFU
 
-## See Also
+## Veja também
 
-- [api.md](./api.md) - Credential generation API, revocation
-- [configuration.md](./configuration.md) - IP allowlisting, monitoring
-- [patterns.md](./patterns.md) - ICE restart, credential refresh patterns
+- [api.md](./api.md) - API de geração de credenciais, revogação
+- [configuration.md](./configuration.md) - Lista de permissões de IP, monitoramento
+- [patterns.md](./patterns.md) - reinicialização do ICE, padrões de atualização de credenciais

@@ -1,56 +1,55 @@
-# Workers VPC Connectivity
+# Conectividade VPC de trabalhadores
 
-Connect Cloudflare Workers to private networks and internal infrastructure using TCP Sockets.
+Conecte os trabalhadores da Cloudflare a redes privadas e infraestrutura interna usando soquetes TCP.
 
-## Overview
+## Visão geral
 
-Workers VPC connectivity enables outbound TCP connections from Workers to private resources in AWS, Azure, GCP, on-premises datacenters, or any private network. This is achieved through the **TCP Sockets API** (`cloudflare:sockets`), which provides low-level network access for custom protocols and services.
+A conectividade Workers VPC permite conexões TCP de saída de Workers para recursos privados na AWS, Azure, GCP, datacenters locais ou qualquer rede privada. Isso é conseguido por meio da **API TCP Sockets** (`cloudflare:sockets`), que fornece acesso de rede de baixo nível para protocolos e serviços personalizados.
 
-**Key capabilities:**
+**Principais capacidades:**
 
-- Direct TCP connections to private IPs and hostnames
-- TLS/StartTLS support for encrypted connections
-- Integration with Cloudflare Tunnel for secure private network access
-- Full control over wire protocols (database protocols, SSH, MQTT, custom TCP)
+- Conexões TCP diretas para IPs privados e nomes de host
+- Suporte TLS/StartTLS para conexões criptografadas
+- Integração com Cloudflare Tunnel para acesso seguro à rede privada
+- Controle total sobre protocolos de conexão (protocolos de banco de dados, SSH, MQTT, TCP personalizado)
 
-**Note:** This reference documents the TCP Sockets API. For the newer Workers VPC Services product (HTTP-only service bindings with built-in SSRF protection), refer to separate documentation when available. VPC Services is currently in beta (2025+).
+**Observação:** Esta referência documenta a API TCP Sockets. Para o produto Workers VPC Services mais recente (vinculações de serviço somente HTTP com proteção SSRF integrada), consulte a documentação separada, quando disponível. Os serviços VPC estão atualmente em versão beta (2025+).
 
-## Quick Decision: Which Technology?
+## Decisão Rápida: Qual Tecnologia?
 
-Need private network connectivity from Workers?
+Precisa de conectividade de rede privada dos Trabalhadores?
 
-| Requirement                                   | Use                                                  | Why                                    |
-| --------------------------------------------- | ---------------------------------------------------- | -------------------------------------- |
-| HTTP/HTTPS APIs in private network            | VPC Services (beta, separate docs)                   | SSRF-safe, declarative bindings        |
-| PostgreSQL/MySQL databases                    | [Hyperdrive](../hyperdrive/)                         | Connection pooling, caching, optimized |
-| Custom TCP protocols (SSH, MQTT, proprietary) | **TCP Sockets (this doc)**                           | Full protocol control                  |
-| Simple HTTP with lowest latency               | TCP Sockets + [Smart Placement](../smart-placement/) | Manual optimization                    |
-| Expose on-prem to internet (inbound)          | [Cloudflare Tunnel](../tunnel/)                      | Not Worker-specific                    |
+| Requisito                                                | Usar                                                             | Por que                                      |
+| -------------------------------------------------------- | ---------------------------------------------------------------- | -------------------------------------------- |
+| APIs HTTP/HTTPS em rede privada                          | Serviços VPC (beta, documentos separados)                        | Vinculações declarativas e seguras para SSRF |
+| Bancos de dados PostgreSQL/MySQL                         | [Hiperdrive](../hiperdrive/)                                     | Pool de conexões, cache, otimizado           |
+| Protocolos TCP personalizados (SSH, MQTT, proprietários) | **Soquetes TCP (este documento)**                                | Controle total de protocolo                  |
+| HTTP simples com menor latência                          | Soquetes TCP + [Posicionamento Inteligente](../smart-placement/) | Otimização manual                            |
+| Expor no local à Internet (entrada)                      | [Túnel Cloudflare](../tunnel/)                                   | Não específico do trabalhador                |
 
-## When to Use TCP Sockets
+## Quando usar soquetes TCP
 
-**Use TCP Sockets when you need:**
+**Use soquetes TCP quando precisar:**
 
-- ✅ Direct control over wire protocols (e.g., Postgres wire protocol, SSH, Redis RESP)
-- ✅ Non-HTTP protocols (MQTT, SMTP, custom binary protocols)
-- ✅ StartTLS or custom TLS negotiation
-- ✅ Streaming binary data over TCP
+- ✅ Controle direto sobre protocolos de transmissão (por exemplo, protocolo de transmissão Postgres, SSH, Redis RESP)
+- ✅ Protocolos não HTTP (MQTT, SMTP, protocolos binários personalizados)
+- ✅ StartTLS ou negociação TLS personalizada
+- ✅ Streaming de dados binários por TCP
 
-**Don't use TCP Sockets when:**
+**Não use soquetes TCP quando:**
 
-- ❌ You just need HTTP/HTTPS (use `fetch()` or VPC Services)
-- ❌ You need PostgreSQL/MySQL (use Hyperdrive for pooling)
-- ❌ You need WebSocket (use native Workers WebSocket)
+- ❌ Você só precisa de HTTP/HTTPS (use `fetch()` ou serviços VPC)
+- ❌ Você precisa de PostgreSQL/MySQL (use Hyperdrive para pooling)
+- ❌ Você precisa do WebSocket (use Workers WebSocket nativos)
 
-## Quick Start
+## Início rápido```typescript
 
-```typescript
 import { connect } from 'cloudflare:sockets'
 
 export default {
-  async fetch(req: Request): Promise<Response> {
-    // Connect to private service
-    const socket = connect({ hostname: 'db.internal.company.net', port: 5432 }, { secureTransport: 'on' })
+async fetch(req: Request): Promise<Response> {
+// Connect to private service
+const socket = connect({ hostname: 'db.internal.company.net', port: 5432 }, { secureTransport: 'on' })
 
     try {
       await socket.opened // Wait for connection
@@ -66,8 +65,10 @@ export default {
     } finally {
       await socket.close()
     }
-  },
+
+},
 }
+
 ```
 
 ## Architecture Pattern: Workers + Tunnel
@@ -75,53 +76,55 @@ export default {
 Most private network connectivity combines TCP Sockets with Cloudflare Tunnel:
 
 ```
-┌─────────┐     ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-│ Worker  │────▶│ TCP Socket  │────▶│   Tunnel     │────▶│   Private   │
-│         │     │ (this API)  │     │ (cloudflared)│     │   Network   │
-└─────────┘     └─────────────┘     └──────────────┘     └─────────────┘
+
+┌─────────┐ ┌─────────────┐ ┌──────────────┐ ┌─────────────┐
+│ Worker │────▶│ TCP Socket │────▶│ Tunnel │────▶│ Private │
+│ │ │ (this API) │ │ (cloudflared)│ │ Network │
+└─────────┘ └─────────────┘ └──────────────┘ └─────────────┘
+
 ```
+1. Worker abre soquete TCP para nome de host do Tunnel
+2. Rotas de endpoint do túnel para IP privado
+3. A resposta flui de volta através do túnel para o trabalhador
 
-1. Worker opens TCP socket to Tunnel hostname
-2. Tunnel endpoint routes to private IP
-3. Response flows back through Tunnel to Worker
+Consulte [configuration.md](./configuration.md) para obter detalhes de configuração do túnel.
 
-See [configuration.md](./configuration.md) for Tunnel setup details.
+## Ordem de leitura
 
-## Reading Order
+1. **Comece aqui (README.md)** - Visão geral e guia de decisão
+2. **[api.md](./api.md)** - Interface de soquete, tipos, métodos
+3. **[configuration.md](./configuration.md)** - Configuração do Wrangler, integração do túnel
+4. **[patterns.md](./patterns.md)** - Exemplos do mundo real (bancos de dados, protocolos, tratamento de erros)
+5. **[gotchas.md](./gotchas.md)** - Limites, portas bloqueadas, erros comuns
 
-1. **Start here (README.md)** - Overview and decision guide
-2. **[api.md](./api.md)** - Socket interface, types, methods
-3. **[configuration.md](./configuration.md)** - Wrangler setup, Tunnel integration
-4. **[patterns.md](./patterns.md)** - Real-world examples (databases, protocols, error handling)
-5. **[gotchas.md](./gotchas.md)** - Limits, blocked ports, common errors
+## Limites principais
 
-## Key Limits
-
-| Limit                              | Value                               |
+| Limite | Valor |
 | ---------------------------------- | ----------------------------------- |
-| Max concurrent sockets per request | 6                                   |
-| Blocked destinations               | Cloudflare IPs, localhost, port 25  |
-| Scope requirement                  | Must create in handler (not global) |
+| Máximo de soquetes simultâneos por solicitação | 6 |
+| Destinos bloqueados | IPs Cloudflare, localhost, porta 25 |
+| Requisito de escopo | Deve criar no manipulador (não global) |
 
-See [gotchas.md](./gotchas.md) for complete limits and troubleshooting.
+Consulte [gotchas.md](./gotchas.md) para limites completos e solução de problemas.
 
-## Best Practices
+## Melhores práticas
 
-1. **Always close sockets** - Use try/finally blocks
-2. **Validate destinations** - Prevent SSRF by allowlisting hosts
-3. **Use Hyperdrive for databases** - Better performance than raw TCP
-4. **Prefer fetch() for HTTP** - Only use TCP when necessary
-5. **Combine with Smart Placement** - Reduce latency to private networks
+1. **Sempre feche os soquetes** - Use os blocos try/finally
+2. **Validar destinos** - Prevenir SSRF colocando hosts na lista de permissões
+3. **Use Hyperdrive para bancos de dados** - Melhor desempenho que TCP bruto
+4. **Prefira fetch() para HTTP** - Use TCP somente quando necessário
+5. **Combine com Smart Placement** – Reduza a latência para redes privadas
 
-## Related Technologies
+## Tecnologias Relacionadas
 
-- **[Hyperdrive](../hyperdrive/)** - PostgreSQL/MySQL with connection pooling
-- **[Cloudflare Tunnel](../tunnel/)** - Secure private network access
-- **[Smart Placement](../smart-placement/)** - Auto-locate Workers near backends
-- **VPC Services (beta)** - HTTP-only service bindings with SSRF protection (separate docs)
+- **[Hyperdrive](../hyperdrive/)** - PostgreSQL/MySQL com pool de conexões
+- **[Túnel Cloudflare](../tunnel/)** - Acesso seguro à rede privada
+- **[Smart Placement](../smart-placement/)** - Localize automaticamente trabalhadores próximos aos back-ends
+- **Serviços VPC (beta)** - Vinculações de serviço somente HTTP com proteção SSRF (documentos separados)
 
-## Reference
+## Referência
 
-- [TCP Sockets API Documentation](https://developers.cloudflare.com/workers/runtime-apis/tcp-sockets/)
-- [Connect to databases guide](https://developers.cloudflare.com/workers/tutorials/connect-to-postgres/)
-- [Cloudflare Tunnel setup](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/)
+- [Documentação da API de soquetes TCP](https://developers.cloudflare.com/workers/runtime-apis/tcp-sockets/)
+- [Guia de conexão com bancos de dados](https://developers.cloudflare.com/workers/tutorials/connect-to-postgres/)
+- [Configuração do túnel Cloudflare](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/)
+```

@@ -1,26 +1,26 @@
 ---
 name: component-identification-sizing
-description: Maps architectural components in a codebase and measures their size to identify what should be extracted first. Use when asking "how big is each module?", "what components do I have?", "which service is too large?", "analyze codebase structure", "size my monolith", or planning where to start decomposing. Do NOT use for runtime performance sizing or infrastructure capacity planning.
+description: Mapeia componentes arquiteturais no codebase e mede tamanho para priorizar extração. Use quando perguntar "quão grande é cada módulo?", "quais componentes tenho?", "qual serviço está grande demais?", "analise estrutura do codebase" ou "dimensione meu monólito" ou ao planejar por onde começar a decompor. Aciona em inventário estrutural e métricas de tamanho de módulos. NÃO use para dimensionamento de performance em runtime nem planejamento de capacidade de infraestrutura.
 ---
 
-# Component Identification and Sizing
+# Identificação e dimensionamento de componentes
 
-This skill identifies architectural components (logical building blocks) in a codebase and calculates size metrics to assess decomposition feasibility and identify oversized components.
+Esta skill identifica componentes arquiteturais (blocos lógicos) em um codebase e calcula métricas de tamanho para avaliar viabilidade de decomposição e sinalizar componentes grandes demais.
 
-## How to Use
+## Como usar
 
-### Quick Start
+### Quick start
 
-Request analysis of your codebase:
+Peça análise do codebase:
 
 - **"Identify and size all components in this codebase"**
 - **"Find oversized components that need splitting"**
 - **"Create a component inventory for decomposition planning"**
 - **"Analyze component size distribution"**
 
-### Usage Examples
+### Exemplos de uso
 
-**Example 1: Complete Analysis**
+**Exemplo 1: análise completa**
 
 ```
 User: "Identify and size all components in this codebase"
@@ -34,7 +34,7 @@ The skill will:
 6. Provide recommendations
 ```
 
-**Example 2: Find Oversized Components**
+**Exemplo 2: componentes grandes**
 
 ```
 User: "Which components are too large?"
@@ -46,7 +46,7 @@ The skill will:
 4. Suggest specific splits with estimated sizes
 ```
 
-**Example 3: Component Size Analysis**
+**Exemplo 3: distribuição de tamanho**
 
 ```
 User: "Analyze component sizes and distribution"
@@ -58,119 +58,109 @@ The skill will:
 4. Provide statistics and recommendations
 ```
 
-### Step-by-Step Process
+### Processo passo a passo
 
-1. **Initial Analysis**: Start with complete component inventory
-2. **Identify Issues**: Find components that need attention
-3. **Get Recommendations**: Request actionable split/consolidation suggestions
-4. **Monitor Progress**: Track component growth over time
+1. **Análise inicial**: Comece com inventário completo de componentes
+2. **Identifique problemas**: Achados que precisam atenção
+3. **Recomendações**: Peça sugestões concretas de split/consolidação
+4. **Monitore**: Acompanhe crescimento dos componentes ao longo do tempo
 
-## When to Use
+## Quando usar
 
-Apply this skill when:
+Use quando:
 
-- Starting a monolithic decomposition effort
-- Assessing codebase structure and organization
-- Identifying components that are too large or too small
-- Creating component inventory for migration planning
-- Analyzing code distribution across components
-- Preparing for component-based decomposition patterns
+- Iniciando decomposição de monólito
+- Avaliando organização e estrutura do codebase
+- Identificando componentes grandes ou pequenos demais
+- Criando inventário para planejamento de migração
+- Analisando distribuição de código entre componentes
+- Preparando patterns de decomposição orientados a componentes
 
-## Core Concepts
+## Conceitos centrais
 
-### Component Definition
+### Definição de componente
 
-A **component** is an architectural building block that:
+Um **componente** é bloco arquitetural que:
 
-- Has a well-defined role and responsibility
-- Is identified by a namespace, package structure, or directory path
-- Contains source code files (classes, functions, modules) grouped together
-- Performs specific business or infrastructure functionality
+- Tem papel e responsabilidade bem definidos
+- É identificado por namespace, estrutura de pacote ou diretório
+- Contém arquivos de código (classes, funções, módulos) agrupados
+- Implementa capacidade de negócio ou de infraestrutura
 
-**Key Rule**: Components are identified by **leaf nodes** in directory/namespace structures. If a namespace is extended (e.g., `services/billing` extended to `services/billing/payment`), the parent becomes a **subdomain**, not a component.
+**Regra**: Componentes são **leaf nodes** em diretório/namespace. Se um namespace se estende (ex.: `services/billing` → `services/billing/payment`), o pai vira **subdomínio**, não componente.
 
-### Size Metrics
+### Métricas de tamanho
 
-**Statements** (not lines of code):
+**Statements** (não linhas de código):
 
-- Count executable statements terminated by semicolons or newlines
-- More accurate than lines of code for size comparison
-- Accounts for code complexity, not formatting
+- Contagem de statements executáveis terminados por `;` ou newline
+- Mais justo que LOC para comparar tamanhos
+- Reflete complexidade, não formatação
 
-**Component Size Indicators**:
+**Indicadores**:
 
-- **Percent of codebase**: Component statements / Total statements
-- **File count**: Number of source files in component
-- **Standard deviation**: Distance from mean component size
+- **Percentual do codebase**: statements do componente / total
+- **Contagem de arquivos**: arquivos fonte no componente
+- **Desvio padrão**: distância da média de tamanho
 
-## Analysis Process
+## Processo de análise
 
-### Phase 1: Identify Components
+### Fase 1: Identificar componentes
 
-Scan the codebase directory structure:
+Percorra estrutura de diretório:
 
-1. **Map directory/namespace structure**
-   - For Node.js: `services/`, `routes/`, `models/`, `utils/`
-   - For Java: Package structure (e.g., `com.company.domain.service`)
-   - For Python: Module paths (e.g., `app/billing/payment`)
+1. **Mapear diretório/namespace**
+   - Node.js: `services/`, `routes/`, `models/`, `utils/`
+   - Java: pacotes (`com.company.domain.service`)
+   - Python: paths (`app/billing/payment`)
 
-2. **Identify leaf nodes**
-   - Components are the deepest directories containing source files
-   - Example: `services/BillingService/` is a component
-   - Example: `services/BillingService/payment/` extends it, making `BillingService` a subdomain
+2. **Leaf nodes**
+   - Componentes são os diretórios mais profundos com arquivos fonte
+   - Ex.: `services/BillingService/` é componente
+   - Ex.: `services/BillingService/payment/` estende BillingService ⇒ BillingService é subdomínio
 
-3. **Create component inventory**
-   - List each component with its namespace/path
-   - Note any parent namespaces (subdomains)
+3. **Inventário**
+   - Liste namespace/path por componente
+   - Note namespaces pai (subdomínios)
 
-### Phase 2: Calculate Size Metrics
+### Fase 2: Calcular métricas
 
-For each component:
+Para cada componente:
 
-1. **Count statements**
-   - Parse source files in component directory
-   - Count executable statements (not comments, blank lines, or declarations alone)
-   - Sum across all files in component
-
-2. **Count files**
-   - Total source files (`.js`, `.ts`, `.java`, `.py`, etc.)
-   - Exclude test files, config files, documentation
-
-3. **Calculate percentage**
+1. Contar statements (parse dos arquivos; excluir comentários/brancos/decl sem corpo onde aplicável)
+2. Contar arquivos (`.js`, `.ts`, `.java`, `.py`… sem test/config/doc)
+3. Percentual:
 
    ```
    component_percent = (component_statements / total_statements) * 100
    ```
 
-4. **Calculate statistics**
-   - Mean component size: `total_statements / number_of_components`
-   - Standard deviation: `sqrt(sum((size - mean)^2) / (n - 1))`
-   - Component's deviation: `(component_size - mean) / std_dev`
+4. Estatísticas: média, desvio padrão, offset do componente `(size - mean) / std_dev`
 
-### Phase 3: Identify Size Issues
+### Fase 3: Avaliar problemas de tamanho
 
-**Oversized Components** (candidates for splitting):
+**Grandes demais** (candidatos a split):
 
-- Exceeds 30% of total codebase (for small apps with <10 components)
-- Exceeds 10% of total codebase (for large apps with >20 components)
-- More than 2 standard deviations above mean
-- Contains multiple distinct functional areas
+- \>30% do codebase em apps pequenos (\<10 componentes)
+- \>10% em apps grandes (\>20 componentes)
+- \>2 desvios padrão acima da média
+- Várias áreas funcionais distintas no mesmo lugar
 
-**Undersized Components** (candidates for consolidation):
+**Pequenos demais** (consolidação):
 
-- Less than 1% of codebase (may be too granular)
-- Less than 1 standard deviation below mean
-- Contains only a few files with minimal functionality
+- \<1% do codebase
+- \<1 dp abaixo da média
+- Poucos arquivos / funcionalidade mínima
 
-**Well-Sized Components**:
+**Bem proporcionados**:
 
-- Between 1-2 standard deviations from mean
-- Represents a single, cohesive functional area
-- Appropriate percentage for application size
+- Entre 1–2 dp da média
+- Área funcional única coesa
+- Percentual adequado ao tamanho do app
 
-## Output Format
+## Formato de saída
 
-### Component Inventory Table
+### Tabela de inventário
 
 ```markdown
 ## Component Inventory
@@ -182,13 +172,13 @@ For each component:
 | Notification    | services/NotificationService | 1,433      | 7     | 2%      | ✅ OK        |
 ```
 
-**Status Legend**:
+**Legendas**:
 
 - ✅ OK: Well-sized (within 1-2 std dev from mean)
 - ⚠️ Too Large: Exceeds size threshold or >2 std dev above mean
 - 🔍 Too Small: <1% of codebase or <1 std dev below mean
 
-### Size Analysis Summary
+### Resumo de tamanho
 
 ```markdown
 ## Size Analysis Summary
@@ -216,7 +206,7 @@ For each component:
 - Login (2% - 1,865 statements) - Consider consolidating with Authentication
 ```
 
-### Component Size Distribution
+### Distribuição de tamanho
 
 ```markdown
 ## Component Size Distribution
@@ -236,7 +226,7 @@ Largest: ███████████████████████�
 
 ````
 
-### Recommendations
+### Recomendações
 
 ```markdown
 ## Recommendations
@@ -265,49 +255,49 @@ Largest: ███████████████████████�
 Most components are appropriately sized. Continue monitoring during decomposition.
 ````
 
-## Analysis Checklist
+## Checklist de análise
 
-**Component Identification**:
+**Identificação**:
 
-- [ ] Mapped all directory/namespace structures
-- [ ] Identified leaf nodes (components) vs parent nodes (subdomains)
-- [ ] Created complete component inventory
-- [ ] Documented namespace/path for each component
+- [ ] Mapeadas estruturas de diretório/namespace
+- [ ] Leaf vs nós pai (subdomínios)
+- [ ] Inventário completo
+- [ ] Paths documentados por componente
 
-**Size Calculation**:
+**Cálculo**:
 
-- [ ] Counted statements (not lines) for each component
-- [ ] Counted source files (excluding tests/configs)
-- [ ] Calculated percentage of total codebase
-- [ ] Calculated mean and standard deviation
+- [ ] Statements (não linhas) por componente
+- [ ] Arquivos fonte sem test/config
+- [ ] Percentual do total
+- [ ] Média e desvio padrão
 
-**Size Assessment**:
+**Avaliação**:
 
-- [ ] Identified oversized components (>threshold or >2 std dev)
-- [ ] Identified undersized components (<1% or <1 std dev)
-- [ ] Flagged components for splitting or consolidation
-- [ ] Documented size distribution
+- [ ] Oversized marcados (>limite ou >2 dp)
+- [ ] Undersized (\<1% ou \<1 dp)
+- [ ] Flags de split/consolidação
+- [ ] Distribuição documentada
 
-**Recommendations**:
+**Recomendações**:
 
-- [ ] Suggested splits for oversized components
-- [ ] Suggested consolidations for undersized components
-- [ ] Prioritized recommendations by impact
-- [ ] Created architecture stories for refactoring
+- [ ] Splits para oversized
+- [ ] Consolidações para undersized
+- [ ] Priorização por impacto
+- [ ] Histórias de arquitetura para refactor
 
-## Implementation Notes
+## Notas de implementação
 
-### For Node.js/Express Applications
+### Apps Node.js/Express
 
-Components typically found in:
+Onde componentes aparecem com frequência:
 
-- `services/` - Business logic components
-- `routes/` - API endpoint components
-- `models/` - Data model components
-- `utils/` - Utility components
-- `middleware/` - Middleware components
+- `services/` — lógica
+- `routes/` — superfície API
+- `models/` — modelos
+- `utils/` — utilitários
+- `middleware/`
 
-**Example Component Identification**:
+**Exemplo:**
 
 ```
 services/
@@ -320,15 +310,13 @@ services/
     └── NotificationService.js
 ```
 
-### For Java Applications
+### Apps Java
 
-Components identified by package structure:
+- `com.company.domain.service`
+- `com.company.domain.model`
+- `com.company.domain.repository`
 
-- `com.company.domain.service` - Service components
-- `com.company.domain.model` - Model components
-- `com.company.domain.repository` - Repository components
-
-**Example Component Identification**:
+**Exemplo:**
 
 ```
 com.company.billing.payment   ← Component (leaf package)
@@ -336,31 +324,19 @@ com.company.billing.history   ← Component (leaf package)
 com.company.billing           ← Subdomain (parent of payment/history)
 ```
 
-### Statement Counting
+### Contagem de statements
 
-**JavaScript/TypeScript**:
+**JavaScript/TypeScript**: terminados por `;` ou newline… (como na original)
 
-- Count statements terminated by `;` or newline
-- Include: assignments, function calls, returns, conditionals, loops
-- Exclude: comments, blank lines, declarations without assignment
+**Java**: terminados por `;` …
 
-**Java**:
+**Python**: statements executáveis…
 
-- Count statements terminated by `;`
-- Include: method calls, assignments, returns, conditionals
-- Exclude: class/interface declarations, comments, blank lines
+## Fitness functions
 
-**Python**:
+Depois de dimensionar, automatize checks:
 
-- Count executable statements (not comments or blank lines)
-- Include: assignments, function calls, returns, conditionals
-- Exclude: docstrings, comments, blank lines
-
-## Fitness Functions
-
-After identifying and sizing components, create automated checks:
-
-### Component Size Threshold
+### Limiar de tamanho
 
 ```javascript
 // Alert if any component exceeds 10% of codebase
@@ -376,7 +352,7 @@ function checkComponentSize(components, threshold = 0.1) {
 }
 ```
 
-### Standard Deviation Check
+### Desvio padrão
 
 ```javascript
 // Alert if component is >2 standard deviations from mean
@@ -395,40 +371,40 @@ function checkStandardDeviation(components) {
 }
 ```
 
-## Best Practices
+## Boas práticas
 
-### Do's ✅
+### Faça ✅
 
-- Use statements, not lines of code
-- Identify components as leaf nodes only
-- Calculate both percentage and standard deviation
-- Consider application size when setting thresholds
-- Document namespace/path for each component
-- Create visual size distribution if possible
+- Use statements, não LOC
+- Só leaf nodes como componentes
+- Percentual **e** desvio padrão
+- Thresholds proporcionais ao tamanho do app
+- Documente path de cada componente
+- Histograma/visual quando possível
 
-### Don'ts ❌
+### Evite ❌
 
-- Don't count test files in component size
-- Don't treat parent directories as components
-- Don't use fixed thresholds without considering app size
-- Don't ignore small components (may need consolidation)
-- Don't skip standard deviation calculation
-- Don't mix infrastructure and domain components in same analysis
+- Não incluir testes no tamanho
+- Não tratar pai de diretório como componente só por existir pasta
+- Não usar limiar fixo cego ao tamanho do app
+- Não ignorar componentes miúdos
+- Não pular dp
+- Não misturar análises puramente de domínio e infraestrutura no mesmo relatório sem necessidade
 
-## Next Steps
+## Próximos passos
 
-After completing component identification and sizing:
+Após esta skill:
 
-1. **Apply Gather Common Domain Components Pattern** - Identify duplicate functionality
-2. **Apply Flatten Components Pattern** - Remove orphaned classes from root namespaces
-3. **Apply Determine Component Dependencies Pattern** - Analyze coupling between components
-4. **Create Component Domains** - Group components into logical domains
+1. **Gather Common Domain Components** — duplicação funcional
+2. **Flatten Components** — classes órfãs
+3. **Determine Component Dependencies** — acoplamento
+4. **Create Component Domains** — agrupar em domínios
 
-## Notes
+## Notas
 
-- Component size thresholds vary by application size
-- Small apps (<10 components): 30% threshold may be appropriate
-- Large apps (>20 components): 10% threshold is more appropriate
-- Standard deviation is more reliable than fixed percentages
-- Well-sized components are 1-2 standard deviations from mean
-- Oversized components often contain multiple functional areas that can be split
+- Thresholds mudam conforme número de componentes
+- Apps pequenos (\<10 componentes): até ~30% pode aceitar maior componente único em alguns cenários
+- Apps grandes (\>20): ~10% costuma ser mais razoável
+- Desvio padrão costuma superar só percentuais fixos
+- Bem proporcionados: ~1–2 dp da média
+- Oversized frequentemente comporta splits por áreas funcionais

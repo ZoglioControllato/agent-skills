@@ -1,190 +1,200 @@
-# Strangler Fig Patterns
+# Padrões de Figo Estrangulador
 
-The Strangler Fig pattern, coined by Martin Fowler, gradually replaces legacy systems by building new functionality around the old system, eventually replacing it entirely. Named after tropical fig vines that germinate on a host tree, draw nutrients from it, and eventually become self-sustaining.
+O padrão Strangler Fig, cunhado por Martin Fowler, substitui gradualmente os sistemas legados, construindo novas funcionalidades em torno do sistema antigo, eventualmente substituindo-o totalmente. Nomeado em homenagem a figueiras tropicais que germinam em uma árvore hospedeira, extraem nutrientes dela e eventualmente se tornam autossustentáveis.
 
-This reference covers the pattern in ALL directions — not just decomposition.
+Esta referência cobre o padrão em TODAS as direções - não apenas na decomposição.
 
-## Core Concept
+## Conceito Central
 
-Four high-level activities (per Cartwright, Horn, and Lewis, cited by Fowler):
+Quatro atividades de alto nível (por Cartwright, Horn e Lewis, citados por Fowler):
 
-1. **Establish clear desired outcomes** with organizational alignment.
-2. **Identify seams** to decompose the system into manageable components.
-3. **Replace isolated components** with acceptable risk levels.
-4. **Evolve organizational culture** and development practices alongside the system.
+1. **Estabeleça resultados desejados claros** com alinhamento organizacional.
+2. **Identifique as costuras** para decompor o sistema em componentes gerenciáveis.
+3. **Substitua componentes isolados** por níveis de risco aceitáveis.
+4. **Evoluir a cultura organizacional** e as práticas de desenvolvimento junto com o sistema.
 
-Key principle: **transitional architecture** — temporary code that enables new and legacy systems to coexist. This overhead is justified by the reduced risk compared to big-bang replacement.
+Princípio-chave: **arquitetura de transição** — código temporário que permite a coexistência de sistemas novos e legados. Esta sobrecarga é justificada pelo risco reduzido em comparação com a substituição big bang.
 
-## Pattern 1: API Gateway Strangler
+## Padrão 1: API Gateway Strangler
 
-Use when the system exposes HTTP/REST/GraphQL APIs and you need to route traffic between legacy and new implementations.
+Use quando o sistema expõe APIs HTTP/REST/GraphQL e você precisa rotear o tráfego entre implementações legadas e novas.
 
-**How it works:**
+**Como funciona:**
 
-1. Place a routing layer (API gateway, reverse proxy, or application-level router) in front of the legacy system.
-2. New implementations register for specific routes.
-3. The router directs traffic based on feature flags, percentage rollout, or user segments.
-4. Legacy routes are decommissioned once the new implementation is validated.
+1. Coloque uma camada de roteamento (gateway de API, proxy reverso ou roteador em nível de aplicativo) na frente do sistema legado.
+2. Registro de novas implementações para rotas específicas.
+3. O roteador direciona o tráfego com base em sinalizadores de recursos, distribuição percentual ou segmentos de usuários.
+4. As rotas legadas são desativadas assim que a nova implementação for validada.
 
-**Applies to:**
+**Aplica-se a:**
 
-- Monolith → microservices (route individual endpoints to new services)
-- Microservices → monolith (route service endpoints back to a unified application)
-- Framework migration (e.g., Flask → FastAPI: proxy unmigrated routes to old framework)
+- Monolith → microsserviços (rotear endpoints individuais para novos serviços)
+- Microsserviços → monólito (rotear endpoints de serviço de volta para um aplicativo unificado)
+- Migração de framework (por exemplo, Flask → FastAPI: proxy de rotas não migradas para framework antigo)
 
-**Routing decision logic:**
+**Lógica de decisão de roteamento:**
 
-- `percentage = 0` → all traffic to legacy
-- `percentage = 100` → all traffic to new
-- `0 < percentage < 100` → use consistent hashing on user ID or session for sticky routing (so the same user always hits the same implementation during canary)
+- `porcentagem = 0` → todo o tráfego para legado
+- `porcentagem = 100` → todo o tráfego para novo
+- `0 <porcentagem <100` → use hashing consistente no ID do usuário ou sessão para roteamento fixo (para que o mesmo usuário sempre acesse a mesma implementação durante o canário)
 
-**Rollback:** Set routing percentage back to 0. Instant. No deployment needed.
+**Reversão:** Defina a porcentagem de roteamento de volta para 0. Instantâneo. Nenhuma implantação necessária.
 
-## Pattern 2: Service Extraction with Adapter
+## Padrão 2: Extração de serviço com adaptador
 
-Use when extracting a bounded context from a monolith into a separate service (or the reverse — absorbing a service into a monolith).
+Use ao extrair um contexto limitado de um monólito para um serviço separado (ou o inverso — absorvendo um serviço em um monólito).
 
-**How it works:**
+**Como funciona:**
 
-1. **Extract interface** — Define an abstraction (interface/protocol/ABC) that represents the capability.
-2. **Wrap legacy** — Create an adapter that implements the interface by delegating to the legacy code.
-3. **Implement new** — Build the new implementation behind the same interface.
-4. **Route via dependency injection** — Use feature flags to select which implementation to inject.
+1. **Extrair interface** — Defina uma abstração (interface/protocolo/ABC) que represente a capacidade.
+2. **Wrap legado** — Crie um adaptador que implemente a interface delegando ao código legado.
+3. **Implementar novo** — Construa a nova implementação por trás da mesma interface.
+4. **Rota via injeção de dependência** — Use sinalizadores de recursos para selecionar qual implementação injetar.
 
-**Applies to:**
+**Aplica-se a:**
 
-- Monolith → services (extract module behind interface, then move implementation to separate deployment)
-- Services → monolith (create interface in monolith, implement by calling the service, then inline the implementation and remove the service)
+- Monolith → serviços (extraia o módulo atrás da interface e mova a implementação para uma implantação separada)
+- Serviços → Monolith (criar interface no Monolith, implementar chamando o serviço, em seguida, incorporar a implementação e remover o serviço)
 
-**Key considerations:**
+**Principais considerações:**
 
-- The adapter must handle protocol differences (sync → async, different error types, data format translation).
-- Both implementations must satisfy the same contract tests.
-- During transition, the interface acts as the seam.
+- O adaptador deve lidar com diferenças de protocolo (sincronização → assíncrona, diferentes tipos de erros, tradução de formato de dados).
+- Ambas as implementações devem satisfazer os mesmos testes de contrato.
+- Durante a transição, a interface atua como costura.
 
-## Pattern 3: Database Strangler (Dual-Write)
+## Padrão 3: Estrangulador de banco de dados (gravação dupla)
 
-Use when the migration involves changing the data store (different database, different schema, or splitting a shared database).
+Use quando a migração envolver a alteração do armazenamento de dados (banco de dados diferente, esquema diferente ou divisão de um banco de dados compartilhado).
 
-**How it works:**
+**Como funciona:**
 
-1. **New writes go to new database** (source of truth).
-2. **Async sync to legacy** database for backwards compatibility (best effort — log failures but do not fail the operation).
-3. **Reads try new database first**, fall back to legacy if not found.
-4. **Lazy migration** — When a record is read from legacy, copy it to new database before returning.
-5. **Once all data is migrated**, stop dual-write and decommission legacy database.
+1. **Novas gravações vão para um novo banco de dados** (fonte da verdade).
+2. **Sincronização assíncrona com banco de dados legado** para compatibilidade com versões anteriores (melhor esforço — registra falhas, mas não falha na operação).
+3. **As leituras tentam primeiro o novo banco de dados**, retornam ao legado se não forem encontradas.
+4. **Migração lenta** — Quando um registro é lido do legado, copie-o para o novo banco de dados antes de retornar.
+5. **Depois que todos os dados forem migrados**, interrompa a gravação dupla e desative o banco de dados legado.
 
-**Applies to:**
+**Aplica-se a:**
 
-- Schema migration (old schema → new schema in same or different DB)
-- Database technology change (PostgreSQL → DynamoDB, MongoDB → PostgreSQL, etc.)
-- Database split (shared DB → per-service databases)
-- Database merge (per-service DBs → unified database)
+- Migração de esquema (esquema antigo → novo esquema no mesmo banco de dados ou em banco de dados diferente)
+- Mudança de tecnologia de banco de dados (PostgreSQL → DynamoDB, MongoDB → PostgreSQL, etc.)
+- Divisão de banco de dados (banco de dados compartilhado → bancos de dados por serviço)
+- Mesclagem de banco de dados (bancos de dados por serviço → banco de dados unificado)
 
-**Critical safeguards:**
+**Proteções críticas:**
 
-- The new database is ALWAYS the source of truth for writes once dual-write begins.
-- Legacy sync failures are logged and retried, never blocking the main operation.
-- Data consistency validation runs continuously comparing both databases.
-- Backfill job migrates historical data that is never lazy-migrated (cold data).
+- O novo banco de dados é SEMPRE a fonte da verdade para gravações assim que a gravação dupla começa.
+- As falhas de sincronização herdadas são registradas e repetidas, nunca bloqueando a operação principal.
+- A validação de consistência de dados é executada continuamente comparando os dois bancos de dados.
+- O trabalho de preenchimento migra dados históricos que nunca são migrados lentamente (dados frios).
 
-## Pattern 4: UI Component Strangler
+## Padrão 4: Estrangulador de componentes de UI
 
-Use when migrating frontend frameworks (jQuery → React, Angular → Vue, microfrontends → monolith, etc.).
+Use ao migrar frameworks de frontend (jQuery → React, Angular → Vue, microfrontends → monolith, etc.).
 
-**How it works:**
+**Como funciona:**
 
-1. **Both frameworks coexist** in the same page/application.
-2. **Feature flag wrapper component** decides which implementation to render.
-3. **New components load lazily** (code splitting) to avoid bundle bloat during transition.
-4. **Shared state bridge** connects old and new frameworks for data that must be in sync.
-5. **Route-level migration** — Migrate entire pages/routes at a time, not individual components (unless components are truly independent).
+1. **Ambos os frameworks coexistem** na mesma página/aplicativo.
+2. **Componente wrapper do sinalizador de recurso** decide qual implementação renderizar.
+3. **Novos componentes são carregados lentamente** (divisão de código) para evitar inchaço do pacote durante a transição.
+4. **Ponte de estado compartilhada** conecta estruturas antigas e novas para dados que devem estar sincronizados.
+5. **Migração em nível de rota** — Migre páginas/rotas inteiras de uma vez, não componentes individuais (a menos que os componentes sejam realmente independentes).
 
-**Applies to:**
+pendente).
+
+**Aplica-se a:**
 
 - jQuery/Backbone → React/Vue/Svelte
-- Microfrontends → unified SPA
-- Unified SPA → microfrontends
-- Angular → React (or any framework-to-framework)
-- Server-rendered → client-rendered (or vice versa)
+- Microfrontends → SPA unificado
+- SPA unificado → microfrontends
+- Angular → React (ou qualquer framework para framework)
+- Renderizado pelo servidor → renderizado pelo cliente (ou vice-versa)
 
-**Key considerations:**
+**Principais considerações:**
 
-- Bundle size grows during transition (two frameworks loaded). Mitigate with lazy loading and route-based code splitting.
-- Shared state is the hardest problem. Use an event bus or global state proxy that both frameworks can subscribe to.
-- CSS conflicts between frameworks need scoping (CSS modules, Shadow DOM, or naming conventions).
+- O tamanho do pacote aumenta durante a transição (duas estruturas carregadas). Mitigue com carregamento lento e divisão de código baseada em rota.
+- O estado compartilhado é o problema mais difícil. Use um barramento de eventos ou um proxy de estado global que ambas as estruturas possam assinar.
+- Conflitos CSS entre estruturas precisam de escopo (módulos CSS, Shadow DOM ou convenções de nomenclatura).
 
-## Pattern 5: Event Interception
+## Padrão 5: Interceptação de Eventos
 
-Use when the legacy system communicates through events (message queues, event emitters, webhooks) and you need to intercept and redirect those events.
+Use quando o sistema legado se comunica por meio de eventos (filas de mensagens, emissores de eventos, webhooks) e você precisa interceptar e redirecionar esses eventos.
 
-**How it works:**
+**Como funciona:**
 
-1. **Intercept events** at the source — wrap legacy event producers to also emit to the new event bus.
-2. **Both old and new consumers** receive events during transition.
-3. **New consumers process events** using the modern format/logic.
-4. **Legacy consumers are decommissioned** once new consumers are validated.
+1. **Interceptar eventos** na origem — agrupar produtores de eventos legados para também emitirem para o novo barramento de eventos.
+2. **Consumidores antigos e novos** recebem eventos durante a transição.
+3. **Novos consumidores processam eventos** usando o formato/lógica moderna.
+4. **Consumidores legados são desativados** assim que novos consumidores são validados.
 
-**Applies to:**
+**Aplica-se a:**
 
-- Modernizing event-driven architectures
-- Migrating message queue technology (RabbitMQ → Kafka, SQS → EventBridge)
-- Adding event sourcing to a system that currently does direct writes
+- Modernização de arquiteturas orientadas a eventos
+- Migração de tecnologia de fila de mensagens (RabbitMQ → Kafka, SQS → EventBridge)
+- Adicionar fonte de eventos a um sistema que atualmente faz gravações diretas
 
-**Key considerations:**
+**Principais considerações:**
 
-- Event format transformation must be well-defined and tested (old format → new format mapping).
-- Ordering guarantees may differ between old and new systems — document and handle this.
-- During transition, some events will be processed twice (by old and new consumers). Ensure idempotency.
+- A transformação do formato do evento deve ser bem definida e testada (formato antigo → mapeamento de novo formato).
+- As garantias de pedido podem diferir entre sistemas antigos e novos — documente e lide com isso.
+- Durante a transição, alguns eventos serão processados ​​duas vezes (por antigos e novos consumidores). Garanta a idempotência.
 
-## Pattern 6: Branch by Abstraction
+## Padrão 6: Ramificação por Abstração
 
-Use for large-scale refactoring where you cannot extract a service but need to replace an internal implementation.
+Use para refatoração em larga escala onde você não pode extrair um serviço, mas precisa substituir uma implementação interna.
 
-**How it works:**
+**Como funciona:**
 
-1. **Create an abstraction** (interface) for the component being replaced.
-2. **All call sites are updated** to use the abstraction instead of the concrete implementation.
-3. **Legacy implementation wrapped** behind the abstraction.
-4. **New implementation built** behind the same abstraction.
-5. **Feature flag switches** between implementations.
-6. **Legacy implementation removed** once new is validated.
+1. **Crie uma abstração** (interface) para o componente que está sendo substituído.
+2. **Todos os sites de chamada são atualizados** para usar a abstração em vez da implementação concreta.
+3. **Implementação legada envolvida** por trás da abstração.
+4. **Nova implementação construída** por trás da mesma abstração.
+5. **Alterações de sinalizadores de recurso** entre implementações.
+6. **Implementação legada removida** assim que a nova for validada.
 
-**Applies to:**
+**Aplica-se a:**
 
-- Replacing internal libraries (custom ORM → SQLAlchemy, custom HTTP client → axios)
-- Algorithm replacement (performance optimization)
-- Replacing vendor SDKs
-- Any internal refactoring that is too large for a single PR
+- Substituição de bibliotecas internas (ORM personalizado → SQLAlchemy, cliente HTTP personalizado → axios)
+- Substituição de algoritmo (otimização de desempenho)
+- Substituição de SDKs de fornecedores
+- Qualquer refatoração interna que seja muito grande para um único PR
 
-**Difference from Service Extraction:** Branch by Abstraction stays within the same deployment unit. Service Extraction moves the implementation to a separate deployment.
+**Diferença da extração de serviço:** A ramificação por abstração permanece na mesma unidade de implantação. A Extração de Serviço move a implementação para uma implantação separada.
 
-## Migration Phase Management
+## Gerenciamento da fase de migração
 
-Regardless of which pattern(s) you use, every migration follows these phases:
+Independentemente dos padrões usados, toda migração segue estas fases:
 
-| Phase       | Traffic to New                 | Duration                   | Validation                   | Rollback Trigger           |
-| ----------- | ------------------------------ | -------------------------- | ---------------------------- | -------------------------- |
-| **Setup**   | 0%                             | Until infrastructure ready | Smoke tests pass             | N/A                        |
-| **Shadow**  | 0% (dual-run, compare results) | 1-2 weeks                  | Result parity > 99%          | Mismatch rate > 5%         |
-| **Canary**  | 5-10%                          | 1-2 weeks                  | Error rate < baseline + 0.1% | Error rate > baseline + 1% |
-| **Ramp**    | 25% → 50% → 75%                | 2-4 weeks per step         | Performance parity           | Latency > 2x baseline      |
-| **Full**    | 100%                           | Minimum 30 days            | All metrics green            | Any metric degradation     |
-| **Cleanup** | 100% (legacy removed)          | 1-2 weeks                  | Legacy unused for 30 days    | N/A (cannot rollback)      |
+| Fase             | Tráfego para Novo            | Duração                           | Validação               | Gatilho de reversão |
+| ---------------- | ---------------------------- | --------------------------------- | ----------------------- | ------------------- |
+| **Configuração** | 0%                           | Até a infraestrutura estar pronta | Testes de fumaça passam | N/A                 |
+| **Sombra**       | 0% (execução dupla, comparar |
 
-**Critical rule:** Never proceed to the next phase until the current phase's validation criteria are met. If a rollback trigger fires, go back ONE phase (not all the way to 0%).
+e resultados) | 1-2 semanas | Paridade de resultados > 99% | Taxa de incompatibilidade > 5% |
+| **Canário** | 5-10% | 1-2 semanas | Taxa de erro < valor inicial + 0,1% | Taxa de erro > valor de base + 1% |
+| **Rampa** | 25% → 50% → 75% | 2-4 semanas por etapa | Paridade de desempenho | Latência > 2x linha de base |
+| **Completo** | 100% | Mínimo 30 dias
 
-## Choosing the Right Pattern
+| Todas as métricas verdes | Qualquer degradação métrica |
+| **Limpeza** | 100% (legado removido) | 1-2 semanas | Legado sem uso por 30 dias | N/A (não é possível reverter) |
 
-When writing the migration plan, use this decision matrix to select patterns for each domain:
+**Regra crítica:** Nunca prossiga para a próxima fase até que os critérios de validação da fase atual sejam atendidos. Se um gatilho de reversão for acionado, volte UMA fase (não até 0%).
 
-| Situation                                 | Primary Pattern                 | Supporting Patterns                            |
-| ----------------------------------------- | ------------------------------- | ---------------------------------------------- |
-| HTTP API needs to route between old/new   | API Gateway Strangler           | Service Extraction for each endpoint           |
-| Module needs to become a separate service | Service Extraction with Adapter | Branch by Abstraction for internal deps        |
-| Database schema must change               | Database Strangler (Dual-Write) | API Gateway for read/write routing             |
-| Frontend framework change                 | UI Component Strangler          | Event Interception for shared state            |
-| Internal library replacement              | Branch by Abstraction           | —                                              |
-| Event/messaging system change             | Event Interception              | Database Strangler if events drive writes      |
-| Multiple services → monolith              | API Gateway Strangler (reverse) | Service Extraction (reverse — absorb)          |
-| Monolith → modular monolith               | Branch by Abstraction           | — (no service boundary, just internal modules) |
+## Escolhendo o padrão certo
+
+Ao escrever o plano de migração, use esta matriz de decisão para selecionar padrões para cada domínio:
+
+| Situação                                     | Padrão Primário                 | Padrões de suporte                     |
+| -------------------------------------------- | ------------------------------- | -------------------------------------- |
+| A API HTTP precisa rotear entre antigo/novo  | Estrangulador de gateway de API | Extração de serviço para cada endpoint |
+| Módulo precisa se tornar um serviço separado | Extração de serviço             |
+
+n com adaptador | Ramificação por Abstração para dependências internas |
+| O esquema do banco de dados deve mudar | Estrangulador de banco de dados (gravação dupla) | API Gateway para roteamento de leitura/gravação |
+| Mudança na estrutura do front-end | Estrangulador de componentes de UI | Interceptação de eventos para estado compartilhado |
+| Substituição de biblioteca interna | Ramificação por Abstração | -
+
+|
+| Alteração do sistema de eventos/mensagens | Interceptação de Eventos | Estrangulador de banco de dados se eventos geram gravações |
+| Vários serviços → monólito | API Gateway Strangler (reverso) | Extração de serviço (reverso - absorção) |
+| Monólito → monólito modular | Ramificação por Abstração | — (sem limite de serviço, apenas módulos internos) |

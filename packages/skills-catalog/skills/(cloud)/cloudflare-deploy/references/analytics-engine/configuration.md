@@ -1,23 +1,20 @@
-# Analytics Engine Configuration
+# Configuração do mecanismo analítico
 
-## Setup
+## Configuração
 
-1. Add binding to `wrangler.jsonc`
-2. Deploy Worker
-3. Dataset created automatically on first write
-4. Query via SQL API
+1. Adicione ligação a `wrangler.jsonc`
+2. Implantar trabalhador
+3. Conjunto de dados criado automaticamente na primeira gravação
+4. Consulta via API SQL
 
 ## wrangler.jsonc
 
-```jsonc
+````jsonc
 {
   "name": "my-worker",
   "analytics_engine_datasets": [{ "binding": "ANALYTICS", "dataset": "my_events" }],
 }
-```
-
-Multiple datasets for separate concerns:
-
+```Vários conjuntos de dados para questões separadas:
 ```jsonc
 {
   "analytics_engine_datasets": [
@@ -25,9 +22,9 @@ Multiple datasets for separate concerns:
     { "binding": "USER_EVENTS", "dataset": "user_activity" },
   ],
 }
-```
+````
 
-## TypeScript
+##TypeScript
 
 ```typescript
 interface Env {
@@ -47,39 +44,39 @@ export default {
 }
 ```
 
-## Data Point Limits
+##Limites de pontos de dados
 
-| Field   | Limit                 | SQL Access             |
-| ------- | --------------------- | ---------------------- |
-| blobs   | 20 strings, 16KB each | `blob1`...`blob20`     |
-| doubles | 20 numbers            | `double1`...`double20` |
-| indexes | 1 string, 16KB        | `index1`               |
+| Campo   | Limite                 | Acesso SQL           |
+| ------- | ---------------------- | -------------------- |
+| bolhas  | 20 strings, 16 KB cada | `blob1`...`blob20`   |
+| duplas  | 20 números             | `duplo1`...`duplo20` |
+| índices | 1 string, 16 KB        | `índice1`            |
 
-## Write Behavior
+## Comportamento de gravação
 
-| Scenario       | Behavior                         |
-| -------------- | -------------------------------- |
-| <1M writes/min | All accepted                     |
-| >1M writes/min | Automatic sampling               |
-| Invalid data   | Silent failure (check tail logs) |
+| Cenário                    | Comportamento                               |
+| -------------------------- | ------------------------------------------- |
+| <1 milhão de gravações/min | Todos aceitos                               |
+| >1 milhão de gravações/min | Amostragem automática                       |
+| Dados inválidos            | Falha silenciosa (verifique os logs finais) |
 
-**Mitigate sampling:** Pre-aggregate, use multiple datasets, write only critical metrics.
+**Mitigue a amostragem:** pré-agregue, use vários conjuntos de dados e grave apenas métricas críticas.
 
-## Query Limits
+## Limites de consulta
 
-| Resource       | Limit             |
-| -------------- | ----------------- |
-| Query timeout  | 30 seconds        |
-| Data retention | 90 days (default) |
-| Result size    | ~10MB             |
+| Recurso                  | Limite           |
+| ------------------------ | ---------------- |
+| Tempo limite da consulta | 30 segundos      |
+| Retenção de dados        | 90 dias (padrão) |
+| Tamanho do resultado     | ~10 MB           |
 
-## Cost
+## Custo
 
-**Free tier:** 10M writes/month, 1M reads/month
+**Nível gratuito:** 10 milhões de gravações/mês, 1 milhão de leituras/mês
 
-**Paid:** $0.05 per 1M writes, $1.00 per 1M reads
+**Pago:** US$ 0,05 por 1 milhão de gravações, US$ 1,00 por 1 milhão de leituras
 
-## Environment-Specific
+## Específico do ambiente
 
 ```jsonc
 {
@@ -92,7 +89,7 @@ export default {
 }
 ```
 
-## Monitoring
+##Monitoramento
 
 ```bash
 npx wrangler tail  # Check for sampling/write errors

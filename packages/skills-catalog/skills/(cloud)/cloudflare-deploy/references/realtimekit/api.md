@@ -1,10 +1,10 @@
-# RealtimeKit API Reference
+# Referência da API RealtimeKit
 
-Complete API reference for Meeting object, REST endpoints, and SDK methods.
+Referência completa da API para objeto de reunião, endpoints REST e métodos SDK.
 
-## Meeting Object API
+## API de objeto de reunião
 
-### `meeting.self` - Local Participant
+### `meeting.self` - Participante local
 
 ```typescript
 // Properties: id, userId, name, audioEnabled, videoEnabled, screenShareEnabled, audioTrack, videoTrack, screenShareTracks, roomJoined, roomState
@@ -23,9 +23,9 @@ meeting.self.on('roomJoined', () => {})
 meeting.self.on('audioUpdate', ({ audioEnabled, audioTrack }) => {})
 ```
 
-### `meeting.participants` - Remote Participants
+###`meeting.participants` - Participantes Remotos
 
-**Collections**:
+**Coleções**:
 
 ```typescript
 meeting.participants.joined / active / waitlisted / pinned // Maps
@@ -34,7 +34,7 @@ const count = meeting.participants.joined.size()
 const p = meeting.participants.joined.get('peer-id')
 ```
 
-**Participant Properties**:
+**Propriedades do Participante**:
 
 ```typescript
 participant.id / userId / name
@@ -42,20 +42,20 @@ participant.audioEnabled / videoEnabled / screenShareEnabled
 participant.audioTrack / videoTrack / screenShareTracks
 ```
 
-**Events**:
+**Eventos**:
 
 ```typescript
 meeting.participants.joined.on('participantJoined', (participant) => {})
 meeting.participants.joined.on('participantLeft', (participant) => {})
 ```
 
-### `meeting.meta` - Metadata
+###`meeting.meta` - Metadados
 
 ```typescript
 meeting.meta.meetingId / meetingTitle / meetingStartedTimestamp
 ```
 
-### `meeting.chat` - Chat
+###`meeting.chat` - Bate-papo
 
 ```typescript
 meeting.chat.messages // Array
@@ -63,7 +63,7 @@ meeting.chat.messages // Array
 meeting.chat.on('chatUpdate', ({ message, messages }) => {})
 ```
 
-### `meeting.polls` - Polling
+###`meeting.polls` - Pesquisa
 
 ```typescript
 meeting.polls.items // Array
@@ -71,27 +71,27 @@ await meeting.polls.create(question, options, anonymous, hideVotes)
 await meeting.polls.vote(pollId, optionIndex)
 ```
 
-### `meeting.plugins` - Collaborative Apps
+###`meeting.plugins` - Aplicativos colaborativos
 
 ```typescript
 meeting.plugins.all // Array
 ;(await meeting.plugins.activate(pluginId)) / deactivate()
 ```
 
-### `meeting.ai` - AI Features
+###`meeting.ai` - Recursos de IA
 
 ```typescript
 meeting.ai.transcripts // Live transcriptions (when enabled in Preset)
 ```
 
-### Core Methods
+### Métodos principais
 
 ```typescript
 await meeting.join() // Emits 'roomJoined' on meeting.self
 await meeting.leave()
 ```
 
-## TypeScript Types
+##Tipos TypeScript
 
 ```typescript
 import type { RealtimeKitClient, States, UIConfig, Participant } from '@cloudflare/realtimekit'
@@ -123,9 +123,9 @@ interface Participant {
 }
 ```
 
-## Store Architecture
+##Arquitetura da loja
 
-RealtimeKit uses reactive store (event-driven updates, live Maps):
+O RealtimeKit usa armazenamento reativo (atualizações orientadas a eventos, mapas ao vivo):
 
 ```typescript
 // Subscribe to state changes
@@ -137,13 +137,13 @@ const isAudioOn = meeting.self.audioEnabled
 const count = meeting.participants.joined.size()
 ```
 
-**Key principles:** State updates emit events after changes. Use `.toArray()` sparingly. Collections are live Maps.
+**Princípios-chave:** As atualizações de estado emitem eventos após as alterações. Use `.toArray()` com moderação. As coleções são mapas ao vivo.
 
-## REST API
+## API REST
 
 Base: `https://api.cloudflare.com/client/v4/accounts/{account_id}/realtime/kit/{app_id}`
 
-### Meetings
+### Reuniões
 
 ```bash
 GET    /meetings                                    # List all
@@ -152,7 +152,7 @@ POST   /meetings                                    # Create: {"title": "..."}
 PATCH  /meetings/{meeting_id}                       # Update: {"title": "...", "record_on_start": true}
 ```
 
-### Participants
+### Participantes
 
 ```bash
 GET    /meetings/{meeting_id}/participants                          # List all
@@ -163,7 +163,7 @@ DELETE /meetings/{meeting_id}/participants/{participant_id}         # Delete
 POST   /meetings/{meeting_id}/participants/{participant_id}/token   # Refresh token
 ```
 
-### Active Session
+### Sessão Ativa
 
 ```bash
 GET  /meetings/{meeting_id}/active-session               # Get active session
@@ -172,7 +172,7 @@ POST /meetings/{meeting_id}/active-session/kick-all      # Kick all
 POST /meetings/{meeting_id}/active-session/poll          # Create poll: {"question": "...", "options": [...], "anonymous": false}
 ```
 
-### Recording
+### Gravação
 
 ```bash
 GET  /recordings?meeting_id={meeting_id}                 # List recordings
@@ -182,7 +182,7 @@ PUT  /recordings/{recording_id}                          # Control: {"action": "
 POST /recordings/track                                   # Track recording: {"meeting_id": "...", "layers": [...]}
 ```
 
-### Livestreaming
+### Transmissão ao vivo
 
 ```bash
 GET  /livestreams?exclude_meetings=false                                # List all
@@ -192,7 +192,7 @@ POST /meetings/{meeting_id}/active-livestream/stop                      # Stop
 POST /livestreams                                                       # Create independent: returns {ingest_server, stream_key, playback_url}
 ```
 
-### Sessions & Analytics
+### Sessões e análises
 
 ```bash
 GET  /sessions                                                          # List all
@@ -216,18 +216,17 @@ PATCH  /webhooks/{webhook_id}       # Update
 DELETE /webhooks/{webhook_id}       # Delete
 ```
 
-## Session Lifecycle
+##Ciclo de vida da sessão
 
-```
+````
 Initialization → Join Intent → [Waitlist?] → Meeting Screen (Stage) → Ended
                                    ↓ Approved
                                [Rejected → Ended]
-```
+```O UI Kit lida com transições de estado automaticamente.
 
-UI Kit handles state transitions automatically.
+## Veja também
 
-## See Also
-
-- [Configuration](./configuration.md) - Setup and installation
-- [Patterns](./patterns.md) - Usage examples
-- [README](./README.md) - Overview and quick start
+- [Configuração](./configuration.md) - Configuração e instalação
+- [Padrões](./patterns.md) - Exemplos de uso
+- [README](./README.md) - Visão geral e início rápido
+````

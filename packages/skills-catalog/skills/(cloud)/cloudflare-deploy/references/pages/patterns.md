@@ -1,6 +1,6 @@
-# Patterns
+# Padrões
 
-## API Routes
+## Rotas de API
 
 ```typescript
 // functions/api/todos/[id].ts
@@ -20,7 +20,7 @@ export const onRequestPut: PagesFunction<Env> = async ({ env, params, request })
 // Also: onRequestDelete, onRequestPost
 ```
 
-## Auth Middleware
+## Middleware de auth
 
 ```typescript
 // functions/_middleware.ts
@@ -62,7 +62,7 @@ export const onRequest: PagesFunction = async (context) => {
 }
 ```
 
-## Form Handling
+## Formulários
 
 ```typescript
 // functions/api/contact.ts
@@ -73,7 +73,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
 }
 ```
 
-## Background Tasks
+## Tarefas em segundo plano
 
 ```typescript
 export const onRequestPost: PagesFunction = async ({ request, waitUntil }) => {
@@ -88,7 +88,7 @@ export const onRequestPost: PagesFunction = async ({ request, waitUntil }) => {
 }
 ```
 
-## Error Handling
+## Tratamento de erros
 
 ```typescript
 // functions/_middleware.ts
@@ -109,7 +109,7 @@ const errorHandler: PagesFunction = async (context) => {
 export const onRequest = [errorHandler]
 ```
 
-## Caching
+## Cache
 
 ```typescript
 // functions/api/data.ts
@@ -124,9 +124,9 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request }) => {
 }
 ```
 
-## Smart Placement for Database Apps
+## Smart Placement com banco
 
-Enable Smart Placement for apps with D1 or centralized data sources:
+Habilite para apps com D1 ou dados centralizados:
 
 ```jsonc
 // wrangler.jsonc
@@ -147,19 +147,17 @@ Enable Smart Placement for apps with D1 or centralized data sources:
 ```typescript
 // functions/api/data.ts
 export const onRequestGet: PagesFunction<Env> = async ({ env }) => {
-  // Smart Placement optimizes execution location over time
-  // Balances user location vs database location
   const data = await env.DB.prepare('SELECT * FROM products LIMIT 10').all()
   return Response.json(data)
 }
 ```
 
-**Best for**: Read-heavy apps with D1/Durable Objects in specific regions.  
-**Not needed**: Apps without data locality constraints or with evenly distributed traffic.
+**Melhor para**: apps leitura-intensiva com D1/DO em regiões específicas.  
+**Desnecessário**: sem localidade de dados ou tráfego uniforme.
 
-## Framework Integration
+## Integração com frameworks
 
-**Supported** (2026): SvelteKit, Astro, Nuxt, Qwik, Solid Start
+**Suportados** (2026): SvelteKit, Astro, Nuxt, Qwik, Solid Start
 
 ```bash
 npm create cloudflare@latest my-app -- --framework=svelte
@@ -195,21 +193,21 @@ export default defineEventHandler(async (event) => {
 })
 ```
 
-**⚠️ Framework Status** (2026):
+**Status** (2026):
 
-- ✅ **Supported**: SvelteKit, Astro, Nuxt, Qwik, Solid Start
-- ❌ **Deprecated**: Next.js (`@cloudflare/next-on-pages`), Remix (`@remix-run/cloudflare-pages`)
+- **Suportados**: SvelteKit, Astro, Nuxt, Qwik, Solid Start
+- **Depreciados**: Next.js (`@cloudflare/next-on-pages`), Remix (`@remix-run/cloudflare-pages`)
 
-For deprecated frameworks, see [gotchas.md](./gotchas.md#framework-specific) for migration options.
+Para frameworks depreciados: [gotchas.md](./gotchas.md#framework-specific).
 
 [Framework Guides](https://developers.cloudflare.com/pages/framework-guides/)
 
 ## Monorepo
 
-Dashboard → Settings → Build → Root directory. Set to subproject (e.g., `apps/web`).
+Dashboard → Settings → Build → Root directory. Ex.: `apps/web`.
 
-## Best Practices
+## Boas práticas
 
-**Performance**: Exclude static via `_routes.json`; cache with KV; keep bundle < 1MB  
-**Security**: Use secrets (not vars); validate inputs; rate limit with KV/DO  
-**Workflow**: Preview per branch; local dev with `wrangler pages dev`; instant rollbacks in Dashboard
+**Desempenho**: exclua estáticos em `_routes.json`; cache com KV; bundle < 1MB  
+**Segurança**: secrets (não vars); valide inputs; rate limit com KV/DO  
+**Fluxo**: preview por branch; `wrangler pages dev`; rollbacks rápidos no Dashboard

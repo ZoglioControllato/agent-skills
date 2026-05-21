@@ -1,47 +1,47 @@
-# Workerd Runtime
+# Tempo de execução do Workerd
 
-V8-based JS/Wasm runtime powering Cloudflare Workers. Use as app server, dev tool, or HTTP proxy.
+Tempo de execução JS/Wasm baseado em V8 alimentando Cloudflare Workers. Use como servidor de aplicativos, ferramenta de desenvolvimento ou proxy HTTP.
 
-## ⚠️ IMPORTANT SECURITY NOTICE
+## ⚠️ AVISO IMPORTANTE DE SEGURANÇA
 
-**workerd is NOT a hardened sandbox.** Do not run untrusted code. It's designed for deploying YOUR code locally/self-hosted, not multi-tenant SaaS. Cloudflare production adds security layers not present in open-source workerd.
+**workerd NÃO é uma sandbox reforçada.** Não execute código não confiável. Ele foi projetado para implantar SEU código localmente/auto-hospedado, não SaaS multilocatário. A produção da Cloudflare adiciona camadas de segurança não presentes no trabalho de código aberto.
 
-## Decision Tree: When to Use What
+## Árvore de decisão: quando usar o quê
 
-**95% of users:** Use Wrangler
+**95% dos usuários:** Use o Wrangler
 
-- Local development: `wrangler dev` (uses workerd internally)
-- Deployment: `wrangler deploy` (deploys to Cloudflare)
-- Types: `wrangler types` (generates TypeScript types)
+- Desenvolvimento local: `wrangler dev` (usa o workerd internamente)
+- Implantação: `wrangler deploy` (implanta no Cloudflare)
+- Tipos: `wrangler types` (gera tipos TypeScript)
 
-**Use raw workerd directly only if:**
+**Use o trabalhador bruto diretamente somente se:**
 
-- Self-hosting Workers runtime in production
-- Embedding runtime in C++ application
-- Custom tooling/testing infrastructure
-- Debugging workerd-specific behavior
+- Tempo de execução de trabalhadores auto-hospedados em produção
+- Incorporação de tempo de execução em aplicativo C++
+- Infraestrutura de ferramentas/testes personalizados
+- Depuração de comportamento específico do trabalhador
 
-**Never use workerd for:**
+**Nunca use o trabalhador para:**
 
-- Running untrusted/user-submitted code
-- Multi-tenant isolation (not hardened)
-- Production without additional security layers
+- Execução de código não confiável/enviado pelo usuário
+- Isolamento multilocatário (não reforçado)
+- Produção sem camadas de segurança adicionais
 
-## Key Features
+## Principais recursos
 
-- **Standards-based**: Fetch API, Web Crypto, Streams, WebSocket
-- **Nanoservices**: Service bindings with local call performance
-- **Capability security**: Explicit bindings prevent SSRF
-- **Backwards compatible**: Version = max compat date supported
+- **Baseado em padrões**: Fetch API, Web Crypto, Streams, WebSocket
+- **Nanoserviços**: vinculações de serviço com desempenho de chamada local
+- **Segurança de capacidade**: ligações explícitas impedem SSRF
+- **Compatível com versões anteriores**: Versão = data máxima de compatibilidade suportada
 
-## Architecture
+## Arquitetura```
 
-```
 Config (workerd.capnp)
 ├── Services (workers/endpoints)
 ├── Sockets (HTTP/HTTPS listeners)
 └── Extensions (global capabilities)
-```
+
+````
 
 ## Quick Start
 
@@ -49,37 +49,37 @@ Config (workerd.capnp)
 workerd serve config.capnp
 workerd compile config.capnp myConfig -o binary
 workerd test config.capnp
-```
+````
 
-## Platform Support & Beta Status
+## Suporte à plataforma e status beta
 
-| Platform        | Status       | Notes                     |
-| --------------- | ------------ | ------------------------- |
-| Linux (x64)     | Stable       | Primary platform          |
-| macOS (x64/ARM) | Stable       | Full support              |
-| Windows         | Beta         | Use WSL2 for best results |
-| Linux (ARM64)   | Experimental | Limited testing           |
+| Plataforma      | Estado       | Notas                                   |
+| --------------- | ------------ | --------------------------------------- |
+| Linux (x64)     | Estável      | Plataforma primária                     |
+| macOS (x64/ARM) | Estável      | Suporte total                           |
+| Janelas         | Beta         | Use WSL2 para obter melhores resultados |
+| Linux (ARM64)   | Experimental | Testes limitados                        |
 
-workerd is in **active development**. Breaking changes possible. Pin versions in production.
+O trabalhador está em **desenvolvimento ativo**. Quebrando mudanças possíveis. Versões de pinos em produção.
 
-## Core Concepts
+## Conceitos Básicos
 
-- **Service**: Named endpoint (worker/network/disk/external)
-- **Binding**: Capability-based resource access (KV/DO/R2/services)
-- **Compatibility date**: Feature gate (always set!)
-- **Modules**: ES modules (recommended) or service worker syntax
+- **Serviço**: endpoint nomeado (trabalhador/rede/disco/externo)
+- **Vinculação**: acesso a recursos baseado em capacidade (KV/DO/R2/serviços)
+- **Data de compatibilidade**: Porta de recursos (sempre definida!)
+- **Módulos**: módulos ES (recomendado) ou sintaxe do service worker
 
-## Reading Order (Progressive Disclosure)
+## Ordem de leitura (divulgação progressiva)
 
-**Start here:**
+**Comece aqui:**
 
-1. This README (overview, decision tree)
-2. [patterns.md](./patterns.md) - Common workflows, framework examples
+1. Este README (visão geral, árvore de decisão)
+2. [patterns.md](./patterns.md) - Fluxos de trabalho comuns, exemplos de estrutura
 
-**When you need details:** 3. [configuration.md](./configuration.md) - Config format, services, bindings 4. [api.md](./api.md) - Runtime APIs, TypeScript types 5. [gotchas.md](./gotchas.md) - Common errors, debugging
+**Quando você precisar de detalhes:** 3. [configuration.md](./configuration.md) - Formato de configuração, serviços, ligações 4. [api.md](./api.md) - APIs de tempo de execução, tipos TypeScript 5. [gotchas.md](./gotchas.md) - Erros comuns, depuração
 
-## Related References
+## Referências relacionadas
 
-- [workers](../workers/) - Workers runtime API documentation
-- [miniflare](../miniflare/) - Testing tool built on workerd
-- [wrangler](../wrangler/) - CLI that uses workerd for local dev
+- [workers](../workers/) - Documentação da API de tempo de execução de trabalhadores
+- [miniflare](../miniflare/) - Ferramenta de teste construída em Workerd
+- [wrangler](../wrangler/) - CLI que usa trabalhador para desenvolvimento local

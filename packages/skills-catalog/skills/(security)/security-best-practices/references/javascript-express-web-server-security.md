@@ -1,1151 +1,1195 @@
-# Express (Node.js) Web Security Spec (Express 5.x / 4.19.2+, Node.js LTS)
+# Express (Node.js) Especificação de segurança da Web (Express 5.x/4.19.2+, Node.js LTS)
 
-This document is designed as a **security spec** that supports:
+Este documento foi concebido como uma **especificação de segurança** que oferece suporte a:
 
-1. **Secure-by-default code generation** for new Express apps and routes.
-2. **Security review / vulnerability hunting** in existing Express code (passive “notice issues while working” and active “scan the repo and report findings”).
+1. **Geração de código seguro por padrão** para novos aplicativos e rotas Express.
+2. **Revisão de segurança/caça de vulnerabilidades** no código Express existente (passivo “notificar problemas durante o trabalho” e ativo “verificar o repositório e relatar descobertas”).
 
-It is intentionally written as a set of **normative requirements** (“MUST/SHOULD/MAY”) plus **audit rules** (what bad patterns look like, how to detect them, and how to fix/mitigate them).
-
----
-
-## 0) Safety, boundaries, and anti-abuse constraints (MUST FOLLOW)
-
-- MUST NOT request, output, log, or commit secrets (API keys, passwords, private keys, session secrets, cookies, tokens).
-- MUST NOT “fix” security by disabling protections (e.g., weakening cookie flags, disabling CSRF defenses for cookie-authenticated apps, enabling permissive CORS, trusting proxy headers from the open internet, turning on debugging/stack traces in production, disabling TLS without a replacement).
-- MUST provide **evidence-based findings** during audits: cite file paths, code snippets, middleware/config values, and runtime assumptions that justify the claim.
-- MUST treat uncertainty honestly: if a protection might exist in infrastructure (reverse proxy, gateway, WAF, CDN), report it as “not visible in app code; verify at runtime/config.”
-- MUST prefer vetted libraries and platform controls over “roll your own” crypto/auth/session/CSRF. Express explicitly expects the application to validate/handle user input correctly; it does not do this automatically. ([Express][1])
+Ele é intencionalmente escrito como um conjunto de **requisitos normativos** (“DEVE/DEVE/PODE”) mais **regras de auditoria** (como são os padrões ruins, como detectá-los e como corrigi-los/mitigá-los).
 
 ---
 
-## 1) Operating modes
+## 0) Segurança, limites e restrições antiabuso (DEVE SEGUIR)
 
-### 1.1 Generation mode (default)
+- NÃO DEVE solicitar, gerar, registrar ou confirmar segredos (chaves de API, senhas, chaves privadas, segredos de sessão, cookies, tokens).
+- NÃO DEVE “consertar” a segurança desabilitando proteções (por exemplo, enfraquecendo sinalizadores de cookies, desabilitando defesas CSRF para aplicativos autenticados por cookies, habilitando CORS permissivo, confiando em cabeçalhos de proxy da Internet aberta, ativando depuração/rastreamento de pilha na produção, desabilitando TLS sem substituição).
+- DEVE fornecer \*\*baseado em evidências
 
-When asked to write new Express code or modify existing code:
+descobertas\*\* durante auditorias: cite caminhos de arquivos, trechos de código, valores de middleware/config e suposições de tempo de execução que justificam a afirmação.
 
-- MUST follow every **MUST** requirement in this spec.
-- SHOULD follow every **SHOULD** requirement unless the user explicitly says otherwise.
-- MUST prefer safe-by-default APIs and proven libraries over custom security code.
-- MUST avoid introducing new risky sinks (shell execution, dynamic code evaluation, unsafe redirects, serving user files as HTML, template rendering from untrusted strings, unsafe filesystem paths, SSRF URL fetch endpoints, etc.).
+- DEVE tratar a incerteza com honestidade: se existir uma proteção na infraestrutura (proxy reverso, gateway, WAF, CDN), relate-a como “não visível no código do aplicativo; verifique em tempo de execução/configuração”.
+- DEVE preferir bibliotecas verificadas e controles de plataforma em vez de criptografia/autenticação/sessão/CSRF “faça você mesmo”. Express espera explicitamente que o aplicativo
 
-### 1.2 Passive review mode (always on while editing)
-
-While working anywhere in an Express repo (even if the user did not ask for a security scan):
-
-- MUST “notice” violations of this spec in touched/nearby code.
-- SHOULD mention issues as they come up, with a brief explanation + safe fix.
-
-### 1.3 Active audit mode (explicit scan request)
-
-When the user asks to “scan”, “audit”, or “hunt for vulns”:
-
-- MUST systematically search the codebase for violations of this spec.
-- MUST output findings in a structured format (see §2.3).
-
-Recommended audit order:
-
-1. Entrypoints (server/app bootstrap), deployment manifests, Dockerfiles, process manager config, CI/CD.
-2. Express settings + middleware stack order (helmet, parsers, auth, sessions, CSRF, CORS).
-3. Proxy trust (`trust proxy`) and IP/protocol/host handling. ([Express][2])
-4. Auth flows, sessions, cookies, password reset links, redirect handling. ([Express][1])
-5. State-changing routes + CSRF protections (cookie-authenticated apps). ([OWASP Cheat Sheet Series][3])
-6. Template rendering and XSS defenses (HTML generation, CSP, `res.locals`). ([OWASP Cheat Sheet Series][4])
-7. File handling (uploads + downloads + static files) and path traversal. ([Express][5])
-8. Injection classes (SQL, NoSQL, command execution, unsafe deserialization). ([OWASP Cheat Sheet Series][6])
-9. Outbound requests (SSRF) and webhook/callback delivery. ([OWASP Cheat Sheet Series][7])
-10. Rate limiting / brute-force defenses / abuse controls. ([Express][1])
-11. Dependency hygiene / lockfiles / npm audit / vulnerable Express versions. ([Express][1])
+aplicação para validar/tratar a entrada do usuário corretamente; isso não acontece automaticamente. ([Expresso][1])
 
 ---
 
-## 2) Definitions and review guidance
+## 1) Modos de operação
 
-### 2.1 Untrusted input (treat as attacker-controlled unless proven otherwise)
+### 1.1 Modo de geração (padrão)
 
-In Express, common untrusted inputs include:
+Quando solicitado a escrever um novo código Express ou modificar o código existente:
 
-- `req.params` (route parameters)
-- `req.query` (query string parameters; can be strings/arrays/objects depending on parsing) ([OWASP Cheat Sheet Series][8])
-- `req.body` from `express.json()`, `express.urlencoded()`, `express.text()`, `express.raw()` ([Express][5])
+- DEVE seguir todos os requisitos **DEVE** nesta especificação.
+- DEVE seguir todos os requisitos **DEVE**, a menos que o usuário diga explicitamente o contrário.
+- DEVE preferir APIs seguras por padrão e bibliotecas comprovadas em vez de código de segurança personalizado.
+- DEVE evitar a introdução de novos coletores arriscados (execução de shell, avaliação dinâmica de código, redirecionamentos inseguros, exibição de arquivos de usuário como HTML, renderização de modelos a partir de strings não confiáveis, caminhos de sistema de arquivos inseguros, pontos de extremidade de busca de URL SSRF,
+
+etc.).
+
+### 1.2 Modo de revisão passiva (sempre ativado durante a edição)
+
+Ao trabalhar em qualquer lugar em um repositório Express (mesmo que o usuário não tenha solicitado uma verificação de segurança):
+
+- DEVE “notar” violações desta especificação no código tocado/próximo.
+- DEVE mencionar os problemas à medida que surgem, com uma breve explicação + solução segura.
+
+### 1.3 Modo de auditoria ativo (solicitação de verificação explícita)
+
+Quando o usuário pede para “verificar”, “auditar” ou “caçar vulnerabilidades”:
+
+- DEVE pesquisar sistematicamente a base de código em busca de violações desta especificação.
+- DEVE apresentar os resultados num formato estruturado (ver §2.3).
+
+Ordem de auditoria recomendada:
+
+1. Pontos de entrada (bootstrap de servidor/aplicativo), manifestos de implantação, Dockerfiles, configuração do gerenciador de processos, CI/CD.
+2. Configurações expressas + ordem da pilha de middleware (capacete, analisadores, autenticação, sessões, CSRF, CORS).
+3. Confiança de proxy (`trust proxy`) e manipulação de IP/protocolo/host. ([Expresso][2])
+4. Fluxos de autenticação, sessões, cookies, links de redefinição de senha, tratamento de redirecionamento. ([Expresso][1])
+5. Rotas de mudança de estado + proteções CSRF (aplicativos autenticados por cookies). ([OWASP Cheat
+
+Série de folhas][3]) 6. Renderização de templates e defesas XSS (geração HTML, CSP, `res.locals`). ([Série de folhas de dicas OWASP] [4]) 7. Manipulação de arquivos (uploads + downloads + arquivos estáticos) e percurso de caminho. ([Expresso][5]) 8. Classes de injeção (SQL, NoSQL, execução de comandos, desserialização insegura). ([Série de folhas de dicas OWASP] [6]) 9. Solicitações de saída (SSRF) e entrega de webhook/retorno de chamada. ([Série de folhas de dicas OWASP] [7]) 10. Limitação de taxa/força bruta
+
+defesas/controles de abuso. ([Expresso][1]) 11. Higiene de dependências/lockfiles/auditoria npm/versões Express vulneráveis. ([Expresso][1])
+
+---
+
+## 2) Definições e orientações de revisão
+
+### 2.1 Entrada não confiável (tratada como controlada pelo invasor, salvo prova em contrário)
+
+No Express, entradas não confiáveis comuns incluem:
+
+- `req.params` (parâmetros de rota)
+- `req.query` (parâmetros de string de consulta; podem ser strings/arrays/objetos dependendo da análise) ([OWASP Cheat Sheet Series][8])
+- `req.body` de `express.json()`, `express.urlencoded()`, `express.text()`, `express.raw()` ([Express][5])
 - `req.headers` / `req.get(...)`
-- `req.cookies` / `req.signedCookies` (if cookie parsing middleware is used)
-- Upload metadata and filenames (e.g., multer `file.originalname`, `file.mimetype`)
-- Any data from external systems (webhooks, third-party APIs, message queues)
-- Any persisted user content (DB rows) that originated from users
+- `req.cookies` / `req.signedCookies` (se o middleware de análise de cookies for usado)
+- Carregar metadados e nomes de arquivos (por exemplo, multer `file.originalname`, `file.
 
-Special proxy note:
+tipo MIME`)
 
-- If `trust proxy` is enabled, values like `req.ip`, `req.hostname`, and `req.protocol` may be derived from `X-Forwarded-*` headers which **can be attacker-controlled** if your proxy chain is not correctly overwriting/removing them. ([Express][2])
+- Quaisquer dados de sistemas externos (webhooks, APIs de terceiros, filas de mensagens)
+- Qualquer conteúdo de usuário persistente (linhas de banco de dados) originado de usuários
 
-### 2.2 State-changing request
+Nota especial de procuração:
 
-A request is state-changing if it can create/update/delete data, change auth/session state, trigger side effects (purchase, email send, webhook send), or initiate privileged actions.
+- Se `trust proxy` estiver habilitado, valores como `req.ip`, `req.hostname` e `req.protocol` podem ser derivados de cabeçalhos `X-Forwarded-*` que **podem ser controlados pelo invasor** se sua cadeia de proxy não os estiver sobrescrevendo/removendo corretamente. ([Expresso][2])
 
-### 2.3 Required audit finding format
+### 2.2 Solicitação de mudança de estado
 
-For each issue found, output:
+Uma solicitação muda de estado se puder criar/atualizar/excluir dados, alterar o estado de autenticação/sessão, acionar efeitos colaterais (compra, envio de e-mail, envio de webhook) ou iniciar ações privilegiadas.
 
-- Rule ID:
-- Severity: Critical / High / Medium / Low
-- Location: file path + function/route/middleware name + line(s)
-- Evidence: the exact code/config snippet
-- Impact: what could go wrong, who can exploit it
-- Fix: safe change (prefer minimal diff)
-- Mitigation: defense-in-depth if immediate fix is hard
-- False positive notes: what to verify if uncertain
+### 2.3 Formato de descoberta de auditoria necessário
 
----
+Para cada problema encontrado, produza:
 
-## 3) Secure baseline: minimum production configuration (MUST in production)
-
-This is the smallest “production baseline” that prevents common Express misconfigurations.
-
-Minimum baseline targets:
-
-- `helmet()` is used and configured (especially CSP where applicable), and fingerprinting is reduced (disable `x-powered-by`). ([Express][1])
-- A custom 404 handler and a custom error handler exist, and production does not leak internal stack traces. ([Express][1])
-- Cookie/session usage is deliberate:
-  - Not using default session cookie names
-  - Cookies use secure attributes (`Secure`, `HttpOnly`, `SameSite`) as appropriate
-  - Cookie-backed sessions never store secrets (they are readable by the client)
-  - Server-side sessions never use MemoryStore in production. ([Express][1])
-
-- Request body parsing has explicit limits (`express.json({ limit })`, `express.urlencoded({ limit, parameterLimit, depth })`). ([Express][5])
-- `trust proxy` is configured explicitly to match your proxy topology; not blindly `true`. ([Express][2])
-- Login/auth endpoints have brute-force protection and rate limiting. ([Express][1])
-- Dependencies are regularly audited/updated (`npm audit` + advisory response). ([Express][1])
+- ID da regra:
+- Gravidade: Crítica / Alta / Média / Baixa
+- Localização: caminho do arquivo + nome da função/rota/middleware + linha(s)
+- Evidência: o trecho de código/configuração exato
+- Impacto: o que pode dar errado, quem pode explorar
+- Correção: mudança segura (prefira diferença mínima)
+- Mitigação: defesa profunda se a solução imediata for difícil
+- Notas falso-positivas: o que verificar em caso de incerteza
 
 ---
 
-## 4) Rules (generation + audit)
+## 3) Linha de base segura: configuração mínima de produção (DEVE em produção)
 
-Each rule contains: required practice, insecure patterns, detection hints, and remediation.
+Esta é a menor “linha de base de produção” que evita configurações incorretas comuns do Express.
 
-### EXPRESS-INPUT-001: Treat all user input as untrusted and validate it
+Metas mínimas de referência:
 
-Severity: High
+- `helmet()` é usado e configurado (especialmente CSP quando aplicável), e impressão digital é reduzida (desative `x-powered-by`). ([Expresso][1])
+- Existem um manipulador 404 personalizado e um manipulador de erros personalizado, e a produção não vaza rastreamentos de pilha internos. ([Expresso][1])
+- O uso de cookies/sessão é deliberado:
+  - Não usar nomes de cookies de sessão padrão
+  - Os cookies usam atributos seguros (`Secure`, `HttpOnly`, `SameSite`) conforme apropriado
+  - S com base em cookies
 
-Required:
+as sessões nunca armazenam segredos (eles podem ser lidos pelo cliente)
 
-- MUST validate and normalize untrusted inputs before using them in security-sensitive logic or dangerous sinks (DB queries, redirects, filesystem, HTML output, shell commands). Ensure the untrusted inputs are type checked and structure checked before using or passing forward.
-- SHOULD apply allowlists (known-good) rather than blocklists when feasible.
-- MUST reject or safely handle unexpected types/shapes in `req.query`, `req.params`, and `req.body`.
+- As sessões do lado do servidor nunca usam o MemoryStore na produção. ([Expresso][1])
 
-Insecure patterns:
-
-- Passing `req.query`, `req.params`, `req.body` directly into database/query builders, redirects, filesystem paths, or templates.
-- Assuming `req.query.foo` is always a string (it can be an array/object depending on parsing). ([OWASP Cheat Sheet Series][8])
-
-Detection hints:
-
-- Identify “untrusted-to-sink” flows: request → sink (`res.redirect`, SQL execution, `sendFile`, `child_process`, template render, outbound fetch).
-- Search for direct usage of `req.query.*`, `req.body.*`, `req.params.*` in sensitive calls.
-
-Fix:
-
-- Add schema validation (e.g., zod/joi/express-validator) at route boundaries.
-- Normalize types (e.g., force IDs to integers; reject arrays when scalar expected).
-
-Notes:
-
-- Express production security guidance explicitly says input validation/handling is the application’s responsibility. ([Express][1])
+- A análise do corpo da solicitação tem limites explícitos (`express.json({ limit })`, `express.urlencoded({ limit, parâmetroLimit, profundidade })`). ([Expresso][5])
+- `trust proxy` está configurado explicitamente para corresponder à sua topologia de proxy; não cegamente “verdadeiro”. ([Expresso][2])
+- Os endpoints de login/autenticação têm proteção de força bruta e limitação de taxa. ([Expresso][1])
+- As dependências são auditadas/atualizadas regularmente (`auditoria npm` + resposta consultiva). ([Expresso][1])
 
 ---
 
-### EXPRESS-REDIRECT-001: Prevent open redirects; validate redirect targets
+## 4) Regras (geração + auditoria)
 
-Severity: Medium
+Cada regra contém: práticas necessárias, padrões inseguros, dicas de detecção e correção.
 
-Required:
+### EXPRESS-INPUT-001: Trate todas as entradas do usuário como não confiáveis e valide-as
 
-- MUST validate redirect destinations derived from untrusted input (`next`, `return_to`, `url`).
-- SHOULD allowlist only same-site relative paths (preferred) or a strict allowlist of domains.
-- MUST fall back to a safe default when validation fails.
+Gravidade: Alta
 
-Insecure patterns:
+Obrigatório:
 
-- `res.redirect(req.query.next)` with no validation.
-- `res.redirect(req.body.url)` or `res.location(...)` using untrusted URLs.
+- DEVE validar e normalizar entradas não confiáveis ​​antes de usá-las em lógicas sensíveis à segurança ou em coletores perigosos (consultas de banco de dados, redirecionamentos, sistema de arquivos, saída HTML, comandos shell). Certifique-se de que as entradas não confiáveis ​​sejam verificadas por tipo e estrutura antes de usar ou transmitir.
+- DEVE aplicar listas de permissões (em boas condições) em vez de listas de bloqueio, quando viável.
+- DEVE rejeitar ou lidar com segurança com tipos/formas inesperados em `req.query`, `req.params` e `req.b
 
-Detection hints:
+ody`.
 
-- Search for `res.redirect(` and `res.location(` and trace the source of the target.
-- Look for query params named `next`, `redirect`, `return`, `url`.
+Padrões inseguros:
 
-Fix:
+- Passar `req.query`, `req.params`, `req.body` diretamente para construtores de banco de dados/consultas, redirecionamentos, caminhos de sistema de arquivos ou modelos.
+- Supondo que `req.query.foo` seja sempre uma string (pode ser um array/objeto dependendo da análise). ([Série de folhas de dicas OWASP] [8])
 
-- Only allow relative paths (starting with `/`) and disallow `//`, backslashes, and encoded variants.
-- If cross-domain redirects are required, allowlist exact hosts and enforce `https`.
+Dicas de detecção:
 
-Notes:
+- Identificar fluxos “não confiáveis ​​para coletor”: solicitação → coletor (`res.redirect`, execução SQL, `sendFile`, `child_process`, renderização de modelo, busca de saída).
+- Pesquise o uso direto de `req.query.*`, `req.body.*`, `req.params.*` em chamadas confidenciais.
 
-- Express documentation calls out open redirects as dangerous user input and shows validating the host before redirecting. ([Express][1])
-- Keep Express updated: Express has had an open-redirect-related CVE affecting some versions, and upgrades are part of the mitigation posture. ([NVD][9])
+Correção:
+
+- Adicionar validação de esquema (por exemplo, zod/joi/express-validator) nos limites da rota.
+- Normalizar tipos (por exemplo, forçar IDs para números inteiros; rejeitar matrizes quando for esperado escalar).
+
+Notas:
+
+- A orientação expressa de segurança de produção diz explicitamente que a validação/manuseio de entrada é de responsabilidade do aplicativo. ([Expresso][1])
 
 ---
 
-### EXPRESS-HEADERS-001: Use Helmet (or equivalent) to set essential security headers
+### EXPRESS-REDIRECT-001: Evita redirecionamentos abertos; validar alvos de redirecionamento
 
-Severity: Medium
+Gravidade: Média
 
-Required:
+Obrigatório:
 
-- SHOULD use `helmet()` to set common security headers.
-- SHOULD configure CSP realistically (avoid `unsafe-inline` where possible) for pages that render user-influenced content.
-- SHOULD set `X-Content-Type-Options: nosniff`, clickjacking defenses (`X-Frame-Options` or CSP `frame-ancestors`), and appropriate referrer policy.
+- DEVE validar destinos de redirecionamento derivados de entradas não confiáveis ​​(`next`, `return_to`, `url`).
+- DEVE permitir apenas caminhos relativos do mesmo site (preferencial) ou uma lista de permissões estrita de domínios.
+- DEVE voltar a um padrão seguro quando a validação falhar.
 
-NOTE: It is most important to set the CSP's script-src. All other directives are not as important and can generally be excluded for the ease of development.
+Padrões inseguros:
 
-Insecure patterns:
+- `res.redirect(req.query.next)` sem validação.
+- `res.redirect(req.body.url)` ou `res.location(...)` usando URLs não confiáveis.
 
-- No security headers set in app code and no evidence they are set at the edge.
-- CSP missing on apps that display user content.
-- Misconfigured framing headers that unintentionally allow clickjacking.
+Dicas de detecção:
 
-Detection hints:
+- Procure por `res.redirect(` e `res.location(` e rastreie a origem do alvo.
+- Procure parâmetros de consulta chamados `next`, `redirect`, `return`, `url`.
 
-- Search for `helmet(` usage; check if CSP is configured or disabled.
-- Search for `res.setHeader(` / `res.set(` for security header setting.
-- If not visible in app code, check nginx/CDN config; otherwise flag “verify at edge.”
+Correção:
 
-Fix:
+- Permitir apenas caminhos relativos (começando com `/`) e proibir `//`, barras invertidas e variantes codificadas.
+- Se forem necessários redirecionamentos entre domínios, adicione hosts exatos à lista de permissões e aplique `https`.
 
-- Add `helmet()` early in middleware order and configure:
+Notas:
+
+- A documentação expressa chama redirecionamentos abertos como entrada perigosa do usuário e mostra a validação do host antes do redirecionamento. ([Expresso][1])
+- Mantenha o Express atualizado: o Express teve um CVE relacionado ao redirecionamento aberto afetando algumas versões, e as atualizações fazem parte da postura de mitigação. ([NVD][9])
+
+---
+
+### EXPRESS-HEADERS-001: Use capacete (ou equivalente) para definir cabeçalhos de segurança essenciais
+
+Gravidade: Média
+
+Obrigatório:
+
+- DEVE usar `helmet()` para definir cabeçalhos de segurança comuns.
+- DEVE configurar o CSP de forma realista (evitar `unsafe-inline` sempre que possível) para páginas que renderizam conteúdo influenciado pelo usuário.
+- DEVE definir `X-Content-Type-Options: nosniff`, defesas contra clickjacking (`X-Frame-Options` ou CSP `frame-ancestors`) e política de referência apropriada.
+
+NOTA: É muito importante definir o script-src do CSP. Todas as outras directivas não são tão importantes e geralmente podem ser excluídas para facilitar o desenvolvimento.
+
+Padrões inseguros:
+
+- Nenhum cabeçalho de segurança definido no código do aplicativo e nenhuma evidência de que esteja definido na borda.
+- CSP ausente em aplicativos que exibem conteúdo do usuário.
+- Cabeçalhos de enquadramento mal configurados que permitem involuntariamente o clickjacking.
+
+Dicas de detecção:
+
+- Procure por `helmet(` uso; verifique se o CSP está configurado ou desabilitado.
+- Pesquise `res.setHeader(` / `res.set(` para configuração do cabeçalho de segurança.
+- Se não estiver visível no código do aplicativo, verifique a configuração do nginx/CDN; caso contrário, sinalize “verificar na borda”.
+
+Correção:
+
+- Adicione `helmet()` no início da ordem do middleware e configure:
   - CSP (`contentSecurityPolicy`)
-  - Frame protections (`frameguard` or CSP `frame-ancestors`)
+  - Proteções de quadros (`frameguard` ou CSP `frame-ancestors`)
   - `X-Content-Type-Options` (`noSniff`)
 
-Notes:
+Notas:
 
-- Express production security best practices recommend Helmet and list headers Helmet sets by default. ([Express][1])
-- OWASP HTTP Headers guidance is a useful reference when tuning policies. ([OWASP Cheat Sheet Series][10])
+- As práticas recomendadas de segurança de produção expressa recomendam capacete e listar cabeçalhos de conjuntos de capacete por padrão. ([Expresso][1])
+- A orientação dos cabeçalhos HTTP OWASP é uma referência útil ao ajustar políticas. ([Série de folhas de dicas OWASP] [10])
 
 ---
 
-### EXPRESS-FINGERPRINT-001: Reduce fingerprinting by disabling `x-powered-by` and customizing error/404 responses
+### EXPRESS-FINGERPRINT-001: Reduza as impressões digitais desativando `x-powered-by` e personalizando respostas de erro/404
 
-Severity: Low (defense-in-depth)
+Gravidade: Baixa (defesa profunda)
 
-Required:
+Obrigatório:
 
-- SHOULD disable `X-Powered-By` using `app.disable('x-powered-by')`.
-- SHOULD provide a custom 404 handler and a custom error handler to avoid distinct default responses and to control information leakage.
+- DEVE desabilitar `X-Powered-By` usando `app.disable('x-powered-by')`.
+- DEVE fornecer um manipulador 404 personalizado e um manipulador de erros personalizado para evitar respostas padrão distintas e controlar o vazamento de informações.
 
-Insecure patterns:
+Padrões inseguros:
 
-- Default `X-Powered-By: Express` header left enabled.
-- Default Express 404/error responses in production with identifiable formatting and/or stack traces.
+- Cabeçalho padrão `X-Powered-By: Express` deixado ativado.
+- Respostas de erro Express 404/padrão em produção com formatação identificável e/ou rastreamentos de pilha.
 
-Detection hints:
+Dicas de detecção:
 
-- Search for `app.disable('x-powered-by')`.
-- Check middleware tail for a custom 404 (`app.use((req,res)=>...)`) and a custom error handler (`app.use((err,req,res,next)=>...)`).
-- Check if `NODE_ENV` is correctly set for production behavior (see EXPRESS-ERROR-001). ([Express][11])
+- Procure por `app.disable('x-powered-by')`.
+- Verifique a cauda do middleware para um 404 personalizado (`app.use((req,res)=>...)`) e um manipulador de erros personalizado (`app.use((err,req,res,next)=>...)`).
+- Verifique se `NODE_ENV` está configurado corretamente para comportamento de produção (ver EXPRESS-ERROR-001). ([Expresso][11])
 
-Fix:
+Correção:
 
-- Add:
+- Adicionar:
   - `app.disable('x-powered-by')`
-  - A custom 404 handler
-  - A custom error handler that logs server-side and returns generic messages client-side
+  - Um manipulador 404 personalizado
+  - Um manipulador de erros personalizado que registra no lado do servidor e retorna mensagens genéricas no lado do cliente
 
-Notes:
+Notas:
 
-- Express docs explicitly recommend disabling `x-powered-by` and adding your own not-found and error handlers. ([Express][1])
-
----
-
-### EXPRESS-COOKIE-001: Cookies must use secure attributes and minimal scope
-
-Severity: Medium
-
-Required:
-
-- MUST set cookie flags appropriately for any authentication/session cookie:
-  - `Secure` when HTTPS (production) IMPORTANT NOTE: Only set `Secure` in production environment if TLS is configured. When running in a local dev environment over HTTP, do not set `Secure` property on cookies. You should do this conditionally based on if the app is running in production mode. You should also include a property like `SESSION_COOKIE_SECURE` which can be used to disable `Secure` cookies when testing over HTTP.
-  - `HttpOnly` for auth/session cookies
-  - `SameSite` set deliberately (`Lax` is a common baseline; `Strict` if compatible; `None` only with `Secure` and a justified cross-site need)
-
-- SHOULD avoid setting `domain` broadly (avoid “all subdomains” unless required).
-- SHOULD set bounded expiry appropriate to risk and UX.
-
-Insecure patterns:
-
-- Session/auth cookies without `HttpOnly`.
-- Cookies without `Secure` in production HTTPS.
-- `SameSite=None` + cookie-authenticated state-changing endpoints without CSRF protections.
-
-Detection hints:
-
-- Search for `res.cookie(`, `Set-Cookie`, `cookie: { ... }`, `express-session`, `cookie-session`.
-- Verify cookie flags in session middleware configuration.
-
-Fix:
-
-- Set these attributes centrally in session/cookie middleware configuration.
-
-Notes:
-
-- Express production security guidance lists cookie security options (`secure`, `httpOnly`, etc.). ([Express][1])
-- `res.cookie()` ultimately sets `Set-Cookie` with options; defaults follow RFC 6265 behavior when options are omitted. ([Express][5])
-- OWASP session management guidance is relevant for choosing flags and lifetimes. ([OWASP Cheat Sheet Series][12])
+- Os documentos expressos recomendam explicitamente desabilitar `x-powered-by` e adicionar seus próprios manipuladores de erros e não encontrados. ([Expresso][1])
 
 ---
 
-### EXPRESS-SESS-001: Do not use the default session cookie name; avoid session fingerprinting
+### EXPRESS-COOKIE-001: Os cookies devem usar atributos seguros e escopo mínimo
 
-Severity: Low (defense-in-depth)
+Gravidade: Média
 
-Required:
+Obrigatório:
 
-- SHOULD override the default session cookie name (e.g., do not keep `connect.sid` when using `express-session`).
-- SHOULD use a generic name (e.g., `sessionId`) unless you have a compatibility reason.
+- DEVE definir sinalizadores de cookie adequadamente para qualquer cookie de autenticação/sessão:
+  - `Secure` quando HTTPS (produção) NOTA IMPORTANTE: Defina `Secure` apenas no ambiente de produção se o TLS estiver configurado. Ao executar em um ambiente de desenvolvimento local via HTTP, não defina a propriedade `Secure` nos cookies. Você deve fazer isso condicionalmente com base no fato de o aplicativo estar sendo executado no modo de produção. Você também deve incluir uma propriedade como `SESSION_COOKIE_SECURE` que pode ser você
 
-Insecure patterns:
+sed para desabilitar cookies `seguros` ao testar via HTTP.
 
-- `express-session` used with no `name:` configured (default cookie name).
-- Multiple apps on the same domain sharing a cookie name accidentally.
+- `HttpOnly` para cookies de autenticação/sessão
+- `SameSite` definido deliberadamente (`Lax` é uma linha de base comum; `Strict` se compatível; `None` apenas com `Secure` e uma necessidade justificada entre sites)
 
-Detection hints:
+- DEVE evitar definir `domínio` de forma ampla (evite “todos os subdomínios”, a menos que seja necessário).
+- DEVE definir uma expiração limitada apropriada ao risco e UX.
 
-- Search for `express-session` config blocks; check for `name:`.
+Padrões inseguros:
 
-Fix:
+- Cookies de sessão/autenticação sem `HttpOnly`.
+- Cookies sem `Secure` em HTTPS de produção.
+- `SameSite=None` + endpoints de mudança de estado autenticados por cookie sem proteções CSRF.
 
-- Set `name: 'sessionId'` (or similar) in `express-session` options.
+Dicas de detecção:
 
-Notes:
+- Procure por `res.cookie(`, `Set-Cookie`, `cookie: { ... }`, `express-session`, `cookie-session`.
+- Verifique sinalizadores de cookies na configuração do middleware da sessão.
 
-- Express docs explicitly recommend not using the default session cookie name to reduce fingerprinting. ([Express][1])
+Correção:
 
----
+- Defina esses atributos centralmente na configuração do middleware de sessão/cookie.
 
-### EXPRESS-SESS-002: Session storage and lifecycle must be production-safe
+Notas:
 
-Severity: High
-
-Required:
-
-- MUST NOT use `MemoryStore` in production (it is not designed for production use).
-- MUST store session secrets outside source control and rotate them safely.
-- SHOULD regenerate sessions on login / privilege changes to reduce session fixation risk.
-- MUST NOT store sensitive secrets in client-readable cookie sessions.
-
-Insecure patterns:
-
-- `app.use(session({ store: new MemoryStore(), ... }))` or missing store (defaults to MemoryStore).
-- Hard-coded for example: `secret: 'keyboard cat'` / `secret: 's3Cur3'` in repo.
-- Using `cookie-session` to store access tokens, refresh tokens, or PII.
-
-Detection hints:
-
-- Search for `express-session` and look for `MemoryStore` usage or missing `store`.
-- Search for `secret:` in session config and check if it’s hard-coded.
-- Look for `req.session = ...` patterns and whether sensitive data is stored.
-
-Fix:
-
-- Use a production session store (Redis, database-backed, etc.).
-- Load secrets from environment/secret manager.
-- On login: `req.session.regenerate(...)` or equivalent flow with safe privilege re-binding.
-
-Notes:
-
-- `express-session` explicitly warns that `MemoryStore` is not designed for production. ([Express][1])
-- `express-session` documents rotating secrets and session regeneration to guard against fixation. ([Express][1])
-- Express notes that cookie-backed sessions serialize data into the cookie and that cookie data is visible to the client; keep it small and non-secret. ([Express][1])
+- A orientação de segurança de produção expressa lista opções de segurança de cookies (`secure`, `httpOnly`, etc.). ([Expresso][1])
+- `res.cookie()` finalmente define `Set-Cookie` com opções; os padrões seguem o comportamento do RFC 6265 quando as opções são omitidas. ([Expresso][5])
+- A orientação de gerenciamento de sessão OWASP é relevante para a escolha de sinalizadores e tempos de vida. ([Série de folhas de dicas OWASP] [12])
 
 ---
 
-### EXPRESS-CSRF-001: Cookie-authenticated state-changing requests MUST be CSRF-protected
+### EXPRESS-SESS-001: Não use o nome do cookie de sessão padrão; evite impressões digitais de sessão
 
-Severity: High
+Gravidade: Baixa (defesa profunda)
 
-- IMPORTANT NOTE: If cookies are not being used for auth (ie auth is via Authentication header or other passed token), then there is no CSRF risk.
+Obrigatório:
 
-Required:
+- DEVE substituir o nome do cookie de sessão padrão (por exemplo, não mantenha `connect.sid` ao usar `express-session`).
+- DEVE usar um nome genérico (por exemplo, `sessionId`), a menos que você tenha um motivo de compatibilidade.
 
-- MUST protect all state-changing endpoints (POST/PUT/PATCH/DELETE) that rely on cookies for authentication.
-- SHOULD use a well-understood CSRF mitigation (token-based is the typical baseline).
-- MAY add defense-in-depth: Origin/Referer validation, Fetch Metadata enforcement, SameSite cookies, custom header requirements for XHR/fetch—**but do not treat these as a full replacement** unless explicitly designed and justified.
-- MUST use at a minimum require a custom HTTP header if form based CRSF tokens are not practical, as this is the second strongest method.
+Padrões inseguros:
 
-IMPORTANT NOTE:
+- `express-session` usado sem `name:` ​​configurado (nome padrão do cookie).
+- Vários aplicativos no mesmo domínio compartilham acidentalmente um nome de cookie.
 
-- If authentication is done via `Authorization: Bearer ...` headers (and not cookies), classic browser CSRF is typically not applicable;
+Dicas de detecção:
 
-Insecure patterns:
+- Procure por blocos de configuração `express-session`; verifique `nome:`.
 
-- Cookie-authenticated endpoints that change state with no CSRF protection.
-- Using GET for state-changing actions (amplifies CSRF risk).
-- “CSRF protection” that only checks a user-controlled field.
+Correção:
 
-Detection hints:
+- Defina `name: 'sessionId'` (ou similar) nas opções `express-session`.
 
-- Enumerate routes with methods other than GET/HEAD and identify whether cookies gate auth.
-- Look for presence/absence of CSRF middleware and token checks.
-- Check JSON APIs too, not only HTML forms.
+Notas:
 
-Fix:
-
-- Implement CSRF tokens for cookie-authenticated flows.
-- Add Origin/Referer checks where feasible, and ensure SameSite is set appropriately.
-
-Notes:
-
-- OWASP CSRF guidance and OWASP Node.js guidance both recommend anti-CSRF tokens as a standard control for web apps. ([OWASP Cheat Sheet Series][3])
+- Os documentos expressos recomendam explicitamente não usar o nome do cookie de sessão padrão para reduzir impressões digitais. ([Expresso][1])
 
 ---
 
-### EXPRESS-CORS-001: CORS must be explicit and least-privilege
+### EXPRESS-SESS-002: O armazenamento e o ciclo de vida da sessão devem ser seguros para produção
 
-Severity: Medium (High if misconfigured with credentials)
+Gravidade: Alta
 
-Required:
+Obrigatório:
 
-- If CORS is not needed, MUST keep it disabled.
-- If CORS is needed:
-  - MUST allowlist trusted origins (do not reflect arbitrary `Origin` without validation).
-  - MUST NOT combine broad origins with credentialed cookies (`Access-Control-Allow-Credentials: true`).
-  - SHOULD restrict methods, headers, and exposed headers to what’s required.
+- NÃO DEVE usar `MemoryStore` em produção (ele não foi projetado para uso em produção).
+- DEVE armazenar segredos de sessão fora do controle de origem e alterná-los com segurança.
+- DEVE regenerar sessões em alterações de login/privilégio para reduzir o risco de fixação de sessão.
+- NÃO DEVE armazenar segredos confidenciais em sessões de cookies legíveis pelo cliente.
 
-Insecure patterns:
+Padrões inseguros:
 
-- `Access-Control-Allow-Origin: *` with `Access-Control-Allow-Credentials: true`.
-- Reflecting `Origin` for all requests without allowlist validation.
-- Applying permissive CORS middleware globally when only a subset needs cross-origin access.
+- `app.use(session({ store: new MemoryStore(), ... }))` ou armazenamento ausente (o padrão é MemoryStore).
+- Codificado, por exemplo: `secret: 'keyboard cat'` / `secret: 's3Cur3'` no repo.
+- Usando `cookie-session` para armazenar tokens de acesso, tokens de atualização ou PII.
 
-Detection hints:
+Dicas de detecção:
 
-- Search for `cors(`, `Access-Control-Allow-Origin`, `Access-Control-Allow-Credentials`.
-- Inspect whether cookies are used for auth on endpoints exposed cross-origin.
+- Procure por `express-session` e procure por uso de `MemoryStore` ou `store` ausente.
+- Procure por `secret:` na configuração da sessão e verifique se está codificado.
+- Procure padrões `req.session = ...` e se dados confidenciais estão armazenados.
 
-Fix:
+Correção:
 
-- Implement strict origin allowlist and ensure credentialed requests only for intended origins.
-- Consider splitting CORS config per route group rather than global.
+- Use um armazenamento de sessão de produção (Redis, baseado em banco de dados, etc.).
+- Carregar segredos do ambiente/gerenciador de segredos.
+- No login: `req.session.regenerate(...)` ou fluxo equivalente com religação segura de privilégios.
 
-Notes:
+Notas:
 
-- OWASP HTTP header guidance covers security implications of response headers, including those that affect browser behavior; use it as a reference when reviewing header posture. ([OWASP Cheat Sheet Series][10])
-
----
-
-### EXPRESS-PROXY-001: Reverse proxy trust (`trust proxy`) must be configured correctly
-
-Severity: Medium (High if using IP based authentication)
-
-Required:
-
-- If behind a reverse proxy/LB, MUST configure `app.set('trust proxy', ...)` to match the real proxy chain.
-- MUST NOT blindly set `trust proxy = true` unless you fully control the proxy behavior and header rewriting.
-- MUST ensure the last trusted proxy overwrites/removes `X-Forwarded-For`, `X-Forwarded-Host`, and `X-Forwarded-Proto` so clients cannot spoof them.
-
-Insecure patterns:
-
-- `app.set('trust proxy', true)` in an app directly exposed to the internet or behind unknown proxies.
-- Using `req.ip`, `req.protocol`, `req.hostname` for security decisions without correct proxy trust configuration.
-- Rate limiting keyed by `req.ip` with spoofable forwarded headers.
-
-Detection hints:
-
-- Search for `app.set('trust proxy'`.
-- Check infra docs (nginx/LB) for header rewriting behavior.
-- Identify any security logic using `req.ip`, `req.ips`, `req.protocol`, `req.hostname`.
-
-Fix:
-
-- Set `trust proxy` to a hop count, explicit IP/subnet list, or a custom function matching your network.
-- Ensure proxies overwrite forwarded headers.
-
-Notes:
-
-- Express explicitly warns that when `trust proxy` is `true`, the client IP is derived from `X-Forwarded-For`, and if proxies don’t overwrite forwarded headers, the client can provide any value. It also describes that enabling trust proxy impacts `req.hostname` and `req.protocol` derived from forwarded headers. ([Express][2])
+- `express-session` avisa explicitamente que `MemoryStore` não foi projetado para produção. ([Expresso][1])
+- Documentos `express-session` girando segredos e regeneração de sessão para proteger contra fixação. ([Expresso][1])
+- Express observa que as sessões baseadas em cookies serializam dados no cookie e que os dados do cookie ficam visíveis para o cliente; mantenha-o pequeno e não secreto. ([Expresso][1])
 
 ---
 
-### EXPRESS-BODY-001: Request body size and parsing limits MUST be set appropriately
+### EXPRESS-CSRF-001: Solicitações de alteração de estado autenticadas por cookie DEVEM ser protegidas por CSRF
 
-Severity: Low
+Gravidade: Alta
 
-Required:
+- NOTA IMPORTANTE: Se os cookies não estiverem sendo usados para autenticação (ou seja, a autenticação é via cabeçalho de autenticação ou outro token passado), então não há risco de CSRF.
 
-- SHOULD set explicit body size limits for:
-  - `express.json({ limit })`
-  - `express.urlencoded({ limit, parameterLimit, depth })`
+Obrigatório:
 
-- SHOULD only enable the parsers you need; do not parse large bodies by default for all routes.
-- SHOULD enforce additional limits at the reverse proxy / gateway level.
+- DEVE proteger todos os endpoints que mudam de estado (POST/PUT/PATCH/DELETE) que dependem de cookies para autenticação.
+- DEVE usar uma mitigação de CSRF bem compreendida (baseada em token é a linha de base típica).
+- PODE adicionar defesa profunda: validação de origem/referenciador, aplicação de metadados de busca, cookies SameSite, requisitos de cabeçalho personalizados para XHR/busca —**mas não os trate como uma substituição completa**, a menos que explicitamente projetado e justificado.
+- DEVE usar no mínimo
 
-Insecure patterns:
+m requer um cabeçalho HTTP personalizado se os tokens CRSF baseados em formulário não forem práticos, pois este é o segundo método mais forte.
 
-- No explicit body limits (accepting arbitrarily large JSON/urlencoded).
-- Global parsers applied to all routes when only some need bodies.
-- `parameterLimit` very high without justification (DoS potential).
+NOTA IMPORTANTE:
 
-Detection hints:
+- Se a autenticação for feita através de cabeçalhos `Authorization: Bearer ...` (e não cookies), o CSRF clássico do navegador normalmente não é aplicável;
 
-- Search for `express.json(` and confirm `limit` is set (or consciously accepted).
-- Search for `express.urlencoded(` and inspect `limit`, `parameterLimit`, and `depth`.
-- Review upload/webhook endpoints for special parsing needs.
+Padrões inseguros:
 
-Fix:
+- Endpoints autenticados por cookie que mudam de estado sem proteção CSRF.
+- Usar GET para ações de mudança de estado (amplifica o risco de CSRF).
+- “Proteção CSRF” que verifica apenas um campo controlado pelo usuário.
 
-- Configure parsers with conservative defaults and override per route group when needed.
+Dicas de detecção:
 
-Notes:
+- Enumerar rotas com métodos diferentes de GET/HEAD e identificar se os cookies permitem autenticação.
+- Procure presença/ausência de middleware CSRF e verificações de token.
+- Verifique também as APIs JSON, não apenas os formulários HTML.
 
-- Express documents `express.json` options (including `limit`, defaulting to 100kb) and explicitly notes `req.body` is untrusted and should be validated. ([Express][5])
-- Express documents `express.urlencoded` options including `limit`, `parameterLimit`, and `depth`. ([Express][5])
-- OWASP Node.js guidance also recommends setting request size limits. ([OWASP Cheat Sheet Series][8])
+Correção:
 
----
+- Implementar tokens CSRF para fluxos autenticados por cookies.
+- Adicione verificações de origem/referente sempre que possível e garanta que o SameSite esteja configurado adequadamente.
 
-### EXPRESS-INPUT-002: Prevent HTTP Parameter Pollution and type confusion in `req.query`
+Notas:
 
-Severity: Medium
-
-Required:
-
-- MUST treat `req.query` values as potentially multi-valued (array/object), depending on query parsing.
-- SHOULD reject ambiguous multi-valued parameters for security-sensitive fields (e.g., `role`, `isAdmin`, `redirect`, `amount`, `userId`).
-- SHOULD consider explicit parsing or dedicated middleware if parameter pollution is a concern.
-
-Insecure patterns:
-
-- `if (req.query.admin) { ... }` without type checks (arrays/objects may coerce truthy).
-- Passing `req.query` directly into ORM/NoSQL query objects.
-
-Detection hints:
-
-- Search for security-sensitive comparisons on `req.query.*` without type enforcement.
-- Look for code that assumes query params are strings.
-
-Fix:
-
-- Validate shape: enforce string-only for certain params and reject arrays/objects.
-- Normalize query parsing settings (simple vs extended) where applicable and documented.
-
-Notes:
-
-- OWASP Node.js cheat sheet explicitly highlights that Express query parsing can produce strings, arrays, or objects and recommends preventing HTTP Parameter Pollution. ([OWASP Cheat Sheet Series][8])
+- As orientações OWASP CSRF e OWASP Node.js recomendam tokens anti-CSRF como controle padrão para aplicativos da web. ([Série de folhas de dicas OWASP] [3])
 
 ---
 
-### EXPRESS-XSS-001: Prevent reflected/stored XSS in HTML responses and templating
+### EXPRESS-CORS-001: CORS deve ser explícito e com menos privilégios
 
-Severity: High
+Gravidade: Média (alta se as credenciais estiverem configuradas incorretamente)
 
-Required:
+Obrigatório:
 
-- MUST escape untrusted content in HTML output (templates should auto-escape by default; do not bypass).
-- MUST NOT inject untrusted strings into HTML without escaping/sanitization.
-- SHOULD set CSP (via Helmet) for apps rendering user-controlled content.
-- SHOULD keep `res.locals` free of user-controlled input intended for templates unless it is validated/escaped.
+- Se o CORS não for necessário, DEVE mantê-lo desativado.
+- Se o CORS for necessário:
+  - DEVE incluir origens confiáveis na lista de permissões (não refletir `Origem` arbitrária sem validação).
+  - NÃO DEVE combinar origens amplas com cookies credenciados (`Access-Control-Allow-Credentials: true`).
+  - DEVE restringir métodos, cabeçalhos e cabeçalhos expostos ao que é necessário.
 
-Insecure patterns:
+Padrões inseguros:
+
+- `Access-Control-Allow-Origin: *` com `Access-Control-Allow-Credentials: true`.
+- Refletindo `Origem` para todas as solicitações sem validação de lista de permissões.
+- Aplicar middleware CORS permissivo globalmente quando apenas um subconjunto precisa de acesso de origem cruzada.
+
+Dicas de detecção:
+
+- Procure por `cors(`, `Access-Control-Allow-Origin`, `Access-Control-Allow-Credentials`.
+- Inspecione se os cookies são usados para autenticação em endpoints expostos de origem cruzada.
+
+Correção:
+
+- Implementar uma lista de permissões de origem rigorosa e garantir solicitações credenciadas apenas para as origens pretendidas.
+- Considere dividir a configuração do CORS por grupo de rotas em vez de global.
+
+Notas:
+
+- A orientação do cabeçalho HTTP OWASP cobre as implicações de segurança dos cabeçalhos de resposta, incluindo aqueles que afetam o comportamento do navegador; use-o como referência ao revisar a postura do cabeçalho. ([Série de folhas de dicas OWASP] [10])
+
+---
+
+### EXPRESS-PROXY-001: A confiança do proxy reverso (`trust proxy`) deve ser configurada corretamente
+
+Gravidade: Média (Alta se estiver usando autenticação baseada em IP)
+
+Obrigatório:
+
+- Se estiver atrás de um proxy reverso/LB, DEVE configurar `app.set('trust proxy', ...)` para corresponder à cadeia de proxy real.
+- NÃO DEVE definir cegamente `trust proxy = true`, a menos que você controle totalmente o comportamento do proxy e a reescrita do cabeçalho.
+- DEVE garantir que o último proxy confiável substitua/remova `X-Forwarded-For`, `X-Forwarded-Host` e `X-Forwarded-Proto` para que os clientes não possam falsificá-los.
+
+Padrões inseguros:
+
+- `app.set('trust proxy', true)` em um aplicativo diretamente exposto à Internet ou atrás de proxies desconhecidos.
+- Usando `req.ip`, `req.protocol`, `req.hostname` para decisões de segurança sem configuração correta de confiança de proxy.
+- Limitação de taxa digitada por `req.ip` com cabeçalhos encaminhados falsificáveis.
+
+Dicas de detecção:
+
+- Procure por `app.set('trust proxy'`.
+- Verifique os documentos infra (nginx/LB) para comportamento de reescrita de cabeçalho.
+- Identifique qualquer lógica de segurança usando `req.ip`, `req.ips`, `req.protocol`, `req.hostname`.
+
+Correção:
+
+- Defina `trust proxy` para uma contagem de saltos, uma lista explícita de IP/sub-rede ou uma função personalizada que corresponda à sua rede.
+- Certifique-se de que os proxies substituam os cabeçalhos encaminhados.
+
+Notas:
+
+- Express avisa explicitamente que quando `trust proxy` é `true`, o IP do cliente é derivado de `X-Forwarded-For`, e se os proxies não sobrescreverem os cabeçalhos encaminhados, o cliente pode fornecer qualquer valor. Ele também descreve que a ativação do proxy confiável afeta `req.hostname` e `req.protocol` derivados de cabeçalhos encaminhados. ([Expresso][2])
+
+---
+
+### EXPRESS-BODY-001: O tamanho do corpo da solicitação e os limites de análise DEVEM ser definidos adequadamente
+
+Gravidade: Baixa
+
+Obrigatório:
+
+- DEVE definir limites explícitos de tamanho corporal para:
+  - `express.json({ limite })`
+  - `express.urlencoded({limite, parâmetroLimite, profundidade })`
+
+- DEVE habilitar apenas os analisadores necessários; não analisa corpos grandes por padrão para todas as rotas.
+- DEVE impor limites adicionais no nível do proxy reverso/gateway.
+
+Padrões inseguros:
+
+- Sem limites de corpo explícitos (aceitando JSON/urlencoded arbitrariamente grande).
+- Analisadores globais aplicados a todas as rotas quando apenas algumas precisam de corpos.
+- `parameterLimit` muito alto sem justificativa (potencial DoS).
+
+Dicas de detecção:
+
+- Procure por `express.json(` e confirme se `limit` está definido (ou aceito conscientemente).
+- Procure por `express.urlencoded(` e inspecione `limit`, `parameterLimit` e `profundidade`.
+- Revise os endpoints de upload/webhook para necessidades especiais de análise.
+
+Correção:
+
+- Configure analisadores com padrões conservadores e substitua por grupo de rotas quando necessário.
+
+Notas:
+
+- Documenta expressamente as opções `express.json` (incluindo `limit`, padrão para 100kb) e observa explicitamente que `req.body` não é confiável e deve ser validado. ([Expresso][5])
+- Opções `express.urlencoded` de documentos expressos, incluindo `limit`, `parameterLimit` e `profundidade`. ([Expresso][5])
+- A orientação do OWASP Node.js também recomenda definir limites de tamanho de solicitação. ([Série de folhas de dicas OWASP] [8])
+
+---
+
+### EXPRESS-INPUT-002: Evita poluição de parâmetros HTTP e confusão de tipo em `req.query`
+
+Gravidade: Média
+
+Obrigatório:
+
+- DEVE tratar os valores `req.query` como potencialmente multivalorados (matriz/objeto), dependendo da análise da consulta.
+- DEVE rejeitar parâmetros ambíguos com vários valores para campos sensíveis à segurança (por exemplo, `role`, `isAdmin`, `redirect`, `amount`, `userId`).
+- DEVE considerar a análise explícita ou middleware dedicado se a poluição de parâmetros for uma preocupação.
+
+Padrões inseguros:
+
+- `if (req.query.admin) { ... }` sem verificações de tipo (arrays/objetos podem forçar a verdade).
+- Passando `req.query` diretamente para objetos de consulta ORM/NoSQL.
+
+Dicas de detecção:
+
+- Pesquise comparações sensíveis à segurança em `req.query.*` sem imposição de tipo.
+- Procure o código que assume que os parâmetros de consulta são strings.
+
+Consertar:
+
+- Validar forma: impõe apenas strings para determinados parâmetros e rejeita matrizes/objetos.
+- Normalize as configurações de análise de consulta (simples versus estendida) quando aplicável e documentado.
+
+Notas:
+
+- A folha de dicas do OWASP Node.js destaca explicitamente que a análise de consulta expressa pode produzir strings, matrizes ou objetos e recomenda evitar a poluição de parâmetros HTTP. ([Série de folhas de dicas OWASP] [8])
+
+---
+
+### EXPRESS-XSS-001: Impedir XSS refletido/armazenado em respostas e modelos HTML
+
+Gravidade: Alta
+
+Obrigatório:
+
+- DEVE escapar de conteúdo não confiável na saída HTML (os modelos devem escapar automaticamente por padrão; não ignorar).
+- NÃO DEVE injetar strings não confiáveis ​​em HTML sem escapar/higienizar.
+- DEVE definir CSP (via Helmet) para aplicativos que renderizam conteúdo controlado pelo usuário.
+- DEVE manter `res.locals` livre de entradas controladas pelo usuário destinadas a modelos, a menos que seja validado/escapado.
+
+Padrões inseguros:
 
 - `res.send("<div>" + req.query.q + "</div>")`
-- Passing untrusted HTML through “safe” template flags/filters.
-- Writing untrusted strings into `res.locals` and then rendering without escaping.
+- Passar HTML não confiável através de sinalizadores/filtros de modelos “seguros”.
+- Escrever strings não confiáveis ​​em `res.locals` e depois renderizar sem escapar.
 
-Detection hints:
+Dicas de detecção:
 
-- Search for `res.send(` with strings containing user input.
-- Search for template “safe” flags (engine-specific) and trace data origin.
-- Search for assignments to `res.locals` and whether they might contain untrusted data.
+- Procure por `res.send(` com strings contendo entrada do usuário.
+- Pesquise sinalizadores “seguros” de modelo (específicos do mecanismo) e rastreie a origem dos dados.
+- Pesquise atribuições para `res.locals` e se elas podem conter dados não confiáveis.
 
-Fix:
+Correção:
 
-- Use a template engine with autoescaping; pass only validated data.
-- For rich text that must contain HTML, use a trusted sanitizer and an allowlist policy.
-- Add CSP with realistic directives.
+- Use um mecanismo de template com autoescaping; passe apenas dados validados.
+- Para rich text que deve conter HTML, use um sanitizer confiável e uma política de lista de permissões.
+- Adicione CSP com diretivas realistas.
 
-Notes:
+Notas:
 
-- Express API docs explicitly warn that `res.locals` “should not contain user-controlled input” and is often used to expose things like CSRF tokens to templates. ([Express][5])
-- OWASP XSS prevention guidance provides standard output-encoding and policy recommendations. ([OWASP Cheat Sheet Series][4])
-- Helmet can mitigate some XSS classes via headers such as CSP. ([Express][1])
-
----
-
-### EXPRESS-TEMPLATE-001: Never render untrusted templates or template paths (SSTI / LFI risk)
-
-Severity: Critical (if you can prove template strings/paths are user/attacker-controlled)
-
-Required:
-
-- MUST NOT render templates whose contents or template path/name is influenced by untrusted input.
-- MUST NOT load templates from user-controlled filesystem locations.
-- SHOULD treat “email template editors”, “theme engines”, and “CMS-like template storage” as high-risk designs requiring sandboxing and isolation.
-
-Insecure patterns:
-
-- `res.render(req.query.view, data)` where `view` is not allowlisted.
-- Rendering a template from a string that includes user input (engine-specific).
-- Loading templates from uploads directories.
-
-Detection hints:
-
-- Search for `res.render(` where the first argument is derived from request/DB without allowlist.
-- Search for template compilation APIs (engine-specific) fed by user content.
-
-Fix:
-
-- Use allowlisted template names and a fixed templates directory.
-- If user-defined templates are required, implement strict sandboxing and isolate execution.
-
-Notes:
-
-- Express’s template system depends on the chosen engine; assume unsafe if user input influences template selection or source.
+- Os documentos da API Express alertam explicitamente que `res.locals` “não deve conter entrada controlada pelo usuário” e é frequentemente usado para expor coisas como tokens CSRF a modelos. ([Expresso][5])
+- A orientação de prevenção OWASP XSS fornece codificação de saída padrão e recomendações de políticas. ([Série de folhas de dicas OWASP] [4])
+- O capacete pode mitigar algumas classes XSS por meio de cabeçalhos como CSP. ([Expresso][1])
 
 ---
 
-### EXPRESS-FILES-001: Prevent path traversal and unsafe file serving (sendFile/download)
+### EXPRESS-TEMPLATE-001: Nunca renderize modelos ou caminhos de modelos não confiáveis (risco SSTI/LFI)
 
-Severity: High
+Gravidade: Crítica (se você puder provar que as strings/caminhos do modelo são controlados pelo usuário/atacante)
 
-Required:
+Obrigatório:
 
-- MUST NOT pass user-controlled filesystem paths directly to `res.sendFile()` / `res.download()` / filesystem APIs.
-- SHOULD use `res.sendFile` with a fixed `root` and strict options (e.g., deny dotfiles) when serving user-selected files from a directory.
-- MUST enforce authorization checks before serving user-specific files.
+- NÃO DEVE renderizar modelos cujo conteúdo ou caminho/nome do modelo seja influenciado por entradas não confiáveis.
+- NÃO DEVE carregar modelos de locais de sistemas de arquivos controlados pelo usuário.
+- DEVE tratar “editores de modelos de e-mail”, “mecanismos de temas” e “armazenamento de modelos semelhantes a CMS” como designs de alto risco que exigem sandboxing e isolamento.
 
-Insecure patterns:
+Padrões inseguros:
 
-- `res.sendFile(req.query.path)` or `res.download(req.params.file)` with no root restriction.
-- File-serving routes that accept `..` segments, encoded traversal, or absolute paths.
+- `res.render(req.query.view, data)` onde `view` não está na lista de permissões.
+- Renderizar um modelo a partir de uma string que inclui entrada do usuário (específica do mecanismo).
+- Carregando modelos de diretórios de uploads.
 
-Detection hints:
+Dicas de detecção:
 
-- Search for `res.sendFile(` and trace the `path` argument origin.
-- Search for `res.download(` and trace the `path` argument origin.
-- Look for `fs.readFile`/`createReadStream` on paths derived from requests.
+- Procure por `res.render(` onde o primeiro argumento é derivado de request/DB sem lista de permissões.
+- Pesquisa por APIs de compilação de modelos (específicas do mecanismo) alimentadas pelo conteúdo do usuário.
 
-Fix:
+Correção:
 
-- Use an identifier-to-path mapping stored server-side (DB), not raw paths from clients.
-- Use `root: <trusted_base_dir>` and `dotfiles: 'deny'` where appropriate; validate the filename component strictly.
+- Use nomes de modelos permitidos e um diretório de modelos fixo.
+- Se forem necessários modelos definidos pelo usuário, implemente um sandbox estrito e isole a execução.
 
-Notes:
+Notas:
 
-- Express’s `res.sendFile` docs show using a `root` option and `dotfiles: 'deny'` as part of a safe serving configuration. ([Express][5])
-- `res.download` transfers the file as an attachment, but you still must control/validate the underlying `path`. ([Express][5])
-
----
-
-### EXPRESS-STATIC-001: Harden `express.static` / serve-static and never serve untrusted uploads as active content
-
-Severity: Medium (if serving untrusted user files if there are not robust limits tot eh file extensions)
-
-Required:
-
-- MUST NOT serve user uploads from a public static directory as active content (especially HTML/JS/SVG) unless explicitly intended and sandboxed. If sure that the content is inactive (png, jpg, other images etc) then it may be safe. It may be good to validate image file extensions are allow-listed before serving them.
-- SHOULD configure static serving to:
-  - deny/ignore dotfiles
-  - avoid unintended directory indexes if not needed
-  - apply appropriate cache controls for immutable assets
-
-Insecure patterns:
-
-- `app.use(express.static('uploads'))` where users can upload arbitrary files.
-- Serving uploaded HTML or SVG inline from the same origin as the app.
-
-Detection hints:
-
-- Search for `express.static(` and identify served directories.
-- Compare served directories with upload storage locations.
-- Check for `dotfiles` and `index` options in static middleware.
-
-Fix:
-
-- Store uploads outside any static web root and serve via controlled routes that set safe `Content-Type` and `Content-Disposition: attachment` when appropriate.
-- Configure `express.static(root, { dotfiles: 'deny'|'ignore', index: false (if desired) })`.
-
-Notes:
-
-- Express documents `express.static` options, including `dotfiles` behavior and `index`. ([Express][5])
+- O sistema de templates do Express depende do motor escolhido; presuma inseguro se a entrada do usuário influenciar a seleção ou fonte do modelo.
 
 ---
 
-### EXPRESS-UPLOAD-001: File uploads must be validated, stored safely, and served safely
+### EXPRESS-FILES-001: Impede a passagem de caminho e o fornecimento inseguro de arquivos (sendFile/download)
 
-Severity: Low - Medium
+Gravidade: Alta
 
-Required:
+Obrigatório:
 
-- SHOULD enforce upload size limits (app + edge).
-- MUST validate file type using allowlists and content checks (not only filename extension).
-- MUST store uploads outside executable/static roots when possible.
-- SHOULD generate server-side filenames (random IDs); do not trust original names.
-- MUST serve potentially active formats safely (download attachment) unless explicitly intended.
+- NÃO DEVE passar caminhos de sistemas de arquivos controlados pelo usuário diretamente para `res.sendFile()` / `res.download()` / APIs de sistema de arquivos.
+- DEVE usar `res.sendFile` com uma `root` fixa e opções estritas (por exemplo, negar dotfiles) ao servir arquivos selecionados pelo usuário de um diretório.
+- DEVE impor verificações de autorização antes de servir arquivos específicos do usuário.
 
-Insecure patterns:
+Padrões inseguros:
 
-- Accepting arbitrary file types and serving them back inline.
-- Using `file.originalname` as the storage path.
-- Missing size/type validation.
+- `res.sendFile(req.query.path)` ou `res.download(req.params.file)` sem restrição de root.
+- Rotas de serviço de arquivos que aceitam segmentos `..`, travessia codificada ou caminhos absolutos.
 
-Detection hints:
+Dicas de detecção:
 
-- Look for multer/busboy/formidable usage and check for `limits`.
-- Check where uploaded files are written and how they are served.
-- Check whether uploads end up under `public/` or any `express.static` root.
+- Procure por `res.sendFile(` e rastreie a origem do argumento `path`.
+- Procure por `res.download(` e rastreie a origem do argumento `path`.
+- Procure por `fs.readFile`/`createReadStream` em caminhos derivados de solicitações.
 
-Fix:
+Correção:
 
-- Implement allowlist validation + safe storage + safe serving, per OWASP upload guidance.
+- Use um mapeamento de identificador para caminho armazenado no lado do servidor (DB), e não caminhos brutos de clientes.
+- Use `root: <trusted_base_dir>` e `dotfiles: 'deny'` quando apropriado; valide estritamente o componente do nome do arquivo.
 
-Notes:
+Notas:
 
-- OWASP File Upload guidance covers allowlists, content validation, storage, and safe serving patterns. ([OWASP Cheat Sheet Series][13])
-
----
-
-### EXPRESS-INJECT-001: Prevent SQL injection (use parameterized queries / ORM)
-
-Severity: High
-
-Required:
-
-- MUST use parameterized queries or an ORM/query builder that parameterizes under the hood.
-- MUST NOT build SQL via string concatenation/template literals with untrusted input.
-
-Insecure patterns:
-
-- ``db.query(`SELECT * FROM users WHERE id = ${req.query.id}`)``
-- `"SELECT ... WHERE name = '" + req.body.name + "'"`
-
-Detection hints:
-
-- Grep for `SELECT`, `INSERT`, `UPDATE`, `DELETE` strings in JS/TS.
-- Trace untrusted input into `.query(...)`, `.execute(...)`, or raw SQL APIs.
-
-Fix:
-
-- Replace with parameterized queries (placeholders) or ORM query APIs.
-- Validate types (e.g., integer IDs) before querying.
-
-Notes:
-
-- OWASP SQL injection prevention guidance strongly favors parameterized queries. ([OWASP Cheat Sheet Series][6])
+- Os documentos `res.sendFile` do Express mostram o uso de uma opção `root` e `dotfiles: 'deny'` como parte de uma configuração de serviço segura. ([Expresso][5])
+- `res.download` transfere o arquivo como um anexo, mas você ainda deve controlar/validar o `caminho` subjacente. ([Expresso][5])
 
 ---
 
-### EXPRESS-INJECT-002: Prevent NoSQL injection / operator injection (Mongo-style)
+### EXPRESS-STATIC-001: Fortaleça `express.static` / serve-static e nunca exiba uploads não confiáveis como conteúdo ativo
 
-Severity: High (app-dependent)
+Gravidade: Média (se estiver servindo arquivos de usuários não confiáveis, se não houver limites robustos para extensões de arquivo)
 
-Required:
+Obrigatório:
 
-- MUST validate types and schemas for any query object built from untrusted input.
-- MUST prevent operator injection (e.g., `$ne`, `$gt`, `$where`) if user input is merged into query objects.
-- SHOULD consider defensive libraries/middleware when appropriate.
+- NÃO DEVE veicular uploads de usuários de um diretório estático público como conteúdo ativo (especialmente HTML/JS/SVG), a menos que seja explicitamente pretendido e em sandbox. Se tiver certeza de que o conteúdo está inativo (png, jpg, outras imagens, etc.), então pode ser seguro. Pode ser bom validar se as extensões de arquivo de imagem estão na lista de permissões antes de exibi-las.
+- DEVE configurar a veiculação estática para:
+  - negar/ignorar dotfiles
+  - evite índices de diretório não intencionais se não forem necessários
+  - aplicar aprox.
 
-Insecure patterns:
+controles de cache opriate para ativos imutáveis
 
-- `collection.find(req.body)` where the body is attacker-controlled.
-- Merging `req.query`/`req.body` into Mongo queries without schema validation.
+Padrões inseguros:
 
-Detection hints:
+- `app.use(express.static('uploads'))` onde os usuários podem fazer upload de arquivos arbitrários.
+- Servir HTML ou SVG carregado inline da mesma origem do aplicativo.
 
-- Search for `find(`, `findOne(`, `aggregate(` calls where argument is request-derived.
-- Check for patterns like `{ ...req.query }` or `Object.assign(query, req.body)`.
+Dicas de detecção:
 
-Fix:
+- Procure por `express.static(` e identifique os diretórios servidos.
+- Compare diretórios servidos com locais de armazenamento de upload.
+- Verifique as opções `dotfiles` e `index` no middleware estático.
 
-- Use schema validation at boundary; explicitly construct query objects from validated fields only.
+Correção:
 
-Notes:
+- Armazene uploads fora de qualquer raiz estática da web e sirva por meio de rotas controladas que definem `Content-Type` e `Content-Disposition: attachment` seguros quando apropriado.
+- Configure `express.static(root, { dotfiles: 'deny'|'ignore', index: false (se desejado) })`.
 
-- OWASP Node.js cheat sheet discusses input validation and mentions Node ecosystem modules commonly used for sanitization in NoSQL contexts. ([OWASP Cheat Sheet Series][8])
+Notas:
+
+- Opções `express.static` de documentos expressos, incluindo comportamento de `dotfiles` e `index`. ([Expresso][5])
 
 ---
 
-### EXPRESS-CMD-001: Prevent OS command injection (child_process)
+### EXPRESS-UPLOAD-001: Os uploads de arquivos devem ser validados, armazenados com segurança e servidos com segurança
 
-Severity: Critical to High (depends on exposure), please prove it is user/attacker controlled
+Gravidade: Baixa - Média
 
-Required:
+Obrigatório:
 
-- MUST avoid executing shell commands with untrusted input.
-- If subprocess is necessary:
-  - MUST avoid `exec()` / `execSync()` with attacker-influenced strings
-  - MUST NOT use `shell: true` with attacker-influenced data
-  - SHOULD use `spawn()` with an argument array and strict allowlists. Ensure the executable is hardcoded or allow-listed, do not use a user supplied command name.
-  - SHOULD place user-controlled values after `--` when supported by the subcommand to avoid flag injection
+- DEVE impor limites de tamanho de upload (aplicativo + borda).
+- DEVE validar o tipo de arquivo usando listas de permissões e verificações de conteúdo (não apenas extensão de nome de arquivo).
+- DEVE armazenar uploads fora de raízes executáveis/estáticas quando possível.
+- DEVE gerar nomes de arquivos do lado do servidor (IDs aleatórios); não confie em nomes originais.
+- DEVE servir formatos potencialmente ativos com segurança (download de anexo), a menos que seja explicitamente pretendido.
 
-Insecure patterns:
+Padrões inseguros:
+
+- Aceitar tipos de arquivos arbitrários e servi-los de volta in-line.
+- Usando `file.originalname` como caminho de armazenamento.
+- Falta de validação de tamanho/tipo.
+
+Dicas de detecção:
+
+- Procure por uso multer/busboy/formidável e verifique os `limites`.
+- Verifique onde os arquivos carregados são gravados e como são veiculados.
+- Verifique se os uploads terminam em `public/` ou em qualquer raiz `express.static`.
+
+Consertar:
+
+- Implementar validação de lista de permissões + armazenamento seguro + veiculação segura, de acordo com as orientações de upload do OWASP.
+
+Notas:
+
+- As orientações de upload de arquivos OWASP abrangem listas de permissões, validação de conteúdo, armazenamento e padrões de serviço seguro. ([Série de folhas de dicas OWASP] [13])
+
+---
+
+### EXPRESS-INJECT-001: Evita injeção de SQL (use consultas parametrizadas/ORM)
+
+Gravidade: Alta
+
+Obrigatório:
+
+- DEVE usar consultas parametrizadas ou um construtor de consulta/ORM que parametrize nos bastidores.
+- NÃO DEVE construir SQL por meio de concatenação de strings/literais de modelo com entrada não confiável.
+
+Padrões inseguros:
+
+- ``db.query(`SELECT * FROM usuários WHERE id = ${req.query.id}`)``
+- `"SELECIONE ... WHERE nome = '" + req.body.name + "'"`
+
+Dicas de detecção:
+
+- Grep para strings `SELECT`, `INSERT`, `UPDATE`, `DELETE` em JS/TS.
+- Rastreie entradas não confiáveis ​​em `.query(...)`, `.execute(...)` ou APIs SQL brutas.
+
+Correção:
+
+- Substitua por consultas parametrizadas (espaços reservados) ou APIs de consulta ORM.
+- Valide os tipos (por exemplo, IDs inteiros) antes de consultar.
+
+Notas:
+
+- A orientação de prevenção de injeção SQL do OWASP favorece fortemente consultas parametrizadas. ([Série de folhas de dicas OWASP] [6])
+
+---
+
+### EXPRESS-INJECT-002: Impedir injeção de NoSQL/injeção de operador (estilo Mongo)
+
+Gravidade: Alta (depende do aplicativo)
+
+Obrigatório:
+
+- DEVE validar tipos e esquemas para qualquer objeto de consulta criado a partir de entradas não confiáveis.
+- DEVE evitar a injeção de operador (por exemplo, `$ne`, `$gt`, `$where`) se a entrada do usuário for mesclada em objetos de consulta.
+- DEVE considerar bibliotecas/middleware defensivos quando apropriado.
+
+Padrões inseguros:
+
+- `collection.find(req.body)` onde o corpo é controlado pelo atacante.
+- Mesclando `req.query`/`req.body` em consultas Mongo sem validação de esquema.
+
+Dicas de detecção:
+
+- Procure por chamadas `find(`, `findOne(`, ` agregate(` onde o argumento é derivado da solicitação.
+- Verifique padrões como `{ ...req.query }` ou `Object.assign(query, req.body)`.
+
+Correção:
+
+- Use validação de esquema no limite; construir explicitamente objetos de consulta somente a partir de campos validados.
+
+Notas:
+
+- A folha de dicas do OWASP Node.js discute a validação de entrada e menciona os módulos do ecossistema Node comumente usados para sanitização em contextos NoSQL. ([Série de folhas de dicas OWASP] [8])
+
+---
+
+### EXPRESS-CMD-001: Impedir injeção de comando do SO (child_process)
+
+Gravidade: Crítica a Alta (depende da exposição), prove que é controlada pelo usuário/atacante
+
+Obrigatório:
+
+- DEVE evitar executar comandos shell com entrada não confiável.
+- Se o subprocesso for necessário:
+  - DEVE evitar `exec()` / `execSync()` com strings influenciadas pelo invasor
+  - NÃO DEVE usar `shell: true` com dados influenciados pelo invasor
+  - DEVE usar `spawn()` com uma matriz de argumentos e listas de permissões estritas. Certifique-se de que o executável esteja codificado ou listado como permitido, não use um nome de comando fornecido pelo usuário.
+  - DEVE colocar valores controlados pelo usuário após `--` quando houver suporte
+
+ed pelo subcomando para evitar injeção de sinalizador
+
+Padrões inseguros:
 
 - `exec(req.query.cmd)`
 - `exec(`convert ${userPath} ...`)`
 - `spawn('sh', ['-c', userString])`
 - `spawn(userString, ['foo'])`
 
-Detection hints:
+Dicas de detecção:
 
-- Search for `child_process`, `exec(`, `execSync(`, `spawn(`, `fork(`.
-- Trace request/DB data into command construction.
+- Procure por `child_process`, `exec(`, `execSync(`, `spawn(`, `fork(`.
+- Rastreie dados de solicitação/banco de dados na construção do comando.
 
-Fix:
+Correção:
 
-- If possible, write the functionality in javascript or use a library instead of subprocess.
-- If unavoidable, hard-code command and strictly allowlist parameters.
+- Se possível, escreva a funcionalidade em javascript ou use uma biblioteca em vez de subprocesso.
+- Se inevitável, comando de código rígido e parâmetros estritamente permitidos.
 
-Notes:
+Notas:
 
-- OWASP OS command injection defense guidance covers avoid-shell and allowlist patterns. ([OWASP Cheat Sheet Series][14])
-
----
-
-### EXPRESS-SSRF-001: Prevent server-side request forgery (SSRF) in outbound HTTP
-
-Severity: Medium (High in cloud/LAN deployments)
-
-NOTE: This is mostly only applicable to apps which will be deployed in a cloud/LAN setup or have other http services on the same box. Sometimes the feature requires this functionality unavoidably (webhooks).
-
-Required:
-
-- MUST treat outbound requests to user-provided URLs as high risk if there are other reachable private http endpoints.
-- SHOULD validate and restrict destinations (allowlist hosts/domains) for any user-influenced URL fetch.
-- SHOULD block access to:
-  - localhost / private IP ranges / link-local
-  - cloud metadata endpoints
-
-- MUST allow only `http`/`https` for URL fetch features (to avoid schemas such as `file:`,`javascript:`)
-- SHOULD set timeouts and restrict redirects.
-
-Insecure patterns:
-
-- `fetch(req.query.url)`
-- “URL preview” / “import from URL” endpoints that accept arbitrary URLs.
-
-Detection hints:
-
-- Search for `fetch(`, `axios(`, `got(`, `request(`, `node-fetch` usage where URL originates from users/DB.
-- Review webhook testers, previewers, image fetchers.
-
-Fix:
-
-- Enforce scheme allowlist, host allowlist, DNS/IP resolution checks, timeouts, and redirect policy.
-- Consider network egress controls at infrastructure level.
-
-Notes:
-
-- OWASP SSRF prevention guidance provides standard controls and common pitfalls. ([OWASP Cheat Sheet Series][7])
+- As orientações de defesa de injeção de comando do OWASP OS abrangem padrões de evitar shell e lista de permissões. ([Série de folhas de dicas OWASP] [14])
 
 ---
 
-### EXPRESS-ERROR-001: Error handling MUST not leak sensitive details in production
+### EXPRESS-SSRF-001: Evita falsificação de solicitação do lado do servidor (SSRF) em HTTP de saída
 
-Severity: Low
+Gravidade: Média (alta em implantações em nuvem/LAN)
 
-Required:
+NOTA: Isso se aplica principalmente apenas a aplicativos que serão implantados em uma configuração de nuvem/LAN ou que possuem outros serviços http na mesma caixa. Às vezes, o recurso requer essa funcionalidade inevitavelmente (webhooks).
 
-- SHOULD define a centralized error handler (`app.use((err, req, res, next) => ...)`) at the end of middleware.
-- MUST avoid returning stack traces, internal error messages, or secrets to clients in production.
-- SHOULD log errors server-side with appropriate redaction.
-- SHOULD ensure the app runs with production settings so default behavior doesn’t leak details.
-- MUST avoid logging or returning sensitive information such as secrets, env vars, sessions, cookies in error messages in production.
+Obrigatório:
 
-Insecure patterns:
+- DEVE tratar as solicitações de saída para URLs fornecidas pelo usuário como de alto risco se houver outros pontos de extremidade http privados acessíveis.
+- DEVE validar e restringir destinos (hosts/domínios da lista de permissões) para qualquer busca de URL influenciada pelo usuário.
+- DEVE bloquear o acesso a:
+  - localhost/intervalos de IP privados/link-local
+  - endpoints de metadados em nuvem
 
-- Returning `err.stack` to clients.
-- Using dev-only error middleware in production.
-- `NODE_ENV` left as development, causing verbose error responses.
+- DEVE permitir apenas `http`/`https` para recursos de busca de URL (para evitar esquemas como `file:`,`javascript:`)
+- DEVE definir tempos limite e restringir redirecionamentos.
 
-Detection hints:
+Padrões inseguros:
 
-- Verify there is a final error-handling middleware.
-- Search for `res.status(500).send(err)` or similar.
-- Check production environment variables and startup scripts.
+- `buscar(req.query.url)`
+- Endpoints de “visualização de URL” / “importação de URL” que aceitam URLs arbitrários.
 
-Fix:
+Dicas de detecção:
 
-- Add a production-safe error handler that returns generic messages and logs details internally.
-- Ensure environment is configured for production behavior.
+- Procure por `fetch(`, `axios(`, `got(`, `request(`, `node-fetch` uso onde o URL se origina de usuários/banco de dados.
+- Revise testadores de webhook, visualizadores e buscadores de imagens.
 
-Notes:
+Correção:
 
-- Express production security guidance recommends custom error handling. ([Express][1])
-- Express error handling docs describe the default error handler behavior and how production mode affects what is exposed. ([Express][11])
+- Aplicar lista de permissões de esquema, lista de permissões de host, verificações de resolução de DNS/IP, tempos limite e política de redirecionamento.
+- Considerar controlos de saída de rede ao nível da infraestrutura.
 
----
+Notas:
 
-### EXPRESS-AUTH-001: Prevent brute-force attacks against authorization endpoints
-
-Severity: Medium
-
-NOTE: This is highly application specific and while it is good to bring to the attention of the user, it is hard to fix without additional complex configurations. Prefer to inform the user and if they request you to help implement a solution, help walk them through possible solutions.
-
-Required:
-
-- SHOULD protect login/auth endpoints against brute forcing.
-- SHOULD rate-limit by:
-  1. consecutive failed attempts per username+IP
-  2. failed attempts per IP over a time window
-
-Insecure patterns:
-
-- Unlimited login attempts.
-
-Detection hints:
-
-- Identify all auth endpoints and check for rate limiting/throttling.
-- Search for `rate-limiter-flexible`, `express-rate-limit`, or gateway policies.
-
-Fix:
-
-- Implement rate-limiting/throttling (app or edge). Express docs point to `rate-limiter-flexible` as a tool for this approach. ([Express][1])
-
-Notes:
-
-- OWASP Node.js cheat sheet also recommends precautions against brute forcing. ([OWASP Cheat Sheet Series][8])
+- As orientações de prevenção SSRF da OWASP fornecem controles padrão e armadilhas comuns. ([Série de folhas de dicas OWASP] [7])
 
 ---
 
-### EXPRESS-DEPS-001: Dependency and patch hygiene (Express + Node + critical middleware)
+### EXPRESS-ERROR-001: O tratamento de erros NÃO DEVE vazar detalhes confidenciais na produção
 
-Severity: Medium / Low
+Gravidade: Baixa
 
-NOTE: `npm audit` often returns a large number of insignificant "vulnerabilities" which do not actually matter. You should only focus on Express or other extremely critical packages, ignoring ones listed in dev tools, bundlers, etc.
+Obrigatório:
 
-Do not upgrade packages without concent from the user. This may break existing code in unexpected ways. Instead, inform them of the outdated packages.
+- DEVE definir um manipulador de erros centralizado (`app.use((err, req, res, next) => ...)`) no final do middleware.
+- DEVE evitar retornar rastreamentos de pilha, mensagens de erro internas ou segredos para clientes em produção.
+- DEVE registrar erros no servidor com redação apropriada.
+- DEVE garantir que o aplicativo seja executado com configurações de produção para que o comportamento padrão não vaze detalhes.
+- DEVE evitar registrar ou retornar informações confidenciais, como segredos, env vars,
 
-Required:
+sessões, cookies em mensagens de erro em produção.
 
-- MUST keep Express on a maintained version line (avoid EOL major versions).
-- MAY use `npm audit` in CI and during maintenance work.
-- SHOULD pin dependencies via lockfiles and review major updates carefully.
+Padrões inseguros:
 
-Insecure patterns:
+- Retornando `err.stack` aos clientes.
+- Usando middleware de erro somente dev em produção.
+- `NODE_ENV` deixado como desenvolvimento, causando respostas de erro detalhadas.
 
-- Running EOL Express versions (e.g., very old major lines).
-- Ignoring `npm audit` findings without triage.
-- Unpinned dependency ranges that auto-upgrade into insecure versions.
+Dicas de detecção:
 
-Detection hints:
+- Verifique se existe um middleware final para tratamento de erros.
+- Procure por `res.status(500).send(err)` ou similar.
+- Verifique variáveis ​​de ambiente de produção e scripts de inicialização.
 
-- Check `package.json` and lockfiles for `express` version and other critical middleware versions.
-- Inspect CI pipelines for `npm audit`/SCA steps.
+Consertar:
 
-Fix:
+- Adicione um manipulador de erros seguro para produção que retorne mensagens genéricas e registre detalhes internamente.
+- Certifique-se de que o ambiente esteja configurado para comportamento de produção.
 
-- Upgrade to latest stable Express and apply patches.
-- Add automated dependency scanning and upgrade process.
+Notas:
 
-Notes:
-
-- Express production security guidance emphasizes that dependency vulnerabilities can compromise the app, and recommends `npm audit`. ([Express][1])
-- Track security issues affecting Express versions (including known open-redirect-related CVEs). ([NVD][9])
-
----
-
-### EXPRESS-DOS-001: Configure DoS protections (timeouts, limits, reverse proxy)
-
-Severity: Low
-
-NOTE: It may be hard to tell from the provided application context if the application runs behind a reverse proxy. You can inform the user or recommend one, but do not attempt to configure one without them initiating it. This is highly deployment dependant.
-
-Required:
-
-- SHOULD use a reverse proxy to provide caching, load balancing, and filtering controls when feasible.
-- MAY configure server/proxy timeouts and connection limits to reduce exposure to Slowloris and similar DoS patterns.
-- MUST ensure server/socket errors are handled so malformed connections do not crash the process. (Express should handle exceptions, but there are edgecases)
-
-Insecure patterns:
-
-- No reverse proxy in front of a public Node server, with defaults everywhere.
-- Missing error handlers on server/socket objects.
-- Extremely permissive timeouts and unlimited body sizes.
-
-Detection hints:
-
-- Inspect server creation (`http.createServer`, `https.createServer`) and whether timeouts are set.
-- Check proxy/gateway config for timeouts and max body size.
-
-Fix:
-
-- Explain how to configure reverse proxy and timeouts, set request size limits
-- add robust error handling middleware
-
-Notes:
-
-- Node’s security guidance for HTTP DoS discusses using reverse proxies and correctly configuring server timeouts. ([Node.js][15])
+- A orientação de segurança de produção expressa recomenda tratamento de erros personalizado. ([Expresso][1])
+- Os documentos de tratamento de erros expresso descrevem o comportamento padrão do manipulador de erros e como o modo de produção afeta o que é exposto. ([Expresso][11])
 
 ---
 
-### EXPRESS-NODE-INSPECT-001: Do not expose the Node inspector in production
+### EXPRESS-AUTH-001: Prevenir ataques de força bruta contra endpoints de autorização
 
-Severity: Critical
+Gravidade: Média
 
-NOTE: Ensure that this detection is actually in the production path, and not just being used for local debugging.
+NOTA: Isso é altamente específico do aplicativo e, embora seja bom chamar a atenção do usuário, é difícil de corrigir sem configurações complexas adicionais. Prefira informar o usuário e caso ele solicite ajuda para implementar uma solução, ajude-o a orientar possíveis soluções.
 
-Required:
+Obrigatório:
 
-- MUST NOT run Node with `--inspect` (especially bound to non-loopback) in production.
-- MUST ensure `NODE_OPTIONS` or startup scripts do not enable inspector in prod.
-- SHOULD firewall/debug locally only.
+- DEVE proteger os pontos de extremidade de login/autenticação contra força bruta.
+- DEVE limitar a taxa por:
+  1. Tentativas fracassadas consecutivas por nome de usuário+IP
+  2. tentativas fracassadas por IP durante uma janela de tempo
 
-Insecure patterns:
+Padrões inseguros:
 
-- `node --inspect=0.0.0.0:9229 app.js` in production.
-- Container/PM2/systemd configs enabling inspector.
+- Tentativas de login ilimitadas.
 
-Detection hints:
+Dicas de detecção:
 
-- Search for `--inspect` in Dockerfiles, Procfiles, systemd units, PM2 configs, npm scripts.
-- Check `NODE_OPTIONS`.
+- Identifique todos os pontos de extremidade de autenticação e verifique a limitação/estrangulamento de taxa.
+- Pesquise por `rate-limiter-flexible`, `express-rate-limit` ou políticas de gateway.
 
-Fix:
+Consertar:
 
-- Remove inspector flags from production start commands; restrict to local dev.
+- Implementar limitação/estrangulamento de taxa (aplicativo ou borda). Os documentos expressos apontam para `rate-limiter-flexible` como uma ferramenta para esta abordagem. ([Expresso][1])
 
-Notes:
+Notas:
 
-- Node security guidance discusses inspector exposure risks (e.g., DNS rebinding) and recommends not running inspector in production. ([Node.js][15])
-
----
-
-### EXPRESS-NODE-HTTP-001: Do not enable insecure HTTP parsing in production
-
-Severity: High
-
-NOTE: Ensure that this detection is actually in the production path, and not just being used for local dev.
-
-Required:
-
-- MUST NOT use Node’s `insecureHTTPParser` in production.
-- MAY suggest configuring front-end proxies to normalize ambiguous requests to reduce request smuggling risk.
-
-Insecure patterns:
-
-- Creating an HTTP server with `{ insecureHTTPParser: true }`.
-
-Detection hints:
-
-- Search for `insecureHTTPParser` in server creation code.
-
-Fix:
-
-- Remove insecure parsing; rely on spec-compliant parsing and normalize at the edge.
-
-Notes:
-
-- Node security guidance explicitly recommends not using `insecureHTTPParser`. ([Node.js][15])
+- A folha de dicas do OWASP Node.js também recomenda precauções contra força bruta. ([Série de folhas de dicas OWASP] [8])
 
 ---
 
-## 5) Practical scanning heuristics (how to “hunt”)
+### EXPRESS-DEPS-001: Dependência e higiene de patches (Express + Node + middleware crítico)
 
-When actively scanning an Express repo, these patterns are high-signal:
+Gravidade: Média/Baixa
 
-- TLS / transport:
-  - `app.listen(80` without reverse proxy mention; missing `helmet`; cookies missing `secure` ([Express][1]) (NOTE this only applies to web facing applications, internal apps likely won't have TLS)
+NOTA: `npm audit` geralmente retorna um grande número de "vulnerabilidades" insignificantes que realmente não importam. Você deve se concentrar apenas no Express ou em outros pacotes extremamente críticos, ignorando aqueles listados em ferramentas de desenvolvimento, empacotadores, etc.
 
-- Proxy trust:
-  - `app.set('trust proxy', true)`; logic using `req.ip`/`req.protocol`/`req.hostname` ([Express][2])
+Não atualize pacotes sem o consentimento do usuário. Isto pode quebrar o código existente de maneiras inesperadas. Em vez disso, informe-os sobre os pacotes desatualizados.
 
-- Security headers / fingerprinting:
-  - missing `helmet(`; missing `app.disable('x-powered-by')` ([Express][1])
+Obrigatório:
 
-- Cookies / sessions:
-  - `express-session` with missing `store` (MemoryStore risk), hard-coded `secret:`, missing `cookie: { secure/httpOnly/sameSite }` ([Express][1])
-  - `cookie-session` storing large objects or secrets ([Express][1])
+- DEVE manter o Express em uma linha de versão mantida (evite versões principais EOL).
+- PODE usar `auditoria npm` em CI e durante trabalhos de manutenção.
+- DEVE fixar dependências por meio de lockfiles e revisar cuidadosamente as principais atualizações.
 
-- Body parsing limits:
-  - `express.json()` or `express.urlencoded()` without `limit`/`parameterLimit`/`depth` ([Express][5])
+Padrões inseguros:
+
+- Executando versões EOL Express (por exemplo, linhas principais muito antigas).
+- Ignorar as descobertas da `auditoria npm` sem triagem.
+- Intervalos de dependência não fixados que são atualizados automaticamente para versões inseguras.
+
+Dicas de detecção:
+
+- Verifique `package.json` e lockfiles para a versão `express` e outras versões críticas de middleware.
+- Inspecione pipelines de CI para etapas de `auditoria npm`/SCA.
+
+Correção:
+
+- Atualize para o Express estável mais recente e aplique patches.
+- Adicionar verificação automatizada de dependências e processo de atualização.
+
+Notas:
+
+- A orientação expressa de segurança de produção enfatiza que vulnerabilidades de dependência podem comprometer o aplicativo e recomenda a `auditoria npm`. ([Expresso][1])
+- Rastrear problemas de segurança que afetam as versões Express (incluindo CVEs conhecidos relacionados ao redirecionamento aberto). ([NVD][9])
+
+---
+
+### EXPRESS-DOS-001: Configurar proteções DoS (timeouts, limites, proxy reverso)
+
+Gravidade: Baixa
+
+NOTA: Pode ser difícil dizer, a partir do contexto do aplicativo fornecido, se o aplicativo é executado atrás de um proxy reverso. Você pode informar o usuário ou recomendar um, mas não tente configurar um sem que ele o inicie. Isso é altamente dependente da implantação.
+
+Obrigatório:
+
+- DEVE usar um proxy reverso para fornecer cache, balanceamento de carga e controles de filtragem quando viável.
+- PODE configurar tempos limite de servidor/proxy e limites de conexão para reduzir a exposição ao Slowloris e padrões DoS semelhantes.
+- DEVE garantir que erros de servidor/soquete sejam tratados para que conexões malformadas não interrompam o processo. (Express deve lidar com exceções, mas há casos extremos)
+
+Padrões inseguros:
+
+- Nenhum proxy reverso na frente de um servidor Node público, com padrões em todos os lugares.
+- Manipuladores de erros ausentes em objetos de servidor/soquete.
+- Tempos limite extremamente permissivos e tamanhos de corpo ilimitados.
+
+Dicas de detecção:
+
+- Inspecione a criação do servidor (`http.createServer`, `https.createServer`) e se os tempos limite estão definidos.
+- Verifique a configuração do proxy/gateway para tempos limite e tamanho máximo do corpo.
+
+Consertar:
+
+- Explicar como configurar proxy reverso e tempos limite, definir limites de tamanho de solicitação
+- adicionar middleware robusto para tratamento de erros
+
+Notas:
+
+- A orientação de segurança do Node para HTTP DoS discute o uso de proxies reversos e a configuração correta dos tempos limite do servidor. ([Node.js][15])
+
+---
+
+### EXPRESS-NODE-INSPECT-001: Não exponha o inspetor Node em produção
+
+Gravidade: Crítica
+
+NOTA: Certifique-se de que esta detecção esteja realmente no caminho de produção e não apenas sendo usada para depuração local.
+
+Obrigatório:
+
+- NÃO DEVE executar o Node com `--inspect` (especialmente vinculado a não-loopback) em produção.
+- DEVE garantir que `NODE_OPTIONS` ou scripts de inicialização não habilitem o inspetor no prod.
+- DEVE firewall/depurar apenas localmente.
+
+Padrões inseguros:
+
+- `node --inspect=0.0.0.0:9229 app.js` em produção.
+- Configurações de contêiner/PM2/systemd habilitando o inspetor.
+
+Dicas de detecção:
+
+- Pesquise `--inspect` em Dockerfiles, Procfiles, unidades systemd, configurações PM2, scripts npm.
+- Verifique `NODE_OPTIONS`.
+
+Correção:
+
+- Remover sinalizadores de inspetor dos comandos de início de produção; restringir ao desenvolvedor local.
+
+Notas:
+
+- A orientação de segurança do nó discute os riscos de exposição do inspetor (por exemplo, religação de DNS) e recomenda não executar o inspetor na produção. ([Node.js][15])
+
+---
+
+### EXPRESS-NODE-HTTP-001: Não habilite a análise HTTP insegura na produção
+
+Gravidade: Alta
+
+NOTA: Certifique-se de que esta detecção esteja realmente no caminho de produção e não apenas sendo usada para desenvolvimento local.
+
+Obrigatório:
+
+- NÃO DEVE usar o `insecureHTTPParser` do Node em produção.
+- PODE sugerir a configuração de proxies front-end para normalizar solicitações ambíguas e reduzir o risco de contrabando de solicitações.
+
+Padrões inseguros:
+
+- Criando um servidor HTTP com `{ insecureHTTPParser: true }`.
+
+Dicas de detecção:
+
+- Procure por `insecureHTTPParser` no código de criação do servidor.
+
+Correção:
+
+- Remova análise insegura; confie na análise compatível com as especificações e normalize na borda.
+
+Notas:
+
+- A orientação de segurança do nó recomenda explicitamente não usar `insecureHTTPParser`. ([Node.js][15])
+
+---
+
+## 5) Heurísticas práticas de varredura (como “caçar”)
+
+Ao verificar ativamente um repositório Express, estes padrões são de alto sinal:
+
+- TLS/transporte:
+  - `app.listen(80` sem menção de proxy reverso; faltando `helmet`; cookies faltando `secure` ([Express][1]) (NOTA: isso se aplica apenas a aplicativos voltados para a web, aplicativos internos provavelmente não terão TLS)
+
+- Confiança do proxy:
+  - `app.set('proxy confiável', verdadeiro)`; lógica usando `req.ip`/`req.protocol`/`req.hostname` ([Express][2])
+
+- Cabeçalhos de segurança/impressão digital:
+  - falta `helmet(`; falta `app.disable('x-powered-by')` ([Express][1])
+
+- Cookies/sessões:
+  - `express-session` com `store` ausente (risco MemoryStore), `secret:` codificado, `cookie: { secure/httpOnly/sameSite }` ([Express][1]) ausente
+  - `cookie-session` armazenando objetos grandes ou segredos ([Express][1])
+
+- Limites de análise do corpo:
+  - `express.json()` ou `express.urlencoded()` sem `limit`/`parameterLimit`/`profundidade` ([Express][5])
 
 - CSRF:
-  - POST/PUT/PATCH/DELETE routes using cookie auth with no CSRF tokens/origin checks ([OWASP Cheat Sheet Series][3])
+  - Rotas POST/PUT/PATCH/DELETE usando autenticação de cookie sem tokens CSRF/verificações de origem ([OWASP Cheat Sheet Series][3])
 
-- Open redirects:
-  - `res.redirect(req.query.next)` or similar ([Express][1])
+- Redirecionamentos abertos:
+  - `res.redirect(req.query.next)` ou similar ([Express][1])
 
-- XSS / HTML output:
-  - `res.send(` building HTML with user input; template “safe” flags; untrusted values in `res.locals` ([Express][5])
+- Saída XSS/HTML:
+  - `res.send(` construindo HTML com entrada do usuário; modelo de flags “seguros”; valores não confiáveis em `res.locals` ([Express][5])
 
-- File handling:
-  - `res.sendFile(` / `res.download(` where path originates from request; `express.static('uploads')` ([Express][5])
+- Manipulação de arquivos:
+  - `res.sendFile(` / `res.download(` onde o caminho se origina da solicitação; `express.static('uploads')` ([Express][5])
 
-- Injection:
-  - SQL strings + template literals into DB calls ([OWASP Cheat Sheet Series][6])
-  - `child_process.exec` / `execSync` / `shell: true` ([OWASP Cheat Sheet Series][14])
+- Injeção:
+  - Strings SQL + literais de modelo em chamadas de banco de dados ([OWASP Cheat Sheet Series][6])
+  - `child_process.exec` / `execSync` / `shell: true` ([Série de folhas de dicas OWASP] [14])
 
 - SSRF:
-  - outbound `fetch/axios/got` to user-provided URLs ([OWASP Cheat Sheet Series][7])
+  - saída `fetch/axios/got` para URLs fornecidos pelo usuário ([OWASP Cheat Sheet Series][7])
 
-- Brute force / abuse:
-  - auth endpoints lacking throttling; no rate limiting middleware ([Express][1])
+- Força bruta/abuso:
+  - endpoints de autenticação sem limitação; sem middleware de limitação de taxa ([Express][1])
 
-- Supply chain:
-  - outdated Express versions; no lockfiles; no `npm audit` workflow ([Express][1])
+- Cadeia de abastecimento:
+  - versões Express desatualizadas; sem arquivos de bloqueio; nenhum fluxo de trabalho `npm audit` ([Express][1])
 
-- Node runtime hazards:
-  - `--inspect` in production scripts; `insecureHTTPParser` usage ([Node.js][15])
+- Riscos de tempo de execução do nó:
+  - `--inspect` em scripts de produção; Uso de `insecureHTTPParser` ([Node.js][15])
 
-Always try to confirm:
+Sempre tente confirmar:
 
-- data origin (untrusted vs trusted)
-- sink type (HTML/template, SQL/NoSQL, subprocess, filesystem, redirect, outbound HTTP)
-- protective controls present (validation, allowlists, middleware, proxy config, header policies)
-- whether protections are at the edge vs in app code
+- origem dos dados (não confiável versus confiável)
+- tipo de coletor (HTML/modelo, SQL/NoSQL, subprocesso, sistema de arquivos, redirecionamento, HTTP de saída)
+- controles de proteção presentes (validação, listas de permissões, middleware, configuração de proxy, políticas de cabeçalho)
+- se as proteções estão na borda ou no código do aplicativo
 
 ---
 
-## 6) Sources (accessed 2026-01-27)
+## 6) Fontes (acessado em 27/01/2026)
 
-Primary Express documentation:
+Documentação Expressa Primária:
 
-- Express: Production Best Practices — Security: `https://expressjs.com/en/advanced/best-practice-security.html` ([Express][1])
-- Express: Behind Proxies (`trust proxy`): `https://expressjs.com/en/guide/behind-proxies.html` ([Express][2])
-- Express 5.x API Reference (parsers, static, sendFile, redirect, cookies): `https://expressjs.com/en/5x/api.html` ([Express][5])
-- Express: Error Handling: `https://expressjs.com/en/guide/error-handling.html` ([Express][11])
+- Expresso: Melhores Práticas de Produção — Segurança: `https://expressjs.com/en/advanced/best-practice-security.html` ([Express][1])
+- Expresso: Atrás de Proxies (`trust proxy`): `https://expressjs.com/en/guide/behind-proxies.html` ([Express][2])
+- Referência da API Express 5.x (analisadores, estáticos, sendFile, redirecionamento, cookies): `https://expressjs.com/en/5x/api.html` ([Express][5])
+- Expresso: Tratamento de erros: `https://expressjs.com/en/guide/error-handling.html` (
 
-Session middleware documentation:
+[Expresso][11])
 
-- express-session docs (cookie flags, secret rotation, fixation mitigation, MemoryStore warning): `https://expressjs.com/en/resources/middleware/session.html` ([Express][1])
+Documentação do middleware de sessão:
 
-Node.js and npm official references:
+- documentos de sessão expressa (sinalizadores de cookies, rotação secreta, mitigação de fixação, aviso do MemoryStore): `https://expressjs.com/en/resources/middleware/session.html` ([Express][1])
 
-- Node.js — Security Best Practices (DoS, proxy guidance, inspector risks, request smuggling notes): `https://nodejs.org/en/learn/getting-started/security-best-practices` ([Node.js][15])
-- npm Docs — `npm audit`: `https://docs.npmjs.com/cli/v9/commands/npm-audit/` ([npm Docs][16])
+Referências oficiais de Node.js e npm:
 
-OWASP Cheat Sheet Series:
+- Node.js — Práticas recomendadas de segurança (DoS, orientação de proxy, riscos de inspetores, solicitações de notas de contrabando): `https://nodejs.org/en/learn/getting-started/security-best-practices` ([Node.js][15])
+- Documentos npm — `auditoria npm`: `https://docs.npmjs.com/cli/v9/commands/npm-audit/` ([documentos npm][16])
 
-- Session Management: `https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html` ([OWASP Cheat Sheet Series][12])
-- CSRF Prevention: `https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html` ([OWASP Cheat Sheet Series][3])
-- XSS Prevention: `https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html` ([OWASP Cheat Sheet Series][4])
-- Input Validation: `https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html` ([OWASP Cheat Sheet Series][17])
-- SQL Injection Prevention: `https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html` ([OWASP Cheat Sheet Series][6])
-- OS Command Injection Defense: `https://cheatsheetseries.owasp.org/cheatsheets/OS_Command_Injection_Defense_Cheat_Sheet.html` ([OWASP Cheat Sheet Series][14])
-- SSRF Prevention: `https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html` ([OWASP Cheat Sheet Series][7])
-- File Upload: `https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html` ([OWASP Cheat Sheet Series][13])
-- Unvalidated Redirects: `https://cheatsheetseries.owasp.org/cheatsheets/Unvalidated_Redirects_and_Forwards_Cheat_Sheet.html` ([OWASP Cheat Sheet Series][18])
-- HTTP Headers: `https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html` ([OWASP Cheat Sheet Series][10])
+Série de folhas de dicas OWASP:
 
-Versioning / advisories:
+- Gerenciamento de sessão: `https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html` ([Série de folhas de dicas OWASP] [12])
+- Prevenção de CSRF: `https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html` ([Série de folhas de dicas OWASP][3])
+- Prevenção XSS: `https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html` ([Série de folhas de dicas OWASP][4])
+- Entrada
 
-- Express package version (npm): `https://www.npmjs.com/package/express`
-- Express open redirect advisory (CVE): `https://nvd.nist.gov/vuln/detail/CVE-2024-29041` ([NVD][9])
+Validação: `https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html` ([Série de folhas de dicas OWASP][17])
 
-[1]: https://expressjs.com/en/advanced/best-practice-security.html 'Security Best Practices for Express in Production'
-[2]: https://expressjs.com/en/guide/behind-proxies.html 'Express behind proxies'
-[3]: https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html 'Cross-Site Request Forgery Prevention - OWASP Cheat Sheet Series'
-[4]: https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html 'Cross Site Scripting Prevention - OWASP Cheat Sheet Series'
-[5]: https://expressjs.com/en/5x/api.html 'Express 5.x - API Reference'
-[6]: https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html 'SQL Injection Prevention - OWASP Cheat Sheet Series'
-[7]: https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html 'Server Side Request Forgery Prevention - OWASP Cheat Sheet Series'
-[8]: https://cheatsheetseries.owasp.org/cheatsheets/Nodejs_Security_Cheat_Sheet.html 'Nodejs Security - OWASP Cheat Sheet Series'
-[9]: https://nvd.nist.gov/vuln/detail/cve-2024-29041 'CVE-2024-29041 Detail - NVD'
-[10]: https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html 'HTTP Headers - OWASP Cheat Sheet Series'
-[11]: https://expressjs.com/en/guide/error-handling.html 'Express error handling'
-[12]: https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html 'Session Management - OWASP Cheat Sheet Series'
-[13]: https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html 'File Upload - OWASP Cheat Sheet Series'
-[14]: https://cheatsheetseries.owasp.org/cheatsheets/OS_Command_Injection_Defense_Cheat_Sheet.html 'OS Command Injection Defense - OWASP Cheat Sheet Series'
-[15]: https://nodejs.org/en/learn/getting-started/security-best-practices 'Node.js — Security Best Practices'
-[16]: https://docs.npmjs.com/cli/v9/commands/npm-audit/ 'npm-audit | npm Docs'
-[17]: https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html 'Input Validation - OWASP Cheat Sheet Series'
-[18]: https://cheatsheetseries.owasp.org/cheatsheets/Unvalidated_Redirects_and_Forwards_Cheat_Sheet.html 'Unvalidated Redirects and Forwards - OWASP Cheat Sheet Series'
+- Prevenção de injeção de SQL: `https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html` ([Série de folhas de dicas OWASP][6])
+- Defesa de injeção de comando do sistema operacional: `https://cheatsheetseries.owasp.org/cheatsheets/OS_Command_Injection_Defense_Cheat_Sheet.html` ([Série de folhas de dicas OWASP] [14])
+- SSRF Pré
+
+invenção: `https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html` ([OWASP Cheat Sheet Series][7])
+
+- Upload de arquivo: `https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html` ([Série de folhas de dicas OWASP] [13])
+- Redirecionamentos não validados: `https://cheatsheetseries.owasp.org/cheatsheets/Unvalidated_Redirects_and_Forwards_Cheat_Sheet.html` ([Série de folhas de dicas OWASP][18])
+- Cabeçalhos HTTP: `ht
+
+tps://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html` ([Série de folhas de dicas OWASP] [10])
+
+Versionamento/avisos:
+
+- Versão do pacote expresso (npm): `https://www.npmjs.com/package/express`
+- Aviso de redirecionamento aberto expresso (CVE): `https://nvd.nist.gov/vuln/detail/CVE-2024-29041` ([NVD][9])
+
+[1]: https://expressjs.com/en/advanced/best-practice-security.html 'Práticas recomendadas de segurança para Express em produção'
+[2]: https://expressjs.com/en/guide/behind-proxies.html 'Express atrás de proxies'
+[3]: https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html 'Prevenção de falsificação de solicitação entre sites - Série de folhas de dicas OWASP'
+[4]: https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Pre
+
+vention_Cheat_Sheet.html 'Prevenção de scripts entre sites - Série de folhas de dicas OWASP'
+[5]: https://expressjs.com/en/5x/api.html 'Express 5.x - Referência da API'
+[6]: https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html 'Prevenção de injeção de SQL - série de folhas de dicas OWASP'
+[7]: https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html 'Prevenir falsificação de solicitação do lado do servidor
+
+ion - Série de folhas de dicas OWASP'
+[8]: https://cheatsheetseries.owasp.org/cheatsheets/Nodejs_Security_Cheat_Sheet.html 'Segurança Nodejs - Série de folhas de dicas OWASP'
+[9]: https://nvd.nist.gov/vuln/detail/cve-2024-29041 'CVE-2024-29041 Detalhe - NVD'
+[10]: https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html 'Cabeçalhos HTTP - Série de folhas de dicas OWASP'
+[11]: https://expressjs.com/en/guide/error-handling.html 'Tratamento de erros expresso
+
+'
+[12]: https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html 'Gerenciamento de sessão - Série de folhas de dicas OWASP'
+[13]: https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html 'Upload de arquivo - Série de folhas de dicas OWASP'
+[14]: https://cheatsheetseries.owasp.org/cheatsheets/OS_Command_Injection_Defense_Cheat_Sheet.html 'Defesa de injeção de comando do sistema operacional - série de folhas de dicas OWASP'
+[15]: https://nodejs.org/en/lea
+
+rn/getting-started/security-best-practices 'Node.js - Melhores Práticas de Segurança'
+[16]: https://docs.npmjs.com/cli/v9/commands/npm-audit/ 'npm-audit | Documentos npm'
+[17]: https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html 'Validação de entrada - Série de folhas de dicas OWASP'
+[18]: https://cheatsheetseries.owasp.org/cheatsheets/Unvalidated_Redirects_and_Forwards_Cheat_Sheet.html 'Redirecionamentos e encaminhamentos não validados - OWASP Cheat Shee
+
+Série t'

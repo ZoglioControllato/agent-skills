@@ -1,20 +1,20 @@
-# Gotchas & Troubleshooting
+# Dicas e solução de problemas
 
-## Rate Limits & 429 Errors
+## Limites de taxa e erros 429
 
-**Actual Limits:**
+**Limites reais:**
 
-- **1200 requests / 5 minutes** per user/token (global)
-- **200 requests / second** per IP address
-- **GraphQL: 320 / 5 minutes** (cost-based)
+- **1.200 solicitações/5 minutos** por usuário/token (global)
+- **200 solicitações/segundo** por endereço IP
+- **GraphQL: 320/5 minutos** (com base no custo)
 
-**SDK Behavior:**
+**Comportamento do SDK:**
 
-- Auto-retry with exponential backoff (default 2 retries, Go: 10)
-- Respects `Retry-After` header
-- Throws `RateLimitError` after exhausting retries
+- Nova tentativa automática com espera exponencial (padrão 2 tentativas, Go: 10)
+- Respeita o cabeçalho `Retry-After`
+- Lança `RateLimitError` após tentativas exaustivas
 
-**Solution:**
+**Solução:**
 
 ```typescript
 // Increase retries for rate-limit-heavy workflows
@@ -25,34 +25,31 @@ import pLimit from 'p-limit'
 const limit = pLimit(10) // Max 10 concurrent requests
 ```
 
-## SDK-Specific Issues
+## Problemas específicos do SDK
 
-### Go: Required Field Wrapper
+### Ir: Wrapper de campo obrigatório
 
-**Problem:** Go SDK requires `cloudflare.F()` wrapper for optional fields.
-
-```go
+**Problema:** Go SDK requer wrapper `cloudflare.F()` para campos opcionais.```go
 // ❌ WRONG - Won't compile or send field
 client.Zones.New(ctx, cloudflare.ZoneNewParams{
-    Name: "example.com",
+Name: "example.com",
 })
 
 // ✅ CORRECT
 client.Zones.New(ctx, cloudflare.ZoneNewParams{
-    Name: cloudflare.F("example.com"),
-    Account: cloudflare.F(cloudflare.ZoneNewParamsAccount{
-        ID: cloudflare.F("account-id"),
-    }),
+Name: cloudflare.F("example.com"),
+Account: cloudflare.F(cloudflare.ZoneNewParamsAccount{
+ID: cloudflare.F("account-id"),
+}),
 })
-```
 
-**Why:** Distinguishes between zero value, null, and omitted fields.
+````
 
-### Python: Async vs Sync Clients
+**Porquê:** Distingue entre campos de valor zero, nulos e omitidos.
 
-**Problem:** Using sync client in async context or vice versa.
+### Python: clientes assíncronos vs. sincronizados
 
-```python
+**Problema:** Usando o cliente de sincronização em contexto assíncrono ou vice-versa.```python
 # ❌ WRONG - Can't await sync client
 from cloudflare import Cloudflare
 client = Cloudflare()
@@ -62,73 +59,69 @@ await client.zones.list()  # TypeError
 from cloudflare import AsyncCloudflare
 client = AsyncCloudflare()
 await client.zones.list()
-```
+````
 
-## Token Permission Errors (403)
+## Erros de permissão de token (403)
 
-**Problem:** API returns 403 Forbidden despite valid token.
+**Problema:** API retorna 403 Proibido apesar do token válido.
 
-**Cause:** Token lacks required permissions (scope).
+**Causa:** O token não possui as permissões necessárias (escopo).
 
-**Scopes Required:**
+**Escopos necessários:**
 
-| Operation     | Required Scope                          |
-| ------------- | --------------------------------------- |
-| List zones    | Zone:Read (zone-level or account-level) |
-| Create zone   | Zone:Edit (account-level)               |
-| Edit DNS      | DNS:Edit (zone-level)                   |
-| Deploy Worker | Workers Script:Edit (account-level)     |
-| Read KV       | Workers KV Storage:Read                 |
-| Write KV      | Workers KV Storage:Edit                 |
+| Operação              | Escopo necessário                               |
+| --------------------- | ----------------------------------------------- |
+| Listar zonas          | Zona:Leitura (nível de zona ou nível de conta)  |
+| Criar zona            | Zona:Editar (nível da conta)                    |
+| Editar DNS            | DNS:Editar (nível de zona)                      |
+| Implantar Trabalhador | Script de trabalhadores:Editar (nível de conta) |
+| Leia KV               | Armazenamento KV de trabalhadores:Leia          |
+| Escreva KV            | Armazenamento KV de trabalhadores:Editar        |
 
-**Solution:** Re-create token with correct permissions in Dashboard → My Profile → API Tokens.
+**Solução:** Recrie o token com as permissões corretas em Dashboard → Meu perfil → Tokens de API.
 
-## Pagination Truncation
+## Truncamento de paginação
 
-**Problem:** Only getting first 20 results (default page size).
+**Problema:** Obtendo apenas os primeiros 20 resultados (tamanho de página padrão).
 
-**Solution:** Use auto-pagination iterators.
-
-```typescript
+**Solução:** Use iteradores de paginação automática.```typescript
 // ❌ WRONG - Only first page (20 items)
 const page = await client.zones.list()
 
 // ✅ CORRECT - All results
 const zones = []
 for await (const zone of client.zones.list()) {
-  zones.push(zone)
+zones.push(zone)
 }
-```
 
-## Workers Subrequests
+````
+## Subsolicitações de trabalhadores
 
-**Problem:** Rate limit hit faster than expected in Workers.
+**Problema:** O limite de taxa atingiu mais rápido do que o esperado em Trabalhadores.
 
-**Cause:** Workers subrequests count as separate API calls.
+**Causa:** as subsolicitações dos trabalhadores contam como chamadas de API separadas.
 
-**Solution:** Use bindings instead of REST API in Workers (see ../bindings/).
-
-```typescript
+**Solução:** Use vinculações em vez da API REST em Workers (consulte ../bindings/).```typescript
 // ❌ WRONG - REST API in Workers (counts against rate limit)
 const client = new Cloudflare({ apiToken: env.CLOUDFLARE_API_TOKEN })
 const zones = await client.zones.list()
 
 // ✅ CORRECT - Use bindings (no rate limit)
 // Access via env.MY_BINDING
-```
+````
 
-## Authentication Errors (401)
+## Erros de autenticação (401)
 
-**Problem:** "Authentication failed" or "Invalid token"
+**Problema:** "Falha na autenticação" ou "Token inválido"
 
-**Causes:**
+**Causas:**
 
-- Token expired
-- Token deleted/revoked
-- Token not set in environment
-- Wrong token format
+- Token expirou
+- Token excluído/revogado
+- Token não definido no ambiente
+- Formato de token errado
 
-**Solution:**
+**Solução:**
 
 ```typescript
 // Verify token is set
@@ -141,75 +134,73 @@ const user = await client.user.tokens.verify()
 console.log('Token valid:', user.status)
 ```
 
-## Timeout Errors
+## Erros de tempo limite
 
-**Problem:** Request times out (default 60s).
+**Problema:** A solicitação atinge o tempo limite (padrão 60s).
 
-**Cause:** Large operations (bulk DNS, zone transfers).
+**Causa:** Grandes operações (DNS em massa, transferências de zona).
 
-**Solution:** Increase timeout or split operations.
-
-```typescript
+**Solução:** Aumente o tempo limite ou divida as operações.```typescript
 // Increase timeout
 const client = new Cloudflare({
-  timeout: 300000, // 5 minutes
+timeout: 300000, // 5 minutes
 })
 
 // Or split operations
 const batchSize = 100
 for (let i = 0; i < records.length; i += batchSize) {
-  const batch = records.slice(i, i + batchSize)
-  await processBatch(batch)
+const batch = records.slice(i, i + batchSize)
+await processBatch(batch)
 }
-```
 
-## Zone Not Found (404)
+````
+## Zona não encontrada (404)
 
-**Problem:** Zone ID valid but returns 404.
+**Problema:** ID de zona válido, mas retorna 404.
 
-**Causes:**
+**Causas:**
 
-- Zone not in account associated with token
-- Zone deleted
-- Wrong zone ID format
+- Zona não incluída na conta associada ao token
+- Zona excluída
+- Formato de ID de zona incorreto
 
-**Solution:**
+**Solução:**
 
 ```typescript
 // List all zones to find correct ID
 for await (const zone of client.zones.list()) {
   console.log(zone.id, zone.name)
 }
-```
+````
 
-## Limits Reference
+## Referência de Limites
 
-| Resource/Limit                  | Value     | Notes                  |
-| ------------------------------- | --------- | ---------------------- |
-| API rate limit                  | 1200/5min | Per user/token         |
-| IP rate limit                   | 200/sec   | Per IP                 |
-| GraphQL rate limit              | 320/5min  | Cost-based             |
-| Parallel requests (recommended) | < 10      | Avoid overwhelming API |
-| Default page size               | 20        | Use auto-pagination    |
-| Max page size                   | 50        | Some endpoints         |
+| Recurso/Limite                  | Valor     | Notas                    |
+| ------------------------------- | --------- | ------------------------ |
+| Limite de taxa API              | 1200/5min | Por usuário/token        |
+| Limite de taxa IP               | 200/seg   | Por IP                   |
+| Limite de taxa GraphQL          | 320/5min  | Baseado em custos        |
+| Pedidos paralelos (recomendado) | <10       | Evite API sobrecarregada |
+| Tamanho de página padrão        | 20        | Use paginação automática |
+| Tamanho máximo da página        | 50        | Alguns terminais         |
 
-## Best Practices
+## Melhores práticas
 
-**Security:**
+**Segurança:**
 
-- Never commit tokens
-- Use minimal permissions
-- Rotate tokens regularly
-- Set token expiration
+- Nunca comprometa tokens
+- Use permissões mínimas
+- Gire os tokens regularmente
+- Definir expiração do token
 
-**Performance:**
+**Desempenho:**
 
-- Batch operations
-- Use pagination wisely
-- Cache responses
-- Handle rate limits
+- Operações em lote
+- Use a paginação com sabedoria
+- Respostas de cache
+- Lidar com limites de taxa
 
-**Code Organization:**
+**Organização do código:**
 
 ```typescript
 // Create reusable client instance
@@ -224,8 +215,8 @@ export async function getZoneDetails(zoneId: string) {
 }
 ```
 
-## See Also
+## Veja também
 
-- [api.md](./api.md) - Error types, authentication
-- [configuration.md](./configuration.md) - Timeout/retry configuration
-- [patterns.md](./patterns.md) - Error handling patterns
+- [api.md](./api.md) - Tipos de erros, autenticação
+- [configuration.md](./configuration.md) - Configuração de tempo limite/nova tentativa
+- [patterns.md](./patterns.md) - Padrões de tratamento de erros

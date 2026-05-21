@@ -1,6 +1,6 @@
-# C3 Generated Configuration
+# Configuração gerada C3
 
-## Output Structure
+## Estrutura de saída
 
 ```
 my-app/
@@ -11,7 +11,7 @@ my-app/
 └── .gitignore
 ```
 
-## wrangler.jsonc
+##wrangler.jsonc
 
 ```jsonc
 {
@@ -22,9 +22,9 @@ my-app/
 }
 ```
 
-## Binding Placeholders
+##Espaços reservados para vinculação
 
-C3 generates **placeholder IDs** that must be replaced before deploy:
+C3 gera **IDs de espaço reservado** que devem ser substituídos antes da implantação:
 
 ```jsonc
 {
@@ -33,20 +33,20 @@ C3 generates **placeholder IDs** that must be replaced before deploy:
 }
 ```
 
-**Replace with real IDs:**
+**Substitua por IDs reais:**
 
 ```bash
 npx wrangler kv namespace create MY_KV   # Returns real ID
 npx wrangler d1 create my-database       # Returns real database_id
 ```
 
-**Deployment error if not replaced:**
+**Erro de implantação se não for substituído:**
 
 ```
 Error: Invalid KV namespace ID "placeholder_kv_id"
 ```
 
-## Scripts
+##Roteiros
 
 ```json
 {
@@ -58,28 +58,25 @@ Error: Invalid KV namespace ID "placeholder_kv_id"
 }
 ```
 
-## Type Generation
+##Geração de tipo
 
-Run after adding bindings:
+Execute depois de adicionar ligações:
 
-```bash
+````bash
 npm run cf-typegen
-```
-
-Generates `.wrangler/types/runtime.d.ts`:
-
+```Gera `.wrangler/types/runtime.d.ts`:
 ```typescript
 interface Env {
   MY_KV: KVNamespace
   DB: D1Database
 }
-```
+````
 
-## Post-Creation Checklist
+##Lista de verificação pós-criação
 
-1. Review `wrangler.jsonc` - check name, compatibility_date
-2. Replace placeholder binding IDs with real resource IDs
-3. Run `npm run cf-typegen`
-4. Test: `npm run dev`
-5. Deploy: `npm run deploy`
-6. Add secrets: `npx wrangler secret put SECRET_NAME`
+1. Revise `wrangler.jsonc` - verifique o nome, compatibilidade_data
+2. Substitua IDs de ligação de espaço reservado por IDs de recursos reais
+3. Execute `npm run cf-typegen`
+4. Teste: `npm run dev`
+5. Implantar: `npm run deploy`
+6. Adicione segredos: `npx wrangler secret put SECRET_NAME`

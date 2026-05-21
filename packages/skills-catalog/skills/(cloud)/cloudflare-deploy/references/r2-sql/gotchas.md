@@ -1,39 +1,35 @@
-# R2 SQL Gotchas
+# Dicas de SQL R2
 
-Limitations, troubleshooting, and common pitfalls for R2 SQL.
+Limitações, solução de problemas e armadilhas comuns para SQL R2.
 
-## Critical Limitations
+## Limitações Críticas
 
-### No Workers Binding
+### Sem vinculação de trabalhadores
 
-**Cannot call R2 SQL from Workers/Pages code** - no binding exists.
-
-```typescript
+**Não é possível chamar R2 SQL do código de Trabalhadores/Páginas** - não existe ligação.```typescript
 // ❌ This doesn't exist
 export default {
-  async fetch(request, env) {
-    const result = await env.R2_SQL.query('SELECT * FROM table') // Not possible
-    return Response.json(result)
-  },
+async fetch(request, env) {
+const result = await env.R2_SQL.query('SELECT \* FROM table') // Not possible
+return Response.json(result)
+},
 }
-```
 
-**Solutions:**
+````
+**Soluções:**
 
-- HTTP API from external systems (not Workers)
-- PyIceberg/Spark via r2-data-catalog REST API
-- For Workers, use D1 or external databases
+- API HTTP de sistemas externos (não Workers)
+- PyIceberg/Spark via API REST do catálogo de dados r2
+- Para Trabalhadores, use D1 ou bancos de dados externos
 
-### ORDER BY Limitations
+### ORDER BY Limitações
 
-Can only order by:
+Só pode encomendar por:
 
-1. **Partition key columns** - Always supported
-2. **Aggregation functions** - Supported via shuffle strategy
+1. **Colunas de chave de partição** – Sempre compatível
+2. **Funções de agregação** - Suportadas por meio de estratégia aleatória
 
-**Cannot order by** regular non-partition columns.
-
-```sql
+**Não é possível ordenar por** colunas regulares sem partição.```sql
 -- ✅ Valid: ORDER BY partition key
 SELECT * FROM logs.requests ORDER BY timestamp DESC LIMIT 100;
 
@@ -47,54 +43,54 @@ SELECT * FROM logs.requests ORDER BY user_id;
 -- ❌ Invalid: ORDER BY alias (must repeat function)
 SELECT region, SUM(amount) as total FROM sales.transactions
 GROUP BY region ORDER BY total;  -- Use ORDER BY SUM(amount)
-```
+````
 
-Check partition spec: `DESCRIBE namespace.table_name`
+Verifique as especificações da partição: `DESCRIBE namespace.table_name`
 
-## SQL Feature Limitations
+## Limitações de recursos SQL
 
-| Feature                         | Supported | Notes                     |
-| ------------------------------- | --------- | ------------------------- |
-| SELECT, WHERE, GROUP BY, HAVING | ✅        | Standard support          |
-| COUNT, SUM, AVG, MIN, MAX       | ✅        | Standard aggregations     |
-| ORDER BY partition/aggregation  | ✅        | See above                 |
-| LIMIT                           | ✅        | Max 10,000                |
-| Column aliases                  | ❌        | No AS alias               |
-| Expressions in SELECT           | ❌        | No col1 + col2            |
-| ORDER BY non-partition          | ❌        | Fails at runtime          |
-| JOINs, subqueries, CTEs         | ❌        | Denormalize at write time |
-| Window functions, UNION         | ❌        | Use external engines      |
-| INSERT/UPDATE/DELETE            | ❌        | Use PyIceberg/Pipelines   |
-| Nested columns, arrays, JSON    | ❌        | Flatten at write time     |
+| Recurso                               | Suportado | Notas                                |
+| ------------------------------------- | --------- | ------------------------------------ |
+| SELECIONE, ONDE, AGRUPANDO POR, TENDO | ✅        | Suporte padrão                       |
+| CONTAGEM, SOMA, AVG, MIN, MAX         | ✅        | Agregações padrão                    |
+| ORDER BY partição/agregação           | ✅        | Veja acima                           |
+| LIMITE                                | ✅        | Máximo de 10.000                     |
+| Aliases de coluna                     | ❌        | Nenhum alias de AS                   |
+| Expressões em SELECT                  | ❌        | Não col1 + col2                      |
+| ORDER BY sem partição                 | ❌        | Falha em tempo de execução           |
+| JOINs, subconsultas, CTEs             | ❌        | Desnormalizar no momento da gravação |
+| Funções de janela, UNION              | ❌        | Use motores externos                 |
+| INSERIR/ATUALIZAR/EXCLUIR             | ❌        | Use PyIceberg/Pipelines              |
+| Colunas aninhadas, matrizes, JSON     | ❌        | Achatar na hora da gravação          |
 
-**Workarounds:**
+**Soluções alternativas:**
 
-- No JOINs: Denormalize data or use Spark/PyIceberg
-- No subqueries: Split into multiple queries
-- No aliases: Accept generated names, transform in app
+- Sem JOINs: desnormalize os dados ou use Spark/PyIceberg
+- Sem subconsultas: dividido em várias consultas
+- Sem aliases: aceite nomes gerados, transforme no aplicativo
 
-## Common Errors
+## Erros Comuns
 
-### "Column not found"
+### "Coluna não encontrada"
 
-**Cause:** Typo, column doesn't exist, or case mismatch  
-**Solution:** `DESCRIBE namespace.table_name` to check schema
+**Causa:** Erro de digitação, coluna não existe ou incompatibilidade de maiúsculas e minúsculas
+**Solução:** `DESCRIBE namespace.table_name` para verificar o esquema
 
-### "Type mismatch"
+### "Tipo incompatível"```sql
 
-```sql
 -- ❌ Wrong types
-WHERE status = '200'              -- string instead of integer
-WHERE timestamp > '2025-01-01'    -- missing time/timezone
+WHERE status = '200' -- string instead of integer
+WHERE timestamp > '2025-01-01' -- missing time/timezone
 
 -- ✅ Correct types
 WHERE status = 200
 WHERE timestamp > '2025-01-01T00:00:00Z'
-```
+
+````
 
 ### "ORDER BY column not in partition key"
 
-**Cause:** Ordering by non-partition column  
+**Cause:** Ordering by non-partition column
 **Solution:** Use partition key, aggregation, or remove ORDER BY. Check: `DESCRIBE table`
 
 ### "Token authentication failed"
@@ -106,7 +102,7 @@ export WRANGLER_R2_SQL_AUTH_TOKEN=<your-token>
 
 # Or .env file
 echo "WRANGLER_R2_SQL_AUTH_TOKEN=<your-token>" > .env
-```
+````
 
 ### "Table not found"
 
@@ -116,40 +112,39 @@ SHOW DATABASES;
 SHOW TABLES IN namespace_name;
 ```
 
-Enable catalog: `npx wrangler r2 bucket catalog enable <bucket>`
+Habilitar catálogo: `npx wrangler r2 bucket catalog enable <bucket>`
 
-### "LIMIT exceeds maximum"
+### "LIMIT excede o máximo"
 
-Max LIMIT is 10,000. For pagination, use WHERE filters with partition keys.
+O LIMITE máximo é 10.000. Para paginação, use filtros WHERE com chaves de partição.
 
-### "No data returned" (unexpected)
+### "Nenhum dado retornado" (inesperado)
 
-**Debug steps:**
+**Etapas de depuração:**
 
-1. `SELECT COUNT(*) FROM table` - verify data exists
-2. Remove WHERE filters incrementally
-3. `SELECT * FROM table LIMIT 10` - inspect actual data/types
+1. `SELECT COUNT(*) FROM table` - verifica se os dados existem
+2. Remova os filtros WHERE gradativamente
+3. `SELECT * FROM table LIMIT 10` - inspeciona dados/tipos reais
 
-## Performance Issues
+## Problemas de desempenho
 
-### Slow Queries
+### Consultas lentas
 
-**Causes:** Too many partitions, large LIMIT, no filters, small files
-
-```sql
+**Causas:** Muitas partições, LIMIT grande, sem filtros, arquivos pequenos```sql
 -- ❌ Slow: No filters
-SELECT * FROM logs.requests LIMIT 10000;
+SELECT \* FROM logs.requests LIMIT 10000;
 
 -- ✅ Fast: Filter on partition key
-SELECT * FROM logs.requests
+SELECT \* FROM logs.requests
 WHERE timestamp >= '2025-01-15T00:00:00Z' AND timestamp < '2025-01-16T00:00:00Z'
 LIMIT 1000;
 
 -- ✅ Faster: Multiple filters
-SELECT * FROM logs.requests
+SELECT \* FROM logs.requests
 WHERE timestamp >= '2025-01-15T00:00:00Z' AND status = 404 AND method = 'GET'
 LIMIT 1000;
-```
+
+````
 
 **File optimization:**
 
@@ -170,7 +165,7 @@ WHERE timestamp >= '2024-01-01T00:00:00Z' GROUP BY status;
 SELECT status, COUNT(*) FROM logs.requests
 WHERE timestamp >= '2025-01-01T00:00:00Z' AND timestamp < '2025-02-01T00:00:00Z'
 GROUP BY status;
-```
+````
 
 ## Best Practices
 
@@ -186,43 +181,42 @@ from pyiceberg.transforms import DayTransform
 PartitionSpec(PartitionField(source_id=1, field_id=1000, transform=DayTransform(), name="day"))
 ```
 
-### Query Writing
+### Escrita de consulta
 
-- **Always use LIMIT** for early termination
-- **Filter on partition keys first** for pruning
-- **Combine filters with AND** for more pruning
+- **Sempre use LIMIT** para rescisão antecipada
+- **Filtre primeiro as chaves de partição** para remoção
+- **Combine filtros com AND** para mais poda```sql
+  -- Good
+  WHERE timestamp >= '2025-01-15T00:00:00Z' AND status = 404 AND method = 'GET' LIMIT 100
 
-```sql
--- Good
-WHERE timestamp >= '2025-01-15T00:00:00Z' AND status = 404 AND method = 'GET' LIMIT 100
 ```
+### Digite Segurança
 
-### Type Safety
+- Strings de citação: `'GET'` e não `GET`
+- Carimbos de data e hora RFC3339: `'2025-01-01T00:00:00Z'` e não `'2025-01-01'`
+- Datas ISO: `'2025-01-15'` e não `'01/15/2025'`
 
-- Quote strings: `'GET'` not `GET`
-- RFC3339 timestamps: `'2025-01-01T00:00:00Z'` not `'2025-01-01'`
-- ISO dates: `'2025-01-15'` not `'01/15/2025'`
-
-### Data Organization
+### Organização de dados
 
 - **Pipelines:** Dev `roll_file_time: 10`, Prod `roll_file_time: 300+`
-- **Compression:** Use `zstd`
-- **Maintenance:** Compaction for small files, expire old snapshots
+- **Compressão:** Use `zstd`
+- **Manutenção:** Compactação para arquivos pequenos, expiração de snapshots antigos
 
-## Debugging Checklist
+## Lista de verificação de depuração
 
-1. `npx wrangler r2 bucket catalog enable <bucket>` - Verify catalog
-2. `echo $WRANGLER_R2_SQL_AUTH_TOKEN` - Check token
-3. `SHOW DATABASES` - List namespaces
-4. `SHOW TABLES IN namespace` - List tables
-5. `DESCRIBE namespace.table` - Check schema
-6. `SELECT COUNT(*) FROM namespace.table` - Verify data
-7. `SELECT * FROM namespace.table LIMIT 10` - Test simple query
-8. Add filters incrementally
+1. `npx wrangler r2 bucket catalog enable <bucket>` - Verificar catálogo
+2. `echo $WRANGLER_R2_SQL_AUTH_TOKEN` - Verifique o token
+3. `SHOW DATABASES` - Lista namespaces
+4. `SHOW TABLES IN namespace` - Listar tabelas
+5. `DESCRIBE namespace.table` - Verifique o esquema
+6. `SELECT COUNT(*) FROM namespace.table` - Verifique os dados
+7. `SELECT * FROM namespace.table LIMIT 10` - Teste de consulta simples
+8. Adicione filtros de forma incremental
 
-## See Also
+## Veja também
 
-- [api.md](api.md) - SQL syntax
-- [patterns.md](patterns.md) - Query optimization
-- [configuration.md](configuration.md) - Setup
-- [Cloudflare R2 SQL Docs](https://developers.cloudflare.com/r2-sql/)
+- [api.md](api.md) - Sintaxe SQL
+- [patterns.md](patterns.md) - Otimização de consulta
+- [configuration.md](configuration.md) - Configuração
+- [Documentos SQL do Cloudflare R2](https://developers.cloudflare.com/r2-sql/)
+```

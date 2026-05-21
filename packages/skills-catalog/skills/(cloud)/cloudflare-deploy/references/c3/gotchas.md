@@ -1,65 +1,65 @@
-# C3 Troubleshooting
+# Solução de problemas C3
 
-## Deployment Issues
+## Problemas de implantação
 
-### Placeholder IDs
+### IDs de espaço reservado
 
-**Error:** "Invalid namespace ID"  
-**Fix:** Replace placeholders in wrangler.jsonc with real IDs:
+**Erro:** "ID de namespace inválido"  
+**Correção:** Substitua os espaços reservados em wrangler.jsonc por IDs reais:
 
 ```bash
 npx wrangler kv namespace create MY_KV  # Get real ID
 ```
 
-### Authentication
+### Autenticação
 
-**Error:** "Not authenticated"  
-**Fix:** `npx wrangler login` or set `CLOUDFLARE_API_TOKEN`
+**Erro:** "Não autenticado"  
+**Correção:** `npx wrangler login` ou defina `CLOUDFLARE_API_TOKEN`
 
-### Name Conflict
+### Conflito de nomes
 
-**Error:** "Worker already exists"  
-**Fix:** Change `name` in wrangler.jsonc
+**Erro:** "O trabalhador já existe"  
+**Correção:** Altere o `nome` em wrangler.jsonc
 
-## Platform Selection
+## Seleção de plataforma
 
-| Need                             | Platform           |
-| -------------------------------- | ------------------ |
-| Git integration, branch previews | `--platform=pages` |
-| Durable Objects, D1, Queues      | Workers (default)  |
+| Necessidade                                   | Plataforma                   |
+| --------------------------------------------- | ---------------------------- |
+| Integração Git, visualizações de ramificações | `--plataforma=páginas`       |
+| Objetos Duráveis, D1, Filas                   | Trabalhadores (predefinição) |
 
-Wrong platform? Recreate with correct `--platform` flag.
+Plataforma errada? Recrie com o sinalizador `--platform` correto.
 
-## TypeScript Issues
+## Problemas de TypeScript
 
-**"Cannot find name 'KVNamespace'"**
+**"Não foi possível encontrar o nome 'KVNamespace'"**
 
 ```bash
 npm run cf-typegen  # Regenerate types
 # Restart TS server in editor
 ```
 
-**Missing types after config change:** Re-run `npm run cf-typegen`
+**Tipos ausentes após alteração de configuração:** Execute novamente `npm run cf-typegen`
 
-## Package Manager
+## Gerenciador de pacotes
 
-**Multiple lockfiles causing issues:**
+**Vários arquivos de bloqueio causando problemas:**
 
 ```bash
 rm pnpm-lock.yaml  # If using npm
 rm package-lock.json  # If using pnpm
 ```
 
-## CI/CD
+##CI/CD
 
-**CI hangs on prompts:**
+**CI trava nos prompts:**
 
 ```bash
 npm create cloudflare@latest my-app -- \
   --type=hello-world --lang=ts --no-git --no-deploy
 ```
 
-**Auth in CI:**
+**Autenticação em CI:**
 
 ```yaml
 env:
@@ -67,31 +67,31 @@ env:
   CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 ```
 
-## Framework-Specific
+##Específico da estrutura
 
-| Framework | Issue                  | Fix                              |
-| --------- | ---------------------- | -------------------------------- |
-| Next.js   | create-next-app failed | `npm cache clean --force`, retry |
-| Astro     | Adapter missing        | Install `@astrojs/cloudflare`    |
-| Remix     | Module errors          | Update `@remix-run/cloudflare*`  |
+| Estrutura  | Edição                                 | Correção                                   |
+| ---------- | -------------------------------------- | ------------------------------------------ |
+| Próximo.js | falha na criação do próximo aplicativo | `npm cache clean --force`, tente novamente |
+| Astro      | Adaptador ausente                      | Instale `@astrojs/cloudflare`              |
+| Remixar    | Erros de módulo                        | Atualizar `@remix-run/cloudflare*`         |
 
-## Compatibility Date
+## Data de compatibilidade
 
-**"Feature X requires compatibility_date >= ..."**  
-**Fix:** Update `compatibility_date` in wrangler.jsonc to today's date
+**"O recurso X requer compatibilidade_data >= ..."**  
+**Correção:** Atualize `compatibility_date` em wrangler.jsonc para a data de hoje
 
-## Node.js Version
+## Versão do Node.js.
 
-**"Node.js version not supported"**  
-**Fix:** Install Node.js 18+ (`nvm install 20`)
+**"Versão Node.js não suportada"**  
+**Correção:** Instale o Node.js 18+ (`nvm install 20`)
 
-## Quick Reference
+## Referência rápida
 
-| Error                   | Cause               | Fix                             |
-| ----------------------- | ------------------- | ------------------------------- |
-| Invalid namespace ID    | Placeholder binding | Create resource, update config  |
-| Not authenticated       | No login            | `npx wrangler login`            |
-| Cannot find KVNamespace | Missing types       | `npm run cf-typegen`            |
-| Worker already exists   | Name conflict       | Change `name`                   |
-| CI hangs                | Missing flags       | Add --type, --lang, --no-deploy |
-| Template not found      | Bad name            | Check cloudflare/templates      |
+| Erro                                 | Causa                          | Correção                              |
+| ------------------------------------ | ------------------------------ | ------------------------------------- |
+| ID de namespace inválido             | Vinculação de espaço reservado | Criar recurso, atualizar configuração |
+| Não autenticado                      | Sem login                      | `login do wrangler npx`               |
+| Não é possível encontrar KVNamespace | Tipos ausentes                 | `npm execute cf-typegen`              |
+| Já existe trabalhador                | Conflito de nomes              | Alterar `nome`                        |
+| CI trava                             | Bandeiras ausentes             | Adicione --type, --lang, --no-deploy  |
+| Modelo não encontrado                | Mau nome                       | Verifique cloudflare/modelos          |

@@ -1,136 +1,136 @@
-# Cache Reserve Gotchas
+# Dicas de reserva de cache
 
-## Common Errors
+## Erros Comuns
 
-### "Assets Not Being Cached in Cache Reserve"
+### "Ativos não armazenados em cache na reserva de cache"
 
-**Cause:** Asset is not cacheable, TTL < 10 hours, Content-Length header missing, or blocking headers present (Set-Cookie, Vary: _)  
-**Solution:** Ensure minimum TTL of 10+ hours (`Cache-Control: public, max-age=36000`), add Content-Length header, remove Set-Cookie header, and set `Vary: Accept-Encoding` (not _)
+**Causa:** O ativo não pode ser armazenado em cache, TTL < 10 horas, cabeçalho Content-Length ausente ou cabeçalhos de bloqueio presentes (Set-Cookie, Vary: _)
+**Solução:** Garanta um TTL mínimo de mais de 10 horas (`Cache-Control: public, max-age=36000`), adicione o cabeçalho Content-Length, remova o cabeçalho Set-Cookie e defina `Vary: Accept-Encoding` (não _)
 
-### "Range Requests Not Working" (Video Seeking Fails)
+### "Solicitações de intervalo não funcionam" (falha na busca de vídeo)
 
-**Cause:** Cache Reserve does **NOT** support range requests (HTTP 206 Partial Content)  
-**Solution:** Range requests bypass Cache Reserve entirely. For video streaming with seeking:
+**Causa:** A Reserva de Cache **NÃO** oferece suporte a solicitações de intervalo (conteúdo parcial HTTP 206)
+**Solução:** As solicitações de intervalo ignoram totalmente a Reserva de Cache. Para streaming de vídeo com busca:
 
-- Use edge cache only (shorter TTLs)
-- Consider R2 with direct access for range-heavy workloads
-- Accept that seekable content won't benefit from Cache Reserve persistence
+- Use apenas cache de borda (TTLs mais curtos)
+- Considere R2 com acesso direto para cargas de trabalho de grande alcance
+- Aceite que o conteúdo pesquisável não se beneficiará da persistência da Reserva de Cache
 
-### "Origin Bandwidth Higher Than Expected"
+### "Largura de banda de origem maior que o esperado"
 
-**Cause:** Cache Reserve fetches **uncompressed** content from origin, even though it serves compressed to visitors  
-**Solution:**
+**Causa:** a Reserva de Cache busca conteúdo **não compactado** da origem, mesmo que seja veiculado compactado aos visitantes
+**Solução:**
 
-- If origin charges by bandwidth, factor in uncompressed transfer costs
-- Cache Reserve compresses for visitors automatically (saves visitor bandwidth)
-- Compare: origin egress savings vs higher uncompressed fetch costs
+- Se a origem cobrar por largura de banda, considere os custos de transferência não compactados
+- A reserva de cache é compactada para visitantes automaticamente (economiza largura de banda do visitante)
+- Compare: economia de saída de origem versus custos mais elevados de busca não compactada
 
-### "Cloudflare Images Not Caching with Cache Reserve"
+### "Imagens Cloudflare não armazenadas em cache com reserva de cache"
 
-**Cause:** Cloudflare Images with `Vary: Accept` header (format negotiation) is incompatible with Cache Reserve  
-**Solution:**
+**Causa:** Imagens Cloudflare com cabeçalho `Vary: Accept` (negociação de formato) são incompatíveis com Reserva de Cache
+**Solução:**
 
-- Cache Reserve silently skips images with Vary for format negotiation
-- Original images (non-transformed) may still be eligible
-- Use Cloudflare Images variants or edge cache for transformed images
+- Cache Reserve ignora imagens silenciosamente com Vary para negociação de formato
+- Imagens originais (não transformadas) ainda podem ser elegíveis
+- Use variantes de imagens Cloudflare ou cache de borda para imagens transformadas
 
-### "High Class A Operations Costs"
+### "Custos operacionais de alta classe A"
 
-**Cause:** Frequent cache misses, short TTLs, or frequent revalidation  
-**Solution:** Increase TTL for stable content (24+ hours), enable Tiered Cache to reduce direct Cache Reserve misses, or use stale-while-revalidate
+**Causa:** Faltas frequentes de cache, TTLs curtos ou revalidações frequentes
+**Solução:** Aumente o TTL para conteúdo estável (mais de 24 horas), ative o Tiered Cache para reduzir perdas diretas de reserva de cache ou use obsoleto enquanto revalida
 
-### "Purge Not Working as Expected"
+### "A purga não funciona como esperado"
 
-**Cause:** Purge by tag only triggers revalidation but doesn't remove from Cache Reserve storage  
-**Solution:** Use purge by URL for immediate removal, or disable Cache Reserve then clear all data for complete removal
+**Causa:** A limpeza por tag apenas aciona a revalidação, mas não remove do armazenamento da Reserva de Cache
+**Solução:** use a limpeza por URL para remoção imediata ou desative a Reserva de Cache e limpe todos os dados para remoção completa
 
-### "O2O (Orange-to-Orange) Assets Not Caching"
+### "Ativos O2O (laranja para laranja) sem armazenamento em cache"
 
-**Cause:** Orange-to-Orange (proxied zone requesting another proxied zone on Cloudflare) bypasses Cache Reserve  
-**Solution:**
+**Causa:** Laranja para Laranja (zona com proxy solicitando outra zona com proxy na Cloudflare) ignora a Reserva de Cache
+**Solução:**
 
-- **What is O2O**: Zone A (proxied) → Zone B (proxied), both on Cloudflare
-- **Detection**: Check `cf-cache-status` for `BYPASS` and review request path
-- **Workaround**: Use R2 or direct origin access instead of O2O proxy chains
+- **O que é O2O**: Zona A (proxy) → Zona B (proxy), ambas na Cloudflare
+- **Detecção**: Verifique `cf-cache-status` para `BYPASS` e revise o caminho da solicitação
+- **Solução alternativa**: use R2 ou acesso direto à origem em vez de cadeias de proxy O2O
 
-### "Cache Reserve must be OFF before clearing data"
+### "A reserva de cache deve estar desativada antes de limpar os dados"
 
-**Cause:** Attempting to clear Cache Reserve data while it's still enabled  
-**Solution:** Disable Cache Reserve first, wait briefly for propagation (5s), then clear data (can take up to 24 hours)
+**Causa:** Tentativa de limpar dados de reserva de cache enquanto ainda está ativado
+**Solução:** desative primeiro a Reserva de Cache, aguarde brevemente pela propagação (5s) e depois limpe os dados (pode levar até 24 horas)
 
-## Limits
+## Limites
 
-| Limit                 | Value                              | Notes                                          |
-| --------------------- | ---------------------------------- | ---------------------------------------------- |
-| Minimum TTL           | 10 hours (36000 seconds)           | Assets with shorter TTL not eligible           |
-| Default retention     | 30 days (2592000 seconds)          | Configurable                                   |
-| Maximum file size     | Same as R2 limits                  | No practical limit                             |
-| Purge/clear time      | Up to 24 hours                     | Complete propagation time                      |
-| Plan requirement      | Paid Cache Reserve or Smart Shield | Not available on free plans                    |
-| Content-Length header | Required                           | Must be present for eligibility                |
-| Set-Cookie header     | Blocks caching                     | Must not be present (or use private directive) |
-| Vary header           | Cannot be \*                       | Can use Vary: Accept-Encoding                  |
-| Image transformations | Variants not eligible              | Original images only                           |
-| Range requests        | NOT supported                      | HTTP 206 bypasses Cache Reserve                |
-| Compression           | Fetches uncompressed               | Serves compressed to visitors                  |
-| Worker control        | Zone-level only                    | Cannot control per-request                     |
-| O2O requests          | Bypassed                           | Orange-to-Orange not eligible                  |
+| Limite                               | Valor                                 | Notas                                              |
+| ------------------------------------ | ------------------------------------- | -------------------------------------------------- |
+| TTL mínimo                           | 10 horas (36.000 segundos)            | Ativos com TTL mais curto não elegíveis            |
+| Retenção padrão                      | 30 dias (2592.000 segundos)           | Configurável                                       |
+| Tamanho máximo do arquivo            | Igual aos limites R2                  | Sem limite prático                                 |
+| Tempo de purga/limpeza               | Até 24 horas                          | Tempo de propagação completo                       |
+| Requisito do plano                   | Reserva de cache paga ou Smart Shield | Não disponível em planos gratuitos                 |
+| Cabeçalho de comprimento de conteúdo | Obrigatório                           | Deve estar presente para elegibilidade             |
+| Cabeçalho Set-Cookie                 | Bloqueia cache                        | Não deve estar presente (ou usar diretiva privada) |
+| Variar cabeçalho                     | Não pode ser \*                       | Pode usar Vary: Accept-Encoding                    |
+| Transformações de imagem             | Variantes não elegíveis               | Somente imagens originais                          |
+| Solicitações de intervalo            | NÃO suportado                         | HTTP 206 ignora reserva de cache                   |
+| Compressão                           | Busca descompactado                   | Serve comprimido aos visitantes                    |
+| Controle do trabalhador              | Somente em nível de zona              | Não é possível controlar por solicitação           |
+| Solicitações O2O                     | Ignorado                              | Laranja com Laranja não elegível                   |
 
-## Additional Resources
+## Recursos Adicionais
 
-- **Official Docs**: https://developers.cloudflare.com/cache/advanced-configuration/cache-reserve/
-- **API Reference**: https://developers.cloudflare.com/api/resources/cache/subresources/cache_reserve/
-- **Cache Rules**: https://developers.cloudflare.com/cache/how-to/cache-rules/
-- **Workers Cache API**: https://developers.cloudflare.com/workers/runtime-apis/cache/
-- **R2 Documentation**: https://developers.cloudflare.com/r2/
-- **Smart Shield**: https://developers.cloudflare.com/smart-shield/
-- **Tiered Cache**: https://developers.cloudflare.com/cache/how-to/tiered-cache/
+- **Documentos oficiais**: https://developers.cloudflare.com/cache/advanced-configuration/cache-reserve/
+- **Referência de API**: https://developers.cloudflare.com/api/resources/cache/subresources/cache_reserve/
+- **Regras de cache**: https://developers.cloudflare.com/cache/how-to/cache-rules/
+- **API de cache de trabalho**: https://developers.cloudflare.com/workers/runtime-apis/cache/
+- **Documentação R2**: https://developers.cloudflare.com/r2/
+- **Escudo Inteligente**: https://developers.cloudflare.com/smart-shield/
+- **Cache em camadas**: https://developers.cloudflare.com/cache/how-to/tiered-cache/
 
-## Troubleshooting Flowchart
+## Fluxograma de solução de problemas
 
-Asset not caching in Cache Reserve?
+O ativo não está armazenado em cache na Reserva de Cache?```
+
+1. A Reserva de Cache está habilitada para zona?
+   → Não: Habilitar via Dashboard ou API
+   → Sim: continue na etapa 2
+
+2. O cache em camadas está habilitado?
+   → Não: Habilite o cache em camadas (obrigatório!)
+   → Sim: continue na etapa 3
+
+3. O ativo tem TTL ≥ 10 horas?
+   → Não: Aumento por meio de regras de cache (substituição de edge_ttl)
+   → Sim: continue na etapa 4
+
+4. O cabeçalho Content-Length está presente?
+   → Não: corrija a origem para incluir o comprimento do conteúdo
+   → Sim: continue na etapa 5
+
+5. O cabeçalho Set-Cookie está presente?
+   → Sim: Remova Set-Cookie ou escopo adequadamente
+   → Não: continue na etapa 6
+
+6. O cabeçalho Vary está definido como \*?
+   → Sim: Mude para um valor específico (por exemplo, Accept-Encoding)
+   → Não: continue na etapa 7
+
+7. Esta é uma solicitação de intervalo?
+   → Sim: solicitações de intervalo ignoram a reserva de cache (não compatível)
+   → Não: continue na etapa 8
+
+8. Esta é uma solicitação O2O (Orange-to-Orange)?
+   → Sim: O2O ignora a reserva de cache
+   → Não: continue na etapa 9
+
+9. Verifique o campo Logpush CacheReserveUsed
+   → Filtre os logs para ver se os ativos atingiram a Reserva de Cache
+   → Verifique o cabeçalho cf-cache-status (deve ser HIT após a primeira solicitação)
 
 ```
-1. Is Cache Reserve enabled for zone?
-   → No: Enable via Dashboard or API
-   → Yes: Continue to step 2
+## Veja também
 
-2. Is Tiered Cache enabled?
-   → No: Enable Tiered Cache (required!)
-   → Yes: Continue to step 3
-
-3. Does asset have TTL ≥ 10 hours?
-   → No: Increase via Cache Rules (edge_ttl override)
-   → Yes: Continue to step 4
-
-4. Is Content-Length header present?
-   → No: Fix origin to include Content-Length
-   → Yes: Continue to step 5
-
-5. Is Set-Cookie header present?
-   → Yes: Remove Set-Cookie or scope appropriately
-   → No: Continue to step 6
-
-6. Is Vary header set to *?
-   → Yes: Change to specific value (e.g., Accept-Encoding)
-   → No: Continue to step 7
-
-7. Is this a range request?
-   → Yes: Range requests bypass Cache Reserve (not supported)
-   → No: Continue to step 8
-
-8. Is this an O2O (Orange-to-Orange) request?
-   → Yes: O2O bypasses Cache Reserve
-   → No: Continue to step 9
-
-9. Check Logpush CacheReserveUsed field
-   → Filter logs to see if assets ever hit Cache Reserve
-   → Verify cf-cache-status header (should be HIT after first request)
+- [README](./README.md) - Visão geral e conceitos básicos
+- [Configuração](./configuration.md) - Regras de configuração e cache
+- [Referência da API](./api.md) - Limpeza e monitoramento
+- [Padrões](./patterns.md) - Melhores práticas e otimização
 ```
-
-## See Also
-
-- [README](./README.md) - Overview and core concepts
-- [Configuration](./configuration.md) - Setup and Cache Rules
-- [API Reference](./api.md) - Purging and monitoring
-- [Patterns](./patterns.md) - Best practices and optimization

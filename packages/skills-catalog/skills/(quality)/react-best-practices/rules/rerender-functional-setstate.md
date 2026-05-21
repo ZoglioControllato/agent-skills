@@ -1,74 +1,77 @@
 ---
-title: Use Functional setState Updates
+title: Usar atualizações funcionais de setState
 impact: MEDIUM
-impactDescription: prevents stale closures and unnecessary callback recreations
+impactDescription: evita fechamentos obsoletos e recriação desnecessária de retornos de chamada
 tags: react, hooks, useState, useCallback, callbacks, closures
 ---
 
-## Use Functional setState Updates
+## Usar atualizações funcionais de setState
 
-When updating state based on the current state value, use the functional update form of setState instead of directly referencing the state variable. This prevents stale closures, eliminates unnecessary dependencies, and creates stable callback references.
+Ao atualizar o estado com base no valor atual, use a forma funcional do `setState` em vez de referenciar a variável de estado diretamente. Isso evita fechamentos obsoletos, dispensa dependências desnecessárias e estabiliza referências de retornos de chamada.
 
-**Incorrect (requires state as dependency):**
+**Incorreto (exige estado nas dependências):**
 
 ```tsx
 function TodoList() {
   const [items, setItems] = useState(initialItems)
-  
+
   // Callback must depend on items, recreated on every items change
-  const addItems = useCallback((newItems: Item[]) => {
-    setItems([...items, ...newItems])
-  }, [items])  // ❌ items dependency causes recreations
-  
+  const addItems = useCallback(
+    (newItems: Item[]) => {
+      setItems([...items, ...newItems])
+    },
+    [items],
+  ) // ❌ items dependency causes recreations
+
   // Risk of stale closure if dependency is forgotten
   const removeItem = useCallback((id: string) => {
-    setItems(items.filter(item => item.id !== id))
-  }, [])  // ❌ Missing items dependency - will use stale items!
-  
+    setItems(items.filter((item) => item.id !== id))
+  }, []) // ❌ Missing items dependency - will use stale items!
+
   return <ItemsEditor items={items} onAdd={addItems} onRemove={removeItem} />
 }
 ```
 
-The first callback is recreated every time `items` changes, which can cause child components to re-render unnecessarily. The second callback has a stale closure bug—it will always reference the initial `items` value.
+O primeiro callback é recriado sempre que `items` muda, o que pode forçar a re-renderização em filhos. O segundo tem bug de encerramento obsoleta — referência sempre o `items` inicial.
 
-**Correct (stable callbacks, no stale closures):**
+**Correto (callbacks resultantes, sem fechamento obsoleto):**
 
 ```tsx
 function TodoList() {
   const [items, setItems] = useState(initialItems)
-  
+
   // Stable callback, never recreated
   const addItems = useCallback((newItems: Item[]) => {
-    setItems(curr => [...curr, ...newItems])
-  }, [])  // ✅ No dependencies needed
-  
+    setItems((curr) => [...curr, ...newItems])
+  }, []) // ✅ No dependencies needed
+
   // Always uses latest state, no stale closure risk
   const removeItem = useCallback((id: string) => {
-    setItems(curr => curr.filter(item => item.id !== id))
-  }, [])  // ✅ Safe and stable
-  
+    setItems((curr) => curr.filter((item) => item.id !== id))
+  }, []) // ✅ Safe and stable
+
   return <ItemsEditor items={items} onAdd={addItems} onRemove={removeItem} />
 }
 ```
 
-**Benefits:**
+**Benefícios:**
 
-1. **Stable callback references** - Callbacks don't need to be recreated when state changes
-2. **No stale closures** - Always operates on the latest state value
-3. **Fewer dependencies** - Simplifies dependency arrays and reduces memory leaks
-4. **Prevents bugs** - Eliminates the most common source of React closure bugs
+1. **Referências de retorno de chamada resultam** — não é preciso recriar sempre que o estado muda
+2. **Sem fechamentos obsoletos** — trabalha sempre com o estado mais recente
+3. **Menos dependências** — matrizes de dependência mais simples e menor risco de vazamentos
+4. **Menos bugs** — elimine a fonte mais comum de bugs de encerramento no React
 
-**When to use functional updates:**
+**Quando usar atualização funcional:**
 
-- Any setState that depends on the current state value
-- Inside useCallback/useMemo when state is needed
-- Event handlers that reference state
-- Async operations that update state
+- Qualquer `setState` que dependa do estado atual
+- Dentro de `useCallback`/`useMemo` quando precisar do estado
+- Manipuladores de eventos que consultam estado
+- Operações assíncronas que atualizam estado
 
-**When direct updates are fine:**
+**Quando atualização direta é aceitável:**
 
-- Setting state to a static value: `setCount(0)`
-- Setting state from props/arguments only: `setName(newName)`
-- State doesn't depend on previous value
+- Definir um valor fixo: `setCount(0)`
+- Defina apenas a partir de props/argumentos: `setName(newName)`
+- O novo valor não depende do anterior
 
-**Note:** If your project has [React Compiler](https://react.dev/learn/react-compiler) enabled, the compiler can automatically optimize some cases, but functional updates are still recommended for correctness and to prevent stale closure bugs.
+**Nota:** Com [React Compiler](https://react.dev/learn/react-compiler), o compilador pode gerenciar vários casos, mas atualizações funcionais são recomendadas para correção e para evitar fechamentos obsoletos.

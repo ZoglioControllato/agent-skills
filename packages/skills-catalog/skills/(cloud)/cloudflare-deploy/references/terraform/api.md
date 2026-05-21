@@ -1,16 +1,16 @@
-# Terraform Data Sources Reference
+# Referência de data sources Terraform
 
-Query existing Cloudflare resources to reference in your configurations.
+Consulte recursos Cloudflare existentes para referenciar nas configurações.
 
-## v5 Data Source Names
+## Nomes de data source no v5
 
-| v4 Name                    | v5 Name                     | Notes               |
+| Nome v4                    | Nome v5                     | Observações         |
 | -------------------------- | --------------------------- | ------------------- |
 | `cloudflare_record`        | `cloudflare_dns_record`     |                     |
-| `cloudflare_worker_script` | `cloudflare_workers_script` | Note: plural        |
+| `cloudflare_worker_script` | `cloudflare_workers_script` | Atenção: plural     |
 | `cloudflare_access_*`      | `cloudflare_zero_trust_*`   | Access → Zero Trust |
 
-## Zone Data Sources
+## Data sources de zona
 
 ```hcl
 # Get zone by name
@@ -26,7 +26,7 @@ resource "cloudflare_dns_record" "www" {
 }
 ```
 
-## Account Data Sources
+## Data sources de conta
 
 ```hcl
 # List all accounts
@@ -41,7 +41,7 @@ resource "cloudflare_worker_script" "api" {
 }
 ```
 
-## Worker Data Sources
+## Data sources de Worker
 
 ```hcl
 # Get existing worker script (v5: cloudflare_workers_script)
@@ -59,7 +59,7 @@ resource "cloudflare_workers_script" "consumer" {
 }
 ```
 
-## KV Data Sources
+## Data sources de KV
 
 ```hcl
 # Get KV namespace
@@ -77,7 +77,7 @@ resource "cloudflare_workers_script" "api" {
 }
 ```
 
-## Lists Data Source
+## Data source de listas
 
 ```hcl
 # Get IP lists for WAF rules
@@ -87,7 +87,7 @@ data "cloudflare_list" "blocked_ips" {
 }
 ```
 
-## IP Ranges Data Source
+## Data source de intervalos IP
 
 ```hcl
 # Get Cloudflare IP ranges (for firewall rules)
@@ -112,11 +112,11 @@ resource "aws_security_group_rule" "allow_cloudflare" {
 }
 ```
 
-## Common Patterns
+## Padrões comuns
 
-### Import ID Formats
+### Formatos de ID de import
 
-| Resource                          | Import ID Format              |
+| Recurso                           | Formato do import ID          |
 | --------------------------------- | ----------------------------- |
 | `cloudflare_zone`                 | `<zone-id>`                   |
 | `cloudflare_dns_record`           | `<zone-id>/<record-id>`       |
@@ -131,7 +131,7 @@ resource "aws_security_group_rule" "allow_cloudflare" {
 terraform import cloudflare_dns_record.example <zone-id>/<record-id>
 ```
 
-### Reference Across Modules
+### Referência entre módulos
 
 ```hcl
 # modules/worker/main.tf
@@ -146,7 +146,7 @@ resource "cloudflare_worker_route" "api" {
 }
 ```
 
-### Output Important Values
+### Exportar valores importantes
 
 ```hcl
 output "zone_id" {
@@ -170,9 +170,11 @@ output "name_servers" {
 }
 ```
 
-## See Also
+## Ver também
 
-- [README](./README.md) - Provider setup
-- [Configuration Reference](./configuration.md) - All resource types
-- [Patterns](./patterns.md) - Architecture patterns
-- [Troubleshooting](./gotchas.md) - Common issues
+- [README](./README.md) — Configuração do provider
+- [Configuration Reference](./configuration.md) — Tipos de recurso
+- [Patterns](./patterns.md) — Padrões de arquitetura
+- [Troubleshooting](./gotchas.md) — Problemas comuns
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

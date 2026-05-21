@@ -1,8 +1,8 @@
-# Stream Patterns
+# Padrões Stream
 
-Common workflows, full-stack flows, and best practices.
+Fluxos comuns, full-stack e boas práticas.
 
-## React Stream Player
+## Player React Stream
 
 `npm install @cloudflare/stream-react`
 
@@ -14,9 +14,9 @@ export function VideoPlayer({ videoId, token }: { videoId: string; token?: strin
 }
 ```
 
-## Full-Stack Upload Flow
+## Fluxo de upload full-stack
 
-**Backend API (Workers/Pages)**
+**API backend (Workers/Pages)**
 
 ```typescript
 import Cloudflare from 'cloudflare'
@@ -36,7 +36,7 @@ export default {
 }
 ```
 
-**Frontend component**
+**Componente frontend**
 
 ```tsx
 import { useState } from 'react'
@@ -78,9 +78,9 @@ export function VideoUploader() {
 }
 ```
 
-## TUS Resumable Upload
+## Upload retomável TUS
 
-For large files (>500MB). `npm install tus-js-client`
+Para arquivos grandes (acima de ~500 MB). `npm install tus-js-client`
 
 ```typescript
 import * as tus from 'tus-js-client'
@@ -101,7 +101,7 @@ async function uploadWithTUS(file: File, uploadURL: string, onProgress?: (pct: n
 }
 ```
 
-## Video State Polling
+## Enquete de estado do vídeo
 
 ```typescript
 async function waitForVideoReady(client: Cloudflare, accountId: string, videoId: string) {
@@ -114,7 +114,7 @@ async function waitForVideoReady(client: Cloudflare, accountId: string, videoId:
 }
 ```
 
-## Webhook Handler
+## Handler de webhook
 
 ```typescript
 export default {
@@ -148,9 +148,9 @@ async function verifyWebhook(sig: string, body: string, secret: string): Promise
 }
 ```
 
-## Self-Sign JWT (High Volume Tokens)
+## Auto-assinar JWT (alto volume)
 
-For >1k tokens/day. Prerequisites: Create signing key (see configuration.md).
+Para mais de ~1k tokens/dia. Pré-requisito: criar chave de assinatura (veja configuration.md).
 
 ```typescript
 async function selfSignToken(keyId: string, jwkBase64: string, videoId: string, expiresIn = 3600) {
@@ -189,25 +189,27 @@ const payloadWithRules = {
 }
 ```
 
-## Best Practices
+## Boas práticas
 
-- **Use Direct Creator Uploads** - Avoid proxying through servers
-- **Enable requireSignedURLs** - Control private content access
-- **Self-sign tokens at scale** - Use signing keys for >1k/day
-- **Set allowedOrigins** - Prevent hotlinking
-- **Use webhooks over polling** - Efficient status updates
-- **Set maxDurationSeconds** - Prevent abuse
-- **Enable live recordings** - Auto VOD after stream
+- **Use Direct Creator Uploads** — evite proxy no servidor
+- **Habilite requireSignedURLs** — controle de conteúdo privado
+- **Auto-assine tokens em escala** — chaves acima de ~1k/dia
+- **Defina allowedOrigins** — evite hotlink
+- **Prefira webhooks a polling** — atualizações eficientes
+- **Defina maxDurationSeconds** — mitigue abuso
+- **Gravações ao vivo** — VOD automático após o stream
 
-## In This Reference
+## Nesta referência
 
-- [README.md](./README.md) - Overview and quick start
-- [configuration.md](./configuration.md) - Setup and config
-- [api.md](./api.md) - On-demand video APIs
-- [api-live.md](./api-live.md) - Live streaming APIs
-- [gotchas.md](./gotchas.md) - Error codes, troubleshooting
+- [README.md](./README.md)
+- [configuration.md](./configuration.md)
+- [api.md](./api.md)
+- [api-live.md](./api-live.md)
+- [gotchas.md](./gotchas.md)
 
-## See Also
+## Ver também
 
-- [workers](../workers/) - Deploy Stream APIs in Workers
-- [pages](../pages/) - Integrate Stream with Pages
+- [workers](../workers/)
+- [pages](../pages/)
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

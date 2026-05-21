@@ -1,38 +1,37 @@
-# LCP optimization reference
+# Referência de otimização LCP
 
-## What is LCP?
+## O que é LCP?
 
-Largest Contentful Paint (LCP) measures when the largest content element in the viewport becomes visible. This is typically:
+Largest Contentful Paint (LCP) mede quando o maior elemento de conteúdo na janela de visualização se torna visível. Isso normalmente é:
 
-- An `<img>` element
-- An `<image>` element inside `<svg>`
-- A `<video>` element with poster image
-- An element with a background image via `url()`
-- A block-level element containing text nodes
+- Um elemento `<img>`
+- Um elemento `<image>` dentro de `<svg>`
+- Um elemento `<video>` com imagem de pôster
+- Um elemento com imagem de fundo via `url()`
+- Um elemento de nível de bloco contendo nós de texto
 
-## LCP timeline
+## Cronograma do LCP```
 
-```
-[  Server Response  ][  Resource Load  ][  Render  ]
-       TTFB              Download         Paint
-       └─────────────────────────────────────┘
-                         LCP Time
-```
+[ Server Response ][ Resource Load ][ Render ]
+TTFB Download Paint
+└─────────────────────────────────────┘
+LCP Time
 
-## Detailed optimizations
+````
+## Otimizações detalhadas
 
-### 1. Server response time (TTFB)
+### 1. Tempo de resposta do servidor (TTFB)
 
-Target: < 800ms
+Alvo: <800ms
 
-**Causes:**
+**Causas:**
 
-- Slow server/database queries
-- No CDN/edge caching
-- Inefficient backend code
-- Cold starts (serverless)
+- Consultas lentas de servidor/banco de dados
+- Sem cache CDN/edge
+- Código de back-end ineficiente
+- Inicializações a frio (sem servidor)
 
-**Solutions:**
+**Soluções:**
 
 ```javascript
 // Use edge functions for dynamic content
@@ -42,11 +41,11 @@ export const config = { runtime: 'edge' }
 // Use stale-while-revalidate caching
 // Cache-Control header
 res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=300')
-```
+````
 
-### 2. Resource load time
+### 2. Tempo de carregamento de recursos
 
-**For images:**
+**Para imagens:**
 
 ```html
 <!-- Preload LCP image -->
@@ -67,7 +66,7 @@ res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=300')
 </picture>
 ```
 
-**For text (web fonts):**
+**Para texto (fontes da web):**
 
 ```css
 @font-face {
@@ -77,9 +76,9 @@ res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=300')
 }
 ```
 
-### 3. Render blocking resources
+### 3. Recursos de bloqueio de renderização
 
-**Critical CSS pattern:**
+**Padrão CSS crítico:**
 
 ```html
 <head>
@@ -99,7 +98,7 @@ res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=300')
 </head>
 ```
 
-**Defer JavaScript:**
+**Adiar JavaScript:**
 
 ```html
 <!-- ❌ Blocks parsing -->
@@ -112,13 +111,13 @@ res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=300')
 <script type="module" src="/app.mjs"></script>
 ```
 
-### 4. Client-side rendering
+### 4. Renderização do lado do cliente
 
-**Problem:** Content not in initial HTML.
+**Problema:** Conteúdo não está no HTML inicial.
 
-**Solutions:**
+**Soluções:**
 
-**Server-side rendering (SSR):**
+**Renderização do lado do servidor (SSR):**
 
 ```javascript
 // Next.js
@@ -128,7 +127,7 @@ export async function getServerSideProps() {
 }
 ```
 
-**Static site generation (SSG):**
+**Geração de site estático (SSG):**
 
 ```javascript
 // Next.js
@@ -138,7 +137,7 @@ export async function getStaticProps() {
 }
 ```
 
-**Streaming SSR:**
+**SSR de transmissão:**
 
 ```jsx
 // React 18+
@@ -153,41 +152,38 @@ function Page() {
 }
 ```
 
-## Framework-specific tips
+## Dicas específicas do framework
 
-### Next.js
+### Próximo.js```jsx
 
-```jsx
 import Image from 'next/image'
 
 // LCP image with priority
 ;<Image src="/hero.jpg" priority fill sizes="100vw" alt="Hero" />
-```
 
-### Nuxt
-
-```vue
+````
+### Nuxt```vue
 <NuxtImg src="/hero.jpg" preload loading="eager" sizes="100vw" />
-```
+````
 
-### Astro
+### Astro```astro
 
-```astro
 ---
+
 import { Image } from 'astro:assets';
 import hero from '../assets/hero.jpg';
+
 ---
+
 <Image
   src={hero}
   loading="eager"
   decoding="sync"
   alt="Hero"
 />
-```
 
-## Debugging LCP
-
-```javascript
+````
+## Depurando LCP```javascript
 // Identify LCP element
 new PerformanceObserver((entryList) => {
   const entries = entryList.getEntries()
@@ -202,14 +198,17 @@ new PerformanceObserver((entryList) => {
     loadTime: lastEntry.loadTime,
   })
 }).observe({ type: 'largest-contentful-paint', buffered: true })
-```
+````
 
-## Common issues
+## Problemas comuns
 
-| Issue                    | Impact      | Fix                        |
-| ------------------------ | ----------- | -------------------------- |
-| No preload for LCP image | +500-1000ms | Add `<link rel="preload">` |
-| Large unoptimized image  | +300-800ms  | Compress, use WebP/AVIF    |
-| Render-blocking CSS      | +200-500ms  | Inline critical CSS        |
-| Slow TTFB                | +300-2000ms | CDN, edge caching          |
-| Client-rendered content  | +500-2000ms | SSR/SSG                    |
+| Edição                               | Impacto     | Correção                        |
+| ------------------------------------ | ----------- | ------------------------------- |
+| Sem pré-carregamento para imagem LCP | +500-1000ms | Adicione `<link rel="preload">` |
+| Imagem grande não otimizada          | +300-800ms  | Compactar, usar WebP/AVIF       |
+| CSS de bloqueio de renderização      | +200-500ms  | CSS crítico embutido            |
+| TTFB lento                           | +300-2000ms | CDN, cache de borda             |
+
+| Renderizado pelo cliente
+
+conteúdo | +500-2000ms | RSS/SSG |

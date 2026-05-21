@@ -1,30 +1,30 @@
 # Cloudflare AI Gateway
 
-Expert guidance for implementing Cloudflare AI Gateway - a universal gateway for AI model providers with analytics, caching, rate limiting, and routing capabilities.
+Orientação para implementar o Cloudflare AI Gateway — um gateway universal para provedores de modelos de IA, com análise, cache, limitação de taxa e roteamento.
 
-## When to Use This Reference
+## Quando usar esta referência
 
-- Setting up AI Gateway for any AI provider (OpenAI, Anthropic, Workers AI, etc.)
-- Implementing caching, rate limiting, or request retry/fallback
-- Configuring dynamic routing with A/B testing or model fallbacks
-- Managing provider API keys securely with BYOK
-- Adding security features (guardrails, DLP)
-- Setting up observability with logging and custom metadata
-- Debugging AI Gateway requests or optimizing configurations
+- Configurar o AI Gateway para qualquer provedor (OpenAI, Anthropic, Workers AI etc.)
+- Implementar cache, rate limiting ou retry/fallback de requisição
+- Configurar roteamento dinâmico com A/B ou fallbacks de modelo
+- Gerenciar chaves de API com segurança (BYOK)
+- Adicionar recursos de segurança (guardrails, DLP)
+- Configurar observabilidade com logs e metadados customizados
+- Depurar requisições do AI Gateway ou otimizar configurações
 
-## Quick Start
+## Início rápido
 
-**What's your setup?**
+**Qual é o seu setup?**
 
-- **Using Vercel AI SDK** → Pattern 1 (recommended) - see [sdk-integration.md](./sdk-integration.md)
-- **Using OpenAI SDK** → Pattern 2 - see [sdk-integration.md](./sdk-integration.md)
-- **Cloudflare Worker + Workers AI** → Pattern 3 - see [sdk-integration.md](./sdk-integration.md)
-- **Direct HTTP (any language)** → Pattern 4 - see [configuration.md](./configuration.md)
-- **Framework (LangChain, etc.)** → See [sdk-integration.md](./sdk-integration.md)
+- **Vercel AI SDK** → Padrão 1 (recomendado) — veja [sdk-integration.md](./sdk-integration.md)
+- **OpenAI SDK** → Padrão 2 — veja [sdk-integration.md](./sdk-integration.md)
+- **Cloudflare Worker + Workers AI** → Padrão 3 — veja [sdk-integration.md](./sdk-integration.md)
+- **HTTP direto (qualquer linguagem)** → Padrão 4 — veja [configuration.md](./configuration.md)
+- **Framework (LangChain etc.)** → Veja [sdk-integration.md](./sdk-integration.md)
 
-## Pattern 1: Vercel AI SDK (Recommended)
+## Padrão 1: Vercel AI SDK (recomendado)
 
-Most modern pattern using official `ai-gateway-provider` package with automatic fallbacks.
+Padrão atual usando o pacote oficial `ai-gateway-provider` com fallbacks automáticos.
 
 ```typescript
 import { createAiGateway } from 'ai-gateway-provider'
@@ -40,27 +40,27 @@ const openai = createOpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 })
 
-// Single model
+// Modelo único
 const { text } = await generateText({
   model: gateway(openai('gpt-4o')),
   prompt: 'Hello',
 })
 
-// Automatic fallback array
+// Array de fallback automático
 const { text } = await generateText({
   model: gateway([
-    openai('gpt-4o'), // Try first
+    openai('gpt-4o'), // Tenta primeiro
     anthropic('claude-sonnet-4-5'), // Fallback
   ]),
   prompt: 'Hello',
 })
 ```
 
-**Install:** `npm install ai-gateway-provider ai @ai-sdk/openai @ai-sdk/anthropic`
+**Instalar:** `npm install ai-gateway-provider ai @ai-sdk/openai @ai-sdk/anthropic`
 
-## Pattern 2: OpenAI SDK
+## Padrão 2: OpenAI SDK
 
-Drop-in replacement for OpenAI API with multi-provider support.
+Substituto direto da API OpenAI com suporte multi-provedor.
 
 ```typescript
 import OpenAI from 'openai'
@@ -69,20 +69,20 @@ const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
   baseURL: `https://gateway.ai.cloudflare.com/v1/${accountId}/${gatewayId}/compat`,
   defaultHeaders: {
-    'cf-aig-authorization': `Bearer ${cfToken}`, // For authenticated gateways
+    'cf-aig-authorization': `Bearer ${cfToken}`, // Gateways autenticados
   },
 })
 
-// Switch providers by changing model format: {provider}/{model}
+// Troque o provedor mudando o formato do modelo: {provider}/{model}
 const response = await client.chat.completions.create({
-  model: 'openai/gpt-4o', // or 'anthropic/claude-sonnet-4-5'
+  model: 'openai/gpt-4o', // ou 'anthropic/claude-sonnet-4-5'
   messages: [{ role: 'user', content: 'Hello!' }],
 })
 ```
 
-## Pattern 3: Workers AI Binding
+## Padrão 3: Binding Workers AI
 
-For Cloudflare Workers using Workers AI.
+Para Cloudflare Workers com Workers AI.
 
 ```typescript
 export default {
@@ -103,74 +103,74 @@ export default {
 }
 ```
 
-## Headers Quick Reference
+## Referência rápida de headers
 
-| Header                 | Purpose          | Example          | Notes                                  |
-| ---------------------- | ---------------- | ---------------- | -------------------------------------- |
-| `cf-aig-authorization` | Gateway auth     | `Bearer {token}` | Required for authenticated gateways    |
-| `cf-aig-metadata`      | Tracking         | `{"userId":"x"}` | Max 5 entries, flat structure          |
-| `cf-aig-cache-ttl`     | Cache duration   | `3600`           | Seconds, min 60, max 2592000 (30 days) |
-| `cf-aig-skip-cache`    | Bypass cache     | `true`           | -                                      |
-| `cf-aig-cache-key`     | Custom cache key | `my-key`         | Must be unique per response            |
-| `cf-aig-collect-log`   | Skip logging     | `false`          | Default: true                          |
-| `cf-aig-cache-status`  | Cache hit/miss   | Response only    | `HIT` or `MISS`                        |
+| Header                 | Finalidade       | Exemplo          | Notas                                   |
+| ---------------------- | ---------------- | ---------------- | --------------------------------------- |
+| `cf-aig-authorization` | Auth do gateway  | `Bearer {token}` | Obrigatório em gateways autenticados    |
+| `cf-aig-metadata`      | Rastreamento     | `{"userId":"x"}` | Máx. 5 entradas, estrutura plana        |
+| `cf-aig-cache-ttl`     | Duração do cache | `3600`           | Segundos, mín 60, máx 2592000 (30 dias) |
+| `cf-aig-skip-cache`    | Ignorar cache    | `true`           | -                                       |
+| `cf-aig-cache-key`     | Chave de cache   | `my-key`         | Única por resposta esperada             |
+| `cf-aig-collect-log`   | Pular log        | `false`          | Padrão: true                            |
+| `cf-aig-cache-status`  | Hit/miss         | Só na resposta   | `HIT` ou `MISS`                         |
 
-## In This Reference
+## Nesta referência
 
-| File                                       | Purpose                                                      |
+| Arquivo                                    | Finalidade                                                   |
 | ------------------------------------------ | ------------------------------------------------------------ |
-| [sdk-integration.md](./sdk-integration.md) | Vercel AI SDK, OpenAI SDK, Workers binding patterns          |
-| [configuration.md](./configuration.md)     | Dashboard setup, wrangler, API tokens                        |
-| [features.md](./features.md)               | Caching, rate limits, guardrails, DLP, BYOK, unified billing |
-| [dynamic-routing.md](./dynamic-routing.md) | Fallbacks, A/B testing, conditional routing                  |
-| [troubleshooting.md](./troubleshooting.md) | Debugging, errors, observability, gotchas                    |
+| [sdk-integration.md](./sdk-integration.md) | Vercel AI SDK, OpenAI SDK, padrões com binding Workers       |
+| [configuration.md](./configuration.md)     | Dashboard, wrangler, tokens de API                           |
+| [features.md](./features.md)               | Cache, rate limits, guardrails, DLP, BYOK, billing unificado |
+| [dynamic-routing.md](./dynamic-routing.md) | Fallbacks, A/B, roteamento condicional                       |
+| [troubleshooting.md](./troubleshooting.md) | Debug, erros, observabilidade, armadilhas                    |
 
-## Reading Order
+## Ordem de leitura
 
-| Task             | Files                                               |
-| ---------------- | --------------------------------------------------- |
-| First-time setup | README + [configuration.md](./configuration.md)     |
-| SDK integration  | README + [sdk-integration.md](./sdk-integration.md) |
-| Enable caching   | README + [features.md](./features.md)               |
-| Setup fallbacks  | README + [dynamic-routing.md](./dynamic-routing.md) |
-| Debug errors     | README + [troubleshooting.md](./troubleshooting.md) |
+| Tarefa               | Arquivos                                            |
+| -------------------- | --------------------------------------------------- |
+| Primeira config      | README + [configuration.md](./configuration.md)     |
+| Integração SDK       | README + [sdk-integration.md](./sdk-integration.md) |
+| Habilitar cache      | README + [features.md](./features.md)               |
+| Configurar fallbacks | README + [dynamic-routing.md](./dynamic-routing.md) |
+| Depurar erros        | README + [troubleshooting.md](./troubleshooting.md) |
 
-## Architecture
+## Arquitetura
 
-AI Gateway acts as a proxy between your application and AI providers:
+O AI Gateway atua como proxy entre seu app e os provedores de IA:
 
 ```
-Your App → AI Gateway → AI Provider (OpenAI, Anthropic, etc.)
+Seu app → AI Gateway → Provedor de IA (OpenAI, Anthropic etc.)
          ↓
-    Analytics, Caching, Rate Limiting, Logging
+    Analytics, cache, rate limiting, logging
 ```
 
-**Key URL patterns:**
+**Padrões de URL principais:**
 
-- Unified API (OpenAI-compatible): `https://gateway.ai.cloudflare.com/v1/{account_id}/{gateway_id}/compat/chat/completions`
-- Provider-specific: `https://gateway.ai.cloudflare.com/v1/{account_id}/{gateway_id}/{provider}/{endpoint}`
-- Dynamic routes: Use route name instead of model: `dynamic/{route-name}`
+- API unificada (compatível com OpenAI): `https://gateway.ai.cloudflare.com/v1/{account_id}/{gateway_id}/compat/chat/completions`
+- Por provedor: `https://gateway.ai.cloudflare.com/v1/{account_id}/{gateway_id}/{provider}/{endpoint}`
+- Rotas dinâmicas: use o nome da rota em vez do modelo: `dynamic/{nome-da-rota}`
 
-## Gateway Types
+## Tipos de gateway
 
-1. **Unauthenticated Gateway**: Open access (not recommended for production)
-2. **Authenticated Gateway**: Requires `cf-aig-authorization` header with Cloudflare API token (recommended)
+1. **Não autenticado:** acesso aberto (não recomendado em produção)
+2. **Autenticado:** exige o header `cf-aig-authorization` com token de API da Cloudflare (recomendado)
 
-## Provider Authentication Options
+## Opções de autenticação do provedor
 
-1. **Unified Billing**: Use AI Gateway billing to pay for inference (keyless mode - no provider API key needed)
-2. **BYOK (Store Keys)**: Store provider API keys in Cloudflare dashboard
-3. **Request Headers**: Include provider API key in each request
+1. **Unified billing:** usar a cobrança do AI Gateway (modo sem chave do provedor)
+2. **BYOK (armazenar chaves):** guardar chaves no dashboard da Cloudflare
+3. **Headers da requisição:** incluir chave do provedor em cada pedido
 
-## Related Skills
+## Skills relacionadas
 
-- [Workers AI](../workers-ai/README.md) - For `env.AI.run()` details
-- [Agents SDK](../agents-sdk/README.md) - For stateful AI patterns
-- [Vectorize](../vectorize/README.md) - For RAG patterns with embeddings
+- [Workers AI](../workers-ai/README.md) — detalhes de `env.AI.run()`
+- [Agents SDK](../agents-sdk/README.md) — padrões com estado
+- [Vectorize](../vectorize/README.md) — RAG com embeddings
 
-## Resources
+## Recursos
 
-- [Official Docs](https://developers.cloudflare.com/ai-gateway/)
-- [API Reference](https://developers.cloudflare.com/api/resources/ai_gateway/)
-- [Provider Guides](https://developers.cloudflare.com/ai-gateway/usage/providers/)
-- [Discord Community](https://discord.cloudflare.com)
+- [Documentação oficial](https://developers.cloudflare.com/ai-gateway/)
+- [Referência de API](https://developers.cloudflare.com/api/resources/ai_gateway/)
+- [Guias de provedores](https://developers.cloudflare.com/ai-gateway/usage/providers/)
+- [Comunidade no Discord](https://discord.cloudflare.com)

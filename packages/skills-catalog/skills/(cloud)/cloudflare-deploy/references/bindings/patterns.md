@@ -1,8 +1,8 @@
-# Binding Patterns and Best Practices
+# Padrões e boas práticas de bindings
 
-## Service Binding Patterns
+## Service bindings
 
-### RPC via Service Bindings
+### RPC via service bindings
 
 ```typescript
 // auth-worker
@@ -21,21 +21,21 @@ const response = await env.AUTH_SERVICE.fetch(
 )
 ```
 
-**Why RPC?** Zero latency (same datacenter), no DNS, free, type-safe.
+**Por quê RPC?** Latência mínima (mesmo datacenter), sem DNS, sem custo extra de egress entre serviços.
 
 **HTTP vs Service:**
 
 ```typescript
-// ❌ HTTP (slow, paid, cross-region latency)
+// ❌ HTTP (lento, pode ter custo, latência entre regiões)
 await fetch('https://auth-worker.example.com/validate')
 
-// ✅ Service binding (fast, free, same isolate)
+// ✅ Service binding (rápido, mesmo isolado)
 await env.AUTH_SERVICE.fetch(new Request('https://fake-host/validate'))
 ```
 
-**URL doesn't matter:** Service bindings ignore hostname/protocol, routing happens via binding name.
+**Host na URL não importa** para service bindings: roteamento pelo nome do binding.
 
-### Typed Service RPC
+### RPC tipado
 
 ```typescript
 // shared-types.ts
@@ -66,32 +66,27 @@ const response = await env.AUTH_SERVICE.fetch(
 const data: AuthResponse = await response.json()
 ```
 
-## Secrets Management
+## Gestão de secrets
 
 ```bash
-# Set secret
 npx wrangler secret put API_KEY
 cat api-key.txt | npx wrangler secret put API_KEY
 npx wrangler secret put API_KEY --env staging
 ```
 
 ```typescript
-// Use secret
 const response = await fetch('https://api.example.com', {
   headers: { Authorization: `Bearer ${env.API_KEY}` },
 })
 ```
 
-**Never commit secrets:**
+**Nunca commite:**
 
 ```jsonc
-// ❌ NEVER
 { "vars": { "API_KEY": "sk_live_abc123" } }
 ```
 
-## Testing with Mock Bindings
-
-### Vitest Mock
+## Testes com mocks
 
 ```typescript
 import { vi } from 'vitest'
@@ -113,22 +108,20 @@ const mockCtx: ExecutionContext = {
 const response = await worker.fetch(new Request('http://localhost/test'), mockEnv, mockCtx)
 ```
 
-## Binding Access Patterns
+## Padrões de acesso
 
-### Lazy Access
+### Acesso preguiçoso
 
 ```typescript
-// ✅ Access only when needed
 if (url.pathname === '/cached') {
   const cached = await env.MY_KV.get('data')
   if (cached) return new Response(cached)
 }
 ```
 
-### Parallel Access
+### Acesso paralelo
 
 ```typescript
-// ✅ Parallelize independent calls
 const [user, config, cache] = await Promise.all([
   env.DB.prepare('SELECT * FROM users WHERE id = ?').bind(userId).first(),
   env.MY_KV.get('config'),
@@ -136,18 +129,18 @@ const [user, config, cache] = await Promise.all([
 ])
 ```
 
-## Storage Selection
+## Escolha de storage
 
-### KV: CDN-Backed Reads
+### KV
 
 ```typescript
 const config = await env.MY_KV.get('app-config', { type: 'json' })
 ```
 
-**Use when:** Read-heavy, <25MB, global distribution, eventual consistency OK  
-**Latency:** <10ms reads (cached), writes eventually consistent (60s)
+**Use quando:** leitura alta, <25MB, distribuição global, eventual OK  
+**Latência:** leituras <10ms (cache); escritas eventualmente ~60s
 
-### D1: Relational Queries
+### D1
 
 ```typescript
 const results = await env.DB.prepare(
@@ -158,20 +151,20 @@ const results = await env.DB.prepare(
 ).all()
 ```
 
-**Use when:** Relational data, JOINs, ACID transactions  
-**Limits:** 10GB database size, 100k rows per query
+**Use quando:** dados relacionais, JOINs, transações ACID  
+**Limites:** 10GB por DB, 100k linhas por query
 
-### R2: Large Objects
+### R2
 
 ```typescript
 const object = await env.MY_BUCKET.get('large-file.zip')
 return new Response(object.body)
 ```
 
-**Use when:** Files >25MB, S3-compatible API needed  
-**Limits:** 5TB per object, unlimited storage
+**Use quando:** arquivos >25MB, API estilo S3  
+**Limites:** 5TB por objeto
 
-### Durable Objects: Coordination
+### Durable Objects
 
 ```typescript
 const id = env.COUNTER.idFromName('global')
@@ -179,27 +172,17 @@ const stub = env.COUNTER.get(id)
 await stub.fetch(new Request('https://fake/increment'))
 ```
 
-**Use when:** Strong consistency, real-time coordination, WebSocket state  
-**Guarantees:** Single-threaded execution, transactional storage
+**Use quando:** consistência forte, coordenação tempo real, estado WebSocket
 
-## Anti-Patterns
+## Anti-padrões
 
-**❌ Hardcoding credentials:** `const apiKey = 'sk_live_abc123'`  
-**✅** `npx wrangler secret put API_KEY`
+**Credenciais hardcoded** → `npx wrangler secret put`  
+**REST em vez de binding** → `env.MY_KV.get('key')`  
+**Polling de storage** → Durable Objects para estado em tempo real  
+**Dados grandes em vars** (5KB) → KV  
+**Cache global de env** → leia `env` dentro de `fetch()`
 
-**❌ Using REST API:** `fetch('https://api.cloudflare.com/.../kv/...')`  
-**✅** `env.MY_KV.get('key')`
-
-**❌ Polling storage:** `setInterval(() => env.KV.get('config'), 1000)`  
-**✅** Use Durable Objects for real-time state
-
-**❌ Large data in vars:** `{ "vars": { "HUGE_CONFIG": "..." } }` (5KB max)  
-**✅** `env.MY_KV.put('config', data)`
-
-**❌ Caching env globally:** `const apiKey = env.API_KEY` outside fetch()  
-**✅** Access `env.API_KEY` per-request inside fetch()
-
-## See Also
+## Ver também
 
 - [Service Bindings Docs](https://developers.cloudflare.com/workers/runtime-apis/bindings/service-bindings/)
 - [Miniflare Testing](https://miniflare.dev/)

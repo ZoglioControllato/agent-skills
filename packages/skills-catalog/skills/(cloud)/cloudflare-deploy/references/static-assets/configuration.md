@@ -31,43 +31,43 @@ Minimal configuration requires only `assets.directory`:
 }
 ```
 
-**Configuration keys:**
+**Chaves de configuração:**
 
-- `directory` (string, required): Path to assets folder (e.g. `./dist`, `./public`, `./build`)
-- `binding` (string, optional): Name to access assets in Worker code (e.g. `env.ASSETS`). Default: `"ASSETS"`
-- `not_found_handling` (string, optional): Behavior when asset not found
-  - `"single-page-application"`: Serve `/index.html` for non-asset paths (default for SPAs)
-  - `"404-page"`: Serve `/404.html` if present, otherwise 404
-  - `"none"`: Return 404 for missing assets
-- `html_handling` (string, optional): URL trailing slash behavior
-- `run_worker_first` (boolean | string[], optional): Routes that invoke Worker before checking assets
+- `directory` (string, obrigatório): Caminho para a pasta de ativos (por exemplo, `./dist`, `./public`, `./build`)
+- `binding` (string, opcional): Nome para acessar ativos no código Worker (por exemplo, `env.ASSETS`). Padrão: `"ATIVOS"`
+- `not_found_handling` (string, opcional): Comportamento quando o ativo não é encontrado
+- `"single-page-application"`: veicula `/index.html` para caminhos que não sejam de ativos (padrão para SPAs)
+- `"404-page"`: veicula `/404.html` se presente, caso contrário 404
+- `"none"`: Retorna 404 para ativos perdidos
+- `html_handling` (string, opcional): comportamento da barra final do URL
+- `run_worker_first` (boolean | string[], opcional): Rotas que invocam o Worker antes de verificar os ativos
 
-### not_found_handling Modes
+### Modos not_found_handling
 
-| Mode                        | Behavior                                   | Use Case                            |
-| --------------------------- | ------------------------------------------ | ----------------------------------- |
-| `"single-page-application"` | Serve `/index.html` for non-asset requests | React, Vue, Angular SPAs            |
-| `"404-page"`                | Serve `/404.html` if exists, else 404      | Static sites with custom error page |
-| `"none"`                    | Return 404 for missing assets              | API-first or custom routing         |
+| Modo                           | Comportamento                                                  | Caso de uso                                      |
+| ------------------------------ | -------------------------------------------------------------- | ------------------------------------------------ |
+| `"aplicativo de página única"` | Servir `/index.html` para solicitações que não sejam de ativos | React, Vue, SPAs Angulares                       |
+| `"404 páginas"`                | Servir `/404.html` se existir, caso contrário 404              | Sites estáticos com página de erro personalizada |
+| `"nenhum"`                     | Retornar 404 para ativos perdidos                              | Roteamento API-first ou personalizado            |
 
-### html_handling Modes
+### html_handling Modos
 
-Controls trailing slash behavior for HTML files:
+Controla o comportamento da barra final para arquivos HTML:
 
-| Mode                     | `/page`                                           | `/page/`                 | Use Case                    |
-| ------------------------ | ------------------------------------------------- | ------------------------ | --------------------------- |
-| `"auto-trailing-slash"`  | Redirect to `/page/` if `/page/index.html` exists | Serve `/page/index.html` | Default, SEO-friendly       |
-| `"force-trailing-slash"` | Always redirect to `/page/`                       | Serve if exists          | Consistent trailing slashes |
-| `"drop-trailing-slash"`  | Serve if exists                                   | Redirect to `/page`      | Cleaner URLs                |
-| `"none"`                 | No modification                                   | No modification          | Custom routing logic        |
+| Modo                    | `/página`                                                | `/página/`                  | Caso de uso                        |
+| ----------------------- | -------------------------------------------------------- | --------------------------- | ---------------------------------- |
+| `"barra automática"`    | Redirecionar para `/page/` se `/page/index.html` existir | Servir `/page/index.html`   | Padrão, compatível com SEO         |
+| `"forçar barra final"`  | Sempre redirecione para `/page/`                         | Servir se existir           | Barras finais consistentes         |
+| `"drop-trailing-slash"` | Servir se existir                                        | Redirecionar para `/página` | URLs mais limpos                   |
+| `"nenhum"`              | Sem modificação                                          | Sem modificação             | Lógica de roteamento personalizada |
 
-**Default:** `"auto-trailing-slash"`
+**Padrão:** `"barra final automática"`
 
-### run_worker_first Configuration
+### configuração run_worker_first
 
-Controls which requests invoke Worker before checking assets.
+Controla quais solicitações invocam o Worker antes de verificar os ativos.
 
-**Boolean syntax:**
+**Sintaxe booleana:**
 
 ```jsonc
 {
@@ -91,44 +91,42 @@ Controls which requests invoke Worker before checking assets.
 }
 ```
 
-**Pattern rules:**
+**Regras de padrão:**
 
-- Glob patterns: `*` (any chars), `**` (any path segments)
-- Negative patterns: Prefix with `!` to exclude
-- Precedence: Negative patterns override positive patterns
-- Default: `false` (assets served directly)
+- Padrões Glob: `*` (qualquer caractere), `**` (qualquer segmento de caminho)
+- Padrões negativos: prefixo com `!` para excluir
+- Precedência: padrões negativos substituem padrões positivos
+- Padrão: `false` (ativos veiculados diretamente)
 
-**Decision guidance:**
+**Orientação para decisão:**
 
-- Use `true` for API-first apps (few static assets)
-- Use array patterns for hybrid apps (APIs + static assets)
-- Use `false` for static-first sites (minimal dynamic routes)
+- Use `true` para aplicativos API-first (poucos ativos estáticos)
+- Use padrões de array para aplicativos híbridos (APIs + ativos estáticos)
+- Use `false` para sites estáticos (rotas dinâmicas mínimas)
 
-### .assetsignore File
+Arquivo ### .assetsignore
 
-Exclude files from upload using `.assetsignore` (same syntax as `.gitignore`):
+Exclua arquivos do upload usando `.assetsignore` (mesma sintaxe de `.gitignore`):```
 
-```
 # .assetsignore
-_worker.js
-*.map
-*.md
+
+\_worker.js
+_.map
+_.md
 node_modules/
 .git/
-```
 
-**Common patterns:**
+````
+**Padrões comuns:**
 
-- `_worker.js` - Exclude Worker code from assets
-- `*.map` - Exclude source maps
-- `*.md` - Exclude markdown files
-- Development artifacts
+- `_worker.js` - Excluir código do trabalhador dos ativos
+- `*.map` - Excluir mapas de origem
+- `*.md` - Excluir arquivos markdown
+- Artefatos de desenvolvimento
 
-### Vite Plugin Integration
+### Integração do plug-in Vite
 
-For Vite-based projects, use `@cloudflare/vite-plugin`:
-
-```typescript
+Para projetos baseados em Vite, use `@cloudflare/vite-plugin`:```typescript
 // vite.config.ts
 import { defineConfig } from 'vite'
 import { cloudflare } from '@cloudflare/vite-plugin'
@@ -143,44 +141,44 @@ export default defineConfig({
     }),
   ],
 })
-```
+````
 
-**Features:**
+**Recursos:**
 
-- Automatic asset detection during dev
-- Hot module replacement for assets
-- Production build integration
-- Requires: Wrangler 4.0.0+, `@cloudflare/vite-plugin` 1.0.0+
+- Detecção automática de ativos durante o desenvolvimento
+- Substituição de módulo a quente para ativos
+- Integração de construção de produção
+- Requer: Wrangler 4.0.0+, `@cloudflare/vite-plugin` 1.0.0+
 
-### Key Compatibility Dates
+### Principais datas de compatibilidade
 
-| Date         | Feature                         | Impact                                          |
-| ------------ | ------------------------------- | ----------------------------------------------- |
-| `2025-04-01` | Navigation request optimization | SPAs skip Worker for navigation, reducing costs |
+| Data         | Recurso                                | Impacto                                                     |
+| ------------ | -------------------------------------- | ----------------------------------------------------------- |
+| `2025-04-01` | Otimização de solicitação de navegação | SPAs dispensam trabalhador para navegação, reduzindo custos |
 
-Use current date for new projects. See [Compatibility Dates](https://developers.cloudflare.com/workers/configuration/compatibility-dates/) for full list.
+Use a data atual para novos projetos. Consulte [Datas de compatibilidade](https://developers.cloudflare.com/workers/configuration/compatibility-dates/) para ver a lista completa.
 
-### Environment-Specific Configuration
+### Configuração específica do ambiente
 
-Use `wrangler.jsonc` environments for different configs:
-
-```jsonc
+Use ambientes `wrangler.jsonc` para diferentes configurações:```jsonc
 {
-  "name": "my-worker",
-  "assets": { "directory": "./dist" },
-  "env": {
-    "staging": {
-      "assets": {
-        "not_found_handling": "404-page",
-      },
-    },
-    "production": {
-      "assets": {
-        "not_found_handling": "single-page-application",
-      },
-    },
-  },
+"name": "my-worker",
+"assets": { "directory": "./dist" },
+"env": {
+"staging": {
+"assets": {
+"not_found_handling": "404-page",
+},
+},
+"production": {
+"assets": {
+"not_found_handling": "single-page-application",
+},
+},
+},
 }
+
 ```
 
 Deploy with: `wrangler deploy --env staging`
+```

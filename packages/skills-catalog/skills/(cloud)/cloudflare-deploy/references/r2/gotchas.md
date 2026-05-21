@@ -1,93 +1,93 @@
-# R2 Gotchas & Troubleshooting
+# R2: gotchas e troubleshooting
 
-## List Truncation
+## Truncamento de list
 
 ```typescript
-// ❌ WRONG: Don't compare object count when using include
+// ❌ ERRADO: não compare contagem de objetos com include
 while (listed.objects.length < options.limit) { ... }
 
-// ✅ CORRECT: Always use truncated property
+// ✅ CERTO: sempre use truncated
 while (listed.truncated) {
   const next = await env.MY_BUCKET.list({ cursor: listed.cursor });
   // ...
 }
 ```
 
-**Reason:** `include` with metadata may return fewer objects per page to fit metadata.
+**Motivo:** com `include` e metadados, a página pode ter menos objetos.
 
-## ETag Format
+## Formato ETag
 
 ```typescript
-// ❌ WRONG: Using etag (unquoted) in headers
+// ❌ ERRADO: etag sem aspas nos headers
 headers.set('etag', object.etag) // Missing quotes
 
-// ✅ CORRECT: Use httpEtag (quoted)
+// ✅ CERTO: use httpEtag (com aspas)
 headers.set('etag', object.httpEtag)
 ```
 
-## Checksum Limits
+## Limites de checksum
 
-Only ONE checksum algorithm allowed per PUT:
+Só UM algoritmo de checksum por PUT:
 
 ```typescript
-// ❌ WRONG: Multiple checksums
+// ❌ ERRADO: vários checksums
 await env.MY_BUCKET.put(key, data, { md5: hash1, sha256: hash2 }) // Error
 
-// ✅ CORRECT: Pick one
+// ✅ CERTO: escolha um
 await env.MY_BUCKET.put(key, data, { sha256: hash })
 ```
 
-## Multipart Requirements
+## Requisitos multipart
 
-- All parts must be uniform size (except last part)
-- Part numbers start at 1 (not 0)
-- Uncompleted uploads auto-abort after 7 days
-- `resumeMultipartUpload` doesn't validate uploadId existence
+- Partes com tamanho uniforme (exceto a última)
+- Números de parte começam em 1 (não 0)
+- Uploads incompletos abortam após 7 dias
+- `resumeMultipartUpload` não valida existência do uploadId
 
-## Conditional Operations
+## Operações condicionais
 
 ```typescript
-// Precondition failure returns object WITHOUT body
+// Falha de pré-condição retorna objeto SEM body
 const object = await env.MY_BUCKET.get(key, {
   onlyIf: { etagMatches: '"wrong"' },
 })
 
-// Check for body, not just null
+// Verifique body, não só null
 if (!object) return new Response('Not found', { status: 404 })
 if (!object.body) return new Response(null, { status: 304 }) // Precondition failed
 ```
 
-## Key Validation
+## Validação de key
 
 ```typescript
-// ❌ DANGEROUS: Path traversal
+// ❌ PERIGOSO: path traversal
 const key = url.pathname.slice(1) // Could be ../../../etc/passwd
 await env.MY_BUCKET.get(key)
 
-// ✅ SAFE: Validate keys
+// ✅ SEGURO: valide keys
 if (!key || key.includes('..') || key.startsWith('/')) {
   return new Response('Invalid key', { status: 400 })
 }
 ```
 
-## Storage Class Pitfalls
+## Armadilhas de storage class
 
-- InfrequentAccess: 30-day minimum billing (even if deleted early)
-- Can't transition IA → Standard via lifecycle (use S3 CopyObject)
-- Retrieval fees apply for IA reads
+- InfrequentAccess: cobrança mínima 30 dias (mesmo apagando antes)
+- Não dá para transicionar IA → Standard só com lifecycle (use S3 CopyObject)
+- IA tem taxas de leitura
 
-## Stream Length Requirement
+## Stream sem tamanho conhecido
 
 ```typescript
-// ❌ WRONG: Streaming unknown length fails silently
+// ❌ ERRADO: stream de tamanho desconhecido pode falhar silenciosamente
 const response = await fetch(url)
 await env.MY_BUCKET.put(key, response.body) // May fail without error
 
-// ✅ CORRECT: Buffer or use Content-Length
+// ✅ CERTO: buffer ou Content-Length
 const data = await response.arrayBuffer()
 await env.MY_BUCKET.put(key, data)
 
-// OR: Pass Content-Length if known
+// OU: passe Content-Length se souber
 const object = await env.MY_BUCKET.put(key, request.body, {
   httpMetadata: {
     contentLength: parseInt(request.headers.get('content-length') || '0'),
@@ -95,18 +95,18 @@ const object = await env.MY_BUCKET.put(key, request.body, {
 })
 ```
 
-**Reason:** R2 requires known length for streams. Unknown length may cause silent truncation.
+**Motivo:** R2 precisa de comprimento conhecido; tamanho desconhecido pode truncar sem erro claro.
 
-## S3 SDK Region Configuration
+## Região do SDK S3
 
 ```typescript
-// ❌ WRONG: Missing region breaks ALL S3 SDK calls
+// ❌ ERRADO: sem region quebra chamadas S3
 const s3 = new S3Client({
   endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
   credentials: { ... }
 });
 
-// ✅ CORRECT: MUST set region='auto'
+// ✅ CERTO: region='auto' obrigatório
 const s3 = new S3Client({
   region: 'auto', // REQUIRED
   endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
@@ -114,20 +114,20 @@ const s3 = new S3Client({
 });
 ```
 
-**Reason:** S3 SDK requires region. R2 uses 'auto' as placeholder.
+**Motivo:** SDK exige região; no R2 use `auto`.
 
-## Local Development Limits
+## Limites do dev local
 
 ```typescript
-// ❌ Miniflare/wrangler dev: Limited R2 support
+// ❌ Miniflare/wrangler dev: suporte R2 limitado
 // - No multipart uploads
 // - No presigned URLs (requires S3 SDK + network)
 // - Memory-backed storage (lost on restart)
 
-// ✅ Use remote bindings for full features
+// ✅ Bindings remotos para recursos completos
 wrangler dev --remote
 
-// OR: Conditional logic
+// OU: lógica condicional
 if (env.ENVIRONMENT === 'development') {
   // Fallback for local dev
 } else {
@@ -135,56 +135,56 @@ if (env.ENVIRONMENT === 'development') {
 }
 ```
 
-## Presigned URL Expiry
+## Expiração de URL pré-assinada
 
 ```typescript
-// ❌ WRONG: URL expires but no client validation
+// ❌ ERRADO: URL expira sem aviso ao cliente
 const url = await getSignedUrl(s3, command, { expiresIn: 60 })
 // 61 seconds later: 403 Forbidden
 
-// ✅ CORRECT: Return expiry to client
+// ✅ CERTO: devolva expiração
 return Response.json({
   uploadUrl: url,
   expiresAt: new Date(Date.now() + 60000).toISOString(),
 })
 ```
 
-## Limits
+## Limites
 
-| Limit                    | Value              |
-| ------------------------ | ------------------ |
-| Object size              | 5 TB               |
-| Multipart part count     | 10,000             |
-| Multipart part min size  | 5 MB (except last) |
-| Batch delete             | 1,000 keys         |
-| List limit               | 1,000 per request  |
-| Key size                 | 1024 bytes         |
-| Custom metadata          | 2 KB per object    |
-| Presigned URL max expiry | 7 days             |
+| Limite                      | Valor                |
+| --------------------------- | -------------------- |
+| Tamanho do objeto           | 5 TB                 |
+| Partes multipart            | 10.000               |
+| Tamanho mínimo da parte     | 5 MB (exceto última) |
+| Delete em lote              | 1.000 keys           |
+| Limite de list              | 1.000 por request    |
+| Tamanho da key              | 1024 bytes           |
+| Metadata custom             | 2 KB por objeto      |
+| Expiração máx. URL assinada | 7 dias               |
 
-## Common Errors
+## Erros comuns
 
-### "Stream upload failed" / Silent Truncation
+### "Stream upload failed" / truncamento silencioso
 
-**Cause:** Stream length unknown or Content-Length missing  
-**Solution:** Buffer data or pass explicit Content-Length
+**Causa:** comprimento do stream desconhecido ou Content-Length ausente  
+**Solução:** bufferize ou passe Content-Length explícito
 
-### "Invalid credentials" / S3 SDK
+### "Invalid credentials" / SDK S3
 
-**Cause:** Missing `region: 'auto'` in S3Client config  
-**Solution:** Always set `region: 'auto'` for R2
+**Causa:** falta `region: 'auto'`  
+**Solução:** sempre `region: 'auto'` no R2
 
 ### "Object not found"
 
-**Cause:** Object key doesn't exist or was deleted  
-**Solution:** Verify object key correct, check if object was deleted, ensure bucket correct
+**Causa:** key inexistente ou apagada  
+**Solução:** confira key, bucket e lifecycle
 
 ### "List compatibility error"
 
-**Cause:** Missing or old compatibility_date, or flag not enabled  
-**Solution:** Set `compatibility_date >= 2022-08-04` or enable `r2_list_honor_include` flag
+**Causa:** compatibility_date antiga ou flag não habilitada  
+**Solução:** `compatibility_date >= 2022-08-04` ou flag `r2_list_honor_include`
 
 ### "Multipart upload failed"
 
-**Cause:** Part sizes not uniform or incorrect part number  
-**Solution:** Ensure uniform size except final part, verify part numbers start at 1
+**Causa:** partes com tamanhos irregulares ou número de parte errado  
+**Solução:** tamanho uniforme exceto última; partes começam em 1

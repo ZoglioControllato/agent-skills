@@ -1,126 +1,121 @@
-# Gotchas and Troubleshooting
+# Dicas e solução de problemas
 
-Common pitfalls, limitations, and solutions for TCP Sockets in Cloudflare Workers.
+Armadilhas, limitações e soluções comuns para soquetes TCP em Cloudflare Workers.
 
-## Platform Limits
+## Limites da plataforma
 
-### Connection Limits
+### Limites de conexão
 
-| Limit                              | Value                          |
-| ---------------------------------- | ------------------------------ |
-| Max concurrent sockets per request | 6 (hard limit)                 |
-| Socket lifetime                    | Request duration               |
-| Connection timeout                 | Platform-dependent, no setting |
+| Limite                                         | Valor                                      |
+| ---------------------------------------------- | ------------------------------------------ |
+| Máximo de soquetes simultâneos por solicitação | 6 (limite rígido)                          |
+| Vida útil do soquete                           | Duração do pedido                          |
+| Tempo limite de conexão                        | Dependente da plataforma, sem configuração |
 
-**Problem:** Exceeding 6 connections throws error
+**Problema:** Exceder 6 conexões gera erro
 
-**Solution:** Process in batches of 6
-
-```typescript
+**Solução:** Processar em lotes de 6```typescript
 for (let i = 0; i < hosts.length; i += 6) {
-  const batch = hosts.slice(i, i + 6).map((h) => connect({ hostname: h, port: 443 }))
-  await Promise.all(
-    batch.map(async (s) => {
-      /* use */ await s.close()
-    }),
-  )
+const batch = hosts.slice(i, i + 6).map((h) => connect({ hostname: h, port: 443 }))
+await Promise.all(
+batch.map(async (s) => {
+/_ use _/ await s.close()
+}),
+)
 }
-```
 
-### Blocked Destinations
+````
+### Destinos bloqueados
 
-Cloudflare IPs (1.1.1.1), localhost (127.0.0.1), port 25 (SMTP), Worker's own URL blocked for security.
+IPs Cloudflare (1.1.1.1), localhost (127.0.0.1), porta 25 (SMTP), URL do próprio trabalhador bloqueado por segurança.
 
-**Solution:** Use public IPs or Tunnel hostnames: `connect({ hostname: "db.internal.company.net", port: 5432 })`
+**Solução:** Use IPs públicos ou nomes de host de túnel: `connect({ hostname: "db.internal.company.net", port: 5432 })`
 
-### Scope Requirements
+### Requisitos de escopo
 
-**Problem:** Sockets created in global scope fail
+**Problema:** Sockets criados no escopo global falham
 
-**Cause:** Sockets tied to request lifecycle
+**Causa:** Sockets vinculados ao ciclo de vida da solicitação
 
-**Solution:** Create inside handler: `export default { async fetch() { const socket = connect(...); } }`
+**Solução:** Crie um manipulador interno: `export default { async fetch() { const socket = connect(...); } }`
 
-## Common Errors
+## Erros Comuns
 
-### Error: "proxy request failed"
+### Erro: "falha na solicitação de proxy"
 
-**Causes:** Blocked destination (Cloudflare IP, localhost, port 25), DNS failure, network unreachable
+**Causas:** Destino bloqueado (IP da Cloudflare, localhost, porta 25), falha de DNS, rede inacessível
 
-**Solution:** Validate destinations, use Tunnel hostnames, catch errors with try/catch
+**Solução:** validar destinos, usar nomes de host do Tunnel, detectar erros com try/catch
 
-### Error: "TCP Loop detected"
+### Erro: "Loop TCP detectado"
 
-**Cause:** Worker connecting to itself
+**Causa:** Worker se conectando a si mesmo
 
-**Solution:** Connect to external service, not Worker's own hostname
+**Solução:** Conecte-se ao serviço externo, não ao nome de host do próprio Worker
 
-### Error: "Port 25 prohibited"
+### Erro: "Porta 25 proibida"
 
-**Cause:** SMTP port blocked
+**Causa:** Porta SMTP bloqueada
 
-**Solution:** Use Email Workers API for email
+**Solução:** use a API Email Workers para email
 
-### Error: "socket is not open"
+### Erro: "soquete não está aberto"
 
-**Cause:** Read/write after close
+**Causa:** Leitura/gravação após fechamento
 
-**Solution:** Always use try/finally to ensure proper closure order
+**Solução:** Sempre use try/finally para garantir a ordem de fechamento adequada
 
-### Error: Connection timeout
+### Erro: tempo limite de conexão
 
-**Cause:** No built-in timeout
+**Causa:** Sem tempo limite integrado
 
-**Solution:** Use `Promise.race()`:
-
-```typescript
+**Solução:** Use `Promise.race()`:```typescript
 const socket = connect(addr, opts)
 const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 5000))
 await Promise.race([socket.opened, timeout])
-```
+````
 
-## TLS/SSL Issues
+## Problemas de TLS/SSL
 
-### StartTLS Timing
+### Tempo de início do TLS
 
-**Problem:** Calling `startTls()` too early
+**Problema:** Chamar `startTls()` muito cedo
 
-**Solution:** Send protocol-specific STARTTLS command, wait for server OK, then call `socket.startTls()`
+**Solução:** Envie o comando STARTTLS específico do protocolo, aguarde o servidor OK e chame `socket.startTls()`
 
-### Certificate Validation
+### Validação de certificado
 
-**Problem:** Self-signed certs fail
+**Problema:** certificados autoassinados falham
 
-**Solution:** Use proper certs or Tunnel (handles TLS termination)
+**Solução:** Use certificados ou túnel adequados (lida com a terminação TLS)
 
-## Performance Issues
+## Problemas de desempenho
 
-### Not Using Connection Pooling
+### Não usando pool de conexões
 
-**Problem:** New connection overhead per request
+**Problema:** Nova sobrecarga de conexão por solicitação
 
-**Solution:** Use [Hyperdrive](../hyperdrive/) for databases (built-in pooling)
+**Solução:** Use [Hyperdrive](../hyperdrive/) para bancos de dados (pooling integrado)
 
-### Not Using Smart Placement
+### Não usando posicionamento inteligente
 
-**Problem:** High latency to backend
+**Problema:** Alta latência para back-end
 
-**Solution:** Enable: `{ "placement": { "mode": "smart" } }` in wrangler.jsonc
+**Solução:** Habilite: `{ "placement": { "mode": "smart" } }` em wrangler.jsonc
 
-### Forgetting to Close Sockets
+### Esquecendo de fechar os soquetes
 
-**Problem:** Resource leaks
+**Problema:** Vazamentos de recursos
 
-**Solution:** Always use try/finally:
-
-```typescript
+**Solução:** Sempre use try/finalmente:```typescript
 const socket = connect({ hostname: 'api.internal', port: 443 })
 try {
-  // Use socket
+// Use socket
 } finally {
-  await socket.close()
+await socket.close()
 }
-```
+
+````
 
 ## Data Handling Issues
 
@@ -148,24 +143,24 @@ try {
 const ALLOWED = ['api1.internal.net', 'api2.internal.net']
 const host = new URL(req.url).searchParams.get('host')
 if (!host || !ALLOWED.includes(host)) return new Response('Forbidden', { status: 403 })
-```
+````
 
-## When to Use Alternatives
+## Quando usar alternativas
 
-| Use Case                  | Alternative                  | Reason                      |
-| ------------------------- | ---------------------------- | --------------------------- |
-| PostgreSQL/MySQL          | [Hyperdrive](../hyperdrive/) | Connection pooling, caching |
-| HTTP/HTTPS                | `fetch()`                    | Simpler, built-in           |
-| HTTP with SSRF protection | VPC Services (beta 2025+)    | Declarative bindings        |
+| Caso de uso            | Alternativa                  | Razão                    |
+| ---------------------- | ---------------------------- | ------------------------ |
+| PostgreSQL/MySQL       | [Hiperdrive](../hiperdrive/) | Pool de conexões, cache  |
+| HTTP/HTTPS             | `buscar()`                   | Mais simples, integrado  |
+| HTTP com proteção SSRF | Serviços VPC (beta 2025+)    | Vinculações declarativas |
 
-## Debugging Tips
+## Dicas de depuração
 
-1. **Log connection details:** `const info = await socket.opened; console.log(info.remoteAddress);`
-2. **Test with public services first:** Use tcpbin.com:4242 echo server
-3. **Verify Tunnel:** `cloudflared tunnel info <name>` and `cloudflared tunnel route ip list`
+1. **Registre detalhes da conexão:** `const info = await socket.opened; console.log(info.remoteAddress);`
+2. **Teste primeiro com serviços públicos:** Use tcpbin.com:4242 echo server
+3. **Verificar túnel:** `informações do túnel cloudflared <nome>` e `lista de IP da rota do túnel cloudflared`
 
-## Related
+## Relacionado
 
-- [Hyperdrive](../hyperdrive/) - Database connections
-- [Smart Placement](../smart-placement/) - Latency optimization
-- [Tunnel Troubleshooting](../tunnel/gotchas.md)
+- [Hyperdrive](../hyperdrive/) - Conexões de banco de dados
+- [Smart Placement](../smart-placement/) - Otimização de latência
+- [Solução de problemas de túnel](../tunnel/gotchas.md)

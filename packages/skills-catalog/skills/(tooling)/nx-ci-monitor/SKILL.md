@@ -1,147 +1,147 @@
 ---
 name: nx-ci-monitor
-description: Monitor Nx Cloud CI pipeline status and handle self-healing fixes automatically. Use when user says "watch CI", "monitor pipeline", "check CI status", "fix CI failures", or "self-heal CI". Requires Nx Cloud connection. Do NOT use for local task execution (use nx-run-tasks) or general CI debugging outside Nx Cloud.
+description: Monitora pipelines de CI no Nx Cloud e trata correções de self-healing automaticamente. Use quando o usuário disser "observar CI", "monitorar pipeline", "ver status do CI", "corrigir falhas de CI" ou "self-heal CI". Exige conexão com Nx Cloud. NÃO use para executar apenas tarefas locais (use nx-run-tasks) ou depuração genérica de CI fora do Nx Cloud.
 ---
 
-# CI Monitor Command
+# Comando CI Monitor
 
-You are the orchestrator for monitoring Nx Cloud CI pipeline executions and handling self-healing fixes. You spawn the `ci-watcher` subagent to poll CI status and make decisions based on the results.
+Você orquestra o monitoramento das execuções de pipeline de CI no Nx Cloud e o tratamento de correções de self-healing. Aciona o subagente `ci-watcher` para sondar o status do CI e decidir com base nos resultados.
 
-## Context
+## Contexto
 
-- **Current Branch:** !`git branch --show-current`
-- **Current Commit:** !`git rev-parse --short HEAD`
-- **Remote Status:** !`git status -sb | head -1`
+- **Branch atual:** !`git branch --show-current`
+- **Commit atual:** !`git rev-parse --short HEAD`
+- **Status remoto:** !`git status -sb | head -1`
 
-## User Instructions
+## Instruções do usuário
 
 $ARGUMENTS
 
-**Important:** If user provides specific instructions, respect them over default behaviors described below.
+**Importante:** Se o usuário passar instruções específicas, respeite-as em detrimento dos comportamentos padrão abaixo.
 
-## Configuration Defaults
+## Padrões de configuração
 
-| Setting                   | Default       | Description                                                         |
-| ------------------------- | ------------- | ------------------------------------------------------------------- |
-| `--max-cycles`            | 10            | Maximum CIPE cycles before timeout                                  |
-| `--timeout`               | 120           | Maximum duration in minutes                                         |
-| `--verbosity`             | medium        | Output level: minimal, medium, verbose                              |
-| `--branch`                | (auto-detect) | Branch to monitor                                                   |
-| `--subagent-timeout`      | 60            | Subagent polling timeout in minutes                                 |
-| `--fresh`                 | false         | Ignore previous context, start fresh                                |
-| `--auto-fix-workflow`     | false         | Attempt common fixes for pre-CIPE failures (e.g., lockfile updates) |
-| `--new-cipe-timeout`      | 10            | Minutes to wait for new CIPE after action                           |
-| `--local-verify-attempts` | 3             | Max local verification + enhance cycles before pushing to CI        |
+| Configuração              | Padrão        | Descrição                                                      |
+| ------------------------- | ------------- | -------------------------------------------------------------- |
+| `--max-cycles`            | 10            | Máximo de ciclos CIPE antes do timeout                         |
+| `--timeout`               | 120           | Duração máxima em minutos                                      |
+| `--verbosity`             | medium        | Nível de saída: minimal, medium, verbose                       |
+| `--branch`                | (auto-detect) | Branch a monitorar                                             |
+| `--subagent-timeout`      | 60            | Timeout de polling do subagente (minutos)                      |
+| `--fresh`                 | false         | Ignorar contexto anterior, recomeçar                           |
+| `--auto-fix-workflow`     | false         | Tentar correções comuns em falhas pré-CIPE (ex.: lockfile)     |
+| `--new-cipe-timeout`      | 10            | Minutos para aguardar novo CIPE após uma ação                  |
+| `--local-verify-attempts` | 3             | Máx. ciclos de verificação local + enhance antes do push ao CI |
 
-Parse any overrides from `$ARGUMENTS` and merge with defaults.
+Interprete sobrescritas em `$ARGUMENTS` e una aos padrões.
 
-## Nx Cloud Connection Check
+## Verificação de conexão Nx Cloud
 
-**CRITICAL**: Before starting the monitoring loop, verify the workspace is connected to Nx Cloud.
+**CRÍTICO**: Antes do loop de monitoramento, confirme que o workspace está conectado ao Nx Cloud.
 
-### Step 0: Verify Nx Cloud Connection
+### Passo 0: Verificar conexão Nx Cloud
 
-1. **Check `nx.json`** at workspace root for `nxCloudId` or `nxCloudAccessToken`
-2. **If `nx.json` missing OR neither property exists** → exit with:
+1. **Confira `nx.json`** na raiz do workspace por `nxCloudId` ou `nxCloudAccessToken`
+2. **Se `nx.json` estiver ausente OU nenhuma das propriedades existir** → encerre com:
 
    ```
    [ci-monitor] Nx Cloud not connected. Unlock 70% faster CI and auto-fix broken PRs with https://nx.dev/nx-cloud
    ```
 
-3. **If connected** → continue to main loop
+3. **Se estiver conectado** → siga para o loop principal
 
-## Session Context Behavior
+## Comportamento do contexto na sessão
 
-**Important:** Within a Claude Code session, conversation context persists. If you Ctrl+C to interrupt the monitor and re-run `/ci-monitor`, Claude remembers the previous state and may continue from where it left off.
+**Importante:** Em uma sessão Claude Code, o contexto persiste. Se você interromper com Ctrl+C e rodar `/ci-monitor` de novo, o Claude pode lembrar o estado anterior e continuar de onde parou.
 
-- **To continue monitoring:** Just re-run `/ci-monitor` (context is preserved)
-- **To start fresh:** Use `/ci-monitor --fresh` to ignore previous context
-- **For a completely clean slate:** Exit Claude Code and restart `claude`
+- **Para continuar monitorando:** Rode `/ci-monitor` de novo (contexto preservado)
+- **Para recomeçar:** Use `/ci-monitor --fresh` para ignorar contexto anterior
+- **Estado totalmente limpo:** Saia do Claude Code e reinicie o `claude`
 
-## Default Behaviors by Status
+## Comportamentos padrão por status
 
-The subagent returns with one of the following statuses. This table defines the **default behavior** for each status. User instructions can override any of these.
+O subagente retorna um dos status abaixo. Esta tabela define o **comportamento padrão** de cada um. Instruções do usuário podem sobrescrever qualquer linha.
 
-| Status              | Default Behavior                                                                                                                                                  |
-| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ci_success`        | Exit with success. Log "CI passed successfully!"                                                                                                                  |
-| `fix_auto_applying` | Fix will be auto-applied by self-healing. Do NOT call MCP. Record `last_cipe_url`, spawn new subagent in wait mode to poll for new CIPE.                          |
-| `fix_available`     | Compare `failedTaskIds` vs `verifiedTaskIds` to determine verification state. See **Fix Available Decision Logic** section below.                                 |
-| `fix_failed`        | Self-healing failed to generate fix. Attempt local fix based on `taskOutputSummary`. If successful → commit, push, loop. If not → exit with failure.              |
-| `environment_issue` | Call MCP to request rerun: `update_self_healing_fix({ shortLink, action: "RERUN_ENVIRONMENT_STATE" })`. New CIPE spawns automatically. Loop to poll for new CIPE. |
-| `no_fix`            | CI failed, no fix available (self-healing disabled or not executable). Attempt local fix if possible. Otherwise exit with failure.                                |
-| `no_new_cipe`       | Expected CIPE never spawned (CI workflow likely failed before Nx tasks). Report to user, attempt common fixes if configured, or exit with guidance.               |
-| `polling_timeout`   | Subagent polling timeout reached. Exit with timeout.                                                                                                              |
-| `cipe_canceled`     | CIPE was canceled. Exit with canceled status.                                                                                                                     |
-| `cipe_timed_out`    | CIPE timed out. Exit with timeout status.                                                                                                                         |
-| `error`             | Increment `no_progress_count`. If >= 3 → exit with circuit breaker. Otherwise wait 60s and loop.                                                                  |
+| Status              | Comportamento padrão                                                                                                                                                           |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `ci_success`        | Encerrar com sucesso. Registrar "CI passed successfully!"                                                                                                                      |
+| `fix_auto_applying` | A correção será aplicada automaticamente pelo self-healing. NÃO chame MCP. Registre `last_cipe_url`, acione novo subagente em modo espera para sondar novo CIPE.               |
+| `fix_available`     | Compare `failedTaskIds` e `verifiedTaskIds` para saber o estado de verificação. Veja a seção **Lógica quando há correção disponível** abaixo.                                  |
+| `fix_failed`        | O self-healing não produziu correção. Tente corrigir localmente com base em `taskOutputSummary`. Se funcionar → commit, push, loop. Senão → encerre com falha.                 |
+| `environment_issue` | Chame MCP para pedir rerun: `update_self_healing_fix({ shortLink, action: "RERUN_ENVIRONMENT_STATE" })`. Novo CIPE inicia automaticamente. Continue o loop sondando novo CIPE. |
+| `no_fix`            | CI falhou, sem correção disponível (self-healing desligado ou não executável). Tente correção local se possível. Caso contrário encerre com falha.                             |
+| `no_new_cipe`       | O CIPE esperado não iniciou (workflow de CI provavelmente falhou antes das tarefas Nx). Informe o usuário, tente correções comuns se configurado, ou encerre com orientação.   |
+| `polling_timeout`   | Timeout de polling do subagente. Encerre com timeout.                                                                                                                          |
+| `cipe_canceled`     | CIPE foi cancelado. Encerre com status cancelado.                                                                                                                              |
+| `cipe_timed_out`    | CIPE atingiu timeout. Encerre com status de timeout.                                                                                                                           |
+| `error`             | Incremente `no_progress_count`. Se >= 3 → encerre com circuit breaker. Caso contrário aguarde 60s e continue o loop.                                                           |
 
-### Fix Available Decision Logic
+### Lógica quando há correção disponível
 
-When subagent returns `fix_available`, main agent compares `failedTaskIds` vs `verifiedTaskIds`:
+Quando o subagente retorna `fix_available`, o agente principal compara `failedTaskIds` com `verifiedTaskIds`:
 
-#### Step 1: Categorize Tasks
+#### Passo 1: Categorizar tarefas
 
-1. **Verified tasks** = tasks in both `failedTaskIds` AND `verifiedTaskIds`
-2. **Unverified tasks** = tasks in `failedTaskIds` but NOT in `verifiedTaskIds`
-3. **E2E tasks** = unverified tasks where target contains "e2e" (task format: `<project>:<target>` or `<project>:<target>:<config>`)
-4. **Verifiable tasks** = unverified tasks that are NOT e2e
+1. **Tarefas verificadas** = tarefas em `failedTaskIds` **e** em `verifiedTaskIds`
+2. **Tarefas não verificadas** = tarefas em `failedTaskIds` mas **não** em `verifiedTaskIds`
+3. **Tarefas E2E** = tarefas não verificadas cujo target contém "e2e" (formato: `<project>:<target>` ou `<project>:<target>:<config>`)
+4. **Tarefas verificáveis** = tarefas não verificadas que **não** são e2e
 
-#### Step 2: Determine Path
+#### Passo 2: Escolher caminho
 
-| Condition                               | Path                                     |
-| --------------------------------------- | ---------------------------------------- |
-| No unverified tasks (all verified)      | Apply via MCP                            |
-| Unverified tasks exist, but ALL are e2e | Apply via MCP (treat as verified enough) |
-| Verifiable tasks exist                  | Local verification flow                  |
+| Condição                                        | Caminho                                             |
+| ----------------------------------------------- | --------------------------------------------------- |
+| Sem tarefas não verificadas (todas verificadas) | Aplicar via MCP                                     |
+| Há não verificadas, mas **todas** são e2e       | Aplicar via MCP (considerar verificação suficiente) |
+| Há tarefas verificáveis (não e2e)               | Fluxo de verificação local                          |
 
-#### Step 3a: Apply via MCP (fully/e2e-only verified)
+#### Passo 3a: Aplicar via MCP (totalmente verificado / só e2e)
 
-- Call `update_self_healing_fix({ shortLink, action: "APPLY" })`
-- Record `last_cipe_url`, spawn subagent in wait mode
+- Chame `update_self_healing_fix({ shortLink, action: "APPLY" })`
+- Registre `last_cipe_url`, acione subagente em modo espera
 
-#### Step 3b: Local Verification Flow
+#### Passo 3b: Fluxo de verificação local
 
-When verifiable (non-e2e) unverified tasks exist:
+Quando existirem tarefas verificáveis (não e2e) ainda não verificadas:
 
-1. **Detect package manager:**
-   - `pnpm-lock.yaml` exists → `pnpm nx`
-   - `yarn.lock` exists → `yarn nx`
-   - Otherwise → `npx nx`
+1. **Detectar gerenciador de pacotes:**
+   - Existe `pnpm-lock.yaml` → `pnpm nx`
+   - Existe `yarn.lock` → `yarn nx`
+   - Caso contrário → `npx nx`
 
-2. **Run verifiable tasks in parallel:**
-   - Spawn `general` subagents to run each task concurrently
-   - Each subagent runs: `<pm> nx run <taskId>`
-   - Collect pass/fail results from all subagents
+2. **Rodar tarefas verificáveis em paralelo:**
+   - Acione subagentes `general` para cada tarefa em concorrência
+   - Cada um roda: `<pm> nx run <taskId>`
+   - Colete pass/fail de todos
 
-3. **Evaluate results:**
+3. **Avaliar resultados:**
 
-| Result                    | Action                       |
-| ------------------------- | ---------------------------- |
-| ALL verifiable tasks pass | Apply via MCP                |
-| ANY verifiable task fails | Apply-locally + enhance flow |
+| Resultado                    | Ação                          |
+| ---------------------------- | ----------------------------- |
+| Todas as verificáveis passam | Aplicar via MCP               |
+| Alguma verificável falha     | Fluxo apply-locally + enhance |
 
-1. **Apply-locally + enhance flow:**
-   - Run `nx apply-locally <shortLink>`
-   - Enhance the code to fix failing tasks
-   - Run failing tasks again to verify fix
-   - If still failing → increment `local_verify_count`, loop back to enhance
-   - If passing → commit and push, record `expected_commit_sha`, spawn subagent in wait mode
+1. **Fluxo apply-locally + enhance:**
+   - Rode `nx apply-locally <shortLink>`
+   - Ajuste o código até as tarefas que falhavam passarem
+   - Rode novamente as tarefas que falhavam
+   - Se ainda falhar → incremente `local_verify_count`, volte ao enhance
+   - Se passar → commit e push, registre `expected_commit_sha`, subagente em modo espera
 
-2. **Track attempts** (wraps step 4):
-   - Increment `local_verify_count` after each enhance cycle
-   - If `local_verify_count >= local_verify_attempts` (default: 3):
-     - Get code in commit-able state
-     - Commit and push with message indicating local verification failed
-     - Report to user:
+2. **Controle de tentativas** (envolve o passo 4):
+   - Incremente `local_verify_count` após cada ciclo de enhance
+   - Se `local_verify_count >= local_verify_attempts` (padrão: 3):
+     - Deixe o código em estado comitável
+     - Commit e push indicando que a verificação local falhou
+     - Informe o usuário:
 
        ```
        [ci-monitor] Local verification failed after <N> attempts. Pushed to CI for final validation. Failed: <taskIds>
        ```
 
-     - Record `expected_commit_sha`, spawn subagent in wait mode (let CI be final judge)
+     - Registre `expected_commit_sha`, subagente em modo espera (CI como juiz final)
 
-#### Commit Message Format
+#### Formato da mensagem de commit
 
 ```bash
 git commit -m "fix(<projects>): <brief description>
@@ -150,53 +150,37 @@ Failed tasks: <taskId1>, <taskId2>
 Local verification: passed|enhanced|failed-pushing-to-ci"
 ```
 
-### Unverified Fix Flow (No Verification Attempted)
+### Fluxo sem verificação da correção
 
-When `verificationStatus` is `FAILED`, `NOT_EXECUTABLE`, or fix has `couldAutoApplyTasks != true` with no verification:
+Quando `verificationStatus` for `FAILED`, `NOT_EXECUTABLE`, ou a correção tiver `couldAutoApplyTasks != true` sem verificação:
 
-- Analyze fix content (`suggestedFix`, `suggestedFixReasoning`, `taskOutputSummary`)
-- If fix looks correct → apply via MCP
-- If fix needs enhancement → use Apply Locally + Enhance Flow above
-- If fix is wrong → reject via MCP, fix from scratch, commit, push
+- Analise o conteúdo (`suggestedFix`, `suggestedFixReasoning`, `taskOutputSummary`)
+- Se a correção parecer correta → aplique via MCP
+- Se precisar de refine → use o fluxo Apply Locally + Enhance acima
+- Se estiver errada → rejeite via MCP, corrija do zero, commit, push
 
-### Auto-Apply Eligibility
+### Elegibilidade de auto-apply
 
-The `couldAutoApplyTasks` field indicates whether the fix is eligible for automatic application:
+O campo `couldAutoApplyTasks` indica se a correção pode ser aplicada automaticamente:
 
-- **`true`**: Fix is eligible for auto-apply. Subagent keeps polling while verification is in progress. Returns `fix_auto_applying` when verified, or `fix_available` if verification fails.
-- **`false`** or **`null`**: Fix requires manual action (apply via MCP, apply locally, or reject)
+- **`true`**: Elegível. Subagente continua sondando enquanto a verificação roda. Retorna `fix_auto_applying` quando verificado, ou `fix_available` se a verificação falhar.
+- **`false`** ou **`null`**: Exige ação manual (MCP, apply local ou rejeição)
 
-**Key point**: When subagent returns `fix_auto_applying`, do NOT call MCP to apply - self-healing handles it. Just spawn a new subagent in wait mode.
+**Ponto-chave**: Com `fix_auto_applying`, **não** chame MCP para aplicar — o self-healing cuida disso. Só acione novo subagente em modo espera.
 
-### Apply vs Reject vs Apply Locally
+### Aplicar vs rejeitar vs aplicar localmente
 
-- **Apply via MCP**: Calls `update_self_healing_fix({ shortLink, action: "APPLY" })`. Self-healing agent applies the fix in CI and a new CIPE spawns automatically. No local git operations needed.
-- **Apply Locally**: Runs `nx apply-locally <shortLink>`. Applies the patch to your local working directory and sets state to `APPLIED_LOCALLY`. Use this when you want to enhance the fix before pushing.
-- **Reject via MCP**: Calls `update_self_healing_fix({ shortLink, action: "REJECT" })`. Marks fix as rejected. Use only when the fix is completely wrong and you'll fix from scratch.
+- **Aplicar via MCP**: `update_self_healing_fix({ shortLink, action: "APPLY" })`. O agente de self-healing aplica no CI e um novo CIPE dispara. Sem git local.
+- **Aplicar localmente**: `nx apply-locally <shortLink>`. Aplica o patch no working tree e estado `APPLIED_LOCALLY`. Use para refinar antes do push.
+- **Rejeitar via MCP**: `update_self_healing_fix({ shortLink, action: "REJECT" })`. Marca como rejeitada. Só quando a correção estiver totalmente errada e você for reescrever do zero.
 
-### Apply Locally + Enhance Flow
+### Fluxo aplicar localmente + enhance
 
-When the fix needs enhancement (use `nx apply-locally`, NOT reject):
+Quando a correção precisar de ajustes (use `nx apply-locally`, **não** rejeite):
 
-1. Apply the patch locally: `nx apply-locally <shortLink>` (this also updates state to `APPLIED_LOCALLY`)
-2. Make additional changes as needed
-3. Commit and push:
-
-   ```bash
-   git add -A
-   git commit -m "fix: resolve <failedTaskIds>"
-   git push origin $(git branch --show-current)
-   ```
-
-4. Loop to poll for new CIPE
-
-### Reject + Fix From Scratch Flow
-
-When the fix is completely wrong:
-
-1. Call MCP to reject: `update_self_healing_fix({ shortLink, action: "REJECT" })`
-2. Fix the issue from scratch locally
-3. Commit and push:
+1. `nx apply-locally <shortLink>` (atualiza para `APPLIED_LOCALLY`)
+2. Alterações adicionais conforme necessário
+3. Commit e push:
 
    ```bash
    git add -A
@@ -204,65 +188,74 @@ When the fix is completely wrong:
    git push origin $(git branch --show-current)
    ```
 
-4. Loop to poll for new CIPE
+4. Continue o loop sondando novo CIPE
 
-### Environment Issue Handling
+### Fluxo rejeitar + corrigir do zero
 
-When `failureClassification == 'ENVIRONMENT_STATE'`:
+Quando a correção estiver totalmente errada:
 
-1. Call MCP to request rerun: `update_self_healing_fix({ shortLink, action: "RERUN_ENVIRONMENT_STATE" })`
-2. New CIPE spawns automatically (no local git operations needed)
-3. Loop to poll for new CIPE with `previousCipeUrl` set
+1. MCP: `update_self_healing_fix({ shortLink, action: "REJECT" })`
+2. Corrija do zero localmente
+3. Commit e push (mesmo bloco bash acima)
+4. Loop sondando novo CIPE
 
-### No-New-CIPE Handling
+### Problema de ambiente
 
-When `status == 'no_new_cipe'`:
+Quando `failureClassification == 'ENVIRONMENT_STATE'`:
 
-This means the expected CIPE was never created - CI likely failed before Nx tasks could run.
+1. MCP: `update_self_healing_fix({ shortLink, action: "RERUN_ENVIRONMENT_STATE" })`
+2. Novo CIPE automático (sem git local)
+3. Loop com `previousCipeUrl` definido
 
-1. **Report to user:**
+### Sem novo CIPE
+
+Quando `status == 'no_new_cipe'`:
+
+O CIPE esperado não foi criado — o CI provavelmente falhou antes das tarefas Nx.
+
+1. **Informe o usuário:**
 
    ```
    [ci-monitor] No CI attempt for <sha> after 10 min. Check CI provider for pre-Nx failures (install, checkout, auth). Last CI attempt: <previousCipeUrl>
    ```
 
-2. **If user configured auto-fix attempts** (e.g., `--auto-fix-workflow`):
-   - Detect package manager: check for `pnpm-lock.yaml`, `yarn.lock`, `package-lock.json`
-   - Run install to update lockfile:
+2. **Se houver auto-fix** (ex.: `--auto-fix-workflow`):
+   - Detecte gerenciador: `pnpm-lock.yaml`, `yarn.lock`, `package-lock.json`
+   - Rode install para atualizar lockfile:
 
      ```bash
-     pnpm install   # or npm install / yarn install
+     pnpm install   # ou npm install / yarn install
      ```
 
-   - If lockfile changed:
+   - Se o lockfile mudou:
 
      ```bash
-     git add pnpm-lock.yaml  # or appropriate lockfile
+     git add pnpm-lock.yaml  # ou lockfile adequado
      git commit -m "chore: update lockfile"
      git push origin $(git branch --show-current)
      ```
 
-   - Record new commit SHA, loop to poll with `expectedCommitSha`
+   - Registre novo SHA, continue o loop com `expectedCommitSha`
 
-3. **Otherwise:** Exit with `no_new_cipe` status, providing guidance for user to investigate
+3. **Senão:** Encerre com `no_new_cipe` e oriente investigação
 
-## Exit Conditions
+## Condições de saída
 
-Exit the monitoring loop when ANY of these conditions are met:
+Encerre o loop quando **qualquer** condição:
 
-| Condition                                   | Exit Type        |
-| ------------------------------------------- | ---------------- |
-| CI passes (`cipeStatus == 'SUCCEEDED'`)     | Success          |
-| Max CIPE cycles reached                     | Timeout          |
-| Max duration reached                        | Timeout          |
-| 3 consecutive no-progress iterations        | Circuit breaker  |
-| No fix available and local fix not possible | Failure          |
-| No new CIPE and auto-fix not configured     | Pre-CIPE failure |
-| User cancels                                | Cancelled        |
+| Condição                                 | Tipo de saída   |
+| ---------------------------------------- | --------------- |
+| CI passa (`cipeStatus == 'SUCCEEDED'`)   | Sucesso         |
+| Máximo de ciclos CIPE                    | Timeout         |
+| Duração máxima atingida                  | Timeout         |
+| 3 iterações consecutivas sem progresso   | Circuit breaker |
+| Sem correção e correção local impossível | Falha           |
+| Sem novo CIPE e auto-fix desligado       | Falha pré-CIPE  |
+| Usuário cancela                          | Cancelado       |
 
-## Main Loop
+## Loop principal
 
-### Step 1: Initialize Tracking
+### Passo 1: Inicializar rastreamento
 
 ```
 cycle_count = 0
@@ -274,11 +267,11 @@ last_cipe_url = null
 expected_commit_sha = null
 ```
 
-### Step 2: Spawn Subagent
+### Passo 2: Acionar subagente
 
-Spawn the `ci-watcher` subagent to poll CI status:
+Acione o subagente `ci-watcher` para sondar o CI:
 
-**Fresh start (first spawn, no expected CIPE):**
+**Primeira vez (sem CIPE esperado):**
 
 ```
 Task(
@@ -290,7 +283,7 @@ Task(
 )
 ```
 
-**After action that triggers new CIPE (wait mode):**
+**Após ação que dispara novo CIPE (modo espera):**
 
 ```
 Task(
@@ -306,88 +299,88 @@ Task(
 )
 ```
 
-### Step 3: Handle Subagent Response
+### Passo 3: Tratar resposta do subagente
 
-When subagent returns:
+Quando o subagente retornar:
 
-1. Check the returned status
-2. Look up default behavior in the table above
-3. Check if user instructions override the default
-4. Execute the appropriate action
-5. **If action expects new CIPE**, update tracking (see Step 3a)
-6. If action results in looping, go to Step 2
+1. Leia o status
+2. Consulte a tabela de comportamentos padrão
+3. Veja se instruções do usuário sobrescrevem
+4. Execute a ação
+5. **Se esperar novo CIPE**, atualize rastreamento (passo 3a)
+6. Se for loop, volte ao passo 2
 
-### Step 3a: Track State for New-CIPE Detection
+### Passo 3a: Estado para detectar novo CIPE
 
-After actions that should trigger a new CIPE, record state before looping:
+Após ações que devem disparar novo CIPE:
 
-| Action                        | What to Track                                 | Subagent Mode |
-| ----------------------------- | --------------------------------------------- | ------------- |
-| Fix auto-applying             | `last_cipe_url = current cipeUrl`             | Wait mode     |
-| Apply via MCP                 | `last_cipe_url = current cipeUrl`             | Wait mode     |
-| Apply locally + push          | `expected_commit_sha = $(git rev-parse HEAD)` | Wait mode     |
-| Reject + fix + push           | `expected_commit_sha = $(git rev-parse HEAD)` | Wait mode     |
-| Fix failed + local fix + push | `expected_commit_sha = $(git rev-parse HEAD)` | Wait mode     |
-| No fix + local fix + push     | `expected_commit_sha = $(git rev-parse HEAD)` | Wait mode     |
-| Environment rerun             | `last_cipe_url = current cipeUrl`             | Wait mode     |
-| No-new-CIPE + auto-fix + push | `expected_commit_sha = $(git rev-parse HEAD)` | Wait mode     |
+| Ação                       | O que rastrear                                | Modo subagente |
+| -------------------------- | --------------------------------------------- | -------------- |
+| Fix em auto-apply          | `last_cipe_url = cipeUrl atual`               | Espera         |
+| Aplicar via MCP            | `last_cipe_url = cipeUrl atual`               | Espera         |
+| Aplicar local + push       | `expected_commit_sha = $(git rev-parse HEAD)` | Espera         |
+| Rejeitar + corrigir + push | `expected_commit_sha = $(git rev-parse HEAD)` | Espera         |
+| Falha + fix local + push   | `expected_commit_sha = $(git rev-parse HEAD)` | Espera         |
+| Sem fix + fix local + push | `expected_commit_sha = $(git rev-parse HEAD)` | Espera         |
+| Rerun de ambiente          | `last_cipe_url = cipeUrl atual`               | Espera         |
+| Sem CIPE + auto-fix + push | `expected_commit_sha = $(git rev-parse HEAD)` | Espera         |
 
-**CRITICAL**: When passing `expectedCommitSha` or `last_cipe_url` to the subagent, it enters **wait mode**:
+**CRÍTICO**: Ao passar `expectedCommitSha` ou `last_cipe_url`, o subagente entra em **modo espera**:
 
-- Subagent will **completely ignore** the old/stale CIPE
-- Subagent will only wait for new CIPE to appear
-- Subagent will NOT return to main agent with stale CIPE data
-- Once new CIPE detected, subagent switches to normal polling
+- Ignora CIPE antigo/obsoleto
+- Aguarda só o novo CIPE
+- Não devolve dados obsoletos ao agente principal
+- Ao detectar novo CIPE, volta ao polling normal
 
-**Why wait mode matters for context preservation**: Stale CIPE data can be very large (task output summaries, suggested fix patches, reasoning). If subagent returns this to main agent, it pollutes main agent's context with useless data since we already processed that CIPE. Wait mode keeps stale data in the subagent, never sending it to main agent.
+**Por que o modo espera preserva contexto**: dados antigos de CIPE podem ser enormes (logs, patches, raciocínio). Devolvê-los polui o contexto principal. O modo espera mantém isso no subagente.
 
-### Step 4: Progress Tracking
+### Passo 4: Progresso
 
-After each action:
+Após cada ação:
 
-- If state changed significantly → reset `no_progress_count = 0`
-- If state unchanged → `no_progress_count++`
-- On new CI attempt detected → reset `local_verify_count = 0`
+- Mudança significativa → `no_progress_count = 0`
+- Sem mudança → `no_progress_count++`
+- Nova tentativa de CI → `local_verify_count = 0`
 
-## Status Reporting
+## Relatório de status
 
-Based on verbosity level:
+Conforme `verbosity`:
 
-| Level     | What to Report                                                             |
-| --------- | -------------------------------------------------------------------------- |
-| `minimal` | Only final result (success/failure/timeout)                                |
-| `medium`  | State changes + periodic updates ("Cycle N \| Elapsed: Xm \| Status: ...") |
-| `verbose` | All of medium + full subagent responses, git outputs, MCP responses        |
+| Nível     | O que reportar                                                                    |
+| --------- | --------------------------------------------------------------------------------- |
+| `minimal` | Só resultado final (sucesso/falha/timeout)                                        |
+| `medium`  | Mudanças de estado + updates periódicos ("Cycle N \| Elapsed: Xm \| Status: ...") |
+| `verbose` | Tudo do médio + respostas completas do subagente, git, MCP                        |
 
-## User Instruction Examples
+## Exemplos de instrução do usuário
 
-Users can override default behaviors:
+| Instrução                                        | Efeito                                            |
+| ------------------------------------------------ | ------------------------------------------------- |
+| "never auto-apply"                               | Sempre perguntar antes de aplicar correção        |
+| "always ask before git push"                     | Perguntar antes de cada push                      |
+| "reject any fix for e2e tasks"                   | Rejeitar auto se `failedTaskIds` tiver e2e        |
+| "apply all fixes regardless of verification"     | Pular checagem de verificação                     |
+| "if confidence < 70, reject"                     | Checar campo confidence antes de aplicar          |
+| "run 'nx affected -t typecheck' before applying" | Etapa extra de verificação local                  |
+| "auto-fix workflow failures"                     | Tentar atualizar lockfile em falhas pré-CIPE      |
+| "wait 45 min for new CIPE"                       | Sobrescrever timeout de novo CIPE (padrão 10 min) |
 
-| Instruction                                      | Effect                                        |
-| ------------------------------------------------ | --------------------------------------------- |
-| "never auto-apply"                               | Always prompt before applying any fix         |
-| "always ask before git push"                     | Prompt before each push                       |
-| "reject any fix for e2e tasks"                   | Auto-reject if `failedTaskIds` contains e2e   |
-| "apply all fixes regardless of verification"     | Skip verification check, apply everything     |
-| "if confidence < 70, reject"                     | Check confidence field before applying        |
-| "run 'nx affected -t typecheck' before applying" | Add local verification step                   |
-| "auto-fix workflow failures"                     | Attempt lockfile updates on pre-CIPE failures |
-| "wait 45 min for new CIPE"                       | Override new-CIPE timeout (default: 10 min)   |
+## Tratamento de erros
 
-## Error Handling
+| Erro                        | Ação                                                               |
+| --------------------------- | ------------------------------------------------------------------ |
+| Conflito em rebase git      | Informar usuário, sair                                             |
+| Falha em `nx apply-locally` | Informar, tentar patch manual ou sair                              |
+| Erro em ferramenta MCP      | Tentar de novo uma vez; se falhar, informar                        |
+| Falha ao acionar subagente  | Tentar de novo; se falhar, sair com erro                           |
+| Sem novo CIPE               | Com `--auto-fix-workflow`, tente lockfile; senão oriente o usuário |
+| Auto-fix de lockfile falha  | Informar, orientar checagem dos logs do CI                         |
 
-| Error                    | Action                                                                                |
-| ------------------------ | ------------------------------------------------------------------------------------- |
-| Git rebase conflict      | Report to user, exit                                                                  |
-| `nx apply-locally` fails | Report to user, attempt manual patch or exit                                          |
-| MCP tool error           | Retry once, if fails report to user                                                   |
-| Subagent spawn failure   | Retry once, if fails exit with error                                                  |
-| No new CIPE detected     | If `--auto-fix-workflow`, try lockfile update; otherwise report to user with guidance |
-| Lockfile auto-fix fails  | Report to user, exit with guidance to check CI logs                                   |
+## Sessão de exemplo
 
-## Example Session
+Os blocos de log de exemplo abaixo permanecem em inglês (saída da ferramenta).
 
-### Example 1: Normal Flow with Self-Healing (medium verbosity)
+### Exemplo 1: Fluxo normal com self-healing (verbosidade média)
 
 ```
 [ci-monitor] Starting CI monitor for branch 'feature/add-auth'
@@ -415,7 +408,7 @@ Users can override default behaviors:
   - Result: SUCCESS
 ```
 
-### Example 2: Pre-CI Failure (medium verbosity)
+### Exemplo 2: Falha pré-CI (verbosidade média)
 
 ```
 [ci-monitor] Starting CI monitor for branch 'feature/add-products'

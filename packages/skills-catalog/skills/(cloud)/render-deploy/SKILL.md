@@ -1,178 +1,178 @@
 ---
 name: render-deploy
-description: Deploy applications to Render by analyzing codebases, generating render.yaml Blueprints, and providing Dashboard deeplinks. Use when the user wants to deploy, host, publish, or set up their application on Render's cloud platform. Do NOT use for deploying to Vercel, Netlify, or Cloudflare (use their respective skills).
+description: Implanta aplicações na Render analisando bases de código, gerando Blueprints render.yaml e fornecendo deeplinks do Dashboard. Use quando o usuário quiser implantar, hospedar, publicar ou configurar a aplicação na plataforma em nuvem Render. NÃO use para implantar na Vercel, Netlify ou Cloudflare (use as skills respectivas).
 metadata:
   author: github.com/openai/skills
   version: '1.0.0'
 ---
 
-# Deploy to Render
+# Deploy na Render
 
-Render supports **Git-backed** services and **prebuilt Docker image** services.
+A Render oferece serviços **com Git** e serviços com **imagem Docker pré-construída**.
 
-This skill covers **Git-backed** flows:
+Esta skill cobre fluxos **com Git**:
 
-1. **Blueprint Method** - Generate render.yaml for Infrastructure-as-Code deployments
-2. **Direct Creation** - Create services instantly via MCP tools
+1. **Método Blueprint** — Gerar render.yaml para deploys Infrastructure-as-Code
+2. **Criação direta** — Criar serviços instantaneamente via ferramentas MCP
 
-Blueprints can also run a **prebuilt Docker image** by using `runtime: image`, but the `render.yaml` still must live in a Git repo.
+Blueprints também podem rodar uma **imagem Docker pré-construída** com `runtime: image`, mas o `render.yaml` ainda precisa estar num repositório Git.
 
-If there is no Git remote, stop and ask the user to either:
+Se não houver remote Git, pare e pergunte ao usuário para:
 
-- Create/push a Git remote (can be minimal if only the Blueprint is needed), or
-- Use the Render Dashboard/API to deploy a prebuilt Docker image (MCP cannot create image-backed services).
+- Criar/enviar um remote Git (pode ser mínimo se só o Blueprint for necessário), ou
+- Usar o Dashboard/API Render para implantar imagem Docker pré-construída (MCP não cria serviços baseados em imagem).
 
-## Prerequisites
+## Pré-requisitos
 
-- When sandboxing blocks the deployment network calls, rerun with `sandbox_permissions=require_escalated`.
-- The deployment might take a few minutes. Use appropriate timeout values.
+- Se o sandbox bloquear chamadas de rede do deploy, rode novamente com `sandbox_permissions=require_escalated`.
+- O deploy pode levar alguns minutos. Use timeouts adequados.
 
-## Security Requirements for API Keys and Secrets
+## Requisitos de segurança para chaves API e secrets
 
-**CRITICAL - You must protect user credentials:**
+**CRÍTICO — proteja credenciais do usuário:**
 
-When handling Render API keys or any secrets:
+Ao lidar com chaves API Render ou qualquer secret:
 
-1. **NEVER ask users to paste API keys directly in chat** - Instead, instruct them to set environment variables:
+1. **NUNCA peça para colar chaves API direto no chat** — Em vez disso, oriente a definir variáveis de ambiente:
 
    ```bash
    export RENDER_API_KEY="rnd_xxxxx"
    ```
 
-2. **NEVER include actual API keys in examples** - Always use placeholders like `<YOUR_API_KEY>` or `rnd_xxxxx`
+2. **NUNCA inclua chaves API reais em exemplos** — Use sempre placeholders como `<YOUR_API_KEY>` ou `rnd_xxxxx`
 
-3. **Guide users to secure storage** - Direct them to:
-   - Set environment variables for CLI authentication
-   - Use Render Dashboard for service secrets (env vars marked `sync: false`)
-   - Never commit secrets to Git
+3. **Oriente armazenamento seguro** — Indique:
+   - Variáveis de ambiente para autenticação na CLI
+   - Dashboard Render para secrets de serviço (env vars marcadas `sync: false`)
+   - Nunca commitar secrets no Git
 
-4. **When users need an API key**, provide this guidance:
+4. **Quando precisarem de chave API**, forneça:
    - "Get your API key from: https://dashboard.render.com/u/*/settings#api-keys"
    - "Set it as an environment variable: `export RENDER_API_KEY='your-key-here'`"
    - "Never share or commit this key"
 
-5. **For MCP configuration**, show the structure but emphasize:
-   - Replace `<YOUR_API_KEY>` with their actual key
-   - This file should not be committed to version control
-   - The key should be kept private
+5. **Para configuração MCP**, mostre a estrutura mas enfatize:
+   - Substituir `<YOUR_API_KEY>` pela chave real
+   - Este arquivo não deve ir para controle de versão
+   - A chave deve permanecer privada
 
-6. **If a user accidentally shares a secret in chat**, immediately:
-   - Warn them the key may be compromised
-   - Instruct them to revoke it in Render Dashboard
-   - Guide them to create a new key
+6. **Se o usuário compartilhar um secret no chat por engano**, imediatamente:
+   - Avise que a chave pode estar comprometida
+   - Oriente revogar no Dashboard Render
+   - Oriente criar nova chave
 
-## When to Use This Skill
+## Quando usar esta skill
 
-Activate this skill when users want to:
+Ative quando o usuário quiser:
 
-- Deploy an application to Render
-- Create a render.yaml Blueprint file
-- Set up Render deployment for their project
-- Host or publish their application on Render's cloud platform
-- Create databases, cron jobs, or other Render resources
+- Implantar uma aplicação na Render
+- Criar arquivo Blueprint render.yaml
+- Configurar deploy Render para o projeto
+- Hospedar ou publicar na plataforma em nuvem Render
+- Criar bancos de dados, cron jobs ou outros recursos Render
 
-## Happy Path (New Users)
+## Caminho feliz (usuários novos)
 
-Use this short prompt sequence before deep analysis to reduce friction:
+Antes da análise profunda, use esta sequência curta para reduzir atrito:
 
-1. Ask whether they want to deploy from a Git repo or a prebuilt Docker image.
-2. Ask whether Render should provision everything the app needs (based on what seems likely from the user's description) or only the app while they bring their own infra. If dependencies are unclear, ask a short follow-up to confirm whether they need a database, workers, cron, or other services.
+1. Pergunte se quer deploy a partir de repo Git ou imagem Docker pré-construída.
+2. Pergunte se a Render deve provisionar tudo que o app precisa (pelo que parece na descrição) ou só o app enquanto eles trazem infra própria. Se dependências não estiverem claras, confirme em poucas palavras se precisam de database, workers, cron ou outros serviços.
 
-Then proceed with the appropriate method below.
+Depois siga o método adequado abaixo.
 
-## Choose Your Source Path
+## Escolha da origem
 
-**Git Repo Path:** Required for both Blueprint and Direct Creation. The repo must be pushed to GitHub, GitLab, or Bitbucket.
+**Caminho repo Git:** Obrigatório para Blueprint e Criação direta. O repo deve estar no GitHub, GitLab ou Bitbucket.
 
-**Prebuilt Docker Image Path:** Supported by Render via image-backed services. This is **not** supported by MCP; use the Dashboard/API. Ask for:
+**Caminho imagem Docker pré-construída:** Suportado pela Render via serviços baseados em imagem. **Não** é suportado pelo MCP; use Dashboard/API. Peça:
 
-- Image URL (registry + tag)
-- Registry auth (if private)
-- Service type (web/worker) and port
+- URL da imagem (registry + tag)
+- Auth do registry (se privado)
+- Tipo de serviço (web/worker) e porta
 
-If the user chooses a Docker image, guide them to the Render Dashboard image deploy flow or ask them to add a Git remote (so you can use a Blueprint with `runtime: image`).
+Se escolher imagem Docker, oriente o fluxo de deploy por imagem no Dashboard Render ou peça um remote Git (para usar Blueprint com `runtime: image`).
 
-## Choose Your Deployment Method (Git Repo)
+## Escolha do método de deploy (repo Git)
 
-Both methods require a Git repository pushed to GitHub, GitLab, or Bitbucket. (If using `runtime: image`, the repo can be minimal and only contain `render.yaml`.)
+Ambos exigem repositório Git no GitHub, GitLab ou Bitbucket. (Com `runtime: image`, o repo pode ser mínimo e só ter `render.yaml`.)
 
-| Method              | Best For                           | Pros                                                      |
-| ------------------- | ---------------------------------- | --------------------------------------------------------- |
-| **Blueprint**       | Multi-service apps, IaC workflows  | Version controlled, reproducible, supports complex setups |
-| **Direct Creation** | Single services, quick deployments | Instant creation, no render.yaml file needed              |
+| Método             | Melhor para                      | Vantagens                                  |
+| ------------------ | -------------------------------- | ------------------------------------------ |
+| **Blueprint**      | Apps multi-serviço, fluxos IaC   | Versionado, reproduzível, setups complexos |
+| **Criação direta** | Serviços únicos, deploys rápidos | Criação instantânea, sem render.yaml       |
 
-### Method Selection Heuristic
+### Heurística de escolha do método
 
-Use this decision rule by default unless the user requests a specific method. Analyze the codebase first; only ask if deployment intent is unclear (e.g., DB, workers, cron).
+Use esta regra por padrão salvo pedido explícito de método. Analise a base primeiro; só pergunte se a intenção de deploy não estiver clara (ex.: DB, workers, cron).
 
-**Use Direct Creation (MCP) when ALL are true:**
+**Use Criação direta (MCP) quando TODOS forem verdadeiros:**
 
-- Single service (one web app or one static site)
-- No separate worker/cron services
-- No attached databases or Key Value
-- Simple env vars only (no shared env groups)
-  If this path fits and MCP isn't configured yet, stop and guide MCP setup before proceeding.
+- Serviço único (um web app ou um site estático)
+- Sem workers/cron separados
+- Sem databases ou Key Value anexados
+- Apenas env vars simples (sem grupos compartilhados)
+  Se couber e MCP não estiver configurado, pare e oriente setup do MCP antes de seguir.
 
-**Use Blueprint when ANY are true:**
+**Use Blueprint quando QUALQUER for verdadeiro:**
 
-- Multiple services (web + worker, API + frontend, etc.)
-- Databases, Redis/Key Value, or other datastores are required
-- Cron jobs, background workers, or private services
-- You want reproducible IaC or a render.yaml committed to the repo
-- Monorepo or multi-env setup that needs consistent configuration
+- Vários serviços (web + worker, API + frontend, etc.)
+- Databases, Redis/Key Value ou outros datastores
+- Cron jobs, workers em background ou serviços privados
+- IaC reproduzível ou render.yaml commitado no repo
+- Monorepo ou multi-env que precise config consistente
 
-If unsure, ask a quick clarifying question, but default to Blueprint for safety. For a single service, strongly prefer Direct Creation via MCP and guide MCP setup if needed.
+Na dúvida, pergunte rápido, mas padronize Blueprint por segurança. Para serviço único, prefira fortemente Criação direta via MCP e oriente setup se preciso.
 
-## Prerequisites Check
+## Checagem de pré-requisitos
 
-When starting a deployment, verify these requirements in order:
+Ao iniciar deploy, verifique nesta ordem:
 
-**1. Confirm Source Path (Git vs Docker)**
+**1. Confirmar origem (Git vs Docker)**
 
-If using Git-based methods (Blueprint or Direct Creation), the repo must be pushed to GitHub/GitLab/Bitbucket. Blueprints that reference a prebuilt image still require a Git repo with `render.yaml`.
+Com métodos baseados em Git (Blueprint ou Criação direta), o repo deve estar no GitHub/GitLab/Bitbucket. Blueprints com imagem pré-construída ainda precisam de repo Git com `render.yaml`.
 
 ```bash
 git remote -v
 ```
 
-- If no remote exists, stop and ask the user to create/push a remote **or** switch to Docker image deploy.
+- Sem remote: pare e peça criar/enviar remote **ou** mudar para deploy por imagem Docker.
 
-**2. Check MCP Tools Availability (Preferred for Single-Service)**
+**2. Verificar disponibilidade das ferramentas MCP (preferido para serviço único)**
 
-MCP tools provide the best experience. Check if available by attempting:
+MCP oferece melhor experiência. Verifique tentando:
 
 ```
 list_services()
 ```
 
-If MCP tools are available, you can skip CLI installation for most operations.
+Com MCP disponível, pode pular instalação da CLI na maioria das operações.
 
-**3. Check Render CLI Installation (for Blueprint validation)**
+**3. Verificar instalação da Render CLI (validação Blueprint)**
 
 ```bash
 render --version
 ```
 
-If not installed, offer to install:
+Se não instalada, ofereça instalar:
 
 - macOS: `brew install render`
 - Linux/macOS: `curl -fsSL https://raw.githubusercontent.com/render-oss/cli/main/bin/install.sh | sh`
 
-**4. MCP Setup (if MCP isn't configured)**
+**4. Setup MCP (se MCP não estiver configurado)**
 
-If `list_services()` fails because MCP isn't configured, ask whether they want to set up MCP (preferred) or continue with the CLI fallback. If they choose MCP, ask which AI tool they're using, then provide the matching instructions below. Always use their API key.
+Se `list_services()` falhar por MCP não configurado, pergunte se quer configurar MCP (preferido) ou seguir com fallback CLI. Se escolher MCP, pergunte qual ferramenta de IA usam e siga as instruções abaixo. Use sempre a chave API deles.
 
 ### Cursor
 
-Walk the user through these steps:
+Oriente o usuário nestes passos:
 
-1. Get a Render API key:
+1. Obtenha uma Render API key:
 
 ```
 https://dashboard.render.com/u/*/settings#api-keys
 ```
 
-2. Add this to `~/.cursor/mcp.json` (replace `<YOUR_API_KEY>`):
+2. Adicione isto em `~/.cursor/mcp.json` (substitua `<YOUR_API_KEY>`):
 
 ```json
 {
@@ -187,103 +187,103 @@ https://dashboard.render.com/u/*/settings#api-keys
 }
 ```
 
-3. Restart Cursor, then retry `list_services()`.
+3. Reinicie o Cursor e tente `list_services()` novamente.
 
 ### Claude Code
 
-Walk the user through these steps:
+Oriente o usuário nestes passos:
 
-1. Get a Render API key:
+1. Obtenha uma Render API key:
 
 ```
 https://dashboard.render.com/u/*/settings#api-keys
 ```
 
-2. Add the MCP server with Claude Code (replace `<YOUR_API_KEY>`):
+2. Adicione o servidor MCP no Claude Code (substitua `<YOUR_API_KEY>`):
 
 ```bash
 claude mcp add --transport http render https://mcp.render.com/mcp --header "Authorization: Bearer <YOUR_API_KEY>"
 ```
 
-3. Restart Claude Code, then retry `list_services()`.
+3. Reinicie o Claude Code e tente `list_services()` novamente.
 
-### Other Tools
+### Outras ferramentas
 
-If the user is on another AI app, direct them to the Render MCP docs for that tool's setup steps and install method.
+Se outro app de IA, encaminhe para a documentação MCP Render da ferramenta para passos de setup.
 
-### Workspace Selection
+### Seleção de workspace
 
-After MCP is configured, have the user set the active Render workspace with a prompt like:
+Depois do MCP configurado, peça ao usuário definir o workspace Render ativo com um prompt como:
 
 ```
 Set my Render workspace to [WORKSPACE_NAME]
 ```
 
-**5. Check Authentication (CLI fallback only)**
+**5. Verificar autenticação (somente fallback CLI)**
 
-If MCP isn't available, use the CLI instead and verify you can access your account:
+Sem MCP, use a CLI e verifique acesso à conta:
 
 ```bash
 # Check if user is logged in (use -o json for non-interactive mode)
 render whoami -o json
 ```
 
-If `render whoami` fails or returns empty data, the CLI is not authenticated. The CLI won't always prompt automatically, so explicitly prompt the user to authenticate:
+Se `render whoami` falhar ou vier vazio, a CLI não está autenticada. Nem sempre há prompt automático — oriente login explicitamente:
 
-If neither is configured, ask user which method they prefer:
+Se nada estiver configurado, pergunte qual método prefere:
 
-- **API Key (CLI)**: `export RENDER_API_KEY="rnd_xxxxx"` (Get from https://dashboard.render.com/u/*/settings#api-keys)
-- **Login**: `render login` (Opens browser for OAuth)
+- **API Key (CLI)**: `export RENDER_API_KEY="rnd_xxxxx"` (obtenha em https://dashboard.render.com/u/*/settings#api-keys)
+- **Login**: `render login` (abre navegador para OAuth)
 
-**6. Check Workspace Context**
+**6. Verificar contexto de workspace**
 
-Verify the active workspace:
+Confira o workspace ativo:
 
 ```
 get_selected_workspace()
 ```
 
-Or via CLI:
+Ou pela CLI:
 
 ```bash
 render workspace current -o json
 ```
 
-To list available workspaces:
+Para listar workspaces disponíveis:
 
 ```
 list_workspaces()
 ```
 
-If user needs to switch workspaces, they must do so via Dashboard or CLI (`render workspace set`).
+Para trocar workspace, use Dashboard ou CLI (`render workspace set`).
 
-Once prerequisites are met, proceed with deployment workflow.
+Com pré-requisitos ok, siga o fluxo de deploy.
 
 ---
 
-# Method 1: Blueprint Deployment (Recommended for Complex Apps)
+# Método 1: Deploy Blueprint (recomendado para apps complexos)
 
-## Blueprint Workflow
+## Fluxo Blueprint
 
-### Step 1: Analyze Codebase
+### Etapa 1: Analisar base de código
 
-Analyze the codebase to determine framework/runtime, build and start commands, required env vars, datastores, and port binding. Use the detailed checklists in [references/codebase-analysis.md](references/codebase-analysis.md).
+Analise para determinar framework/runtime, comandos de build e start, env vars, datastores e binding de porta. Use os checklists em [references/codebase-analysis.md](references/codebase-analysis.md).
 
-### Step 2: Generate render.yaml
+### Etapa 2: Gerar render.yaml
 
-Create a `render.yaml` Blueprint file following the Blueprint specification.
+Crie `render.yaml` conforme a especificação Blueprint.
 
-Complete specification: [references/blueprint-spec.md](references/blueprint-spec.md)
+Especificação completa: [references/blueprint-spec.md](references/blueprint-spec.md)
 
-**Key Points:**
+**Pontos-chave:**
 
-- Always use `plan: free` unless user specifies otherwise
-- Include ALL environment variables the app needs
-- Mark secrets with `sync: false` (user fills these in Dashboard)
-- Use appropriate service type: `web`, `worker`, `cron`, `static`, or `pserv`
-- Use appropriate runtime: [references/runtimes.md](references/runtimes.md)
+- Use `plan: free` salvo outro pedido do usuário
+- Inclua TODAS as variáveis de ambiente necessárias
+- Marque secrets com `sync: false` (usuário preenche no Dashboard)
+- Tipo de serviço adequado: `web`, `worker`, `cron`, `static` ou `pserv`
+- Runtime adequado: [references/runtimes.md](references/runtimes.md)
 
-**Basic Structure:**
+**Estrutura básica:**
 
 ```yaml
 services:
@@ -307,53 +307,53 @@ databases:
     plan: free
 ```
 
-**Service Types:**
+**Tipos de serviço:**
 
-- `web`: HTTP services, APIs, web applications (publicly accessible)
-- `worker`: Background job processors (not publicly accessible)
-- `cron`: Scheduled tasks that run on a cron schedule
-- `static`: Static sites (HTML/CSS/JS served via CDN)
-- `pserv`: Private services (internal only, within same account)
+- `web`: HTTP, APIs, apps web (acesso público)
+- `worker`: processadores de jobs em background (sem acesso público)
+- `cron`: tarefas agendadas em cron
+- `static`: sites estáticos (HTML/CSS/JS via CDN)
+- `pserv`: serviços privados (somente internos, mesma conta)
 
-Service type details: [references/service-types.md](references/service-types.md)
-Runtime options: [references/runtimes.md](references/runtimes.md)
-Template examples: [assets/](assets/)
+Detalhes: [references/service-types.md](references/service-types.md)
+Runtimes: [references/runtimes.md](references/runtimes.md)
+Templates: [assets/](assets/)
 
-### Step 2.5: Immediate Next Steps (Always Provide)
+### Etapa 2.5: Próximos passos imediatos (sempre forneça)
 
-After creating `render.yaml`, always give the user a short, explicit checklist and run validation immediately when the CLI is available:
+Depois de criar `render.yaml`, sempre dê um checklist curto e rode validação assim que a CLI estiver disponível:
 
-1. **Authenticate (CLI)**: run `render whoami -o json` (if not logged in, run `render login` or set `RENDER_API_KEY`)
-2. **Validate (recommended)**: run `render blueprints validate`
-   - If the CLI isn't installed, offer to install it and provide the command.
+1. **Autenticar (CLI)**: `render whoami -o json` (se não logado, `render login` ou `RENDER_API_KEY`)
+2. **Validar (recomendado)**: `render blueprints validate`
+   - Sem CLI, ofereça instalar e informe o comando.
 3. **Commit + push**: `git add render.yaml && git commit -m "Add Render deployment configuration" && git push origin main`
-4. **Open Dashboard**: Use the Blueprint deeplink and complete Git OAuth if prompted
-5. **Fill secrets**: Set env vars marked `sync: false`
-6. **Deploy**: Click "Apply" and monitor the deploy
+4. **Abrir Dashboard**: deeplink Blueprint e complete OAuth Git se pedido
+5. **Preencher secrets**: env vars com `sync: false`
+6. **Deploy**: clique em "Apply" e monitore
 
-### Step 3: Validate Configuration
+### Etapa 3: Validar configuração
 
-Validate the render.yaml file to catch errors before deployment. If the CLI is installed, run the commands directly; only prompt the user if the CLI is missing:
+Valide `render.yaml` antes do deploy. Com CLI instalada, rode direto; só peça ao usuário se faltar CLI:
 
 ```bash
-render whoami -o json  # Ensure CLI is authenticated (won't always prompt)
+render whoami -o json  # Garanta CLI autenticada (nem sempre há prompt)
 render blueprints validate
 ```
 
-Fix any validation errors before proceeding. Common issues:
+Corrija erros antes de seguir. Problemas comuns:
 
-- Missing required fields (`name`, `type`, `runtime`)
-- Invalid runtime values
-- Incorrect YAML syntax
-- Invalid environment variable references
+- Campos obrigatórios ausentes (`name`, `type`, `runtime`)
+- Valores de runtime inválidos
+- Sintaxe YAML incorreta
+- Referências de env var inválidas
 
-Configuration guide: [references/configuration-guide.md](references/configuration-guide.md)
+Guia: [references/configuration-guide.md](references/configuration-guide.md)
 
-### Step 4: Commit and Push
+### Etapa 4: Commit e push
 
-**IMPORTANT:** You must merge the `render.yaml` file into your repository before deploying.
+**IMPORTANTE:** faça merge de `render.yaml` no repositório antes do deploy.
 
-Ensure the `render.yaml` file is committed and pushed to your Git remote:
+Confirme commit e push para o remote Git:
 
 ```bash
 git add render.yaml
@@ -361,21 +361,21 @@ git commit -m "Add Render deployment configuration"
 git push origin main
 ```
 
-If there is no Git remote yet, stop here and guide the user to create a GitHub/GitLab/Bitbucket repo, add it as `origin`, and push before continuing.
+Sem remote Git ainda: pare e oriente criar repo GitHub/GitLab/Bitbucket, adicionar `origin` e push antes de continuar.
 
-**Why this matters:** The Dashboard deeplink will read the render.yaml from your repository. If the file isn't merged and pushed, Render won't find the configuration and deployment will fail.
+**Por que importa:** O deeplink do Dashboard lê `render.yaml` do repositório. Sem merge/push, a Render não acha a config e o deploy falha.
 
-Verify the file is in your remote repository before proceeding to the next step.
+Confirme que o arquivo está no remote antes da próxima etapa.
 
-### Step 5: Generate Deeplink
+### Etapa 5: Gerar deeplink
 
-Get the Git repository URL:
+Obtenha a URL do repositório Git:
 
 ```bash
 git remote get-url origin
 ```
 
-This will return a URL from your Git provider. **If the URL is SSH format, convert it to HTTPS:**
+Retorna URL do provedor Git. **Se for SSH, converta para HTTPS:**
 
 | SSH Format                        | HTTPS Format                      |
 | --------------------------------- | --------------------------------- |
@@ -383,55 +383,55 @@ This will return a URL from your Git provider. **If the URL is SSH format, conve
 | `git@gitlab.com:user/repo.git`    | `https://gitlab.com/user/repo`    |
 | `git@bitbucket.org:user/repo.git` | `https://bitbucket.org/user/repo` |
 
-**Conversion pattern:** Replace `git@<host>:` with `https://<host>/` and remove `.git` suffix.
+**Padrão de conversão:** troque `git@<host>:` por `https://<host>/` e remova o sufixo `.git`.
 
-Format the Dashboard deeplink using the HTTPS repository URL:
+Formate o deeplink do Dashboard com a URL HTTPS:
 
 ```
 https://dashboard.render.com/blueprint/new?repo=<REPOSITORY_URL>
 ```
 
-Example:
+Exemplo:
 
 ```
 https://dashboard.render.com/blueprint/new?repo=https://github.com/username/repo-name
 ```
 
-### Step 6: Guide User
+### Etapa 6: Orientar o usuário
 
-**CRITICAL:** Ensure the user has merged and pushed the render.yaml file to their repository before clicking the deeplink. If the file isn't in the repository, Render cannot read the Blueprint configuration and deployment will fail.
+**CRÍTICO:** Confirme merge e push de `render.yaml` antes de clicar no deeplink. Sem o arquivo no repo, a Render não lê o Blueprint e o deploy falha.
 
-Provide the deeplink to the user with these instructions:
+Forneça o deeplink com estas instruções:
 
-1. **Verify render.yaml is merged** - Confirm the file exists in your repository on GitHub/GitLab/Bitbucket
-2. Click the deeplink to open Render Dashboard
-3. Complete Git provider OAuth if prompted
-4. Name the Blueprint (or use default from render.yaml)
-5. Fill in secret environment variables (marked with `sync: false`)
-6. Review services and databases configuration
-7. Click "Apply" to deploy
+1. **Verifique merge do render.yaml** — arquivo existe no GitHub/GitLab/Bitbucket
+2. Clique no deeplink para abrir o Dashboard
+3. Complete OAuth do provedor Git se solicitado
+4. Nomeie o Blueprint (ou use default do render.yaml)
+5. Preencha env vars secretas (`sync: false`)
+6. Revise serviços e databases
+7. Clique em "Apply" para implantar
 
-The deployment will begin automatically. Users can monitor progress in the Render Dashboard.
+O deploy inicia automaticamente; progresso no Dashboard Render.
 
-### Step 7: Verify Deployment
+### Etapa 7: Verificar deployment
 
-After the user deploys via Dashboard, verify everything is working.
+Depois do deploy via Dashboard, verifique se está ok.
 
-**Check deployment status via MCP:**
+**Status via MCP:**
 
 ```
 list_deploys(serviceId: "<service-id>", limit: 1)
 ```
 
-Look for `status: "live"` to confirm successful deployment.
+Procure `status: "live"` para confirmar sucesso.
 
-**Check for runtime errors (wait 2-3 minutes after deploy):**
+**Erros de runtime (aguarde 2–3 min após deploy):**
 
 ```
 list_logs(resource: ["<service-id>"], level: ["error"], limit: 20)
 ```
 
-**Check service health metrics:**
+**Métricas de saúde:**
 
 ```
 get_metrics(
@@ -440,91 +440,87 @@ get_metrics(
 )
 ```
 
-If errors are found, proceed to the **Post-deploy verification and basic triage** section below.
+Se houver erros, vá para **Verificação pós-deploy e triagem básica** abaixo.
 
 ---
 
-# Method 2: Direct Service Creation (Quick Single-Service Deployments)
+# Método 2: Criação direta de serviço (deploys rápidos de serviço único)
 
-For simple deployments without Infrastructure-as-Code, create services directly via MCP tools.
+Para deploys simples sem IaC, crie serviços diretamente via MCP.
 
-## When to Use Direct Creation
+## Quando usar criação direta
 
-- Single web service or static site
-- Quick prototypes or demos
-- When you don't need a render.yaml file in your repo
-- Adding databases or cron jobs to existing projects
+- Um web service ou site estático
+- Protótipos ou demos rápidos
+- Sem precisar de render.yaml no repo
+- Adicionar databases ou cron a projetos existentes
 
-## Prerequisites for Direct Creation
+## Pré-requisitos da criação direta
 
-**Repository must be pushed to a Git provider.** Render clones your repository to build and deploy services.
+**O repositório deve estar no provedor Git.** A Render clona para build e deploy.
 
 ```bash
-git remote -v  # Verify remote exists
-git push origin main  # Ensure code is pushed
+git remote -v  # Verifique se o remote existe
+git push origin main  # Garanta que o código foi enviado
 ```
 
-Supported providers: GitHub, GitLab, Bitbucket
+Provedores: GitHub, GitLab, Bitbucket
 
-If no remote exists, stop and ask the user to create/push a remote or switch to Docker image deploy.
+Sem remote: pare e peça criar/enviar ou usar deploy por imagem Docker.
 
-**Note:** MCP does not support creating image-backed services. Use the Dashboard/API for prebuilt Docker image deploys.
+**Nota:** MCP não cria serviços baseados em imagem. Use Dashboard/API para imagens pré-construídas.
 
-## Direct Creation Workflow
+## Fluxo de criação direta
 
-Use the concise steps below, and refer to [references/direct-creation.md](references/direct-creation.md) for full MCP command examples and follow-on configuration.
+Siga os passos abaixo; detalhes MCP em [references/direct-creation.md](references/direct-creation.md).
 
-### Step 1: Analyze Codebase
+### Etapa 1: Analisar base
 
-Use [references/codebase-analysis.md](references/codebase-analysis.md) to determine runtime, build/start commands, env vars, and datastores.
+Use [references/codebase-analysis.md](references/codebase-analysis.md) para runtime, build/start, env vars e datastores.
 
-### Step 2: Create Resources via MCP
+### Etapa 2: Criar recursos via MCP
 
-Create the service (web or static) and any required databases or key-value stores. See [references/direct-creation.md](references/direct-creation.md).
+Crie serviço (web ou estático) e databases ou key-value necessários. Veja [references/direct-creation.md](references/direct-creation.md).
 
-If MCP returns an error about missing Git credentials or repo access, stop and guide the user to connect their Git provider in the Render Dashboard, then retry.
+Erro de credenciais Git ou acesso ao repo: pare, oriente conectar provedor Git no Dashboard Render e tente de novo.
 
-### Step 3: Configure Environment Variables
+### Etapa 3: Configurar variáveis de ambiente
 
-Add required env vars via MCP after creation. See [references/direct-creation.md](references/direct-creation.md).
+Adicione env vars via MCP após criação. Veja [references/direct-creation.md](references/direct-creation.md).
 
-Remind the user that secrets can be set in the Dashboard if they prefer not to pass them via MCP.
+Lembre que secrets podem ser definidos no Dashboard.
 
-### Step 4: Verify Deployment
+### Etapa 4: Verificar deployment
 
-Check deploy status, logs, and metrics. See [references/direct-creation.md](references/direct-creation.md).
-
----
-
-For service discovery, configuration details, quick commands, and common issues, see [references/deployment-details.md](references/deployment-details.md).
+Status, logs e métricas: [references/direct-creation.md](references/direct-creation.md).
 
 ---
 
-# Post-deploy verification and basic triage (All Methods)
+Descoberta de serviços, detalhes de configuração, comandos rápidos e problemas comuns: [references/deployment-details.md](references/deployment-details.md).
 
-Keep this short and repeatable. If any check fails, fix it before redeploying.
+---
 
-1. Confirm the latest deploy is `live` and serving traffic
-2. Hit the health endpoint (or root) and verify a 200 response
-3. Scan recent error logs for a clear failure signature
-4. Verify required env vars and port binding (`0.0.0.0:$PORT`)
+# Verificação pós-deploy e triagem básica (todos os métodos)
 
-Detailed checklist and commands: [references/post-deploy-checks.md](references/post-deploy-checks.md)
+Curto e repetível. Se algo falhar, corrija antes de redeploy.
 
-If the service fails to start or health checks time out, use the basic triage guide:
-[references/troubleshooting-basics.md](references/troubleshooting-basics.md)
+1. Confirme que o último deploy está `live` servindo tráfego
+2. Acesse health (ou raiz) e verifique resposta 200
+3. Varra logs de erro recentes por assinatura clara de falha
+4. Confira env vars obrigatórias e binding de porta (`0.0.0.0:$PORT`)
 
-## Troubleshooting
+Checklist detalhado: [references/post-deploy-checks.md](references/post-deploy-checks.md)
 
-### Escalated Network Access
+Falha ao iniciar ou health checks em timeout: [references/troubleshooting-basics.md](references/troubleshooting-basics.md)
 
-If deployment fails due to network issues (timeouts, DNS errors, connection resets), rerun the deploy with escalated permissions (use `sandbox_permissions=require_escalated`). The deploy requires escalated network access when sandbox networking blocks outbound requests.
+## Solução de problemas
 
-Example guidance to the user:
+### Rede com permissões elevadas
+
+Falhas de rede (timeouts, DNS, resets): rode com permissões elevadas (`sandbox_permissions=require_escalated`).
 
 ```
 The deploy needs escalated network access to deploy to Render. I can rerun the command with escalated permissions—want me to proceed?
 ```
 
-Optional: If you need deeper diagnostics (metrics/DB checks/error catalog), suggest installing the
-`render-debug` skill. It is not required for the core deploy flow.
+Opcional: para diagnósticos mais profundos (métricas/DB/catálogo de erros), sugira instalar a skill `render-debug`. Não é obrigatória para o fluxo principal.

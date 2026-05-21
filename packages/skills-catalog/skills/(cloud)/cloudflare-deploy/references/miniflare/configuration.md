@@ -1,6 +1,6 @@
-# Configuration
+# Configuração
 
-## Script Loading
+## Carregamento de script
 
 ```js
 // Inline
@@ -20,7 +20,7 @@ new Miniflare({
 })
 ```
 
-## Compatibility
+##Compatibilidade
 
 ```js
 new Miniflare({
@@ -33,9 +33,9 @@ new Miniflare({
 })
 ```
 
-**Critical:** Use `compatibilityDate: "2026-01-01"` or latest to match production runtime. Old dates limit available APIs.
+**Crítico:** Use `compatibilityDate: "2026-01-01"` ou mais recente para corresponder ao tempo de execução de produção. Datas antigas limitam APIs disponíveis.
 
-## HTTP Server & Request.cf
+## Servidor HTTP e Solicitação.cf
 
 ```js
 new Miniflare({
@@ -50,9 +50,9 @@ new Miniflare({
 })
 ```
 
-**Note:** For tests, use `dispatchFetch()` (no port conflicts).
+**Nota:** Para testes, use `dispatchFetch()` (sem conflitos de porta).
 
-## Storage Bindings
+## Ligações de armazenamento
 
 ```js
 new Miniflare({
@@ -82,7 +82,7 @@ new Miniflare({
 })
 ```
 
-## Bindings
+##Ligações
 
 ```js
 new Miniflare({
@@ -100,7 +100,7 @@ new Miniflare({
 })
 ```
 
-## Multiple Workers
+##Vários trabalhadores
 
 ```js
 new Miniflare({
@@ -120,7 +120,7 @@ new Miniflare({
 })
 ```
 
-**With routing:**
+**Com roteamento:**
 
 ```js
 workers: [
@@ -129,7 +129,7 @@ workers: [
 ],
 ```
 
-## Logging & Performance
+##Registro e desempenho
 
 ```js
 import { Log, LogLevel } from 'miniflare'
@@ -141,7 +141,7 @@ new Miniflare({
 })
 ```
 
-## Workers Sites
+##Locais de trabalhadores
 
 ```js
 new Miniflare({
@@ -151,9 +151,9 @@ new Miniflare({
 })
 ```
 
-## From wrangler.toml
+##De wrangler.toml
 
-Miniflare doesn't auto-read `wrangler.toml`:
+Miniflare não lê automaticamente `wrangler.toml`:
 
 ```toml
 # wrangler.toml

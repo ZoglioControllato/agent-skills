@@ -1,105 +1,104 @@
-# Cloudflare Workers AI
+# IA de trabalhadores da Cloudflare
 
-Expert guidance for Cloudflare Workers AI - serverless GPU-powered AI inference at the edge.
+Orientação especializada para Cloudflare Workers AI: inferência de IA baseada em GPU sem servidor na borda.
 
-## Overview
+## Visão geral
 
-Workers AI provides:
+A IA dos trabalhadores fornece:
 
-- 50+ pre-trained models (LLMs, embeddings, image generation, speech-to-text, translation)
-- Native Workers binding (no external API calls)
-- Pay-per-use pricing (neurons consumed per inference)
-- OpenAI-compatible REST API
-- Streaming support for text generation
-- Function calling with compatible models
+- Mais de 50 modelos pré-treinados (LLMs, embeddings, geração de imagens, conversão de fala em texto, tradução)
+- Vinculação de trabalhadores nativos (sem chamadas de API externas)
+- Preços pagos por uso (neurônios consumidos por inferência)
+- API REST compatível com OpenAI
+- Suporte de streaming para geração de texto
+- Chamada de função com modelos compatíveis
 
-**Architecture**: Inference runs on Cloudflare's GPU network. Models load on first request (cold start 1-3s), subsequent requests are faster.
+**Arquitetura**: a inferência é executada na rede GPU da Cloudflare. Os modelos são carregados na primeira solicitação (inicialização a frio de 1 a 3 segundos), as solicitações subsequentes são mais rápidas.
 
-## Quick Start
+## Início rápido```typescript
 
-```typescript
 interface Env {
-  AI: Ai
+AI: Ai
 }
 
 export default {
-  async fetch(request: Request, env: Env) {
-    const response = await env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
-      messages: [{ role: 'user', content: 'What is Cloudflare?' }],
-    })
-    return Response.json(response)
-  },
+async fetch(request: Request, env: Env) {
+const response = await env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
+messages: [{ role: 'user', content: 'What is Cloudflare?' }],
+})
+return Response.json(response)
+},
 }
-```
+
+````
 
 ```bash
 # Setup - add binding to wrangler.jsonc
 wrangler dev --remote  # Must use --remote for AI
 wrangler deploy
-```
+````
 
-## Model Selection Decision Tree
+## Árvore de decisão de seleção de modelo
 
-### Text Generation (Chat/Completion)
+### Geração de Texto (Chat/Conclusão)
 
-**Quality Priority**:
+**Prioridade de qualidade**:
 
-- **Best quality**: `@cf/meta/llama-3.1-70b-instruct` (expensive, ~2000 neurons)
-- **Balanced**: `@cf/meta/llama-3.1-8b-instruct` (good quality, ~200 neurons)
-- **Fastest/cheapest**: `@cf/mistral/mistral-7b-instruct-v0.1` (~50 neurons)
+- **Melhor qualidade**: `@cf/meta/llama-3.1-70b-instruct` (caro, ~2.000 neurônios)
+- **Balanceado**: `@cf/meta/llama-3.1-8b-instruct` (boa qualidade, ~200 neurônios)
+- **Mais rápido/mais barato**: `@cf/mistral/mistral-7b-instruct-v0.1` (~50 neurônios)
 
-**Function Calling**:
+**Chamada de função**:
 
-- Use `@cf/meta/llama-3.1-8b-instruct` or `@cf/meta/llama-3.1-70b-instruct` (native tool support)
+- Use `@cf/meta/llama-3.1-8b-instruct` ou `@cf/meta/llama-3.1-70b-instruct` (suporte de ferramenta nativa)
 
-**Code Generation**:
+**Geração de código**:
 
-- Use `@cf/deepseek-ai/deepseek-coder-6.7b-instruct` (specialized for code)
+- Use `@cf/deepseek-ai/deepseek-coder-6.7b-instruct` (especializado em código)
 
-### Embeddings (Semantic Search/RAG)
+### Incorporações (pesquisa semântica/RAG)
 
-**English text**:
+**Texto em inglês**:
 
-- **Best**: `@cf/baai/bge-large-en-v1.5` (1024 dims, highest quality)
-- **Balanced**: `@cf/baai/bge-base-en-v1.5` (768 dims, good quality)
-- **Fast**: `@cf/baai/bge-small-en-v1.5` (384 dims, lower quality but fast)
+- **Melhor**: `@cf/baai/bge-large-en-v1.5` (1024 dims, mais alta qualidade)
+- **Balanceado**: `@cf/baai/bge-base-en-v1.5` (768 dims, boa qualidade)
+- **Rápido**: `@cf/baai/bge-small-en-v1.5` (384 escurece, qualidade inferior, mas rápido)
 
-**Multilingual**:
+**Multilíngue**:
 
 - Use `@hf/sentence-transformers/paraphrase-multilingual-minilm-l12-v2`
 
-### Image Generation
+### Geração de imagem
 
-- **Stable Diffusion**: `@cf/stabilityai/stable-diffusion-xl-base-1.0` (~10,000 neurons)
-- **Portraits**: `@cf/lykon/dreamshaper-8-lcm` (optimized for faces)
+- **Difusão Estável**: `@cf/stabilityai/stable-diffusion-xl-base-1.0` (~10.000 neurônios)
+- **Retratos**: `@cf/lykon/dreamshaper-8-lcm` (otimizado para rostos)
 
-### Other Tasks
+### Outras tarefas
 
-- **Speech-to-text**: `@cf/openai/whisper`
-- **Translation**: `@cf/meta/m2m100-1.2b` (100 languages)
-- **Image classification**: `@cf/microsoft/resnet-50`
+- **Fala para texto**: `@cf/openai/whisper`
+- **Tradução**: `@cf/meta/m2m100-1.2b` (100 idiomas)
+- **Classificação de imagem**: `@cf/microsoft/resnet-50`
 
-## SDK Approach Decision Tree
+## Árvore de decisão de abordagem do SDK
 
-### Native Binding (Recommended)
+### Vinculação nativa (recomendado)
 
-**When**: Building Workers/Pages with TypeScript  
-**Why**: Zero external dependencies, best performance, native types
-
-```typescript
+**Quando**: Construindo Workers/Páginas com TypeScript
+**Por quê**: zero dependências externas, melhor desempenho, tipos nativos```typescript
 await env.AI.run(model, input)
-```
+
+````
 
 ### REST API
 
-**When**: External services, non-Workers environments, testing  
+**When**: External services, non-Workers environments, testing
 **Why**: Standard HTTP, works anywhere
 
 ```bash
 curl https://api.cloudflare.com/client/v4/accounts/<ACCOUNT_ID>/ai/run/@cf/meta/llama-3.1-8b-instruct \
   -H "Authorization: Bearer <API_TOKEN>" \
   -d '{"messages":[{"role":"user","content":"Hello"}]}'
-```
+````
 
 ### Vercel AI SDK Integration
 
@@ -115,57 +114,57 @@ const model = openai('model-name', {
 })
 ```
 
-## RAG vs Direct Generation
+## RAG vs Geração Direta
 
-### Use RAG (Vectorize + Workers AI) When:
+### Use RAG (Vectorize + Workers AI) quando:
 
-- Answering questions about specific documents/data
-- Need factual accuracy from known corpus
-- Context exceeds model's window (>4K tokens)
-- Building knowledge base chat
+- Responder perguntas sobre documentos/dados específicos
+- Precisa de precisão factual de corpus conhecido
+- O contexto excede a janela do modelo (> tokens de 4K)
+- Construindo bate-papo da base de conhecimento
 
-### Use Direct Generation When:
+### Use geração direta quando:
 
-- Creative writing, brainstorming
-- General knowledge questions
-- Small context fits in prompt (<4K tokens)
-- Cost optimization (RAG adds embedding + vector search costs)
+- Escrita criativa, brainstorming
+- Perguntas de conhecimentos gerais
+- Contexto pequeno cabe no prompt (<tokens 4K)
+- Otimização de custos (RAG adiciona custos de incorporação + pesquisa vetorial)
 
-## Platform Limits
+## Limites da plataforma
 
-| Limit            | Free Tier                    | Paid Plans               |
-| ---------------- | ---------------------------- | ------------------------ |
-| Neurons/day      | 10,000                       | Pay per use              |
-| Rate limit       | Varies by model              | Higher (contact support) |
-| Context window   | Model dependent (2K-8K)      | Same                     |
-| Streaming        | ✅ Supported                 | ✅ Supported             |
-| Function calling | ✅ Supported (select models) | ✅ Supported             |
+| Limite             | Nível gratuito                      | Planos Pagos                              |
+| ------------------ | ----------------------------------- | ----------------------------------------- |
+| Neurônios/dia      | 10.000                              | Pague por uso                             |
+| Limite de taxa     | Varia de acordo com o modelo        | Superior (entre em contato com o suporte) |
+| Janela de contexto | Dependente do modelo (2K-8K)        | Mesmo                                     |
+| Transmissão        | ✅ Suportado                        | ✅ Suportado                              |
+| Chamada de função  | ✅ Suportado (modelos selecionados) | ✅ Suportado                              |
 
-**Pricing**: Free 10K neurons/day, then pay per neuron consumed (varies by model)
+**Preço**: 10 mil neurônios gratuitos/dia e depois pague por neurônio consumido (varia de acordo com o modelo)
 
-## Common Tasks
+## Tarefas Comuns```typescript
 
-```typescript
 // Streaming text generation
 const stream = await env.AI.run(model, { messages, stream: true });
 for await (const chunk of stream) {
-  console.log(chunk.response);
+console.log(chunk.response);
 }
 
 // Embeddings for RAG
 const { data } = await env.AI.run('@cf/baai/bge-base-en-v1.5', {
-  text: ['Query text', 'Document 1', 'Document 2']
+text: ['Query text', 'Document 1', 'Document 2']
 });
 
 // Function calling
 const response = await env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
-  messages: [{ role: 'user', content: 'What is the weather?' }],
-  tools: [{
-    type: 'function',
-    function: { name: 'getWeather', parameters: { ... } }
-  }]
+messages: [{ role: 'user', content: 'What is the weather?' }],
+tools: [{
+type: 'function',
+function: { name: 'getWeather', parameters: { ... } }
+}]
 });
-```
+
+````
 
 ## Development Workflow
 
@@ -178,29 +177,29 @@ wrangler deploy
 
 # View model catalog
 # https://developers.cloudflare.com/workers-ai/models/
-```
+````
 
-## Reading Order
+## Ordem de leitura
 
-**Start here**: Quick Start above → configuration.md (setup)
+**Comece aqui**: Início rápido acima → configuration.md (setup)
 
-**Common tasks**:
+**Tarefas comuns**:
 
-- First time setup: configuration.md → Add binding + deploy
-- Choose model: Model Selection Decision Tree (above) → api.md
-- Build RAG: patterns.md → Vectorize integration
-- Optimize costs: Model Selection + gotchas.md (rate limits)
-- Debugging: gotchas.md → Common errors
+- Configuração inicial: configuration.md → Adicionar ligação + implantação
+- Escolha o modelo: Árvore de decisão de seleção de modelo (acima) → api.md
+- Construir RAG: padrões.md → Integração de vetorização
+- Otimizar custos: Seleção de modelo + gotchas.md (limites de taxa)
+- Depuração: gotchas.md → Erros comuns
 
-## In This Reference
+## Nesta referência
 
-- [configuration.md](./configuration.md) - wrangler.jsonc setup, TypeScript types, bindings, environment variables
-- [api.md](./api.md) - env.AI.run(), streaming, function calling, REST API, response types
-- [patterns.md](./patterns.md) - RAG with Vectorize, prompt engineering, batching, error handling, caching
-- [gotchas.md](./gotchas.md) - Deprecated @cloudflare/ai package, rate limits, pricing, common errors
+- [configuration.md](./configuration.md) - configuração do wrangler.jsonc, tipos TypeScript, ligações, variáveis de ambiente
+- [api.md](./api.md) - env.AI.run(), streaming, chamada de função, API REST, tipos de resposta
+- [patterns.md](./patterns.md) - RAG com Vectorize, engenharia imediata, lote, tratamento de erros, cache
+- [gotchas.md](./gotchas.md) - Pacote @cloudflare/ai obsoleto, limites de taxas, preços, erros comuns
 
-## See Also
+## Veja também
 
-- [vectorize](../vectorize/) - Vector database for RAG patterns
-- [ai-gateway](../ai-gateway/) - Caching, rate limiting, analytics for AI requests
-- [workers](../workers/) - Worker runtime and fetch handler patterns
+- [vectorize](../vectorize/) - Banco de dados de vetores para padrões RAG
+- [ai-gateway](../ai-gateway/) - Cache, limitação de taxa, análise para solicitações de IA
+- [workers](../workers/) - Tempo de execução do trabalhador e padrões de manipulador de busca

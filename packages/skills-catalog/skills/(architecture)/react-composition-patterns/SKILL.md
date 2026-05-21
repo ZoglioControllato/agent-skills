@@ -1,84 +1,75 @@
 ---
 name: react-composition-patterns
-description: React composition patterns that scale. Use when refactoring components with boolean prop proliferation, building flexible component libraries, or designing reusable APIs. Triggers on tasks involving compound components, render props, context providers, or component architecture. Includes React 19 API changes. Do NOT use for React/Next.js performance optimization (use react-best-practices instead).
+description: Padrões de composição React que escalam. Use quando refatorar componentes com proliferação de props booleanas, construir bibliotecas de componentes flexíveis ou projetar APIs reutilizáveis. Aciona em tarefas envolvendo compound components, render props, provedores de contexto ou arquitetura de componentes. Inclui mudanças da API do React 19. NÃO use para otimização de performance React/Next.js (use react-best-practices).
 license: MIT
 metadata:
   author: vercel
   version: '1.0.0'
 ---
 
-# React Composition Patterns
+# Padrões de composição React
 
-Composition patterns for building flexible, maintainable React components. Avoid
-boolean prop proliferation by using compound components, lifting state, and
-composing internals. These patterns make codebases easier for both humans and AI
-agents to work with as they scale.
+Padrões de composição para componentes React flexíveis e sustentáveis. Evite proliferação de props booleanas usando compound components, elevação de estado e composição interna. Esses padrões facilitam bases de código para humanos e agentes de IA conforme crescem.
 
-## When to Apply
+## Quando aplicar
 
-Reference these guidelines when:
+Consulte estas diretrizes quando:
 
-- Refactoring components with many boolean props
-- Building reusable component libraries
-- Designing flexible component APIs
-- Reviewing component architecture
-- Working with compound components or context providers
+- Refatorar componentes com muitas props booleanas
+- Construir bibliotecas de componentes reutilizáveis
+- Projetar APIs de componentes flexíveis
+- Revisar arquitetura de componentes
+- Trabalhar com compound components ou provedores de contexto
 
-## Rule Categories by Priority
+## Categorias de regras por prioridade
 
-| Priority | Category                | Impact | Prefix          |
-| -------- | ----------------------- | ------ | --------------- |
-| 1        | Component Architecture  | HIGH   | `architecture-` |
-| 2        | State Management        | MEDIUM | `state-`        |
-| 3        | Implementation Patterns | MEDIUM | `patterns-`     |
-| 4        | React 19 APIs           | MEDIUM | `react19-`      |
+| Prioridade | Categoria                  | Impacto | Prefixo         |
+| ---------- | -------------------------- | ------- | --------------- |
+| 1          | Arquitetura de componentes | ALTO    | `architecture-` |
+| 2          | Gerenciamento de estado    | MÉDIO   | `state-`        |
+| 3          | Padrões de implementação   | MÉDIO   | `patterns-`     |
+| 4          | APIs do React 19           | MÉDIO   | `react19-`      |
 
-## Quick Reference
+## Referência rápida
 
-### 1. Component Architecture (HIGH)
+### 1. Arquitetura de componentes (ALTO)
 
-- `architecture-avoid-boolean-props` - Don't add boolean props to customize
-  behavior; use composition
-- `architecture-compound-components` - Structure complex components with shared
-  context
+- `architecture-avoid-boolean-props` — Não adicione props booleanas para customizar comportamento; use composição
+- `architecture-compound-components` — Estruture componentes complexos com contexto compartilhado
 
-### 2. State Management (MEDIUM)
+### 2. Gerenciamento de estado (MÉDIO)
 
-- `state-decouple-implementation` - Provider is the only place that knows how
-  state is managed
-- `state-context-interface` - Define generic interface with state, actions, meta
-  for dependency injection
-- `state-lift-state` - Move state into provider components for sibling access
+- `state-decouple-implementation` — O Provider é o único lugar que sabe como o estado é gerenciado
+- `state-context-interface` — Defina interface genérica com state, actions e meta para injeção de dependência
+- `state-lift-state` — Mova estado para componentes Provider para acesso entre irmãos
 
-### 3. Implementation Patterns (MEDIUM)
+### 3. Padrões de implementação (MÉDIO)
 
-- `patterns-explicit-variants` - Create explicit variant components instead of
-  boolean modes
-- `patterns-children-over-render-props` - Use children for composition instead
-  of renderX props
+- `patterns-explicit-variants` — Crie variantes explícitas de componentes em vez de modos booleanos
+- `patterns-children-over-render-props` — Use children para composição em vez de props renderX
 
-### 4. React 19 APIs (MEDIUM)
+### 4. APIs do React 19 (MÉDIO)
 
-> **⚠️ React 19+ only.** Skip this section if using React 18 or earlier.
+> **⚠️ Somente React 19+.** Pule esta seção se usar React 18 ou anterior.
 
-- `react19-no-forwardref` - Don't use `forwardRef`; use `use()` instead of `useContext()`
+- `react19-no-forwardref` — Não use `forwardRef`; use `use()` em vez de `useContext()`
 
-## How to Use
+## Como usar
 
-Read individual rule files for detailed explanations and code examples:
+Leia os arquivos de regra individuais para explicações detalhadas e exemplos de código:
 
 ```
 rules/architecture-avoid-boolean-props.md
 rules/state-context-interface.md
 ```
 
-Each rule file contains:
+Cada arquivo de regra contém:
 
-- Brief explanation of why it matters
-- Incorrect code example with explanation
-- Correct code example with explanation
-- Additional context and references
+- Breve explicação do porquê importa
+- Exemplo incorreto com explicação
+- Exemplo correto com explicação
+- Contexto adicional e referências
 
-## Full Compiled Document
+## Documento compilado completo
 
-For the complete guide with all rules expanded: `AGENTS.md`
+Para o guia completo com todas as regras expandidas: `AGENTS.md`

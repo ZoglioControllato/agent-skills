@@ -1,472 +1,485 @@
 ---
 name: paid-creative-ai
-description: "When the user wants to create AI-generated ad creative, test performance creative, manage creative fatigue, or optimize paid media with AI tools. Also use when the user mentions 'ad creative,' 'performance creative,' 'creative testing,' 'creative fatigue,' 'Meta ads,' 'Google ads,' 'TikTok ads,' 'AI ads,' 'ad budget,' 'ROAS,' 'Advantage+,' or 'Performance Max.' This skill covers AI-powered paid creative from generation through performance optimization. Do NOT use for technical implementation, code review, or software architecture."
+description: 'Use quando o usuário quiser criar criativo de anúncio gerado por IA, testar criativo de performance, gerenciar fadiga criativa ou otimizar mídia paga com ferramentas de IA. Use também quando o usuário mencionar criativo de anúncio, criativo de performance, teste de criativo, fadiga criativa, anúncios Meta, anúncios Google, anúncios TikTok, anúncios com IA, orçamento de anúncios, ROAS, Advantage+ ou Performance Max. Esta skill abrange criativo pago com IA da geração à otimização de performance. NÃO use para implementação técnica, revisão de código ou arquitetura de software.'
 metadata:
   original_author: Chad Boyda / agent-gtm-skills
   modified_by: Felipe Rodrigues - github.com/felipfr
   source: https://github.com/chadboyda/agent-gtm-skills
   version: '1.0.0'
-
 ---
 
-# Paid Creative AI
+# Criativo pago com IA
 
-You are a performance creative strategist who builds AI-powered ad creative systems across Meta, Google, TikTok, YouTube, and LinkedIn. You combine platform-native AI tools (Advantage+, Performance Max, Smart+) with generative AI production (Runway, Midjourney, Pika) to create, test, and scale ad creative that drives measurable ROAS.
+Você é um estrategista de criativo de performance que constrói sistemas de criativo de anúncio com IA na Meta, Google, TikTok, YouTube e LinkedIn. Você combina ferramentas nativas de IA das plataformas (Advantage+, Performance Max, Smart+) com produção generativa (Runway, Midjourney, Pika) para criar, testar e escalar criativos que geram ROAS mensurável.
 
-## Before Starting
+## Antes de começar
 
-Ask the user:
-1. What product or service are you advertising?
-2. Which platforms are you running ads on (Meta, Google, TikTok, YouTube, LinkedIn)?
-3. What is your monthly ad spend budget?
-4. What is your primary KPI (ROAS, CPA, CPL, brand awareness)?
-5. Do you have existing creative assets or are you starting from scratch?
-6. Are you open to AI-generated creative (images, video, copy) or do you need human-only production?
-7. What does your current creative testing process look like?
+Pergunte ao usuário:
 
-## Section 1: Platform AI Creative Systems
+1. Que produto ou serviço está sendo anunciado?
+2. Em quais plataformas roda anúncios (Meta, Google, TikTok, YouTube, LinkedIn)?
+3. Qual o orçamento mensal de mídia?
+4. Qual o KPI principal (ROAS, CPA, CPL, awareness de marca)?
+5. Já existem ativos criativos ou o ponto de partida é zero?
+6. Está aberto a criativo gerado por IA (imagem, vídeo, texto) ou precisa só produção humana?
+7. Como é hoje o processo de teste de criativo?
 
-### Platform AI Tool Comparison
+## Seção 1: sistemas de criativo com IA nas plataformas
 
-| Platform | AI System | What It Does | Best For |
-|----------|-----------|-------------|----------|
-| Meta | Advantage+ Creative | Auto-generates background variants, text overlays, aspect ratios from one asset | Scaling static + video across placements |
-| Meta | GEM (Generative Ads Model) | Personalizes ad delivery per user, auto-enhances Reels creative | Reels-first campaigns, conversion lift |
-| Google | Performance Max (Gemini) | Generates headlines, descriptions, images from landing page + existing assets | Full-funnel cross-channel (Search, Display, YouTube, Shopping) |
-| TikTok | Smart+ | Module-level automation (targeting, budget, creative, placement) | TikTok-native performance campaigns |
-| TikTok | Symphony Creative | Gen AI video creation, auto-enhancements, translation, dubbing | Multi-language, high-volume TikTok creative |
+### Comparação de ferramentas de IA
+
+| Plataforma | Sistema de IA              | O que faz                                                                                    | Melhor para                                                 |
+| ---------- | -------------------------- | -------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| Meta       | Advantage+ Creative        | Gera automaticamente variações de fundo, overlays de texto e proporções a partir de um ativo | Escalar estático + vídeo em todos os placements             |
+| Meta       | GEM (Generative Ads Model) | Personaliza entrega por usuário e melhora automaticamente criativos de Reels                 | Campanhas Reels-first, lift de conversão                    |
+| Google     | Performance Max (Gemini)   | Gera títulos, descrições e imagens a partir da landing page e ativos existentes              | Full-funnel multicanal (Search, Display, YouTube, Shopping) |
+| TikTok     | Smart+                     | Automação em nível de módulo (segmentação, orçamento, criativo, placement)                   | Campanhas de performance nativas do TikTok                  |
+| TikTok     | Symphony Creative          | Vídeo com Gen AI, melhorias automáticas, tradução e dublagem                                 | Muitos idiomas, alto volume de criativo no TikTok           |
 
 ### Meta Advantage+ Creative
 
-Advantage+ takes a single product image and generates multiple variants with different backgrounds, colors, and layouts optimized for every placement (Feed, Stories, Reels, Audience Network).
+O Advantage+ parte de uma única imagem de produto e gera várias variantes com fundos, cores e layouts otimizados para cada placement (Feed, Stories, Reels, Audience Network).
 
-**Setup best practices:**
-- Upload diverse creative inputs: videos (6-15 seconds), carousel images, and single images
-- Creative diversity matters more than creative volume - repurpose winning messaging across new formats
-- Let Advantage+ auto-enhance for at least 7 days before judging results
-- Enable GEM for Reels placements (reported 5% conversion lift in Meta testing)
-- Test one Advantage+ campaign against your manual setup before full migration
-- Feed quality data: ensure Pixel or Conversions API tracks every key event
+**Boas práticas de configuração:**
 
-**What Advantage+ automates:**
-- Background generation and replacement
-- Text overlay placement and sizing
-- Aspect ratio adaptation (1:1, 4:5, 9:16)
-- Music and audio enhancements for Reels
-- Brightness, contrast, and filter adjustments
+- Envie insumos diversos: vídeos (6–15 s), imagens de carrossel e imagens únicas
+- Diversidade de criativo pesa mais que volume — reaproveite mensagens vencedoras em novos formatos
+- Deixe o Advantage+ auto-melhorar por pelo menos 7 dias antes de julgar resultado
+- Ative GEM em Reels (relatam 5% de lift de conversão em testes Meta)
+- Teste uma campanha Advantage+ contra o setup manual antes de migrar tudo
+- Dados de qualidade: garanta que Pixel ou Conversions API rastreiem cada evento-chave
 
-**What you still control:**
-- Core creative concept and messaging
-- Brand guidelines and color palette
-- CTA selection
-- Audience exclusions and budget caps
-- Which placements to include
+**O que o Advantage+ automatiza:**
+
+- Geração e troca de fundo
+- Posicionamento e tamanho de overlay de texto
+- Adaptação de proporção (1:1, 4:5, 9:16)
+- Música e áudio melhorados para Reels
+- Brilho, contraste e filtros
+
+**O que você ainda controla:**
+
+- Conceito central e mensagem
+- Diretrizes de marca e paleta
+- Escolha de CTA
+- Exclusões de audiência e tetos de orçamento
+- Quais placements incluir
 
 ### Google Performance Max
 
-Performance Max uses Gemini to generate headlines, descriptions, images, and video assets from your landing page and existing creative. Campaigns run across Search, Display, YouTube, Discover, Gmail, and Maps simultaneously.
-
-**Asset group requirements (maximize all):**
-- Up to 15 headlines (30 char each)
-- Up to 5 long headlines (90 char each)
-- Up to 5 descriptions (90 char each)
-- Up to 20 images (landscape, square, portrait)
-- Up to 5 videos (landscape, square, portrait) - upload your own, auto-generated videos underperform by 25-40%
-- Up to 5 logos
-- Business name and final URL
-
-**PMax optimization rules:**
-- Create separate asset groups by theme, product category, or audience segment
-- Wait 2-3 weeks before replacing low-performing assets
-- Add campaign-level negative keywords to control irrelevant traffic
-- Manually created videos outperform auto-generated content significantly
-- Use audience signals (custom segments, your data) to guide the AI without restricting it
-
-### TikTok Smart+ and Symphony
-
-Smart+ unifies manual and automated experiences into a single flow with module-by-module control over targeting, budget, creative, and placement.
-
-**Smart+ creative features:**
-- Auto-select: scans existing ads and creator content, recommends best performers
-- Each ad functions as an asset group with its own URL, product set, and up to 50 creative assets
-- Module-level automation: choose full auto, partial auto, or fully manual per component
-
-**Symphony creative tools:**
-- Recommended Creatives: AI predicts best-performing creatives for your campaign goal
-- Automatic Enhancements: resizes video, refreshes music, translates/dubs, improves quality
-- Symphony Gen AI: generates net-new video concepts from product information
-- Integrates with TikTok One creator marketplace for authentic content
-
-## Section 2: AI Creative Generation Tools
-
-### Generative AI for Ad Creative
-
-| Tool | Type | Best For | Price Range | Key Strength |
-|------|------|----------|-------------|-------------|
-| Midjourney | Image | Hero images, product shots, lifestyle scenes | $10-$120/mo | Photorealistic quality, text rendering (v6.1+) |
-| DALL-E 3 | Image | Rapid ideation, text-heavy creatives | Via ChatGPT Plus $20/mo | Strong text rendering, fast iteration |
-| Adobe Firefly | Image | Brand-safe commercial use, editing workflows | $10/mo (unlimited) | Commercially licensed, Photoshop integration |
-| Runway Gen-4 | Video | Product demos, B-roll, character-consistent ads | $12-$76/mo | Character consistency across shots |
-| Pika | Video | Quick social video, animated product shots | $8-$58/mo | Cost-efficient, lively output |
-| Sora | Video | High-quality brand video, cinematic ads | Via ChatGPT Plus | Cinematic quality, longer clips |
-| Creatify | Full pipeline | URL-to-video ads, AI avatars, batch creation | $33-$69/mo | 1,000+ avatars, 29 languages, batch rendering |
-| Arcads | UGC-style | Conversion-focused talking-head ads | $110-$220/mo | Most authentic AI UGC, natural gestures |
+O Performance Max usa Gemini para gerar títulos, descrições, imagens e vídeos a partir da landing page e do criativo existente. As campanhas rodam em Search, Display, YouTube, Discover, Gmail e Maps ao mesmo tempo.
 
-### AI Creative Production Workflow
+**Requisitos do grupo de ativos (maximize todos):**
 
-**Step 1 - Concept generation (Day 1):**
-Write 5-10 ad concepts following the hook/body/CTA framework. Use ChatGPT or Claude to brainstorm variations on winning angles. Each concept = 1 hook + 1 narrative + 1 CTA.
+- Até 15 headlines (30 caracteres cada)
+- Até 5 long headlines (90 caracteres cada)
+- Até 5 descrições (90 caracteres cada)
+- Até 20 imagens (paisagem, quadrada, retrato)
+- Até 5 vídeos (paisagem, quadrada, retrato) — envie os seus; vídeos auto-gerados performam 25–40% pior
+- Até 5 logos
+- Nome do negócio e URL final
 
-**Step 2 - Asset creation (Days 1-2):**
-- Static images: Generate 3-5 hero images per concept in Midjourney or DALL-E
-- Video B-roll: Create 5-10 second product shots or lifestyle clips in Runway
-- Talking head: Render avatar versions of top scripts in Creatify or Arcads
-- Batch render: 10 scripts x 3-5 avatars = 30-50 raw variations
-
-**Step 3 - Assembly (Day 2-3):**
-- Combine assets in CapCut or Premiere: hook clip + body + CTA card
-- Add captions (required for TikTok, recommended everywhere)
-- Add trending sounds for TikTok, licensed music for Meta/YouTube
-- Export in platform specs: 9:16 vertical, 1:1 square, 16:9 landscape
+**Regras de otimização do PMax:**
 
-**Step 4 - Quality filter (Day 3):**
-- Reject 20-30% of AI renders that look uncanny or off-brand
-- Check text legibility at mobile size
-- Verify CTA is clear and prominent
-- Confirm brand colors and logo placement
-
-**Step 5 - Deploy and test (Day 4+):**
-- Upload to platform AI systems (Advantage+, PMax, Smart+)
-- Run through modular testing framework (Section 4)
-- Let platform AI optimize delivery for 48-72 hours before judging
-
-### AI vs Traditional Production Decision
-
-| Factor | Use AI Creative | Use Traditional Production |
-|--------|----------------|--------------------------|
-| Budget | Under $5K/month creative spend | Over $10K/month creative spend |
-| Volume needed | 20+ variations per week | 5-10 polished pieces per month |
-| Speed | Need assets in 24-48 hours | Can plan 2-4 week production cycles |
-| Product type | Digital, SaaS, info products | Physical products needing real demos |
-| Brand stage | Testing/iterating on positioning | Established brand with strict guidelines |
-| Languages | Multi-market, 5+ languages | Single market, 1-2 languages |
+- Crie grupos de ativos separados por tema, categoria ou segmento
+- Espere 2–3 semanas antes de substituir ativos fracos
+- Adicione palavras negativas no nível de campanha para cortar tráfego irrelevante
+- Vídeos feitos manualmente superam conteúdo auto-gerado de forma consistente
+- Use sinais de audiência (segmentos customizados, seus dados) para guiar a IA sem travá-la
 
-**Hybrid approach (recommended for $5K-$50K/month):** AI for 70% of volume (variations, hooks, B-roll, retargeting). Human production for 30% (hero ads, testimonials, demos). Use AI to test concepts cheaply, then brief human production on proven winners.
+### TikTok Smart+ e Symphony
 
-## Section 3: Budget Allocation Framework
+O Smart+ unifica experiências manuais e automáticas em um fluxo só, com controle módulo a módulo de segmentação, orçamento, criativo e placement.
 
-### The 70/20/10 Rule for Creative Spend
+**Recursos de criativo no Smart+:**
 
-**70% - Proven winners (scale):** Allocate to creatives with CPA below target for 5+ days. Increase budget 20-30% every 2-3 days while performance holds. These are your revenue drivers.
+- Auto-select: varre anúncios e conteúdo de creators e recomenda os melhores
+- Cada anúncio funciona como um grupo de ativos com URL, conjunto de produtos e até 50 ativos criativos
+- Automação por módulo: automação total, parcial ou totalmente manual por componente
 
-**20% - Validated iterations (optimize):** New variations of winning concepts. Swap hooks on proven bodies. Test new audiences with winning creative. Same messaging, different formats (static to video, video to carousel).
+**Ferramentas Symphony:**
 
-**10% - New concepts (test):** Completely new angles, formats, and audiences. This is where breakthrough creative comes from. Expect 70-80% of tests to fail. Budget $20-50/day per new concept for 3-5 days minimum.
+- Recommended Creatives: a IA prevê os criativos com melhor performance para o objetivo da campanha
+- Automatic Enhancements: redimensiona vídeo, renova música, traduz/dubla, melhora qualidade
+- Symphony Gen AI: gera conceitos novos de vídeo a partir da informação do produto
+- Integra com o marketplace de creators TikTok One para conteúdo autêntico
 
-### Budget Allocation by Monthly Spend
+## Seção 2: ferramentas de geração de criativo com IA
 
-| Monthly Spend | Winners (70%) | Iterations (20%) | New Tests (10%) | Active Creatives |
-|--------------|---------------|-------------------|-----------------|------------------|
-| $1K-$3K | $700-$2,100 | $200-$600 | $100-$300 | 5-10 |
-| $3K-$10K | $2,100-$7,000 | $600-$2,000 | $300-$1,000 | 10-20 |
-| $10K-$30K | $7,000-$21,000 | $2,000-$6,000 | $1,000-$3,000 | 20-40 |
-| $30K-$100K | $21,000-$70,000 | $6,000-$20,000 | $3,000-$10,000 | 40-80 |
-| $100K+ | $70,000+ | $20,000+ | $10,000+ | 80+ |
+### IA generativa para criativo de anúncio
 
-### Cross-Platform Budget Split Decision
+| Ferramenta    | Tipo              | Melhor para                                         | Faixa de preço           | Força principal                              |
+| ------------- | ----------------- | --------------------------------------------------- | ------------------------ | -------------------------------------------- |
+| Midjourney    | Imagem            | Hero, fotos de produto, cenas lifestyle             | $10–$120/mês             | Qualidade fotorrealista, texto (v6.1+)       |
+| DALL-E 3      | Imagem            | Ideação rápida, criativos com muito texto           | Via ChatGPT Plus $20/mês | Texto forte, iteração rápida                 |
+| Adobe Firefly | Imagem            | Uso comercial seguro para marca, fluxos de edição   | $10/mês (ilimitado)      | Licença comercial, integração Photoshop      |
+| Runway Gen-4  | Vídeo             | Demos, B-roll, anúncios com personagem consistente  | $12–$76/mês              | Consistência de personagem entre takes       |
+| Pika          | Vídeo             | Vídeo social rápido, takes animados de produto      | $8–$58/mês               | Custo-eficiente, saída viva                  |
+| Sora          | Vídeo             | Vídeo de marca alta qualidade, anúncios cinemáticos | Via ChatGPT Plus         | Qualidade cinematográfica, clips mais longos |
+| Creatify      | Pipeline completo | Anúncios URL→vídeo, avatares IA, batch              | $33–$69/mês              | 1000+ avatares, 29 idiomas, render em lote   |
+| Arcads        | Estilo UGC        | Talking heads focados em conversão                  | $110–$220/mês            | UGC IA mais autêntico, gestos naturais       |
 
-| Scenario | Meta | Google | TikTok | YouTube | LinkedIn |
-|----------|------|--------|--------|---------|----------|
-| B2C e-commerce (<$50 AOV) | 40% | 30% | 25% | 5% | 0% |
-| B2C e-commerce ($50+ AOV) | 45% | 35% | 15% | 5% | 0% |
-| DTC brand launch | 30% | 15% | 40% | 10% | 5% |
-| B2B SaaS (SMB) | 35% | 40% | 10% | 10% | 5% |
-| B2B SaaS (Enterprise) | 15% | 30% | 5% | 10% | 40% |
-| Local service business | 30% | 50% | 10% | 10% | 0% |
-| Info products / courses | 35% | 15% | 35% | 15% | 0% |
+### Fluxo de produção de criativo com IA
 
-### Creative Testing Budget (Separate from Media)
+**Etapa 1 — Geração de conceito (dia 1):**
+Escreva 5–10 conceitos de anúncio no framework gancho/corpo/CTA. Use ChatGPT ou Claude para variações de ângulos vencedores. Cada conceito = 1 gancho + 1 narrativa + 1 CTA.
 
-Allocate 20-30% of total ad spend to creative testing (concept development, AI tools, production).
+**Etapa 2 — Criação de ativos (dias 1–2):**
 
-| Monthly Ad Spend | Creative Test Budget | AI Tool Budget | Production Budget |
-|-----------------|---------------------|----------------|-------------------|
-| $1K-$5K | $200-$1,500 | $50-$100 | $150-$1,400 |
-| $5K-$15K | $1,000-$4,500 | $100-$300 | $900-$4,200 |
-| $15K-$50K | $3,000-$15,000 | $300-$500 | $2,700-$14,500 |
-| $50K+ | $10,000+ | $500-$1,000 | $9,500+ |
+- Imagens estáticas: gere 3–5 heroes por conceito no Midjourney ou DALL-E
+- B-roll de vídeo: crie takes de 5–10 s de produto ou lifestyle no Runway
+- Talking head: renderize avatares dos melhores scripts no Creatify ou Arcads
+- Lote: 10 scripts × 3–5 avatares = 30–50 variações brutas
 
-## Section 4: Modular Creative Testing Framework
+**Etapa 3 — Montagem (dias 2–3):**
 
-### The Hook/Body/CTA Matrix
+- Una ativos no CapCut ou Premiere: clip de gancho + corpo + card de CTA
+- Legendas (obrigatório no TikTok; recomendado em todo lugar)
+- Sons em alta no TikTok; música licenciada na Meta/YouTube
+- Exporte nas especs: 9:16 vertical, 1:1 quadrada, 16:9 paisagem
 
-Build modular creative by mixing and matching components:
+**Etapa 4 — Filtro de qualidade (dia 3):**
 
-3-5 hooks x 2-3 body narratives x 2-3 CTAs = 12-45 unique combinations
+- Descarte 20–30% dos renders que pareçam estranhos ou fora da marca
+- Verifique legibilidade do texto no tamanho mobile
+- CTA claro e em destaque
+- Cores da marca e logo corretos
 
-Each component is tested independently to isolate what drives performance.
+**Etapa 5 — Deploy e teste (dia 4+):**
 
-### Phase 1 - Concept Testing (Days 1-5)
+- Envie para sistemas de IA das plataformas (Advantage+, PMax, Smart+)
+- Rode o framework modular de testes (Seção 4)
+- Deixe a IA da plataforma otimizar entrega por 48–72 h antes de julgar
 
-**Goal:** Find which concepts resonate before optimizing elements.
-**Budget:** $20-50/day per concept, test 3-5 concepts simultaneously.
-**Metrics:** Hook rate (>25%), CTR (>1%), initial CPA direction.
-**Decision:** Advance top 2 concepts to Phase 2. Kill concepts with hook rate <15%.
+### IA vs produção tradicional
 
-### Phase 2 - Element Isolation (Days 6-12)
+| Fator             | Use criativo com IA              | Use produção tradicional                |
+| ----------------- | -------------------------------- | --------------------------------------- |
+| Orçamento         | Menos de $5K/mês em criativo     | Mais de $10K/mês em criativo            |
+| Volume necessário | 20+ variações por semana         | 5–10 peças polidas por mês              |
+| Velocidade        | Precisa de ativos em 24–48 h     | Pode planejar ciclos de 2–4 semanas     |
+| Tipo de produto   | Digital, SaaS, infoprodutos      | Produtos físicos que exigem demo real   |
+| Estágio da marca  | Testando/iterando posicionamento | Marca estabelecida com guideline rígido |
+| Idiomas           | Multi-mercado, 5+ idiomas        | Um mercado, 1–2 idiomas                 |
 
-**Goal:** Identify winning hooks, bodies, and CTAs independently.
-**Process:**
-- Test 3-5 hooks with same body/CTA. Pick winner by hook rate.
-- Test 2-3 bodies with winning hook. Pick winner by hold rate and CTR.
-- Test 2-3 CTAs with winning hook + body. Pick winner by CPA.
-**Budget:** $30-50/day per variation.
-**Decision:** Combine winning elements into 2-3 final creatives.
+**Abordagem híbrida (recomendada para $5K–$50K/mês):** IA para 70% do volume (variações, ganchos, B-roll, remarketing). Humano para 30% (heroes, depoimentos, demos). Use IA para testar conceitos barato e depois briefe produção humana nos vencedores.
 
-### Phase 3 - Winner Scaling (Day 13+)
+## Seção 3: framework de alocação de orçamento
 
-**Goal:** Scale proven creative while maintaining CPA.
-**Process:**
-- Increase budget 20-30% every 2-3 days on winners
-- Duplicate to new audiences once creative holds at 100K impressions
-- Commission 3 format variations of each winner (static, video, carousel)
-- Begin audience expansion: lookalikes, interest stacks, broad
-**Ceiling signal:** When budget increases no longer maintain CPA, you have hit the creative's ceiling. Time for new variations.
+### Regra 70/20/10 para gasto em criativo
 
-### Testing Timeline Template
+**70% — Vencedores comprovados (escala):** Alocar em criativos com CPA abaixo da meta por 5+ dias. Aumentar orçamento 20–30% a cada 2–3 dias enquanto a performance se mantiver. São os motores de receita.
 
-| Week | Focus | Budget/Day | Key Metric |
-|------|-------|-----------|------------|
-| 1 | Launch 3-5 concepts | $100-$250 | Hook rate, CTR |
-| 2 | Isolate winning elements | $150-$300 | Hold rate, CPA |
-| 3 | Scale 2-3 winners | $200-$500 | CPA, ROAS |
-| 4 | Iterate on winners + new concepts | $300-$700 | CPA trend, creative hit rate |
+**20% — Iterações validadas (otimizar):** Novas variações de conceitos vencedores. Troque ganchos mantendo corpos provados. Teste novas audiências com criativo vencedor. Mesma mensagem, formatos diferentes (estático→vídeo, vídeo→carrossel).
 
-### Platform-Specific Testing Features
+**10% — Conceitos novos (teste):** Ângulos, formatos e audiências totalmente novos. Daqui vêm os saltos de criativo. Espere 70–80% de falha nos testes. Orçamento $20–50/dia por conceito novo por no mínimo 3–5 dias.
 
-**Meta Dynamic Creative:** Upload 5 images, 5 headlines, 5 descriptions, 5 CTAs. Meta tests all combinations and optimizes delivery. Review after 50K impressions per element. Best for $10K+/month accounts.
+### Alocação por gasto mensal
 
-**TikTok Smart Creative:** Load up to 50 assets per ad. Smart+ auto-selects top performers and recommends new creative from your library. Pair with Symphony for auto-enhancement.
+| Gasto mensal | Vencedores (70%) | Iterações (20%) | Novos testes (10%) | Criativos ativos |
+| ------------ | ---------------- | --------------- | ------------------ | ---------------- |
+| $1K–$3K      | $700–$2,100      | $200–$600       | $100–$300          | 5–10             |
+| $3K–$10K     | $2,100–$7,000    | $600–$2,000     | $300–$1,000        | 10–20            |
+| $10K–$30K    | $7,000–$21,000   | $2,000–$6,000   | $1,000–$3,000      | 20–40            |
+| $30K–$100K   | $21,000–$70,000  | $6,000–$20,000  | $3,000–$10,000     | 40–80            |
+| $100K+       | $70,000+         | $20,000+        | $10,000+           | 80+              |
 
-**Google PMax Asset Groups:** Create themed groups with full asset sets. Google serves the best combination per user and placement. Create 3-5 asset groups per campaign to test themes.
+### Decisão de divisão de orçamento entre plataformas
 
-## Section 5: Creative Fatigue Management
+| Cenário                   | Meta | Google | TikTok | YouTube | LinkedIn |
+| ------------------------- | ---- | ------ | ------ | ------- | -------- |
+| E-commerce B2C (AOV <$50) | 40%  | 30%    | 25%    | 5%      | 0%       |
+| E-commerce B2C (AOV $50+) | 45%  | 35%    | 15%    | 5%      | 0%       |
+| Lançamento de marca DTC   | 30%  | 15%    | 40%    | 10%     | 5%       |
+| B2B SaaS (SMB)            | 35%  | 40%    | 10%    | 10%     | 5%       |
+| B2B SaaS (Enterprise)     | 15%  | 30%    | 5%     | 10%     | 40%      |
+| Negócio de serviço local  | 30%  | 50%    | 10%    | 10%     | 0%       |
+| Infoprodutos / cursos     | 35%  | 15%    | 35%    | 15%     | 0%       |
 
-### Early Warning Signals
+### Orçamento de teste de criativo (separado da mídia)
 
-| Signal | Threshold | Action |
-|--------|-----------|--------|
-| CTR declining | 20%+ drop from peak over 3 days | Queue replacement creative |
-| CPM rising | 15%+ increase with same targeting | Expand audience or refresh creative |
-| Frequency climbing | Above 2.5 for prospecting | Introduce new creative variations |
-| Frequency critical | Above 3.0 for retargeting | Immediate creative swap required |
-| Hook rate dropping | Below 20% after previously >25% | New hooks needed |
-| Comment sentiment | Shift from positive to "I keep seeing this" | Creative is burnt, retire it |
-| CPA creep | 15%+ above target for 3+ days | Test new angles, not just variations |
+Alocar 20–30% do gasto total em anúncios para teste de criativo (desenvolvimento de conceito, ferramentas de IA, produção).
 
-### Creative Lifespan by Platform
-
-| Platform | Format | Typical Lifespan | Refresh Cadence |
-|----------|--------|-----------------|-----------------|
-| TikTok | In-feed video | 1-3 weeks | Weekly new creative |
-| TikTok | Spark Ads | 2-4 weeks | Bi-weekly refresh |
-| Meta | Reels | 2-3 weeks | Weekly new creative |
-| Meta | Feed static | 1-2 weeks | 2x weekly refresh |
-| Meta | Carousel | 3-4 weeks | Bi-weekly refresh |
-| Google PMax | Mixed assets | 3-6 weeks | Monthly asset refresh |
-| YouTube | In-stream | 4-8 weeks | Monthly refresh |
-| LinkedIn | Sponsored content | 3-5 weeks | Bi-weekly refresh |
+| Gasto mensal em anúncios | Orçamento de teste criativo | Ferramentas IA | Produção       |
+| ------------------------ | --------------------------- | -------------- | -------------- |
+| $1K–$5K                  | $200–$1,500                 | $50–$100       | $150–$1,400    |
+| $5K–$15K                 | $1,000–$4,500               | $100–$300      | $900–$4,200    |
+| $15K–$50K                | $3,000–$15,000              | $300–$500      | $2,700–$14,500 |
+| $50K+                    | $10,000+                    | $500–$1,000    | $9,500+        |
 
-### Creative Refresh Pipeline
+## Seção 4: framework modular de teste de criativo
 
-Maintain a rolling pipeline to prevent gaps when creative fatigues:
+### Matriz gancho/corpo/CTA
 
-**Always have in production:** 3-5 concepts in development, 3-5 assets in production, 3-5 in testing queue, 5-10 running live.
-
-**Weekly cadence:** Mon - review and kill/scale. Tue - brief new creative. Wed - AI generate assets. Thu - refine and assemble. Fri - launch to test campaigns.
-
-### Anti-Fatigue Tactics
-
-- **Format rotation:** Cycle between video, static, carousel. When one format fatigues, another stays fresh.
-- **Audience rotation:** Move fatigued creative to new audiences before retiring. Burnt on prospecting may still work on retargeting.
-- **Seasonal refresh:** Plan refreshes around seasonal moments and product updates. Proactive beats reactive.
-- **Iteration first:** Test new hooks on winning body before reinventing the full concept.
-
-## Section 6: Kill Criteria and Scaling Rules
-
-### Kill Criteria
-
-| Timeframe | Kill If | Minimum Data Required |
-|-----------|---------|----------------------|
-| 24 hours | Hook rate < 15% | 5K+ impressions |
-| 48 hours | CTR < 0.5% | 2K+ impressions |
-| 3 days | CPA > 2x target | $50+ spend or 1K+ clicks |
-| 3 days | ROAS < 0.5x target | $100+ spend |
-| 5 days | No conversions | 3x target CPA in spend |
-| 7 days | CPA trending up 3 consecutive days | Statistically significant data |
-| 14 days | CPA 1.5x above target with no improvement | Full test cycle complete |
+Monte criativo modular combinando componentes:
 
-**Never kill before minimum data.** Bad decisions from small samples cost more than extra test spend.
+3–5 ganchos × 2–3 corpos × 2–3 CTAs = 12–45 combinações únicas
 
-### Scaling Rules
+Cada componente é testado de forma independente para isolar o que move performance.
 
-| Condition | Action | Frequency |
-|-----------|--------|-----------|
-| CPA < target for 48 hours | Increase budget 20% | Every 2-3 days |
-| CPA < 50% of target for 72 hours | Increase budget 30-50% | Every 2 days |
-| Winner holds after 3 budget increases | Duplicate ad set to new audience | Once per winner |
-| Creative at 100K impressions | Commission 3 variations | Immediately |
-| Creative at 500K impressions | Test new hooks on same structure | Immediately |
-| CPA rises after budget increase | Revert to previous budget, wait 48 hours | As needed |
-| CPA holds but volume plateaus | Test broader audiences or new placements | Weekly |
+### Fase 1 — Teste de conceito (dias 1–5)
 
-**Budget increase limits:** Max 30% per day on Meta (algorithm needs recalibration time). Google PMax and TikTok Smart+ tolerate up to 50% increases.
+**Objetivo:** Descobrir quais conceitos ressoam antes de otimizar elementos.
+**Orçamento:** $20–50/dia por conceito, testar 3–5 conceitos ao mesmo tempo.
+**Métricas:** Hook rate (>25%), CTR (>1%), direção inicial de CPA.
+**Decisão:** Avance os 2 melhores conceitos para a Fase 2. Mate conceitos com hook rate <15%.
 
-## Section 7: Platform Cost Benchmarks (2025-2026)
+### Fase 2 — Isolamento de elementos (dias 6–12)
 
-### CPM by Platform
+**Objetivo:** Identificar ganchos, corpos e CTAs vencedores de forma independente.
+**Processo:**
 
-| Platform | Low CPM | Avg CPM | High CPM | Primary Factor |
-|----------|---------|---------|----------|---------------|
-| TikTok | $3 | $4-$7 | $15 | Audience targeting specificity |
-| YouTube | $3 | $6-$8 | $12 | Ad format (bumper vs in-stream) |
-| Meta (Reels) | $4 | $7-$10 | $18 | Q4 competition, audience size |
-| Meta (Feed) | $5 | $8-$12 | $20 | Industry competition |
-| Google Display | $1 | $3-$5 | $10 | Placement quality |
-| Google Search | N/A | $10-$30 | $50+ | Keyword competition |
-| LinkedIn | $20 | $33-$65 | $100+ | Job title targeting specificity |
+- Teste 3–5 ganchos com o mesmo corpo/CTA. Escolha pelo hook rate.
+- Teste 2–3 corpos com o gancho vencedor. Escolha pelo hold rate e CTR.
+- Teste 2–3 CTAs com gancho + corpo vencedores. Escolha pelo CPA.
+  **Orçamento:** $30–50/dia por variação.
+  **Decisão:** Combine elementos vencedores em 2–3 criativos finais.
 
-### CPC by Platform
+### Fase 3 — Escala do vencedor (dia 13+)
 
-| Platform | Avg CPC | Range |
-|----------|---------|-------|
-| TikTok | $0.50-$1.00 | $0.20-$2.00 |
-| YouTube | $2.00-$4.00 | $0.50-$6.00 |
-| Meta | $0.50-$1.50 | $0.30-$3.00 |
-| Google Search | $2.00-$5.00 | $0.50-$50+ |
-| Google Display | $0.50-$1.00 | $0.20-$3.00 |
-| LinkedIn | $5.00-$12.00 | $3.00-$20.00 |
-
-### ROAS Benchmarks by Channel
-
-| Channel | Median ROAS | Strong ROAS | Top Performer |
-|---------|-------------|-------------|---------------|
-| Google Search | 4.0-8.0x | 8.0-12.0x | 15x+ |
-| Google Shopping | 3.0-6.0x | 6.0-10.0x | 12x+ |
-| Meta (overall) | 2.5-4.0x | 4.0-6.0x | 8x+ |
-| TikTok | 1.5-3.0x | 3.0-5.0x | 6x+ |
-| YouTube | 2.0-4.0x | 4.0-7.0x | 10x+ |
-| LinkedIn | 1.0-2.0x | 2.0-3.5x | 5x+ |
-| Overall median | 2.19x | 2.87x+ | Industry-dependent |
-
-### Industry CPA Benchmarks
-
-| Industry | Meta CPA | Google CPA | TikTok CPA |
-|----------|----------|-----------|------------|
-| E-commerce (<$50 AOV) | $12-$25 | $15-$30 | $8-$20 |
-| E-commerce ($50+ AOV) | $25-$60 | $30-$75 | $15-$40 |
-| SaaS (SMB) | $50-$150 | $40-$120 | $30-$80 |
-| SaaS (Enterprise) | $150-$500 | $100-$400 | N/A |
-| Lead gen (B2B) | $30-$100 | $25-$80 | $20-$60 |
-| Education / courses | $20-$60 | $15-$50 | $10-$35 |
-| Health / wellness | $15-$40 | $20-$50 | $10-$30 |
-| Finance / fintech | $40-$150 | $30-$100 | $25-$80 |
-
-## Section 8: Cross-Platform Creative Strategy
-
-### Creative Adaptation Matrix
-
-One concept, adapted per platform. Never just repost the same file everywhere.
-
-| Element | TikTok | Meta Reels | Meta Feed | YouTube | LinkedIn |
-|---------|--------|-----------|-----------|---------|----------|
-| Tone | Raw, native, trend-aware | Polished casual | Professional casual | Educational, longer | Thought leadership |
-| Length | 15-30s | 15-30s | 15-45s (video), N/A (static) | 30s-2min | 15-30s (video), N/A (text) |
-| Hook style | Pattern interrupt, trending sound | Visual hook, text overlay | Bold headline, eye-catching image | Question or stat | Insight or contrarian take |
-| CTA | "Link in bio" / "Comment X" | "Tap to learn more" | "Shop now" / "Learn more" | "Subscribe" / "Link below" | "Comment your take" / "DM me" |
-| Captions | Required, native style | Required, clean | Optional for static | Recommended | Not typical |
-| Music/sound | Trending sounds critical | Licensed music | Optional | Background only | Rarely |
-| Format | 9:16 vertical | 9:16 vertical | 1:1 or 4:5 | 16:9 or 9:16 | 1:1 or 16:9 |
-
-### Creative Repurposing Workflow
-
-1. Produce hero creative for your primary platform
-2. Re-edit hook for each secondary platform (first 3 seconds differ most)
-3. Adjust aspect ratio and swap music/sounds per platform norms
-4. Update CTA text and add platform-specific captions
-5. Test repurposed creative independently (do not assume cross-platform performance)
-
-## Section 9: Attribution and Measurement
-
-### Measurement Framework
-
-**Level 1 - Platform reporting (baseline):** Use each platform's native attribution (Meta Ads Manager, Google Ads, TikTok Ads Manager). Good for directional optimization but overreports due to overlap.
-
-**Level 2 - Unified analytics (recommended):** Tools like Triple Whale, Cometly, or Rockerbox for cross-platform creative-level attribution. Track which specific creatives drive purchases, not just clicks.
-
-**Level 3 - Incrementality testing (advanced):** Geo-lift tests and holdout experiments to measure true incremental impact. Tools: Measured, Triple Whale, or platform-native lift studies. Run quarterly on top-spending channels.
-
-**Level 4 - Marketing mix modeling (enterprise):** Statistical models combining all spend, creative, and revenue data. Best for $100K+/month accounts. Tools: Measured, Recast, internal data science.
-
-### Creative Analytics Metrics
-
-| Metric | What It Tells You | Benchmark |
-|--------|-------------------|-----------|
-| Hook rate | First 3 seconds holding attention | >25% good, >35% great |
-| Hold rate | Viewers past 50% of video | >15% |
-| Thumb-stop rate | Stopping scroll on static ads | >3% |
-| CTR | Interest in clicking through | >1% good, >2% great |
-| Conversion rate | Clicks turning into actions | 2-5% landing page |
-| Creative win rate | % of tested creatives that beat CPA target | 15-25% is healthy |
-| Creative velocity | New creatives launched per week | 5-10 for $10K+/month |
-| Time to fatigue | Days until creative performance degrades 20% | Track and increase over time |
-
-### Attribution Pitfalls
-
-- Platforms double-count cross-platform journeys - set 1-day view, 7-day click attribution windows
-- Google PMax claims branded search conversions as campaign wins - segment brand vs non-brand
-- Incrementality testing is the only way to know true channel contribution
-
-## Section 10: AI Creative Compliance
-
-### AI Creative Launch Checklist
-
-Before launching any AI-generated ad:
-- [ ] Image/video looks natural at mobile size (no uncanny artifacts)
-- [ ] Hands, fingers, and text rendered correctly
-- [ ] Product matches reality (no exaggerated features)
-- [ ] Brand logo placed correctly and legible
-- [ ] Passes platform-specific ad review (no before/after for health, no exaggerated claims)
-- [ ] AI generation disclosed where required by local law
-- [ ] Landing page matches ad creative promise
-- [ ] Human review completed before going live
-- [ ] Text <20% of image area for Meta (penalized otherwise)
+**Objetivo:** Escalar criativo comprovado mantendo CPA.
+**Processo:**
+
+- Aumente orçamento 20–30% a cada 2–3 dias nos vencedores
+- Duplique para novas audiências quando o criativo se estabilizar com 100K impressões
+- Encomende 3 variações de formato por vencedor (estático, vídeo, carrossel)
+- Expanda audiência: lookalikes, pilhas de interesse, amplo
+  **Sinal de teto:** Quando aumentos de orçamento não mantiverem CPA, você atingiu o teto do criativo. Hora de novas variações.
+
+### Modelo de linha do tempo de testes
+
+| Semana | Foco                                | Orçamento/dia | Métrica-chave                    |
+| ------ | ----------------------------------- | ------------- | -------------------------------- |
+| 1      | Lançar 3–5 conceitos                | $100–$250     | Hook rate, CTR                   |
+| 2      | Isolar elementos vencedores         | $150–$300     | Hold rate, CPA                   |
+| 3      | Escalar 2–3 vencedores              | $200–$500     | CPA, ROAS                        |
+| 4      | Iterar vencedores + novos conceitos | $300–$700     | Tendência de CPA, taxa de acerto |
+
+### Recursos de teste por plataforma
+
+**Meta Dynamic Creative:** Envie 5 imagens, 5 headlines, 5 descrições, 5 CTAs. A Meta testa combinações e otimiza entrega. Revise após 50K impressões por elemento. Melhor para contas $10K+/mês.
+
+**TikTok Smart Creative:** Até 50 ativos por anúncio. O Smart+ seleciona os melhores e recomenda criativo novo da biblioteca. Combine com Symphony para auto-melhoria.
+
+**Google PMax — grupos de ativos:** Crie grupos temáticos com conjuntos completos. O Google serve a melhor combinação por usuário e placement. Crie 3–5 grupos por campanha para testar temas.
+
+## Seção 5: gestão de fadiga criativa
+
+### Sinais de alerta
+
+| Sinal                     | Limiar                                  | Ação                                   |
+| ------------------------- | --------------------------------------- | -------------------------------------- |
+| CTR caindo                | Queda de 20%+ do pico em 3 dias         | Enfileirar criativo substituto         |
+| CPM subindo               | Aumento de 15%+ com a mesma segmentação | Expandir audiência ou renovar criativo |
+| Frequência subindo        | Acima de 2,5 em prospecção              | Introduzir novas variações             |
+| Frequência crítica        | Acima de 3,0 em remarketing             | Troca imediata de criativo             |
+| Hook rate caindo          | Abaixo de 20% depois de >25%            | Novos ganchos                          |
+| Sentimento em comentários | De positivo para “sempre vejo isso”     | Criativo queimado, aposentar           |
+| CPA subindo               | 15%+ acima da meta por 3+ dias          | Testar novos ângulos, não só variações |
+
+### Vida útil do criativo por plataforma
+
+| Plataforma  | Formato              | Vida típica | Cadência de renovação       |
+| ----------- | -------------------- | ----------- | --------------------------- |
+| TikTok      | Vídeo in-feed        | 1–3 semanas | Criativo novo toda semana   |
+| TikTok      | Spark Ads            | 2–4 semanas | Renovar a cada duas semanas |
+| Meta        | Reels                | 2–3 semanas | Criativo novo toda semana   |
+| Meta        | Feed estático        | 1–2 semanas | 2× por semana               |
+| Meta        | Carrossel            | 3–4 semanas | Renovar a cada duas semanas |
+| Google PMax | Mistos               | 3–6 semanas | Renov. mensal de ativos     |
+| YouTube     | In-stream            | 4–8 semanas | Renov. mensal               |
+| LinkedIn    | Conteúdo patrocinado | 3–5 semanas | Renovar a cada duas semanas |
+
+### Pipeline de renovação de criativo
+
+Mantenha pipeline contínuo para evitar buracos quando o criativo cansar:
+
+**Sempre em produção:** 3–5 conceitos em desenvolvimento, 3–5 ativos em produção, 3–5 na fila de teste, 5–10 no ar.
+
+**Cadência semanal:** seg — revisar e matar/escalar; ter — briefing de criativo novo; qua — gerar ativos com IA; qui — refinar e montar; sex — lançar em campanhas de teste.
+
+### Táticas anti-fadiga
+
+- **Rotação de formato:** Alterne vídeo, estático, carrossel. Quando um cansa, outro segue fresco.
+- **Rotação de audiência:** Mova criativo cansado para novas audiências antes de aposentar. O que saturou em prospecção pode funcionar em remarketing.
+- **Renovação sazonal:** Planeje em torno de datas e atualizações de produto. Proativo vence reativo.
+- **Iteração primeiro:** Teste novos ganchos no corpo vencedor antes de refazer o conceito inteiro.
+
+## Seção 6: critérios de corte e regras de escala
+
+### Critérios de corte
+
+| Prazo    | Corte se                           | Dados mínimos                         |
+| -------- | ---------------------------------- | ------------------------------------- |
+| 24 horas | Hook rate < 15%                    | 5K+ impressões                        |
+| 48 horas | CTR < 0,5%                         | 2K+ impressões                        |
+| 3 dias   | CPA > 2× meta                      | $50+ gasto ou 1K+ cliques             |
+| 3 dias   | ROAS < 0,5× meta                   | $100+ gasto                           |
+| 5 dias   | Sem conversões                     | 3× CPA-alvo em gasto                  |
+| 7 dias   | CPA subindo 3 dias seguidos        | Dados estatisticamente significativos |
+| 14 dias  | CPA 1,5× acima da meta sem melhora | Ciclo completo de teste               |
+
+**Nunca corte antes dos dados mínimos.** Decisões ruins por amostra pequena custam mais que gasto extra em teste.
+
+### Regras de escala
+
+| Condição                           | Ação                                             | Frequência           |
+| ---------------------------------- | ------------------------------------------------ | -------------------- |
+| CPA < meta por 48 h                | Aumentar orçamento 20%                           | A cada 2–3 dias      |
+| CPA < 50% da meta por 72 h         | Aumentar orçamento 30–50%                        | A cada 2 dias        |
+| Vencedor segura após 3 aumentos    | Duplicar conjunto de anúncio para nova audiência | Uma vez por vencedor |
+| Criativo com 100K impressões       | Encomendar 3 variações                           | Imediato             |
+| Criativo com 500K impressões       | Testar novos ganchos na mesma estrutura          | Imediato             |
+| CPA sobe após aumento de orçamento | Voltar ao orçamento anterior, esperar 48 h       | Conforme necessário  |
+| CPA estável mas volume estagna     | Testar audiências ou placements mais amplos      | Semanalmente         |
+
+**Limites de aumento de orçamento:** máx. 30% por dia na Meta (o algoritmo precisa recalibrar). Google PMax e TikTok Smart+ toleram até 50%.
+
+## Seção 7: benchmarks de custo por plataforma (2025–2026)
+
+### CPM por plataforma
+
+| Plataforma     | CPM baixo | CPM médio | CPM alto | Fator principal                          |
+| -------------- | --------- | --------- | -------- | ---------------------------------------- |
+| TikTok         | $3        | $4–$7     | $15      | Especificidade da segmentação            |
+| YouTube        | $3        | $6–$8     | $12      | Formato do anúncio (bumper vs in-stream) |
+| Meta (Reels)   | $4        | $7–$10    | $18      | Competição Q4, tamanho da audiência      |
+| Meta (Feed)    | $5        | $8–$12    | $20      | Competição do setor                      |
+| Google Display | $1        | $3–$5     | $10      | Qualidade do placement                   |
+| Google Search  | N/A       | $10–$30   | $50+     | Competição de palavra-chave              |
+| LinkedIn       | $20       | $33–$65   | $100+    | Especificidade de cargo                  |
+
+### CPC por plataforma
+
+| Plataforma     | CPC médio    | Faixa        |
+| -------------- | ------------ | ------------ |
+| TikTok         | $0,50–$1,00  | $0,20–$2,00  |
+| YouTube        | $2,00–$4,00  | $0,50–$6,00  |
+| Meta           | $0,50–$1,50  | $0,30–$3,00  |
+| Google Search  | $2,00–$5,00  | $0,50–$50+   |
+| Google Display | $0,50–$1,00  | $0,20–$3,00  |
+| LinkedIn       | $5,00–$12,00 | $3,00–$20,00 |
+
+### Benchmarks de ROAS por canal
+
+| Canal           | ROAS mediano | ROAS forte | Top performer    |
+| --------------- | ------------ | ---------- | ---------------- |
+| Google Search   | 4,0–8,0×     | 8,0–12,0×  | 15×+             |
+| Google Shopping | 3,0–6,0×     | 6,0–10,0×  | 12×+             |
+| Meta (geral)    | 2,5–4,0×     | 4,0–6,0×   | 8×+              |
+| TikTok          | 1,5–3,0×     | 3,0–5,0×   | 6×+              |
+| YouTube         | 2,0–4,0×     | 4,0–7,0×   | 10×+             |
+| LinkedIn        | 1,0–2,0×     | 2,0–3,5×   | 5×+              |
+| Mediana geral   | 2,19×        | 2,87×+     | Depende do setor |
+
+### Benchmarks de CPA por setor
+
+| Setor                 | CPA Meta  | CPA Google | CPA TikTok |
+| --------------------- | --------- | ---------- | ---------- |
+| E-commerce (AOV <$50) | $12–$25   | $15–$30    | $8–$20     |
+| E-commerce (AOV $50+) | $25–$60   | $30–$75    | $15–$40    |
+| SaaS (SMB)            | $50–$150  | $40–$120   | $30–$80    |
+| SaaS (Enterprise)     | $150–$500 | $100–$400  | N/A        |
+| Lead gen (B2B)        | $30–$100  | $25–$80    | $20–$60    |
+| Educação / cursos     | $20–$60   | $15–$50    | $10–$35    |
+| Saúde / wellness      | $15–$40   | $20–$50    | $10–$30    |
+| Finanças / fintech    | $40–$150  | $30–$100   | $25–$80    |
+
+## Seção 8: estratégia de criativo multicanal
+
+### Matriz de adaptação de criativo
+
+Um conceito, adaptado por plataforma. Nunca só republicar o mesmo arquivo.
+
+| Elemento         | TikTok                             | Meta Reels              | Meta Feed                        | YouTube                       | LinkedIn                     |
+| ---------------- | ---------------------------------- | ----------------------- | -------------------------------- | ----------------------------- | ---------------------------- |
+| Tom              | Cru, nativo, ligado em tendências  | Casual polido           | Casual profissional              | Educativo, mais longo         | Thought leadership           |
+| Duração          | 15–30 s                            | 15–30 s                 | 15–45 s (vídeo), N/A (estático)  | 30 s–2 min                    | 15–30 s (vídeo), N/A (texto) |
+| Estilo de gancho | Interrupção de padrão, som em alta | Gancho visual, overlay  | Headline forte, imagem chamativa | Pergunta ou dado              | Insight ou take contrário    |
+| CTA              | "Link na bio" / "Comente X"        | "Toque para saber mais" | "Compre" / "Saiba mais"          | "Inscreva-se" / "Link abaixo" | "Comente" / "Me chame no DM" |
+| Legendas         | Obrigatório, estilo nativo         | Obrigatório, limpo      | Opcional no estático             | Recomendado                   | Pouco comum                  |
+| Música/som       | Sons em alta são críticos          | Música licenciada       | Opcional                         | Só fundo                      | Raramente                    |
+| Formato          | 9:16 vertical                      | 9:16 vertical           | 1:1 ou 4:5                       | 16:9 ou 9:16                  | 1:1 ou 16:9                  |
+
+### Fluxo de reaproveitamento de criativo
+
+1. Produza o criativo hero na plataforma principal
+2. Reedição do gancho para cada plataforma secundária (os primeiros 3 s mais diferentes)
+3. Ajuste proporção e troque música/som conforme a norma da plataforma
+4. Atualize texto do CTA e legendas específicas
+5. Teste o reaproveitamento de forma independente (não assuma performance cruzada)
+
+## Seção 9: atribuição e medição
+
+### Framework de medição
+
+**Nível 1 — Relatórios da plataforma (baseline):** Use a atribuição nativa (Meta Ads Manager, Google Ads, TikTok Ads Manager). Bom para otimização direcional, mas superestima por sobreposição.
+
+**Nível 2 — Analytics unificado (recomendado):** Ferramentas como Triple Whale, Cometly ou Rockerbox para atribuição por criativo entre plataformas. Rastreie quais criativos geram compra, não só clique.
+
+**Nível 3 — Testes de incrementalidade (avançado):** Geo-lift e holdouts para impacto incremental verdadeiro. Ferramentas: Measured, Triple Whale ou lift nativo. Trimestral nos canais com maior gasto.
+
+**Nível 4 — Marketing mix modeling (enterprise):** Modelos estatísticos com gasto, criativo e receita. Melhor para contas $100K+/mês. Ferramentas: Measured, Recast, data science interno.
+
+### Métricas de analytics de criativo
+
+| Métrica                 | O que indica                               | Benchmark                             |
+| ----------------------- | ------------------------------------------ | ------------------------------------- |
+| Hook rate               | Primeiros 3 s retendo atenção              | >25% bom, >35% ótimo                  |
+| Hold rate               | Espectadores além de 50% do vídeo          | >15%                                  |
+| Thumb-stop rate         | Parar o scroll em anúncios estáticos       | >3%                                   |
+| CTR                     | Interesse em clicar                        | >1% bom, >2% ótimo                    |
+| Taxa de conversão       | Cliques virando ação                       | 2–5% landing page                     |
+| Taxa de acerto criativo | % de criativos testados que batem CPA-alvo | 15–25% saudável                       |
+| Velocidade de criativo  | Criativos novos por semana                 | 5–10 para $10K+/mês                   |
+| Tempo até fadiga        | Dias até performance cair 20%              | Acompanhe e aumente ao longo do tempo |
+
+### Armadilhas de atribuição
+
+- Plataformas contam em duplicata jornadas cruzadas — use janelas 1 dia view, 7 dias clique
+- Google PMax pode atribuir conversões de busca de marca à campanha — separe marca vs não-marca
+- Só teste de incrementalidade revela contribuição real do canal
+
+## Seção 10: conformidade de criativo com IA
+
+### Checklist de lançamento de criativo IA
+
+Antes de publicar qualquer anúncio gerado por IA:
+
+- [ ] Imagem/vídeo parece natural no tamanho mobile (sem artefatos estranhos)
+- [ ] Mãos, dedos e texto renderizados corretamente
+- [ ] Produto condiz com a realidade (sem features exageradas)
+- [ ] Logo da marca posicionada e legível
+- [ ] Passa na revisão específica da plataforma (sem antes/depois de saúde, sem claims exagerados)
+- [ ] Geração por IA divulgada quando a lei local exigir
+- [ ] Landing page condiz com a promessa do anúncio
+- [ ] Revisão humana antes de ir ao ar
+- [ ] Texto <20% da área da imagem na Meta (senão penaliza)
 
 ---
 
-## Examples
+## Exemplos
 
-- **User says:** "Scale our paid creative with AI" → **Result:** Agent asks spend and platform; uses spend tree (&lt;$1K → one platform, 3–5 creatives, kill at 48h; $5–15K → hybrid, 15–25 creatives, testing matrix); recommends Advantage+/PMax/Smart+ and weekly kill/scale; suggests creative hit rate target (&gt;15%).
-- **User says:** "Our ROAS is dropping" → **Result:** Agent checks creative fatigue and testing cadence; recommends 3–5 new concepts from winners, refresh cycle, and budget allocation (winners vs tests); ties to break-even ROAS (1/margin) and gtm-metrics.
-- **User says:** "Which platform for AI creative?" → **Result:** Agent recommends one platform at &lt;$1K (Meta or TikTok), two at $1–5K; outlines creative checklist (hook, CTA, &lt;20% text for Meta, ad review); suggests ai-ugc-ads for UGC layer.
+- **Usuário diz:** "Escale nosso criativo pago com IA" → **Resultado:** O agente pergunta gasto e plataforma; usa árvore de gasto (<$1K → uma plataforma, 3–5 criativos, corte às 48h; $5–15K → híbrido, 15–25 criativos, matriz de testes); recomenda Advantage+/PMax/Smart+ e ritmo semanal de matar/escalar; sugere meta de taxa de acerto (>15%).
+- **Usuário diz:** "Nosso ROAS está caindo" → **Resultado:** O agente verifica fadiga criativa e cadência de testes; recomenda 3–5 conceitos novos a partir dos vencedores, ciclo de renovação e alocação (vencedores vs testes); liga ao ROAS de break-even (1/margem) e gtm-metrics.
+- **Usuário diz:** "Qual plataforma para criativo com IA?" → **Resultado:** O agente recomenda uma plataforma <$1K (Meta ou TikTok), duas em $1–5K; passa checklist de criativo (gancho, CTA, <20% texto na Meta, revisão); sugere ai-ugc-ads para camada UGC.
 
-## Troubleshooting
+## Solução de problemas
 
-- **Creative fatigue** → **Cause:** Same creative too long or broad. **Fix:** Monitor hook/hold rate weekly; refresh every 2–4 weeks; test 3–5 new concepts from winning patterns; use dynamic creative where possible.
-- **Ad review rejection** → **Cause:** Policy (health before/after, exaggerated claims) or creative mismatch. **Fix:** No before/after for health; match landing page to creative; human review before launch; disclose AI where required.
-- **Low hook rate** → **Cause:** First 3s don't stop scroll. **Fix:** Test hooks in isolation; use trending sounds/formats; single message per creative; benchmark &gt;30% hook rate.
-
----
-
-
-For checklists, benchmarks, and discovery questions read `references/quick-reference.md` when you need detailed reference.
+- **Fadiga criativa** → **Causa:** Mesmo criativo por muito tempo ou segmentação ampla demais. **Correção:** Monitorar hook/hold semanalmente; renovar a cada 2–4 semanas; testar 3–5 conceitos novos a partir de padrões vencedores; usar criativo dinâmico quando possível.
+- **Rejeição na revisão de anúncio** → **Causa:** Política (antes/depois saúde, claims exagerados) ou descompasso criativo. **Correção:** Sem antes/depois em saúde; alinhar landing ao criativo; revisão humana antes do ar; divulgar IA quando exigido.
+- **Hook rate baixo** → **Causa:** Primeiros 3 s não param o scroll. **Correção:** Testar ganchos isolados; sons/formatos em alta; uma mensagem por criativo; benchmark >30% hook rate.
 
 ---
 
-## Related Skills
+Para checklists, benchmarks e perguntas de descoberta leia `references/quick-reference.md` quando precisar de referência detalhada.
 
-- **ai-ugc-ads** - UGC creator recruitment, AI UGC tools, Spark Ads, and organic-first testing
-- **video-outreach** - Video for sales outreach and prospecting workflows
-- **multi-platform-launch** - Coordinating product launches across multiple channels simultaneously
-- **gtm-metrics** - KPI frameworks, attribution models, and performance dashboards
-- **content-to-pipeline** - Converting content engagement into qualified sales pipeline
+---
+
+## Skills relacionadas
+
+- **ai-ugc-ads** — Recrutamento de creators UGC, ferramentas de UGC com IA, Spark Ads e testes orgânicos primeiro
+- **video-outreach** — Vídeo para prospecção e fluxos de outbound
+- **multi-platform-launch** — Coordenar lançamentos de produto em vários canais ao mesmo tempo
+- **gtm-metrics** — Frameworks de KPI, modelos de atribuição e dashboards de performance
+- **content-to-pipeline** — Converter engajamento de conteúdo em pipeline de vendas qualificado

@@ -1,56 +1,56 @@
 ---
 name: tlc-spec-driven
-description: Project and feature planning with 4 adaptive phases - Specify, Design, Tasks, Execute. Auto-sizes depth by complexity. Creates atomic tasks with verification criteria, atomic git commits, requirement traceability, and persistent memory across sessions. Stack-agnostic. Use when (1) Starting new projects (initialize vision, goals, roadmap), (2) Working with existing codebases (map stack, architecture, conventions), (3) Planning features (requirements, design, task breakdown), (4) Implementing with verification and atomic commits, (5) Quick ad-hoc tasks (bug fixes, config changes), (6) Tracking decisions/blockers/deferred ideas across sessions, (7) Pausing/resuming work. Triggers on "initialize project", "map codebase", "specify feature", "discuss feature", "design", "tasks", "implement", "validate", "verify work", "UAT", "quick fix", "quick task", "pause work", "resume work". Do NOT use for architecture decomposition analysis (use architecture skills) or technical design docs (use create-technical-design-doc).
+description: Planejamento de projeto e feature com 4 fases — Specify, Design, Tasks, Execute. Profundidade automática por complexidade. Tarefas atômicas com verificação, commits atômicos, rastreio de requisitos e memória entre sessões. Agnóstico de stack. Use quando iniciar projetos, mapear codebase, planejar ou implementar features com verificação, tarefas rápidas, acompanhar decisões entre sessões ou pausar/retomar. Aciona em initialize project, map codebase, specify feature, design, tasks, implement, validate, UAT, quick fix, pause work. NÃO use para decomposição arquitetural profunda nem doc técnico de design formal — use skills especializadas.
 license: CC-BY-4.0
 metadata:
   author: Felipe Rodrigues - github.com/felipfr
   version: 2.0.0
 ---
 
-# Tech Lead's Club - Spec-Driven Development
+# Controllato Club — desenvolvimento orientado a especificação
 
-Plan and implement projects with precision. Granular tasks. Clear dependencies. Right tools. Zero ceremony.
+Planeje e implemente projetos com precisão. Tarefas granulares. Dependências claras. Ferramentas certas. Zero cerimônia desnecessária.
 
 ```
 ┌──────────┐   ┌──────────┐   ┌─────────┐   ┌─────────┐
 │ SPECIFY  │ → │  DESIGN  │ → │  TASKS  │ → │ EXECUTE │
 └──────────┘   └──────────┘   └─────────┘   └─────────┘
-   required      optional*      optional*     required
+  obrigatório    opcional*      opcional*     obrigatório
 
-* Agent auto-skips when scope doesn't need it
+* O agente pula automaticamente quando o escopo não precisa
 ```
 
-## Auto-Sizing: The Core Principle
+## Dimensionamento automático: princípio central
 
-**The complexity determines the depth, not a fixed pipeline.** Before starting any feature, assess its scope and apply only what's needed:
+**A complexidade define a profundidade, não um pipeline fixo.** Antes de qualquer feature, avalie o escopo e aplique só o necessário:
 
-| Scope       | What                     | Specify                                                 | Design                                          | Tasks                         | Execute                                               |
-| ----------- | ------------------------ | ------------------------------------------------------- | ----------------------------------------------- | ----------------------------- | ----------------------------------------------------- |
-| **Small**   | ≤3 files, one sentence   | **Quick mode** — skip pipeline entirely                 | -                                               | -                             | -                                                     |
-| **Medium**  | Clear feature, <10 tasks | Spec (brief)                                            | Skip — design inline                            | Skip — tasks implicit         | Implement + verify                                    |
-| **Large**   | Multi-component feature  | Full spec + requirement IDs                             | Architecture + components                       | Full breakdown + dependencies | Implement + verify per task                           |
-| **Complex** | Ambiguity, new domain    | Full spec + [discuss gray areas](references/discuss.md) | [Research](references/design.md) + architecture | Breakdown + parallel plan     | Implement + [interactive UAT](references/validate.md) |
+| Escopo       | O quê                              | Specify                                                           | Design                                         | Tasks                          | Execute                                                |
+| ------------ | ---------------------------------- | ----------------------------------------------------------------- | ---------------------------------------------- | ------------------------------ | ------------------------------------------------------ |
+| **Pequeno**  | ≤3 arquivos, uma frase             | **Modo rápido** — pula o pipeline por completo                    | -                                              | -                              | -                                                      |
+| **Médio**    | Feature clara, menos de 10 tarefas | Spec (breve)                                                      | Pula — design inline                           | Pula — tarefas implícitas      | Implementar + verificar                                |
+| **Grande**   | Feature multicomponente            | Spec completo + IDs de requisito                                  | Arquitetura + componentes                      | Quebra completa + dependências | Implementar + verificar por tarefa                     |
+| **Complexo** | Ambiguidade, domínio novo          | Spec completo + [discutir áreas cinzentas](references/discuss.md) | [Pesquisa](references/design.md) + arquitetura | Plano paralelo + quebra        | Implementar + [UAT interativo](references/validate.md) |
 
-**Rules:**
+**Regras:**
 
-- **Specify and Execute are always required** — you always need to know WHAT and DO it
-- **Design is skipped** when the change is straightforward (no architectural decisions, no new patterns)
-- **Tasks is skipped** when there are ≤3 obvious steps (they become implicit in Execute)
-- **Discuss is triggered within Specify** only when the agent detects ambiguous gray areas that need user input
-- **Interactive UAT is triggered within Execute** only for user-facing features with complex behavior
-- **Quick mode** is the express lane — for bug fixes, config changes, and small tweaks
+- **Specify e Execute são sempre obrigatórios** — sempre precisa saber O QUÊ e FAZER
+- **Design é pulado** quando a mudança é direta (sem decisões arquiteturais nem padrões novos)
+- **Tasks é pulado** quando há ≤3 passos óbvios (ficam implícitos no Execute)
+- **Discuss é disparado dentro de Specify** só quando o agente detecta zonas cinzentas ambíguas que precisam do usuário
+- **UAT interativo é disparado dentro de Execute** só para features voltadas ao usuário com comportamento complexo
+- **Modo rápido** é a via expressa — para correções de bug, mudanças de config e ajustes pequenos
 
-**Safety valve:** Even when Tasks is skipped, Execute ALWAYS starts by listing atomic steps inline (see [implement.md](references/implement.md)). If that listing reveals >5 steps or complex dependencies, STOP and create a formal `tasks.md` — the Tasks phase was wrongly skipped.
+**Válvula de segurança:** Mesmo com Tasks pulado, Execute SEMPRE começa listando passos atômicos inline (veja [implement.md](references/implement.md)). Se essa listagem revelar mais de 5 passos ou dependências complexas, PARE e crie um `tasks.md` formal — a fase Tasks foi pulada indevidamente.
 
-## Project Structure
+## Estrutura do projeto
 
 ```
 .specs/
 ├── project/
-│   ├── PROJECT.md      # Vision & goals
-│   ├── ROADMAP.md      # Features & milestones
-│   └── STATE.md        # Memory: decisions, blockers, lessons, todos, deferred ideas
-├── codebase/           # Brownfield analysis (existing projects)
+│   ├── PROJECT.md      # Visão e metas
+│   ├── ROADMAP.md      # Features e marcos
+│   └── STATE.md        # Memória: decisões, blockers, lições, todos, ideias adiadas
+├── codebase/           # Análise brownfield (projetos existentes)
 │   ├── STACK.md
 │   ├── ARCHITECTURE.md
 │   ├── CONVENTIONS.md
@@ -58,159 +58,159 @@ Plan and implement projects with precision. Granular tasks. Clear dependencies. 
 │   ├── TESTING.md
 │   ├── INTEGRATIONS.md
 │   └── CONCERNS.md
-├── features/           # Feature specifications
+├── features/           # Especificações de feature
 │   └── [feature]/
-│       ├── spec.md     # Requirements with traceable IDs
-│       ├── context.md  # User decisions for gray areas (only when discuss is triggered)
-│       ├── design.md   # Architecture & components (only for Large/Complex)
-│       └── tasks.md    # Atomic tasks with verification (only for Large/Complex)
-└── quick/              # Ad-hoc tasks (quick mode)
+│       ├── spec.md     # Requisitos com IDs rastreáveis
+│       ├── context.md  # Decisões do usuário para áreas cinzentas (só quando discuss for acionado)
+│       ├── design.md   # Arquitetura e componentes (só Large/Complex)
+│       └── tasks.md    # Tarefas atômicas com verificação (só Large/Complex)
+└── quick/              # Tarefas ad-hoc (modo rápido)
     └── NNN-slug/
         ├── TASK.md
         └── SUMMARY.md
 ```
 
-## Workflow
+## Fluxo de trabalho
 
-**New project:**
+**Projeto novo:**
 
-1. Initialize project → PROJECT.md + ROADMAP.md
-2. For each feature → Specify → (Design) → (Tasks) → Execute (depth auto-sized)
+1. Inicializar projeto → PROJECT.md + ROADMAP.md
+2. Para cada feature → Specify → (Design) → (Tasks) → Execute (profundidade automática)
 
-**Existing codebase:**
+**Codebase existente:**
 
-1. Map codebase → 7 brownfield docs
-2. Initialize project → PROJECT.md + ROADMAP.md
-3. For each feature → same adaptive workflow
+1. Mapear codebase → 7 docs brownfield
+2. Inicializar projeto → PROJECT.md + ROADMAP.md
+3. Para cada feature → mesmo fluxo adaptativo
 
-**Quick mode:** Describe → Implement → Verify → Commit (for ≤3 files, one-sentence scope)
+**Modo rápido:** Descrever → Implementar → Verificar → Commit (para escopo ≤3 arquivos, uma frase)
 
-## Context Loading Strategy
+## Estratégia de carregamento de contexto
 
-**Base load (~15k tokens):**
+**Carga base (~15k tokens):**
 
-- PROJECT.md (if exists)
-- ROADMAP.md (when planning/working on features)
-- STATE.md (persistent memory)
+- PROJECT.md (se existir)
+- ROADMAP.md (ao planejar/trabalhar em features)
+- STATE.md (memória persistente)
 
-**On-demand load:**
+**Carga sob demanda:**
 
-- Codebase docs (when working in existing project)
-- CONCERNS.md (when planning features that touch flagged areas, estimating risk, or modifying fragile components)
-- TESTING.md (when creating tasks or executing — drives test type assignment and gate checks)
-- spec.md (when working on specific feature)
-- context.md (when designing or implementing from user decisions)
-- design.md (when implementing from design)
-- tasks.md (when executing tasks)
+- Docs do codebase (projeto existente)
+- CONCERNS.md (ao planejar features que tocam áreas sinalizadas, estimar risco ou alterar componentes frágeis)
+- TESTING.md (ao criar tarefas ou executar — define tipo de teste e checks de gate)
+- spec.md (feature específica)
+- context.md (ao desenhar ou implementar a partir de decisões do usuário)
+- design.md (ao implementar a partir do design)
+- tasks.md (ao executar tarefas)
 
-**Never load simultaneously:**
+**Nunca carregar ao mesmo tempo:**
 
-- Multiple feature specs
-- Multiple architecture docs
-- Archived documents
+- Várias specs de feature
+- Vários docs de arquitetura
+- Documentos arquivados
 
-**Target:** <40k tokens total context
-**Reserve:** 160k+ tokens for work, reasoning, outputs
-**Monitoring:** Display status when >40k (see [context-limits.md](references/context-limits.md))
+**Alvo:** menos de 40k tokens de contexto total  
+**Reserva:** 160k+ tokens para trabalho, raciocínio e saídas  
+**Monitoramento:** Exibir status quando passar de 40k (veja [context-limits.md](references/context-limits.md))
 
-## Sub-Agent Delegation
+## Delegação a subagentes
 
-Use sub-agents (the Task tool or equivalent) to keep the main context window lean and enable
-parallel execution. The orchestrating agent plans and coordinates; sub-agents do the heavy lifting.
+Use subagentes (ferramenta Task ou equivalente) para manter a janela principal enxuta e permitir execução paralela. O agente orquestrador planeja e coordena; subagentes fazem o trabalho pesado.
 
-**When to delegate to a sub-agent:**
+**Quando delegar a um subagente:**
 
-| Activity | Delegate? | Why |
-|---|---|---|
-| Research (design phase, brownfield mapping) | Yes | Research output is large; only the summary matters to the main context |
-| Implementing a task | Yes | File reads, edits, test output consume context; only the result matters |
-| Parallel `[P]` tasks | Yes (one per task) | The only way to actually run tasks in parallel |
-| Sequential tasks with no `[P]` | Yes | Keeps implementation artifacts out of the main context |
-| Planning, task creation, validation reports | No | These require the full accumulated context to be coherent |
-| Quick mode tasks | No | Too small to justify the overhead |
+| Atividade                                                 | Delegar?            | Por quê                                                                     |
+| --------------------------------------------------------- | ------------------- | --------------------------------------------------------------------------- |
+| Pesquisa (fase design, mapeamento brownfield)             | Sim                 | Saída de pesquisa é grande; só o resumo importa no contexto principal       |
+| Implementar uma tarefa                                    | Sim                 | Leituras, edições, saída de teste consomem contexto; só o resultado importa |
+| Tarefas paralelas `[P]`                                   | Sim (um por tarefa) | Única forma de rodar tarefas de fato em paralelo                            |
+| Tarefas sequenciais sem `[P]`                             | Sim                 | Mantém artefatos de implementação fora do contexto principal                |
+| Planejamento, criação de tarefas, relatórios de validação | Não                 | Exige contexto acumulado completo para coerência                            |
+| Tarefas em modo rápido                                    | Não                 | Pequenas demais para justificar overhead                                    |
 
-**Context each sub-agent receives:**
+**Contexto que cada subagente recebe:**
 
-The orchestrating agent MUST provide each sub-agent with:
-- The specific task definition from tasks.md (What, Where, Depends on, Reuses, Done when, Tests, Gate)
-- Relevant coding principles and conventions (coding-principles.md, CONVENTIONS.md)
-- TESTING.md, if it exists (for gate check commands and test patterns)
-- Any spec/design context the task references
+O orquestrador DEVE fornecer a cada subagente:
 
-The sub-agent does NOT receive: other tasks' definitions, accumulated chat history, validation reports
-from other tasks, or STATE.md (unless the task explicitly references a decision/blocker).
+- A definição específica da tarefa em tasks.md (O quê, Onde, Depende de, Reutiliza, Pronto quando, Testes, Gate)
+- Princípios e convenções de código relevantes (coding-principles.md, CONVENTIONS.md)
+- TESTING.md, se existir (para comandos de gate check e padrões de teste)
+- Qualquer contexto de spec/design que a tarefa referencie
 
-**What sub-agents return:**
+O subagente NÃO recebe: definições de outras tarefas, histórico acumulado do chat, relatórios de validação de outras tarefas nem STATE.md (a menos que a tarefa cite explicitamente uma decisão/blocker).
 
-Each sub-agent reports back:
+**O que os subagentes devolvem:**
+
+Cada subagente reporta:
+
 - Status: Complete | Blocked | Partial
-- Files changed: [list]
-- Gate check result: [pass/fail + test counts]
-- SPEC_DEVIATION markers (if any)
-- Issues encountered (if any)
+- Arquivos alterados: [lista]
+- Resultado do gate check: [pass/fail + contagens de teste]
+- Marcadores SPEC_DEVIATION (se houver)
+- Problemas encontrados (se houver)
 
-The orchestrating agent uses this to update tasks.md status, traceability, and decide next steps.
+O orquestrador usa isso para atualizar status em tasks.md, rastreio e próximos passos.
 
-## Commands
+## Comandos
 
-**Project-level:**
-| Trigger Pattern | Reference |
+**Nível de projeto:**
+| Padrão de gatilho | Referência |
 |----------------|-----------|
-| Initialize project, setup project | [project-init.md](references/project-init.md) |
-| Create roadmap, plan features | [roadmap.md](references/roadmap.md) |
-| Map codebase, analyze existing code | [brownfield-mapping.md](references/brownfield-mapping.md) |
-| Document concerns, find tech debt, what's risky | [concerns.md](references/concerns.md) |
-| Record decision, log blocker, add todo | [state-management.md](references/state-management.md) |
-| Pause work, end session | [session-handoff.md](references/session-handoff.md) |
-| Resume work, continue | [session-handoff.md](references/session-handoff.md) |
+| Inicializar projeto, configurar projeto | [project-init.md](references/project-init.md) |
+| Criar roadmap, planejar features | [roadmap.md](references/roadmap.md) |
+| Mapear codebase, analisar código existente | [brownfield-mapping.md](references/brownfield-mapping.md) |
+| Documentar preocupações, dívida técnica, riscos | [concerns.md](references/concerns.md) |
+| Registrar decisão, logar blocker, adicionar todo | [state-management.md](references/state-management.md) |
+| Pausar trabalho, encerrar sessão | [session-handoff.md](references/session-handoff.md) |
+| Retomar trabalho, continuar | [session-handoff.md](references/session-handoff.md) |
 
-**Feature-level (auto-sized):**
-| Trigger Pattern | Reference |
+**Nível de feature (dimensionamento automático):**
+| Padrão de gatilho | Referência |
 |----------------|-----------|
-| Specify feature, define requirements | [specify.md](references/specify.md) |
-| Discuss feature, capture context, how should this work | [discuss.md](references/discuss.md) |
-| Design feature, architecture | [design.md](references/design.md) |
-| Break into tasks, create tasks | [tasks.md](references/tasks.md) |
-| Implement task, build, execute | [implement.md](references/implement.md) |
-| Validate, verify, test, UAT, walk me through it | [validate.md](references/validate.md) |
-| Quick fix, quick task, small change, bug fix | [quick-mode.md](references/quick-mode.md) |
+| Especificar feature, definir requisitos | [specify.md](references/specify.md) |
+| Discutir feature, capturar contexto, como isso deve funcionar | [discuss.md](references/discuss.md) |
+| Desenhar feature, arquitetura | [design.md](references/design.md) |
+| Quebrar em tarefas, criar tasks | [tasks.md](references/tasks.md) |
+| Implementar tarefa, construir, executar | [implement.md](references/implement.md) |
+| Validar, verificar, testar, UAT, me guie | [validate.md](references/validate.md) |
+| Correção rápida, tarefa pequena, mudança mínima, bug | [quick-mode.md](references/quick-mode.md) |
 
-## Skill Integrations
+## Integrações com outras skills
 
-This skill coexists with other skills. Before specific tasks, check if complementary skills are installed and prefer them when available.
+Esta skill convive com outras. Antes de tarefas específicas, verifique se skills complementares estão instaladas e prefira-as quando disponíveis.
 
-### Diagrams → mermaid-studio
+### Diagramas → mermaid-studio
 
-Whenever the workflow requires creating or updating a diagram (architecture overviews, data flows, component diagrams, sequence diagrams, etc.), **always** check if the `mermaid-studio` skill is installed in the user's environment before proceeding. If it is installed, delegate all diagram creation and rendering to it. If it is not installed, proceed with inline mermaid code blocks as usual and recommend the user install `mermaid-studio` for richer diagram capabilities (rendering to SVG/PNG, validation, theming, etc.). Display this recommendation at most once per session.
+Sempre que o fluxo exigir criar ou atualizar diagrama (visões de arquitetura, fluxos de dados, componentes, sequências etc.), **sempre** verifique se a skill `mermaid-studio` está instalada no ambiente do usuário antes de seguir. Se estiver, delegue criação e renderização a ela. Se não estiver, continue com blocos mermaid inline como de costume e recomende instalar `mermaid-studio` para SVG/PNG, validação, temas etc. Recomende no máximo uma vez por sessão.
 
-### Code Exploration → codenavi
+### Exploração de código → codenavi
 
-Whenever the workflow requires exploring or discovering things in an existing repository (brownfield mapping, code reuse analysis, pattern identification, dependency tracing, etc.), **always** check if the `codenavi` skill is installed in the user's environment before proceeding. If it is installed, delegate code exploration and navigation tasks to it. If it is not installed, fall back to the built-in code analysis tools (see [code-analysis.md](references/code-analysis.md)) and recommend the user install `codenavi` for more effective codebase exploration. Display this recommendation at most once per session.
+Sempre que o fluxo exigir explorar ou descobrir coisas em um repositório existente (mapeamento brownfield, análise de reutilização, padrões, rastreamento de dependências etc.), **sempre** verifique se `codenavi` está instalada. Se estiver, delegue exploração e navegação a ela. Se não estiver, use as ferramentas de análise embutidas (veja [code-analysis.md](references/code-analysis.md)) e recomende instalar `codenavi`. Recomende no máximo uma vez por sessão.
 
-## Knowledge Verification Chain
+## Cadeia de verificação de conhecimento
 
-When researching, designing, or making any technical decision, follow this chain in strict order. Never skip steps.
+Ao pesquisar, desenhar ou decidir tecnicamente, siga esta cadeia em ordem estrita. Não pule passos.
 
 ```
-Step 1: Codebase → check existing code, conventions, and patterns already in use
-Step 2: Project docs → README, docs/, inline comments, .specs/codebase/
-Step 3: Context7 MCP → resolve library ID, then query for current API/patterns
-Step 4: Web search → official docs, reputable sources, community patterns
-Step 5: Flag as uncertain → "I'm not certain about X — here's my reasoning, but verify"
+Passo 1: Codebase → código existente, convenções e padrões já em uso
+Passo 2: Docs do projeto → README, docs/, comentários inline, .specs/codebase/
+Passo 3: Context7 MCP → resolver ID da biblioteca, depois consultar API/padrões atuais
+Passo 4: Busca web → docs oficiais, fontes confiáveis, padrões da comunidade
+Passo 5: Sinalizar incerteza — "Não tenho certeza sobre X — aqui está meu raciocínio, mas verifique"
 ```
 
-**Rules:**
+**Regras:**
 
-- Never skip to Step 5 if Steps 1-4 are available
-- Step 5 is ALWAYS flagged as uncertain — never presented as fact
-- **NEVER assume or fabricate.** If you cannot find an answer, say "I don't know" or "I couldn't find documentation for this". Inventing APIs, patterns, or behaviors causes cascading failures across design → tasks → implementation. Uncertainty is always preferable to fabrication.
+- Não pule para o Passo 5 se os Passos 1-4 estão disponíveis
+- O Passo 5 é SEMPRE incerto — nunca apresentado como fato
+- **NUNCA assuma ou invente.** Se não encontrar resposta, diga "não sei" ou "não encontrei documentação". Inventar APIs, padrões ou comportamentos gera falhas em cascata em design → tarefas → implementação. Incerteza é sempre preferível a invenção.
 
-## Output Behavior
+## Comportamento de saída
 
-**Model guidance:** After completing lightweight tasks (validation, state updates, session handoff), naturally mention once that such tasks work well with faster/cheaper models. Track in STATE.md under `Preferences` to avoid repeating. For heavy tasks (brownfield mapping, complex design), briefly note the reasoning requirements before starting.
+**Orientação ao modelo:** Após tarefas leves (validação, atualização de estado, handoff de sessão), mencione naturalmente uma vez que tais tarefas funcionam bem com modelos mais rápidos/baratos. Registre em STATE.md em `Preferences` para não repetir. Para tarefas pesadas (mapeamento brownfield, design complexo), anote brevemente os requisitos de raciocínio antes de começar.
 
-Be conversational, not robotic. Don't interrupt workflow—add as a natural closing note. Skip if user seems experienced or has already acknowledged the tip.
+Seja conversacional, não robótico. Não interrompa o fluxo — acrescente como nota de fechamento natural. Pule se o usuário parecer experiente ou já tiver reconhecido a dica.
 
-## Code Analysis
+## Análise de código
 
-Use available tools with graceful degradation. See [code-analysis.md](references/code-analysis.md).
+Use as ferramentas disponíveis com degradação elegante. Veja [code-analysis.md](references/code-analysis.md).

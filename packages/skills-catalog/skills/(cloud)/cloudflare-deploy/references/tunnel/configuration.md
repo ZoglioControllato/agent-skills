@@ -1,25 +1,25 @@
-# Tunnel Configuration
+# Configuração Tunnel
 
-## Config Source
+## Fonte de config
 
-Tunnels use one of two config sources:
+Tunnels usam uma de duas fontes:
 
-| Config Source | Storage           | Updates             | Use Case                           |
-| ------------- | ----------------- | ------------------- | ---------------------------------- |
-| Local         | `config.yml` file | Edit file, restart  | Dev, multi-env, version control    |
-| Cloudflare    | Dashboard/API     | Instant, no restart | Production, centralized management |
+| Fonte      | Armazenamento        | Atualizações              | Caso de uso                          |
+| ---------- | -------------------- | ------------------------- | ------------------------------------ |
+| Local      | arquivo `config.yml` | edita arquivo, reinicia   | Dev, vários ambientes, versionamento |
+| Cloudflare | Painel/API           | instantâneo, sem reinício | Produção, gestão centralizada        |
 
-**Token-based tunnels** = config source: Cloudflare
-**Locally-managed tunnels** = config source: local
+**Tunnels com token** = fonte: Cloudflare  
+**Tunnels gerenciados localmente** = fonte: local
 
-## Config File Location
+## Localização do arquivo
 
 ```
 ~/.cloudflared/config.yml          # User config
 /etc/cloudflared/config.yml        # System-wide (Linux)
 ```
 
-## Basic Structure
+## Estrutura básica
 
 ```yaml
 tunnel: <UUID>
@@ -31,9 +31,9 @@ ingress:
   - service: http_status:404 # Required catch-all
 ```
 
-## Ingress Rules
+## Regras de ingress
 
-Rules evaluated **top to bottom**, first match wins.
+Avaliadas **de cima para baixo**; a primeira correspondência vence.
 
 ```yaml
 ingress:
@@ -54,28 +54,28 @@ ingress:
   - service: http_status:404
 ```
 
-**Validation**:
+**Validação:**
 
 ```bash
 cloudflared tunnel ingress validate
 cloudflared tunnel ingress rule https://foo.example.com
 ```
 
-## Service Types
+## Tipos de serviço
 
-| Protocol | Format                   | Client Requirement       |
-| -------- | ------------------------ | ------------------------ |
-| HTTP     | `http://localhost:8000`  | Browser                  |
-| HTTPS    | `https://localhost:8443` | Browser                  |
-| TCP      | `tcp://localhost:2222`   | `cloudflared access tcp` |
-| SSH      | `ssh://localhost:22`     | `cloudflared access ssh` |
-| RDP      | `rdp://localhost:3389`   | `cloudflared access rdp` |
-| Unix     | `unix:/path/to/socket`   | Browser                  |
-| Test     | `hello_world`            | Browser                  |
+| Protocolo | Formato                  | Requisito do cliente     |
+| --------- | ------------------------ | ------------------------ |
+| HTTP      | `http://localhost:8000`  | Navegador                |
+| HTTPS     | `https://localhost:8443` | Navegador                |
+| TCP       | `tcp://localhost:2222`   | `cloudflared access tcp` |
+| SSH       | `ssh://localhost:22`     | `cloudflared access ssh` |
+| RDP       | `rdp://localhost:3389`   | `cloudflared access rdp` |
+| Unix      | `unix:/path/to/socket`   | Navegador                |
+| Test      | `hello_world`            | Navegador                |
 
-## Origin Configuration
+## Config da origem
 
-### Connection Settings
+### Parâmetros de conexão
 
 ```yaml
 originRequest:
@@ -86,7 +86,7 @@ originRequest:
   keepAliveConnections: 100
 ```
 
-### TLS Settings
+### TLS
 
 ```yaml
 originRequest:
@@ -95,7 +95,7 @@ originRequest:
   caPool: /path/to/ca.pem # Custom CA
 ```
 
-### HTTP Settings
+### HTTP
 
 ```yaml
 originRequest:
@@ -104,7 +104,7 @@ originRequest:
   http2Origin: true
 ```
 
-## Private Network Mode
+## Modo rede privada
 
 ```yaml
 tunnel: <UUID>
@@ -119,9 +119,9 @@ cloudflared tunnel route ip add 10.0.0.0/8 my-tunnel
 cloudflared tunnel route ip add 192.168.1.100/32 my-tunnel
 ```
 
-## Config Source Comparison
+## Comparativo de fontes
 
-### Local Config
+### Config local
 
 ```yaml
 # config.yml
@@ -138,22 +138,22 @@ ingress:
 cloudflared tunnel run my-tunnel
 ```
 
-**Pros:** Version control, multi-environment, offline edits
-**Cons:** Requires file distribution, manual restarts
+**Prós:** versionamento, vários ambientes, edições offline  
+**Contras:** distribuição de arquivo, reinícios manuais
 
-### Cloudflare Config (Token-Based)
+### Config Cloudflare (token)
 
 ```bash
 # No config file needed
 cloudflared tunnel --no-autoupdate run --token <TOKEN>
 ```
 
-Configure routes in dashboard: **Zero Trust** > **Networks** > **Tunnels** > [Tunnel] > **Public Hostname**
+Configure rotas em **Zero Trust** → **Networks** → **Tunnels** → [Tunnel] → **Public Hostname**
 
-**Pros:** Centralized updates, no file management, instant route changes
-**Cons:** Requires dashboard/API access, less portable
+**Prós:** atualizações centralizadas, sem arquivo, mudança de rota imediata  
+**Contras:** depende de painel/API, menos portável
 
-## Environment Variables
+## Variáveis de ambiente
 
 ```bash
 TUNNEL_TOKEN=<token>                    # Token for config source: cloudflare
@@ -161,3 +161,5 @@ TUNNEL_ORIGIN_CERT=/path/to/cert.pem   # Override cert path (local config)
 NO_AUTOUPDATE=true                      # Disable auto-updates
 TUNNEL_LOGLEVEL=debug                   # Log level
 ```
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

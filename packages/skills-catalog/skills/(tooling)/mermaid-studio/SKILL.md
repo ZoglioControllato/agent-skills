@@ -1,6 +1,6 @@
 ---
 name: mermaid-studio
-description: Expert Mermaid diagram creation, validation, and rendering with dual-engine output (SVG/PNG/ASCII). Supports all 20+ diagram types including C4 architecture, AWS architecture-beta with service icons, flowcharts, sequence, ERD, state, class, mindmap, timeline, git graph, sankey, and more. Features code-to-diagram analysis, batch rendering, 15+ themes, and syntax validation. Use when users ask to create diagrams, visualize architecture, render mermaid files, generate ASCII diagrams, document system flows, model databases, draw AWS infrastructure, analyze code structure, or anything involving "mermaid", "diagram", "flowchart", "architecture diagram", "sequence diagram", "ERD", "C4", "ASCII diagram". Do NOT use for non-Mermaid image generation, data plotting with chart libraries, or general documentation writing.
+description: Criação, validação e renderização de diagramas Mermaid (SVG/PNG/ASCII). Suporta 20+ tipos (C4, AWS architecture-beta, fluxogramas, sequência, ERD, estado, classe, mindmap, timeline, git graph, sankey, etc.), análise código-para-diagrama, render em lote, 15+ temas e validação de sintaxe. Use quando pedirem diagramas, arquitetura visual, render de arquivos mermaid, ASCII, fluxos de sistema, modelagem de banco, infra AWS ou termos como "mermaid", "fluxograma", "diagrama de sequência", "ERD", "C4". NÃO use para imagens fora do Mermaid, gráficos com libs de chart ou redação de documentação geral (use docs-writer).
 license: CC-BY-4.0
 metadata:
   author: Felipe Rodrigues - github.com/felipfr
@@ -9,17 +9,17 @@ metadata:
 
 # Mermaid Studio
 
-Expert-level Mermaid diagram creation, validation, and multi-format rendering. Creates diagrams from descriptions or code analysis, validates syntax, and renders to SVG, PNG, or ASCII with professional theming.
+Criação, validação e renderização multiformato de diagramas Mermaid de nível especializado. Cria diagramas a partir de descrições ou análise de código, valida sintaxe e renderiza para SVG, PNG ou ASCII com temas profissionais.
 
-## Golden Rules — Elegant Diagrams by Default
+## Regras de Ouro — Diagramas Elegantes por Padrão
 
-Every diagram MUST follow these principles. They are not optional — they define the difference between a mediocre diagram and a gold-standard one.
+Cada diagrama DEVE seguir estes princípios. Eles não são opcionais – eles definem a diferença entre um diagrama medíocre e um padrão ouro.
 
-### Rule 1: Always Use an Init Directive for Professional Styling
+### Regra 1: Sempre use uma diretiva Init para estilo profissional
 
-**NEVER** create a diagram without an `%%{init}` directive or frontmatter config. The default Mermaid theme produces harsh black lines and generic colors. Always apply a curated palette.
+**NUNCA** crie um diagrama sem uma diretiva `%%{init}` ou configuração do frontmatter. O tema padrão do Mermaid produz linhas pretas fortes e cores genéricas. Sempre aplique uma paleta selecionada.
 
-**For general diagrams (flowchart, sequence, state, class, ERD):**
+**Para diagramas gerais (fluxograma, sequência, estado, classe, ERD):**
 
 ```
 %%{init: {'theme': 'base', 'themeVariables': {
@@ -33,143 +33,153 @@ Every diagram MUST follow these principles. They are not optional — they defin
 }}}%%
 ```
 
-**⚠️ Font Warning:** Do NOT set `fontFamily` in theme variables. The Mermaid default font (`trebuchet ms, verdana, arial, sans-serif`) works everywhere. Setting `system-ui`, `Segoe UI`, or `-apple-system` will render as Times New Roman in headless Chromium (used by `mmdc`).
+**⚠️ Aviso de fonte:** NÃO defina `fontFamily` nas variáveis ​​do tema. A fonte padrão Mermaid (`trebuchet ms, verdana, arial, sans-serif`) funciona em qualquer lugar. Definir `system-ui`, `Segoe UI` ou `-apple-system` será renderizado como Times New Roman no Chromium headless (usado por `mmdc`).
 
-**For C4 diagrams — see the dedicated C4 styling section below.**
+**Para diagramas C4 — consulte a seção dedicada de estilo C4 abaixo.**
 
-**For architecture-beta diagrams — see the dedicated AWS/Architecture section below.**
+**Para diagramas de arquitetura beta — consulte a seção AWS/Arquitetura dedicada abaixo.**
 
-### Rule 2: Soft Lines, Never Harsh Black
+### Regra 2: Linhas suaves, preto nunca áspero
 
-The single biggest visual improvement is using `lineColor: '#94a3b8'` (slate-400) instead of the default black. This creates a modern, breathable diagram. For dark themes, use `lineColor: '#64748b'` (slate-500).
+A maior melhoria visual é usar `lineColor: '#94a3b8'` (slate-400) em vez do preto padrão. Isso cria um diagrama moderno e respirável. Para temas escuros, use `lineColor: '#64748b'` (slate-500).
 
-### Rule 3: Limit Density — Breathe
+### Regra 3: Limite de Densidade – Respire
 
-- Maximum 15 nodes per diagram (not 20 — fewer is more elegant)
-- Use `subgraph` or boundaries to create whitespace and visual grouping
-- Prefer LR (left-right) for process flows — it reads more naturally
-- Use invisible links (`A ~~~ B`) to add spacing when the layout is cramped
+- Máximo de 15 nós por diagrama (não 20 – menos é mais elegante)
+- Use `subgraph` ou limites para criar espaços em branco e agrupamento visual
+- Prefira LR (esquerda-direita) para fluxos de processo — a leitura é mais natural
+- Use links invisíveis (`A ~~~ B`) para adicionar espaçamento quando o layout estiver apertado
 
-### Rule 4: Meaningful Labels and Consistent Style
+### Regra 4: rótulos significativos e estilo consistente
 
-- Node IDs: camelCase (`orderService`, not `s1` or `os`)
-- Labels: short, clear natural language (`[Order Service]`)
-- Arrows: action verbs with protocol info (`"Sends order via gRPC"`)
-- Descriptions: one-line, role-focused (`"Handles order lifecycle"`)
+- IDs de nó: camelCase (`orderService`, não `s1` ou `os`)
+- Rótulos: linguagem natural curta e clara (`[Serviço de pedido]`)
+- Setas: verbos de ação com informações de protocolo (`"Envia pedido via gRPC"`)
+- Descrições: unifilar, com foco na função (`"Lida com o ciclo de vida do pedido"`)
 
-### Rule 5: Color Harmony Over Color Variety
+### Regra 5: Harmonia de cores em vez de variedade de cores
 
-Use max 3-4 colors per diagram. Map colors to meaning:
+Use no máximo 3-4 cores por diagrama. Mapeie as cores para o significado:
 
-- **Blue tones** (#4f46e5, #3b82f6) → primary systems, internal services
-- **Green tones** (#10b981, #059669) → success states, data stores
-- **Amber tones** (#f59e0b, #d97706) → external systems, warnings
-- **Slate tones** (#64748b, #94a3b8) → lines, borders, secondary elements
-- **Red tones** (#ef4444) → errors ONLY, never as decoration
+- **Tons azuis** (#4f46e5, #3b82f6) → sistemas primários, serviços internos
+- **Tons verdes** (#10b981, #059669) → estados de sucesso, armazenamentos de dados
+- **Tons âmbar** (#f59e0b, #d97706) → sistemas externos, avisos
+- **Tons de ardósia** (#64748b, #94a3b8) → linhas, bordas, elementos secundários
+- **Tons vermelhos** (#ef4444) → SOMENTE erros, nunca como decoração
 
-## Modes of Operation
+## Modos de operação
 
-This skill operates in three modes based on user intent:
+Esta habilidade opera em três modos com base na intenção do usuário:
 
-| Mode       | Trigger                                           | What happens               |
-| ---------- | ------------------------------------------------- | -------------------------- |
-| **Create** | "draw a diagram of...", "visualize my..."         | Generates .mmd code only   |
-| **Render** | "render this mermaid", "convert to SVG/PNG/ASCII" | Renders existing .mmd      |
-| **Full**   | "create and render...", ambiguous requests        | Create → Validate → Render |
+| Modo           | Gatilho                                                  | O que acontece           |
+| -------------- | -------------------------------------------------------- | ------------------------ |
+| **Criar**      | "desenhe um diagrama de...", "visualize meu..."          | Gera apenas código .mmd  |
+| **Renderizar** | "renderizar esta sereia", "converter para SVG/PNG/ASCII" | Renderiza .mmd existente |
+| **Completo**   | "criar e renderizar...", solicitações ambíguas           |
 
-Default to **Full** mode when intent is unclear.
+Criar → Validar → Renderizar |
 
-## Step 1: Understand the Request
+O padrão é o modo **Completo** quando a intenção não está clara.
 
-Before writing any Mermaid code, determine:
+## Etapa 1: Entenda a solicitação
 
-1. **What to diagram** — system, flow, schema, architecture, code structure?
-2. **Which diagram type** — use the Decision Matrix below
-3. **Output format** — code only, SVG, PNG, or ASCII?
-4. **Theme preference** — ask only if rendering; default to `base` theme with curated palette
+Antes de escrever qualquer código Mermaid, determine:
 
-### Diagram Type Decision Matrix
+1. **O que diagramar** — sistema, fluxo, esquema, arquitetura, estrutura de código?
+2. **Qual tipo de diagrama** — use a Matriz de Decisão abaixo
+3. **Formato de saída** — somente código, SVG, PNG ou ASCII?
+4. **Preferência de tema** — pergunte apenas se for renderização; padrão para o tema `base` com paleta selecionada
 
-| User describes...                              | Diagram Type  | Syntax keyword       |
-| ---------------------------------------------- | ------------- | -------------------- |
-| Process, algorithm, decision tree, workflow    | Flowchart     | `flowchart TD/LR`    |
-| API calls, message passing, request/response   | Sequence      | `sequenceDiagram`    |
-| Database schema, table relationships           | ERD           | `erDiagram`          |
-| OOP classes, domain model, interfaces          | Class         | `classDiagram`       |
-| State machine, lifecycle, transitions          | State         | `stateDiagram-v2`    |
-| High-level system overview (C4 Level 1)        | C4 Context    | `C4Context`          |
-| Applications, databases, services (C4 Level 2) | C4 Container  | `C4Container`        |
-| Internal components (C4 Level 3)               | C4 Component  | `C4Component`        |
-| Request flows with numbered steps              | C4 Dynamic    | `C4Dynamic`          |
-| Infrastructure, cloud deployment               | C4 Deployment | `C4Deployment`       |
-| Cloud services with icons (AWS/GCP/Azure)      | Architecture  | `architecture-beta`  |
-| Project timeline, scheduling                   | Gantt         | `gantt`              |
-| Proportional data, percentages                 | Pie           | `pie`                |
-| Brainstorming, hierarchical ideas              | Mindmap       | `mindmap`            |
-| Historical events, chronology                  | Timeline      | `timeline`           |
-| Branching strategy, git history                | Git Graph     | `gitGraph`           |
-| Flow quantities, resource distribution         | Sankey        | `sankey-beta`        |
-| X/Y data visualization                         | XY Chart      | `xychart-beta`       |
-| Priority matrix, strategic positioning         | Quadrant      | `quadrantChart`      |
-| Layout control, grid positioning               | Block         | `block-beta`         |
-| Network packets, protocol headers              | Packet        | `packet-beta`        |
-| Task boards, kanban workflow                   | Kanban        | `kanban`             |
-| User experience, satisfaction scoring          | User Journey  | `journey`            |
-| System requirements traceability               | Requirement   | `requirementDiagram` |
+### Matriz de decisão do tipo de diagrama
 
-If the user's description doesn't clearly map to one type, suggest 2-3 options with a brief rationale for each, then let them choose.
+| O usuário descreve...                                        | Tipo de diagrama | Palavra-chave de sintaxe |
+| ------------------------------------------------------------ | ---------------- | ------------------------ |
+| Processo, algoritmo, árvore de decisão, fluxo de trabalho    | Fluxograma       | `fluxograma TD/LR`       |
+| Chamadas de API, passagem de mensagens, solicitação/resposta | Sequência        | `sequenceDiagram`        |
+| Esquema de banco de dados, relacionamentos de tabelas        | DER              | `erDiagrama`             |
 
-### When to Load References
+| Classes OOP, modelo de domínio, interfaces | Classe | `classDiagrama` |
+| Máquina de estados, ciclo de vida, transições | Estado | `stateDiagram-v2` |
+| Visão geral do sistema de alto nível (C4 Nível 1) | Contexto C4 | `C4Contexto` |
+| Aplicações, bases de dados, serviços (C4 Nível 2) | Contêiner C4 | `C4Container` |
+| Componentes internos (C4 Nível 3) | Componente C4 | `C4Component` |
 
-Load reference files ONLY when needed for the specific diagram type:
+| Fluxos de solicitação com etapas numeradas | C4 Dinâmico | `C4Dinâmico` |
+| Infraestrutura, implantação em nuvem | Implantação C4 | `Implantação C4` |
+| Serviços em nuvem com ícones (AWS/GCP/Azure) | Arquitetura | `arquitetura-beta` |
+| Cronograma do projeto, agendamento | Gantt | `gantt` |
+| Dados proporcionais, percentagens | Torta | `torta` |
 
-- **C4 diagrams** → Read `references/c4-architecture.md` BEFORE writing code
-- **AWS/Cloud architecture** → Read `references/aws-architecture.md` BEFORE writing code
-- **Code-to-diagram** → Read `references/code-to-diagram.md` BEFORE analyzing
-- **Theming/styling** → Read `references/themes.md` when user requests custom themes
-- **Syntax errors** → Read `references/troubleshooting.md` when validation fails
-- **Any diagram type details** → Read `references/diagram-types.md` for comprehensive syntax
+| Brainstorming, ideias hierárquicas | Mapa mental | `mapa mental` |
+| Eventos históricos, cronologia | Linha do tempo | `linha do tempo` |
+| Estratégia de ramificação, histórico do git | Gráfico Git | `gitGraph` |
+| Quantidades de fluxo, distribuição de recursos | Sankey | `sankey-beta` |
+| Visualização de dados X/Y | Gráfico XY | `xychart-beta` |
 
-## Step 2: Create the Diagram
+| Matriz de prioridades, posicionamento estratégico | Quadrante | `quadrantChart` |
+| Controle de layout, posicionamento de grade | Bloco | `bloco-beta` |
+| Pacotes de rede, cabeçalhos de protocolo | Pacote | `pacote-beta` |
+| Quadros de tarefas, fluxo de trabalho kanban | Kanban | `kanban` |
+| Experiência do usuário, pontuação de satisfação | Jornada do usuário | `jornada` |
 
-### 2.1 — Write Mermaid Code
+| Rastreabilidade dos requisitos do sistema | Requisito | `requirementDiagram` |
 
-Follow these principles in order of priority:
+Se a descrição do usuário não corresponder claramente a um tipo, sugira de 2 a 3 opções com uma breve justificativa para cada uma e deixe-o escolher.
 
-1. **Elegance first** — every diagram must look professional with init directives and curated colors
-2. **Correctness** — valid syntax that renders without errors
-3. **Clarity** — meaningful labels, logical flow direction, clear relationships
-4. **Simplicity** — under 15 nodes per diagram; split complex systems into multiple
-5. **Consistency** — uniform naming (camelCase for IDs, descriptive labels in brackets)
+### Quando carregar referências
 
-### 2.2 — Structure Rules
+Carregue arquivos de referência SOMENTE quando necessário para o tipo de diagrama específico:
+
+- **Diagramas C4** → Leia `references/c4-architecture.md` ANTES de escrever o código
+- **Arquitetura AWS/Cloud** → Leia `references/aws-architecture.md` ANTES de escrever o código
+- **Code-to-diagram** → Leia `references/code-to-diagram.md` ANTES de analisar
+- **Temas/estilos** → Leia `references/themes.md` quando o usuário solicitar temas personalizados
+- **Erros de sintaxe** → Leia `references/troubleshooting.md` quando a validação falhar
+- **Qualquer detalhe do tipo de diagrama** → Leia `r
+
+eferences/diagram-types.md` para sintaxe abrangente
+
+## Etapa 2: Crie o Diagrama
+
+### 2.1 - Escreva o código da sereia
+
+Siga estes princípios em ordem de prioridade:
+
+1. **Elegância em primeiro lugar** — cada diagrama deve ter uma aparência profissional com diretivas de inicialização e cores selecionadas
+2. **Correção** — sintaxe válida que é renderizada sem erros
+3. **Clareza** — rótulos significativos, direção lógica do fluxo, relacionamentos claros
+4. **Simplicidade** — menos de 15 nós por diagrama; dividir sistemas complexos em múltiplos
+5. **Consistência** — nomenclatura uniforme (camelCase para IDs, rótulos descritivos entre colchetes)
+
+### 2.2 — Regras de Estrutura
 
 ```
+
 %% Diagram: [Purpose] | Author: [auto] | Date: [auto]
 %%{init: {'theme': 'base', 'themeVariables': { ... }}}%%
 [diagramType]
     [content]
 ```
 
-**CRITICAL:** The `%%{init}` directive MUST go on the very first non-comment line, BEFORE the diagram type declaration. Alternatively, use YAML frontmatter at the absolute start of the file.
+**CRÍTICO:** A diretiva `%%{init}` DEVE ir na primeira linha sem comentários, ANTES da declaração do tipo de diagrama. Como alternativa, use o frontmatter YAML no início absoluto do arquivo.
 
-**Naming conventions:**
+**Convenções de nomenclatura:**
 
-- Node IDs: camelCase, descriptive (`orderService`, not `s1`)
-- Labels: natural language in brackets (`[Order Service]`)
-- Relationships: action verbs (`"Sends order to"`, `"Reads from"`)
+- IDs de nó: camelCase, descritivo (`orderService`, não `s1`)
+- Etiquetas: linguagem natural entre colchetes (`[Serviço de Pedido]`)
+- Relacionamentos: verbos de ação (`"Envia pedido para"`, `"Lê de"`)
 
-**Layout best practices:**
+**Layout Boas práticas:**
 
-- `TD` (top-down) for hierarchical flows and processes
-- `LR` (left-right) for timelines, pipelines, and sequential processes
-- `RL` for right-to-left reading contexts
-- Use `subgraph` to group related nodes; name subgraphs meaningfully
-- Add `direction` inside subgraphs when needed for different flow
+- `TD` (top-down) para fluxos e processos hierárquicos
+- `LR` (esquerda-direita) para cronogramas, pipelines e processos sequenciais
+- `RL` para contextos de leitura da direita para a esquerda
+- Use `subgraph` para agrupar nós relacionados; nomear subgráficos de forma significativa
+- Adicione `direção` dentro dos subgráficos quando necessário para fluxos diferentes
 
-### 2.3 — Quick Reference Examples
+### 2.3 — Exemplos de referência rápida
 
-**Flowchart (with professional styling):**
+**Fluxograma (com estilo profissional):**
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {
@@ -191,9 +201,9 @@ flowchart TD
     Save --> End([End])
 ```
 
-For sequence diagram and ERD styling examples, read `references/themes.md`.
+Para exemplos de diagramas de sequência e estilos de ERD, leia `references/themes.md`.
 
-**C4 Context (with MANDATORY elegant styling):**
+**Contexto C4 (com estilo elegante OBRIGATÓRIO):**
 
 ```mermaid
 C4Context
@@ -215,7 +225,7 @@ C4Context
     UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
 ```
 
-**Architecture (AWS with Iconify icons):**
+**Arquitetura (AWS com ícones Iconify):**
 
 ```mermaid
 architecture-beta
@@ -231,81 +241,85 @@ architecture-beta
     lambda:B --> T:s3
 ```
 
-**IMPORTANT:** Architecture-beta diagrams with `logos:*` icons require icon pack registration. When rendering with the render script, use the `--icons logos` flag. If rendering in a markdown viewer that doesn't support icon packs, use the built-in icons (`cloud`, `database`, `disk`, `server`, `internet`) as fallback. Read `references/aws-architecture.md` for the complete icon catalog and rendering instructions.
+**IMPORTANTE:** Diagramas de arquitetura beta com ícones `logos:*` requerem registro de pacote de ícones. Ao renderizar com o script de renderização, use o sinalizador `--icons logos`. Se estiver renderizando em um visualizador de markdown que não suporta pacotes de ícones, use os ícones integrados (`nuvem`, `banco de dados`, `disco`, `servidor`, `internet`) como substituto. Leia `references/aws-architecture.md` para obter o catálogo completo de ícones e instruções de renderização.
 
-For comprehensive syntax of ALL diagram types, read `references/diagram-types.md`.
+Para uma sintaxe abrangente de TODOS os tipos de diagramas, leia `references/diagram-types.md`.
 
-## C4 Diagrams — Mandatory Styling Guide
+## Diagramas C4 – Guia de estilo obrigatório
 
-C4 diagrams have **fixed element styling** (blue boxes for systems, gray for persons, etc.), but their **relationship lines default to harsh black** which creates visual noise. You MUST apply these styling rules:
+Os diagramas C4 têm **estilo de elemento fixo** (caixas azuis para sistemas, cinza para pessoas, etc.), mas suas **linhas de relacionamento são padronizadas em preto forte**, o que cria ruído visual. Você DEVE aplicar estas regras de estilo:
 
-### The C4 Styling Pattern
+### O padrão de estilo C4
 
-Every C4 diagram MUST include these directives at the end:
-
-```
-    %% === MANDATORY STYLING ===
-    %% Apply soft line colors to ALL relationships
-    UpdateRelStyle(fromAlias, toAlias, $textColor="#475569", $lineColor="#94a3b8")
-    %% Repeat for each Rel() in the diagram
+Todo diagrama C4 DEVE incluir estas diretivas no final:```
+%% === MANDATORY STYLING ===
+%% Apply soft line colors to ALL relationships
+UpdateRelStyle(fromAlias, toAlias, $textColor="#475569", $lineColor="#94a3b8")
+%% Repeat for each Rel() in the diagram
 
     %% Optimize layout spacing
     UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
-```
 
-### C4 Color Values Reference
+````
+### Referência de valores de cores C4
 
-| Purpose           | Color     | Hex       | Notes                                    |
+| Finalidade | Cor | Hexágono | Notas |
 | ----------------- | --------- | --------- | ---------------------------------------- |
-| Soft line color   | Slate-400 | `#94a3b8` | Replaces harsh default black             |
-| Line text color   | Slate-600 | `#475569` | Readable but not dominant                |
-| Accent line       | Blue-400  | `#60a5fa` | For highlighted or primary relationships |
-| Warning line      | Amber-500 | `#f59e0b` | For external/risky connections           |
-| Custom element bg | Emerald   | `#10b981` | For data stores or success highlights    |
-| Custom element bg | Indigo    | `#4f46e5` | For primary system emphasis              |
+| Cor da linha suave | Ardósia-400 | `#94a3b8` | Substitui o preto padrão severo |
+| Cor do texto da linha | Ardósia-600 | `#475569` | Legível, mas não dominante |
+| Linha de destaque | Azul-400 | `#60a5fa` | Para relacionamentos destacados ou primários |
+| Guerra
 
-### C4 Layout Tips
+linha de mineração | Âmbar-500 | `#f59e0b` | Para conexões externas/de risco |
+| Elemento personalizado bg | Esmeralda | `#10b981` | Para armazenamentos de dados ou destaques de sucesso |
+| Elemento personalizado bg | Índigo | `#4f46e5` | Para ênfase no sistema primário |
 
-**CRITICAL — Maximum 6 `Rel()` per diagram.** More than 6 relationships causes Dagre to route arrows through nodes, creating unreadable spaghetti. If your system needs more connections, split it into multiple focused diagrams.
+### Dicas de layout C4
 
-- Use `$c4ShapeInRow="3"` for most diagrams (prevents horizontal crowding)
-- Use `$c4ShapeInRow="2"` for diagrams with long labels
-- Use `$c4BoundaryInRow="1"` always (stacks boundaries vertically for clarity)
-- Apply `$offsetY="-10"` to `UpdateRelStyle` when labels overlap with elements
-- Prefer tree-shaped topologies (1 in, 1-2 out per node) over mesh topologies
-- Declare elements in flow order — the order of `Container()` declarations affects layout
-- Use directional `Rel_D`, `Rel_R`, etc. only as a last resort when auto-layout creates overlapping
+**CRÍTICO — Máximo de 6 `Rel()` por diagrama.** Mais de 6 relacionamentos fazem com que Dagre direcione setas através dos nós, criando um espaguete ilegível. Se o seu sistema precisar de mais conexões, divida-o em vários diagramas específicos.
 
-For comprehensive C4 syntax, examples, and patterns, read `references/c4-architecture.md`.
+- Use `$c4ShapeInRow="3"` para a maioria dos diagramas (evita aglomeração horizontal)
+- Use `$c4ShapeInRow="2"` para diagramas com rótulos longos
+- Use `$c4BoundaryInRow="1"` sempre (empilha os limites verticalmente para maior clareza)
+- Aplique `$offsetY="-10"` a `UpdateRelStyle` quando os rótulos se sobrepõem aos elementos
+- Prefira topologias em forma de árvore (1 entrada, 1-2 saídas por nó) em vez de topologias de malha
+- Declarar elementos em ordem de fluxo — a ordem das declarações `Container()` afeta
 
-## Step 3: Validate
+layout
+- Use `Rel_D`, `Rel_R` direcional, etc. apenas como último recurso quando o layout automático criar sobreposição
 
-Before rendering, ALWAYS validate the Mermaid syntax:
+Para sintaxe, exemplos e padrões abrangentes do C4, leia `references/c4-architecture.md`.
+
+## Etapa 3: Validar
+
+Antes de renderizar, SEMPRE valide a sintaxe Mermaid:
 
 ```bash
 node $SKILL_DIR/scripts/validate.mjs <file.mmd>
-```
+````
 
-If validation fails:
+Se a validação falhar:
 
-1. Read the error message carefully
-2. Consult `references/troubleshooting.md` for common fixes
-3. Fix the syntax and re-validate
-4. Maximum 3 fix attempts before asking the user for clarification
+1. Leia a mensagem de erro com atenção
+2. Consulte `references/troubleshooting.md` para soluções comuns
+3. Corrija a sintaxe e revalide
+4. Máximo de 3 tentativas de correção antes de pedir esclarecimentos ao usuário
 
-## Step 4: Render
+## Etapa 4: Renderizar
 
-### 4.1 — Setup (First Run Only)
+### 4.1 — Configuração (apenas na primeira execução)
 
 ```bash
+
 bash $SKILL_DIR/scripts/setup.sh
 ```
 
-This auto-installs both rendering engines and icon pack dependencies. Run once per environment.
+Isso instala automaticamente os mecanismos de renderização e as dependências do pacote de ícones. Execute uma vez por ambiente.
 
-### 4.2 — Single Diagram Rendering
+### 4.2 — Renderização de Diagrama Único
 
 ```bash
+
 # SVG (default — best quality)
 node $SKILL_DIR/scripts/render.mjs -i diagram.mmd -o diagram.svg
 
@@ -319,11 +333,11 @@ node $SKILL_DIR/scripts/render-ascii.mjs -i diagram.mmd
 node $SKILL_DIR/scripts/render.mjs -i diagram.mmd -o diagram.svg --icons logos,fa
 ```
 
-The `--icons` flag registers Iconify packs before rendering. Packs: `logos` (AWS/tech), `fa` (Font Awesome). Use `logos` for AWS.
+O sinalizador `--icons` registra os pacotes Iconify antes da renderização. Pacotes: `logos` (AWS/tech), `fa` (Font Awesome). Use `logotipos` para AWS.
 
-### 4.3 — Batch Rendering
+### 4.3 — Renderização em lote
 
-For multiple diagrams at once:
+Para vários diagramas de uma só vez:
 
 ```bash
 node $SKILL_DIR/scripts/batch.mjs \
@@ -334,49 +348,55 @@ node $SKILL_DIR/scripts/batch.mjs \
   --workers 4
 ```
 
-### 4.4 — Available Themes
+### 4.4 — Temas Disponíveis
 
-**beautiful-mermaid (15):** `tokyo-night` | `tokyo-night-storm` | `tokyo-night-light` | `dracula` | `nord` | `nord-light` | `catppuccin-mocha` | `catppuccin-latte` | `github-dark` | `github-light` | `solarized-dark` | `solarized-light` | `one-dark` | `zinc-dark` | `zinc-light`
+**linda-sereia (15):** `noite de Tóquio` | `tóquio-noite-tempestade` | `tóquio-luz noturna` | `drácula` | `norte` | `nord-light` | `catppuccin-mocha` | `catppuccin-latte` | `github-escuro` | `github-light` | `escuro solarizado` | `luz solarizada` | `one-escuro` | `zinco-escuro` | `zinco-light`
 
-**mermaid-cli native (5):** `default` | `forest` | `dark` | `neutral` | `base`
+**sereia-cli nativo (5):** `default` | `floresta` | `escuro` | `neutro` | `base`
 
-Custom theme: `--theme base --config '{"theme":"base","themeVariables":{"primaryColor":"#4f46e5","lineColor":"#94a3b8"}}'`
+Tema personalizado: `--theme base --config '{"theme":"base","themeVariables":{"primaryColor":"#4f46e5","lineColor":"#94a3b8"}}'`
 
-For the full theme catalog, read `references/themes.md`. The render script auto-selects the best engine (mmdc primary, beautiful-mermaid fallback, Puppeteer for icon packs).
+Para o catálogo completo de temas, leia `references/themes.md`. O script de renderização seleciona automaticamente o melhor mecanismo (mmdc primário, substituto da bela sereia, Puppeteer para pacotes de ícones).
 
-## Step 5: Code-to-Diagram (When Requested)
+## Etapa 5: código para diagrama (quando solicitado)
 
-When the user asks to visualize existing code or architecture:
+Quando o usuário pede para visualizar o código ou arquitetura existente:
 
-1. Read `references/code-to-diagram.md` for the analysis methodology
-2. Analyze the codebase to identify the right diagram type:
-   - Module dependencies → Flowchart or Class diagram
-   - API routes and handlers → Sequence diagram
-   - Database models/schemas → ERD
-   - Service architecture → C4 Container or Architecture diagram
-   - State machines in code → State diagram
-3. Generate the .mmd file **with proper init directives** (Golden Rule 1)
-4. Validate and render as usual
+1. Leia `references/code-to-diagram.md` para a metodologia de análise
+2. Analise a base de código para identificar o tipo de diagrama correto:
+   - Dependências do módulo → Fluxograma ou diagrama de classes
+   - Rotas e manipuladores de API → Diagrama de sequência
+   - Modelos/esquemas de banco de dados → ERD
+   - Arquitetura de serviço → Contêiner C4 ou diagrama de arquitetura
+   - Máquinas de estado em código → Diagrama de estado
+3. Gere o arquivo .mmd **com diretivas de inicialização adequadas** (Regra de ouro 1)
+   4
 
-## Troubleshooting Quick Reference
+. Valide e renderize normalmente
 
-| Symptom               | Likely Cause       | Fix                                                    |
-| --------------------- | ------------------ | ------------------------------------------------------ |
-| Diagram won't render  | Syntax error       | Run validate.mjs, check brackets/quotes                |
-| Labels cut off        | Text too long      | Shorten labels or use line breaks `<br/>`              |
-| Layout looks wrong    | Wrong direction    | Try different TD/LR/BT/RL                              |
-| Nodes overlap         | Too many nodes     | Split into subgraphs or multiple diagrams              |
-| Lines too dark/thick  | No init directive  | Add `%%{init}` with `lineColor: '#94a3b8'`             |
-| C4 lines overlapping  | No styling applied | Add `UpdateRelStyle` with offsets to each Rel          |
-| AWS icons not showing | No icon pack       | Use `--icons logos` flag or fallback to built-in icons |
-| `mmdc` not found      | Not installed      | Run `setup.sh`                                         |
-| Theme not applied     | Wrong engine       | beautiful-mermaid themes only work with that engine    |
+## Solução de problemas Referência rápida
 
-For comprehensive troubleshooting, read `references/troubleshooting.md`.
+| Sintoma                      | Causa provável    | Correção                                        |
+| ---------------------------- | ----------------- | ----------------------------------------------- |
+| O diagrama não é renderizado | Erro de sintaxe   | Execute valid.mjs, verifique colchetes/aspas    |
+| Etiquetas cortadas           | Texto muito longo | Encurte rótulos ou use quebras de linha `<br/>` |
+| O layout parece errado       | Errado            |
 
-## Output Conventions
+recção | Experimente diferentes TD/LR/BT/RL |
+| Sobreposição de nós | Muitos nós | Dividir em subgráficos ou múltiplos diagramas |
+| Linhas muito escuras/grossas | Nenhuma diretiva de inicialização | Adicione `%%{init}` com `lineColor: '#94a3b8'` |
+| Linhas C4 sobrepostas | Nenhum estilo aplicado | Adicione `UpdateRelStyle` com deslocamentos para cada Rel |
+| Ícones da AWS não exibidos | Nenhum pacote de ícones | Use `--icons logos` f
 
-- Save .mmd source files alongside rendered outputs
-- Naming: `{purpose}-{type}.mmd` (e.g., `auth-flow-sequence.mmd`)
-- For batch: maintain input filename, change extension
-- Always provide both the .mmd source and rendered file to the user
+atraso ou fallback para ícones integrados |
+| `mmdc` não encontrado | Não instalado | Execute `setup.sh` |
+| Tema não aplicado | Motor errado | temas de linda sereia só funcionam com esse mecanismo |
+
+Para solução de problemas abrangente, leia `references/troubleshooting.md`.
+
+## Convenções de saída
+
+- Salve arquivos de origem .mmd junto com as saídas renderizadas
+- Nomenclatura: `{propósito}-{tipo}.mmd` (por exemplo, `auth-flow-sequence.mmd`)
+- Para lote: mantenha o nome do arquivo de entrada, altere a extensão
+- Sempre forneça a fonte .mmd e o arquivo renderizado ao usuário

@@ -1,35 +1,34 @@
-# Cloudflare Workers Playground Skill Reference
+# Referência de habilidades do Cloudflare Workers Playground
 
-## Overview
+## Visão geral
 
-Cloudflare Workers Playground is a browser-based sandbox for instantly experimenting with, testing, and deploying Cloudflare Workers without authentication or setup. This skill provides patterns, APIs, and best practices specifically for Workers Playground development.
+O Cloudflare Workers Playground é um sandbox baseado em navegador para experimentar, testar e implantar instantaneamente o Cloudflare Workers sem autenticação ou configuração. Esta habilidade fornece padrões, APIs e práticas recomendadas especificamente para o desenvolvimento do Workers Playground.
 
 **URL:** [workers.cloudflare.com/playground](https://workers.cloudflare.com/playground)
 
-## ⚠️ Playground Constraints
+## ⚠️ Restrições do playground
 
-**Playground is NOT production-equivalent:**
+**Playground NÃO é equivalente à produção:**
 
-- ✅ Real Workers runtime, instant testing, shareable URLs
-- ❌ No TypeScript (JavaScript only)
-- ❌ No bindings (KV, D1, R2, Durable Objects)
-- ❌ No environment variables or secrets
-- ❌ ES modules only (no Service Worker format)
-- ⚠️ Safari broken (use Chrome/Firefox)
+- ✅ Tempo de execução Real Workers, testes instantâneos, URLs compartilháveis
+- ❌ Sem TypeScript (somente JavaScript)
+- ❌ Sem ligações (KV, D1, R2, Objetos Duráveis)
+- ❌ Sem variáveis de ambiente ou segredos
+- ❌ Apenas módulos ES (sem formato Service Worker)
+- ⚠️ Safari quebrado (use Chrome/Firefox)
 
-**For production:** Use `wrangler` CLI. Playground is for rapid prototyping.
+**Para produção:** Use a CLI `wrangler`. Playground é para prototipagem rápida.
 
-## Quick Start
+## Início rápido
 
-Minimal Worker:
-
-```javascript
+Trabalhador Mínimo:```javascript
 export default {
-  async fetch(request, env, ctx) {
-    return new Response('Hello World')
-  },
+async fetch(request, env, ctx) {
+return new Response('Hello World')
+},
 }
-```
+
+````
 
 JSON API:
 
@@ -40,7 +39,7 @@ export default {
     return Response.json(data)
   },
 }
-```
+````
 
 Proxy with modification:
 
@@ -69,63 +68,63 @@ export default {
 }
 ```
 
-## Reading Order
+## Ordem de leitura
 
-1. **[configuration.md](configuration.md)** - Start here: playground setup, constraints, deployment
-2. **[api.md](api.md)** - Core APIs: Request, Response, ExecutionContext, fetch, Cache
-3. **[patterns.md](patterns.md)** - Common use cases: routing, proxying, A/B testing, multi-module code
-4. **[gotchas.md](gotchas.md)** - Troubleshooting: errors, browser issues, limits, best practices
+1. **[configuration.md](configuration.md)** - Comece aqui: configuração do playground, restrições, implantação
+2. **[api.md](api.md)** - APIs principais: solicitação, resposta, ExecutionContext, busca, cache
+3. **[patterns.md](patterns.md)** - Casos de uso comuns: roteamento, proxy, testes A/B, código de vários módulos
+4. **[gotchas.md](gotchas.md)** - Solução de problemas: erros, problemas de navegador, limites, práticas recomendadas
 
-## In This Reference
+## Nesta referência
 
-- **[configuration.md](configuration.md)** - Setup, deployment, configuration
-- **[api.md](api.md)** - API endpoints, methods, interfaces
-- **[patterns.md](patterns.md)** - Common patterns, use cases, examples
-- **[gotchas.md](gotchas.md)** - Troubleshooting, best practices, limitations
+- **[configuration.md](configuration.md)** - Instalação, implantação, configuração
+- **[api.md](api.md)** - endpoints de API, métodos, interfaces
+- **[patterns.md](patterns.md)** - Padrões comuns, casos de uso, exemplos
+- **[gotchas.md](gotchas.md)** - Solução de problemas, práticas recomendadas, limitações
 
-## Key Features
+## Principais recursos
 
-**No Setup Required:**
+**Não é necessária nenhuma configuração:**
 
-- Open URL and start coding
-- No CLI, no account, no config files
-- Code executes in real Cloudflare Workers runtime
+- Abra o URL e comece a codificar
+- Sem CLI, sem conta, sem arquivos de configuração
+- O código é executado em tempo de execução real do Cloudflare Workers
 
-**Instant Preview:**
+**Visualização instantânea:**
 
-- Live preview pane with browser tab or HTTP tester
-- Auto-reload on code changes
-- DevTools integration (right-click → Inspect)
+- Painel de visualização ao vivo com guia do navegador ou testador HTTP
+- Recarga automática em alterações de código
+- Integração DevTools (clique com o botão direito → Inspecionar)
 
-**Share & Deploy:**
+**Compartilhar e implantar:**
 
-- Copy Link generates permanent shareable URL
-- Deploy button publishes to production in ~30 seconds
-- Get `*.workers.dev` subdomain immediately
+- Copiar Link gera URL compartilhável permanente
+- O botão Implantar é publicado na produção em aproximadamente 30 segundos
+- Obtenha o subdomínio `*.workers.dev` imediatamente
 
-## Common Use Cases
+## Casos de uso comuns
 
-- **API development:** Test endpoints before wrangler setup
-- **Learning Workers:** Experiment with APIs without local environment
-- **Prototyping:** Quick POCs for edge logic
-- **Sharing examples:** Generate shareable links for bug reports or demos
-- **Framework testing:** Import from CDN (Hono, itty-router, etc.)
+- **Desenvolvimento de API:** Teste endpoints antes da configuração do wrangler
+- **Trabalhadores de aprendizagem:** Experimente APIs sem ambiente local
+- **Prototipagem:** POCs rápidos para lógica de borda
+- **Exemplos de compartilhamento:** Gere links compartilháveis para relatórios de bugs ou demonstrações
+- **Testes de estrutura:** Importação de CDN (Hono, itty-router, etc.)
 
-## Limitations vs Production
+## Limitações vs Produção
 
-| Feature          | Playground       | Production (wrangler)    |
-| ---------------- | ---------------- | ------------------------ |
-| Language         | JavaScript only  | JS + TypeScript          |
-| Bindings         | None             | KV, D1, R2, DO, AI, etc. |
-| Environment vars | None             | Full support             |
-| Module format    | ES only          | ES + Service Worker      |
-| CPU time         | 10ms (Free plan) | 10ms Free / 50ms Paid    |
-| Custom domains   | No               | Yes                      |
-| Analytics        | No               | Yes                      |
+| Recurso                 | Parque infantil       | Produção (wrangler)          |
+| ----------------------- | --------------------- | ---------------------------- |
+| Idioma                  | Somente JavaScript    | JS + TypeScript              |
+| Encadernações           | Nenhum                | KV, D1, R2, DO, AI, etc.     |
+| Variações ambientais    | Nenhum                | Suporte total                |
+| Formato do módulo       | Somente ES            | ES + Trabalhador de Serviços |
+| Tempo de CPU            | 10ms (plano gratuito) | 10ms grátis / 50ms pagos     |
+| Domínios personalizados | Não                   | Sim                          |
+| Análise                 | Não                   | Sim                          |
 
-## See Also
+## Veja também
 
-- [Cloudflare Workers Docs](https://developers.cloudflare.com/workers/)
-- [Workers Examples](https://developers.cloudflare.com/workers/examples/)
-- [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/)
-- [Workers API Reference](https://developers.cloudflare.com/workers/runtime-apis/)
+- [Documentos do Cloudflare Workers](https://developers.cloudflare.com/workers/)
+- [Exemplos de trabalhadores](https://developers.cloudflare.com/workers/examples/)
+- [CLI do Wrangler](https://developers.cloudflare.com/workers/wrangler/)
+- [Referência da API Workers](https://developers.cloudflare.com/workers/runtime-apis/)

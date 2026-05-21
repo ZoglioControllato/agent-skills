@@ -1,6 +1,6 @@
-# API Reference
+# Referência da API
 
-## SDK Setup
+## Configuração do SDK
 
 ```typescript
 import Cloudflare from 'cloudflare'
@@ -10,7 +10,7 @@ const client = new Cloudflare({
 })
 ```
 
-## Core Methods
+## Métodos principais
 
 ```typescript
 // List rulesets
@@ -42,30 +42,30 @@ await client.rulesets.update({
 await client.rulesets.delete({ zone_id: 'zone_id', ruleset_id: 'ruleset_id' })
 ```
 
-## Actions & Phases
+## Ações e fases
 
-### Actions by Phase
+### Ações por fase
 
-| Action              | Custom | Managed | Rate Limit | Description                   |
-| ------------------- | ------ | ------- | ---------- | ----------------------------- |
-| `block`             | ✅     | ❌      | ✅         | Block request with 403        |
-| `challenge`         | ✅     | ❌      | ✅         | Show CAPTCHA challenge        |
-| `js_challenge`      | ✅     | ❌      | ✅         | JS-based challenge            |
-| `managed_challenge` | ✅     | ❌      | ✅         | Smart challenge (recommended) |
-| `log`               | ✅     | ❌      | ✅         | Log only, don't block         |
-| `skip`              | ✅     | ❌      | ❌         | Skip rule evaluation          |
-| `execute`           | ❌     | ✅      | ❌         | Deploy managed ruleset        |
+| Ação                | Custom | Managed | Rate Limit | Descrição                         |
+| ------------------- | ------ | ------- | ---------- | --------------------------------- |
+| `block`             | ✅     | ❌      | ✅         | Bloqueia com 403                  |
+| `challenge`         | ✅     | ❌      | ✅         | Desafio CAPTCHA                   |
+| `js_challenge`      | ✅     | ❌      | ✅         | Desafio em JavaScript             |
+| `managed_challenge` | ✅     | ❌      | ✅         | Desafio inteligente (recomendado) |
+| `log`               | ✅     | ❌      | ✅         | Só registra                       |
+| `skip`              | ✅     | ❌      | ❌         | Pula avaliação da regra           |
+| `execute`           | ❌     | ✅      | ❌         | Implanta ruleset gerenciado       |
 
-### Phases (Execution Order)
+### Fases (ordem de execução)
 
-1. `http_request_firewall_custom` - Custom rules (first line of defense)
-2. `http_request_firewall_managed` - Managed rulesets (pre-configured protection)
-3. `http_ratelimit` - Rate limiting (request throttling)
-4. `http_request_sbfm` - Super Bot Fight Mode (Pro+ only)
+1. `http_request_firewall_custom` — regras customizadas (primeira linha)
+2. `http_request_firewall_managed` — rulesets gerenciados
+3. `http_ratelimit` — rate limiting
+4. `http_request_sbfm` — Super Bot Fight Mode (somente Pro+)
 
-## Expression Syntax
+## Sintaxe de expressão
 
-### Fields
+### Campos
 
 ```typescript
 // Request properties
@@ -89,7 +89,7 @@ http.request.cookies['session'][0]
 lower(http.user_agent) // Lowercase user agent
 ```
 
-### Operators
+### Operadores
 
 ```typescript
 // Comparison
@@ -112,7 +112,7 @@ and // Logical AND
 or // Logical OR
 ```
 
-### Expression Examples
+### Exemplos de expressão
 
 ```typescript
 'cf.waf.score gt 40' // Attack score
@@ -124,7 +124,7 @@ or // Logical OR
 '(cf.waf.score.sqli gt 20 or cf.waf.score.xss gt 20) and http.request.uri.path starts_with "/api"' // Complex
 ```
 
-## Rate Limiting Configuration
+## Configuração de rate limiting
 
 ```typescript
 {
@@ -146,7 +146,7 @@ or // Logical OR
 }
 ```
 
-## Managed Ruleset Deployment
+## Implantação de ruleset gerenciado
 
 ```typescript
 {
@@ -170,11 +170,11 @@ or // Logical OR
 }
 ```
 
-## Skip Rules
+## Regras skip
 
-Skip rules bypass subsequent rule evaluation. Two skip types:
+As regras skip ignoram avaliações subsequentes. Dois tipos:
 
-**Skip current ruleset**: Skip remaining rules in current phase only
+**Skip do ruleset atual:** pula apenas o restante da fase atual
 
 ```typescript
 {
@@ -187,7 +187,7 @@ Skip rules bypass subsequent rule evaluation. Two skip types:
 }
 ```
 
-**Skip entire phases**: Skip one or more phases completely
+**Skip de fases inteiras:**
 
 ```typescript
 {
@@ -200,4 +200,6 @@ Skip rules bypass subsequent rule evaluation. Two skip types:
 }
 ```
 
-**Note**: Skip rules in custom phase can skip managed/ratelimit phases, but not vice versa (execution order).
+**Nota:** regras skip na fase custom podem pular managed/ratelimit; o inverso não vale (ordem de execução).
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

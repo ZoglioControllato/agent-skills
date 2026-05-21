@@ -1,234 +1,253 @@
-## Directory Submission Strategy
+## Estratégia de envio de diretório
 
-### Batch Submission Approach
+### Abordagem de envio em lote
 
-Set aside 2-3 hours and submit to multiple directories in one session. Prepare these
-assets in advance:
+Reserve de 2 a 3 horas e envie para vários diretórios em uma sessão. Prepare estes
+ativos antecipadamente:
 
-**Required assets for all directories:**
-- Product name and one-line description (< 100 chars)
-- Full description (150-300 words, keyword-rich)
-- Logo (square, 512x512 PNG minimum)
-- 3-5 product screenshots (1280x800 or larger)
-- Product URL
-- Category tags (3-5 relevant categories)
-- Pricing info (free tier, pricing page URL)
-- Founder/maker social profiles
+**Ativos necessários para todos os diretórios:**
 
-### Directory Tiers
+- Nome do produto e descrição em uma linha (<100 caracteres)
+- Descrição completa (150-300 palavras, rica em palavras-chave)
+- Logotipo (quadrado, mínimo de 512x512 PNG)
+- 3 a 5 capturas de tela do produto (1280x800 ou maior)
+- URL do produto
+- Tags de categoria (3-5 categorias relevantes)
+- Informações sobre preços (nível gratuito, URL da página de preços)
+- Perfis sociais do fundador/criador
 
-**Tier 1 - High Impact (submit first):**
-- Product Hunt
-- Hacker News (Show HN)
-- There's An AI For That (for AI products)
-- Futurepedia (for AI products)
-- G2 / Capterra
-- BetaList
+### Camadas de diretório
 
-**Tier 2 - Medium Impact (submit in week -1 to 0):**
-- Indie Hackers
-- Dev Hunt (developer tools)
-- Microlaunch
-- Toolify (AI tools)
-- Uneed
-- AlternativeTo
+**Nível 1 – Alto impacto (enviar primeiro):**
 
-**Tier 3 - Long-Tail SEO (submit in week +1 to +2):**
-- SaaSHub
-- StackShare
-- Crunchbase
-- GetApp / Software Advice
-- Awesome lists on GitHub (for open source)
-- Niche-specific directories for your category
+- Caça ao Produto
+- Notícias sobre hackers (Mostrar HN)
+- Existe uma IA para isso (para produtos de IA)
+- Futurepedia (para produtos de IA)
+- G2/Capterra
+- Lista Beta
 
-### Directory Listing Optimization
+**Nível 2 - Impacto médio (enviar nas semanas -1 a 0):**
 
-Front-load primary keyword in title and first sentence. Match feature descriptions to the
-directory's filter categories. Include social proof (user count, testimonials). Use polished
-screenshots (directories with thumbnails favor visual quality). Pick the most specific
-category available, not the broadest.
+- Hackers independentes
+- Dev Hunt (ferramentas para desenvolvedores)
+- Microlançamento
+- Toolify (ferramentas de IA)
+- Desnecessário
+- Alternativa para
 
----
+**Nível 3 - SEO de cauda longa (enviar nas semanas +1 a +2):**
+-SaaSHub
+-StackShare
 
-## AppSumo Launch Strategy
+- Base Crunch
+- Assessoria GetApp / Software
+- Listas incríveis no GitHub (para código aberto)
+- Diretórios específicos de nicho para sua categoria
 
-### When to Use AppSumo
+### Otimização de listagem de diretório
 
-AppSumo lifetime deals work best when:
-
-- You need a cash injection for development ($10K-$100K+ in first month is common)
-- You want to rapidly grow your user base for social proof
-- Your product has low marginal cost per user (not per-API-call AI tools)
-- You can handle a sudden spike in support volume
-- You have upsell paths beyond the lifetime tier
-
-### When to Avoid AppSumo
-
-- Your product has high per-user marginal costs (heavy API usage, compute)
-- You cannot handle 500-2000+ new users in a week
-- You have no upsell or expansion revenue model
-- You are pre-product-market-fit (LTD users give loud feedback on unfinished products)
-
-### AppSumo Deal Structure
-
-| Element | Recommendation |
-|---|---|
-| Pricing | $49-$79 one-time for Tier 1 |
-| Tiers | 3 tiers with stacking codes |
-| Feature limits | Cap AI/API usage with credits; offer BYOK option |
-| Duration | 30-60 day deal window |
-| Revenue split | 70% to you (first deal), negotiate for subsequent |
-
-### AI Tool Considerations (2025-2026)
-
-Many AI-based lifetime deals have failed because API costs (OpenAI, Anthropic) create
-ongoing per-use expenses. Strategies to mitigate:
-
-1. **Credit bundles** - Include monthly credit refresh, not unlimited usage
-2. **BYOK (Bring Your Own Key)** - Let users connect their own API keys
-3. **Usage tiers** - Cap usage per plan tier with clear limits
-4. **Annual refresh** - Structure as "lifetime access with annual credit renewal"
-
-### AppSumo Launch Checklist
-
-Prepare infrastructure for 5x traffic, staff up support or build self-serve docs, create
-AppSumo-specific onboarding flow, set up separate analytics segment, prepare upsell paths
-for power users, write LTD buyer FAQ, and plan early Taco (review) collection.
+Carregue a palavra-chave primária no título e na primeira frase. Combine as descrições dos recursos com o
+categorias de filtro do diretório. Inclui prova social (contagem de usuários, depoimentos). Use polido
+capturas de tela (diretórios com miniaturas favorecem a qualidade visual). Escolha o mais específico
+categoria disponível, não a mais ampla.
 
 ---
 
-## G2 and Capterra Strategy
+## Estratégia de lançamento do AppSumo
 
-**Ranking formula:** Get to ~100 reviews fast, maintain 3-4 new positive reviews per month,
-respond to every review, optimize your profile for the category's feature filters.
+### Quando usar o AppSumo
 
-**Review generation by tactic:**
-- Post-support-resolution email: 15-25% response rate
-- In-app prompt after milestone: 10-20% response rate
-- Incentivized review (G2 gift card program): 20-30% response rate
+As ofertas vitalícias do AppSumo funcionam melhor quando:
 
-**Paid placement:** G2 starts at ~$1K/month for category placement + intent data.
-Capterra runs PPC at ~$2/click. Free listings still work with strong review volume.
+- Você precisa de uma injeção de dinheiro para o desenvolvimento (US$ 10 mil a US$ 100 mil ou mais no primeiro mês é comum)
+- Você deseja aumentar rapidamente sua base de usuários para prova social
+- Seu produto tem baixo custo marginal por usuário (não ferramentas de IA por chamada de API)
+- Você pode lidar com um aumento repentino no volume de suporte
+- Você tem caminhos de upsell além do nível vitalício
 
----
+### Quando evitar o AppSumo
 
-## UGC-Only Growth: $0 Ad Spend Scaling
+- Seu produto tem altos custos marginais por usuário (uso intenso de API, computação)
+- Você não consegue lidar com mais de 500-2.000 novos usuários em uma semana
+- Você não tem modelo de upsell ou expansão de receita
+- Você está pré-adequado ao mercado do produto (usuários de LTD dão feedback alto sobre produtos inacabados)
 
-### The UGC Launch Flywheel
+### Estrutura do negócio do AppSumo
 
-Make product shareable -> Users create content -> Repurpose as social proof/ads ->
-More users discover product -> Improve shareability triggers based on what performs -> Repeat.
+| Elemento            | Recomendação                                               |
+| ------------------- | ---------------------------------------------------------- |
+| Preços              | $ 49- $ 79 únicos para Nível 1                             |
+| Camadas             | 3 níveis com códigos de empilhamento                       |
+| Limites de recursos | Limitar o uso de AI/API com créditos; oferecer opção BYOK  |
+| Duração             | Janela de negociação de 30 a 60 dias                       |
+| Divisão de receitas | 70% para você (primeiro negócio), negocie para subsequente |
 
-### Making Your Product Shareable
+### Considerações sobre ferramentas de IA (2025-2026)
 
-1. **Screenshot-worthy UI** - Design moments users want to share (results screens, dashboards)
-2. **Built-in sharing triggers** - "Share your results" buttons, public profile pages
-3. **Template the format** - Create a repeatable content format users can fill in
-4. **Badge/certification outputs** - Generate shareable badges users display in bios/websites
-5. **Before/after framing** - Show transformation that creates "how did you do that?" reactions
+Muitos acordos vitalícios baseados em IA falharam porque os custos da API (OpenAI, Anthropic) criam
+despesas contínuas por uso. Estratégias para mitigar:
 
-### UGC Performance Benchmarks (2025)
+1. **Pacotes de créditos** - Inclui atualização mensal de crédito, não uso ilimitado
+2. **BYOK (Bring Your Own Key)** - Permita que os usuários conectem suas próprias chaves de API
+3. **Níveis de uso** - Limite o uso por nível de plano com limites claros
+4. **Atualização anual** - Estrutura como "acesso vitalício com renovação anual de crédito"
 
-- UGC ads get 4x higher click-through rates vs. branded ads
-- UGC costs 30-80% less than influencer marketing
-- Brands report $4 return for every $1 invested in UGC programs
-- 50% lower cost-per-click on UGC-based paid campaigns
+### Lista de verificação de lançamento do AppSumo
 
-### Zero-Budget UGC Tactics for Launch
-
-| Tactic | Cost | Expected Output |
-|---|---|---|
-| "Show your setup" challenge on X | $0 | 20-50 posts from early users |
-| Template/swipe file with branding | $0 | Passive shares as users use templates |
-| Founding member badge for profiles | $0 | Social proof in user bios |
-| Public roadmap with voting | $0 | Community engagement content |
-| User spotlight in your newsletter | $0 | Incentivizes others to share |
-
-Cross-reference: ai-ugc-ads skill for scaling UGC into paid campaigns.
+Prepare a infraestrutura para tráfego 5x maior, forme equipes de suporte ou crie documentos de autoatendimento, crie
+Fluxo de integração específico do AppSumo, configuração de segmento analítico separado, preparação de caminhos de upsell
+para usuários avançados, escreva as perguntas frequentes do comprador LTD e planeje a coleta antecipada do Taco (revisão).
 
 ---
 
-## Budget Decision Framework
+## Estratégia G2 e Capterra
 
-| Budget | Key Additions | Expected Results |
-|---|---|---|
-| **$0 Bootstrap** | Carrd/Notion landing page, build-in-public on X, BetaList, PH, Show HN, 15-20 free directories, Reddit/communities | 500-3K signups, 1K-10K visits |
-| **Under $500** | + Custom landing page template, demo video (self-recorded), email nurture tool, LaunchList referral waitlist, newsletter swaps | 1K-5K signups, 3K-20K visits |
-| **Under $5K** | + Professional video ($500-1500), paid newsletter sponsorships, AppSumo deal, G2/Capterra paid placement, micro-influencer seeding, PR service | 3K-15K signups, 10K-50K visits |
+**Fórmula de classificação:** Obtenha cerca de 100 avaliações rapidamente, mantenha de 3 a 4 novas avaliações positivas por mês,
+responda a cada avaliação, otimize seu perfil para os filtros de recursos da categoria.
 
----
+**Geração de revisão por tática:**
 
-## Platform-Specific Timing
+- E-mail de resolução pós-suporte: taxa de resposta de 15 a 25%
+- Solicitação no aplicativo após marco: taxa de resposta de 10-20%
+- Revisão incentivada (programa de vale-presente G2): taxa de resposta de 20-30%
 
-| Platform | Best Days | Best Time | Why |
-|---|---|---|---|
-| Product Hunt | Tue, Wed, Thu | 12:01 AM PT | Algorithm reset; midweek peak traffic |
-| Hacker News | Tue-Thu | 8-10 AM PT | Pre-standup browsing; high early velocity |
-| Hacker News (alt) | Sunday | 6-9 PM PT | Low competition window |
-| LinkedIn | Tue-Thu | 7-9 AM local | Professional morning scroll |
-| X (Twitter) | Tue-Thu | 8-10 AM PT | Engagement peaks |
-| Reddit | Mon-Wed | 6-9 AM PT | Fresh content for US morning |
-
-### Launch Day Hour-by-Hour
-
-- **12:01 AM PT** - PH goes live; share link with inner circle via DM only
-- **6:00 AM PT** - Check PH position, respond to overnight comments
-- **8:00 AM PT** - Post Show HN, publish X thread, post LinkedIn, share in communities
-- **10:00 AM PT** - Reddit posts, send launch email to waitlist
-- **12:00 PM PT** - Midday engagement check, share early metrics on X
-- **3:00 PM PT** - Respond to all new PH/HN comments
-- **6:00 PM PT** - Evening progress update on X
-- **9:00 PM PT** - Final PH comment sweep, plan Day 1 content
+**Posicionamento pago:** G2 começa em aproximadamente US$ 1 mil/mês para posicionamento de categoria + dados de intenção.
+Capterra executa PPC por aproximadamente US$ 2/clique. Listagens gratuitas ainda funcionam com grande volume de avaliações.
 
 ---
 
-## Measuring Launch Success
+## Crescimento somente UGC: escala de gastos com publicidade de US$ 0
 
-### Core Launch Metrics
+### O volante de lançamento UGC
 
-| Metric | What It Tells You | Target (Good Launch) |
-|---|---|---|
-| Total signups (Day 0) | Demand signal | 200-1000 |
-| Total signups (Week 1) | Sustained interest | 500-3000 |
-| Activation rate | Product-market fit signal | 30-60% |
-| PH rank | Social proof tier | Top 5 of the day |
-| HN points | Technical credibility | 50+ |
-| Waitlist conversion | Pre-launch quality | 25-50% |
-| Directory referral traffic | Long-tail value | 100+ visits/month |
-| Email list growth | Owned audience | 500-2000 new subs |
-| Social mentions | Word of mouth | 50+ unique mentions |
-| Reviews collected (G2/Capterra) | Buyer confidence | 10-20 in first month |
+Torne o produto compartilhável -> Os usuários criam conteúdo -> Adapte como prova social/anúncios ->
+Mais usuários descobrem o produto -> Melhorar os gatilhos de compartilhamento com base no desempenho -> Repetir.
 
-### Attribution Tracking
+### Tornando seu produto compartilhável
 
-Set up before launch: UTM parameters on every shared link, separate landing pages or
-query params per platform, referral source tracking (Plausible, PostHog, Mixpanel),
-PH referral data, and HN traffic spike correlation.
+1. **IU digna de captura de tela** - Momentos de design que os usuários desejam compartilhar (telas de resultados, painéis)
+2. **Gatilhos de compartilhamento integrados** - botões "Compartilhe seus resultados", páginas de perfil público
+3. **Modele o formato** - Crie um formato de conteúdo repetível que os usuários possam preencher
+4. **Saídas de crachás/certificações** - Gere crachás compartilháveis que os usuários exibem em bios/sites
+5. **Enquadramento antes/depois** - Mostre a transformação que cria "como você fez isso?" reação
 
-### 7-Day Post-Launch Review
+ns
 
-Run this review one week after launch. Cover: results vs. goals (signups, activation,
-revenue), per-platform performance (PH rank/upvotes, HN points, directory referrals,
-social mentions, email growth), top 3 things that worked, top 3 to improve, and next
-30-day action items.
+### Benchmarks de desempenho UGC (2025)
 
----
+- Anúncios UGC obtêm taxas de cliques 4 vezes mais altas em comparação com anúncios de marca
+- UGC custa 30-80% menos que marketing de influenciador
+- Marcas relatam retorno de US$ 4 para cada US$ 1 investido em programas UGC
+- Custo por clique 50% menor em campanhas pagas baseadas em UGC
 
-## Common Launch Mistakes
+### Táticas UGC com orçamento zero para lançamento
 
-| Phase | Mistake | Fix |
-|---|---|---|
-| Pre-launch | No waitlist before launch | Collect emails 4+ weeks early |
-| Pre-launch | Launching a landing page, not a product | Ship working MVP first |
-| Pre-launch | No supporter coordination | Brief 20-50 people with specific instructions |
-| Pre-launch | Same messaging across platforms | Customize tone per platform norms |
-| Day 0 | Publicly asking for upvotes | Private DMs only, never public posts |
-| Day 0 | Not responding to comments | Reply to every comment within 30 min |
-| Day 0 | Launching on Friday | Launch Tue-Thu for peak traffic |
-| Day 0 | No live demo available | Offer instant try-it-now experience |
-| Post-launch | Going silent after Day 0 | Post daily updates for Week +1 |
-| Post-launch | Not collecting reviews | Ask every active user for G2/Capterra review |
-| Post-launch | Skipping directory submissions | Batch-submit to 15-20 directories |
+| Tática                                 | Custo | Resultado Esperado                                               |
+| -------------------------------------- | ----- | ---------------------------------------------------------------- |
+| Desafio "Mostre sua configuração" no X | $0    | 20 a 50 postagens de usuários iniciais                           |
+| Arquivo de modelo/furto com marca      | $0    | Compartilhamentos passivos à medida que os usuários usam modelos |
+| Crachá de membro fundador para perfis  | $0    | Prova social nas biografias dos usuários                         |
+| Roteiro público com votação            | $0    | Conteúdo de envolvimento da comunidade                           |
+| Destaque do usuário em sua newsletter  | $0    | Incentiva outras pessoas a compartilhar                          |
+
+Referência cruzada: habilidade ai-ugc-ads para dimensionar UGC em campanhas pagas.
 
 ---
 
+## Quadro de decisão orçamentária
+
+| Orçamento              | Principais adições                                                                                                                                                                             | Resultados esperados                             |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| **$0 Bootstrap**       | Página inicial do Carrd/Notion, construída publicamente em X, BetaList, PH, Show HN, 15-20 diretórios gratuitos, Reddit/communities                                                            | 500 a 3 mil inscrições, 1 mil a 10 mil visitas   |
+| **Menos de US$ 500**   | + Modelo de página de destino personalizado, vídeo de demonstração (autogravado), ferramenta de criação de e-mail, lista de espera de referência do LaunchList, troca de boletins informativos | 1 mil a 5 mil inscrições, 3 mil a 20 mil visitas |
+| **Menos de US$ 5 mil** | + Vídeo profissional ($                                                                                                                                                                        |
+
+500-1500), patrocínios de boletins informativos pagos, acordo AppSumo, colocação paga G2/Capterra, propagação de microinfluenciadores, serviço de relações públicas | 3 mil a 15 mil inscrições, 10 mil a 50 mil visitas |
+
+---
+
+## Tempo específico da plataforma
+
+| Plataforma                   | Melhores dias    | Melhor horário                   | Por que                                                     |
+| ---------------------------- | ---------------- | -------------------------------- | ----------------------------------------------------------- |
+| Caça ao produto              | Ter, Quarta, Qui | 12h01 horário do Pacífico        | Redefinição de algoritmo; tráfego de pico no meio da semana |
+| Notícias sobre hackers       | Ter-Qui          | 8h às 10h (horário do Pacífico)  | Navegação pré-standup; alta velocidade inicial              |
+| Notícias sobre hackers (alt) | Domingo          | 18h às 21h (horário do Pacífico) | Janela de baixa concorrência                                |
+| LinkedIn                     | Ter-Qui          | 7h às 9h locais                  | Pergaminho matinal profissional                             |
+| X (Twitter)                  | Ter-Qui          | 8h às 10h (horário do Pacífico)  | Picos de engajamento                                        |
+| Reddit                       | Seg-Qua          | 6-9                              |
+
+SOU PT | Conteúdo novo para a manhã dos EUA |
+
+### Dia de lançamento, hora a hora
+
+- **12h01 PT** - PH entra no ar; compartilhar link com círculo interno apenas via DM
+- **6:00 AM PT** - Verifique a posição do PH, responda aos comentários durante a noite
+- **8h00 PT** - Postar Show HN, publicar tópico X, postar LinkedIn, compartilhar em comunidades
+- **10h00 PT** - Postagens no Reddit, enviar e-mail de lançamento para lista de espera
+- **12h00 PT** - Verificação de engajamento ao meio-dia, compartilhar métricas antecipadas no X
+- **15:00 PT** - Responder a todos os novos comentários de PH/HN
+- **18:00 PT ** - Programa noturno
+
+atualização ss no X
+
+- **21:00 PT ** - Varredura final de comentários do PH, plano de conteúdo do Dia 1
+
+---
+
+## Medindo o sucesso do lançamento
+
+### Métricas principais de lançamento
+
+| Métrica                            | O que isso lhe diz                       | Alvo (Bom Lançamento)   |
+| ---------------------------------- | ---------------------------------------- | ----------------------- |
+| Total de inscrições (Dia 0)        | Sinal de demanda                         | 200-1000                |
+| Total de inscrições (Semana 1)     | Interesse sustentado                     | 500-3000                |
+| Taxa de ativação                   | Sinal de adequação do produto ao mercado | 30-60%                  |
+| Classificação PH                   | Camada de prova social                   | Top 5 do dia            |
+| Pontos HN                          | Credibilidade técnica                    | 50+                     |
+| Conversão de lista de espera       | Qualidade de pré-lançamento              | 25-50%                  |
+| Tráfego de referência de diretório | Valor de cauda longa                     | Mais de 100 visitas/seg |
+
+o |
+| Crescimento da lista de e-mail | Público próprio | 500-2.000 novos assinantes |
+| Menções sociais | Boca a boca | Mais de 50 menções únicas |
+| Avaliações coletadas (G2/Capterra) | Confiança do comprador | 10-20 no primeiro mês |
+
+### Acompanhamento de atribuição
+
+Configure antes do lançamento: parâmetros UTM em cada link compartilhado, páginas de destino separadas ou
+parâmetros de consulta por plataforma, rastreamento de fonte de referência (Plausible, PostHog, Mixpanel),
+Dados de referência de PH e correlação de pico de tráfego HN.
+
+### Revisão pós-lançamento de 7 dias
+
+Execute esta revisão uma semana após o lançamento. Capa: resultados x metas (inscrições, ativação,
+receita), desempenho por plataforma (classificação/votos positivos de PH, pontos HN, referências de diretório,
+menções sociais, crescimento de e-mail), três principais coisas que funcionaram, três principais coisas para melhorar e o próximo
+Itens de ação de 30 dias.
+
+---
+
+## Erros comuns de inicialização
+
+| Fase           | Erro                                     | Correção                                                |
+| -------------- | ---------------------------------------- | ------------------------------------------------------- |
+| Pré-lançamento | Sem lista de espera antes do lançamento  | Colete e-mails com mais de 4 semanas de antecedência    |
+| Pré-lançamento | Lançar uma landing page, não um produto  | Envie o MVP funcionando primeiro                        |
+| Pré-lançamento | Sem coordenação de torcedores            | Informar 20-50 pessoas com instruções específicas       |
+| Pré-lançamento | Mesmas mensagens em todas as plataformas | Personalize o tom de acordo com as normas da plataforma |
+| Dia 0          | Pedindo publicamente votos positivos     | Apenas DMs privados, nunca postagens públicas           |
+
+|
+| Dia 0 | Não respondendo aos comentários | Responda a todos os comentários em 30 minutos |
+| Dia 0 | Lançamento na sexta-feira | Lançamento de terça a quinta para pico de tráfego |
+| Dia 0 | Nenhuma demonstração ao vivo disponível | Ofereça uma experiência instantânea de teste agora |
+| Pós-lançamento | Ficando em silêncio após o Dia 0 | Publique atualizações diárias para a Semana +1 |
+| Pós-lançamento | Não coletando avaliações | Peça a cada usuário ativo uma análise do G2/Capterra |
+| Pós-lançamento | Ignorando envios de diretório | Envio em lote para 15
+
+-20 diretórios |
+
+---

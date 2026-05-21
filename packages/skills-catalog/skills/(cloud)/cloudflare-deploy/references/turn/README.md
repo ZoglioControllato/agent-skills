@@ -1,86 +1,86 @@
-# Cloudflare TURN Service
+# Serviço Cloudflare TURN
 
-Expert guidance for implementing Cloudflare TURN Service in WebRTC applications.
+Orientação especializada para implementação do Cloudflare TURN Service em aplicações WebRTC.
 
-## Overview
+## Visão geral
 
-Cloudflare TURN (Traversal Using Relays around NAT) Service is a managed relay service for WebRTC applications. TURN acts as a relay point for traffic between WebRTC clients and SFUs, particularly when direct peer-to-peer communication is obstructed by NATs or firewalls. The service runs on Cloudflare's global anycast network across 310+ cities.
+O serviço Cloudflare TURN (Traversal Using Relays around NAT) é um serviço de retransmissão gerenciado para aplicativos WebRTC. O TURN atua como um ponto de retransmissão para o tráfego entre clientes WebRTC e SFUs, especialmente quando a comunicação ponto a ponto direta é obstruída por NATs ou firewalls. O serviço é executado na rede global anycast da Cloudflare em mais de 310 cidades.
 
-## Key Characteristics
+## Principais características
 
-- **Anycast Architecture**: Automatically connects clients to the closest Cloudflare location
-- **Global Network**: Available across Cloudflare's entire network (excluding China Network)
-- **Zero Configuration**: No need to manually select regions or servers
-- **Protocol Support**: STUN/TURN over UDP, TCP, and TLS
-- **Free Tier**: Free when used with Cloudflare Calls SFU, otherwise $0.05/GB outbound
+- **Arquitetura Anycast**: conecta clientes automaticamente ao local mais próximo da Cloudflare
+- **Rede Global**: disponível em toda a rede da Cloudflare (excluindo a China Network)
+- **Configuração Zero**: Não há necessidade de selecionar manualmente regiões ou servidores
+- **Suporte a protocolo**: STUN/TURN sobre UDP, TCP e TLS
+- **Nível gratuito**: Gratuito quando usado com Cloudflare Calls SFU, caso contrário, US$ 0,05/GB de saída
 
-## In This Reference
+## Nesta referência
 
-| File                                   | Purpose                                                  |
-| -------------------------------------- | -------------------------------------------------------- |
-| [api.md](./api.md)                     | Credentials API, TURN key management, types, constraints |
-| [configuration.md](./configuration.md) | Worker setup, wrangler.jsonc, env vars, IP allowlisting  |
-| [patterns.md](./patterns.md)           | Implementation patterns, use cases, integration examples |
-| [gotchas.md](./gotchas.md)             | Troubleshooting, limits, security, common mistakes       |
+| Arquivo                               | Finalidade                                                                       |
+| ------------------------------------- | -------------------------------------------------------------------------------- |
+| [api.md](./api.md)                    | API de credenciais, gerenciamento de chaves TURN, tipos, restrições              |
+| [configuração.md](./configuration.md) | Configuração do trabalhador, wrangler.jsonc, env vars, lista de permissões de IP |
+| [padrões.md](./padrões.md)            | Padrões de implementação, casos de uso, exemplos de integração                   |
+| [gotchas.md](./gotchas.md)            | Solução de problemas, limites, segurança, erros comuns                           |
 
-## Reading Order
+## Ordem de leitura
 
-| Task                 | Files to Read                     | Est. Tokens |
-| -------------------- | --------------------------------- | ----------- |
-| Quick start          | README only                       | ~500        |
-| Generate credentials | README → api                      | ~1300       |
-| Worker integration   | README → configuration → patterns | ~2000       |
-| Debug connection     | gotchas                           | ~700        |
-| Security review      | api → gotchas                     | ~1500       |
-| Enterprise firewall  | configuration                     | ~600        |
+| Tarefa                       | Arquivos para ler               | Husa. Fichas |
+| ---------------------------- | ------------------------------- | ------------ |
+| Início rápido                | Somente LEIA-ME                 | ~500         |
+| Gerar credenciais            | LEIA-ME → API                   | ~1300        |
+| Integração dos trabalhadores | README → configuração → padrões | ~2000        |
+| Conexão de depuração         | pegadinhas                      | ~700         |
+| Revisão de segurança         | API → pegadinhas                | ~1500        |
+| Firewall corporativo         | configuração                    | ~600         |
 
-## Service Addresses and Ports
+## Endereços e portas de serviço
 
-### STUN over UDP
+### STUN sobre UDP
 
-- **Primary**: `stun.cloudflare.com:3478/udp`
-- **Alternate**: `stun.cloudflare.com:53/udp` (blocked by browsers, not recommended)
+- **Primário**: `stun.cloudflare.com:3478/udp`
+- **Alternativa**: `stun.cloudflare.com:53/udp` (bloqueado por navegadores, não recomendado)
 
-### TURN over UDP
+### VIRAR UDP
 
-- **Primary**: `turn.cloudflare.com:3478/udp`
-- **Alternate**: `turn.cloudflare.com:53/udp` (blocked by browsers)
+- **Primário**: `turn.cloudflare.com:3478/udp`
+- **Alternativa**: `turn.cloudflare.com:53/udp` (bloqueado pelos navegadores)
 
-### TURN over TCP
+### TURN sobre TCP
 
-- **Primary**: `turn.cloudflare.com:3478/tcp`
-- **Alternate**: `turn.cloudflare.com:80/tcp`
+- **Primário**: `turn.cloudflare.com:3478/tcp`
+- **Alternativa**: `turn.cloudflare.com:80/tcp`
 
-### TURN over TLS
+### TRANSFORMAR TLS
 
-- **Primary**: `turn.cloudflare.com:5349/tcp`
-- **Alternate**: `turn.cloudflare.com:443/tcp`
+- **Primário**: `turn.cloudflare.com:5349/tcp`
+- **Alternativa**: `turn.cloudflare.com:443/tcp`
 
-## Quick Start
+## Início rápido
 
-1. **Create TURN key via API**: see [api.md#create-turn-key](./api.md#create-turn-key)
-2. **Generate credentials**: see [api.md#generate-temporary-credentials](./api.md#generate-temporary-credentials)
-3. **Configure Worker**: see [configuration.md#cloudflare-worker-integration](./configuration.md#cloudflare-worker-integration)
-4. **Implement client**: see [patterns.md#basic-turn-configuration-browser](./patterns.md#basic-turn-configuration-browser)
+1. **Criar chave TURN via API**: consulte [api.md#create-turn-key](./api.md#create-turn-key)
+2. **Gerar credenciais**: consulte [api.md#generate-temporary-credentials](./api.md#generate-temporary-credentials)
+3. **Configurar Worker**: consulte [configuration.md#cloudflare-worker-integration](./configuration.md#cloudflare-worker-integration)
+4. **Implementar cliente**: consulte [patterns.md#basic-turn-configuration-browser](./patterns.md#basic-turn-configuration-browser)
 
-## When to Use TURN
+## Quando usar TURN
 
-- **Restrictive NATs**: Symmetric NATs that block direct connections
-- **Corporate firewalls**: Environments blocking WebRTC ports
-- **Mobile networks**: Carrier-grade NAT scenarios
-- **Predictable connectivity**: When reliability > efficiency
+- **NATs restritivos**: NATs simétricos que bloqueiam conexões diretas
+- **Firewalls corporativos**: ambientes bloqueando portas WebRTC
+- **Redes móveis**: cenários NAT de nível de operadora
+- **Conectividade previsível**: quando confiabilidade > eficiência
 
-## Related Cloudflare Services
+## Serviços Cloudflare relacionados
 
-- **Cloudflare Calls SFU**: Managed Selective Forwarding Unit (TURN free when used with SFU)
-- **Cloudflare Stream**: Video streaming with WHIP/WHEP support
-- **Cloudflare Workers**: Backend for credential generation
-- **Cloudflare KV**: Credential caching
-- **Cloudflare Durable Objects**: Session state management
+- **Cloudflare Calls SFU**: Unidade de encaminhamento seletivo gerenciado (TURN free quando usado com SFU)
+- **Cloudflare Stream**: streaming de vídeo com suporte WHIP/WHEP
+- **Cloudflare Workers**: back-end para geração de credenciais
+- **Cloudflare KV**: cache de credenciais
+- **Objetos duráveis da Cloudflare**: gerenciamento do estado da sessão
 
-## Additional Resources
+## Recursos Adicionais
 
-- [Cloudflare Calls Documentation](https://developers.cloudflare.com/calls/)
-- [Cloudflare TURN Service Docs](https://developers.cloudflare.com/realtime/turn/)
-- [Cloudflare API Reference](https://developers.cloudflare.com/api/resources/calls/subresources/turn/)
-- [Orange Meets (Open Source Example)](https://github.com/cloudflare/orange)
+- [Documentação de chamadas da Cloudflare](https://developers.cloudflare.com/calls/)
+- [Documentos de serviço Cloudflare TURN](https://developers.cloudflare.com/realtime/turn/)
+- [Referência da API Cloudflare](https://developers.cloudflare.com/api/resources/calls/subresources/turn/)
+- [Orange Meets (exemplo de código aberto)](https://github.com/cloudflare/orange)

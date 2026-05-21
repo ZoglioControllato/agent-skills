@@ -1,65 +1,67 @@
-# Cloudflare Images Skill Reference
+# Referência da skill Cloudflare Images
 
-**Cloudflare Images** is an end-to-end image management solution providing storage, transformation, optimization, and delivery at scale via Cloudflare's global network.
+**Cloudflare Images** é uma solução ponta a ponta de gestão de imagens com armazenamento, transformação, otimização e entrega em escala pela rede global da Cloudflare.
 
-## Quick Decision Tree
+## Árvore de decisão rápida
 
-**Need to:**
+**Precisa de:**
 
-- **Transform in Worker?** → [api.md](api.md#workers-binding-api-2026-primary-method) (Workers Binding API)
-- **Upload from Worker?** → [api.md](api.md#upload-from-worker) (REST API)
-- **Upload from client?** → [patterns.md](patterns.md#upload-from-client-direct-creator-upload) (Direct Creator Upload)
-- **Set up variants?** → [configuration.md](configuration.md#variants-configuration)
-- **Serve responsive images?** → [patterns.md](patterns.md#responsive-images)
-- **Add watermarks?** → [patterns.md](patterns.md#watermarking)
-- **Fix errors?** → [gotchas.md](gotchas.md#common-errors)
+- **Transformar no Worker?** → [api.md](api.md#workers-binding-api-2026-primary-method) (Workers Binding API)
+- **Enviar do Worker?** → [api.md](api.md#upload-from-worker) (REST API)
+- **Enviar do cliente?** → [patterns.md](patterns.md#upload-from-client-direct-creator-upload) (Direct Creator Upload)
+- **Configurar variantes?** → [configuration.md](configuration.md#variants-configuration)
+- **Servir imagens responsivas?** → [patterns.md](patterns.md#responsive-images)
+- **Adicionar marcas d’água?** → [patterns.md](patterns.md#watermarking)
+- **Corrigir erros?** → [gotchas.md](gotchas.md#common-errors)
 
-## Reading Order
+## Ordem de leitura
 
-**For building image upload/transform feature:**
+**Para implementar upload/transformação de imagens:**
 
-1. [configuration.md](configuration.md) - Setup Workers binding
-2. [api.md](api.md#workers-binding-api-2026-primary-method) - Learn transform API
-3. [patterns.md](patterns.md#upload-from-client-direct-creator-upload) - Direct upload pattern
-4. [gotchas.md](gotchas.md) - Check limits and errors
+1. [configuration.md](configuration.md) — configurar binding do Workers
+2. [api.md](api.md#workers-binding-api-2026-primary-method) — API de transformação
+3. [patterns.md](patterns.md#upload-from-client-direct-creator-upload) — padrão de upload direto
+4. [gotchas.md](gotchas.md) — limites e erros
 
-**For URL-based transforms:**
+**Para transformações por URL:**
 
-1. [configuration.md](configuration.md#variants-configuration) - Create variants
-2. [api.md](api.md#url-transform-api) - URL syntax
-3. [patterns.md](patterns.md#responsive-images) - Responsive patterns
+1. [configuration.md](configuration.md#variants-configuration) — criar variantes
+2. [api.md](api.md#url-transform-api) — sintaxe de URL
+3. [patterns.md](patterns.md#responsive-images) — padrões responsivos
 
-**For troubleshooting:**
+**Para solução de problemas:**
 
-1. [gotchas.md](gotchas.md#common-errors) - Error messages
-2. [gotchas.md](gotchas.md#limits) - Size/format limits
+1. [gotchas.md](gotchas.md#common-errors) — mensagens de erro
+2. [gotchas.md](gotchas.md#limits) — limites de tamanho/formato
 
-## Core Methods
+## Métodos principais
 
-| Method                           | Use Case              | Location             |
-| -------------------------------- | --------------------- | -------------------- |
-| `env.IMAGES.input().transform()` | Transform in Worker   | [api.md:11](api.md)  |
-| REST API `/images/v1`            | Upload images         | [api.md:57](api.md)  |
-| Direct Creator Upload            | Client-side upload    | [api.md:127](api.md) |
-| URL transforms                   | Static image delivery | [api.md:112](api.md) |
+| Método                           | Caso de uso               | Localização          |
+| -------------------------------- | ------------------------- | -------------------- |
+| `env.IMAGES.input().transform()` | Transformar no Worker     | [api.md:11](api.md)  |
+| REST API `/images/v1`            | Enviar imagens            | [api.md:57](api.md)  |
+| Direct Creator Upload            | Upload do lado do cliente | [api.md:127](api.md) |
+| Transformações por URL           | Entrega estática          | [api.md:112](api.md) |
 
-## In This Reference
+## Nesta referência
 
-- **[api.md](api.md)** - Complete API: Workers binding, REST endpoints, URL transforms
-- **[configuration.md](configuration.md)** - Setup: wrangler.toml, variants, auth, signed URLs
-- **[patterns.md](patterns.md)** - Patterns: responsive images, watermarks, format negotiation, caching
-- **[gotchas.md](gotchas.md)** - Troubleshooting: limits, errors, best practices
+- **[api.md](api.md)** — API completa: binding Workers, REST, URLs
+- **[configuration.md](configuration.md)** — Setup: wrangler, variantes, auth, URLs assinadas
+- **[patterns.md](patterns.md)** — Padrões: responsivo, marcas d’água, negociação de formato, cache
+- **[gotchas.md](gotchas.md)** — Solução de problemas: limites, erros, boas práticas
 
-## Key Features
+## Recursos principais
 
-- **Automatic Optimization** - AVIF/WebP format negotiation
-- **On-the-fly Transforms** - Resize, crop, blur, sharpen via URL or API
-- **Workers Binding** - Transform images in Workers (2026 primary method)
-- **Direct Upload** - Secure client-side uploads without backend proxy
-- **Global Delivery** - Cached at 300+ Cloudflare data centers
-- **Watermarking** - Overlay images programmatically
+- **Otimização automática** — negociação AVIF/WebP
+- **Transformações sob demanda** — redimensionar, recortar, desfoque, nitidez via URL ou API
+- **Binding no Workers** — transformar imagens no Workers (método principal em 2026)
+- **Upload direto** — uploads seguros do cliente sem proxy no backend
+- **Entrega global** — cache em mais de 300 data centers Cloudflare
+- **Marca d’água** — sobrepor imagens programaticamente
 
-## See Also
+## Ver também
 
-- [Official Docs](https://developers.cloudflare.com/images/)
-- [Workers Examples](https://developers.cloudflare.com/images/tutorials/)
+- [Documentação oficial](https://developers.cloudflare.com/images/)
+- [Exemplos Workers](https://developers.cloudflare.com/images/tutorials/)
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

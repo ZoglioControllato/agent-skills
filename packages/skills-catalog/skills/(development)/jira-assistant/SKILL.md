@@ -1,52 +1,52 @@
 ---
-description: Manage Jira issues via Atlassian MCP — search, create, update, transition status, and handle sprint tasks. Auto-detects workspace configuration. Use when user says "create a Jira ticket", "update my sprint", "check Jira status", "transition this issue", "search Jira", or "move ticket to done". Do NOT use for Confluence pages (use confluence-assistant).
+description: Gerencia issues Jira via MCP Atlassian — buscar, criar, atualizar, transicionar status e tarefas de sprint. Detecta a configuração do workspace automaticamente. Use quando o usuário disser "criar um ticket Jira", "atualizar minha sprint", "ver status no Jira", "transicionar esta issue", "buscar no Jira" ou "mover ticket para done". NÃO use para páginas Confluence (use confluence-assistant).
 name: jira-assistant
 ---
 
 # Jira Assistant
 
-You are an expert in using Atlassian MCP tools to interact with Jira.
+Você é expert em usar as ferramentas MCP da Atlassian para interagir com o Jira.
 
-## When to Use
+## Quando usar
 
-Use this skill when the user asks to:
+Use esta skill quando o usuário pedir para:
 
-- Search for Jira issues or tasks
-- Create new Jira issues (Task, Epic, Subtask)
-- Update existing issues
-- Transition issue status (To Do → In Progress → Done, etc.)
-- Add comments to issues
-- Manage assignees
-- Query issues with specific criteria
+- Buscar issues ou tarefas no Jira
+- Criar novas issues (Task, Epic, Subtask)
+- Atualizar issues existentes
+- Transicionar status da issue (A fazer → Em progresso → Concluído, etc.)
+- Adicionar comentários em issues
+- Gerenciar responsáveis
+- Consultar issues com critérios específicos
 
-## Configuration
+## Configuração
 
-**Project Detection Strategy (Automatic):**
+**Estratégia de detecção de projeto (automática):**
 
-1. **Check workspace rules first**: Look for Jira configuration in `.cursor/rules/jira-config.mdc`
-2. **If not found**: Use MCP search tools to discover available projects
-3. **If still unclear**: Ask user to specify project key
-4. **Use detected values** for all Jira operations in this conversation
+1. **Regras do workspace primeiro:** Procure configuração Jira em `.cursor/rules/jira-config.mdc`
+2. **Se não encontrar:** Use ferramentas de busca MCP para descobrir projetos disponíveis
+3. **Se ainda não estiver claro:** Peça ao usuário a chave do projeto
+4. **Use os valores detectados** em todas as operações Jira nesta conversa
 
-### Configuration Detection Workflow
+### Fluxo de detecção de configuração
 
-When you activate this skill:
+Ao ativar esta skill:
 
-1. Check if workspace has `.cursor/rules/jira-config.mdc` with Jira configuration
-2. If found, extract and use: Project Key, Cloud ID, URL, Board URL
-3. If not found:
+1. Verifique se o workspace tem `.cursor/rules/jira-config.mdc` com configuração Jira
+2. Se encontrar, extraia e use: Project Key, Cloud ID, URL, Board URL
+3. Se não encontrar:
    - Use `search("jira projects I have access to")` via MCP
-   - Present discovered projects to user
-   - Ask: "Which Jira project should I use? (e.g., KAN, PROJ, DEV)"
-4. Store the configuration for this conversation and proceed with operations
+   - Apresente os projetos descobertos ao usuário
+   - Pergunte: "Qual projeto Jira devo usar? (ex.: KAN, PROJ, DEV)"
+4. Armazene a configuração para esta conversa e prossiga com as operações
 
-**Note for skill users:** To configure this skill for your workspace, create `.cursor/rules/jira-config.mdc` with your project details.
+**Nota para quem usa a skill:** Para configurar no seu workspace, crie `.cursor/rules/jira-config.mdc` com os detalhes do projeto.
 
-## Workflow
+## Fluxo de trabalho
 
-### 1. Finding Issues (Always Start Here)
+### 1. Encontrar issues (sempre comece aqui)
 
-**Use `search` (Rovo Search) first** for general queries:
+**Use `search` (Rovo Search) primeiro** para consultas gerais:
 
 ```
 search("issues in {PROJECT_KEY} project")
@@ -54,18 +54,18 @@ search("tasks assigned to me")
 search("bugs in progress")
 ```
 
-- Natural language works better than JQL for general searches
-- Faster and more intuitive
-- Returns relevant results quickly
-- Replace `{PROJECT_KEY}` with the detected project key from configuration
+- Linguagem natural funciona melhor que JQL para buscas gerais
+- Mais rápido e intuitivo
+- Retorna resultados relevantes rapidamente
+- Substitua `{PROJECT_KEY}` pela chave detectada na configuração
 
-### 2. Searching with Specific Criteria
+### 2. Buscar com critérios específicos
 
-**Use `searchJiraIssuesUsingJql`** when you need precise filters:
+**Use `searchJiraIssuesUsingJql`** quando precisar de filtros precisos:
 
-**⚠️ ALWAYS include `project = {PROJECT_KEY}` in JQL queries**
+**⚠️ SEMPRE inclua `project = {PROJECT_KEY}` nas consultas JQL**
 
-Examples (replace `{PROJECT_KEY}` with detected project key):
+Exemplos (substitua `{PROJECT_KEY}` pela chave detectada):
 
 ```
 project = {PROJECT_KEY} AND status = "In Progress"
@@ -74,176 +74,176 @@ project = {PROJECT_KEY} AND type = "Epic" AND status != "Done"
 project = {PROJECT_KEY} AND priority = "High"
 ```
 
-### 3. Getting Issue Details
+### 3. Obter detalhes da issue
 
-Depending on what you have:
+Dependendo do que você tem:
 
-- **If you have ARI**: `fetch(ari)`
-- **If you have issue key/id**: `getJiraIssue(cloudId, issueKey)`
+- **Se tiver ARI**: `fetch(ari)`
+- **Se tiver chave ou id da issue**: `getJiraIssue(cloudId, issueKey)`
 
-### 4. Creating Issues
+### 4. Criar issues
 
-**ALWAYS use the detected `projectKey` and `cloudId` from configuration**
+**SEMPRE use o `projectKey` e `cloudId` detectados na configuração**
 
-#### Step-by-step process:
+#### Passo a passo:
 
 ```
-a. View issue types:
+a. Ver tipos de issue:
    getJiraProjectIssueTypesMetadata(
      cloudId="{CLOUD_ID}",
      projectKey="{PROJECT_KEY}"
    )
 
-b. View required fields:
+b. Ver campos obrigatórios:
    getJiraIssueTypeMetaWithFields(
      cloudId="{CLOUD_ID}",
      projectKey="{PROJECT_KEY}",
      issueTypeId="from-step-a"
    )
 
-c. Create the issue:
+c. Criar a issue:
    createJiraIssue(
      cloudId="{CLOUD_ID}",
      projectKey="{PROJECT_KEY}",
      issueTypeName="Task",
-     summary="Brief task description",
-     description="## Context\n..."
+     summary="Breve descrição da tarefa",
+     description="## Contexto\n..."
    )
 ```
 
-**Note:** Replace `{PROJECT_KEY}` and `{CLOUD_ID}` with values from detected configuration.
+**Nota:** Substitua `{PROJECT_KEY}` e `{CLOUD_ID}` pelos valores da configuração detectada.
 
-**Available issue types:**
+**Tipos de issue disponíveis:**
 
-- Task (default)
+- Task (padrão)
 - Epic
-- Subtask (requires `parent` field with parent issue key)
+- Subtask (exige campo `parent` com a chave da issue pai)
 
-### 5. Updating and Transitioning Issues
+### 5. Atualizar e transicionar issues
 
-#### Edit fields:
+#### Editar campos:
 
 ```
 editJiraIssue(cloudId, issueKey, fields)
 ```
 
-#### Change status:
+#### Mudar status:
 
 ```
-1. Get available transitions:
+1. Obter transições disponíveis:
    getTransitionsForJiraIssue(cloudId, issueKey)
 
-2. Apply transition:
+2. Aplicar transição:
    transitionJiraIssue(cloudId, issueKey, transitionId)
 ```
 
-#### Add comment:
+#### Adicionar comentário:
 
 ```
 addCommentToJiraIssue(cloudId, issueKey, comment)
 ```
 
-## Default Task Template
+## Modelo padrão de tarefa
 
-**ALWAYS use this template** in the `description` field when creating issues:
+**SEMPRE use este modelo** no campo `description` ao criar issues:
 
 ```markdown
-## Context
+## Contexto
 
-[Brief explanation of the problem or need]
+[Explicação breve do problema ou necessidade]
 
-## Objective
+## Objetivo
 
-[What needs to be accomplished]
+[O que precisa ser entregue]
 
-## Technical Requirements
+## Requisitos técnicos
 
-[This is high level, it doesn't mention which class or file, but the technical high level objective]
+[Nível alto; não cite classe ou arquivo, mas o objetivo técnico de alto nível]
 
-- [ ] Requirement 1
-- [ ] Requirement 2
-- [ ] Requirement 3
+- [ ] Requisito 1
+- [ ] Requisito 2
+- [ ] Requisito 3
 
-## Acceptance Criteria
+## Critérios de aceite
 
-- [ ] Criteria 1
-- [ ] Criteria 2
-- [ ] Criteria 3
+- [ ] Critério 1
+- [ ] Critério 2
+- [ ] Critério 3
 
-## Technical Notes
+## Notas técnicas
 
-[Don't include file paths as they can change overtime]
-[Technical considerations, dependencies, relevant links]
+[Não inclua caminhos de arquivo — podem mudar com o tempo]
+[Considerações técnicas, dependências, links relevantes]
 
-## Estimate
+## Estimativa
 
-[Time estimate or story points, if applicable]
+[Estimativa de tempo ou story points, se aplicável]
 ```
 
-## Best Practices
+## Boas práticas
 
-### ✅ DO
+### ✅ FAZER
 
-- **Always use the detected project key** in all operations
-- **Always use Markdown** in the `description` field
-- **Use `search` first** for natural language queries
-- **Use JQL** for precise filtering (but always include `project = {PROJECT_KEY}`)
-- **Follow the task template** for consistency
-- **Avoid file paths** in descriptions (they change over time)
-- **Keep summaries brief** and descriptions detailed
+- **Sempre usar a chave de projeto detectada** em todas as operações
+- **Sempre Markdown** no campo `description`
+- **Usar `search` primeiro** para consultas em linguagem natural
+- **Usar JQL** para filtros precisos (mas sempre com `project = {PROJECT_KEY}`)
+- **Seguir o modelo de tarefa** para consistência
+- **Evitar caminhos de arquivo** nas descrições (mudam com o tempo)
+- **Summaries breves** e descrições detalhadas
 
-### ⚠️ IMPORTANT
+### ⚠️ IMPORTANTE
 
-- **Issue ID** is numeric (internal)
-- **Issue Key** is "{PROJECT_KEY}-123" format (user-facing)
-- **To create subtasks**: Use the `parent` field with parent issue key
-- **CloudId** can be URL or UUID - both work
-- **Use detected configuration values** from workspace rules or user input
+- **Issue ID** é numérico (interno)
+- **Issue Key** tem formato "{PROJECT_KEY}-123" (voltado ao usuário)
+- **Para subtasks:** use o campo `parent` com a chave da issue pai
+- **CloudId** pode ser URL ou UUID — ambos funcionam
+- **Use valores da configuração detectada** das regras do workspace ou entrada do usuário
 
-## Examples
+## Exemplos
 
-### Example 1: Create a Task
+### Exemplo 1: Criar uma Task
 
 ```
-User: "Create a task to implement user authentication"
+Usuário: "Crie uma tarefa para implementar autenticação de usuário"
 
 createJiraIssue(
   cloudId="{CLOUD_ID}",
   projectKey="{PROJECT_KEY}",
   issueTypeName="Task",
-  summary="Implement user authentication endpoint",
-  description="## Context
-We need to secure our API endpoints with user authentication.
+  summary="Implementar endpoint de autenticação de usuário",
+  description="## Contexto
+Precisamos proteger os endpoints da API com autenticação de usuário.
 
-## Objective
-Implement JWT-based authentication for API access.
+## Objetivo
+Implementar autenticação JWT para acesso à API.
 
-## Technical Requirements
-- [ ] Create authentication middleware
-- [ ] Implement JWT token generation
-- [ ] Add token validation
-- [ ] Secure existing endpoints
+## Requisitos técnicos
+- [ ] Criar middleware de autenticação
+- [ ] Implementar geração de token JWT
+- [ ] Adicionar validação de token
+- [ ] Proteger endpoints existentes
 
-## Acceptance Criteria
-- [ ] Users can login with credentials
-- [ ] JWT tokens are generated on successful login
-- [ ] Protected endpoints validate tokens
-- [ ] Invalid tokens return 401
+## Critérios de aceite
+- [ ] Usuários conseguem login com credenciais
+- [ ] Tokens JWT são gerados no login bem-sucedido
+- [ ] Endpoints protegidos validam tokens
+- [ ] Tokens inválidos retornam 401
 
-## Technical Notes
-Use bcrypt for password hashing, JWT for tokens, and implement refresh token logic.
+## Notas técnicas
+Use bcrypt para hash de senha, JWT para tokens e implemente lógica de refresh token.
 
-## Estimate
+## Estimativa
 5 story points"
 )
 ```
 
-**Note:** Use actual values from detected configuration in place of placeholders.
+**Nota:** Use valores reais da configuração detectada no lugar dos placeholders.
 
-### Example 2: Search and Update Issue
+### Exemplo 2: Buscar e atualizar issue
 
 ```
-User: "Find my in-progress tasks and update the first one"
+Usuário: "Ache minhas tarefas em progresso e atualize a primeira"
 
 1. searchJiraIssuesUsingJql(
      cloudId="{CLOUD_ID}",
@@ -253,16 +253,16 @@ User: "Find my in-progress tasks and update the first one"
 2. editJiraIssue(
      cloudId="{CLOUD_ID}",
      issueKey="{PROJECT_KEY}-123",
-     fields={ "description": "## Context\nUpdated context..." }
+     fields={ "description": "## Contexto\nContexto atualizado..." }
    )
 ```
 
-**Note:** Replace placeholders with detected configuration values.
+**Nota:** Substitua os placeholders pelos valores da configuração detectada.
 
-### Example 3: Transition Issue Status
+### Exemplo 3: Transicionar status da issue
 
 ```
-User: "Move task {PROJECT_KEY}-456 to Done"
+Usuário: "Mova a tarefa {PROJECT_KEY}-456 para Done"
 
 1. getTransitionsForJiraIssue(cloudId="{CLOUD_ID}", issueKey="{PROJECT_KEY}-456")
 
@@ -273,58 +273,58 @@ User: "Move task {PROJECT_KEY}-456 to Done"
    )
 ```
 
-**Note:** Replace placeholders with detected configuration values.
+**Nota:** Substitua os placeholders pelos valores da configuração detectada.
 
-### Example 4: Create Subtask
+### Exemplo 4: Criar subtask
 
 ```
-User: "Create a subtask for {PROJECT_KEY}-789"
+Usuário: "Crie uma subtask para {PROJECT_KEY}-789"
 
 createJiraIssue(
   cloudId="{CLOUD_ID}",
   projectKey="{PROJECT_KEY}",
   issueTypeName="Subtask",
   parent="{PROJECT_KEY}-789",
-  summary="Implement validation logic",
-  description="## Context\nSubtask for implementing input validation..."
+  summary="Implementar lógica de validação",
+  description="## Contexto\nSubtask para implementar validação de entrada..."
 )
 ```
 
-**Note:** Replace placeholders with detected configuration values.
+**Nota:** Substitua os placeholders pelos valores da configuração detectada.
 
-## Common JQL Patterns
+## Padrões JQL comuns
 
-All queries **MUST** include `project = {PROJECT_KEY}` (use detected project key):
+Todas as consultas **DEVEM** incluir `project = {PROJECT_KEY}` (use a chave detectada):
 
 ```jql
-# My current work
+# Meu trabalho atual
 project = {PROJECT_KEY} AND assignee = currentUser() AND status = "In Progress"
 
-# Recent issues
+# Issues recentes
 project = {PROJECT_KEY} AND created >= -7d
 
-# High priority bugs
+# Bugs de alta prioridade
 project = {PROJECT_KEY} AND type = Bug AND priority = High
 
-# Epics without completion
+# Épicos não concluídos
 project = {PROJECT_KEY} AND type = Epic AND status != Done
 
-# Unassigned tasks
+# Tarefas não atribuídas
 project = {PROJECT_KEY} AND assignee is EMPTY AND status = "To Do"
 
-# Issues updated this week
+# Issues atualizadas nesta semana
 project = {PROJECT_KEY} AND updated >= startOfWeek()
 ```
 
-**Note:** Replace `{PROJECT_KEY}` with the actual project key from detected configuration.
+**Nota:** Substitua `{PROJECT_KEY}` pela chave real da configuração detectada.
 
-## Important Notes
+## Observações importantes
 
-- **Project key is mandatory** - Always include `project = {PROJECT_KEY}` in JQL queries
-- **Use detected configuration** - Read from `.cursor/rules/jira-config.mdc` or ask user
-- **Use Markdown** in descriptions - Not HTML or plain text
-- **Follow the template** - Maintains consistency across issues
-- **Natural language search first** - Use JQL only when needed
-- **Avoid file paths** - They change and become outdated
-- **Keep technical notes high-level** - Focus on approach, not implementation details
-- **Story points are optional** - Include estimates when relevant
+- **Chave de projeto é obrigatória** — sempre inclua `project = {PROJECT_KEY}` nas consultas JQL
+- **Use configuração detectada** — leia `.cursor/rules/jira-config.mdc` ou pergunte ao usuário
+- **Use Markdown** nas descrições — não HTML nem texto puro
+- **Siga o modelo** — mantém consistência entre issues
+- **Busca em linguagem natural primeiro** — JQL só quando necessário
+- **Evite caminhos de arquivo** — mudam e ficam desatualizados
+- **Mantenha notas técnicas em alto nível** — foco na abordagem, não em detalhes de implementação
+- **Story points são opcionais** — inclua estimativas quando relevante

@@ -1,6 +1,6 @@
-## Routing Patterns
+## Padrões de roteamento
 
-### Session Affinity (Stateful)
+### Afinidade de sessão (com estado)
 
 ```typescript
 export class SessionBackend extends Container {
@@ -18,9 +18,9 @@ export default {
 }
 ```
 
-**Use:** User sessions, WebSocket, stateful games, per-user caching.
+**Uso:** sessões de usuário, WebSocket, jogos com estado, cache por usuário.
 
-### Load Balancing (Stateless)
+### Balanceamento de carga (sem estado)
 
 ```typescript
 export default {
@@ -32,9 +32,9 @@ export default {
 }
 ```
 
-**Use:** Stateless HTTP APIs, CPU-intensive work, read-only queries.
+**Uso:** APIs HTTP sem estado, trabalho com uso intensivo de CPU, consultas somente leitura.
 
-### Singleton Pattern
+### Padrão Singleton
 
 ```typescript
 export default {
@@ -46,9 +46,9 @@ export default {
 }
 ```
 
-**Use:** Global cache, centralized coordinator, single source of truth.
+**Uso:** Cache global, coordenador centralizado, fonte única de verdade.
 
-## WebSocket Forwarding
+## Encaminhamento WebSocket
 
 ```typescript
 export default {
@@ -66,9 +66,9 @@ export default {
 }
 ```
 
-**⚠️ Critical:** Always use `fetch()` for WebSocket.
+**⚠️ Crítico:** Sempre use `fetch()` para WebSocket.
 
-## Graceful Shutdown
+## Desligamento Gracioso
 
 ```typescript
 export class GracefulContainer extends Container {
@@ -88,7 +88,7 @@ export class GracefulContainer extends Container {
 }
 ```
 
-## Concurrent Request Handling
+##Tratamento de solicitações simultâneas
 
 ```typescript
 export class SafeContainer extends Container {
@@ -106,9 +106,9 @@ export class SafeContainer extends Container {
 }
 ```
 
-**Use:** One-time initialization, preventing concurrent startup.
+**Uso:** Inicialização única, evitando inicialização simultânea.
 
-## Activity Timeout Renewal
+## Renovação do tempo limite da atividade
 
 ```typescript
 export class LongRunningContainer extends Container {
@@ -128,9 +128,9 @@ export class LongRunningContainer extends Container {
 }
 ```
 
-**Use:** Long operations exceeding `sleepAfter`.
+**Uso:** Operações longas que excedem `sleepAfter`.
 
-## Multiple Port Routing
+## Roteamento de múltiplas portas
 
 ```typescript
 export class MultiPortContainer extends Container {
@@ -145,9 +145,9 @@ export class MultiPortContainer extends Container {
 }
 ```
 
-**Use:** Multi-protocol services (HTTP + gRPC), separate metrics endpoints.
+**Uso:** serviços multiprotocolo (HTTP + gRPC), endpoints de métricas separados.
 
-## Workflow Integration
+## Integração de fluxo de trabalho
 
 ```typescript
 import { WorkflowEntrypoint } from 'cloudflare:workers'
@@ -174,9 +174,9 @@ export class ProcessingWorkflow extends WorkflowEntrypoint {
 }
 ```
 
-**Use:** Orchestrating multi-step container operations, durable execution.
+**Uso:** orquestração de operações de contêiner em várias etapas, execução durável.
 
-## Queue Consumer Integration
+## Integração do Consumidor de Fila
 
 ```typescript
 export default {
@@ -201,4 +201,4 @@ export default {
 }
 ```
 
-**Use:** Asynchronous job processing, batch operations, event-driven execution.
+**Uso:** Processamento de trabalho assíncrono, operações em lote, execução orientada a eventos.

@@ -1,153 +1,170 @@
-# Socratic Questioning
+# Questionamento Socrático
 
-Structured question frameworks for exposing assumptions and deepening understanding.
+Estruturas de perguntas estruturadas para expor suposições e aprofundar a compreensão.
 
-## Core Principle
+## Princípio Fundamental
 
-Socratic questioning does not argue. It asks. The goal is to help the user discover gaps in their own reasoning by surfacing what they have not examined. Every question should create a moment of "I hadn't thought about that."
+O questionamento socrático não discute. Ele pergunta. O objetivo é ajudar o usuário a descobrir lacunas em seu próprio raciocínio, trazendo à tona o que não examinou. Cada pergunta deve criar um momento de “eu não tinha pensado nisso”.
 
-The agent must never answer the questions itself. Present them, let the user sit with them.
+O agente nunca deve responder ele mesmo às perguntas. Apresente-os, deixe o usuário sentar-se com eles.
 
-## The 6 Question Types
+## Os 6 tipos de perguntas
 
-Research (NAACL 2024, ChemRxiv 2025) confirms these 6 types as the most effective for critical analysis in AI-assisted workflows.
+A pesquisa (NAACL 2024, ChemRxiv 2025) confirma esses 6 tipos como os mais eficazes para análises críticas em fluxos de trabalho assistidos por IA.
 
-### 1. Clarifying Questions
+### 1. Esclarecimento de dúvidas
 
-Force precision on vague or overloaded terms.
+Forçar precisão em termos vagos ou sobrecarregados.
 
-| Pattern | Example |
-|---------|---------|
-| "When you say X, what specifically do you mean?" | "When you say 'scalable,' do you mean 10x users or 1000x?" |
-| "How would you define X to someone unfamiliar?" | "How would you explain 'real-time' to a non-engineer?" |
-| "Are there cases where X means something different?" | "Does 'fast' mean the same thing for API response and batch job?" |
+| Padrão                                                      | Exemplo                                                                     |
+| ----------------------------------------------------------- | --------------------------------------------------------------------------- |
+| "Quando você diz X, o que especificamente você quer dizer?" | "Quando você diz 'escalável', você quer dizer 10x usuários ou 1000x?"       |
+| "Como você definiria X para alguém desconhecido?"           | "Como você explicaria 'tempo real' para alguém que não é engenheiro?"       |
+| “Existem casos em que X significa algo diferente?”          | "'Rápido' significa a mesma coisa para resposta de API e trabalho em lote?" |
 
-### 2. Assumption-Probing Questions
+### 2. Perguntas de investigação de suposições
 
-Surface hidden premises that the reasoning depends on.
+Revele premissas ocultas das quais o raciocínio depende.
 
-| Pattern | Example |
-|---------|---------|
-| "What are you assuming here?" | "What has to be true for microservices to improve velocity?" |
-| "Is this based on data or intuition?" | "Is the 'users hate the current flow' claim from research or assumption?" |
-| "What would change your mind?" | "What metric would convince you this approach is wrong?" |
-| "What are you treating as fixed that might be flexible?" | "Does the deadline have to be Q2, or is that an assumption?" |
+| Padrão                                                      | Exemplo                                                                                       |
+| ----------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| "O que você está assumindo aqui?"                           | "O que deve ser verdade para que os microsserviços melhorem a velocidade?"                    |
+| “Isso é baseado em dados ou intuição?”                      | "A afirmação de que 'os usuários odeiam o fluxo atual' é resultado de pesquisa ou suposição?" |
+| "O que mudaria sua mente?"                                  | “Que métrica o convenceria de que essa abordagem está errada?”                                |
+| "O que você está tratando como fixo que pode ser flexível?" | "O prazo tem que ser o segundo trimestre, ou                                                  |
 
-### 3. Evidence-Probing Questions
+isso é uma suposição?" |
 
-Test the evidential basis for beliefs.
+### 3. Perguntas de investigação de evidências
 
-| Pattern | Example |
-|---------|---------|
-| "What evidence supports this?" | "What data shows users actually want this feature?" |
-| "How do you know X is true?" | "How do you know the current system can't handle the load?" |
-| "How large and representative is the sample?" | "Was the pilot tested on production-like data or sanitized staging data?" |
-| "Is the source independent or interested?" | "Is that benchmark from a vendor or an independent test?" |
+Teste a base evidencial das crenças.
 
-### 4. Implication Questions
+| Padrão                                      | Exemplo                                                                        |
+| ------------------------------------------- | ------------------------------------------------------------------------------ |
+| "Que evidências apoiam isso?"               | “Quais dados mostram que os usuários realmente desejam esse recurso?”          |
+| "Como você sabe que X é verdade?"           | “Como você sabe que o sistema atual não consegue lidar com a carga?”           |
+| “Quão grande e representativa é a amostra?” | “O piloto foi testado em dados de produção ou em dados de teste higienizados?” |
+| “A fonte é independente ou interessada?”    | "Essa referência é de um fornecedor ou de uma empresa independente             |
 
-Follow the logical consequences of the position.
+não testar?" |
 
-| Pattern | Example |
-|---------|---------|
-| "If that's true, what follows?" | "If we accept this latency budget, what does that force on the database layer?" |
-| "Does X necessarily lead to Y?" | "Does adding caching necessarily improve user experience?" |
-| "What's the second-order effect?" | "If we hire contractors to speed up, what happens to team knowledge?" |
-| "What becomes harder later?" | "What future feature becomes harder if we choose this schema?" |
+### 4. Perguntas de implicação
 
-### 5. Perspective-Shifting Questions
+Siga as consequências lógicas da posição.
 
-Force consideration of other viewpoints.
+| Padrão                                 | Exemplo                                                                                     |
+| -------------------------------------- | ------------------------------------------------------------------------------------------- |
+| "Se isso for verdade, o que se segue?" | “Se aceitarmos esse orçamento de latência, o que isso forçará na camada de banco de dados?” |
+| "X necessariamente leva a Y?"          | "Adicionar cache necessariamente melhora a experiência do usuário?"                         |
+| “Qual é o efeito de segunda ordem?”    | “Se contratarmos empreiteiros para acelerar, o que acontece com o conhecimento da equipe?”  |
+| "O que fica mais difícil depois?"      | "Qual recurso futuro se tornará mais difícil se escolhermos                                 |
 
-| Pattern | Example |
-|---------|---------|
-| "How would [stakeholder] see this?" | "How would the on-call engineer feel about this architecture?" |
-| "What would a skeptic say?" | "What would a senior engineer who prefers simplicity say?" |
-| "What does this look like in 2 years?" | "Will this abstraction still make sense when the team doubles?" |
-| "Who loses if this succeeds?" | "If we adopt this vendor, what capability do we give up?" |
+esse esquema?" |
 
-### 6. Meta-Questions
+### 5. Perguntas de mudança de perspectiva
 
-Examine the reasoning process itself.
+Forçar a consideração de outros pontos de vista.
 
-| Pattern | Example |
-|---------|---------|
-| "Why are we framing it this way?" | "Why are we treating this as a technology decision instead of an organizational one?" |
-| "What question are we NOT asking?" | "We've discussed performance — what about operability?" |
-| "Are we solving the right problem?" | "Is the real problem the deploy pipeline or the coupling?" |
-| "What would it take to change your mind?" (Kozyrkov's Magic Question) | "If I could prove X, would you reconsider?" |
+| Padrão                                       | Exemplo                                                                   |
+| -------------------------------------------- | ------------------------------------------------------------------------- |
+| "Como [as partes interessadas] veriam isso?" | "Como o engenheiro de plantão se sentiria em relação a essa arquitetura?" |
+| "O que um cético diria?"                     | "O que diria um engenheiro sênior que prefere a simplicidade?"            |
+| "Como será isso daqui a 2 anos?"             | “Essa abstração ainda fará sentido quando a equipe dobrar?”               |
+| "Quem perde se isso der certo?"              | “Se adotarmos esse fornecedor, de que capacidade abriremos mão?”          |
 
-## Assumption Detection Signals
+### 6. Meta-perguntas
 
-Watch for language that hides assumptions. When you hear these, probe immediately.
+Examine o próprio processo de raciocínio.
 
-| Signal Phrase | Hidden Assumption | Probe With |
-|---------------|-------------------|------------|
-| "Obviously..." | The speaker hasn't questioned this | "What makes this obvious? Has it been tested?" |
-| "Everyone knows..." | Consensus hasn't been verified | "Who specifically? Has anyone disagreed?" |
-| "It just makes sense..." | The reasoning chain hasn't been articulated | "Walk me through the logic step by step." |
-| "We always..." | Historical pattern assumed to be optimal | "Why? What would happen if you didn't?" |
-| "There's no other way..." | Alternatives haven't been explored | "What if there were? What would it look like?" |
-| "It's simple..." | Complexity has been underestimated | "What's the simplest thing that could go wrong?" |
-| "Users want..." | User research may be absent or stale | "How do you know? When was this last validated?" |
-| "The standard approach is..." | Convention hasn't been validated for context | "Standard for whom? Does their context match yours?" |
-| "We need to be careful..." | Risk aversion without quantified risk | "What specifically is the risk? How likely?" |
+| Padrão                                                                      | Exemplo                                                                                |
+| --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| "Por que estamos enquadrando desta forma?"                                  | “Por que estamos tratando isso como uma decisão tecnológica em vez de organizacional?” |
+| "Que pergunta NÃO estamos fazendo?"                                         | "Discutimos o desempenho - e a operabilidade?"                                         |
+| "Estamos resolvendo o problema certo?"                                      | "O verdadeiro problema é o pipeline de implantação ou o acoplamento?"                  |
+| "O que seria necessário para mudar de ideia?" (Pergunta Mágica de Kozyrkov) | "Se eu co                                                                              |
 
-## Domain-Adapted Question Banks
+Se você pudesse provar X, você reconsideraria?" |
 
-### Technical Decisions
+## Sinais de detecção de suposição
 
-- What are you optimizing for? Are you sure that's the right dimension?
-- What's the simplest version that tests the core assumption?
-- What constraint are you treating as fixed that might actually be flexible?
-- How would you build this if you had to ship in one week?
-- What's the most expensive thing to change later?
-- If you had to explain the failure mode to a non-technical executive, what would you say?
+Fique atento à linguagem que esconde suposições. Ao ouvir isso, investigue imediatamente.
 
-### Business Decisions
+| Frase de Sinal       | Suposição Oculta                          | Sondar com                                |
+| -------------------- | ----------------------------------------- | ----------------------------------------- |
+| "Obviamente..."      | O palestrante não questionou isso         | "O que torna isso óbvio? Foi testado?"    |
+| "Todo mundo sabe..." | O consenso não foi verificado             | "Quem especificamente? Alguém discordou?" |
+| "Faz sentido..."     | A cadeia de raciocínio não foi articulada | "Mostre-me a lógica passo a passo."       |
+| "Nós sempre..."      | História                                  |
 
-- Who is the customer for this decision? Are you sure?
-- What would make this a bad investment in hindsight?
-- How does this compare to doing nothing?
-- What's the opportunity cost of this choice?
-- If a competitor made the opposite choice, would you be worried?
-- What's the maximum you'd pay a clairvoyant for perfect information on this? (Kozyrkov's Value of Clairvoyance test — if low, the decision doesn't need more analysis)
+padrão histórico considerado ótimo | "Por quê? O que aconteceria se você não o fizesse?" |
+| "Não tem outro jeito..." | Alternativas não foram exploradas | "E se houvesse? Como seria?" |
+| "É simples..." | A complexidade foi subestimada | "Qual é a coisa mais simples que pode dar errado?" |
+| "Os usuários querem..." | A pesquisa do usuário pode estar ausente ou desatualizada | "Como você sabe? Quando isso foi validado pela última vez?" |
+| "A abordagem padrão é..." |
 
-### Strategic Decisions
+Convenção não foi validada para o contexto | "Padrão para quem? O contexto deles corresponde ao seu?" |
+| "Precisamos ter cuidado..." | Aversão ao risco sem risco quantificado | "Qual é especificamente o risco? Qual a probabilidade?" |
 
-- What has to be true for this strategy to work?
-- Which of those assumptions are you least confident about?
-- What's the fastest way to test the riskiest assumption?
-- How will you know if this is failing before it's too late?
-- What's the exit strategy if this doesn't work?
-- Frame this as a bet: what are you staking, at what odds, for what payoff?
+## Bancos de perguntas adaptadas ao domínio
 
-## Output Template
+### Decisões Técnicas
 
-```markdown
+- Para que você está otimizando? Tem certeza de que essa é a dimensão certa?
+- Qual é a versão mais simples que testa a suposição central?
+- Que restrição você está tratando como fixa e que na verdade pode ser flexível?
+- Como você construiria isso se tivesse que enviar em uma semana?
+- Qual é a coisa mais cara para mudar depois?
+- Se você tivesse que explicar o modo de falha para um executivo não técnico, o que você diria?
+
+### Decisões de Negócios
+
+- Quem é o cliente para esta decisão? Tem certeza?
+- O que tornaria este um mau investimento em retrospectiva?
+- Como isso se compara a não fazer nada?
+- Qual é o custo de oportunidade desta escolha?
+- Se um concorrente fizesse a escolha oposta, você ficaria preocupado?
+- Qual o máximo que você pagaria a um clarividente por uma informação perfeita sobre isso? (Teste de Valor de Clarividência de Kozyrkov - se baixo, a decisão não precisa de mais análise)
+
+### Decisões Estratégicas
+
+- O que tem de ser verdade para que esta estratégia funcione?
+- Em quais dessas suposições você está menos confiante?
+- Qual é a maneira mais rápida de testar a suposição mais arriscada?
+- Como você saberá se isso está falhando antes que seja tarde demais?
+- Qual é a estratégia de saída se isso não funcionar?
+- Enquadre isto como uma aposta: o que você está apostando, com que probabilidades, com que recompensa?
+
+## Modelo de saída```markdown
+
 ## Assumption Inventory
 
-| # | Assumption | Type | Confidence | Source |
-|---|-----------|------|------------|--------|
-| 1 | [Stated or hidden assumption] | Stated / Unstated | High / Medium / Low | [Where it appears in the reasoning] |
+| #   | Assumption                    | Type              | Confidence          | Source                              |
+| --- | ----------------------------- | ----------------- | ------------------- | ----------------------------------- |
+| 1   | [Stated or hidden assumption] | Stated / Unstated | High / Medium / Low | [Where it appears in the reasoning] |
 
 ## Probing Questions
 
 ### [Theme 1: e.g., "User Behavior"]
+
 1. [Question targeting assumption #X] _(Type: Assumption-probing)_
 2. [Follow-up question deepening the probe] _(Type: Implication)_
 
 ### [Theme 2: e.g., "Technical Feasibility"]
+
 1. [Question targeting assumption #Y] _(Type: Evidence-probing)_
 2. [Follow-up question] _(Type: Perspective-shifting)_
 
 ### [Theme 3: e.g., "Business Viability"]
+
 1. [Question targeting assumption #Z] _(Type: Meta-question)_
 2. [Follow-up question] _(Type: Clarifying)_
 
 ## Suggested Experiments
 
-| Assumption | Experiment | Effort | Signal |
-|-----------|-----------|--------|--------|
+| Assumption            | Experiment       | Effort       | Signal              |
+| --------------------- | ---------------- | ------------ | ------------------- |
 | [Riskiest assumption] | [How to test it] | Low/Med/High | [What result means] |
+
+```
+
 ```

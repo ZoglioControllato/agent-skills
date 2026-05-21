@@ -1,28 +1,28 @@
 # Cloudflare Tunnel
 
-Secure outbound-only connections between infrastructure and Cloudflare's global network.
+Conexões seguras somente de saída entre sua infraestrutura e a rede global da Cloudflare.
 
-## Overview
+## Visão geral
 
-Cloudflare Tunnel (formerly Argo Tunnel) enables:
+O Cloudflare Tunnel (antes Argo Tunnel) permite:
 
-- **Outbound-only connections** - No inbound ports or firewall changes
-- **Public hostname routing** - Expose local services to internet
-- **Private network access** - Connect internal networks via WARP
-- **Zero Trust integration** - Built-in access policies
+- **Conexões só de saída** — sem portas de entrada ou mudanças grandes de firewall
+- **Roteamento por hostname público** — expor serviços locais à internet
+- **Acesso a rede privada** — redes internas via WARP
+- **Integração Zero Trust** — políticas de acesso embutidas
 
-**Architecture**: Tunnel (persistent object) → Replica (`cloudflared` process) → Origin services
+**Arquitetura:** Tunnel (objeto persistente) → Réplica (processo `cloudflared`) → Serviços de origem
 
-**Terminology:**
+**Terminologia:**
 
-- **Tunnel**: Named persistent object with UUID
-- **Replica**: Individual `cloudflared` process connected to tunnel
-- **Config Source**: Where ingress rules stored (local file vs Cloudflare dashboard)
-- **Connector**: Legacy term for replica
+- **Tunnel:** objeto nomeado persistente com UUID
+- **Réplica:** processo individual `cloudflared` conectado ao tunnel
+- **Config Source:** onde ficam as regras de ingresso (arquivo local vs painel Cloudflare)
+- **Connector:** termo legado para réplica
 
-## Quick Start
+## Início rápido
 
-### Local Config
+### Config local
 
 ```bash
 # Install cloudflared
@@ -41,16 +41,16 @@ cloudflared tunnel route dns my-tunnel app.example.com
 cloudflared tunnel run my-tunnel
 ```
 
-### Dashboard Config (Recommended)
+### Config no painel (recomendado)
 
-1. **Zero Trust** > **Networks** > **Tunnels** > **Create**
-2. Name tunnel, copy token
-3. Configure routes in dashboard
-4. Run: `cloudflared tunnel --no-autoupdate run --token <TOKEN>`
+1. **Zero Trust** → **Networks** → **Tunnels** → **Create**
+2. Nomeie o tunnel, copie o token
+3. Configure rotas no painel
+4. Execute: `cloudflared tunnel --no-autoupdate run --token <TOKEN>`
 
-## Decision Tree
+## Árvore de decisão
 
-**Choose config source:**
+**Escolha da fonte de config:**
 
 ```
 Need centralized config updates?
@@ -65,7 +65,7 @@ Need firewall approval?
 └─ See networking.md first
 ```
 
-## Core Commands
+## Comandos principais
 
 ```bash
 # Tunnel lifecycle
@@ -85,7 +85,7 @@ cloudflared tunnel route ip add 10.0.0.0/8 <tunnel>
 cloudflared tunnel run <name>
 ```
 
-## Configuration Example
+## Exemplo de configuração
 
 ```yaml
 # ~/.cloudflared/config.yml
@@ -102,36 +102,38 @@ ingress:
   - service: http_status:404
 ```
 
-## Reading Order
+## Ordem de leitura
 
-**New to Cloudflare Tunnel:**
+**Novo no Cloudflare Tunnel:**
 
-1. This README (overview, quick start)
-2. [networking.md](./networking.md) - Firewall rules, connectivity pre-checks
-3. [configuration.md](./configuration.md) - Config file options, ingress rules
-4. [patterns.md](./patterns.md) - Docker, Kubernetes, production deployment
-5. [gotchas.md](./gotchas.md) - Troubleshooting, best practices
+1. Este README (visão geral, início rápido)
+2. [networking.md](./networking.md) — firewall, checagens de conectividade
+3. [configuration.md](./configuration.md) — opções de arquivo, ingress
+4. [patterns.md](./patterns.md) — Docker, Kubernetes, produção
+5. [gotchas.md](./gotchas.md) — solução de problemas, boas práticas
 
-**Enterprise deployment:**
+**Implantação enterprise:**
 
-1. [networking.md](./networking.md) - Corporate firewall requirements
-2. [gotchas.md](./gotchas.md) - HA setup, security best practices
-3. [patterns.md](./patterns.md) - Kubernetes, rolling updates
+1. [networking.md](./networking.md) — requisitos de firewall corporativo
+2. [gotchas.md](./gotchas.md) — HA, segurança
+3. [patterns.md](./patterns.md) — Kubernetes, updates graduais
 
-**Programmatic control:**
+**Controle programático:**
 
-1. [api.md](./api.md) - REST API, TypeScript SDK
+1. [api.md](./api.md) — REST API, SDK TypeScript
 
-## In This Reference
+## Nesta referência
 
-- [networking.md](./networking.md) - Firewall rules, ports, connectivity pre-checks
-- [configuration.md](./configuration.md) - Config file options, ingress rules, TLS settings
-- [api.md](./api.md) - REST API, TypeScript SDK, token-based tunnels
-- [patterns.md](./patterns.md) - Docker, Kubernetes, Terraform, HA, use cases
-- [gotchas.md](./gotchas.md) - Troubleshooting, limitations, best practices
+- [networking.md](./networking.md) — firewall, portas, pré-checagens
+- [configuration.md](./configuration.md) — arquivo de config, ingress, TLS
+- [api.md](./api.md) — REST, SDK, tunnels com token
+- [patterns.md](./patterns.md) — Docker, Kubernetes, Terraform, HA
+- [gotchas.md](./gotchas.md) — limitações, boas práticas
 
-## See Also
+## Ver também
 
-- [workers](../workers/) - Workers with Tunnel integration
-- [access](../access/) - Zero Trust access policies
-- [warp](../warp/) - WARP client for private networks
+- [workers](../workers/) — Workers com Tunnel
+- [access](../access/) — políticas Zero Trust Access
+- [warp](../warp/) — cliente WARP para redes privadas
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

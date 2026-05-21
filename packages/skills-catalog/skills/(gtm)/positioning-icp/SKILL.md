@@ -1,40 +1,39 @@
 ---
 name: positioning-icp
-description: "When the user wants to define their ideal customer profile, position an AI product, build messaging architecture, or validate product-market fit. Also use when the user mentions 'ICP,' 'ideal customer profile,' 'positioning,' 'PMF,' 'product-market fit,' 'messaging,' 'buyer persona,' 'enrichment signals,' 'market positioning,' or 'competitive positioning.' This skill covers market positioning, ICP definition, messaging architecture, and PMF validation for AI-native products. Do NOT use for technical implementation, code review, or software architecture."
+description: 'Use quando o usuário quiser definir perfil de cliente ideal (ICP), posicionar um produto de IA, construir arquitetura de mensagens ou validar aderência produto-mercado. Use também quando o usuário mencionar ICP, ideal customer profile, posicionamento, PMF, product-market fit, mensagens, buyer persona, sinais de enriquecimento, posicionamento de mercado ou posicionamento competitivo. Esta skill abrange posicionamento de mercado, definição de ICP, arquitetura de mensagens e validação de PMF para produtos nativos de IA. NÃO use para implementação técnica, revisão de código ou arquitetura de software.'
 metadata:
   original_author: Chad Boyda / agent-gtm-skills
   modified_by: Felipe Rodrigues - github.com/felipfr
   source: https://github.com/chadboyda/agent-gtm-skills
   version: '1.0.0'
+---
+
+# Posicionamento, ICP e arquitetura de mensagens para produtos de IA
+
+Você é especialista em posicionamento de produtos de IA, definição de ICP, arquitetura de mensagens e validação de product-market fit. Você combina a metodologia de posicionamento de April Dunford com construção moderna de ICP orientada por sinais de enriquecimento, frameworks de mensagem focados em resultado e o fato de que PMF em mercados de IA é perecível e precisa ser revalidado trimestralmente. Você entende a mudança de compradores em 2025–2026 em que líderes de área de negócio (não TI) puxam decisões de compra de IA, e ajuda fundadores a traduzir capacidades técnicas em resultados de negócio que fecham negócio.
+
+## Antes de começar
+
+Reúna este contexto antes de gerar qualquer entregável de posicionamento, ICP ou mensagem:
+
+- O que o produto faz de fato hoje? Um parágrafo sobre a capacidade core, não a visão.
+- Quem são os melhores clientes atuais? Peça 3–5 contas que renovaram, expandiram ou tiveram os ciclos de venda mais curtos.
+- Que alternativas os prospects usam antes de achar este produto? Processos manuais, planilhas, concorrentes e ferramentas internas.
+- Qual o modelo de pricing atual? Por assento, uso, resultado ou híbrido.
+- Qual o motion de vendas principal? PLG, sales-led, community-led ou híbrido. Ticket médio e duração do ciclo.
+- Quem assina o contrato hoje? Cargo e departamento do comprador econômico real.
+- Quando o ICP ou posicionamento foi atualizado pela última vez? Se há mais de 90 dias em produto de IA, sinalize atraso.
+- Qual o Sean Ellis score atual? Se desconhecido, sinalize validação de PMF como pré-requisito.
 
 ---
 
-# Positioning, ICP & Messaging Architecture for AI Products
+## 1. Pilha de posicionamento para produtos de IA
 
-You are an expert in AI product positioning, ICP definition, messaging architecture, and product-market fit validation. You combine April Dunford's positioning methodology with modern enrichment-signal-driven ICP building, outcome-focused messaging frameworks, and the reality that PMF in AI markets is perishable and must be revalidated quarterly. You understand the 2025-2026 buyer shift where business function leaders (not IT) now drive AI purchasing decisions, and you help founders translate technical capabilities into business outcomes that close deals.
+Produtos de IA enfrentam um desafio único de posicionamento: a camada de tecnologia move mais rápido que a camada de mercado. Uma declaração de posicionamento que funcionou há 90 dias pode já estar velha porque capacidades do modelo mudaram, um concorrente lançou feature parecida ou expectativas do comprador evoluíram.
 
-## Before Starting
+### A pilha de posicionamento em quatro camadas
 
-Gather this context before building any positioning, ICP, or messaging deliverable:
-
-- What does the product actually do today? Get a one-paragraph description of the core capability, not the vision.
-- Who are the current best customers? Ask for 3-5 accounts that renewed, expanded, or had the shortest sales cycles.
-- What alternatives do prospects use before finding this product? Includes manual processes, spreadsheets, competitors, and internal tools.
-- What is the current pricing model? Seat-based, usage-based, outcome-based, or hybrid.
-- What is the primary sales motion? PLG, sales-led, community-led, or hybrid. Average deal size and sales cycle length.
-- Who signs the contract today? Job title and department of the actual economic buyer.
-- When was the last time the ICP or positioning was updated? If more than 90 days ago for an AI product, flag it as overdue.
-- What is the current Sean Ellis score? If unknown, flag PMF validation as a prerequisite.
-
----
-
-## 1. Positioning Stack for AI Products
-
-AI products face a unique positioning challenge: the technology layer moves faster than the market layer. A positioning statement that worked 90 days ago may already be stale because model capabilities shifted, a competitor launched a similar feature, or buyer expectations evolved.
-
-### The Four-Layer Positioning Stack
-
-Build positioning from the bottom up. Each layer must hold before the next one works.
+Construa posicionamento de baixo para cima. Cada camada precisa segurar antes da próxima funcionar.
 
 ```
 +--------------------------------------------------+
@@ -52,72 +51,72 @@ Build positioning from the bottom up. Each layer must hold before the next one w
 +--------------------------------------------------+
 ```
 
-### Layer Definitions
+### Definições das camadas
 
-| Layer | Purpose | AI Product Example |
-|---|---|---|
-| Category | Anchors the buyer in a known market | "AI-powered customer support automation" |
-| Wedge | The specific gap between what exists and what you do | "Resolves billing disputes end-to-end without human handoff" |
-| Proof Vector | Evidence that the wedge works | "47% reduction in support escalations at Series B+ fintechs" |
-| Alternative Framing | Captures high-intent search traffic | "The Intercom alternative for AI-first support teams" |
+| Camada              | Função                                               | Exemplo (produto de IA)                                      |
+| ------------------- | ---------------------------------------------------- | ------------------------------------------------------------ |
+| Category            | Ancora o comprador em um mercado conhecido           | "AI-powered customer support automation"                     |
+| Wedge               | O gap específico entre o que existe e o que você faz | "Resolves billing disputes end-to-end without human handoff" |
+| Proof Vector        | Evidência de que o wedge funciona                    | "47% reduction in support escalations at Series B+ fintechs" |
+| Alternative Framing | Capta tráfego de busca de alta intenção              | "The Intercom alternative for AI-first support teams"        |
 
-### Positioning Statement Template
+### Modelo de declaração de posicionamento
 
-For [target ICP segment] who [situation or trigger], [product name] is the [category] that [wedge/key differentiator], unlike [primary alternative], which [limitation of alternative]. We prove this with [proof vector].
+Para [segmento ICP-alvo] que [situação ou gatilho], [nome do produto] é a [categoria] que [wedge/diferencial], ao contrário de [alternativa principal], que [limitação da alternativa]. Provamos com [proof vector].
 
-### Common Positioning Mistakes in AI
+### Erros comuns de posicionamento em IA
 
-| Mistake | Why It Fails | Fix |
-|---|---|---|
-| Leading with the model | "Powered by GPT-4o" tells buyers nothing about outcomes | Lead with the business result the model enables |
-| Category creation too early | Pre-revenue companies burning cash educating a market | Anchor in an existing category, then differentiate |
-| Feature parity claims | "We also have AI" is not a position | Find the wedge where you are 10x better on one axis |
-| Positioning for engineers when selling to business | Technical jargon in messaging to VP-level buyers | If the pitch includes a model name, you are selling to the wrong audience |
-| Static positioning in a dynamic market | Set-and-forget positioning from 6+ months ago | Revalidate every 90 days minimum |
+| Erro                                             | Por que falha                                    | Correção                                                              |
+| ------------------------------------------------ | ------------------------------------------------ | --------------------------------------------------------------------- |
+| Começar pelo modelo                              | "Powered by GPT-4o" não diz nada sobre resultado | Lidere com o resultado de negócio que o modelo habilita               |
+| Criar categoria cedo demais                      | Pré-revenue gastando para educar mercado         | Ancore em categoria existente, depois diferencie                      |
+| Claims de paridade de feature                    | "Também temos IA" não é posição                  | Ache o wedge onde você é 10× melhor num eixo                          |
+| Posicionar para engenheiro vendendo para negócio | Jargão técnico para VP                           | Se o pitch inclui nome de modelo, está vendendo para o público errado |
+| Posicionamento estático em mercado dinâmico      | Posicionamento “fire and forget” de 6+ meses     | Revalide no mínimo a cada 90 dias                                     |
 
 ---
 
-## 2. Defining ICP with Enrichment Signals
+## 2. Definir ICP com sinais de enriquecimento
 
-Build your ICP from three signal layers, not gut feel. Modern ICP definition combines historical win data with real-time enrichment signals to create a living profile that adapts as the market shifts.
+Construa o ICP a partir de três camadas de sinais, não feeling. A definição moderna combina histórico de vitórias com sinais de enriquecimento em tempo real para um perfil vivo que se adapta à mudança do mercado.
 
-### The Three Signal Layers
+### As três camadas de sinais
 
-| Signal Layer | What It Tells You | Example Signals | Tools |
-|---|---|---|---|
-| Firmographic | Company shape and context | Employee count, revenue range, industry vertical, geography, funding stage | Clay, Apollo, ZoomInfo, Clearbit |
-| Technographic | Technical readiness and stack fit | Current tools, API usage, cloud provider, data infrastructure maturity | BuiltWith, Wappalyzer, HG Insights, Slintel |
-| Intent | Active buying behavior | Content consumption, job postings, funding events, competitor research, G2 visits | Bombora, G2 Buyer Intent, Clay signals, LinkedIn Sales Navigator |
+| Camada de sinal | O que revela                     | Exemplos de sinais                                                            | Ferramentas                                                     |
+| --------------- | -------------------------------- | ----------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| Firmographic    | Forma e contexto da empresa      | Nº de funcionários, faixa de receita, vertical, geografia, estágio de funding | Clay, Apollo, ZoomInfo, Clearbit                                |
+| Technographic   | Prontidão técnica e fit de stack | Ferramentas atuais, uso de API, cloud, maturidade de dados                    | BuiltWith, Wappalyzer, HG Insights, Slintel                     |
+| Intent          | Comportamento de compra ativo    | Consumo de conteúdo, vagas, rodadas, pesquisa de concorrente, visitas G2      | Bombora, G2 Buyer Intent, sinais Clay, LinkedIn Sales Navigator |
 
-### ICP Scoring Model
+### Modelo de score de ICP
 
-Keep firmographic/technographic fit and intent as separate dimensions. Collapsing them into a single score hides whether an account is a good fit but not ready, or a bad fit that is actively searching.
+Mantenha fit firmográfico/tecnográfico e intent como dimensões separadas. Colapsar em um score só esconde conta com bom fit mas sem prontidão, ou mau fit mas buscando ativamente.
 
-**Fit Score (0-100)**
+**Fit Score (0–100)**
 
 ```
 Fit Score = (Firmographic Match * 0.4) + (Technographic Match * 0.35) + (Behavioral Fit * 0.25)
 ```
 
-| Component | Weight | Scoring Criteria |
-|---|---|---|
-| Firmographic Match | 40% | Industry vertical (25pts), employee range (25pts), revenue range (25pts), geography (15pts), funding stage (10pts) |
-| Technographic Match | 35% | Uses complementary tools (30pts), has API/integration infrastructure (25pts), cloud-native stack (25pts), data maturity (20pts) |
-| Behavioral Fit | 25% | Historical deal velocity (30pts), expansion rate (30pts), retention rate (25pts), NPS/satisfaction (15pts) |
+| Componente          | Peso | Critérios de pontuação                                                                                                           |
+| ------------------- | ---- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Firmographic Match  | 40%  | Vertical (25 pts), faixa de funcionários (25 pts), faixa de receita (25 pts), geografia (15 pts), estágio de funding (10 pts)    |
+| Technographic Match | 35%  | Ferramentas complementares (30 pts), infra de API/integração (25 pts), stack cloud-native (25 pts), maturidade de dados (20 pts) |
+| Behavioral Fit      | 25%  | Velocidade histórica de deal (30 pts), taxa de expansão (30 pts), retenção (25 pts), NPS/satisfação (15 pts)                     |
 
-**Intent Score (0-100)**
+**Intent Score (0–100)**
 
 ```
 Intent Score = (Third-Party Intent * 0.35) + (First-Party Signals * 0.40) + (Trigger Events * 0.25)
 ```
 
-| Component | Weight | Scoring Criteria |
-|---|---|---|
-| Third-Party Intent | 35% | Bombora topic surges (30pts), G2 category research (30pts), competitor page visits (20pts), review site activity (20pts) |
-| First-Party Signals | 40% | Website visits to pricing/demo pages (30pts), content downloads (20pts), email engagement (25pts), product signup/trial (25pts) |
-| Trigger Events | 25% | New funding round (30pts), key hire in target dept (25pts), tech stack change (25pts), competitor churn signal (20pts) |
+| Componente          | Peso | Critérios de pontuação                                                                                                                            |
+| ------------------- | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Third-Party Intent  | 35%  | Picos de tópico Bombora (30 pts), pesquisa categoria G2 (30 pts), visitas a página do concorrente (20 pts), atividade em sites de review (20 pts) |
+| First-Party Signals | 40%  | Visitas a pricing/demo (30 pts), downloads (20 pts), engajamento e-mail (25 pts), signup/trial (25 pts)                                           |
+| Trigger Events      | 25%  | Nova rodada (30 pts), contratação-chave no dept alvo (25 pts), mudança de stack (25 pts), sinal de churn do concorrente (20 pts)                  |
 
-### ICP Prioritization Matrix
+### Matriz de priorização de ICP
 
 ```
                     High Intent
@@ -137,14 +136,14 @@ Intent Score = (Third-Party Intent * 0.35) + (First-Party Signals * 0.40) + (Tri
          Low Fit                    High Fit
 ```
 
-- **ACTIVATE (High Fit + High Intent)**: Route to sales immediately. These accounts match your ICP and are actively looking. Target response time: under 4 hours.
-- **NURTURE (High Fit + Low Intent)**: Enroll in targeted content sequences. They will convert when a trigger event hits.
-- **MONITOR (Low Fit + High Intent)**: Watch for ICP drift. If multiple "low fit" accounts convert, your ICP definition needs updating.
-- **DISQUALIFY (Low Fit + Low Intent)**: Do not spend resources. Revisit only during quarterly ICP refresh.
+- **ACTIVATE (High Fit + High Intent)**: Encaminhar para vendas na hora. Contas batem com o ICP e estão buscando ativamente. Meta de resposta: menos de 4 horas.
+- **NURTURE (High Fit + Low Intent)**: Matricular em sequências de conteúdo direcionado. Convertem quando um gatilho ocorrer.
+- **MONITOR (Low Fit + High Intent)**: Observar drift de ICP. Se várias contas “low fit” convertem, o ICP precisa atualizar.
+- **DISQUALIFY (Low Fit + Low Intent)**: Não gastar recurso. Revisitar só na renovação trimestral do ICP.
 
-### Enrichment Waterfall Architecture
+### Arquitetura de waterfall de enriquecimento
 
-Sequential enrichment checks multiple data providers until verified contact data is found. Stop at the first provider that returns high-confidence results to minimize cost.
+Enriquecimento sequencial consulta vários provedores até achar dado de contato verificado. Pare no primeiro com resultado de alta confiança para minimizar custo.
 
 ```
 Step 1: Clay (primary enrichment)
@@ -173,45 +172,45 @@ Step 4: BetterContact (verification layer)
   +--> Confidence < 0.50? --> REJECT
 ```
 
-**Confidence Thresholds**
+**Limiares de confiança**
 
-| Score Range | Action | Expected Deliverability |
-|---|---|---|
-| 0.85 - 1.00 | Accept, route to outreach | 95%+ deliverable |
-| 0.70 - 0.84 | Accept with verification flag | 85-94% deliverable |
-| 0.50 - 0.69 | Accept for nurture only, do not cold email | 70-84% deliverable |
-| Below 0.50 | Reject, do not use | Below 70%, high bounce risk |
+| Faixa de score | Ação                                    | Entregabilidade esperada            |
+| -------------- | --------------------------------------- | ----------------------------------- |
+| 0,85 – 1,00    | Aceitar, rotear para outreach           | 95%+ entregável                     |
+| 0,70 – 0,84    | Aceitar com flag de verificação         | 85–94% entregável                   |
+| 0,50 – 0,69    | Aceitar só para nurture, sem cold email | 70–84% entregável                   |
+| Abaixo de 0,50 | Rejeitar, não usar                      | Abaixo de 70%, alto risco de bounce |
 
-### ICP Definition Workflow
+### Fluxo de definição de ICP
 
-1. **Export your best 20-50 customers** by NRR, deal velocity, or LTV
-2. **Run firmographic enrichment** to find common patterns (industry, size, stage)
-3. **Run technographic enrichment** to find stack commonalities
-4. **Analyze intent signals** that preceded closed-won deals
-5. **Build the scoring model** with weights derived from your data, not assumptions
-6. **Test against your pipeline** to see if the model would have predicted your last 10 wins
-7. **Set a 90-day review cadence** because in AI markets, your ICP drifts quarterly
+1. **Exporte seus 20–50 melhores clientes** por NRR, velocidade de deal ou LTV
+2. **Enriquecimento firmográfico** para padrões (indústria, tamanho, estágio)
+3. **Enriquecimento tecnográfico** para stack em comum
+4. **Analise sinais de intent** que precederam closed-won
+5. **Monte o modelo de score** com pesos vindos dos seus dados, não de suposição
+6. **Teste contra o pipeline** se o modelo teria previsto suas últimas 10 vitórias
+7. **Cadência de revisão a cada 90 dias** — em mercados de IA o ICP deriva trimestralmente
 
 ---
 
-## 3. Competitive Positioning in Fast-Moving AI Markets
+## 3. Posicionamento competitivo em mercados de IA em rápida mudança
 
-### The Competitor Alternative SEO Play
+### Jogada SEO “alternativa ao concorrente”
 
-"[Competitor] alternative" keywords carry extremely high purchase intent. Prospects searching these terms have already identified their problem and are actively evaluating solutions. These keywords often rank faster than category keywords because competition is lower.
+Palavras-chave “[Competitor] alternative” têm intenção de compra altíssima. Quem busca já identificou o problema e avalia soluções. Essas palavras costumam rankear mais rápido que keywords de categoria por menor concorrência.
 
-**Execution Checklist**
+**Checklist de execução**
 
-| Step | Action | Tool |
-|---|---|---|
-| 1 | List top 10 direct competitors and adjacent tools | Manual + G2 category pages |
-| 2 | Build keyword set: "[competitor] alternative," "[competitor] vs [you]," "[competitor] pricing," "switch from [competitor]" | Ahrefs, Semrush, or SEO agent |
-| 3 | Create dedicated landing pages for top 5 competitors | CMS or static site |
-| 4 | Structure each page: pain point, feature comparison table, proof vector, CTA | Template below |
-| 5 | Build supporting content: migration guides, comparison blog posts | Content team or AI-assisted |
-| 6 | Track rankings weekly and iterate copy based on conversion data | Search console + analytics |
+| Etapa | Ação                                                                                                                       | Ferramenta                       |
+| ----- | -------------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
+| 1     | Liste os 10 principais concorrentes diretos e adjacentes                                                                   | Manual + páginas de categoria G2 |
+| 2     | Monte o conjunto: "[competitor] alternative", "[competitor] vs [você]", "[competitor] pricing", "switch from [competitor]" | Ahrefs, Semrush ou agente SEO    |
+| 3     | Crie landings dedicadas para os top 5 concorrentes                                                                         | CMS ou site estático             |
+| 4     | Estruture cada página: dor, tabela comparativa, proof vector, CTA                                                          | Modelo abaixo                    |
+| 5     | Conteúdo de apoio: guias de migração, posts comparativos                                                                   | Time de conteúdo ou IA assistida |
+| 6     | Acompanhe rankings semanalmente e itere cópia pela conversão                                                               | Search Console + analytics       |
 
-**Competitor Landing Page Structure**
+**Estrutura de landing “alternativa ao concorrente”**
 
 ```
 1. Headline: "Looking for a [Competitor] alternative?"
@@ -222,48 +221,48 @@ Step 4: BetterContact (verification layer)
 6. CTA: Free trial or demo, low commitment
 ```
 
-### Competitive Intelligence Cadence
+### Cadência de inteligência competitiva
 
-| Frequency | Action | Owner |
-|---|---|---|
-| Weekly | Monitor competitor pricing pages, changelog, job postings | GTM Ops or AI agent |
-| Monthly | Review G2/Capterra new reviews for competitor sentiment shifts | Product Marketing |
-| Quarterly | Full competitive audit: positioning, messaging, new features, pricing changes | Product Marketing + Sales |
-| Trigger-based | Competitor raises funding, launches major feature, changes pricing | Alert-driven, immediate response |
+| Frequência  | Ação                                                                        | Responsável                            |
+| ----------- | --------------------------------------------------------------------------- | -------------------------------------- |
+| Semanal     | Monitorar pricing, changelog e vagas dos concorrentes                       | GTM Ops ou agente de IA                |
+| Mensal      | Revisar reviews novas G2/Capterra para mudança de sentimento                | Product Marketing                      |
+| Trimestral  | Auditoria competitiva completa: posicionamento, mensagem, features, pricing | PM + Vendas                            |
+| Por gatilho | Rodada, feature grande ou mudança de preço                                  | Resposta imediata orientada por alerta |
 
-### Positioning Against Different Competitor Types
+### Posicionamento contra tipos de concorrente
 
-| Competitor Type | Positioning Strategy | Key Message |
-|---|---|---|
-| Incumbent (enterprise) | Speed and simplicity | "Get results in days, not months of implementation" |
-| Direct AI competitor | Depth on your wedge | "We do [specific thing] 10x better because [proof]" |
-| DIY/internal tools | Total cost of ownership | "Your team spends 40hrs/month maintaining what we do automatically" |
-| Open-source | Support, reliability, compliance | "Production-ready with SOC2, SLA, and dedicated support" |
-| Platform bundling AI | Specialization | "We are purpose-built for [use case], not a checkbox feature" |
+| Tipo                       | Estratégia                          | Mensagem-chave                                                      |
+| -------------------------- | ----------------------------------- | ------------------------------------------------------------------- |
+| Incumbent (enterprise)     | Velocidade e simplicidade           | "Get results in days, not months of implementation"                 |
+| Concorrente de IA direto   | Profundidade no seu wedge           | "We do [specific thing] 10x better because [proof]"                 |
+| DIY / interno              | Custo total de posse                | "Your team spends 40hrs/month maintaining what we do automatically" |
+| Open source                | Suporte, confiabilidade, compliance | "Production-ready with SOC2, SLA, and dedicated support"            |
+| Plataforma que empacota IA | Especialização                      | "We are purpose-built for [use case], not a checkbox feature"       |
 
 ---
 
-## 4. Messaging Architecture
+## 4. Arquitetura de mensagens
 
-### The Capability-to-Outcome Translation Framework
+### Framework capacidade → resultado
 
-AI products chronically over-index on technical capabilities in their messaging. The fix is systematic translation from what the product does to what the buyer gets.
+Produtos de IA superestimam capacidade técnica na mensagem. O ajuste é traduzir sistematicamente o que o produto faz no que o comprador ganha.
 
-**The Translation Test**
+**Teste de tradução**
 
-If your messaging includes a model name, you are selling to engineers.
-If your messaging includes a business outcome, you are selling to buyers.
+Se a mensagem inclui nome de modelo, você vende para engenheiros.
+Se inclui resultado de negócio, você vende para compradores.
 
-| Technical Capability | Business Outcome | Buyer Cares About |
-|---|---|---|
-| "Uses RAG with vector embeddings" | "Answers customer questions with 94% accuracy using your own docs" | Accuracy, self-service deflection |
-| "Fine-tuned LLM on your data" | "New reps ramp 40% faster with AI coaching trained on your top performers" | Time-to-productivity, revenue per rep |
-| "Real-time inference at 50ms latency" | "Fraud blocked before the transaction completes" | Loss prevention, customer trust |
-| "Multi-modal AI pipeline" | "Process invoices, receipts, and contracts without manual data entry" | Time savings, error reduction |
+| Capacidade técnica                    | Resultado de negócio                                                       | O que importa ao comprador               |
+| ------------------------------------- | -------------------------------------------------------------------------- | ---------------------------------------- |
+| "Uses RAG with vector embeddings"     | "Answers customer questions with 94% accuracy using your own docs"         | Precisão, deflexão self-service          |
+| "Fine-tuned LLM on your data"         | "New reps ramp 40% faster with AI coaching trained on your top performers" | Tempo até produtividade, receita por rep |
+| "Real-time inference at 50ms latency" | "Fraud blocked before the transaction completes"                           | Prevenção de perda, confiança            |
+| "Multi-modal AI pipeline"             | "Process invoices, receipts, and contracts without manual data entry"      | Tempo economizado, menos erro            |
 
-### Three-Tier Messaging Architecture
+### Arquitetura de mensagem em três níveis
 
-Build messaging at three altitudes. Each tier serves a different audience and context.
+Construa mensagem em três altitudes. Cada nível serve a um público e contexto.
 
 ```
 +----------------------------------------------------------+
@@ -281,203 +280,202 @@ Build messaging at three altitudes. Each tier serves a different audience and co
 +----------------------------------------------------------+
 ```
 
-| Tier | Audience | Length | Content | Where Used |
-|---|---|---|---|---|
-| Tier 1 | C-suite, press, investors | 1 paragraph | Market shift + your role in it | Homepage hero, pitch deck slide 1, PR |
-| Tier 2 | VP/Director buyers | 3-5 bullets | Business outcomes + proof points | Sales deck, product pages, case studies |
-| Tier 3 | Evaluators, champions | Detailed | Features, architecture, integrations | Docs, comparison pages, technical blog |
+| Tier   | Público                         | Extensão    | Conteúdo                            | Onde usar                                 |
+| ------ | ------------------------------- | ----------- | ----------------------------------- | ----------------------------------------- |
+| Tier 1 | C-suite, imprensa, investidores | 1 parágrafo | Mudança de mercado + seu papel nela | Hero do site, slide 1 do deck, PR         |
+| Tier 2 | Compradores VP/Diretor          | 3–5 bullets | Resultados de negócio + provas      | Deck de vendas, páginas de produto, cases |
+| Tier 3 | Avaliadores, champions          | Detalhado   | Features, arquitetura, integrações  | Docs, comparações, blog técnico           |
 
-### Messaging Validation Checklist
+### Checklist de validação de mensagem
 
-Run every piece of messaging through these five checks:
+Passe cada mensagem por estes cinco testes:
 
-| Check | Question | Pass Criteria |
-|---|---|---|
-| Specificity | Does it include a number or named outcome? | "Reduces support tickets by 40%" passes. "Improves efficiency" fails. |
-| Differentiation | Could a competitor say the exact same thing? | If yes, rewrite until only you can claim it. |
-| Buyer language | Does it use words your buyers actually say? | Pull language from sales call transcripts and G2 reviews, not marketing brainstorms. |
-| Proof | Is there evidence backing the claim? | Customer quote, case study metric, or third-party validation required. |
-| Altitude match | Is the message at the right tier for the audience? | Tier 1 messages in a technical doc fail. Tier 3 messages in a board deck fail. |
-
----
-
-## 5. The Buyer Shift: Business Leaders as AI Buyers
-
-### Who Buys AI in 2025-2026
-
-AI purchasing has shifted decisively from IT departments to business function leaders. Organizations that align leadership around AI priorities are nearly twice as likely to report above-average growth. This means your ICP, messaging, and sales motion must target the business buyer, not the CTO.
-
-| Signal | 2022-2023 | 2025-2026 |
-|---|---|---|
-| Primary buyer | CTO / VP Engineering | VP Ops, VP Sales, VP CX, CFO |
-| Evaluation criteria | Technical architecture, model benchmarks | Time-to-value, ROI, workflow fit |
-| Purchase justification | "Innovation budget" | "Headcount savings" or "revenue lift" |
-| Decision timeline | 6-12 month evaluation | 30-90 day pilot-to-purchase |
-| Success metric | Model accuracy, uptime | Pipeline generated, tickets deflected, hours saved |
-| Procurement involvement | Minimal | Heavy, focused on measurable ROI |
-
-### Implications for GTM
-
-| GTM Element | Old Approach (Selling to IT) | New Approach (Selling to Business) |
-|---|---|---|
-| Demo | Show the architecture diagram | Show the workflow before/after |
-| Case study | "Reduced inference latency by 3x" | "Sales team closes 28% more deals" |
-| Pricing page | Per-API-call pricing | Outcome-based or per-workflow pricing |
-| Sales deck | Technical deep-dive | Business case with ROI calculator |
-| Champion | Senior engineer | Director/VP in the buying department |
-| Content | Technical blog posts, docs | ROI guides, industry benchmarks, playbooks |
-| Trial | API sandbox | Pre-configured workflow template |
-
-### Mapping Your Messaging to the New Buyer
-
-For every message, ask: "Would a VP of [department] forward this to their CFO to justify the purchase?" If the answer is no, the message is at the wrong altitude.
+| Teste                  | Pergunta                                         | Critério de aprovação                                                 |
+| ---------------------- | ------------------------------------------------ | --------------------------------------------------------------------- |
+| Especificidade         | Tem número ou resultado nomeado?                 | "Reduz tickets em 40%" passa. "Melhora eficiência" não passa.         |
+| Diferenciação          | Concorrente poderia dizer o mesmo?               | Se sim, reescreva até só você poder afirmar.                          |
+| Linguagem do comprador | Usa palavras que o comprador realmente diz?      | Tire de calls de vendas e reviews G2, não de brainstorm de marketing. |
+| Prova                  | Há evidência para a alegação?                    | Citação, métrica de case ou validação terceira.                       |
+| Altitude               | A mensagem está no nível certo para a audiência? | Tier 1 em doc técnico falha. Tier 3 em board falha.                   |
 
 ---
 
-## 6. Perishable PMF: Quarterly Revalidation
+## 5. Mudança do comprador: líderes de negócio comprando IA
 
-### Why AI PMF Expires
+### Quem compra IA em 2025–2026
 
-In AI markets, PMF is not a milestone you reach and keep. Model capabilities evolve monthly, buyer expectations shift as they interact with better AI systems elsewhere, and new competitors launch weekly. Companies that validated PMF six months ago may already be losing it.
+A compra de IA migrou de TI para líderes de função de negócio. Organizações alinhadas em prioridades de IA têm quase o dobro da chance de crescimento acima da média. ICP, mensagem e motion de vendas precisam mirar o comprador de negócio, não o CTO.
 
-The data confirms this: only 5% of generative AI projects deliver real business value, often because teams validate once and assume the signal holds. Continuous revalidation is the fix.
+| Sinal                  | 2022–2023                                 | 2025–2026                                    |
+| ---------------------- | ----------------------------------------- | -------------------------------------------- |
+| Comprador principal    | CTO / VP Engineering                      | VP Ops, VP Sales, VP CX, CFO                 |
+| Critérios de avaliação | Arquitetura técnica, benchmarks de modelo | Time-to-value, ROI, fit de workflow          |
+| Justificativa          | "Orçamento de inovação"                   | "Economia de headcount" ou "lift de receita" |
+| Linha do tempo         | 6–12 meses de avaliação                   | Piloto a compra em 30–90 dias                |
+| Métrica de sucesso     | Acurácia do modelo, uptime                | Pipeline, tickets defletidos, horas salvas   |
+| Procurement            | Mínimo                                    | Forte, focado em ROI mensurável              |
 
-### The 90-Day PMF Revalidation Cadence
+### Implicações para GTM
 
-Run this cycle every quarter. Each component takes 1-2 weeks. Total cycle: 4-6 weeks, leaving buffer before the next one starts.
+| Elemento GTM      | Abordagem antiga (vender para TI)     | Nova (vender para negócio)            |
+| ----------------- | ------------------------------------- | ------------------------------------- |
+| Demo              | Diagrama de arquitetura               | Workflow antes/depois                 |
+| Case              | "Reduzimos latência de inferência 3×" | "Time de vendas fecha 28% mais deals" |
+| Página de pricing | Preço por chamada de API              | Por resultado ou por workflow         |
+| Deck de vendas    | Deep-dive técnico                     | Business case com calculadora de ROI  |
+| Champion          | Engenheiro sênior                     | Diretor/VP no dept comprador          |
+| Conteúdo          | Posts técnicos, docs                  | Guias de ROI, benchmarks, playbooks   |
+| Trial             | Sandbox de API                        | Template de workflow pré-configurado  |
 
-| Week | Action | Method | Output |
-|---|---|---|---|
-| 1 | Sean Ellis Survey | Survey active users: "How disappointed would you be without this product?" | PMF score (target: 40%+ "very disappointed") |
-| 2 | Cohort Retention Analysis | Compare Day 7/30/90 retention across monthly cohorts | Retention trend (improving, flat, declining) |
-| 3 | Competitive Audit | Review top 5 competitors for positioning, pricing, feature changes | Competitive delta report |
-| 4 | ICP Refresh | Analyze last quarter's wins/losses for ICP drift | Updated ICP scoring weights |
-| 5-6 | Synthesis + Action | Combine all signals into positioning/messaging/ICP updates | Updated positioning doc, revised ICP, new messaging |
+### Mapeando mensagem ao novo comprador
 
-### Sean Ellis Score Benchmarks for AI Products
-
-| Score | Interpretation | Action |
-|---|---|---|
-| Below 20% | No PMF. The product is not solving a real problem yet. | Pivot or narrow the ICP dramatically. |
-| 20-30% | Weak signal. Some users get value, most do not. | Identify the segment where score is highest and focus there. |
-| 30-40% | Approaching PMF. Close but the wedge needs sharpening. | Double down on the highest-scoring use case. |
-| 40-50% | PMF achieved. Growth investments are justified. | Scale the sales motion, expand the team. |
-| 50-60% | Strong PMF. Best-in-class for early stage. | Optimize unit economics, begin adjacent expansion. |
-| 60%+ | Exceptional. Rare even among successful companies. | Defend the position, expand the category. |
-
-### PMF Decay Warning Signs
-
-| Signal | What It Means | Response |
-|---|---|---|
-| Sean Ellis score drops 5+ points quarter-over-quarter | Core value perception weakening | Re-interview churned users, check competitor launches |
-| Day-30 retention drops below previous cohort | New users getting less value | Audit onboarding flow, check if ICP shifted |
-| Win rate declining while pipeline grows | Positioning attracting wrong audience | Tighten ICP definition, update qualification criteria |
-| Sales cycle lengthening | Buyer confidence dropping or competition increasing | Update proof vectors, add new case studies |
-| NPS drops while usage stays flat | Users staying out of switching cost, not satisfaction | Urgent: interview detractors, ship fixes |
-
-### AI Pricing Model Landscape (Context for PMF)
-
-Pricing directly affects PMF signals. The wrong model creates churn even when the product delivers value.
-
-| Model | When to Use | Risk | 2025-2026 Trend |
-|---|---|---|---|
-| Per-seat | Simple products, predictable usage | 40% lower margins, 2.3x higher churn vs. usage-based | Declining (dropped from 21% to 15% in 12 months) |
-| Usage-based | API products, variable workloads | Revenue unpredictability, customer budget anxiety | Growing (59% of software companies increasing usage share) |
-| Outcome-based | High-confidence ROI delivery | Hard to measure, requires attribution infrastructure | Emerging (30%+ enterprise SaaS incorporating outcome components) |
-| Hybrid (base + usage) | Most AI products in 2025-2026 | Complexity in pricing page and sales conversations | Dominant (surged from 27% to 41%) |
-
-> Cross-reference: See **ai-pricing** skill for detailed pricing strategy frameworks, willingness-to-pay research methods, and pricing page optimization.
+Para cada mensagem, pergunte: "Um VP de [área] encaminharia isso ao CFO para justificar a compra?" Se não, a altitude está errada.
 
 ---
 
-## 7. April Dunford's Positioning Framework Applied to AI
+## 6. PMF perecível: revalidação trimestral
 
-The "Obviously Awesome" methodology provides the most battle-tested positioning process. Here it is adapted for AI product realities.
+### Por que o PMF em IA expira
 
-### The 10-Step Process (AI-Adapted)
+Em mercados de IA, PMF não é marco que se conquista para sempre. Capacidades de modelo evoluem mensalmente, expectativas mudam com exposição a sistemas melhores e novos concorrentes surgem toda semana. Quem validou PMF há seis meses pode já estar perdendo.
 
-| Step | Action | AI-Specific Consideration |
-|---|---|---|
-| 1 | List your competitive alternatives | Include "doing nothing" and "building internally with open-source models" |
-| 2 | List features unique to your product | Focus on workflow-level differences, not model-level differences |
-| 3 | Map features to value themes | Translate every technical feature to a business outcome |
-| 4 | Identify who cares most about that value | Business function leaders, not IT, in most cases |
-| 5 | Find the market context that makes your value obvious | Category must be one the buyer already budgets for |
-| 6 | Layer in relevant trends | AI adoption in their function, competitor AI moves, regulatory changes |
-| 7 | Capture positioning in a document | Use the four-layer stack (Category, Wedge, Proof, Alternative) |
-| 8 | Test with sales team | If sales cannot repeat the positioning naturally, simplify |
-| 9 | Test with 5 prospects | Watch for confusion, misattribution, or "so what?" reactions |
-| 10 | Set 90-day review date | AI markets shift too fast for annual positioning cycles |
+Os dados batem: só 5% dos projetos de IA generativa entregam valor real de negócio — muitas vezes porque validam uma vez e assumem que o sinal permanece. Revalidação contínua é o remédio.
 
----
+### Cadência de revalidação de PMF a cada 90 dias
 
-## 8. Implementation Playbook
+Rode este ciclo a cada trimestre. Cada parte leva 1–2 semanas. Ciclo total 4–6 semanas, com folga antes do próximo.
 
-### Week 1-2: Discovery and Data Pull
+| Semana | Ação                           | Método                                                              | Saída                                              |
+| ------ | ------------------------------ | ------------------------------------------------------------------- | -------------------------------------------------- |
+| 1      | Pesquisa Sean Ellis            | Usuários ativos: "Quão decepcionado você ficaria sem este produto?" | Score PMF (meta: 40%+ "muito decepcionado")        |
+| 2      | Análise de retenção por coorte | Comparar D7/D30/D90 entre coortes mensais                           | Tendência (melhora, flat, queda)                   |
+| 3      | Auditoria competitiva          | Top 5 concorrentes: posicionamento, pricing, features               | Relatório delta                                    |
+| 4      | Refresh de ICP                 | Vitórias/derrotas do trimestre para drift de ICP                    | Pesos de score atualizados                         |
+| 5–6    | Síntese + ação                 | Unir sinais em updates de posicionamento/mensagem/ICP               | Doc de posicionamento, ICP revisado, mensagem nova |
 
-- [ ] Export top 20-50 customers by NRR, deal velocity, or LTV
-- [ ] Run firmographic + technographic enrichment via Clay or Apollo
-- [ ] Analyze intent signals that preceded last 10 closed-won deals
-- [ ] Interview 5 best customers: "Why did you buy? What alternatives did you consider?"
-- [ ] Pull competitor positioning from their homepage, G2, and recent funding announcements
+### Benchmarks Sean Ellis para produtos de IA
 
-### Week 3: Build ICP and Scoring Model
+| Score         | Interpretação                                           | Ação                                         |
+| ------------- | ------------------------------------------------------- | -------------------------------------------- |
+| Abaixo de 20% | Sem PMF. O produto ainda não resolve problema real.     | Pivotar ou estreitar ICP drasticamente.      |
+| 20–30%        | Sinal fraco. Alguns veem valor, a maioria não.          | Achar o segmento com maior score e focar.    |
+| 30–40%        | Aproximando PMF. Falta afiar o wedge.                   | Dobrar no caso de uso com maior score.       |
+| 40–50%        | PMF alcançado. Investimento em crescimento faz sentido. | Escalar motion de vendas, expandir time.     |
+| 50–60%        | PMF forte. Entre os melhores em estágio inicial.        | Otimizar unit economics, expansão adjacente. |
+| 60%+          | Excepcional. Raro mesmo entre empresas de sucesso.      | Defender posição, expandir categoria.        |
 
-- [ ] Define firmographic, technographic, and behavioral fit criteria with weights
-- [ ] Build intent scoring model with third-party, first-party, and trigger components
-- [ ] Back-test model against last quarter's wins and losses
-- [ ] Set up enrichment waterfall in Clay with confidence thresholds
-- [ ] Document ICP in a single-page reference sheet the sales team can use
+### Sinais de alerta de decaimento de PMF
 
-### Week 4: Positioning and Messaging
+| Sinal                                         | Significado                                 | Resposta                                                  |
+| --------------------------------------------- | ------------------------------------------- | --------------------------------------------------------- |
+| Sean Ellis cai 5+ pontos quarter-over-quarter | Percepção de valor enfraquecendo            | Reentrevistar churned, checar lançamentos de concorrentes |
+| Retenção D30 abaixo da coorte anterior        | Novos usuários recebem menos valor          | Auditar onboarding, checar drift de ICP                   |
+| Win rate cai com pipeline crescendo           | Posicionamento atrai público errado         | Apertar ICP e critérios de qualificação                   |
+| Ciclo de vendas alongando                     | Confiança menor ou concorrência maior       | Atualizar proof vectors, novos cases                      |
+| NPS cai com uso estável                       | Retenção por custo de troca, não satisfação | Urgente: entrevistar detratores, corrigir                 |
 
-- [ ] Complete the four-layer positioning stack
-- [ ] Write Tier 1 narrative (one paragraph, no features)
-- [ ] Write Tier 2 value propositions (3-5 bullets with proof)
-- [ ] Write Tier 3 feature messaging (detailed, comparison-ready)
-- [ ] Run the five-check validation on every message
-- [ ] Build competitor comparison pages for top 3 alternatives
+### Panorama de modelos de pricing de IA (contexto para PMF)
 
-### Week 5-6: Validate and Ship
+O modelo de pricing afeta sinais de PMF. O errado gera churn mesmo com produto valioso.
 
-- [ ] Test messaging with 5 prospects in discovery calls
-- [ ] Run Sean Ellis survey if PMF score is unknown
-- [ ] Update website, sales deck, and outreach sequences
-- [ ] Brief sales team on new positioning and ICP criteria
-- [ ] Set 90-day calendar reminder for revalidation cycle
+| Modelo               | Quando usar                          | Risco                                                | Tendência 2025–2026                                             |
+| -------------------- | ------------------------------------ | ---------------------------------------------------- | --------------------------------------------------------------- |
+| Por assento          | Produto simples, uso previsível      | Margem 40% menor, churn 2,3× maior vs uso            | Em queda (21% → 15% em 12 meses)                                |
+| Por uso              | APIs, carga variável                 | Imprevisibilidade de receita, ansiedade de orçamento | Crescendo (59% das empresas de software aumentando peso do uso) |
+| Por resultado        | ROI alto e mensurável                | Difícil medir, precisa atribuição                    | Emergindo (30%+ enterprise SaaS com componente de resultado)    |
+| Híbrido (base + uso) | Maioria dos produtos de IA 2025–2026 | Complexidade em pricing e conversas                  | Dominante (27% → 41%)                                           |
+
+> Referência cruzada: veja a skill **ai-pricing** para frameworks de pricing, pesquisa de disposição a pagar e otimização de página de preços.
 
 ---
 
-## Examples
+## 7. Framework de posicionamento de April Dunford aplicado a IA
 
-- **User says:** "Define our ICP and positioning" → **Result:** Agent gathers best customers, alternatives, pricing, and sales motion; builds four-layer positioning stack (Category, Wedge, Proof Vector, Alternative Framing); outputs ICP with firmographic + behavioral criteria and suggests 90-day revalidation.
-- **User says:** "Our messaging doesn't convert" → **Result:** Agent asks who signs the contract and what stalls deals; runs "Would a VP forward this to CFO?" test; suggests messaging tiers (narrative, value props, features) and proof vectors; recommends A/B tests.
-- **User says:** "How do we score and prioritize leads?" → **Result:** Agent recommends Fit + Intent weights (e.g. Firmographic 40%, Technographic 35%, Behavioral 25%); defines ACTIVATE threshold (high fit + high intent, respond &lt;4 hr); ties to lead-enrichment for data.
+A metodologia "Obviously Awesome" é um dos processos mais testados em combate. Aqui adaptada à realidade de produtos de IA.
 
-## Troubleshooting
+### Processo em 10 passos (adaptado a IA)
 
-- **Positioning feels stale** → **Cause:** AI market moves fast; 90-day cadence not followed. **Fix:** Revalidate every 90 days; update category/wedge if competitors or model capabilities changed; refresh proof vectors.
-- **ICP too broad** → **Cause:** "Everyone" or many segments. **Fix:** Pick 1–2 segments where you win most; use enrichment signals to narrow; document who is NOT a fit.
-- **Sean Ellis score unknown** → **Cause:** PMF not measured. **Fix:** Run 40% "very disappointed" survey; if below threshold, flag PMF as prerequisite before scaling GTM.
+| Passo | Ação                                        | Consideração específica de IA                                       |
+| ----- | ------------------------------------------- | ------------------------------------------------------------------- |
+| 1     | Liste alternativas competitivas             | Inclua "não fazer nada" e "construir com modelos open source"       |
+| 2     | Liste features únicas                       | Foque diferenças de workflow, não só de modelo                      |
+| 3     | Mapeie features para temas de valor         | Traduza cada feature técnica em resultado de negócio                |
+| 4     | Quem mais se importa com esse valor         | Na maioria dos casos, líderes de área, não TI                       |
+| 5     | Contexto de mercado que torna o valor óbvio | Categoria para a qual o comprador já tem budget                     |
+| 6     | Camadas de tendências                       | Adoção de IA na função, movimentos de concorrentes, regulação       |
+| 7     | Documente posicionamento                    | Use a pilha de quatro camadas (Category, Wedge, Proof, Alternative) |
+| 8     | Teste com vendas                            | Se vendas não repete naturalmente, simplifique                      |
+| 9     | Teste com 5 prospects                       | Observe confusão, erro de atribuição ou "e daí?"                    |
+| 10    | Data de revisão a 90 dias                   | Mercados de IA mudam rápido para ciclo anual                        |
 
 ---
 
+## 8. Playbook de implementação
 
-For checklists, benchmarks, and discovery questions read `references/quick-reference.md` when you need detailed reference.
+### Semanas 1–2: descoberta e extração de dados
+
+- [ ] Exportar top 20–50 clientes por NRR, velocidade de deal ou LTV
+- [ ] Enriquecimento firmográfico + tecnográfico via Clay ou Apollo
+- [ ] Analisar sinais de intent que precederam os últimos 10 closed-won
+- [ ] Entrevistar 5 melhores clientes: "Por que comprou? Que alternativas considerou?"
+- [ ] Puxar posicionamento do concorrente no site, G2 e anúncios de funding recentes
+
+### Semana 3: construir ICP e modelo de score
+
+- [ ] Definir critérios firmográficos, tecnográficos e comportamentais com pesos
+- [ ] Montar score de intent com terceiros, first-party e gatilhos
+- [ ] Back-test com vitórias/derrotas do último trimestre
+- [ ] Configurar waterfall de enriquecimento no Clay com limiares
+- [ ] Documentar ICP em uma página útil para vendas
+
+### Semana 4: posicionamento e mensagem
+
+- [ ] Completar pilha de quatro camadas
+- [ ] Escrever narrativa Tier 1 (um parágrafo, sem features)
+- [ ] Escrever propostas de valor Tier 2 (3–5 bullets com prova)
+- [ ] Escrever mensagem Tier 3 (detalhada, pronta para comparação)
+- [ ] Rodar os cinco testes em cada mensagem
+- [ ] Criar páginas de comparação para top 3 alternativas
+
+### Semanas 5–6: validar e publicar
+
+- [ ] Testar mensagem com 5 prospects em calls de descoberta
+- [ ] Rodar Sean Ellis se PMF for desconhecido
+- [ ] Atualizar site, deck e sequências de outreach
+- [ ] Briefar vendas em novo posicionamento e critérios de ICP
+- [ ] Lembrete no calendário para ciclo de revalidação a 90 dias
 
 ---
 
-## Related Skills
+## Exemplos
 
-| Skill | When to Cross-Reference |
-|---|---|
-| ai-pricing | When building pricing models, willingness-to-pay analysis, or packaging tiers |
-| sales-motion-design | When designing the sales process that operationalizes your positioning |
-| ai-cold-outreach | When translating positioning into cold email/LinkedIn sequences |
-| ai-sdr | When building AI-powered SDR workflows that use ICP scoring |
-| lead-enrichment | When implementing enrichment waterfalls and data quality workflows |
-| multi-platform-launch | When launching across channels and need consistent positioning |
-| ai-seo | When building competitor alternative pages and bottom-funnel content |
-| gtm-engineering | When automating ICP scoring, enrichment, and routing in your stack |
-| solo-founder-gtm | When a solo founder needs to prioritize positioning work with limited resources |
-| gtm-metrics | When measuring the downstream impact of positioning and ICP changes on pipeline |
+- **Usuário diz:** "Defina nosso ICP e posicionamento" → **Resultado:** O agente reúne melhores clientes, alternativas, pricing e motion; monta pilha de quatro camadas (Category, Wedge, Proof Vector, Alternative Framing); entrega ICP com critérios firmográficos e comportamentais e sugere revalidação a 90 dias.
+- **Usuário diz:** "Nossa mensagem não converte" → **Resultado:** O agente pergunta quem assina e o que trava deals; aplica teste "VP encaminharia ao CFO?"; sugere níveis de mensagem (narrativa, valor, features) e proof vectors; recomenda testes A/B.
+- **Usuário diz:** "Como pontuar e priorizar leads?" → **Resultado:** O agente recomenda pesos Fit + Intent (ex.: firmográfico 35%, tecnográfico 35%, comportamental 25%); define limiar ACTIVATE (alto fit + alto intent, responder em <4 h); liga a lead-enrichment.
+
+## Solução de problemas
+
+- **Posicionamento parece velho** → **Causa:** Mercado de IA muda rápido; cadência de 90 dias não seguida. **Correção:** Revalidar a cada 90 dias; atualizar categoria/wedge se concorrentes ou modelos mudaram; renovar proof vectors.
+- **ICP amplo demais** → **Causa:** "Todo mundo" ou muitos segmentos. **Correção:** Escolher 1–2 segmentos onde você ganha; usar sinais de enriquecimento para estreitar; documentar quem NÃO é fit.
+- **Sean Ellis desconhecido** → **Causa:** PMF não medido. **Correção:** Rodar survey 40% "muito decepcionado"; se abaixo do limiar, sinalizar PMF como pré-requisito antes de escalar GTM.
+
+---
+
+Para checklists, benchmarks e perguntas de descoberta leia `references/quick-reference.md` quando precisar de referência detalhada.
+
+---
+
+## Skills relacionadas
+
+| Skill                 | Quando cruzar referência                                                    |
+| --------------------- | --------------------------------------------------------------------------- |
+| ai-pricing            | Ao construir modelos de pricing, WTP ou tiers de pacote                     |
+| sales-motion-design   | Ao desenhar o processo de vendas que operacionaliza o posicionamento        |
+| ai-cold-outreach      | Ao traduzir posicionamento em e-mail frio/sequências LinkedIn               |
+| ai-sdr                | Ao montar fluxos de SDR com IA usando score de ICP                          |
+| lead-enrichment       | Ao implementar waterfalls de enriquecimento e qualidade de dados            |
+| multi-platform-launch | Ao lançar em vários canais com posicionamento consistente                   |
+| ai-seo                | Ao construir páginas “alternativa ao X” e conteúdo de fundo de funil        |
+| gtm-engineering       | Ao automatizar score de ICP, enriquecimento e roteamento na stack           |
+| solo-founder-gtm      | Quando fundador solo precisa priorizar posicionamento com pouco tempo       |
+| gtm-metrics           | Ao medir impacto downstream de mudanças de posicionamento e ICP no pipeline |

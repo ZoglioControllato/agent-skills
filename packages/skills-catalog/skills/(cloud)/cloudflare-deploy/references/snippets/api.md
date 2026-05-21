@@ -179,36 +179,38 @@ Content-Type: application/json
 }
 ```
 
-## Available APIs in Snippets
+## APIs disponíveis em snippets
 
-### ✅ Supported
+### ✅ Suportado
 
-- `fetch()` - HTTP requests (2-5 subrequests per plan)
-- `Request` / `Response` - Standard Web APIs
-- `URL` / `URLSearchParams` - URL manipulation
-- `Headers` - Header manipulation
-- `TextEncoder` / `TextDecoder` - Text encoding
-- `crypto.subtle` - Web Crypto API (hashing, signing)
-- `crypto.randomUUID()` - UUID generation
+- `fetch()` - solicitações HTTP (2 a 5 subsolicitações por plano)
+- `Request` / `Response` - APIs da Web padrão
+- `URL` / `URLSearchParams` - manipulação de URL
+- `Cabeçalhos` - Manipulação de cabeçalho
+- `TextEncoder` / `TextDecoder` - Codificação de texto
+- `crypto.subtle` - Web Crypto API (hashing, assinatura)
+- `crypto.randomUUID()` - geração de UUID
 
-### ❌ Not Supported in Snippets
+### ❌ Não compatível com snippets
 
-- `caches` API - Not available (use Workers)
-- `KV`, `D1`, `R2` - Storage APIs (use Workers)
-- `Durable Objects` - Stateful objects (use Workers)
-- `WebSocket` - WebSocket upgrades (use Workers)
-- `HTMLRewriter` - HTML parsing (use Workers)
-- `import` statements - No module imports
-- `addEventListener` - Use `export default { async fetch() {}` pattern
+- API `caches` - Não disponível (use Workers)
+- `KV`, `D1`, `R2` - APIs de armazenamento (use Workers)
+- `Durable Objects` - Objetos com estado (use Workers)
+- `WebSocket` - atualizações do WebSocket (use Workers)
+- `HTMLRewriter` - análise de HTML (use Workers)
+- Instruções `import` - Nenhuma importação de módulo
+- `addEventListener` - Use o padrão `export default { async fetch() {}`
 
-## Snippet Structure
+## Estrutura do trecho```javascript
 
-```javascript
 export default {
-  async fetch(request) {
-    // Your logic here
-    const response = await fetch(request)
-    return response // or modified response
-  },
+async fetch(request) {
+// Your logic here
+const response = await fetch(request)
+return response // or modified response
+},
 }
+
+```
+
 ```

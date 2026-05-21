@@ -19,18 +19,18 @@ Bot Management provides multi-tier protection:
 (cf.bot_management.score le 29 and not cf.bot_management.verified_bot) → Managed Challenge
 ```
 
-## What Do You Need?
+## O que você precisa?```txt
 
-```txt
 ├─ Initial setup → configuration.md
-│   ├─ Free tier → "Bot Fight Mode"
-│   ├─ Pro/Business → "Super Bot Fight Mode"
-│   └─ Enterprise → "Bot Management for Enterprise"
+│ ├─ Free tier → "Bot Fight Mode"
+│ ├─ Pro/Business → "Super Bot Fight Mode"
+│ └─ Enterprise → "Bot Management for Enterprise"
 ├─ Workers API integration → api.md
 ├─ WAF rules → patterns.md
 ├─ Debugging → gotchas.md
 └─ Analytics → api.md#bot-analytics
-```
+
+````
 
 ## Reading Order
 
@@ -71,14 +71,14 @@ export default {
     return fetch(request)
   },
 }
-```
+````
 
 ```txt
-# WAF: Block definite bots
-(cf.bot_management.score eq 1 and not cf.bot_management.verified_bot)
+# WAF: Bloquear bots definitivos
+(cf.bot_management.score eq 1 e não cf.bot_management.verified_bot)
 
-# WAF: Protect sensitive endpoints
-(cf.bot_management.score lt 50 and http.request.uri.path in {"/login" "/checkout"} and not cf.bot_management.verified_bot)
+# WAF: Proteja endpoints sensíveis
+(cf.bot_management.score lt 50 e http.request.uri.path em {"/login" "/checkout"} e não cf.bot_management.verified_bot)
 ```
 
 ## In This Reference

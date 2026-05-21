@@ -1,55 +1,56 @@
 ---
-title: Avoid Duplicate Serialization in RSC Props
+title: Evitar serialização duplicada em props RSC
 impact: LOW
-impactDescription: reduces network payload by avoiding duplicate serialization
+impactDescription: reduz a carga útil da rede para evitar serialização duplicada
 tags: server, rsc, serialization, props, client-components
 ---
 
-## Avoid Duplicate Serialization in RSC Props
+## Evitar serialização duplicada em props RSC
 
-**Impact: LOW (reduces network payload by avoiding duplicate serialization)**
+**Impacto: BAIXO (reduz payload de rede para evitar serialização duplicada)**
 
-RSC→client serialization deduplicates by object reference, not value. Same reference = serialized once; new reference = serialized again. Do transformations (`.toSorted()`, `.filter()`, `.map()`) in client, not server.
+RSC→cliente deduplica por referência de objeto, não por valor igual. Mesma referência serializada uma vez; referência nova serializada outra vez. Faça transformações (`.toSorted()`, `.filter()`, `.map()`) no cliente, não no servidor.
 
-**Incorrect (duplicates array):**
+**Incorreto (matriz duplicada):**
 
 ```tsx
 // RSC: sends 6 strings (2 arrays × 3 items)
 <ClientList usernames={usernames} usernamesOrdered={usernames.toSorted()} />
 ```
 
-**Correct (sends 3 strings):**
+**Correto (envia 3 cordas):**
 
 ```tsx
 // RSC: send once
-<ClientList usernames={usernames} />
+;<ClientList usernames={usernames} />
 
 // Client: transform there
-'use client'
+;('use client')
 const sorted = useMemo(() => [...usernames].sort(), [usernames])
 ```
 
-**Nested deduplication behavior:**
+**Desduplicação aninhada:**
 
-Deduplication works recursively. Impact varies by data type:
+A desduplicação é recursiva. O impacto varia pelo tipo:
 
-- `string[]`, `number[]`, `boolean[]`: **HIGH impact** - array + all primitives fully duplicated
-- `object[]`: **LOW impact** - array duplicated, but nested objects deduplicated by reference
+- `string[]`, `number[]`, `boolean[]`: **alto impacto** — array e todos os primitivos duplicados
 
-```tsx
-// string[] - duplicates everything
-usernames={['a','b']} sorted={usernames.toSorted()} // sends 4 strings
+- `object[]`: **baixo impacto** — apenas a estrutura do array é duplicada; objetos aninados deduplicados por referência```tsx
+  // string[] - duplicates everything
+  usernames={['a','b']} sorted={usernames.toSorted()} // sends 4 strings
 
 // object[] - duplicates array structure only
 users={[{id:1},{id:2}]} sorted={users.toSorted()} // sends 2 arrays + 2 unique objects (not 4)
-```
 
-**Operations breaking deduplication (create new references):**
+````
 
-- Arrays: `.toSorted()`, `.filter()`, `.map()`, `.slice()`, `[...arr]`
-- Objects: `{...obj}`, `Object.assign()`, `structuredClone()`, `JSON.parse(JSON.stringify())`
+**Operações que quebram deduplicação (criam referências novas):**
 
-**More examples:**
+- Matrizes: `.toSorted()`, `.filter()`, `.map()`, `.slice()`, `[...arr]`
+
+- Objetos: `{...obj}`, `Object.assign()`, `structuredClone()`, `JSON.parse(JSON.stringify())`
+
+**Outros exemplos:**
 
 ```tsx
 // ❌ Bad
@@ -60,6 +61,6 @@ users={[{id:1},{id:2}]} sorted={users.toSorted()} // sends 2 arrays + 2 unique o
 <C users={users} />
 <C product={product} />
 // Do filtering/destructuring in client
-```
+````
 
-**Exception:** Pass derived data when transformation is expensive or client doesn't need original.
+**Exceção:** passe dado já derivado quando a transformação para cara ou quando o cliente não precisa do original.

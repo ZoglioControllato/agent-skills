@@ -143,6 +143,6 @@ export default {
 } satisfies ExportedHandler<Env>
 ```
 
-**When:** Existing Worker, framework-generated (Next.js/SvelteKit), custom routing logic
+**Quando:** Worker existente, gerado pela estrutura (Next.js/SvelteKit), lógica de roteamento personalizada
 
-**See also:** [api.md](./api.md) for `env.ASSETS.fetch()` | [gotchas.md](./gotchas.md) for debugging
+**Veja também:** [api.md](./api.md) para `env.ASSETS.fetch()` | [gotchas.md](./gotchas.md) para depuração

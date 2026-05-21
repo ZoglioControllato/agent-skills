@@ -1,15 +1,15 @@
 ---
-title: Cache Property Access in Loops
+title: Faça cache de acesso às propriedades em loops
 impact: LOW-MEDIUM
-impactDescription: reduces lookups
-tags: javascript, loops, optimization, caching
+impactDescription: reduz buscas
+tags: javascript, loops, otimização, cache
 ---
 
-## Cache Property Access in Loops
+## Faça cache de acesso a propriedades em loops
 
-Cache object property lookups in hot paths.
+Armazene em variável o resultado de cadeias de propriedades em caminhos quentes.
 
-**Incorrect (3 lookups × N iterations):**
+**Incorreto (3 buscas × N iterações):**
 
 ```typescript
 for (let i = 0; i < arr.length; i++) {
@@ -17,7 +17,7 @@ for (let i = 0; i < arr.length; i++) {
 }
 ```
 
-**Correct (1 lookup total):**
+**Correto (1 busca no total):**
 
 ```typescript
 const value = obj.config.settings.value

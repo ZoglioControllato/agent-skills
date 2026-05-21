@@ -1,70 +1,70 @@
-# Workers Gotchas
+# Gotchas do Workers
 
-## Common Errors
+## Erros comuns
 
 ### "Too much CPU time used"
 
-**Cause:** Worker exceeded CPU time limit (10ms standard, 30ms unbound)  
-**Solution:** Use `ctx.waitUntil()` for background work, offload heavy compute to Durable Objects, or consider Workers AI for ML workloads
+**Causa:** Worker excedeu o limite de tempo de CPU (10 ms padrão, 30 ms unbound)  
+**Solução:** use `ctx.waitUntil()` para trabalho em segundo plano, descarregue computação pesada para Durable Objects ou considere Workers AI para cargas de ML
 
 ### "Module-Level State Lost"
 
-**Cause:** Workers are stateless between requests; module-level variables reset unpredictably  
-**Solution:** Use KV, D1, or Durable Objects for persistent state; don't rely on module-level variables
+**Causa:** Workers são stateless entre requisições; variáveis em nível de módulo resetam de forma imprevisível  
+**Solução:** use KV, D1 ou Durable Objects para estado persistente; não dependa de variáveis em nível de módulo
 
 ### "Body has already been used"
 
-**Cause:** Attempting to read response body twice (bodies are streams)  
-**Solution:** Clone response before reading: `response.clone()` or read once and create new Response with the text
+**Causa:** tentativa de ler o corpo da resposta duas vezes (corpos são streams)  
+**Solução:** clone a resposta antes de ler: `response.clone()` ou leia uma vez e crie um novo Response com o texto
 
 ### "Node.js module not found"
 
-**Cause:** Node.js built-ins not available by default  
-**Solution:** Use Workers APIs (e.g., R2 for file storage) or enable Node.js compat with `"compatibility_flags": ["nodejs_compat_v2"]`
+**Causa:** built-ins do Node.js não estão disponíveis por padrão  
+**Solução:** use APIs dos Workers (ex.: R2 para arquivos) ou habilite compat Node com `"compatibility_flags": ["nodejs_compat_v2"]`
 
 ### "Cannot fetch in global scope"
 
-**Cause:** Attempting to use fetch during module initialization  
-**Solution:** Move fetch calls inside handler functions (fetch, scheduled, etc.) where they're allowed
+**Causa:** tentativa de usar fetch durante a inicialização do módulo  
+**Solução:** mova chamadas fetch para dentro de funções handler (fetch, scheduled, etc.) onde são permitidas
 
 ### "Subrequest depth limit exceeded"
 
-**Cause:** Too many nested subrequests creating deep call chain  
-**Solution:** Flatten request chain or use service bindings for direct Worker-to-Worker communication
+**Causa:** muitas subrequisições aninhadas criando cadeia profunda  
+**Solução:** achate a cadeia ou use service bindings para comunicação direta Worker–Worker
 
 ### "D1 read-after-write inconsistency"
 
-**Cause:** D1 is eventually consistent; reads may not reflect recent writes  
-**Solution:** Use D1 Sessions (2024+) to guarantee read-after-write consistency within a session:
+**Causa:** D1 é eventualmente consistente; leituras podem não refletir escritas recentes  
+**Solução:** use D1 Sessions (2024+) para garantir consistência read-after-write na sessão:
 
 ```typescript
 const session = env.DB.withSession()
 await session.prepare('INSERT INTO users (name) VALUES (?)').bind('Alice').run()
-const user = await session.prepare('SELECT * FROM users WHERE name = ?').bind('Alice').first() // Guaranteed to see Alice
+const user = await session.prepare('SELECT * FROM users WHERE name = ?').bind('Alice').first() // Garantido ver Alice
 ```
 
-**When to use sessions:** Write → Read patterns, transactions requiring consistency
+**Quando usar sessions:** padrões escrita → leitura, transações que exigem consistência
 
 ### "wrangler types not generating TypeScript definitions"
 
-**Cause:** Type generation not configured or outdated  
-**Solution:** Run `npx wrangler types` after changing bindings in wrangler.jsonc:
+**Causa:** geração de tipos não configurada ou desatualizada  
+**Solução:** execute `npx wrangler types` após alterar bindings no wrangler.jsonc:
 
 ```bash
-npx wrangler types  # Generates .wrangler/types/runtime.d.ts
+npx wrangler types  # Gera .wrangler/types/runtime.d.ts
 ```
 
-Add to `tsconfig.json`: `"include": [".wrangler/types/**/*.ts"]`
+Adicione ao `tsconfig.json`: `"include": [".wrangler/types/**/*.ts"]`
 
-Then import: `import type { Env } from './.wrangler/types/runtime';`
+Depois importe: `import type { Env } from './.wrangler/types/runtime';`
 
 ### "Durable Object RPC errors with deprecated fetch pattern"
 
-**Cause:** Using old `stub.fetch()` pattern instead of RPC (2024+)  
-**Solution:** Export methods directly, call via RPC:
+**Causa:** uso do padrão antigo `stub.fetch()` em vez de RPC (2024+)  
+**Solução:** exporte métodos diretamente, chame via RPC:
 
 ```typescript
-// ❌ Old fetch pattern
+// ❌ Padrão fetch antigo
 export class MyDO {
   async fetch(request: Request) {
     const { method } = await request.json()
@@ -77,41 +77,41 @@ export class MyDO {
 const stub = env.DO.get(id)
 const res = await stub.fetch('http://x', { method: 'POST', body: JSON.stringify({ method: 'increment' }) })
 
-// ✅ RPC pattern (type-safe, no serialization overhead)
+// ✅ Padrão RPC (tipado, sem overhead de serialização)
 export class MyDO {
   async increment() {
     return ++this.value
   }
 }
 const stub = env.DO.get(id)
-const count = await stub.increment() // Direct method call
+const count = await stub.increment() // Chamada de método direta
 ```
 
 ### "WebSocket connection closes unexpectedly"
 
-**Cause:** Worker reaches CPU limit while maintaining WebSocket connection  
-**Solution:** Use WebSocket hibernation (2024+) to offload idle connections:
+**Causa:** Worker atinge limite de CPU enquanto mantém conexão WebSocket  
+**Solução:** use WebSocket hibernation (2024+) para descarregar conexões ociosas:
 
 ```typescript
 export class WebSocketDO {
   async webSocketMessage(ws: WebSocket, message: string) {
-    // Handle message
+    // Tratar mensagem
   }
   async webSocketClose(ws: WebSocket, code: number) {
-    // Cleanup
+    // Limpeza
   }
 }
 ```
 
-Hibernation automatically suspends inactive connections, wakes on events
+A hibernação suspende automaticamente conexões inativas e acorda em eventos
 
 ### "Framework middleware not working with Workers"
 
-**Cause:** Framework expects Node.js primitives (e.g., Express uses Node streams)  
-**Solution:** Use Workers-native frameworks (Hono, itty-router, Worktop) or adapt middleware:
+**Causa:** framework espera primitivas Node (ex.: Express usa streams Node)  
+**Solução:** use frameworks nativos de Workers (Hono, itty-router, Worktop) ou adapte middleware:
 
 ```typescript
-// ✅ Hono (Workers-native)
+// ✅ Hono (nativo Workers)
 import { Hono } from 'hono'
 const app = new Hono()
 app.use('*', async (c, next) => {
@@ -119,24 +119,24 @@ app.use('*', async (c, next) => {
 })
 ```
 
-See [frameworks.md](./frameworks.md) for full patterns
+Veja [frameworks.md](./frameworks.md) para padrões completos
 
-## Limits
+## Limites
 
-| Limit               | Value     | Notes                         |
-| ------------------- | --------- | ----------------------------- |
-| Request size        | 100 MB    | Maximum incoming request size |
-| Response size       | Unlimited | Supports streaming            |
-| CPU time (standard) | 10ms      | Standard Workers              |
-| CPU time (unbound)  | 30ms      | Unbound Workers               |
-| Subrequests         | 1000      | Per request                   |
-| KV reads            | 1000      | Per request                   |
-| KV write size       | 25 MB     | Maximum per write             |
-| Environment size    | 5 MB      | Total size of env bindings    |
+| Limite                | Valor     | Observações                           |
+| --------------------- | --------- | ------------------------------------- |
+| Tamanho da requisição | 100 MB    | Tamanho máximo da requisição recebida |
+| Tamanho da resposta   | Ilimitado | Suporta streaming                     |
+| CPU (standard)        | 10 ms     | Workers standard                      |
+| CPU (unbound)         | 30 ms     | Workers unbound                       |
+| Subrequisições        | 1000      | Por requisição                        |
+| Leituras KV           | 1000      | Por requisição                        |
+| Tamanho de escrita KV | 25 MB     | Máximo por escrita                    |
+| Tamanho do ambiente   | 5 MB      | Tamanho total dos bindings de env     |
 
-## See Also
+## Ver também
 
-- [Patterns](./patterns.md) - Best practices
-- [API](./api.md) - Runtime APIs
-- [Configuration](./configuration.md) - Setup
-- [Frameworks](./frameworks.md) - Hono, routing, validation
+- [Patterns](./patterns.md) — boas práticas
+- [API](./api.md) — APIs de runtime
+- [Configuration](./configuration.md) — configuração
+- [Frameworks](./frameworks.md) — Hono, roteamento, validação

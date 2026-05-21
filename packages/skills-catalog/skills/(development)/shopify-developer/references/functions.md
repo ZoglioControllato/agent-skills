@@ -1,57 +1,60 @@
-# Shopify Functions Reference
+# Referência de funções do Shopify
 
-Shopify Functions replace Scripts as the way to customise backend logic. They run in a WebAssembly sandbox with strict performance guarantees.
+As funções do Shopify substituem os scripts como forma de personalizar a lógica de back-end. Eles são executados em uma sandbox WebAssembly com garantias rigorosas de desempenho.
 
-## Overview
+## Visão geral
 
-| Item | Value |
-|------|-------|
-| Runtime | WebAssembly (Wasm) |
-| Languages | Rust (recommended), JavaScript (via Javy) |
-| Execution limit | 11ms instruction count limit |
-| Memory limit | 64 KB linear memory |
-| Input/Output | JSON (stdin/stdout) |
-| API version | 2026-01 |
+| Artigo             | Valor                                     |
+| ------------------ | ----------------------------------------- |
+| Tempo de execução  | WebAssembly (Wasm)                        |
+| Idiomas            | Rust (recomendado), JavaScript (via Javy) |
+| Limite de execução | Limite de contagem de instruções de 11ms  |
+| Limite de memória  | Memória linear de 64 KB                   |
+| Entrada/Saída      | JSON (stdin/stdout)                       |
+| Versão da API      | 2026-01                                   |
 
-## Function Types
+## Tipos de funções
 
-| Type | Purpose | Replaces |
-|------|---------|----------|
-| `product_discounts` | Automatic product discounts | Shopify Scripts (line item) |
-| `order_discounts` | Order-level discounts | Shopify Scripts (order) |
-| `shipping_discounts` | Shipping rate discounts | Shopify Scripts (shipping) |
-| `payment_customization` | Hide/reorder payment methods | Shopify Scripts |
-| `delivery_customization` | Hide/reorder/rename delivery options | Shopify Scripts |
-| `cart_transform` | Merge/expand/update cart lines | New |
-| `fulfillment_constraints` | Constrain fulfillment locations | New |
-| `order_routing_location_rule` | Custom order routing | New |
-| `cart_checkout_validation` | Validate cart at checkout | New |
+| Tipo                     | Finalidade                                   | Substitui                          |
+| ------------------------ | -------------------------------------------- | ---------------------------------- |
+| `descontos_produtos`     | Descontos automáticos em produtos            | Scripts do Shopify (item de linha) |
+| `order_descontos`        | Descontos em nível de pedido                 | Scripts do Shopify (pedido)        |
+| `descontos_envio`        | Descontos nas taxas de envio                 | Scripts do Shopify (frete)         |
+| `pagamento_customização` | Ocultar/reordenar métodos de pagamento       | Scripts do Shopify                 |
+| `delivery_customization` | Ocultar/reordenar/renomear opções de entrega | ShopifyS                           |
 
-## Getting Started
+criptas |
+| `cart_transform` | Mesclar/expandir/atualizar linhas do carrinho | Novo |
+| `fulfillment_constraints` | Restringir locais de atendimento | Novo |
+| `order_routing_location_rule` | Roteamento de pedidos personalizados | Novo |
+| `cart_checkout_validation` | Validar carrinho na finalização da compra | Novo |
 
-### Create a Function
+## Primeiros passos
 
-```bash
+### Crie uma função```bash
+
 # Generate a new function extension
+
 shopify app generate extension --template discount_function_rust
+
 # or
+
 shopify app generate extension --template discount_function_javascript
 
 # Structure created:
+
 extensions/my-discount/
 ├── src/
-│   ├── main.rs          # Rust: function logic
-│   └── run.graphql      # Input query
-├── Cargo.toml           # Rust dependencies
+│ ├── main.rs # Rust: function logic
+│ └── run.graphql # Input query
+├── Cargo.toml # Rust dependencies
 ├── shopify.extension.toml
-└── schema.graphql       # Generated API schema
-```
+└── schema.graphql # Generated API schema
 
-### Input Query (run.graphql)
+````
+### Consulta de entrada (run.graphql)
 
-Define what data your function receives:
-
-```graphql
+Defina quais dados sua função recebe:```graphql
 query RunInput {
   cart {
     lines {
@@ -79,22 +82,21 @@ query RunInput {
     }
   }
 }
-```
+````
 
-### Rust Implementation
+### Implementação de ferrugem```rust
 
-```rust
-use shopify_function::prelude::*;
+use shopify_function::prelude::\*;
 use shopify_function::Result;
 
 #[shopify_function_target(rename = "function")]
 fn function(input: input::ResponseData) -> Result<output::FunctionRunResult> {
-    let config: serde_json::Value = serde_json::from_str(
-        input.discount_node.metafield
-            .as_ref()
-            .map(|m| m.value.as_str())
-            .unwrap_or("{}"),
-    )?;
+let config: serde_json::Value = serde_json::from_str(
+input.discount_node.metafield
+.as_ref()
+.map(|m| m.value.as_str())
+.unwrap_or("{}"),
+)?;
 
     let percentage = config.get("percentage")
         .and_then(|v| v.as_f64())
@@ -142,12 +144,11 @@ fn function(input: input::ResponseData) -> Result<output::FunctionRunResult> {
         discount_application_strategy:
             output::DiscountApplicationStrategy::FIRST,
     })
+
 }
-```
 
-### JavaScript Implementation
-
-```javascript
+````
+### Implementação de JavaScript```javascript
 // src/run.js
 export function run(input) {
   const config = JSON.parse(
@@ -182,13 +183,12 @@ export function run(input) {
     discountApplicationStrategy: "FIRST",
   };
 }
-```
+````
 
-## Configuration
+## Configuração
 
-### shopify.extension.toml
+### shopify.extension.toml```toml
 
-```toml
 api_version = "2026-01"
 
 [[extensions]]
@@ -196,30 +196,30 @@ name = "VIP Discount"
 handle = "vip-discount"
 type = "function"
 
-  [extensions.build]
-  command = "cargo wasi build --release"
-  path = "target/wasm32-wasi/release/vip-discount.wasm"
+[extensions.build]
+command = "cargo wasi build --release"
+path = "target/wasm32-wasi/release/vip-discount.wasm"
 
-  # For JavaScript:
-  # command = "npx javy compile src/run.js -o dist/function.wasm"
-  # path = "dist/function.wasm"
+# For JavaScript:
 
-  [extensions.targeting]
-  target = "purchase.product-discount.run"
+# command = "npx javy compile src/run.js -o dist/function.wasm"
 
-  [extensions.ui]
-  handle = "vip-discount-ui"
+# path = "dist/function.wasm"
 
-  [extensions.input.variables]
-  namespace = "discount"
-  key = "config"
-```
+[extensions.targeting]
+target = "purchase.product-discount.run"
 
-## Testing
+[extensions.ui]
+handle = "vip-discount-ui"
 
-### Unit tests (Rust)
+[extensions.input.variables]
+namespace = "discount"
+key = "config"
 
-```rust
+````
+## Teste
+
+### Testes unitários (Rust)```rust
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -241,63 +241,64 @@ mod tests {
         assert!(result.discounts.is_empty());
     }
 }
-```
+````
 
-### Local testing
+### Testes locais```bash
 
-```bash
 # Test with sample input
+
 shopify app function run --path extensions/my-discount
 
 # Build and preview
+
 shopify app dev
-```
 
-## Deployment
-
-```bash
+````
+## Implantação```bash
 # Deploy function with app
 shopify app deploy
 
 # Functions are versioned with the app
 # Each deploy creates a new function version
-```
+````
 
-## Migration from Scripts
+## Migração de Scripts
 
-| Scripts | Functions |
-|---------|-----------|
-| Ruby-like DSL | Rust or JavaScript (Wasm) |
-| Online Store only | All channels (POS, B2B, headless) |
-| Limited to 3 types | 10+ function types |
-| No version control | Git-based, CI/CD ready |
-| Script Editor app | Shopify CLI |
-| Shopify-hosted | Developer-hosted logic |
+| Roteiros                     | Funções                              |
+| ---------------------------- | ------------------------------------ |
+| DSL tipo Ruby                | Ferrugem ou JavaScript (Wasm)        |
+| Apenas loja online           | Todos os canais (POS, B2B, headless) |
+| Limitado a 3 tipos           | Mais de 10 tipos de funções          |
+| Sem controle de versão       | Baseado em Git, pronto para CI/CD    |
+| Aplicativo Editor de scripts | CLI do Shopify                       |
+| Hospedado pelo Shopify       | Lógica hospedada pelo desenvolvedor  |
 
-**Migration steps:**
+**Etapas de migração:**
 
-1. Identify Scripts in use (Settings > Apps > Script Editor)
-2. Map each Script to a Function type (see table above)
-3. Rewrite logic in Rust or JavaScript
-4. Test with `shopify app function run`
-5. Deploy and activate via Shopify admin
-6. Disable old Scripts
+1. Identifique os scripts em uso (Configurações > Aplicativos > Editor de scripts)
+2. Mapeie cada Script para um tipo de Função (veja tabela acima)
+3. Reescreva a lógica em Rust ou JavaScript
+4. Teste com `execução da função do aplicativo shopify`
+5. Implante e ative por meio do administrador do Shopify
+6. Desative scripts antigos
 
-## Performance Guidelines
+## Diretrizes de desempenho
 
-- Functions must complete within the instruction count limit (~11ms equivalent)
-- Minimise allocations - reuse buffers where possible
-- Avoid complex string operations in hot paths
-- Rust compiles to smaller, faster Wasm than JavaScript
-- Use `cargo wasi build --release` for optimised builds
-- Profile with `shopify app function run --export-timing`
+- As funções devem ser concluídas dentro do limite de contagem de instruções (equivalente a aproximadamente 11 ms)
+- Minimize as alocações - reutilize buffers sempre que possível
+- Evite operações complexas de strings em caminhos quentes
+- Rust compila para Wasm menor e mais rápido que JavaScript
+- Use `cargo wasi build --release` para compilações otimizadas
+- Perfil com `função do aplicativo shopify run --export-timing`
 
-## Best Practices
+## Melhores práticas
 
-1. **Use Rust for production** - smaller binaries, faster execution
-2. **Use JavaScript for prototyping** - faster iteration, familiar syntax
-3. **Keep input queries minimal** - request only the fields you need
-4. **Store configuration in metafields** - avoid hardcoded values
-5. **Test edge cases** - empty carts, missing metafields, zero quantities
-6. **Version your functions** - use semantic versioning with app deploys
-7. **Monitor execution** - check function logs in Partner Dashboard
+1. **Use Rust para produção** - binários menores, execução mais rápida
+2. **Use JavaScript para prototipagem** – iteração mais rápida, sintaxe familiar
+3. **Mantenha o mínimo de consultas de entrada** - solicite apenas os campos necessários
+4. **Armazene a configuração em metacampos** - evite valores codificados
+5. **Casos extremos de teste** - carrinhos vazios, metacampos ausentes, quantidades zero
+6. **Versione suas funções** - use controle de versão semântico com implantações de aplicativos
+7. **Monitorar a execução** -
+
+verifique os logs de função no Painel do Parceiro

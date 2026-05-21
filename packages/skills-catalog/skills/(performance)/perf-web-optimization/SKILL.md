@@ -1,42 +1,42 @@
 ---
 name: perf-web-optimization
-description: 'Optimize web performance: bundle size, images, caching, lazy loading, and overall page speed. Use when site is slow, reducing bundle size, fixing layout shifts, improving Time to Interactive, or optimizing for Lighthouse scores. Triggers on: web performance, bundle size, page speed, slow site, lazy loading. Do NOT use for Core Web Vitals-specific fixes (use core-web-vitals), running Lighthouse audits (use perf-lighthouse), or Astro-specific optimization (use perf-astro).'
+description: 'Otimize performance web: tamanho de bundle, imagens, cache, lazy loading e velocidade geral da página. Use quando o site estiver lento, para reduzir bundle, corrigir layout shift, melhorar Time to Interactive ou otimizar para scores Lighthouse. Aciona em performance web, tamanho de bundle, velocidade da página, site lento, lazy loading. NÃO use para correções específicas só de Core Web Vitals (use core-web-vitals), rodar auditorias Lighthouse (use perf-lighthouse) ou otimização específica de Astro (use perf-astro).'
 ---
 
-# Web Performance Optimization
+# Otimização de performance web
 
-Systematic approach: Measure → Identify → Prioritize → Implement → Verify.
+Abordagem sistemática: Medir → Identificar → Priorizar → Implementar → Verificar.
 
-## Target Metrics
+## Métricas alvo
 
-| Metric | Good    | Needs Work | Poor    |
-| ------ | ------- | ---------- | ------- |
-| LCP    | < 2.5s  | 2.5-4s     | > 4s    |
-| INP    | < 200ms | 200-500ms  | > 500ms |
-| CLS    | < 0.1   | 0.1-0.25   | > 0.25  |
-| TTFB   | < 800ms | 800ms-1.8s | > 1.8s  |
+| Métrica | Bom     | Precisa melhorar | Ruim    |
+| ------- | ------- | ---------------- | ------- |
+| LCP     | < 2.5s  | 2.5-4s           | > 4s    |
+| INP     | < 200ms | 200-500ms        | > 500ms |
+| CLS     | < 0.1   | 0.1-0.25         | > 0.25  |
+| TTFB    | < 800ms | 800ms-1.8s       | > 1.8s  |
 
-## Quick Wins
+## Vitórias rápidas
 
-### 1. Images (usually biggest impact on LCP)
+### 1. Imagens (geralmente maior impacto no LCP)
 
 ```html
-<!-- Hero/LCP image: eager + high priority -->
+<!-- Hero/LCP: eager + alta prioridade -->
 <img src="/hero.webp" alt="Hero" width="1200" height="600" loading="eager" fetchpriority="high" decoding="async" />
 
-<!-- Below fold: lazy load -->
+<!-- Abaixo da dobra: lazy -->
 <img src="/product.webp" alt="Product" width="400" height="300" loading="lazy" decoding="async" />
 ```
 
-Always set `width` and `height` to prevent CLS.
+Sempre defina `width` e `height` para evitar CLS.
 
-### 2. Fonts (common LCP/CLS culprit)
+### 2. Fontes (vilã comum de LCP/CLS)
 
 ```html
-<!-- Preconnect to font origin -->
+<!-- Preconnect na origem da fonte -->
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-<!-- Non-blocking font load -->
+<!-- Carregamento não bloqueante -->
 <link
   rel="stylesheet"
   href="https://fonts.googleapis.com/css2?family=Inter&display=swap"
@@ -45,22 +45,22 @@ Always set `width` and `height` to prevent CLS.
 />
 ```
 
-### 3. Third-party Scripts (common INP killer)
+### 3. Scripts de terceiros (comum no INP)
 
 ```html
-<!-- Defer to user interaction -->
+<!-- Adiar até interação -->
 <script>
   function loadThirdParty() {
-    // Load analytics, chat widgets, etc.
+    // Analytics, widgets de chat, etc.
   }
   ;['scroll', 'click', 'touchstart'].forEach((e) => addEventListener(e, loadThirdParty, { once: true, passive: true }))
   setTimeout(loadThirdParty, 5000)
 </script>
 ```
 
-### 4. Critical CSS
+### 4. CSS crítico
 
-Inline critical CSS in `<head>`, defer the rest:
+Inline do CSS crítico em `<head>`, adie o restante:
 
 ```html
 <style>
@@ -69,7 +69,7 @@ Inline critical CSS in `<head>`, defer the rest:
 <link rel="preload" href="/styles.css" as="style" onload="this.rel='stylesheet'" />
 ```
 
-## Bundle Analysis
+## Análise de bundle
 
 ```bash
 # Webpack
@@ -78,16 +78,16 @@ npx webpack-bundle-analyzer dist/stats.json
 # Vite
 npx vite-bundle-visualizer
 
-# Check package size before installing
+# Tamanho do pacote antes de instalar
 npx bundlephobia <package-name>
 ```
 
-Common heavy packages to replace:
+Pacotes pesados comuns para substituir:
 
-- `moment` (67KB) → `date-fns` (12KB) or `dayjs` (2KB)
-- `lodash` (72KB) → cherry-pick imports or native methods
+- `moment` (67KB) → `date-fns` (12KB) ou `dayjs` (2KB)
+- `lodash` (72KB) → imports pontuais ou nativo
 
-## Code Splitting Patterns
+## Padrões de code splitting
 
 ```javascript
 // React lazy
@@ -108,56 +108,56 @@ build: {
 }
 ```
 
-## Caching Headers
+## Headers de cache
 
 ```
-# Static assets (immutable hash in filename)
+# Assets estáticos (hash imutável no nome)
 Cache-Control: public, max-age=31536000, immutable
 
-# HTML (revalidate)
+# HTML (revalidar)
 Cache-Control: no-cache
 
-# API responses
+# Respostas de API
 Cache-Control: private, max-age=0, must-revalidate
 ```
 
-## Measurement
+## Medição
 
-For running audits, reading reports, and setting budgets, use the **perf-lighthouse** skill.
+Para rodar auditorias, ler relatórios e definir budgets, use a skill **perf-lighthouse**.
 
 ## Checklist
 
-### Images
+### Imagens
 
-- [ ] Modern formats (WebP/AVIF)
-- [ ] Responsive `srcset`
-- [ ] `width`/`height` attributes
-- [ ] `loading="lazy"` below fold
-- [ ] `fetchpriority="high"` on LCP image
+- [ ] Formatos modernos (WebP/AVIF)
+- [ ] `srcset` responsivo
+- [ ] Atributos `width`/`height`
+- [ ] `loading="lazy"` abaixo da dobra
+- [ ] `fetchpriority="high"` na imagem LCP
 
 ### JavaScript
 
 - [ ] Bundle < 200KB gzipped
-- [ ] Code splitting by route
-- [ ] Third-party scripts deferred
-- [ ] No unused dependencies
+- [ ] Code splitting por rota
+- [ ] Scripts de terceiros adiados
+- [ ] Sem dependências não usadas
 
 ### CSS
 
-- [ ] Critical CSS inlined
-- [ ] Non-critical CSS deferred
-- [ ] No unused CSS
+- [ ] CSS crítico inlined
+- [ ] CSS não crítico adiado
+- [ ] Sem CSS não usado
 
-### Fonts
+### Fontes
 
 - [ ] `font-display: swap`
-- [ ] Preconnect to font origin
-- [ ] Subset if possible
+- [ ] Preconnect na origem
+- [ ] Subset quando possível
 
-## Detailed Examples
+## Exemplos detalhados
 
-For in-depth optimization patterns, see:
+Padrões aprofundados em:
 
-- [references/core-web-vitals.md](references/core-web-vitals.md) - Fixing LCP, CLS, INP issues
-- [references/bundle-optimization.md](references/bundle-optimization.md) - Reducing JS bundle size
-- [references/image-optimization.md](references/image-optimization.md) - Image formats, responsive images, sharp scripts
+- [references/core-web-vitals.md](references/core-web-vitals.md) — LCP, CLS, INP
+- [references/bundle-optimization.md](references/bundle-optimization.md) — reduzir bundle JS
+- [references/image-optimization.md](references/image-optimization.md) — formatos, imagens responsivas, scripts sharp

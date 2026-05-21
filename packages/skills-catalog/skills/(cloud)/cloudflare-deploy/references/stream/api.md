@@ -1,12 +1,12 @@
-# Stream API Reference
+# Referência da API Stream
 
-Upload, playback, live streaming, and management APIs.
+APIs de envio, reprodução, streaming ao vivo e gestão.
 
-## Upload APIs
+## APIs de upload
 
-### Direct Creator Upload (Recommended)
+### Direct Creator Upload (recomendado)
 
-**Backend: Create upload URL (SDK)**
+**Backend: criar URL de upload (SDK)**
 
 ```typescript
 import Cloudflare from 'cloudflare'
@@ -22,7 +22,7 @@ const uploadData = await client.stream.directUpload.create({
 // Returns: { uploadURL: string, uid: string }
 ```
 
-**Frontend: Upload file**
+**Frontend: enviar arquivo**
 
 ```typescript
 async function uploadVideo(file: File, uploadURL: string) {
@@ -32,7 +32,7 @@ async function uploadVideo(file: File, uploadURL: string) {
 }
 ```
 
-### Upload from URL
+### Upload a partir de URL
 
 ```typescript
 const video = await client.stream.copy.create({
@@ -43,9 +43,9 @@ const video = await client.stream.copy.create({
 })
 ```
 
-## Playback APIs
+## APIs de reprodução
 
-### Embed Player (iframe)
+### Player incorporado (iframe)
 
 ```html
 <iframe
@@ -58,7 +58,7 @@ const video = await client.stream.copy.create({
 ></iframe>
 ```
 
-### HLS/DASH Manifest URLs
+### URLs de manifest HLS/DASH
 
 ```typescript
 // HLS
@@ -81,7 +81,7 @@ const thumbPct = `https://customer-<CODE>.cloudflarestream.com/${videoId}/thumbn
 const gif = `https://customer-<CODE>.cloudflarestream.com/${videoId}/thumbnails/thumbnail.gif`
 ```
 
-## Signed URLs
+## URLs assinadas
 
 ```typescript
 // Low volume (<1k/day): Use API
@@ -100,9 +100,9 @@ async function getSignedToken(accountId: string, videoId: string, apiToken: stri
 // High volume: Self-sign with RS256 JWT (see "Self-Sign JWT" in patterns.md)
 ```
 
-## Captions & Clips
+## Legendas e clips
 
-### Upload Captions
+### Enviar legendas
 
 ```typescript
 async function uploadCaption(
@@ -122,7 +122,7 @@ async function uploadCaption(
 }
 ```
 
-### Generate AI Captions
+### Gerar legendas com IA
 
 ```typescript
 // TODO: Requires Workers AI integration - see workers-ai reference
@@ -135,7 +135,7 @@ async function generateAICaptions(accountId: string, videoId: string, apiToken: 
 }
 ```
 
-### Clip Video
+### Recortar vídeo
 
 ```typescript
 async function clipVideo(accountId: string, videoId: string, apiToken: string, startTime: number, endTime: number) {
@@ -151,7 +151,7 @@ async function clipVideo(accountId: string, videoId: string, apiToken: string, s
 }
 ```
 
-## Video Management
+## Gestão de vídeos
 
 ```typescript
 // List videos
@@ -178,14 +178,16 @@ await client.stream.videos.delete(videoId, {
 })
 ```
 
-## In This Reference
+## Nesta referência
 
-- [README.md](./README.md) - Overview and quick start
-- [configuration.md](./configuration.md) - Setup and config
-- [api-live.md](./api-live.md) - Live streaming APIs (RTMPS/SRT/WebRTC)
-- [patterns.md](./patterns.md) - Full-stack flows, best practices
-- [gotchas.md](./gotchas.md) - Error codes, troubleshooting
+- [README.md](./README.md) — visão geral e início rápido
+- [configuration.md](./configuration.md) — setup
+- [api-live.md](./api-live.md) — APIs de streaming ao vivo (RTMPS/SRT/WebRTC)
+- [patterns.md](./patterns.md) — fluxos e boas práticas
+- [gotchas.md](./gotchas.md) — erros e limites
 
-## See Also
+## Ver também
 
-- [workers](../workers/) - Deploy Stream APIs in Workers
+- [workers](../workers/) — expor APIs Stream em Workers
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

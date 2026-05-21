@@ -1,200 +1,205 @@
-# Next.js (TypeScript/JavaScript) Web Security Spec (Next.js 16.1.x, Node.js 20.9+)
+# Next.js (TypeScript/JavaScript) Especificação de segurança da Web (Next.js 16.1.x, Node.js 20.9+)
 
-This document is designed as a **security spec** that supports:
+Este documento foi concebido como uma **especificação de segurança** que oferece suporte a:
 
-1. **Secure-by-default code generation** for new Next.js backend code (Route Handlers, API Routes, Server Actions, Proxy/Middleware).
-2. **Security review / vulnerability hunting** in existing Next.js repos (passive “notice issues while working” and active “scan the repo and report findings”).
+1. **Geração de código seguro por padrão** para novo código de back-end Next.js (Route Handlers, API Routes, Server Actions, Proxy/Middleware).
+2. **Revisão de segurança/caça de vulnerabilidades** em repositórios Next.js existentes (passivo “avisar problemas durante o trabalho” e ativo “verificar o repositório e relatar descobertas”).
 
-It is intentionally written as a set of **normative requirements** (“MUST/SHOULD/MAY”) plus **audit rules** (what bad patterns look like, how to detect them, and how to fix/mitigate them).
+Ele é intencionalmente escrito como um conjunto de **requisitos normativos** (“DEVE/DEVE/PODE”) mais **regras de auditoria** (como são os padrões ruins, como detectá-los e como corrigi-los/mitigá-los).
 
-Target scope: Next.js **16.1.x** (latest line shown in the App Router docs) ([Next.js][1]), running on Node.js **20.9+** (per Next.js system requirements). ([Next.js][2])
-
----
-
-## 0) Safety, boundaries, and anti-abuse constraints (MUST FOLLOW)
-
-- MUST NOT request, output, log, or commit secrets (API keys, passwords, private keys, session cookies, OAuth tokens, `process.env` dumps, database URLs with credentials).
-- MUST NOT “fix” security by disabling protections (e.g., disabling origin checks, relaxing CORS to `*`, skipping authz checks, turning off cookie security flags, turning off CSP because it’s “hard”).
-- MUST provide **evidence-based findings** during audits: cite file paths, code snippets, and configuration values that justify each claim.
-- MUST treat uncertainty honestly: if a protection might exist in infrastructure (reverse proxy, CDN, WAF, platform headers), report it as “not visible in app code; verify at runtime/config”.
-- MUST assume all request-facing server code is reachable by attackers unless there is a clearly enforced auth boundary (not just “the UI doesn’t link to it”).
-- MUST treat TypeScript types as **non-security boundaries**: types do not validate runtime input; runtime checks are required. ([Next.js][3])
+Escopo de destino: Next.js **16.1.x** (última linha mostrada nos documentos do App Router) ([Next.js][1]), em execução em Node.js **20.9+** (de acordo com os requisitos do sistema Next.js). ([Próximo.js][2])
 
 ---
 
-## 1) Operating modes
+## 0) Segurança, limites e restrições antiabuso (DEVE SEGUIR)
 
-### 1.1 Generation mode (default)
+- NÃO DEVE solicitar, gerar, registrar ou confirmar segredos (chaves de API, senhas, chaves privadas, cookies de sessão, tokens OAuth, dumps `process.env`, URLs de banco de dados com credenciais).
+- NÃO DEVE “consertar” a segurança desativando proteções (por exemplo, desativando verificações de origem, relaxando o CORS para `*`, ignorando verificações de autorização, desativando sinalizadores de segurança de cookies, desativando CSP porque é “difícil”).
+- DEVE fornecer **descobertas baseadas em evidências** durante as auditorias: citar caminhos de arquivos, co
 
-When asked to write new Next.js code or modify existing code:
+de snippets e valores de configuração que justificam cada afirmação.
 
-- MUST follow every **MUST** requirement in this spec.
-- SHOULD follow every **SHOULD** requirement unless the user explicitly says otherwise.
-- MUST prefer safe-by-default APIs and proven libraries over custom security code.
-- MUST avoid introducing new risky sinks (dynamic code execution, unsafe redirects, serving user files as HTML, SSRF URL fetchers, building SQL strings, etc.).
+- DEVE tratar a incerteza com honestidade: se existir uma proteção na infraestrutura (proxy reverso, CDN, WAF, cabeçalhos de plataforma), relate-a como “não visível no código do aplicativo; verifique em tempo de execução/configuração”.
+- DEVE assumir que todo o código do servidor voltado para a solicitação pode ser acessado pelos invasores, a menos que haja um limite de autenticação claramente aplicado (não apenas “a UI não está vinculada a ele”).
+- DEVE tratar os tipos TypeScript como \*\*
 
-### 1.2 Passive review mode (always on while editing)
-
-While working anywhere in a Next.js repo (even if the user did not ask for a security scan):
-
-- MUST “notice” violations of this spec in touched/nearby code.
-- SHOULD mention issues as they come up, with a brief explanation + safe fix.
-
-### 1.3 Active audit mode (explicit scan request)
-
-When the user asks to “scan”, “audit”, or “hunt for vulns”:
-
-- MUST systematically search the codebase for violations of this spec.
-- MUST output findings in a structured format (see §2.3).
-
-Recommended audit order:
-
-1. Deployment entrypoints and environment (Dockerfiles, `package.json` scripts, hosting config).
-2. Next.js config (`next.config.*`), Proxy/Middleware, routing patterns.
-3. Authentication, sessions, cookies.
-4. CSRF protections and state-changing endpoints (Server Actions, Route Handlers, API Routes).
-5. XSS (React + CSP) and unsafe HTML rendering.
-6. Cache/data-leak hazards (static rendering + caching + “use cache”).
-7. File handling (uploads/downloads) and path traversal.
-8. Injection classes (SQL/ORM misuse, command execution, unsafe deserialization).
-9. Outbound requests (SSRF).
-10. Redirect handling (open redirects).
-11. CORS and security headers.
+limites não relacionados à segurança\*\*: tipos não validam entrada de tempo de execução; verificações de tempo de execução são necessárias. ([Próximo.js][3])
 
 ---
 
-## 2) Definitions and review guidance
+## 1) Modos de operação
 
-### 2.1 Untrusted input (treat as attacker-controlled unless proven otherwise)
+### 1.1 Modo de geração (padrão)
 
-In Next.js backends, untrusted input includes:
+Quando solicitado a escrever um novo código Next.js ou modificar o código existente:
 
-App Router:
+- DEVE seguir todos os requisitos **DEVE** nesta especificação.
+- DEVE seguir todos os requisitos **DEVE**, a menos que o usuário diga explicitamente o contrário.
+- DEVE preferir APIs seguras por padrão e bibliotecas comprovadas em vez de código de segurança personalizado.
+- DEVE evitar a introdução de novos coletores de risco (execução dinâmica de código, redirecionamentos inseguros, exibição de arquivos de usuário como HTML, buscadores de URL SSRF, construção de strings SQL, etc.).
 
-- Route Handler params and request data:
-  - `context.params` (dynamic segments), search params (`request.url`, `new URL(request.url).searchParams`)
+### 1.2 Modo de revisão passiva (sempre ativado durante a edição)
+
+Ao trabalhar em qualquer lugar em um repositório Next.js (mesmo que o usuário não tenha solicitado uma verificação de segurança):
+
+- DEVE “notar” violações desta especificação no código tocado/próximo.
+- DEVE mencionar os problemas à medida que surgem, com uma breve explicação + solução segura.
+
+### 1.3 Modo de auditoria ativo (solicitação de verificação explícita)
+
+Quando o usuário pede para “verificar”, “auditar” ou “caçar vulnerabilidades”:
+
+- DEVE pesquisar sistematicamente a base de código em busca de violações desta especificação.
+- DEVE apresentar os resultados num formato estruturado (ver §2.3).
+
+Ordem de auditoria recomendada:
+
+1. Pontos de entrada e ambiente de implantação (Dockerfiles, scripts `package.json`, configuração de hospedagem).
+2. Configuração Next.js (`next.config.*`), Proxy/Middleware, padrões de roteamento.
+3. Autenticação, sessões, cookies.
+4. Proteções CSRF e endpoints de mudança de estado (ações de servidor, manipuladores de rota, rotas de API).
+5. XSS (React + CSP) e renderização HTML insegura.
+6. Riscos de cache/vazamento de dados (renderização estática + cache + “usar cache”).
+7. Manipulação de arquivos (uploads/do
+
+downloads) e passagem de caminho. 8. Classes de injeção (uso indevido de SQL/ORM, execução de comandos, desserialização insegura). 9. Solicitações de saída (SSRF). 10. Tratamento de redirecionamentos (redirecionamentos abertos). 11. CORS e cabeçalhos de segurança.
+
+---
+
+## 2) Definições e orientações de revisão
+
+### 2.1 Entrada não confiável (tratada como controlada pelo invasor, salvo prova em contrário)
+
+Nos back-ends Next.js, a entrada não confiável inclui:
+
+Roteador de aplicativos:
+
+- Parâmetros do manipulador de rota e dados de solicitação:
+  - `context.params` (segmentos dinâmicos), parâmetros de pesquisa (`request.url`, `new URL(request.url).searchParams`)
   - `request.headers`, `request.cookies`
-  - `await request.json()`, `await request.formData()`, `await request.text()`
+  - `aguardar request.json()`, `aguardar request.formData()`, `aguardar request.text()`
 
-- Dynamic APIs used in Server Components/Server Functions:
-  - `headers()` and `cookies()` values ([Next.js][4])
+- APIs dinâmicas usadas em componentes/funções de servidor:
+  - Valores `headers()` e `cookies()` ([Next.js][4])
 
 Pages Router:
 
-- `req.query`, `req.cookies`, `req.body` in `pages/api/*` handlers ([Next.js][3])
+- `req.query`, `req.cookies`, `req.body` em manipuladores `pages/api/*` ([Next.js][3])
 
-Plus:
+Mais:
 
-- Anything from external systems (webhooks, third-party APIs, message queues)
-- Any persisted user content (DB rows) that originated from users
+- Qualquer coisa de sistemas externos (webhooks, APIs de terceiros, filas de mensagens)
+- Qualquer conteúdo de usuário persistente (linhas de banco de dados) originado de usuários
 
-### 2.2 State-changing request
+### 2.2 Solicitação de mudança de estado
 
-A request is state-changing if it can create/update/delete data, change auth/session state, trigger side effects (purchase, email send, webhook send), or initiate privileged actions.
+Uma solicitação muda de estado se puder criar/atualizar/excluir dados, alterar o estado de autenticação/sessão, acionar efeitos colaterais (compra, envio de e-mail, envio de webhook) ou iniciar ações privilegiadas.
 
-Special note for Next.js:
+Nota especial para Next.js:
 
-- **Server Actions** are invoked via network requests and can mutate state; treat them as state-changing endpoints. ([Next.js][5])
+- **Ações do servidor** são invocadas por meio de solicitações de rede e podem alterar o estado; trate-os como pontos finais de mudança de estado. ([Próximo.js][5])
 
-### 2.3 Required audit finding format
+### 2.3 Formato de descoberta de auditoria necessário
 
-For each issue found, output:
+Para cada problema encontrado, produza:
 
-- Rule ID:
-- Severity: Critical / High / Medium / Low
-- Location: file path + function/route name + line(s)
-- Evidence: the exact code/config snippet
-- Impact: what could go wrong, who can exploit it
-- Fix: safe change (prefer minimal diff)
-- Mitigation: defense-in-depth if immediate fix is hard
-- False positive notes: what to verify if uncertain
-
----
-
-## 3) Secure baseline: minimum production configuration (MUST in production)
-
-This is the smallest “production baseline” that prevents common Next.js backend misconfigurations.
-
-### 3.1 Run Next.js in production mode (MUST)
-
-- MUST run `next build` + `next start` (or the managed platform equivalent), not `next dev`. Dev mode has different error/reporting behavior and is not designed for production exposure. ([Next.js][6])
-- MUST ensure `NODE_ENV=production` in production (Next.js defaults `NODE_ENV` based on command; verify the runtime environment). ([Next.js][7])
-
-### 3.2 Put a reverse proxy / edge layer in front when self-hosting (MUST for public internet)
-
-- If self-hosting, MUST place a reverse proxy (e.g., nginx) or equivalent edge layer in front of the Next.js server to handle malformed requests, slow attacks, payload size limits, rate limiting, and similar concerns. ([Next.js][8])
-
-### 3.3 Baseline header/cookie posture (SHOULD)
-
-- SHOULD set a baseline of security headers globally (CSP, `X-Content-Type-Options`, clickjacking defense via CSP `frame-ancestors` and/or `X-Frame-Options`, etc.). Next.js provides guidance for implementing CSP via Proxy/headers. ([Next.js][7])
-- MUST ensure auth/session cookies use secure attributes (`Secure`, `HttpOnly`, `SameSite`) as appropriate. ([Next.js][9])
-  IMPORTANT NOTE: Only set `Secure` in production environment. When running in a local dev environment over HTTP, do not set `Secure` property on cookies. You should do this conditionally based on if the app is running in production mode. You should also include a property like `SESSION_COOKIE_SECURE` which can be used to disable `Secure` cookies when testing over HTTP.
-
-### 3.4 Clear separation between server-only and client code (MUST)
-
-- MUST prevent secrets and privileged logic from being bundled into client code.
-- MUST treat `NEXT_PUBLIC_*` environment variables as public (browser-exposed and inlined at build time). ([Next.js][7])
+- ID da regra:
+- Gravidade: Crítica / Alta / Média / Baixa
+- Localização: caminho do arquivo + nome da função/rota + linha(s)
+- Evidência: o trecho de código/configuração exato
+- Impacto: o que pode dar errado, quem pode explorar
+- Correção: mudança segura (prefira diferença mínima)
+- Mitigação: defesa profunda se a solução imediata for difícil
+- Notas falso-positivas: o que verificar em caso de incerteza
 
 ---
 
-## 4) Rules (generation + audit)
+## 3) Linha de base segura: configuração mínima de produção (DEVE em produção)
 
-Each rule contains: required practice, insecure patterns, detection hints, and remediation.
+Esta é a menor “linha de base de produção” que evita configurações incorretas comuns de back-end do Next.js.
 
-### NEXT-DEPLOY-001: Do not run `next dev` in production; ensure production mode behavior
+### 3.1 Execute Next.js em modo de produção (OBRIGATÓRIO)
 
-Severity: High (if production)
+- DEVE executar `next build` + `next start` (ou o equivalente da plataforma gerenciada), não `next dev`. O modo Dev tem comportamento diferente de erros/relatórios e não foi projetado para exposição de produção. ([Próximo.js][6])
+- DEVE garantir `NODE_ENV=production` na produção (o padrão do Next.js é `NODE_ENV` com base no comando; verifique o ambiente de tempo de execução). ([Próximo.js][7])
 
-NOTE: If they are deploying to a specific Next.js hosting provider, they do not need to worry about this.
+### 3.2 Coloque um proxy reverso/camada de borda na frente durante a auto-hospedagem (OBRIGATÓRIO para Internet pública)
 
-Required:
+- Se for auto-hospedado, DEVE colocar um proxy reverso (por exemplo, nginx) ou camada de borda equivalente na frente do servidor Next.js para lidar com solicitações malformadas, ataques lentos, limites de tamanho de carga útil, limitação de taxa e preocupações semelhantes. ([Próximo.js][8])
 
-- MUST NOT deploy `next dev` or any development server mode to production.
-- MUST ensure production builds and production runtime are used for any public deployment. ([Next.js][6])
+### 3.3 Postura de base do cabeçalho/cookie (DEVE)
 
-Insecure patterns:
+- DEVE definir uma linha de base de cabeçalhos de segurança globalmente (CSP, `X-Content-Type-Options`, defesa contra clickjacking via CSP `frame-ancestors` e/ou `X-Frame-Options`, etc.). Next.js fornece orientação para implementação de CSP por meio de proxy/cabeçalhos. ([Próximo.js][7])
+- DEVE garantir que os cookies de autenticação/sessão usem atributos seguros (`Secure`, `HttpOnly`, `SameSite`) conforme apropriado. ([Próximo.js][9])
+  NOTA IMPORTANTE: Defina `Secure` apenas no ambiente de produção. Ao correr em um
 
-- `next dev` in Docker `CMD`, Procfile, platform start command.
-- `NODE_ENV=development` in production environment config.
-- Debug/dev-only endpoints or flags exposed publicly.
+ambiente de desenvolvimento local sobre HTTP, não defina a propriedade `Secure` nos cookies. Você deve fazer isso condicionalmente com base no fato de o aplicativo estar sendo executado no modo de produção. Você também deve incluir uma propriedade como `SESSION_COOKIE_SECURE` que pode ser usada para desabilitar cookies `Secure` ao testar via HTTP.
 
-Detection hints:
+### 3.4 Separação clara entre código somente servidor e código cliente (MUST)
 
-- Search `package.json` scripts and deployment manifests for `next dev`.
-- Search infra for `NODE_ENV=development` or missing `NODE_ENV`.
-- Check Kubernetes/PM2/systemd entrypoints for `next dev`.
-
-Fix:
-
-- Use `next build` during CI/build and `next start` at runtime (or platform-native build/run).
-- Ensure environment sets `NODE_ENV=production`.
-
-Note:
-
-- Dev mode is fine for local development. Only flag if it is being used as a production entrypoint.
+- DEVE evitar que segredos e lógica privilegiada sejam agrupados no código do cliente.
+- DEVE tratar as variáveis ​​de ambiente `NEXT_PUBLIC_*` como públicas (expostas ao navegador e incorporadas no momento da construção). ([Próximo.js][7])
 
 ---
 
-### NEXT-SUPPLY-001: Stay on supported Next.js releases; patch quickly for security advisories
+## 4) Regras (geração + auditoria)
 
-Severity: High (Critical if known-vulnerable version)
+Cada regra contém: práticas necessárias, padrões inseguros, dicas de detecção e correção.
 
-Required:
+### NEXT-DEPLOY-001: Não execute `next dev` em produção; garantir o comportamento do modo de produção
 
-- MUST run a supported Next.js version line and apply security updates promptly. Next.js documents an LTS/support policy. ([Next.js][10])
-- MUST treat published advisories as urgent upgrade signals (e.g., update to a patched release). ([GitHub][11])
+Gravidade: Alta (se produção)
 
-Insecure patterns:
+NOTA: Se eles estiverem implantando em um provedor de hospedagem Next.js específico, eles não precisam se preocupar com isso.
 
-- Running EOL Next.js major/minor without backported security fixes.
-- Ignoring advisories, or pinning `next` to a vulnerable range.
+Obrigatório:
 
-Detection hints:
+- NÃO DEVE implantar `next dev` ou qualquer modo de servidor de desenvolvimento para produção.
+- DEVE garantir que as compilações de produção e o tempo de execução de produção sejam usados ​​para qualquer implantação pública. ([Próximo.js][6])
 
-- Check `package.json` and lockfiles for `next` version.
-- Compare against Next.js support policy and advisories.
+Padrões inseguros:
 
-IMPORTANT: Any versions older than these minor versions are vulnerable to "react2shell" vulnerability (https://nextjs.org/blog/CVE-2025-66478):
+- `next dev` no Docker `CMD`, Procfile, comando de inicialização da plataforma.
+- `NODE_ENV=development` na configuração do ambiente de produção.
+- Endpoints ou sinalizadores somente de depuração/dev expostos publicamente.
+
+Dicas de detecção:
+
+- Pesquise scripts `package.json` e manifestos de implantação para `next dev`.
+- Pesquise infra por `NODE_ENV=development` ou `NODE_ENV` ausente.
+- Verifique os pontos de entrada do Kubernetes/PM2/systemd para `next dev`.
+
+Consertar:
+
+- Use `next build` durante CI/build e `next start` em tempo de execução (ou build/execução nativa da plataforma).
+- Certifique-se de que o ambiente esteja definido como `NODE_ENV=production`.
+
+Nota:
+
+- O modo Dev é adequado para desenvolvimento local. Sinalize apenas se estiver sendo usado como ponto de entrada de produção.
+
+---
+
+### NEXT-SUPPLY-001: Fique por dentro das versões Next.js suportadas; corrigir rapidamente avisos de segurança
+
+Gravidade: Alta (versão crítica se conhecida como vulnerável)
+
+Obrigatório:
+
+- DEVE executar uma linha de versão Next.js compatível e aplicar atualizações de segurança imediatamente. Next.js documenta uma política LTS/suporte. ([Próximo.js][10])
+- DEVE tratar os avisos publicados como sinais de atualização urgente (por exemplo, atualização para uma versão corrigida). ([GitHub][11])
+
+Padrões inseguros:
+
+- Executando EOL Next.js maior/secundário sem correções de segurança backportadas.
+- Ignorar avisos ou fixar `próximo` a um intervalo vulnerável.
+
+Dicas de detecção:
+
+- Verifique `package.json` e lockfiles para a `próxima versão`.
+- Compare com a política de suporte e avisos do Next.js.
+
+IMPORTANTE: Quaisquer versões anteriores a essas versões secundárias são vulneráveis à vulnerabilidade "react2shell" (https://nextjs.org/blog/CVE-2025-66478):
 15.0.5
 15.1.9
 15.2.6
@@ -203,936 +208,954 @@ IMPORTANT: Any versions older than these minor versions are vulnerable to "react
 15.5.7
 16.0.7
 
-Fix:
+Correção:
 
-- Upgrade `next` to a supported and patched version.
-- Add a dependency update process + CI checks.
+- Atualize `next` para uma versão suportada e corrigida.
+- Adicione um processo de atualização de dependência + verificações de CI.
 
 ---
 
-### NEXT-SECRETS-001: Secrets MUST NOT be committed or exposed to the browser
+### NEXT-SECRETS-001: Os segredos NÃO DEVEM ser confirmados ou expostos ao navegador
 
-Severity: High (Critical if secret is client-exposed)
+Gravidade: Alta (Crítica se o segredo for exposto ao cliente)
 
-Required:
+Obrigatório:
 
-- MUST store secrets in environment variables or a secret manager; MUST NOT commit `.env*` files.
-- MUST treat `.env*` as sensitive; Next.js warns you “almost never want to commit these files.” ([Next.js][7])
-- MUST treat any `NEXT_PUBLIC_*` environment variable as public and browser-visible (inlined into the client bundle at build time). ([Next.js][7])
+- DEVE armazenar segredos em variáveis ​​de ambiente ou em um gerenciador de segredos; NÃO DEVE submeter arquivos `.env*`.
+- DEVE tratar `.env*` como sensível; Next.js avisa que “quase nunca deseja enviar esses arquivos”. ([Próximo.js][7])
+- DEVE tratar qualquer variável de ambiente `NEXT_PUBLIC_*` como pública e visível ao navegador (incorporada ao pacote do cliente no momento da construção). ([Próximo.js][7])
 
-Insecure patterns:
+Padrões inseguros:
 
-- `.env`, `.env.local`, `.env.production` committed to git.
+- `.env`, `.env.local`, `.env.production` comprometido com o git.
 - `NEXT_PUBLIC_API_KEY`, `NEXT_PUBLIC_SECRET`, `NEXT_PUBLIC_DATABASE_URL`, etc.
-- Rendering `process.env` values into HTML or returning them from API routes.
+- Renderizar valores `process.env` em HTML ou retorná-los de rotas de API.
 
-Detection hints:
+Dicas de detecção:
 
-- Scan git history and repo files for `.env` content, `DB_PASS=`, `API_KEY=`, `SECRET=`.
-- Grep for `NEXT_PUBLIC_` and review any sensitive-looking names.
-- Search for `process.env` usage in Client Components (`"use client"`) and shared modules.
+- Verifique o histórico do git e os arquivos repo em busca de conteúdo `.env`, `DB_PASS=`, `API_KEY=`, `SECRET=`.
+- Grep para `NEXT_PUBLIC_` e revise quaisquer nomes de aparência sensível.
+- Pesquise o uso de `process.env` em Componentes Cliente (`"use client"`) e módulos compartilhados.
 
-Fix:
+Correção:
 
-- Move secrets to server-only env vars (no `NEXT_PUBLIC_` prefix).
-- Ensure `.env*` is ignored and secrets are injected at deploy time.
-- Rotate leaked keys.
-
----
-
-### NEXT-SECRETS-002: Avoid server-only → client bundling mistakes (server/client boundary is a security boundary)
-
-Severity: High
-
-Required:
-
-- MUST ensure server-only modules (DB clients, secret-dependent code) are not imported into Client Components or other client-bundled code paths.
-- SHOULD use server-only patterns/layers (e.g., a dedicated DAL and server-only modules) and treat boundary violations as security bugs. Next.js explicitly discusses the “server-only” concept for sensitive modules. ([Next.js][6])
-
-Insecure patterns:
-
-- Importing DB clients, admin SDKs, or secret-reading modules into `"use client"` components.
-- Shared `lib/` modules imported by both server and client code that reference secrets.
-
-Detection hints:
-
-- Search for `"use client"` and examine its imports for server-only dependencies.
-- Look for DB client packages (`pg`, `mysql2`, `mongoose`, `prisma`, admin SDKs) imported from `components/` or other client paths.
-- Search for `process.env` access in UI components.
-
-Fix:
-
-- Refactor into `lib/server/*` and only import from server contexts (Route Handlers, Server Components, Server Actions).
-- Add an explicit “server-only” guard pattern (and/or tests) to prevent accidental imports.
+- Mova segredos para env vars somente de servidor (sem prefixo `NEXT_PUBLIC_`).
+- Certifique-se de que `.env*` seja ignorado e que os segredos sejam injetados no momento da implantação.
+- Gire as chaves vazadas.
 
 ---
 
-### NEXT-AUTH-001: Authentication/authorization MUST be enforced server-side for every protected action
+### NEXT-SECRETS-002: Evite erros de empacotamento somente de servidor → cliente (o limite servidor/cliente é um limite de segurança)
 
-Severity: High
+Gravidade: Alta
 
-Required:
+Obrigatório:
 
-- MUST enforce authn/authz in server-side code for:
-  - Route Handlers (`app/**/route.ts`) ([Next.js][1])
-  - API Routes (`pages/api/**`) ([Next.js][3])
-  - Server Actions (`"use server"` functions invoked by clients) ([Next.js][6])
+- DEVE garantir que módulos somente de servidor (clientes de banco de dados, código dependente de segredo) não sejam importados para componentes de cliente ou outros caminhos de código agrupados pelo cliente.
+- DEVE usar padrões/camadas somente de servidor (por exemplo, um DAL dedicado e módulos somente de servidor) e tratar violações de limites como bugs de segurança. Next.js discute explicitamente o conceito “somente servidor” para módulos confidenciais. ([Próximo.js][6])
 
-- MUST NOT rely on client-side checks (hiding UI, route guards on the client) as the only protection.
+Padrões inseguros:
 
-Insecure patterns:
+- Importação de clientes de banco de dados, SDKs administrativos ou módulos de leitura secreta para componentes `"use client"`.
+- Módulos `lib/` compartilhados importados pelo código do servidor e do cliente que fazem referência a segredos.
 
-- Sensitive Route Handlers with no session verification.
-- Server Actions that mutate data but do not validate user identity/permissions.
-- “Authorization” checks in React components only.
+Dicas de detecção:
 
-Detection hints:
+- Procure por `"use client"` e examine suas importações para dependências somente de servidor.
+- Procure por pacotes de clientes de banco de dados (`pg`, `mysql2`, `mongoose`, `prisma`, SDKs admin) importados de `components/` ou outros caminhos de cliente.
+- Pesquise o acesso `process.env` nos componentes da UI.
 
-- Enumerate all Route Handlers and API Routes; for each, identify whether it requires auth.
-- Grep for `"use server"` and review all exported actions for auth checks.
-- Search for admin actions triggered by query params / form submits.
+Consertar:
 
-Fix:
-
-- Centralize auth helpers and call them in every protected endpoint/action.
-- Implement least-privilege authorization checks (role/resource ownership) per action.
+- Refatore em `lib/server/*` e importe apenas de contextos de servidor (Route Handlers, Server Components, Server Actions).
+- Adicione um padrão de proteção (e/ou testes) explícito “somente servidor” para evitar importações acidentais.
 
 ---
 
-### NEXT-AUTH-002: Proxy/Middleware-based auth MUST NOT create route coverage gaps
+### NEXT-AUTH-001: A autenticação/autorização DEVE ser aplicada no lado do servidor para cada ação protegida
 
-Severity: High
+Gravidade: Alta
 
-Required:
+Obrigatório:
 
-- If using **Proxy** or **Middleware** for authentication checks, MUST ensure it covers every route that needs protection.
-- Next.js documentation notes Proxy can use a `matcher`, and for auth it’s recommended Proxy runs on all routes. ([Next.js][12])
-- MUST treat `matcher` mistakes as an auth bypass risk.
+- DEVE impor authn/authz no código do lado do servidor para:
+  - Manipuladores de rota (`app/**/route.ts`) ([Next.js][1])
+  - Rotas de API (`pages/api/**`) ([Next.js][3])
+  - Ações do Servidor (funções `"use server"` invocadas pelos clientes) ([Next.js][6])
 
-Insecure patterns:
+- NÃO DEVE confiar em verificações do lado do cliente (ocultar UI, protetores de rota no cliente) como a única proteção.
 
-- Proxy/Middleware only matches “pages” but not `/api/*`, or only matches some route groups.
-- “Denylist” style matchers that miss alternative request forms (framework-internal variants, RSC navigations, etc.).
+Padrões inseguros:
 
-Detection hints:
+- Manipuladores de rotas sensíveis sem verificação de sessão.
+- Ações do servidor que alteram dados, mas não validam a identidade/permissões do usuário.
+- Verificações de “autorização” apenas em componentes React.
 
-- Inspect `proxy.ts` / `middleware.ts` and its `matcher`.
-- Compare matchers to the full set of routes (including `app/api/**` and `pages/api/**`).
-- Ensure static assets and Next internals are excluded only intentionally, and that sensitive routes are included.
+Dicas de detecção:
 
-Fix:
+- Enumerar todos os Route Handlers e Rotas API; para cada um, identifique se requer autenticação.
+- Grep para `"use server"` e revise todas as ações exportadas para verificações de autenticação.
+- Pesquise ações administrativas acionadas por parâmetros de consulta/envios de formulários.
 
-- Prefer allowlisting protected route prefixes or running Proxy globally and doing internal allow/deny logic.
-- Add integration tests: request protected route without auth and assert denial.
+Consertar:
 
-Notes:
-
-- Proxy is commonly used for “optimistic checks”; it is not a complete authorization system by itself. ([Next.js][12])
-
----
-
-### NEXT-CSRF-001: Cookie-authenticated state-changing endpoints MUST be CSRF-protected
-
-Severity: High
-
-- IMPORTANT NOTE: If cookies are not being used for auth (ie auth is via Authentication header or other passed token), then there is no CSRF risk.
-
-Required:
-
-- MUST protect every state-changing endpoint that relies on cookies for auth (POST/PUT/PATCH/DELETE).
-- For **Server Actions**, Next.js performs an Origin/Host comparison to help prevent CSRF; do not disable or weaken it. ([Next.js][5])
-- If Server Actions must be callable from additional trusted origins (e.g., a trusted proxy domain), MUST use `allowedOrigins` with a strict allowlist. ([Next.js][5])
-- For **Route Handlers** and **API Routes**, MUST implement CSRF protections explicitly (tokens and/or strict Origin/Referer + SameSite + custom headers). Route Handlers are an “escape hatch” and require application-level security decisions. ([Next.js][6])
-
-Insecure patterns:
-
-- POST endpoints (including Server Actions) that mutate state and accept cross-site requests with no token/origin checks.
-- `allowedOrigins: ['*']` (or broad wildcards) or “reflect Origin” logic.
-- Using GET requests to change state.
-
-Detection hints:
-
-- Enumerate all state-changing endpoints and determine auth mechanism.
-- Search for `allowedOrigins` and confirm the list is small, specific, and justified. ([Next.js][5])
-- In Route Handlers/API Routes: look for missing CSRF token validation or missing Origin/Referer checks.
-
-Fix:
-
-- Implement a CSRF token strategy for cookie-auth endpoints.
-- Keep cookies `SameSite=Lax` or `Strict` when compatible; don’t treat SameSite alone as sufficient.
-- Use strict Origin validation for JSON API endpoints, especially when not using CSRF tokens.
-
-Notes:
-
-- XSS can defeat CSRF protections; CSRF defenses do not replace XSS prevention.
+- Centralize os auxiliares de autenticação e chame-os em cada endpoint/ação protegido.
+- Implementar verificações de autorização de privilégio mínimo (propriedade de função/recurso) por ação.
 
 ---
 
-### NEXT-SESS-001: Session cookies MUST use secure attributes in production
+### NEXT-AUTH-002: Autenticação baseada em proxy/middleware NÃO DEVE criar lacunas de cobertura de rota
 
-Severity: Medium
+Gravidade: Alta
 
-Required (production, HTTPS):
+Obrigatório:
 
-- MUST set session/auth cookies with:
-  - `Secure: true` (HTTPS-only) IMPORTANT NOTE: Only set `Secure` in production environment. When running in a local dev environment over HTTP, do not set `Secure` property on cookies. You should do this conditionally based on if the app is running in production mode. You should also include a property like `SESSION_COOKIE_SECURE` which can be used to disable `Secure` cookies when testing over HTTP.
-  - `HttpOnly: true` (not readable by JS)
-  - `SameSite: 'Lax'` (recommended) or `'Strict'` if compatible
+- Se estiver usando **Proxy** ou **Middleware** para verificações de autenticação, DEVE garantir que ele cubra todas as rotas que precisam de proteção.
+- Notas da documentação do Next.js O proxy pode usar um `matcher` e, para autenticação, é recomendado que o proxy seja executado em todas as rotas. ([Próximo.js][12])
+- DEVE tratar os erros do `matcher` como um risco de desvio de autenticação.
 
-- Only use `SameSite: 'none'` when you truly need cross-site cookies, and then MUST also set `Secure`. Cookie options are supported in Next.js cookie APIs. ([Next.js][9])
+Padrões inseguros:
 
-Insecure patterns:
+- Proxy/Middleware corresponde apenas a “páginas”, mas não a `/api/*`, ou corresponde apenas a alguns grupos de rotas.
+- Correspondentes de estilo “lista de bloqueios” que perdem formulários de solicitação alternativos (variantes internas da estrutura, navegações RSC, etc.).
 
-- `secure: false` in production.
-- `httpOnly: false` for auth cookies.
-- `sameSite: 'none'` without a clear need, especially on cookie-authenticated state-changing endpoints.
+Dicas de detecção:
 
-Detection hints:
+- Inspecione `proxy.ts` / `middleware.ts` e seu `matcher`.
+- Compare os matchers com o conjunto completo de rotas (incluindo `app/api/**` e `pages/api/**`).
+- Certifique-se de que os ativos estáticos e os internos do Next sejam excluídos apenas intencionalmente e que as rotas confidenciais sejam incluídas.
 
-- Search for cookie setting sites (`cookies().set(...)`, `Set-Cookie` headers, auth library cookie config).
-- Review cookie options used in Route Handlers and Server Actions. ([Next.js][9])
+Consertar:
 
-Fix:
+- Prefira incluir prefixos de rotas protegidas na lista de permissões ou executar o Proxy globalmente e fazer lógica interna de permissão/negação.
+- Adicionar testes de integração: solicitar rota protegida sem autenticação e afirmar negação.
 
-- Set secure cookie attributes at the auth/session layer.
-- Reduce cookie scope: avoid wide `domain` unless you explicitly need subdomain-wide cookies.
+Notas:
 
----
-
-### NEXT-SESS-002: Sessions MUST be bounded and resistant to fixation/replay
-
-Severity: Low
-
-Required:
-
-- SHOULD set bounded session lifetimes appropriate to the app.
-- SHOULD rotate session identifiers on login and privilege changes.
-- MUST NOT store sensitive secrets directly in client-readable storage (including cookies that are not encrypted).
-
-Insecure patterns:
-
-- Long-lived admin sessions with no rotation.
-- “Remember me forever” for privileged roles without additional risk controls.
-- Storing access tokens/refresh tokens in non-HttpOnly cookies or localStorage.
-
-Detection hints:
-
-- Review auth library configuration for expiration and rotation.
-- Search for `localStorage.setItem('token'...)` and non-HttpOnly cookie usage.
-
-Fix:
-
-- Use short lifetimes for privileged sessions; refresh with rotation.
-- Store only opaque session IDs in cookies; keep sensitive material server-side.
+- O proxy é comumente usado para “verificações otimistas”; não é um sistema de autorização completo por si só. ([Próximo.js][12])
 
 ---
 
-### NEXT-INPUT-001: Runtime input validation is mandatory (TypeScript is not validation)
+### NEXT-CSRF-001: Endpoints de mudança de estado autenticados por cookie DEVEM ser protegidos por CSRF
 
-Severity: High
+Gravidade: Alta
 
-Required:
+- NOTA IMPORTANTE: Se os cookies não estiverem sendo usados ​​para autenticação (ou seja, a autenticação é via cabeçalho de autenticação ou outro token passado), então não há risco de CSRF.
 
-- MUST validate and normalize all attacker-controlled input at runtime (schemas, type checks, bounds).
-- Next.js API Routes explicitly note `req.body` is `any` and must be validated before use. ([Next.js][3])
-- MUST validate Server Action arguments (treat as hostile). ([Next.js][6])
+Obrigatório:
 
-Insecure patterns:
+- DEVE proteger todos os endpoints de mudança de estado que dependem de cookies para autenticação (POST/PUT/PATCH/DELETE).
+- Para **Ações do Servidor**, Next.js realiza uma comparação Origem/Host para ajudar a prevenir CSRF; não o desative ou enfraqueça. ([Próximo.js][5])
+- Se as ações do servidor precisarem ser chamadas de origens confiáveis adicionais (por exemplo, um domínio proxy confiável), DEVE usar `allowedOrigins` com uma lista de permissões estrita. ([Próximo.js][5])
+- Para **Manipuladores de Rotas** e **Rotas de API**, M
 
-- Trusting `req.body` shape directly.
-- Passing `params.id`/`searchParams` directly into DB queries or file paths.
-- Parsing JSON and then assuming types without validation.
+UST implementa proteções CSRF explicitamente (tokens e/ou Origin/Referer estrito + SameSite + cabeçalhos personalizados). Os manipuladores de rotas são uma “saída de emergência” e exigem decisões de segurança em nível de aplicativo. ([Próximo.js][6])
 
-Detection hints:
+Padrões inseguros:
 
-- Identify endpoints that accept JSON/form input and check for schema validation.
-- Grep for `req.body.` usage and for `await request.json()` usage in Route Handlers; verify validation exists.
+- Endpoints POST (incluindo ações do servidor) que alteram o estado e aceitam solicitações entre sites sem verificações de token/origem.
+- `allowedOrigins: ['*']` (ou curingas amplos) ou lógica “refletir Origem”.
+- Usando solicitações GET para alterar o estado.
 
-Fix:
+Dicas de detecção:
 
-- Add schema validation (e.g., zod/yup/valibot) and reject invalid input with 4xx.
-- Validate IDs as strict types (UUID/int) and enforce length/charset constraints.
+- Enumere todos os endpoints que mudam de estado e determine o mecanismo de autenticação.
+- Pesquise `allowedOrigins` e confirme se a lista é pequena, específica e justificada. ([Próximo.js][5])
+- Em Route Handlers/API Routes: procure por falta de validação de token CSRF ou falta de verificações de origem/referente.
+
+Consertar:
+
+- Implementar uma estratégia de token CSRF para endpoints de autenticação de cookie.
+- Manter cookies `SameSite=Lax` ou `Strict` quando compatíveis; não trate SameSite sozinho como suficiente.
+- Use validação estrita de origem para endpoints de API JSON, especialmente quando não estiver usando tokens CSRF.
+
+Notas:
+
+- XSS pode derrotar proteções CSRF; As defesas CSRF não substituem a prevenção XSS.
 
 ---
 
-### NEXT-HEADERS-001: Essential security headers MUST be set (in app or at the edge)
+### NEXT-SESS-001: Os cookies de sessão DEVEM usar atributos seguros na produção
 
-Severity: Low
+Gravidade: Média
 
-Required (typical web app):
+Obrigatório (produção, HTTPS):
 
-- SHOULD set:
-  - CSP (`Content-Security-Policy`) (see NEXT-CSP-001)
+- DEVE definir cookies de sessão/autenticação com:
+  - `Secure: true` (somente HTTPS) NOTA IMPORTANTE: Defina `Secure` apenas no ambiente de produção. Ao executar em um ambiente de desenvolvimento local via HTTP, não defina a propriedade `Secure` nos cookies. Você deve fazer isso condicionalmente com base no fato de o aplicativo estar sendo executado no modo de produção. Você também deve incluir uma propriedade como `SESSION_COOKIE_SECURE` que pode ser usada para desabilitar cookies `Secure` ao testar via HTTP.
+  - `Http
+
+Somente: true` (não legível por JS)
+
+- `SameSite: 'Lax'` (recomendado) ou `'Strict'` se compatível
+
+- Use `SameSite: 'none'` apenas quando você realmente precisar de cookies entre sites e DEVE também definir `Secure`. As opções de cookies são suportadas nas APIs de cookies Next.js. ([Próximo.js][9])
+
+Padrões inseguros:
+
+- `seguro: falso` em produção.
+- `httpOnly: false` para cookies de autenticação.
+- `sameSite: 'none'` sem uma necessidade clara, especialmente em endpoints de mudança de estado autenticados por cookie.
+
+Dicas de detecção:
+
+- Pesquise sites de configuração de cookies (`cookies().set(...)`, cabeçalhos `Set-Cookie`, configuração de cookie da biblioteca de autenticação).
+- Revise as opções de cookies usadas em Route Handlers e Server Actions. ([Próximo.js][9])
+
+Correção:
+
+- Defina atributos de cookies seguros na camada de autenticação/sessão.
+- Reduza o escopo dos cookies: evite `domínios` amplos, a menos que você precise explicitamente de cookies para todo o subdomínio.
+
+---
+
+### NEXT-SESS-002: As sessões DEVEM ser limitadas e resistentes à fixação/repetição
+
+Gravidade: Baixa
+
+Obrigatório:
+
+- DEVE definir tempos de vida de sessão limitados apropriados ao aplicativo.
+- DEVE alternar os identificadores de sessão nas alterações de login e privilégios.
+- NÃO DEVE armazenar segredos confidenciais diretamente em armazenamento legível pelo cliente (incluindo cookies que não são criptografados).
+
+Padrões inseguros:
+
+- Sessões administrativas de longa duração sem rotação.
+- “Lembre-se de mim para sempre” para funções privilegiadas sem controles de risco adicionais.
+- Armazenar tokens de acesso/tokens de atualização em cookies não HttpOnly ou localStorage.
+
+Dicas de detecção:
+
+- Revise a configuração da biblioteca de autenticação para expiração e rotação.
+- Procure por `localStorage.setItem('token'...)` e uso de cookies não HttpOnly.
+
+Consertar:
+
+- Utilize tempos de vida curtos para sessões privilegiadas; atualizar com rotação.
+- Armazene apenas IDs de sessão opacos em cookies; mantenha o material confidencial no lado do servidor.
+
+---
+
+### NEXT-INPUT-001: A validação de entrada em tempo de execução é obrigatória (TypeScript não é validação)
+
+Gravidade: Alta
+
+Obrigatório:
+
+- DEVE validar e normalizar todas as entradas controladas pelo invasor em tempo de execução (esquemas, verificações de tipo, limites).
+- As rotas da API Next.js observam explicitamente que `req.body` é `any` e devem ser validadas antes do uso. ([Próximo.js][3])
+- DEVE validar argumentos de ação do servidor (tratar como hostis). ([Próximo.js][6])
+
+Padrões inseguros:
+
+- Confiar diretamente na forma `req.body`.
+- Passando `params.id`/`searchParams` diretamente em consultas de banco de dados ou caminhos de arquivo.
+- Analisando JSON e assumindo tipos sem validação.
+
+Dicas de detecção:
+
+- Identifique endpoints que aceitam entrada JSON/formulário e verifique a validação do esquema.
+- Grep para uso de `req.body.` e para uso de `await request.json()` em Route Handlers; verificar se a validação existe.
+
+Consertar:
+
+- Adicione validação de esquema (por exemplo, zod/yup/valibot) e rejeite entradas inválidas com 4xx.
+- Valide IDs como tipos estritos (UUID/int) e aplique restrições de comprimento/conjunto de caracteres.
+
+---
+
+### NEXT-HEADERS-001: Cabeçalhos de segurança essenciais DEVEM ser definidos (no aplicativo ou na borda)
+
+Gravidade: Baixa
+
+Obrigatório (aplicativo web típico):
+
+- DEVE definir:
+  - CSP (`Política de Segurança de Conteúdo`) (consulte NEXT-CSP-001)
   - `X-Content-Type-Options: nosniff`
-  - Clickjacking defense (`frame-ancestors` in CSP and/or `X-Frame-Options`)
-  - `Referrer-Policy` and `Permissions-Policy` when appropriate
+  - Defesa contra clickjacking (`frame-ancestors` em CSP e/ou `X-Frame-Options`)
+  - `Referrer-Policy` e `Permissions-Policy` quando apropriado
 
-- MUST ensure cookies are set with secure attributes (see NEXT-SESS-001). ([Next.js][9])
+- DEVE garantir que os cookies sejam definidos com atributos seguros (consulte NEXT-SESS-001). ([Próximo.js][9])
 
-Insecure patterns:
+Padrões inseguros:
 
-- No security headers anywhere (app or edge).
-- Allowing iframing unintentionally.
-- `Content-Type` sniffing possible due to missing `nosniff`.
+- Sem cabeçalhos de segurança em qualquer lugar (aplicativo ou borda).
+- Permitir iframe involuntariamente.
+- É possível detectar `Content-Type` devido à falta de `nosniff`.
 
-Detection hints:
+Dicas de detecção:
 
-- Check `proxy.ts` / middleware for `response.headers.set(...)`. ([Next.js][7])
-- If not visible in app code, flag as “verify at edge/CDN”.
+- Verifique `proxy.ts`/middleware para `response.headers.set(...)`. ([Próximo.js][7])
+- Se não estiver visível no código do aplicativo, sinalize como “verificar na borda/CDN”.
 
-Fix:
+Correção:
 
-- Set headers centrally (Proxy/Middleware or other centralized mechanism).
-- Ensure consistent headers across routes.
-
----
-
-### NEXT-CSP-001: Use a CSP to reduce XSS impact; prefer nonces for scripts
-
-Severity: Medium
-
-NOTE: It is most important to set the CSP's script-src. All other directives are not as important and can generally be excluded for the ease of development.
-
-Required:
-
-- SHOULD deploy a CSP, ideally with nonces for scripts.
-- SHOULD follow Next.js guidance for CSP implementation (including nonce generation and header application). ([Next.js][7])
-- MUST avoid loosening CSP as a “fix” (e.g., `script-src 'unsafe-inline'`) without explicit risk acceptance.
-
-Insecure patterns:
-
-- CSP missing on apps that display user-generated HTML/markdown.
-- CSP that broadly enables inline scripts or eval without strict justification.
-
-Detection hints:
-
-- Search for `Content-Security-Policy` header setting and examine its directives.
-- Check use of `next/script` and whether a nonce is provided when CSP requires it.
-
-Fix:
-
-- Implement CSP per Next.js guidance; use a nonce and apply it consistently.
-- Reduce inline scripts; avoid `eval`.
-
-Notes:
-
-- CSP is defense-in-depth; it does not replace proper output encoding and sanitization.
+- Definir cabeçalhos centralmente (Proxy/Middleware ou outro mecanismo centralizado).
+- Garanta cabeçalhos consistentes em todas as rotas.
 
 ---
 
-### NEXT-XSS-001: Prevent reflected/stored XSS in React/Next rendering
+### NEXT-CSP-001: Use um CSP para reduzir o impacto do XSS; prefira nonces para scripts
 
-Severity: High
+Gravidade: Média
 
-Required:
+NOTA: É muito importante definir o script-src do CSP. Todas as outras directivas não são tão importantes e geralmente podem ser excluídas para facilitar o desenvolvimento.
 
-- MUST rely on React’s default escaping; MUST NOT insert untrusted HTML into the DOM without sanitization.
-- MUST treat these as high-risk sinks:
-  - `dangerouslySetInnerHTML`
-  - rendering user-controlled strings into `<script>` tags or event handler attributes
+Obrigatório:
 
-- MUST avoid serving uploaded HTML as active HTML (serve as attachment or sanitize/transform).
+- DEVE implantar um CSP, de preferência com nonces para scripts.
+- DEVE seguir as orientações do Next.js para implementação de CSP (incluindo geração de nonce e aplicação de cabeçalho). ([Próximo.js][7])
+- DEVE evitar afrouxar o CSP como uma “correção” (por exemplo, `script-src 'unsafe-inline'`) sem aceitação explícita de riscos.
 
-Insecure patterns:
+Padrões inseguros:
 
-- `<div dangerouslySetInnerHTML={{ __html: userContent }} />` with no sanitizer.
-- Markdown renderers configured to allow raw HTML with no sanitizer.
-- Returning user content with `Content-Type: text/html` from a Route Handler.
+- CSP ausente em aplicativos que exibem HTML/markdown gerados pelo usuário.
+- CSP que permite amplamente scripts in-line ou avaliação sem justificativa estrita.
 
-Detection hints:
+Dicas de detecção:
 
-- Search for `dangerouslySetInnerHTML`, `__html:`.
-- Search for template-like string concatenation that builds HTML.
-- Review any “render HTML” or “preview” features.
+- Pesquise a configuração do cabeçalho `Content-Security-Policy` e examine suas diretivas.
+- Verifique o uso de `next/script` e se um nonce é fornecido quando o CSP exige.
 
-Fix:
+Consertar:
 
-- Sanitize untrusted HTML with a well-maintained sanitizer; prefer strict allowlists.
-- Prefer rendering user content as text, not HTML.
-- Add CSP to reduce impact.
+- Implementar CSP conforme orientação do Next.js; use um nonce e aplique-o de forma consistente.
+- Reduza scripts embutidos; evite `eval`.
+
+Notas:
+
+- CSP é uma defesa profunda; ele não substitui a codificação e higienização de saída adequadas.
 
 ---
 
-### NEXT-ACTION-001: Server Actions MUST be treated like public endpoints
+### NEXT-XSS-001: Impedir XSS refletido/armazenado na renderização React/Next
 
-Severity: High (Critical for privileged actions)
+Gravidade: Alta
 
-Required:
+Obrigatório:
 
-- MUST apply the same controls as for Route Handlers:
+- DEVE confiar no escape padrão do React; NÃO DEVE inserir HTML não confiável no DOM sem higienização.
+- DEVE tratá-los como sumidouros de alto risco:
+  - `perigosamenteSetInnerHTML`
+  - renderização de strings controladas pelo usuário em tags `<script>` ou atributos do manipulador de eventos
+
+- DEVE evitar servir HTML carregado como HTML ativo (servir como anexo ou higienizar/transformar).
+
+Padrões inseguros:
+
+- `<div perigosamenteSetInnerHTML={{ __html: userContent }} />` sem desinfetante.
+- Renderizadores Markdown configurados para permitir HTML bruto sem sanitizador.
+- Retornando conteúdo do usuário com `Content-Type: text/html` de um Route Handler.
+
+Dicas de detecção:
+
+- Procure por `dangerouslySetInnerHTML`, `__html:`.
+- Pesquise concatenação de strings semelhante a um modelo que cria HTML.
+- Revise quaisquer recursos de “renderização de HTML” ou “visualização”.
+
+Consertar:
+
+- Limpe HTML não confiável com um desinfetante bem conservado; prefira listas de permissões estritas.
+- Prefira renderizar o conteúdo do usuário como texto, não como HTML.
+- Adicione CSP para reduzir o impacto.
+
+---
+
+### NEXT-ACTION-001: As ações do servidor DEVEM ser tratadas como endpoints públicos
+
+Gravidade: Alta (Crítica para ações privilegiadas)
+
+Obrigatório:
+
+- DEVE aplicar os mesmos controles dos Route Handlers:
   - authn/authz
-  - input validation
-  - CSRF/origin protections
-  - rate limiting for sensitive actions
+  - validação de entrada
+  - Proteções CSRF/origem
+  - limitação de taxa para ações sensíveis
 
-- MUST NOT assume Server Actions are “not reachable” or “internal”.
-- MUST understand Server Action request protections:
-  - Next.js compares Origin with host to mitigate CSRF; extra origins must be explicitly allowlisted via `allowedOrigins`. ([Next.js][5])
+- NÃO DEVE presumir que as Ações do Servidor são “inacessíveis” ou “internas”.
+- DEVE compreender as proteções de solicitação de ação do servidor:
+  - Next.js compara Origin com host para mitigar CSRF; origens extras devem ser explicitamente incluídas na lista de permissões por meio de `allowedOrigins`. ([Próximo.js][5])
 
-Insecure patterns:
+Padrões inseguros:
 
-- `"use server"` functions that update DB state with no auth check.
-- Adding overly broad `allowedOrigins` to “make it work”.
+- Funções `"use server"` que atualizam o estado do banco de dados sem verificação de autenticação.
+- Adicionando `allowedOrigins` excessivamente amplo para “fazer funcionar”.
 
-Detection hints:
+Dicas de detecção:
 
-- Grep for `"use server"` and inventory all exported actions.
-- Identify any action doing privileged writes; confirm it checks identity and permission.
+- Grep para `"use server"` e inventariar todas as ações exportadas.
+- Identifique qualquer ação realizando gravações privilegiadas; confirme que verifica a identidade e a permissão.
 
-Fix:
+Correção:
 
-- Wrap actions with an authz helper (fail closed).
-- Keep `allowedOrigins` minimal and audited.
-
----
-
-### NEXT-ACTION-002: Do not accidentally leak secrets through Server Action closure/binding patterns
-
-Severity: Medium (High if important secrets are exposed)
-
-Required:
-
-- MUST treat Server Action closed-over values as sensitive and design intentionally.
-- Next.js notes that closed-over values are encrypted/signed, but values passed through `.bind` are not encrypted; do not rely on `.bind` to protect secrets. ([Next.js][6])
-- If using a stable encryption key for Server Actions across deployments, MUST treat it as a secret and store securely (do not commit/log it). ([Next.js][6])
-
-Insecure patterns:
-
-- `myAction.bind(null, process.env.SECRET)` or binding sensitive tokens/IDs that should not be client-influenced.
-- Logging action arguments that include secrets.
-
-Detection hints:
-
-- Search for `.bind(` on Server Action functions.
-- Search for `process.env` usage near Server Actions.
-
-Fix:
-
-- Avoid binding secrets into actions; fetch secrets server-side inside the action.
-- Keep action arguments minimal and validated.
+- Envolver ações com um auxiliar authz (falha fechada).
+- Mantenha `allowedOrigins` mínimo e auditado.
 
 ---
 
-### NEXT-CACHE-001: Prevent data leaks via static rendering and shared caching
+### NEXT-ACTION-002: Não vaze acidentalmente segredos por meio de padrões de fechamento/ligação de ação do servidor
 
-Severity: High (Critical if cross-user data leak)
+Gravidade: Média (Alta se segredos importantes forem expostos)
 
-Required:
+Obrigatório:
 
-- MUST ensure pages/endpoints that return user-specific or sensitive data are not statically generated or cached in a shared way.
-- Route Handlers are not cached by default, but GET handlers can opt into caching/static behavior; do not do this for per-user data. ([Next.js][1])
-- MUST treat `use cache` and similar caching mechanisms as potentially cross-user unless explicitly proven private; do not cache per-user DB results in shared caches. ([Next.js][1])
-- SHOULD set explicit `Cache-Control: no-store` / `private` for sensitive responses (auth/session/user data APIs).
+- DEVE tratar os valores fechados da Ação do Servidor como confidenciais e projetá-los intencionalmente.
+- Next.js observa que os valores fechados são criptografados/assinados, mas os valores passados ​​​​por `.bind` não são criptografados; não confie em `.bind` para proteger segredos. ([Próximo.js][6])
+- Se estiver usando uma chave de criptografia estável para ações do servidor em implantações, DEVE tratá-la como um segredo e armazená-la com segurança (não confirmá-la/registrá-la). ([Próximo.js][6])
 
-Insecure patterns:
+Padrões inseguros:
 
-- `export const dynamic = 'force-static'` on a route that returns user-specific data. ([Next.js][1])
-- Using `use cache` around a function that queries user-specific data without a per-user cache key. ([Next.js][1])
-- Returning auth/session responses from GET endpoints with caching enabled.
+- `myAction.bind(null, process.env.SECRET)` ou vinculação de tokens/IDs sensíveis que não devem ser influenciados pelo cliente.
+- Registrar argumentos de ação que incluem segredos.
 
-Detection hints:
+Dicas de detecção:
 
-- Search for `dynamic = 'force-static'`, `revalidate`, `use cache`, `cacheLife`, `unstable_cache`.
-- Inspect all GET Route Handlers that are cached/static and confirm they only return public data.
-- Confirm that use of `cookies()`/`headers()` (dynamic APIs) is not accidentally removed in ways that make a route static. ([Next.js][1])
+- Procure por `.bind(` nas funções de ação do servidor.
+- Pesquise o uso de `process.env` perto de Ações do Servidor.
 
-Fix:
+Correção:
 
-- Mark sensitive routes as dynamic and set `Cache-Control: no-store`.
-- Ensure caching keys include user identity if caching is truly needed (and store it in a user-private cache).
+- Evite vincular segredos a ações; buscar segredos do lado do servidor dentro da ação.
+- Mantenha os argumentos de ação mínimos e validados.
 
 ---
 
-### NEXT-FILES-001: User uploads MUST be validated, stored safely, and served safely
+### NEXT-CACHE-001: Evite vazamentos de dados por meio de renderização estática e cache compartilhado
 
-Severity: Medium
+Gravidade: Alta (crítica em caso de vazamento de dados entre usuários)
 
-Required:
+Obrigatório:
 
-- MUST enforce upload size limits at the edge and in application logic.
-- MUST validate file type using allowlists and content checks (not only extension).
-- MUST store uploads outside the `public/` directory (anything under `public/` is served as static content by default).
-- MUST serve potentially active formats safely (`Content-Disposition: attachment`) unless explicitly intended.
+- DEVE garantir que as páginas/pontos de extremidade que retornam dados confidenciais ou específicos do usuário não sejam gerados estaticamente ou armazenados em cache de forma compartilhada.
+- Os manipuladores de rota não são armazenados em cache por padrão, mas os manipuladores GET podem optar pelo comportamento de cache/estático; não faça isso para dados por usuário. ([Próximo.js][1])
+- DEVE tratar o `use cache` e mecanismos de cache semelhantes como potencialmente entre usuários, a menos que seja explicitamente provado que é privado; não armazene em cache os resultados do banco de dados por usuário em caches compartilhados. ([Próximo
 
-Insecure patterns:
+t.js][1])
 
-- Accepting arbitrary file types and serving them back inline.
-- Using user-supplied filename as the storage path.
-- Writing uploads into `public/uploads/` and serving them directly.
+- DEVE definir `Cache-Control: no-store` / `private` explícito para respostas confidenciais (APIs de autenticação/sessão/dados do usuário).
 
-Detection hints:
+Padrões inseguros:
 
-- Search for `formData()` / multipart parsing, `fs.writeFile`, storage SDK usage.
-- Look for any write path under `public/`.
-- Look for “download” endpoints that set `Content-Type: text/html` or serve user files inline.
+- `export const dynamic = 'force-static'` em uma rota que retorna dados específicos do usuário. ([Próximo.js][1])
+- Usar `use cache` em torno de uma função que consulta dados específicos do usuário sem uma chave de cache por usuário. ([Próximo.js][1])
+- Retornando respostas de autenticação/sessão de endpoints GET com cache habilitado.
 
-Fix:
+Dicas de detecção:
 
-- Use a dedicated object store (S3/GCS) or a safe server-side directory outside static roots.
-- Generate random server-side filenames; store metadata separately.
+- Procure por `dynamic = 'force-static'`, `revalidate`, `use cache`, `cacheLife`, `unstable_cache`.
+- Inspecione todos os manipuladores de rota GET armazenados em cache/estáticos e confirme se eles retornam apenas dados públicos.
+- Confirme se o uso de `cookies()`/`headers()` (APIs dinâmicas) não é removido acidentalmente de forma que torne uma rota estática. ([Próximo.js][1])
 
----
+Correção:
 
-### NEXT-PATH-001: Prevent path traversal and unsafe file access
-
-Severity: High
-
-Required:
-
-- MUST NOT use user-controlled strings as filesystem paths.
-- MUST validate and normalize identifiers; use allowlists and safe base directories.
-- MUST avoid reading arbitrary files based on request parameters.
-
-Insecure patterns:
-
-- `fs.readFile(request.nextUrl.searchParams.get('path'))`
-- `path.join(base, userPath)` without normalization + boundary checks
-
-Detection hints:
-
-- Search for `fs.` usage in Route Handlers/API Routes.
-- Search for `path.join`/`path.resolve` fed by request params.
-
-Fix:
-
-- Use opaque IDs that map to server-side stored paths.
-- Enforce that resolved paths remain within an intended base directory.
-- Sanitize and disallow `..` from being used when creating urls
+- Marque rotas sensíveis como dinâmicas e defina `Cache-Control: no-store`.
+- Certifique-se de que as chaves de cache incluam a identidade do usuário se o cache for realmente necessário (e armazene-o em um cache privado do usuário).
 
 ---
 
-### NEXT-SSRF-001: Outbound requests using user-influenced URLs MUST be restricted
+### NEXT-FILES-001: Os uploads do usuário DEVEM ser validados, armazenados com segurança e servidos com segurança
 
-Severity: Medium (High in internal networks)
+Gravidade: Média
 
-NOTE: This is mostly only applicable to apps which will be deployed in a cloud/LAN setup or have other http services on the same box. Sometimes the feature requires this functionality unavoidably (webhooks).
+Obrigatório:
 
-Required:
+- DEVE impor limites de tamanho de upload na borda e na lógica do aplicativo.
+- DEVE validar o tipo de arquivo usando listas de permissões e verificações de conteúdo (não apenas extensão).
+- DEVE armazenar uploads fora do diretório `public/` (qualquer coisa em `public/` é servido como conteúdo estático por padrão).
+- DEVE servir formatos potencialmente ativos com segurança (`Disposição de conteúdo: anexo`), a menos que seja explicitamente pretendido.
 
-- MUST treat any server-side `fetch()` to a user-provided URL as high-risk.
-- SHOULD allowlist destinations (hosts/domains) for URL fetch features.
-- SHOULD block:
-  - localhost / private IP ranges / link-local
-  - cloud metadata endpoints
+Padrões inseguros:
 
-- MUST restrict protocols to `http:` and `https:`.
-- SHOULD set strict timeouts and restrict redirects.
+- Aceitar tipos de arquivos arbitrários e servi-los de volta in-line.
+- Usando o nome de arquivo fornecido pelo usuário como caminho de armazenamento.
+- Escrever uploads em `public/uploads/` e servi-los diretamente.
 
-Insecure patterns:
+Dicas de detecção:
 
-- `await fetch(req.query.url)` or `await fetch((await request.json()).url)`
-- “URL preview” endpoints that fetch arbitrary URLs.
+- Pesquise `formData()`/análise multipart, `fs.writeFile`, uso do SDK de armazenamento.
+- Procure qualquer caminho de gravação em `public/`.
+- Procure endpoints de “download” que definam `Content-Type: text/html` ou forneçam arquivos do usuário inline.
 
-Detection hints:
+Consertar:
 
-- Search for `fetch(` in server code and trace where the URL comes from.
-- Look for “webhook tester”, “preview”, “import from URL” features.
-
-Fix:
-
-- Parse URL, enforce `http/https`, allowlist hostnames, re-resolve DNS/IP to block private ranges.
-- Set timeouts (AbortSignal) and limit redirects.
+- Use um armazenamento de objetos dedicado (S3/GCS) ou um diretório seguro no lado do servidor fora das raízes estáticas.
+- Gere nomes de arquivos aleatórios no servidor; armazenar metadados separadamente.
 
 ---
 
-### NEXT-REDIRECT-001: Prevent open redirects (including auth flows)
+### NEXT-PATH-001: Impedir passagem de caminho e acesso inseguro a arquivos
 
-Severity: Low
+Gravidade: Alta
 
-Required:
+Obrigatório:
 
-- MUST validate redirect targets derived from untrusted input (e.g., `next`, `redirect`, `returnTo`).
-- SHOULD prefer redirecting only to same-site relative paths.
-- MUST validate any absolute URL against an allowlist.
-- MUST ensure urls are `http` or `https:` schema, disallowing `javascript:` schema
+- NÃO DEVE usar strings controladas pelo usuário como caminhos do sistema de arquivos.
+- DEVE validar e normalizar identificadores; use listas de permissões e diretórios base seguros.
+- DEVE evitar a leitura de arquivos arbitrários com base nos parâmetros da solicitação.
 
-Insecure patterns:
+Padrões inseguros:
 
-- `redirect(searchParams.get('next')!)`
-- `NextResponse.redirect(new URL(req.nextUrl.searchParams.get('to')!, req.url))` without checks
+- `fs.readFile(request.nextUrl.searchParams.get('caminho'))`
+- `path.join(base, userPath)` sem normalização + verificações de limites
 
-Detection hints:
+Dicas de detecção:
 
-- Search for `redirect(` (server components/actions) and `NextResponse.redirect`.
-- Search for `res.redirect(` in API Routes. ([Next.js][3])
+- Pesquise o uso de `fs.` em Route Handlers/API Routes.
+- Procure por `path.join`/`path.resolve` alimentado por parâmetros de solicitação.
 
-Fix:
+Correção:
 
-- Only allow relative paths (`/path`) and reject protocol-relative (`//evil.com`) or absolute URLs.
-- If invalid, fall back to a safe default (home/dashboard).
-
----
-
-### NEXT-CORS-001: CORS must be explicit and least-privilege
-
-Severity: Medium (High if misconfigured with credentials)
-
-Required:
-
-- If CORS is not needed, MUST keep it disabled.
-- Next.js API Routes do not set CORS headers by default, meaning they are same-origin by default; only enable CORS when you truly need it. ([Next.js][3])
-- If enabling CORS:
-  - MUST allowlist trusted origins (no reflection of arbitrary Origin)
-  - MUST be careful with credentialed requests (cookies); never combine broad origins with credentials.
-  - SHOULD restrict methods and headers.
-
-Insecure patterns:
-
-- `Access-Control-Allow-Origin: *` with `Access-Control-Allow-Credentials: true`
-- Reflecting `Origin` without validation.
-
-Detection hints:
-
-- Search for `Access-Control-Allow-Origin`, `cors`, “CORS” middleware/wrappers.
-- Review preflight `OPTIONS` handlers.
-
-Fix:
-
-- Implement strict origin allowlist and minimal methods/headers.
-- Ensure cookies aren’t exposed cross-origin unless necessary and reviewed.
+- Use IDs opacos que mapeiam caminhos armazenados no lado do servidor.
+- Imponha que os caminhos resolvidos permaneçam dentro de um diretório base pretendido.
+- Sanitizar e impedir que `..` seja usado ao criar URLs
 
 ---
 
-### NEXT-WEBHOOK-001: Webhook endpoints MUST verify authenticity using the raw body
+### NEXT-SSRF-001: Solicitações de saída usando URLs influenciados pelo usuário DEVEM ser restritas
 
-Severity: Medium
+Gravidade: Média (Alta em redes internas)
 
-Required:
+NOTA: Isso se aplica principalmente apenas a aplicativos que serão implantados em uma configuração de nuvem/LAN ou que possuem outros serviços http na mesma caixa. Às vezes, o recurso requer essa funcionalidade inevitavelmente (webhooks).
 
-- MUST verify webhook signatures using the **raw request body** (not a re-serialized parsed object).
-- Next.js notes a use case for disabling body parsing is verifying the raw body of a webhook request. ([Next.js][3])
+Obrigatório:
 
-Insecure patterns:
+- DEVE tratar qualquer `fetch()` do lado do servidor para uma URL fornecida pelo usuário como de alto risco.
+- DEVE listar destinos (hosts/domínios) para recursos de busca de URL.
+- DEVE bloquear:
+  - localhost/intervalos de IP privados/link-local
+  - endpoints de metadados em nuvem
 
-- Verifying webhook signatures over `JSON.stringify(req.body)` (can change formatting).
-- Accepting webhooks with no signature verification and no allowlist.
+- DEVE restringir os protocolos a `http:` e `https:`.
+- DEVE definir tempos limites estritos e restringir redirecionamentos.
 
-Detection hints:
+Padrões inseguros:
 
-- Find webhook endpoints (`/api/webhook`, `/app/api/**/webhook`).
-- Check whether they use raw body verification.
+- `await fetch(req.query.url)` ou `await fetch((await request.json()).url)`
+- Endpoints de “visualização de URL” que buscam URLs arbitrários.
 
-Fix:
+Dicas de detecção:
 
-- Disable Next.js automatic body parsing only for those webhook routes, read raw bytes safely, verify signature, then parse.
+- Procure por `fetch(` no código do servidor e rastreie a origem da URL.
+- Procure os recursos “webhook tester”, “preview”, “import from URL”.
 
----
+Correção:
 
-### NEXT-INJECT-001: Prevent SQL injection (use parameterized queries / ORM)
-
-Severity: High
-
-Required:
-
-- MUST use parameterized queries or an ORM that parameterizes under the hood.
-- MUST NOT build SQL by string concatenation / template strings with untrusted input.
-
-Insecure patterns:
-
-- ``db.query(`SELECT * FROM users WHERE id = ${id}`)``
-- `"WHERE name = '" + user + "'"`
-
-Detection hints:
-
-- Grep for `SELECT`, `INSERT`, `UPDATE`, `DELETE` strings.
-- Trace untrusted input (`params`, `searchParams`, `req.query`, `req.body`, `request.json()`) into DB calls.
-
-Fix:
-
-- Use prepared statements / ORM query APIs.
-- Validate and coerce types before querying.
+- Analisar URL, impor `http/https`, listar nomes de host, resolver novamente DNS/IP para bloquear intervalos privados.
+- Definir tempos limite (AbortSignal) e limitar redirecionamentos.
 
 ---
 
-### NEXT-INJECT-002: Prevent OS command injection and unsafe subprocess use
+### NEXT-REDIRECT-001: Impedir redirecionamentos abertos (incluindo fluxos de autenticação)
 
-Severity: Critical to High
+Gravidade: Baixa
 
-Required:
+Obrigatório:
 
-- MUST avoid executing OS commands with attacker-controlled input.
-- If subprocess is necessary:
-  - MUST pass args as an array (not a single shell string)
-  - MUST NOT use `shell: true` with attacker-influenced strings
-  - SHOULD use strict allowlists for any variable component
+- DEVE validar alvos de redirecionamento derivados de entradas não confiáveis (por exemplo, `next`, `redirect`, `returnTo`).
+- DEVE preferir redirecionar apenas para caminhos relativos do mesmo site.
+- DEVE validar qualquer URL absoluto em relação a uma lista de permissões.
+- DEVE garantir que os URLs sejam do esquema `http` ou `https:`, proibindo o esquema `javascript:`
 
-Insecure patterns:
+Padrões inseguros:
 
-- `exec("convert " + filename)`
+- `redirect(searchParams.get('próximo')!)`
+- `NextResponse.redirect(new URL(req.nextUrl.searchParams.get('to')!, req.url))` sem verificações
+
+Dicas de detecção:
+
+- Procure por `redirect(` (componentes/ações do servidor) e `NextResponse.redirect`.
+- Pesquise `res.redirect(` em API Routes. ([Next.js][3])
+
+Correção:
+
+- Permitir apenas caminhos relativos (`/path`) e rejeitar URLs relativos a protocolo (`//evil.com`) ou absolutos.
+- Se inválido, volte para um padrão seguro (home/painel).
+
+---
+
+### NEXT-CORS-001: CORS deve ser explícito e com menos privilégios
+
+Gravidade: Média (alta se as credenciais estiverem configuradas incorretamente)
+
+Obrigatório:
+
+- Se o CORS não for necessário, DEVE mantê-lo desativado.
+- As rotas da API Next.js não definem cabeçalhos CORS por padrão, o que significa que eles são da mesma origem por padrão; habilite o CORS apenas quando você realmente precisar dele. ([Próximo.js][3])
+- Se ativar o CORS:
+  - DEVE listar origens confiáveis (sem reflexo de origem arbitrária)
+  - DEVE ter cuidado com solicitações credenciadas (cookies); nunca combine origens amplas com credenciais.
+  - DEVE restringir métodos e cabeçalhos.
+
+Padrões inseguros:
+
+- `Access-Control-Allow-Origin: *` com `Access-Control-Allow-Credentials: true`
+- Refletindo `Origem` sem validação.
+
+Dicas de detecção:
+
+- Procure por `Access-Control-Allow-Origin`, `cors`, middleware/wrappers “CORS”.
+- Revise os manipuladores `OPTIONS` de comprovação.
+
+Correção:
+
+- Implementar lista de permissões de origem rigorosa e métodos/cabeçalhos mínimos.
+- Certifique-se de que os cookies não sejam expostos de origem cruzada, a menos que seja necessário e revisado.
+
+---
+
+### NEXT-WEBHOOK-001: Os endpoints do webhook DEVEM verificar a autenticidade usando o corpo bruto
+
+Gravidade: Média
+
+Obrigatório:
+
+- DEVE verificar as assinaturas do webhook usando o **corpo da solicitação bruta** (não um objeto analisado re-serializado).
+- Next.js observa que um caso de uso para desabilitar a análise do corpo é verificar o corpo bruto de uma solicitação de webhook. ([Próximo.js][3])
+
+Padrões inseguros:
+
+- Verificando assinaturas de webhook em `JSON.stringify(req.body)` (pode alterar a formatação).
+- Aceitar webhooks sem verificação de assinatura e sem lista de permissões.
+
+Dicas de detecção:
+
+- Encontre endpoints de webhook (`/api/webhook`, `/app/api/**/webhook`).
+- Verifique se eles usam verificação corporal bruta.
+
+Correção:
+
+- Desative a análise automática do corpo do Next.js apenas para essas rotas de webhook, leia os bytes brutos com segurança, verifique a assinatura e, em seguida, analise.
+
+---
+
+### NEXT-INJECT-001: Impedir injeção de SQL (use consultas parametrizadas/ORM)
+
+Gravidade: Alta
+
+Obrigatório:
+
+- DEVE usar consultas parametrizadas ou um ORM que parametrize nos bastidores.
+- NÃO DEVE construir SQL por concatenação de strings/strings de modelo com entrada não confiável.
+
+Padrões inseguros:
+
+- ``db.query(`SELECT * FROM usuários WHERE id = ${id}`)``
+- `"ONDE nome = '" + usuário + "'"`
+
+Dicas de detecção:
+
+- Grep para strings `SELECT`, `INSERT`, `UPDATE`, `DELETE`.
+- Rastreie entradas não confiáveis ​​(`params`, `searchParams`, `req.query`, `req.body`, `request.json()`) em chamadas de banco de dados.
+
+Correção:
+
+- Use instruções preparadas/APIs de consulta ORM.
+- Valide e coaja os tipos antes de consultar.
+
+---
+
+### NEXT-INJECT-002: Evita a injeção de comandos do sistema operacional e o uso inseguro de subprocessos
+
+Gravidade: Crítica a Alta
+
+Obrigatório:
+
+- DEVE evitar executar comandos do sistema operacional com entrada controlada pelo invasor.
+- Se o subprocesso for necessário:
+  - DEVE passar argumentos como um array (não uma única string de shell)
+  - NÃO DEVE usar `shell: true` com strings influenciadas pelo invasor
+  - DEVE usar listas de permissões estritas para qualquer componente variável
+
+Padrões inseguros:
+
+- `exec("converter " + nome do arquivo)`
 - `spawn("bash", ["-c", userInput])`
 - `spawn(userInput, ["foo"])`
 
-Detection hints:
+Dicas de detecção:
 
-- Search for `child_process`, `exec`, `spawn`, `shell: true`.
+- Procure por `child_process`, `exec`, `spawn`, `shell: true`.
 
-Fix:
+Correção:
 
-- Use library APIs instead of shell commands.
-- Hard-code commands and allowlist validated parameters (and use `--` to separate flags where supported).
+- Use APIs de biblioteca em vez de comandos shell.
+- Comandos de código rígido e parâmetros validados na lista de permissões (e use `--` para separar sinalizadores quando houver suporte).
 
 ---
 
-### NEXT-INJECT-003: Avoid dynamic code execution and unsafe deserialization
+### NEXT-INJECT-003: Evite execução dinâmica de código e desserialização insegura
 
-Severity: High to Critical
+Gravidade: Alta a Crítica
 
-Required:
+Obrigatório:
 
-- MUST NOT use `eval`, `new Function`, `vm.runIn*` on untrusted strings.
-- MUST treat deserializing complex formats (YAML, XML, custom serialization) as risky; use safe parsers and strict schemas.
+- NÃO DEVE usar `eval`, `new Function`, `vm.runIn*` em strings não confiáveis.
+- DEVE tratar a desserialização de formatos complexos (YAML, XML, serialização personalizada) como arriscada; use analisadores seguros e esquemas rígidos.
 
-Insecure patterns:
+Padrões inseguros:
 
 - `eval(req.body.code)`
-- Parsing YAML from user input with a non-safe schema.
+- Análise de YAML da entrada do usuário com um esquema não seguro.
 
-Detection hints:
+Dicas de detecção:
 
-- Search for `eval(`, `new Function`, `vm.`, `require(` with non-literals.
-- Search for `js-yaml`, XML parsers, custom serializer usage on untrusted input.
+- Procure por `eval(`, `new Function`, `vm.`, `require(` com não literais.
+- Pesquise `js-yaml`, analisadores XML, uso de serializador personalizado em entradas não confiáveis.
 
-Fix:
+Correção:
 
-- Remove dynamic execution; use safe interpreters or strict parsers.
-- Validate and constrain input.
-
----
-
-### NEXT-LOG-001: Logging MUST NOT leak secrets or sensitive headers
-
-Severity: Medium
-
-Required:
-
-- MUST NOT log:
-  - `Authorization` headers
-  - cookies / session tokens
-  - request bodies containing credentials
-  - environment variables or configuration dumps
-
-- SHOULD implement structured logging with redaction.
-
-Insecure patterns:
-
-- `console.log(req.headers)` in auth endpoints
-- `console.log(process.env)` in server code
-
-Detection hints:
-
-- Search for `console.log(`, `logger.info(`, `debug(` in server routes/actions.
-- Check for logs of headers/cookies/body.
-
-Fix:
-
-- Redact sensitive fields; log only what is needed for debugging.
-- Use safe error messages for clients; keep detail server-side only.
+- Remover execução dinâmica; use intérpretes seguros ou analisadores rigorosos.
+- Validar e restringir a entrada.
 
 ---
 
-### NEXT-ERROR-001: Error handling MUST avoid leaking implementation details in production
+### NEXT-LOG-001: O registro NÃO DEVE vazar segredos ou cabeçalhos confidenciais
 
-Severity: Low
+Gravidade: Média
 
-Required:
+Obrigatório:
 
-- MUST not expose stack traces or internal error details to end users in production.
-- Ensure production mode behavior (Next.js production error handling differs from dev). ([Next.js][6])
+- NÃO DEVE registrar:
+  - Cabeçalhos `Autorização`
+  - cookies/tokens de sessão
+  - solicitar órgãos contendo credenciais
+  - variáveis de ambiente ou dumps de configuração
 
-Insecure patterns:
+- DEVE implementar registro estruturado com redação.
 
-- Returning `err.stack` in JSON responses.
-- Showing detailed exception data to unauthenticated users.
+Padrões inseguros:
 
-Detection hints:
+- `console.log(req.headers)` em endpoints de autenticação
+- `console.log(process.env)` no código do servidor
 
-- Search for `res.status(500).json(err)` or `return Response.json(err)`.
-- Verify error responses are sanitized.
+Dicas de detecção:
 
-Fix:
+- Procure por `console.log(`, `logger.info(`, `debug(` nas rotas/ações do servidor.
+- Verifique se há registros de cabeçalhos/cookies/corpo.
 
-- Return generic error messages to clients; log details server-side with redaction.
+Correção:
 
----
-
-### NEXT-PROXY-001: Proxy/Middleware must not introduce header smuggling or unsafe header forwarding
-
-Severity: Medium
-
-Required:
-
-- MUST be careful when copying/forwarding request headers upstream:
-  - Do not forward attacker-controlled `x-forwarded-*` headers unless you have a trusted proxy chain.
-  - Do not forward `Authorization`/cookies to unrelated outbound services.
-
-- Next.js Proxy patterns often mutate headers; ensure this doesn’t create security issues.
-
-Insecure patterns:
-
-- Blindly cloning all request headers to an outbound `fetch()` call.
-- Trusting `x-forwarded-host` or `host` to construct sensitive absolute URLs without allowlisting.
-
-Detection hints:
-
-- Search `headers()` and `request.headers` usage (especially for URL building). ([Next.js][4])
-- Search Proxy/Middleware for header rewrites.
-
-Fix:
-
-- Allowlist forwarded headers explicitly.
-- Validate hostnames before using them to build callback URLs or redirects.
+- Redigir campos sensíveis; registre apenas o que é necessário para depuração.
+- Utilizar mensagens de erro seguras para clientes; mantenha os detalhes apenas do lado do servidor.
 
 ---
 
-### NEXT-HOST-001: Host/Origin-derived URL construction MUST be allowlisted
+### NEXT-ERROR-001: O tratamento de erros DEVE evitar o vazamento de detalhes de implementação na produção
 
-Severity: Medium
+Gravidade: Baixa
 
-Required:
+Obrigatório:
 
-- MUST NOT generate security-sensitive absolute URLs (password reset links, OAuth callback URLs, email verification links) directly from unvalidated `Host` headers.
-- For Server Actions, Origin/Host matching is part of CSRF mitigation; do not weaken it. ([Next.js][5])
+- NÃO DEVE expor rastreamentos de pilha ou detalhes de erros internos aos usuários finais em produção.
+- Garanta o comportamento do modo de produção (o tratamento de erros de produção do Next.js difere do dev). ([Próximo.js][6])
 
-Insecure patterns:
+Padrões inseguros:
+
+- Retornando `err.stack` em respostas JSON.
+- Mostrando dados detalhados de exceção para usuários não autenticados.
+
+Dicas de detecção:
+
+- Procure por `res.status(500).json(err)` ou `return Response.json(err)`.
+- Verifique se as respostas de erro foram higienizadas.
+
+Consertar:
+
+- Retornar mensagens de erro genéricas aos clientes; detalhes do log no lado do servidor com redação.
+
+---
+
+### NEXT-PROXY-001: Proxy/Middleware não deve introduzir contrabando de cabeçalho ou encaminhamento inseguro de cabeçalho
+
+Gravidade: Média
+
+Obrigatório:
+
+- DEVE ter cuidado ao copiar/encaminhar cabeçalhos de solicitação upstream:
+  - Não encaminhe cabeçalhos `x-forwarded-*` controlados pelo invasor, a menos que você tenha uma cadeia de proxy confiável.
+  - Não encaminhe `Autorização`/cookies para serviços de saída não relacionados.
+
+- Os padrões de proxy Next.js geralmente alteram os cabeçalhos; certifique-se de que isso não crie problemas de segurança.
+
+Padrões inseguros:
+
+- Clonar cegamente todos os cabeçalhos de solicitação para uma chamada `fetch()` de saída.
+- Confiar em `x-forwarded-host` ou `host` para construir URLs absolutos confidenciais sem lista de permissões.
+
+Dicas de detecção:
+
+- Pesquise o uso de `headers()` e `request.headers` (especialmente para construção de URL). ([Próximo.js][4])
+- Pesquise Proxy/Middleware para reescritas de cabeçalho.
+
+Consertar:
+
+- Lista de permissões encaminhadas explicitamente.
+- Valide nomes de host antes de usá-los para criar URLs de retorno de chamada ou redirecionamentos.
+
+---
+
+### NEXT-HOST-001: A construção de URL derivada de host/origem DEVE estar na lista de permissões
+
+Gravidade: Média
+
+Obrigatório:
+
+- NÃO DEVE gerar URLs absolutos sensíveis à segurança (links de redefinição de senha, URLs de retorno de chamada OAuth, links de verificação de e-mail) diretamente de cabeçalhos `Host` não validados.
+- Para Ações de Servidor, a correspondência Origem/Host faz parte da mitigação de CSRF; não o enfraqueça. ([Próximo.js][5])
+
+Padrões inseguros:
 
 - `const base = "https://" + request.headers.get("host")`
-- Using unvalidated `x-forwarded-host` for absolute URL generation.
+- Usando `x-forwarded-host` não validado para geração de URL absoluta.
 
-Detection hints:
+Dicas de detecção:
 
-- Grep for `.get('host')`, `.get('x-forwarded-host')`, and absolute URL building.
-- Review auth-related email link generation code.
+- Grep para `.get('host')`, `.get('x-forwarded-host')` e construção de URL absoluta.
+- Revise o código de geração de link de e-mail relacionado à autenticação.
 
-Fix:
+Correção:
 
-- Use a configured, allowlisted canonical app origin (e.g., `APP_ORIGIN=https://example.com`).
-- Allowlist hostnames; fail closed.
-
----
-
-### NEXT-DOS-001: Rate limiting and resource controls MUST exist for abuse-prone endpoints
-
-Severity: Medium
-
-Required:
-
-- SHOULD implement rate limiting/throttling for:
-  - login, password reset, signup
-  - expensive Server Actions
-  - webhook ingestion
-
-- MUST implement request size limits (see NEXT-LIMITS-001).
-- If self-hosting, MUST rely on reverse proxy for additional protections. ([Next.js][8])
-
-Insecure patterns:
-
-- No throttling on login/reset endpoints.
-- Expensive actions callable without auth or with unlimited frequency.
-
-Detection hints:
-
-- Identify auth endpoints and check for rate limiting.
-- Search for “send email”, “charge”, “generate report” flows.
-
-Fix:
-
-- Add edge rate limiting and app-level user/IP throttles.
-- Add job queues for heavy work; return 202 when appropriate.
+- Use uma origem de aplicativo canônico configurado e permitido (por exemplo, `APP_ORIGIN=https://example.com`).
+- Lista de permissões de nomes de host; falhar fechado.
 
 ---
 
-## 5) Practical scanning heuristics (how to “hunt”)
+### NEXT-DOS-001: Limitação de taxa e controles de recursos DEVEM existir para endpoints propensos a abusos
 
-When actively scanning, use these high-signal patterns:
+Gravidade: Média
+
+Obrigatório:
+
+- DEVE implementar limitação/estrangulamento de taxa para:
+  - login, redefinição de senha, inscrição
+  - ações de servidor caras
+  - ingestão de webhook
+
+- DEVE implementar limites de tamanho de solicitação (consulte NEXT-LIMITS-001).
+- Se for auto-hospedado, DEVE contar com proxy reverso para proteções adicionais. ([Próximo.js][8])
+
+Padrões inseguros:
+
+- Sem limitação nos endpoints de login/redefinição.
+- Ações caras que podem ser chamadas sem autorização ou com frequência ilimitada.
+
+Dicas de detecção:
+
+- Identifique pontos de extremidade de autenticação e verifique a limitação de taxa.
+- Pesquise os fluxos “enviar e-mail”, “cobrar”, “gerar relatório”.
+
+Correção:
+
+- Adicione limitação de taxa de borda e aceleradores de usuário/IP no nível do aplicativo.
+- Adicionar filas de trabalhos para trabalhos pesados; retorne 202 quando apropriado.
+
+---
+
+## 5) Heurísticas práticas de varredura (como “caçar”)
+
+Ao digitalizar ativamente, use estes padrões de sinal alto:
 
 - Production misconfig:
-  - `next dev`, `NODE_ENV=development`, dev-only start commands ([Next.js][7])
+  - `next dev`, `NODE_ENV=development`, comandos de inicialização somente dev ([Next.js][7])
 
 - Secrets exposure:
-  - `.env` committed, `NEXT_PUBLIC_` on sensitive variables ([Next.js][7])
-  - `process.env` used in `"use client"` modules
+  - `.env` confirmado, `NEXT_PUBLIC_` em variáveis sensíveis ([Next.js][7])
+  - `process.env` usado em módulos `"use client"`
 
-- Auth coverage:
-  - `app/**/route.ts` or `pages/api/**` with no auth checks ([Next.js][1])
-  - `"use server"` actions with DB writes and no authz ([Next.js][6])
-  - `proxy.ts` / `middleware.ts` matchers that exclude sensitive routes ([Next.js][12])
+- Cobertura de autenticação:
+  - `app/**/route.ts` ou `pages/api/**` sem verificações de autenticação ([Next.js][1])
+  - ações `"use server"` com gravações de banco de dados e sem autorização ([Next.js][6])
+  - Matchers `proxy.ts` / `middleware.ts` que excluem rotas confidenciais ([Next.js][12])
 
 - CSRF:
-  - cookie-auth POST/PUT/PATCH/DELETE with no token/origin checks
-  - `serverActions.allowedOrigins` too broad ([Next.js][5])
+  - cookie-auth POST/PUT/PATCH/DELETE sem verificações de token/origem
+  - `serverActions.allowedOrigins` muito amplo ([Next.js][5])
 
 - XSS:
-  - `dangerouslySetInnerHTML`, raw HTML markdown rendering
-  - missing CSP / overly permissive CSP ([Next.js][7])
+  - `dangerouslySetInnerHTML`, renderização de markdown HTML bruto
+  - CSP ausente/CSP excessivamente permissivo ([Next.js][7])
 
-- Caching/data leak:
-  - `dynamic = 'force-static'` on sensitive GET handlers ([Next.js][1])
-  - `use cache`, `cacheLife`, `unstable_cache` around user-specific data ([Next.js][1])
+- Cache/vazamento de dados:
+  - `dynamic = 'force-static'` em manipuladores GET sensíveis ([Next.js][1])
+  - `use cache`, `cacheLife`, `unstable_cache` em torno de dados específicos do usuário ([Next.js][1])
 
-- Files:
-  - writing uploads under `public/`
-  - `fs.readFile` / `path.join` with request input
+- Arquivos:
+  - escrever uploads em `público/`
+  - `fs.readFile` / `path.join` com entrada de solicitação
 
 - SSRF:
-  - `fetch(userProvidedUrl)` from Route Handlers / Server Actions
+  - `fetch(userProvidedUrl)` de manipuladores de rota/ações do servidor
 
-- Redirect:
+- Redirecionar:
   - `redirect(searchParams.get('next'))`, `NextResponse.redirect(...)`, `res.redirect(req.query.next)` ([Next.js][3])
 
 - CORS:
-  - wildcard origins, origin reflection, credentials + broad origins ([Next.js][3])
+  - origens curinga, reflexão de origem, credenciais + origens amplas ([Next.js][3])
 
-- Limits:
-  - API routes with `bodyParser: false` and no raw-body verification for webhooks ([Next.js][3])
-  - `serverActions.bodySizeLimit` raised without justification ([Next.js][5])
+- Limites:
+  - Rotas de API com `bodyParser: false` e sem verificação de corpo bruto para webhooks ([Next.js][3])
+  - `serverActions.bodySizeLimit` gerado sem justificativa ([Next.js][5])
 
-- Dependency hygiene:
-  - old `next` versions that conflict with support policy/advisories ([Next.js][10])
+- Higiene de dependência:
+  - versões `next` antigas que entram em conflito com políticas/recomendações de suporte ([Next.js][10])
 
-Always try to confirm:
+Sempre tente confirmar:
 
-- data origin (untrusted vs trusted)
-- sink type (HTML/DOM, SQL, subprocess, files, redirect, outbound HTTP)
-- protective controls present (schema validation, allowlists, middleware/proxy checks, authz helpers, edge protections)
+- origem dos dados (não confiável versus confiável)
+- tipo de coletor (HTML/DOM, SQL, subprocesso, arquivos, redirecionamento, HTTP de saída)
+- controles de proteção presentes (validação de esquema, listas de permissões, verificações de middleware/proxy, auxiliares de autorização, proteções de borda)
 
 ---
 
-## 6) Sources (accessed 2026-01-27)
+## 6) Fontes (acessado em 27/01/2026)
 
-Primary framework documentation (Next.js):
+Documentação da estrutura primária (Next.js):
 
-- Next.js Docs: Installation (system requirements / Node version) — `https://nextjs.org/docs/app/getting-started/installation`
-- Next.js Docs: Route Handlers — `https://nextjs.org/docs/app/getting-started/route-handlers`
-- Next.js Docs: API Routes (Pages Router) — `https://nextjs.org/docs/pages/building-your-application/routing/api-routes`
-- Next.js Docs: Environment Variables — `https://nextjs.org/docs/pages/guides/environment-variables`
-- Next.js Docs: Data Security — `https://nextjs.org/docs/app/guides/data-security`
-- Next.js Docs: Content Security Policy — `https://nextjs.org/docs/app/guides/content-security-policy`
-- Next.js Docs: Proxy — `https://nextjs.org/docs/app/getting-started/proxy`
-- Next.js Docs: `serverActions.allowedOrigins` and `serverActions.bodySizeLimit` — `https://nextjs.org/docs/app/api-reference/config/next-config-js/serverActions`
-- Next.js Docs: `cookies()` — `https://nextjs.org/docs/app/api-reference/functions/cookies`
-- Next.js Docs: `headers()` — `https://nextjs.org/docs/app/api-reference/functions/headers`
-- Next.js Docs: Self-hosting (reverse proxy guidance) — `https://nextjs.org/docs/pages/guides/self-hosting`
-- Next.js Docs: Support policy (supported versions/LTS) — `https://nextjs.org/docs/support-policy`
+- Documentos Next.js: Instalação (requisitos do sistema / versão do Node) - `https://nextjs.org/docs/app/getting-started/installation`
+- Documentos Next.js: manipuladores de rota - `https://nextjs.org/docs/app/getting-started/route-handlers`
+- Documentos Next.js: Rotas de API (roteador de páginas) - `https://nextjs.org/docs/pages/building-your-application/routing/api-routes`
+- Documentos Next.js: Variáveis de ambiente - `https://nextjs.org/docs/pages/guides/environment-variables`
+- Próximo.
 
-Next.js security guidance & advisories:
+js Documentos: Segurança de dados — `https://nextjs.org/docs/app/guides/data-security`
 
-- Next.js Blog: How to think about security in Next.js — `https://nextjs.org/blog/security-nextjs-server-components-actions`
-- GitHub Security Advisory: Next.js DoS via Server Components / Server Actions (CVE-2026-23864) — `https://github.com/advisories/GHSA-fq29-rrrv-cq2m`
-- Next.js Blog: Security update (example security advisory context) — `https://nextjs.org/blog/security-update`
+- Documentos Next.js: Política de segurança de conteúdo - `https://nextjs.org/docs/app/guides/content-security-policy`
+- Documentos Next.js: Proxy - `https://nextjs.org/docs/app/getting-started/proxy`
+- Documentos Next.js: `serverActions.allowedOrigins` e `serverActions.bodySizeLimit` - `https://nextjs.org/docs/app/api-reference/config/next-config-js/serverActions`
+- Documentos Next.js: `cookies()` — `h
 
-General web security references (recommended baseline):
+ttps://nextjs.org/docs/app/api-reference/functions/cookies`
 
-- OWASP Cheat Sheet Series (CSRF, Session Management, XSS Prevention, SSRF Prevention, File Upload, HTTP Headers) — `https://cheatsheetseries.owasp.org/`
+- Documentos Next.js: `headers ()` - `https://nextjs.org/docs/app/api-reference/functions/headers`
+- Documentos Next.js: auto-hospedagem (orientação sobre proxy reverso) - `https://nextjs.org/docs/pages/guides/self-hosting`
+- Documentos Next.js: Política de suporte (versões suportadas/LTS) - `https://nextjs.org/docs/support-policy`
 
-[1]: https://nextjs.org/docs/app/getting-started/route-handlers 'Getting Started: Route Handlers | Next.js'
-[2]: https://nextjs.org/docs/app/getting-started/deploying 'Getting Started: Deploying'
-[3]: https://nextjs.org/docs/pages/building-your-application/routing/api-routes 'Routing: API Routes | Next.js'
-[4]: https://nextjs.org/docs/app/api-reference/functions/headers 'Functions: headers | Next.js'
-[5]: https://nextjs.org/docs/app/api-reference/config/next-config-js/serverActions 'next.config.js: serverActions | Next.js'
-[6]: https://nextjs.org/blog/security-nextjs-server-components-actions 'How to Think About Security in Next.js | Next.js'
-[7]: https://nextjs.org/docs/pages/guides/environment-variables 'Guides: Environment Variables | Next.js'
-[8]: https://nextjs.org/docs/pages/guides/self-hosting 'Guides: Self-Hosting'
-[9]: https://nextjs.org/docs/app/api-reference/functions/cookies 'Functions: cookies | Next.js'
+Orientações e avisos de segurança Next.js:
+
+- Blog Next.js: Como pensar sobre segurança em Next.js — `https://nextjs.org/blog/security-nextjs-server-components-actions`
+- Aviso de segurança do GitHub: Next.js DoS por meio de componentes de servidor/ações de servidor (CVE-2026-23864) — `https://github.com/advisories/GHSA-fq29-rrrv-cq2m`
+- Blog Next.js: Atualização de segurança (exemplo de contexto de aconselhamento de segurança) — `https://nextjs.org/blog/security-update`
+
+Referências gerais de segurança da web (linha de base recomendada):
+
+- Série de folhas de dicas OWASP (CSRF, gerenciamento de sessão, prevenção XSS, prevenção SSRF, upload de arquivos, cabeçalhos HTTP) - `https://cheatsheetseries.owasp.org/`
+
+[1]: https://nextjs.org/docs/app/getting-started/route-handlers 'Primeiros passos: manipuladores de rota | Próximo.js'
+[2]: https://nextjs.org/docs/app/getting-started/deploying 'Primeiros passos: implantação'
+[3]: https://nextjs.org/docs/pages/building-your-application/routing/api-routes 'Roteamento: Rotas API | Próximo.js'
+[4]: https://nextjs.org/docs/app/api-reference/functions/headers 'Funções: cabeçalhos | Próximo.js'
+[5]: https://nextjs.org/docs/app/api-reference
+
+/config/next-config-js/serverActions 'next.config.js: serverActions | Próximo.js'
+[6]: https://nextjs.org/blog/security-nextjs-server-components-actions 'Como pensar sobre segurança em Next.js | Próximo.js'
+[7]: https://nextjs.org/docs/pages/guides/environment-variables 'Guias: Variáveis de ambiente | Próximo.js'
+[8]: https://nextjs.org/docs/pages/guides/self-hosting 'Guias: auto-hospedagem'
+[9]: https://nextjs.org/docs/app/api-reference/functions/cookies
+
+'Funções: cookies | Próximo.js'
 [10]: https://nextjs.org/blog/next-16 'Next.js 16'
-[11]: https://github.com/vercel/next.js/security/advisories/GHSA-9g9p-9gw9-jx7f 'Denial of Service in Image Optimizer · Advisory'
-[12]: https://nextjs.org/docs/pages/guides/authentication 'Guides: Authentication | Next.js'
+[11]: https://github.com/vercel/next.js/security/advisories/GHSA-9g9p-9gw9-jx7f 'Negação de serviço no otimizador de imagem · Consultivo'
+[12]: https://nextjs.org/docs/pages/guides/authentication 'Guias: Autenticação | Próximo.js'

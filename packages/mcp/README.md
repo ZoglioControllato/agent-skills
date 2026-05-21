@@ -1,145 +1,145 @@
 # 🔌 agent-skills-mcp
 
-MCP server that exposes the same [agent-skills](https://github.com/tech-leads-club/agent-skills) catalog to any MCP-compatible AI client. Use it when you want the agent to **consult skills on demand** during a session — search by intent, then fetch only what's needed.
+Servidor MCP que expõe o mesmo catálogo [agent-skills](https://github.com/tech-leads-club/agent-skills) para qualquer cliente de IA compatível com MCP. Use quando quiser que o agente **consulte skills sob demanda** durante a sessão — buscar por intenção e só então baixar o necessário.
 
-## CLI vs MCP
+## CLI versus MCP
 
-Both use the **same catalog** and the same CDN. Choose by workflow:
+Ambos usam o **mesmo catálogo** e o mesmo CDN. Escolha pelo fluxo de trabalho:
 
-|                 | **CLI** (`@tech-leads-club/agent-skills`)                                                    | **MCP** (this package)                                                            |
-| :-------------- | :------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------- |
-| **Use when**    | You want skills **installed** in your agent (project or global) so they're always available. | You want the agent to **look up** skills during a chat — no installation.         |
-| **Persistence** | Skills live in `.agents/`, `~/.cursor/skills/`, etc.                                         | No local install; agent fetches from CDN when it needs a skill.                   |
-| **Best for**    | Curated set of skills you use often; lockfile, updates, multi-agent install.                 | One-off help, exploring the catalog, or trying a skill before installing via CLI. |
+|                  | **CLI** (`@tech-leads-club/agent-skills`)                                           | **MCP** (este pacote)                                                       |
+| :--------------- | :---------------------------------------------------------------------------------- | :-------------------------------------------------------------------------- |
+| **Use quando**   | Você quer skills **instaladas** no agente (projeto ou globais), sempre disponíveis. | Você quer que o agente **consulte** skills durante o chat — sem instalação. |
+| **Persistência** | Skills ficam em `.agents/`, `~/.cursor/skills/`, etc.                               | Sem instalação local; o agente busca no CDN quando precisa.                 |
+| **Ideal para**   | Conjunto curado que você usa muito; lockfile, updates, vários agentes.              | Ajuda pontual, explorar o catálogo ou testar antes de instalar via CLI.     |
 
-You can use **both**: install your go-to skills with the CLI and add the MCP so the agent can pull in others on demand.
+É possível usar **os dois**: instale suas favoritas com a CLI e adicione o MCP para puxar outras sob demanda.
 
-## Why use this MCP
+## Por que usar este MCP
 
-When the agent needs a skill mid-session, loading the full catalog would be wasteful. This server provides a **three-step workflow** — search by intent, load the right skill, then fetch only the references needed — so the agent finds skills in one tool call and doesn't overfetch or guess names.
+Quando uma skill é necessária no meio da sessão, carregar o catálogo inteiro desperdiça tokens. Este servidor segue um **fluxo em três etapas** — buscar por intenção, carregar a skill certa e só buscar referências quando preciso — assim o agente encontra skills em menos chamadas e não faz overfetch nem chuta nomes.
 
-For explicit catalog browsing requests, there is also a dedicated `list_skills` tool that returns a compact category-grouped list with truncated descriptions.
+Para pedidos explícitos de navegação no catálogo, existe também a ferramenta `list_skills`, com lista compacta agrupada por categoria e descrições truncadas.
 
-Search is powered by **Fuse.js**: fuzzy matching over name, extracted trigger keywords, description, and category, with extended operators and relevance scoring (0–100 + match quality).
+A busca usa **Fuse.js**: correspondência aproximada em nome, palavras-chave de gatilho extraídas, descrição e categoria, com operadores estendidos e pontuação de relevância (0–100 + qualidade do match).
 
-## 🛠️ Tools
+## 🛠️ Ferramentas
 
 ### `list_skills`
 
-> **Catalog browse tool (explicit request only).**
-> **When:** The user explicitly asks to list/browse available skills.
-> **Input:** `explicit_request: true` (required) and optional `description_max_chars` (default `120`, range `40..240`).
-> **Returns:** Available skills grouped by `category`, each with `name` and truncated `description`, plus `total_skills` and `total_categories`.
-> **Constraints:** Do not call proactively during normal search/read/fetch workflow.
+> **Ferramenta de navegação (somente pedido explícito).**
+> **Quando:** O usuário pediu explicitamente listar/navegar skills disponíveis.
+> **Entrada:** `explicit_request: true` (obrigatório) e `description_max_chars` opcional (padrão `120`, intervalo `40..240`).
+> **Retorno:** Skills agrupadas por `category`, cada uma com `name` e `description` truncada, além de `total_skills` e `total_categories`.
+> **Restrições:** Não chame de forma proativa no fluxo normal de search/read/fetch.
 
-- Designed for low token usage with compact JSON output
-- Uses in-memory index data (no extra registry fetch on execution)
-- Returns only currently available skills for use
+- Pensado para baixo uso de tokens com JSON compacto
+- Usa dados de índice em memória (sem fetch extra do registry ao executar)
+- Retorna apenas skills atualmente disponíveis
 
 ### `search_skills`
 
-> **Step 1 of 3** in the skill workflow. Always call this before `read_skill`.
-> **When:** The user needs help with a technical task (implement, refactor, test, deploy, review, etc.).
-> **Input:** A concise intent phrase, e.g. `typescript api error handling`, `react component testing`.
-> **Returns:** Up to 5 skills ranked by relevance with `name`, `description`, `category`, `usage_hint`, `score` (0-100), and `match_quality`.
-> **Then:** Pick the highest-scoring match and call `read_skill` with its name.
-> **Tips:** Multi-word queries use AND logic. Use `|` for OR (e.g. `react | vue testing`). Use `=` for exact match.
+> **Etapa 1 de 3** do fluxo. Sempre chame antes de `read_skill`.
+> **Quando:** O usuário precisa de ajuda técnica (implementar, refatorar, testar, implantar, revisar etc.).
+> **Entrada:** Frase curta de intenção, ex.: `typescript api error handling`, `react component testing`.
+> **Retorno:** Até 5 skills ordenadas por relevância, com `name`, `description`, `category`, `usage_hint`, `score` (0-100) e `match_quality`.
+> **Depois:** Escolha o melhor match e chame `read_skill` com o nome da skill.
+> **Dicas:** Várias palavras usam AND. Use `|` para OR (ex.: `react | vue testing`). Use `=` para igualdade exata.
 
-**Search features:**
+**Recursos de busca:**
 
-- Fuzzy matching via Fuse.js with **extended search operators** (AND, OR `|`, exact `=`, prefix `^`)
-- **Weighted fields:** `name` (0.45), extracted `triggers` (0.30), `description` (0.20), `category` (0.05)
-- **Trigger extraction:** Automatically parses "Triggers on...", "Use when...", and "Keywords -..." patterns from descriptions into a high-signal index field
-- **Relevance scoring:** Each result includes a 0-100 score and a human-readable `match_quality` label (`exact` / `strong` / `partial` / `weak`)
-- Minimum match character length of 2 to avoid noise
-- Empty query → `UserError("Query cannot be empty")`
-- No matches → empty array with explanatory message
+- Fuzzy Fuse.js com **operadores estendidos** (AND, OR `|`, exato `=`, prefixo `^`)
+- **Campos ponderados:** `name` (0,45), `triggers` extraídos (0,30), `description` (0,20), `category` (0,05)
+- **Extração de gatilhos:** interpreta trechos tipo "Triggers on...", "Use when...", "Keywords -..." nas descrições
+- **Pontuação:** cada resultado inclui score 0–100 e `match_quality` (`exact` / `strong` / `partial` / `weak`)
+- Tamanho mínimo de caracteres do match: 2, para reduzir ruído
+- Consulta vazia → `UserError("Query cannot be empty")`
+- Sem matches → array vazio com mensagem explicativa
 
 ### `read_skill`
 
-> **Step 2 of 3.** Call after `search_skills` — never call directly without searching first.
-> **Input:** The skill `name` from `search_skills` results.
-> **Returns:** `[0]` The skill's main instructions (SKILL.md). `[1]` A list of available reference file paths (`scripts/`, `references/`, `assets/`).
-> **Then:** Apply the skill instructions. Only call `fetch_skill_files` if the instructions reference specific files you need.
+> **Etapa 2 de 3.** Chame depois de `search_skills` — não chame direto sem buscar antes.
+> **Entrada:** `name` da skill retornado por `search_skills`.
+> **Retorno:** `[0]` instruções principais (SKILL.md). `[1]` lista de caminhos de referência (`scripts/`, `references/`, `assets/`).
+> **Depois:** Aplique as instruções. Só chame `fetch_skill_files` se as instruções citarem arquivos específicos.
 
-- Fetches `SKILL.md` explicitly from `files[]` as the main skill instructions
-- Reference list includes only paths under `scripts/`, `references/`, and `assets/`
-- Returns two separate content blocks: main content + compact reference list (capped at 50 paths)
-- Skill with only one file returns a single content block (no empty second block)
-- Invalid `skill_name` → `UserError("Skill '{name}' not found. Use search_skills to find valid names.")`
-- CDN failure → `UserError("CDN unavailable. Try again shortly.")`
+- Obtém explicitamente `SKILL.md` de `files[]`
+- Lista de referências só sob `scripts/`, `references/` e `assets/`
+- Dois blocos: conteúdo principal + lista de referências (máx. 50 caminhos)
+- Skill com um arquivo só → um único bloco
+- Nome inválido → `UserError("Skill '{name}' not found. Use search_skills to find valid names.")`
+- CDN indisponível → `UserError("CDN unavailable. Try again shortly.")`
 
 ### `fetch_skill_files`
 
-> **Step 3 of 3 (optional).** Fetch reference files that a skill's instructions told you to load.
-> **Input:** `skill_name` + up to 5 `file_paths` from the reference list returned by `read_skill`.
-> **Returns:** The content of each requested file, separated by `---` delimiters.
-> **Constraints:** Only paths from `read_skill`'s reference list are valid — never guess or construct paths. Make multiple calls if you need more than 5 files.
+> **Etapa 3 de 3 (opcional).** Busque arquivos de referência que as instruções pediram.
+> **Entrada:** `skill_name` + até 5 `file_paths` da lista devolvida por `read_skill`.
+> **Retorno:** Conteúdo de cada arquivo, separado por delimitadores `---`.
+> **Restrições:** Só são válidos caminhos vindos da lista de `read_skill` — não invente caminhos. Faça várias chamadas se precisar de mais de 5 arquivos.
 
-- Validates **all** paths against `skill.files[]` before any network call — rejects with the full list of invalid paths
-- Accepts only paths under `scripts/`, `references/`, and `assets/` from `read_skill`
-- Fetches valid files in parallel (`Promise.allSettled`)
-- Partial failure: returns successful content and notes failed paths — does not abort the entire response
+- Valida **todos** os caminhos contra `skill.files[]` antes de rede — erro com lista de inválidos
+- Aceita só caminhos sob `scripts/`, `references/` e `assets/` de `read_skill`
+- Downloads em paralelo (`Promise.allSettled`)
+- Falha parcial: retorna o que deu certo e indica falhas — não aborta tudo
 
 ---
 
-## 📦 Resource & Prompts
+## 📦 Recurso e prompts
 
 ### `skills://catalog`
 
-Full registry JSON (`application/json`). MCP clients that support Resources can cache this natively, eliminating round-trips for catalog data.
+Registry JSON completo (`application/json`). Clientes MCP com suporte a Resources podem cachear nativamente.
 
-### Prompts (Slash Commands)
+### Prompts (comandos com /)
 
-MCP prompts are surfaced as **slash commands** (`/`) in compatible clients (Claude Desktop, Cursor, VS Code + Copilot, Claude Code). They give users instant access to skills without typing tool names.
+Prompts MCP aparecem como **slash commands** (`/`) em clientes compatíveis (Claude Desktop, Cursor, VS Code + Copilot, Claude Code). Permitem usar o catálogo sem digitar nomes das ferramentas.
 
-#### `/skills` — Main entrypoint
+#### `/skills` — Entrada principal
 
-The easiest way to use the catalog. Give your task in natural language and the prompt guides the agent through `search_skills` → `read_skill` → apply.
+O caminho mais simples: descreva a tarefa em linguagem natural e o prompt guia por `search_skills` → `read_skill` → aplicar.
 
-| Argument | Required | Description                                                           |
-| :------- | :------- | :-------------------------------------------------------------------- |
-| `task`   | Yes      | What you are trying to accomplish (e.g. "optimize React performance") |
+| Argumento | Obrigatório | Descrição                                                 |
+| :-------- | :---------- | :-------------------------------------------------------- |
+| `task`    | Sim         | O que você quer fazer (ex.: "optimize React performance") |
 
-Examples:
+Exemplos:
 
 - `/skills task:"refactor a large React component"`
 - `/skills task:"review accessibility issues in my UI"`
 - `/skills task:"plan migration from monolith to modular architecture"`
 
-#### `/use` — Direct skill shortcut
+#### `/use` — Atalho direto
 
-Use when you already know the exact skill name and want a direct shortcut.
+Use quando já souber o nome exato da skill.
 
-| Argument  | Required | Description                            |
-| :-------- | :------- | :------------------------------------- |
-| `name`    | Yes      | Exact skill name (e.g. `docs-writer`) |
-| `context` | No       | What specifically you need help with   |
+| Argumento | Obrigatório | Descrição                             |
+| :-------- | :---------- | :------------------------------------ |
+| `name`    | Sim         | Nome exato (ex. `docs-writer`)        |
+| `context` | Não         | Em que contexto você precisa de ajuda |
 
-Examples:
+Exemplos:
 
 - `/use name:"docs-writer" context:"write a README for this package"`
 - `/use name:"react-best-practices" context:"improve Next.js page performance"`
 
-#### `/skills-help` — Quick usage examples
+#### `/skills-help` — Exemplos rápidos
 
-Shows quick examples and when to use `/skills` vs `/use`.
+Mostra quando usar `/skills` versus `/use`.
 
-#### `/find-skill` — Compatibility alias
+#### `/find-skill` — Alias
 
-Alias for `/skills` with the same `task` argument.
+Alias para `/skills` com o mesmo argumento `task`.
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Início rápido
 
-### Plugin Install (Recommended)
+### Plugin (recomendado)
 
-The fastest way — no manual config, no JSON editing.
+Mais rápido — sem editar JSON manualmente.
 
 #### Cursor
 
-Browse [cursor.com/marketplace](https://cursor.com/marketplace) and search for **`agent-skills`**, or type inside Cursor:
+Acesse [cursor.com/marketplace](https://cursor.com/marketplace), busque **`agent-skills`**, ou no Cursor:
 
 ```bash
 /add-plugin agent-skills
@@ -147,18 +147,18 @@ Browse [cursor.com/marketplace](https://cursor.com/marketplace) and search for *
 
 #### Claude Code
 
-Add the Tech Leads Club marketplace, then install the plugin:
+Adicione o marketplace da organização, depois instale o plugin:
 
 ```bash
 /plugin marketplace add tech-leads-club/agent-skills
 /plugin install agent-skills-mcp@tech-leads-club
 ```
 
-Or browse the [official Anthropic plugin directory](https://claude.com/plugins) and search for **`agent-skills-mcp`**.
+Ou use o [diretório oficial de plugins Anthropic](https://claude.com/plugins) e busque **`agent-skills-mcp`**.
 
-### Manual Install (Any MCP-compatible agent)
+### Instalação manual (qualquer agente compatível com MCP)
 
-Add the MCP server directly to your agent's config. The block below is the standard MCP format — works for most agents:
+Adicione o servidor ao arquivo de config. O trecho segue o formato MCP usual:
 
 ```json
 {
@@ -179,7 +179,7 @@ claude mcp add agent-skills -- npx -y @tech-leads-club/agent-skills-mcp
 
 #### VS Code (GitHub Copilot)
 
-`.vscode/mcp.json` uses a slightly different schema:
+`.vscode/mcp.json` usa schema levemente diferente:
 
 ```json
 {
@@ -193,52 +193,52 @@ claude mcp add agent-skills -- npx -y @tech-leads-club/agent-skills-mcp
 }
 ```
 
-## ⚡ Caching
+## ⚡ Cache
 
-The registry is fetched from [jsDelivr CDN](https://cdn.jsdelivr.net/gh/tech-leads-club/agent-skills@latest/packages/skills-catalog/skills-registry.json) and cached in memory:
+O registry é buscado no [CDN jsDelivr](https://cdn.jsdelivr.net/gh/tech-leads-club/agent-skills@latest/packages/skills-catalog/skills-registry.json) e em cache em memória:
 
-- **TTL:** 15 minutes — cache hit returns immediately with no network call
-- **ETag revalidation:** on TTL expiry, sends `If-None-Match`; a `304 Not Modified` renews the TTL without re-downloading the payload
-- **Cold start retry:** 3 attempts with exponential backoff — server won't start if CDN is unreachable
-- **Stale fallback:** if CDN fails after warmup, stale cache is returned rather than erroring
-- All cache events are logged to `stderr` (never `stdout` — stdout is reserved for JSON-RPC)
+- **TTL:** 15 minutos — cache hit não faz rede
+- **Revalidação ETag:** ao expirar, envia `If-None-Match`; `304` renova o TTL sem baixar o payload
+- **Retry no cold start:** 3 tentativas com backoff exponencial — servidor não sobe sem alcançar o CDN nas condições iniciais
+- **Stale fallback:** se o CDN falhar após warmup, devolve cache antigo em vez de erro
+- Logs de cache vão só para `stderr` (nunca `stdout` — reservado ao JSON-RPC)
 
-## 🔒 Error Reference
+## 🔒 Referência de erros
 
-| Scenario                               | Behaviour                                                                       |
-| :------------------------------------- | :------------------------------------------------------------------------------ |
-| Registry CDN unreachable at cold start | Retries 3× with exponential backoff, then server exits with error               |
-| Registry CDN unreachable after warmup  | Stale cache returned; warning logged to `stderr`                                |
-| Malformed registry JSON                | Logged to `stderr`; stale cache used if available                               |
-| `skill_name` not in registry           | `UserError`: "Skill '{name}' not found. Use search_skills to find valid names." |
-| `file_paths` contains invalid path     | `UserError` listing all invalid paths — no files fetched                        |
-| `search_skills` with empty query       | `UserError`: "Query cannot be empty"                                            |
-| One parallel file fetch fails          | Partial success: successful files returned, failed path noted in output         |
+| Situação                                | Comportamento                                                    |
+| :-------------------------------------- | :--------------------------------------------------------------- |
+| CDN do registry indisponível na partida | 3 tentativas com backoff, depois o servidor sai com erro         |
+| CDN indisponível após aquecimento       | Cache antigo devolvido; aviso em `stderr`                        |
+| JSON do registry malformado             | Erro registrado em `stderr`; usa cache velho se houver           |
+| `skill_name` fora do registry           | `UserError`: Skill não encontrada; use `search_skills`           |
+| `file_paths` com caminho inválido       | `UserError` listando todos os inválidos — nenhum arquivo baixado |
+| `search_skills` com query vazia         | `UserError`: query não pode ser vazia                            |
+| Uma falha em fetch paralelo de arquivo  | Sucesso parcial: devolve arquivos ok e marca os que falharam     |
 
-## 🧪 Development
+## 🧪 Desenvolvimento
 
-From the **repo root**:
+Na **raiz do repositório**:
 
 ```bash
-npm run build              # Build all (or: npx nx build @tech-leads-club/agent-skills-mcp)
+npm run build              # Build completo (ou: npx nx build @tech-leads-club/agent-skills-mcp)
 npx nx lint @tech-leads-club/agent-skills-mcp
 npx nx test @tech-leads-club/agent-skills-mcp
-npm run start:dev:mcp      # Build MCP and open Inspector
+npm run start:dev:mcp      # Build MCP + Inspector
 ```
 
-From **packages/mcp**:
+Em **packages/mcp**:
 
 ```bash
 npx nx build @tech-leads-club/agent-skills-mcp
 npx nx lint @tech-leads-club/agent-skills-mcp
 npx nx test @tech-leads-club/agent-skills-mcp
-npm run start:dev          # Build + Inspector (uses ../../dist/packages/mcp)
+npm run start:dev          # Build + Inspector (usa ../../dist/packages/mcp)
 ```
 
-## ⚙️ Requirements
+## ⚙️ Requisitos
 
 - Node.js ≥ 24
 
-## 📄 License & repo
+## 📄 Licença e repositório
 
-MIT — [Tech Leads Club](https://github.com/tech-leads-club). Same repo as the [CLI](https://github.com/tech-leads-club/agent-skills#-quick-start) and the [skills catalog](https://tech-leads-club.github.io/agent-skills/).
+MIT — [Controllato Club](https://github.com/tech-leads-club). Mesmo repositório da [CLI](https://github.com/tech-leads-club/agent-skills) e do [catálogo de skills](https://tech-leads-club.github.io/agent-skills/).

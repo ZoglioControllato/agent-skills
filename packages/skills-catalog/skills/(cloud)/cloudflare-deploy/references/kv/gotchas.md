@@ -1,11 +1,11 @@
-# KV Gotchas & Troubleshooting
+# KV: gotchas e troubleshooting
 
-## Common Errors
+## Erros comuns
 
 ### "Stale Read After Write"
 
-**Cause:** Eventual consistency means writes may not be immediately visible in other regions  
-**Solution:** Don't read immediately after write; return confirmation without reading or use the local value you just wrote. Writes visible immediately in same location, ≤60s globally
+**Causa:** consistência eventual — escritas podem não aparecer imediatamente em outras regiões  
+**Solução:** não leia logo após escrever; confirme sem reler ou use o valor que acabou de escrever. Escrita visível na mesma localidade; ≤60s globalmente
 
 ```typescript
 // ❌ BAD: Read immediately after write
@@ -20,8 +20,8 @@ return new Response(newValue) // Don't re-read
 
 ### "429 Rate Limit on Concurrent Writes"
 
-**Cause:** Multiple concurrent writes to same key exceeding 1 write/second limit  
-**Solution:** Use sequential writes, unique keys for concurrent operations, or implement retry with exponential backoff
+**Causa:** várias escritas concorrentes na mesma chave além de 1/s  
+**Solução:** escritas sequenciais, chaves distintas ou retry com backoff exponencial
 
 ```typescript
 async function putWithRetry(kv: KVNamespace, key: string, value: string, maxAttempts = 5): Promise<void> {
@@ -45,13 +45,13 @@ async function putWithRetry(kv: KVNamespace, key: string, value: string, maxAtte
 
 ### "Inefficient Multiple Gets"
 
-**Cause:** Making multiple individual get() calls instead of bulk operation  
-**Solution:** Use bulk get with array of keys: `env.USERS.get(["user:1", "user:2", "user:3"])` to reduce to 1 operation
+**Causa:** vários `get()` em vez de bulk  
+**Solução:** `env.USERS.get(["user:1", "user:2", "user:3"])` — uma operação
 
 ### "Null Reference Error"
 
-**Cause:** Attempting to use value without checking for null when key doesn't exist  
-**Solution:** Always handle null returns - KV returns `null` for missing keys, not undefined
+**Causa:** uso sem checar null quando a chave não existe  
+**Solução:** KV retorna `null` para chave ausente
 
 ```typescript
 // ❌ BAD: Assumes value exists
@@ -70,59 +70,56 @@ return new Response(config.theme)
 
 ### "Negative Lookup Caching"
 
-**Cause:** Keys that don't exist are cached as "not found" for up to 60s  
-**Solution:** Creating a key after checking won't be visible until cache expires
+**Causa:** chaves inexistentes ficam em cache como "não encontrado" até ~60s  
+**Solução:** criar após checar pode não ser visível até expirar o cache negativo
 
 ```typescript
-// Check → create pattern has race condition
 const exists = await env.KV.get('key') // null, cached as "not found"
 if (!exists) {
   await env.KV.put('key', 'value')
-  // Next get() may still return null for ~60s due to negative cache
 }
 
-// Alternative: Always assume key may not exist, use defaults
 const value = (await env.KV.get('key')) ?? 'default-value'
 ```
 
-## Performance Tips
+## Dicas de performance
 
-| Scenario            | Recommendation                | Why                                         |
-| ------------------- | ----------------------------- | ------------------------------------------- |
-| Large values (>1MB) | Use `stream` type             | Avoids buffering entire value in memory     |
-| Many small keys     | Coalesce into one JSON object | Reduces operations, improves cache hit rate |
-| High write volume   | Spread across different keys  | Avoid 1 write/second per-key limit          |
-| Cold reads          | Increase `cacheTtl` parameter | Reduces latency for frequently-read data    |
-| Bulk operations     | Use array form of get()       | Single operation, better performance        |
+| Cenário                | Recomendação           | Por quê                                      |
+| ---------------------- | ---------------------- | -------------------------------------------- |
+| Valores grandes        | Tipo `stream`          | Evita buffer completo na memória             |
+| Muitas chaves pequenas | Um objeto JSON         | Menos operações, melhor cache                |
+| Alto volume de escrita | Espalhe por chaves     | Evita limite 1 escrita/s por chave           |
+| Cold reads             | Aumente `cacheTtl`     | Menos latência em dados lidos com frequência |
+| Bulk                   | Forma array de `get()` | Uma operação, melhor performance             |
 
-## Cost Examples
+## Exemplos de custo
 
 **Free tier:**
 
-- 100K reads/day = 3M/month ✅
-- 1K writes/day = 30K/month ✅
-- 1GB storage ✅
+- 100K reads/dia = 3M/mês ✓
+- 1K writes/dia = 30K/mês ✓
+- 1GB storage ✓
 
-**Example paid workload:**
+**Carga paga exemplo:**
 
-- 10M reads/month = $5.00
-- 100K writes/month = $0.50
-- 1GB storage = $0.50
-- **Total: ~$6/month**
+- 10M reads/mês ≈ US$ 5,00
+- 100K writes/mês ≈ US$ 0,50
+- 1GB storage ≈ US$ 0,50
+- **Total ~US$ 6/mês**
 
-## Limits
+## Limites
 
-| Limit                 | Value              | Notes                                |
-| --------------------- | ------------------ | ------------------------------------ |
-| Key size              | 512 bytes          | Maximum key length                   |
-| Value size            | 25 MiB             | Maximum value; 413 error if exceeded |
-| Metadata size         | 1024 bytes         | Maximum metadata per key             |
-| cacheTtl minimum      | 60s                | Minimum cache TTL                    |
-| Write rate per key    | 1 write/second     | All plans; 429 error if exceeded     |
-| Propagation time      | ≤60s               | Global propagation time              |
-| Bulk get max          | 100 keys           | Maximum keys per bulk operation      |
-| Operations per Worker | 1,000              | Per request (bulk counts as 1)       |
-| Reads pricing         | $0.50 per 10M      | Per million reads                    |
-| Writes pricing        | $5.00 per 1M       | Per million writes                   |
-| Deletes pricing       | $5.00 per 1M       | Per million deletes                  |
-| Storage pricing       | $0.50 per GB-month | Per GB per month                     |
+| Limite            | Valor             | Observações                        |
+| ----------------- | ----------------- | ---------------------------------- |
+| Tamanho da chave  | 512 bytes         | Comprimento máximo                 |
+| Tamanho do valor  | 25 MiB            | 413 se exceder                     |
+| Metadados         | 1024 bytes        | Por chave                          |
+| cacheTtl mínimo   | 60s               | TTL mínimo de cache                |
+| Escrita por chave | 1/s               | 429 se exceder                     |
+| Propagação        | ≤60s              | Tempo global                       |
+| Bulk get máx.     | 100 chaves        | Por operação bulk                  |
+| Ops por Worker    | 1.000             | Por requisição (bulk conta como 1) |
+| Preço reads       | US$ 0,50 / 10M    | Por milhão                         |
+| Preço writes      | US$ 5 / 1M        | Por milhão                         |
+| Preço deletes     | US$ 5 / 1M        | Por milhão                         |
+| Preço storage     | US$ 0,50 / GB-mês | Por GB                             |

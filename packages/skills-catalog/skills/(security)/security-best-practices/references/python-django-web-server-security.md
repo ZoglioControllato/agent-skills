@@ -1,855 +1,888 @@
-# Django (Python) Web Security Spec (Django 6.0.x, Python 3.x)
+# Especificação de segurança da Web Django (Python) (Django 6.0.x, Python 3.x)
 
-This document is designed as a **security spec** that supports:
+Este documento foi concebido como uma **especificação de segurança** que oferece suporte a:
 
-1. **Secure-by-default code generation** for new Django code.
-2. **Security review / vulnerability hunting** in existing Django code (passive “notice issues while working” and active “scan the repo and report findings”).
+1. **Geração de código seguro por padrão** para novo código Django.
+2. **Revisão de segurança/caça de vulnerabilidades** no código Django existente (passivo “notificar problemas durante o trabalho” e ativo “verificar o repositório e relatar descobertas”).
 
-It is intentionally written as a set of **normative requirements** (“MUST/SHOULD/MAY”) plus **audit rules** (what bad patterns look like, how to detect them, and how to fix/mitigate them).
-
----
-
-## 0) Safety, boundaries, and anti-abuse constraints (MUST FOLLOW)
-
-- MUST NOT request, output, log, or commit secrets (API keys, passwords, private keys, session cookies, `SECRET_KEY`, `SECRET_KEY_FALLBACKS`, database passwords).
-- MUST NOT “fix” security by disabling protections (e.g., removing `CsrfViewMiddleware`, sprinkling `@csrf_exempt`, loosening `ALLOWED_HOSTS` to `['*']`, disabling `SecurityMiddleware`, disabling template auto-escaping, disabling permission checks).
-- MUST provide **evidence-based findings** during audits: cite file paths, code snippets, and concrete configuration values that justify the claim.
-- MUST treat uncertainty honestly: if a protection might exist in infrastructure (reverse proxy, WAF, CDN, ingress controller), report it as “not visible in app code; verify at runtime / edge config”.
-- MUST keep fixes compatible with Django’s intended security model: prefer Django’s built-ins (middleware, auth, forms, ORM) over custom security logic whenever possible. Django’s deployment checklist and system checks are part of the intended model. ([Django Project][1])
+Ele é intencionalmente escrito como um conjunto de **requisitos normativos** (“DEVE/DEVE/PODE”) mais **regras de auditoria** (como são os padrões ruins, como detectá-los e como corrigi-los/mitigá-los).
 
 ---
 
-## 1) Operating modes
+## 0) Segurança, limites e restrições antiabuso (DEVE SEGUIR)
 
-### 1.1 Generation mode (default)
+- NÃO DEVE solicitar, gerar, registrar ou confirmar segredos (chaves de API, senhas, chaves privadas, cookies de sessão, `SECRET_KEY`, `SECRET_KEY_FALLBACKS`, senhas de banco de dados).
+- NÃO DEVE “consertar” a segurança desativando proteções (por exemplo, removendo `CsrfViewMiddleware`, espalhando `@csrf_exempt`, afrouxando `ALLOWED_HOSTS` para `['*']`, desativando `SecurityMiddleware`, desativando o escape automático de modelo, desativando verificações de permissão).
+- DEVE fornecer \*\* descobertas baseadas em evidências
 
-When asked to write new Django code or modify existing code:
+ngs\*\* durante auditorias: cite caminhos de arquivo, trechos de código e valores de configuração concretos que justifiquem a afirmação.
 
-- MUST follow every **MUST** requirement in this spec.
-- SHOULD follow every **SHOULD** requirement unless the user explicitly says otherwise.
-- MUST prefer safe-by-default Django APIs and proven libraries over custom security code.
-- MUST avoid introducing new risky sinks (dynamic template rendering from untrusted strings, unsafe redirects, unsafe file serving, shell execution, raw SQL string formatting, SSRF-capable URL fetchers from untrusted input).
+- DEVE tratar a incerteza com honestidade: se existir uma proteção na infraestrutura (proxy reverso, WAF, CDN, controlador de entrada), relate-a como “não visível no código do aplicativo; verifique em tempo de execução/configuração de borda”.
+- DEVE manter as correções compatíveis com o modelo de segurança pretendido do Django: prefira os integrados do Django (middleware, auth, formulários, ORM) em vez de programas personalizados
 
-### 1.2 Passive review mode (always on while editing)
-
-While working anywhere in a Django repo (even if the user did not ask for a security scan):
-
-- MUST “notice” violations of this spec in touched/nearby code.
-- SHOULD mention issues as they come up, with a brief explanation + safe fix.
-
-### 1.3 Active audit mode (explicit scan request)
-
-When the user asks to “scan”, “audit”, or “hunt for vulns”:
-
-- MUST systematically search the codebase for violations of this spec.
-- MUST output findings in a structured format (see §2.3).
-
-Recommended audit order:
-
-1. Deployment entrypoints (ASGI/WSGI), Dockerfiles, Procfiles, systemd units, platform manifests.
-2. `settings.py` and environment-specific settings modules.
-3. Middleware ordering and enabled protections.
-4. Authn/authz (login, session management, permissions, admin).
-5. CSRF protections and state-changing endpoints.
-6. Templates and XSS.
-7. File handling (uploads/downloads/static/media) and path traversal.
-8. Injection classes (SQL, command execution, unsafe deserialization).
-9. Outbound requests (SSRF).
-10. Redirect handling (open redirects) + CORS + security headers (CSP, HSTS, etc.).
-11. Dependency/pinning and patch posture.
+lógica de segurança sempre que possível. A lista de verificação de implantação e as verificações do sistema do Django fazem parte do modelo pretendido. ([Projeto Django][1])
 
 ---
 
-## 2) Definitions and review guidance
+## 1) Modos de operação
 
-### 2.1 Untrusted input (treat as attacker-controlled unless proven otherwise)
+### 1.1 Modo de geração (padrão)
 
-Examples include:
+Quando solicitado a escrever um novo código Django ou modificar o código existente:
+
+- DEVE seguir todos os requisitos **DEVE** nesta especificação.
+- DEVE seguir todos os requisitos **DEVE**, a menos que o usuário diga explicitamente o contrário.
+- DEVE preferir APIs Django seguras por padrão e bibliotecas comprovadas em vez de código de segurança personalizado.
+- DEVE evitar a introdução de novos coletores arriscados (renderização dinâmica de modelos de strings não confiáveis, redirecionamentos inseguros, serviço de arquivos inseguros, execução de shell, formatação de strings SQL brutas, buscadores de URL compatíveis com SSRF de não confiáveis
+
+entrada).
+
+### 1.2 Modo de revisão passiva (sempre ativado durante a edição)
+
+Ao trabalhar em qualquer lugar em um repositório Django (mesmo que o usuário não tenha solicitado uma verificação de segurança):
+
+- DEVE “notar” violações desta especificação no código tocado/próximo.
+- DEVE mencionar os problemas à medida que surgem, com uma breve explicação + solução segura.
+
+### 1.3 Modo de auditoria ativo (solicitação de verificação explícita)
+
+Quando o usuário pede para “verificar”, “auditar” ou “caçar vulnerabilidades”:
+
+- DEVE pesquisar sistematicamente a base de código em busca de violações desta especificação.
+- DEVE apresentar os resultados num formato estruturado (ver §2.3).
+
+Ordem de auditoria recomendada:
+
+1. Pontos de entrada de implantação (ASGI/WSGI), Dockerfiles, Procfiles, unidades systemd, manifestos de plataforma.
+2. `settings.py` e módulos de configurações específicas do ambiente.
+3. Ordenação de middleware e proteções habilitadas.
+4. Authn/authz (login, gerenciamento de sessão, permissões, admin).
+5. Proteções CSRF e endpoints de mudança de estado.
+6. Modelos e XSS.
+7. Manipulação de arquivos (uploads/downloads/estático/mídia) e passagem de caminho.
+8. Classes de injeção (SQL, comando exe
+
+corte, desserialização insegura). 9. Solicitações de saída (SSRF). 10. Tratamento de redirecionamentos (redirecionamentos abertos) + CORS + cabeçalhos de segurança (CSP, HSTS, etc.). 11. Dependência/fixação e postura de patch.
+
+---
+
+## 2) Definições e orientações de revisão
+
+### 2.1 Entrada não confiável (tratada como controlada pelo invasor, salvo prova em contrário)
+
+Os exemplos incluem:
 
 - `request.GET`, `request.POST`, `request.FILES`
-- `request.body`, JSON bodies (e.g., `json.loads(request.body)`), DRF `request.data`
-- URL path parameters (e.g., `<int:id>`, `<slug:...>`)
-- `request.headers` / `request.META` (including `HTTP_HOST`, `HTTP_ORIGIN`, `HTTP_REFERER`, `HTTP_X_FORWARDED_*`)
-- `request.COOKIES`
-- Any data from external systems (webhooks, third-party APIs, message queues)
-- Any persisted content that originated from users (DB rows, cached content, file uploads)
+- `request.body`, corpos JSON (por exemplo, `json.loads(request.body)`), DRF `request.data`
+- Parâmetros de caminho de URL (por exemplo, `<int:id>`, `<slug:...>`)
+- `request.headers` / `request.META` (incluindo `HTTP_HOST`, `HTTP_ORIGIN`, `HTTP_REFERER`, `HTTP_X_FORWARDED_*`)
+- `solicitação.COOKIES`
+- Quaisquer dados de sistemas externos (webhooks, APIs de terceiros, filas de mensagens)
+- Qualquer conteúdo persistente originado do usuário
 
-Django explicitly emphasizes “never trust user-controlled data” and recommends using forms/validation. ([Django Project][2])
+s (linhas do banco de dados, conteúdo em cache, uploads de arquivos)
 
-### 2.2 State-changing request
+Django enfatiza explicitamente “nunca confie em dados controlados pelo usuário” e recomenda o uso de formulários/validação. ([Projeto Django][2])
 
-A request is state-changing if it can create/update/delete data, change auth/session state, trigger side effects (purchase, email send, webhook send), or initiate privileged actions.
+### 2.2 Solicitação de mudança de estado
 
-### 2.3 Required audit finding format
+Uma solicitação muda de estado se puder criar/atualizar/excluir dados, alterar o estado de autenticação/sessão, acionar efeitos colaterais (compra, envio de e-mail, envio de webhook) ou iniciar ações privilegiadas.
 
-For each issue found, output:
+### 2.3 Formato de descoberta de auditoria necessário
 
-- Rule ID:
-- Severity: Critical / High / Medium / Low
-- Location: file path + function/class/view name + line(s)
-- Evidence: the exact code/config snippet
-- Impact: what could go wrong, who can exploit it
-- Fix: safe change (prefer minimal diff)
-- Mitigation: defense-in-depth if immediate fix is hard
-- False positive notes: what to verify if uncertain
+Para cada problema encontrado, produza:
 
----
-
-## 3) Secure baseline: minimum production configuration (MUST in production)
-
-This is the smallest “production baseline” that prevents common Django misconfigurations. Django provides a “Deployment checklist” and recommends running `manage.py check --deploy` against production settings. ([Django Project][1])
-
-### 3.1 Settings management pattern (SHOULD)
-
-- SHOULD use environment-based configuration (or a secret manager) so production settings are not hard-coded.
-- MUST treat sensitive settings as confidential (e.g., `SECRET_KEY`, DB passwords) and keep them out of source control. Django’s checklist explicitly recommends loading `SECRET_KEY` from env or a file rather than hardcoding. ([Django Project][1])
-- SHOULD separate dev vs prod settings modules, with safe defaults for production (fail closed if critical settings are missing). ([Django Project][1])
-
-### 3.2 Minimum baseline targets (production)
-
-- MUST NOT use `manage.py runserver` as the production entrypoint; use a production-ready WSGI or ASGI server. ([Django Project][1])
-- MUST set `DEBUG = False` in production. ([Django Project][1])
-- MUST set a strong, secret `SECRET_KEY` and keep it secret; MAY use `SECRET_KEY_FALLBACKS` for safe rotation. ([Django Project][1])
-- MUST set `ALLOWED_HOSTS` to expected hosts (no wildcard unless you do your own host validation). ([Django Project][1])
-- MUST enforce HTTPS for authenticated areas (ideally site-wide for any login-capable app) and set `CSRF_COOKIE_SECURE=True` and `SESSION_COOKIE_SECURE=True` when HTTPS is used. ([Django Project][1])
-- SHOULD enable key `SecurityMiddleware` headers/settings: HSTS, Referrer-Policy, COOP, nosniff, SSL redirect (with correct proxy configuration). ([Django Project][3])
-- MUST treat user uploads as untrusted; ensure your web server never interprets them as executable content; keep `MEDIA_ROOT` separate from `STATIC_ROOT`. ([Django Project][1])
+- ID da regra:
+- Gravidade: Crítica / Alta / Média / Baixa
+- Localização: caminho do arquivo + nome da função/classe/visualização + linha(s)
+- Evidência: o trecho de código/configuração exato
+- Impacto: o que pode dar errado, quem pode explorar
+- Correção: mudança segura (prefira diferença mínima)
+- Mitigação: defesa profunda se a solução imediata for difícil
+- Notas falso-positivas: o que verificar em caso de incerteza
 
 ---
 
-## 4) Rules (generation + audit)
+## 3) Linha de base segura: configuração mínima de produção (DEVE em produção)
 
-Each rule contains: required practice, insecure patterns, detection hints, and remediation.
+Esta é a menor “linha de base de produção” que evita configurações incorretas comuns do Django. Django fornece uma “lista de verificação de implantação” e recomenda executar `manage.py check --deploy` nas configurações de produção. ([Projeto Django][1])
 
-### DJANGO-DEPLOY-001: Do not use Django’s development server in production
+### 3.1 Padrão de gerenciamento de configurações (DEVE)
 
-Severity: High (if production)
+- DEVE usar configuração baseada em ambiente (ou um gerenciador de segredos) para que as configurações de produção não sejam codificadas.
+- DEVE tratar configurações confidenciais como confidenciais (por exemplo, `SECRET_KEY`, senhas de banco de dados) e mantê-las fora do controle de origem. A lista de verificação do Django recomenda explicitamente carregar `SECRET_KEY` do env ou de um arquivo em vez de codificar. ([Projeto Django][1])
+- DEVE separar os módulos de configurações dev vs prod, com padrões seguros para produção (falha no fechamento
 
-Required:
+d se faltarem configurações críticas). ([Projeto Django][1])
 
-- MUST NOT deploy `manage.py runserver` as the production server.
-- MUST run behind a production-grade WSGI or ASGI server. ([Django Project][1])
+### 3.2 Metas mínimas de linha de base (produção)
 
-Insecure patterns:
+- NÃO DEVE usar `manage.py runserver` como ponto de entrada de produção; use um servidor WSGI ou ASGI pronto para produção. ([Projeto Django][1])
+- DEVE definir `DEBUG = False` na produção. ([Projeto Django][1])
+- DEVE definir um `SECRET_KEY` forte e secreto e mantê-lo em segredo; PODE usar `SECRET_KEY_FALLBACKS` para rotação segura. ([Projeto Django][1])
+- DEVE definir `ALLOWED_HOSTS` para hosts esperados (sem curinga, a menos que você faça sua própria validação de host). ([Projeto Django][1])
 
-- Production docs/scripts using `python manage.py runserver 0.0.0.0:8000`.
-- Docker `CMD`/entrypoint uses `runserver`.
-- Kubernetes/Procfile/systemd units invoking `runserver`.
+- DEVE impor HTTPS para áreas autenticadas (de preferência em todo o site para qualquer aplicativo com capacidade de login) e definir `CSRF_COOKIE_SECURE=True` e `SESSION_COOKIE_SECURE=True` quando HTTPS for usado. ([Projeto Django][1])
+- DEVE ativar os principais cabeçalhos/configurações `SecurityMiddleware`: HSTS, Referrer-Policy, COOP, nosniff, redirecionamento SSL (com configuração de proxy correta). ([Projeto Django][3])
+- DEVE tratar os uploads dos usuários como não confiáveis; garanta que seu servidor web nunca interprete
 
-Detection hints:
-
-- Search for `manage.py runserver`, `runserver 0.0.0.0`, `--insecure`.
-- Check Docker `CMD/ENTRYPOINT`, Procfile, systemd unit files, Helm charts.
-
-Fix:
-
-- Use a production server (WSGI/ASGI) as recommended in Django’s deployment checklist. ([Django Project][1])
-
-Note:
-
-- `runserver` is fine for local development. Only flag if it’s used as the production entrypoint.
+hem como conteúdo executável; mantenha `MEDIA_ROOT` separado de `STATIC_ROOT`. ([Projeto Django][1])
 
 ---
 
-### DJANGO-DEPLOY-002: `DEBUG` MUST be disabled in production
+## 4) Regras (geração + auditoria)
 
-Severity: High
+Cada regra contém: práticas necessárias, padrões inseguros, dicas de detecção e correção.
 
-Required:
+### DJANGO-DEPLOY-001: Não use o servidor de desenvolvimento do Django em produção
 
-- MUST set `DEBUG = False` in production.
-- MUST treat any mechanism that exposes debug pages/tracebacks to untrusted users as a critical information disclosure risk. Django’s checklist explicitly warns `DEBUG=True` leaks source excerpts, local variables, settings, and more. ([Django Project][1])
+Gravidade: Alta (se produção)
 
-Insecure patterns:
+Obrigatório:
 
-- `DEBUG = True` in production settings.
-- Environment defaults to `DEBUG=True` unless explicitly overridden.
+- NÃO DEVE implantar `manage.py runserver` como servidor de produção.
+- DEVE ser executado atrás de um servidor WSGI ou ASGI de nível de produção. ([Projeto Django][1])
 
-Detection hints:
+Padrões inseguros:
 
-- Search `DEBUG = True`, `DEBUG=os.environ.get(..., True)`, `DJANGO_DEBUG`, `.env` files.
-- Look for “production” settings modules that import from dev defaults.
+- Documentos/scripts de produção usando `python manage.py runserver 0.0.0.0:8000`.
+- Docker `CMD`/entrypoint usa `runserver`.
+- Unidades Kubernetes/Procfile/systemd invocando `runserver`.
 
-Fix:
+Dicas de detecção:
 
-- Set `DEBUG=False` in prod settings; use explicit environment config.
-- Ensure error reporting is via safe logging/monitoring, not debug pages. ([Django Project][1])
+- Procure por `manage.py runserver`, `runserver 0.0.0.0`, `--insecure`.
+- Verifique Docker `CMD/ENTRYPOINT`, Procfile, arquivos de unidade systemd, gráficos Helm.
 
----
+Consertar:
 
-### DJANGO-CONFIG-001: `SECRET_KEY` must be strong, secret, and rotated safely
+- Use um servidor de produção (WSGI/ASGI) conforme recomendado na lista de verificação de implantação do Django. ([Projeto Django][1])
 
-Severity: High (Critical if missing in production with signing/sessions)
+Nota:
 
-Required:
-
-- MUST set a large random `SECRET_KEY` in production and keep it secret. ([Django Project][1])
-- MUST NOT commit it to source control or print/log it. ([Django Project][1])
-- SHOULD load it from env or a file/secret store (not hard-coded). ([Django Project][1])
-- MAY rotate keys using `SECRET_KEY_FALLBACKS` to avoid instantly invalidating all signed data; MUST remove old keys from fallbacks in a timely manner. ([Django Project][1])
-
-Insecure patterns:
-
-- Hard-coded `SECRET_KEY = "..."` in repo for production.
-- `SECRET_KEY` reused across environments.
-- `SECRET_KEY_FALLBACKS` contains long-expired keys indefinitely.
-
-Detection hints:
-
-- Search for `SECRET_KEY =`, `SECRET_KEY_FALLBACKS`, `.env` committed files, `print(settings.SECRET_KEY)`.
-
-Fix:
-
-- Load from secret manager / environment variable.
-- If rotating:
-  - Set new `SECRET_KEY`
-  - Keep old key(s) temporarily in `SECRET_KEY_FALLBACKS`
-  - Remove old key(s) after the rotation window. ([Django Project][1])
+- `runserver` é adequado para desenvolvimento local. Sinalize apenas se for usado como ponto de entrada de produção.
 
 ---
 
-### DJANGO-HOST-001: Host header must be validated (`ALLOWED_HOSTS` must be strict)
+### DJANGO-DEPLOY-002: `DEBUG` DEVE ser desabilitado na produção
 
-Severity: Medium
+Gravidade: Alta
 
-Required:
+Obrigatório:
 
-- MUST set `ALLOWED_HOSTS` in production to your expected domains/hosts. ([Django Project][1])
-- MUST NOT set `ALLOWED_HOSTS = ['*']` in production unless you also implement your own robust `Host` validation (Django warns that wildcards require your own validation to avoid CSRF-class attacks). ([Django Project][1])
-- SHOULD configure the fronting web server to reject unknown hosts early (defense-in-depth). ([Django Project][1])
+- DEVE definir `DEBUG = False` na produção.
+- DEVE tratar qualquer mecanismo que exponha páginas de depuração/tracebacks a usuários não confiáveis ​​como um risco crítico de divulgação de informações. A lista de verificação do Django avisa explicitamente que `DEBUG=True` vaza trechos de fontes, variáveis ​​locais, configurações e muito mais. ([Projeto Django][1])
 
-Insecure patterns:
+Padrões inseguros:
 
-- `ALLOWED_HOSTS = ['*']` (or env expands to `*`) in production.
-- `ALLOWED_HOSTS = []` with `DEBUG=False` (site won’t run, or misconfigured deployments attempt workarounds).
+- `DEBUG = True` nas configurações de produção.
+- O ambiente é padronizado como `DEBUG=True`, a menos que seja explicitamente substituído.
 
-Detection hints:
+Dicas de detecção:
 
-- Search `ALLOWED_HOSTS`.
-- Check platform environment settings that override `ALLOWED_HOSTS`.
+- Pesquise arquivos `DEBUG = True`, `DEBUG=os.environ.get(..., True)`, `DJANGO_DEBUG`, `.env`.
+- Procure módulos de configurações de “produção” que importam dos padrões de desenvolvimento.
 
-Fix:
+Correção:
 
-- Set `ALLOWED_HOSTS = ['example.com', 'www.example.com', ...]` for prod.
-- Keep dev hosts separate.
-
-Notes:
-
-- Django uses the Host header for URL construction; fake Host values can lead to CSRF, cache poisoning, and poisoned email links (Django security docs call this out). ([Django Project][2])
+- Defina `DEBUG=False` nas configurações do produto; use configuração de ambiente explícita.
+- Certifique-se de que o relatório de erros seja feito por meio de registro/monitoramento seguro, e não de páginas de depuração. ([Projeto Django][1])
 
 ---
 
-### DJANGO-HTTPS-001: If TLS is used cookie transport must be secured
+### DJANGO-CONFIG-001: `SECRET_KEY` deve ser forte, secreto e girado com segurança
 
-Severity: High (Critical for auth-enabled apps)
+Gravidade: Alta (Crítica se estiver ausente na produção com assinatura/sessões)
 
-NOTE: Only enforce this if TLS is enabled, as it will break non-TLS applications
+Obrigatório:
 
-If using TLS:
+- DEVE definir um grande `SECRET_KEY` aleatório na produção e mantê-lo em segredo. ([Projeto Django][1])
+- NÃO DEVE enviá-lo ao controle de origem ou imprimi-lo/registrá-lo. ([Projeto Django][1])
+- DEVE carregá-lo do env ou de um arquivo/armazenamento secreto (não codificado). ([Projeto Django][1])
+- PODE girar chaves usando `SECRET_KEY_FALLBACKS` para evitar invalidar instantaneamente todos os dados assinados; DEVE remover chaves antigas de substitutos em tempo hábil. ([Projeto Django][1])
 
-- MUST set:
-  - `CSRF_COOKIE_SECURE = True` ([Django Project][1])
-  - `SESSION_COOKIE_SECURE = True` ([Django Project][1])
+Padrões inseguros:
 
-- SHOULD consider enabling:
-  - `SECURE_SSL_REDIRECT = True` (with correct proxy config) ([Django Project][3])
-  - HSTS via `SECURE_HSTS_SECONDS` (+ includeSubDomains/preload as appropriate). ([Django Project][3])
+- `SECRET_KEY = "..."` codificado no repositório para produção.
+- `SECRET_KEY` reutilizado em ambientes.
+- `SECRET_KEY_FALLBACKS` contém chaves expiradas indefinidamente.
 
-Insecure patterns:
+Dicas de detecção:
 
-- Login pages over HTTP, or mixed HTTP/HTTPS with the same session cookie.
-- `CSRF_COOKIE_SECURE=False` or `SESSION_COOKIE_SECURE=False` in production HTTPS.
-- HSTS enabled incorrectly (can break site for the duration).
+- Procure por `SECRET_KEY =`, `SECRET_KEY_FALLBACKS`, `.env` arquivos confirmados, `print(settings.SECRET_KEY)`.
 
-Detection hints:
+Consertar:
 
-- Inspect `settings.py` for `CSRF_COOKIE_SECURE`, `SESSION_COOKIE_SECURE`, `SECURE_SSL_REDIRECT`, `SECURE_HSTS_SECONDS`.
-- Inspect proxy/ingress config for HTTP->HTTPS redirect behavior.
-
-Fix:
-
-- Enable HTTPS redirect and secure cookies.
-- Add HSTS carefully (start with low value, validate, then increase). Django warns misconfig can break your site for the HSTS duration. ([Django Project][3])
+- Carregar do gerenciador secreto/variável de ambiente.
+- Se estiver girando:
+  - Definir novo `SECRET_KEY`
+  - Mantenha as chaves antigas temporariamente em `SECRET_KEY_FALLBACKS`
+  - Remova a(s) chave(s) antiga(s) após a janela de rotação. ([Projeto Django][1])
 
 ---
 
-### DJANGO-PROXY-001: Reverse proxy trust must be configured correctly (`SECURE_PROXY_SSL_HEADER`)
+### DJANGO-HOST-001: O cabeçalho do host deve ser validado (`ALLOWED_HOSTS` deve ser estrito)
 
-Severity: Medium (when behind a TLS proxy)
+Gravidade: Média
 
-Required:
+Obrigatório:
 
-- If behind a reverse proxy that terminates TLS, MUST configure Django so `request.is_secure()` reflects the _external_ scheme, otherwise CSRF and other logic can break. Django documents using `SECURE_PROXY_SSL_HEADER` for this. ([Django Project][3])
-- MUST only set `SECURE_PROXY_SSL_HEADER` if you control the proxy (or have guarantees) and it strips inbound spoofed headers. Django explicitly warns misconfig can compromise security and lists required conditions. ([Django Project][3])
+- DEVE definir `ALLOWED_HOSTS` em produção para seus domínios/hosts esperados. ([Projeto Django][1])
+- NÃO DEVE definir `ALLOWED_HOSTS = ['*']` em produção, a menos que você também implemente sua própria validação `Host` robusta (Django avisa que curingas requerem sua própria validação para evitar ataques de classe CSRF). ([Projeto Django][1])
+- DEVE configurar o servidor web frontal para rejeitar hosts desconhecidos antecipadamente (defesa profunda). ([Projeto Django][1])
 
-Insecure patterns:
+Padrões inseguros:
 
-- `SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")` in an environment where the proxy does not strip user-supplied `X-Forwarded-Proto`.
-- Infinite redirect loops after setting `SECURE_SSL_REDIRECT=True` (often indicates proxy HTTPS detection is wrong). ([Django Project][3])
+- `ALLOWED_HOSTS = ['*']` (ou env se expande para `*`) em produção.
+- `ALLOWED_HOSTS = []` com `DEBUG=False` (o site não funciona ou implantações mal configuradas tentam soluções alternativas).
 
-Detection hints:
+Dicas de detecção:
 
-- Search `SECURE_PROXY_SSL_HEADER`, `SECURE_SSL_REDIRECT`.
-- Inspect ingress/proxy behavior for stripping forwarded headers.
+- Pesquise `ALLOWED_HOSTS`.
+- Verifique as configurações do ambiente da plataforma que substituem `ALLOWED_HOSTS`.
 
-Fix:
+Correção:
 
-- Set `SECURE_PROXY_SSL_HEADER` only if the proxy strips and sets the header correctly (per Django’s documented prerequisites). ([Django Project][3])
+- Defina `ALLOWED_HOSTS = ['example.com', 'www.example.com', ...]` para prod.
+- Mantenha os hosts de desenvolvimento separados.
 
----
+Notas:
 
-### DJANGO-SESS-001: Session cookies must use secure attributes in production
-
-Severity: Medium (Only if TLS enabled)
-
-Required (production, HTTPS):
-
-- MUST set `SESSION_COOKIE_SECURE=True` (only transmit over HTTPS). ([Django Project][3])
-- MUST keep `SESSION_COOKIE_HTTPONLY=True` (Django default is `True`). ([Django Project][3])
-- SHOULD keep `SESSION_COOKIE_SAMESITE='Lax'` (Django default is `Lax`) unless a justified cross-site flow requires `None`. ([Django Project][3])
-- SHOULD avoid setting `SESSION_COOKIE_DOMAIN` unless you truly need cross-subdomain cookies (subdomain-wide cookies expand attack surface).
-
-Insecure patterns:
-
-- `SESSION_COOKIE_SECURE=False` in production HTTPS.
-
-IMPORTANT NOTE: Only set `Secure` in production environment when TLS is configured. When running in a local dev environment over HTTP, do not set `Secure` property on cookies. You should do this conditionally based on if the app is running in production mode. You should also include a property like `SESSION_COOKIE_SECURE` which can be used to disable `Secure` cookies when testing over HTTP.
-
-- `SESSION_COOKIE_HTTPONLY=False`.
-- `SESSION_COOKIE_SAMESITE=None` combined with cookie-authenticated state-changing endpoints (higher CSRF risk).
-
-Detection hints:
-
-- Search for `SESSION_COOKIE_` settings, `response.set_cookie(..., httponly=..., secure=..., samesite=...)`.
-
-Fix:
-
-- Set the above explicitly in production settings.
-- Validate compatibility with your auth flows. ([Django Project][3])
+- Django usa o cabeçalho Host para construção de URL; Valores falsos de Host podem levar a CSRF, envenenamento de cache e links de e-mail envenenados (os documentos de segurança do Django alertam sobre isso). ([Projeto Django][2])
 
 ---
 
-### DJANGO-SESS-002: CSRF cookie settings must be deliberate (HttpOnly has tradeoffs)
+### DJANGO-HTTPS-001: Se for usado TLS, o transporte de cookies deve ser protegido
 
-Severity: Medium
+Gravidade: alta (crítica para aplicativos habilitados para autenticação)
 
-Required:
+NOTA: Aplique isso apenas se o TLS estiver ativado, pois isso interromperá aplicativos não-TLS
 
-- SHOULD set `CSRF_COOKIE_SECURE=True` when using HTTPS/TLS. ([Django Project][3])
-- SHOULD keep `CSRF_COOKIE_SAMESITE='Lax'` unless you have a cross-site requirement. Django default is `Lax`. ([Django Project][3])
-- MAY set `CSRF_COOKIE_HTTPONLY=True` (default is `False`) if your frontend does not need to read the CSRF cookie. If you enable it, your JS must read the CSRF token from the DOM instead (Django documents this). ([Django Project][3])
+Se estiver usando TLS:
 
-Insecure patterns:
+- DEVE definir:
+  - `CSRF_COOKIE_SECURE = True` ([Projeto Django][1])
+  - `SESSION_COOKIE_SECURE = True` ([Projeto Django][1])
 
-- `CSRF_COOKIE_SECURE=False` in production HTTPS/TLS.
-- Setting `CSRF_COOKIE_HTTPONLY=True` but still relying on “read csrftoken cookie in JS” patterns (breaks CSRF for AJAX).
-- `CSRF_COOKIE_SAMESITE=None` without a clear reason.
+- DEVE considerar habilitar:
+  - `SECURE_SSL_REDIRECT = True` (com configuração de proxy correta) ([Projeto Django][3])
+  - HSTS via `SECURE_HSTS_SECONDS` (+ includeSubDomains/preload conforme apropriado). ([Projeto Django][3])
 
-Detection hints:
+Padrões inseguros:
 
-- Search for `CSRF_COOKIE_` settings.
-- Search JS for `document.cookie` usage to fetch `csrftoken`.
+- Páginas de login por HTTP ou HTTP/HTTPS misto com o mesmo cookie de sessão.
+- `CSRF_COOKIE_SECURE=False` ou `SESSION_COOKIE_SECURE=False` em HTTPS de produção.
+- HSTS ativado incorretamente (pode interromper o site durante esse período).
 
-Fix:
+Dicas de detecção:
 
-- Align cookie settings with your CSRF token acquisition method (cookie vs DOM) as Django describes. ([Django Project][4])
+- Inspecione `settings.py` para `CSRF_COOKIE_SECURE`, `SESSION_COOKIE_SECURE`, `SECURE_SSL_REDIRECT`, `SECURE_HSTS_SECONDS`.
+- Inspecione a configuração de proxy/entrada para comportamento de redirecionamento HTTP->HTTPS.
 
----
+Consertar:
 
-### DJANGO-CSRF-001: Cookie-authenticated state-changing requests MUST be CSRF-protected
-
-Severity: High
-
-Required:
-
-- MUST keep `django.middleware.csrf.CsrfViewMiddleware` enabled (it is activated by default). ([Django Project][4])
-- MUST include `{% csrf_token %}` in internal POST forms; MUST NOT include it in forms that POST to external URLs (Django warns this leaks the token). ([Django Project][4])
-- MUST protect all state-changing endpoints (POST/PUT/PATCH/DELETE) that rely on cookies for authentication.
-- For AJAX/SPA calls, MUST send the CSRF token via the `X-CSRFToken` header (or configured header name) as documented. ([Django Project][4])
-- MUST be very careful with `@csrf_exempt` and use it only when absolutely necessary; if used, MUST replace CSRF with an appropriate alternative control (e.g., request signing for webhooks). Django explicitly warns about `csrf_exempt`. ([Django Project][2])
-
-Insecure patterns:
-
-- Missing `CsrfViewMiddleware` in `MIDDLEWARE`.
-- `@csrf_exempt` on general-purpose authenticated views.
-- POST/PUT/PATCH/DELETE endpoints with session auth and no CSRF tokens.
-- Using GET for state-changing actions (amplifies CSRF risk).
-
-Detection hints:
-
-- Inspect `settings.py` `MIDDLEWARE` for `CsrfViewMiddleware` and its order (Django notes it should come before middleware that assumes CSRF is handled). ([Django Project][4])
-- Search for `csrf_exempt`, `csrf_protect`, `ensure_csrf_cookie`.
-- Enumerate URL patterns for non-GET methods; confirm CSRF coverage.
-
-Fix:
-
-- Re-enable `CsrfViewMiddleware`, add CSRF tokens to forms, and add AJAX header handling.
-- For caching decorators: if you cache a view that needs CSRF tokens, apply `@csrf_protect` as Django documents to avoid caching a response without CSRF cookie/Vary headers. ([Django Project][4])
-
-Notes:
-
-- When deployed with HTTPS, Django’s CSRF middleware also checks the Referer header for same-origin (Django security docs mention this). ([Django Project][2])
+- Habilite o redirecionamento HTTPS e proteja os cookies.
+- Adicione HSTS com cuidado (comece com valor baixo, valide e depois aumente). Django avisa que configuração incorreta pode danificar seu site durante o HSTS. ([Projeto Django][3])
 
 ---
 
-### DJANGO-XSS-001: Prevent reflected/stored XSS in templates and HTML generation
+### DJANGO-PROXY-001: A confiança do proxy reverso deve ser configurada corretamente (`SECURE_PROXY_SSL_HEADER`)
 
-Severity: High
+Gravidade: Média (quando atrás de um proxy TLS)
 
-Required:
+Obrigatório:
 
-- MUST rely on Django template auto-escaping (safe-by-default) for HTML templates. Django security docs highlight that Django templates escape dangerous characters but have limitations. ([Django Project][2])
-- MUST NOT disable auto-escaping broadly (`{% autoescape off %}`) unless the content is trusted or safely sanitized. ([Django Project][5])
-- MUST NOT mark untrusted content as safe:
-  - Avoid `mark_safe(...)` on user data.
-  - Avoid `|safe` on user-controlled content.
+- Se estiver atrás de um proxy reverso que finalize o TLS, DEVE configurar o Django para que `request.is_secure()` reflita o esquema _externo_, caso contrário o CSRF e outras lógicas podem quebrar. Documentos Django usando `SECURE_PROXY_SSL_HEADER` para isso. ([Projeto Django][3])
+- DEVE definir `SECURE_PROXY_SSL_HEADER` apenas se você controlar o proxy (ou tiver garantias) e ele remover cabeçalhos falsificados de entrada. Django avisa explicitamente que configurações incorretas podem comprometer a segurança e listar requisitos
 
-- MUST be careful about HTML context pitfalls (e.g., unquoted attributes); Django explicitly shows an example where escaping does not protect an unquoted attribute context. ([Django Project][2])
-- SHOULD prefer safe HTML construction helpers (e.g., `format_html`) rather than manual concatenation that risks missing escapes. ([Django Project][6])
+condições iradas. ([Projeto Django][3])
 
-Insecure patterns:
+Padrões inseguros:
+
+- `SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")` em um ambiente onde o proxy não remove o `X-Forwarded-Proto` fornecido pelo usuário.
+- Loops de redirecionamento infinitos após definir `SECURE_SSL_REDIRECT=True` (geralmente indica que a detecção de HTTPS do proxy está errada). ([Projeto Django][3])
+
+Dicas de detecção:
+
+- Pesquise `SECURE_PROXY_SSL_HEADER`, `SECURE_SSL_REDIRECT`.
+- Inspecione o comportamento de entrada/proxy para remover cabeçalhos encaminhados.
+
+Correção:
+
+- Defina `SECURE_PROXY_SSL_HEADER` somente se o proxy remover e definir o cabeçalho corretamente (de acordo com os pré-requisitos documentados do Django). ([Projeto Django][3])
+
+---
+
+### DJANGO-SESS-001: Cookies de sessão devem usar atributos seguros na produção
+
+Gravidade: Média (somente se TLS estiver ativado)
+
+Obrigatório (produção, HTTPS):
+
+- DEVE definir `SESSION_COOKIE_SECURE=True` (transmitir apenas por HTTPS). ([Projeto Django][3])
+- DEVE manter `SESSION_COOKIE_HTTPONLY=True` (o padrão do Django é `True`). ([Projeto Django][3])
+- DEVE manter `SESSION_COOKIE_SAMESITE='Lax'` (o padrão do Django é `Lax`) a menos que um fluxo entre sites justificado exija `None`. ([Projeto Django][3])
+- DEVE evitar definir `SESSION_COOKIE_DOMAIN`, a menos que você realmente precise de cookies entre subdomínios (cookies para todo o subdomínio expa
+
+segunda superfície de ataque).
+
+Padrões inseguros:
+
+- `SESSION_COOKIE_SECURE=False` em HTTPS de produção.
+
+NOTA IMPORTANTE: Defina `Secure` apenas no ambiente de produção quando o TLS estiver configurado. Ao executar em um ambiente de desenvolvimento local via HTTP, não defina a propriedade `Secure` nos cookies. Você deve fazer isso condicionalmente com base no fato de o aplicativo estar sendo executado no modo de produção. Você também deve incluir uma propriedade como `SESSION_COOKIE_SECURE` que pode ser usada para desabilitar cookies `Secure` ao testar via HTTP.
+
+- `SESSION_COOKIE_HTTPONLY=Falso`.
+- `SESSION_COOKIE_SAMESITE=None` combinado com endpoints de mudança de estado autenticados por cookie (maior risco de CSRF).
+
+Dicas de detecção:
+
+- Pesquise as configurações de `SESSION_COOKIE_`, `response.set_cookie(..., httponly=..., secure=..., samesite=...)`.
+
+Correção:
+
+- Defina o acima explicitamente nas configurações de produção.
+- Valide a compatibilidade com seus fluxos de autenticação. ([Projeto Django][3])
+
+---
+
+### DJANGO-SESS-002: As configurações de cookies CSRF devem ser deliberadas (HttpOnly tem vantagens e desvantagens)
+
+Gravidade: Média
+
+Obrigatório:
+
+- DEVE definir `CSRF_COOKIE_SECURE=True` ao usar HTTPS/TLS. ([Projeto Django][3])
+- DEVE manter `CSRF_COOKIE_SAMESITE='Lax'` a menos que você tenha um requisito entre sites. O padrão do Django é `Lax`. ([Projeto Django][3])
+- PODE definir `CSRF_COOKIE_HTTPONLY=True` (o padrão é `False`) se seu frontend não precisar ler o cookie CSRF. Se você habilitá-lo, seu JS deverá ler o token CSRF do DOM (o Django documenta isso). ([Projeto Django][3])
+
+Padrões inseguros:
+
+- `CSRF_COOKIE_SECURE=False` em HTTPS/TLS de produção.
+- Definir `CSRF_COOKIE_HTTPONLY=True` mas ainda contar com padrões “ler csrftoken cookie em JS” (quebra CSRF para AJAX).
+- `CSRF_COOKIE_SAMESITE=None` sem um motivo claro.
+
+Dicas de detecção:
+
+- Pesquise as configurações `CSRF_COOKIE_`.
+- Pesquise JS pelo uso de `document.cookie` para buscar `csrftoken`.
+
+Consertar:
+
+- Alinhe as configurações de cookies com seu método de aquisição de token CSRF (cookie vs DOM) conforme descrito pelo Django. ([Projeto Django][4])
+
+---
+
+### DJANGO-CSRF-001: Solicitações de alteração de estado autenticadas por cookie DEVEM ser protegidas por CSRF
+
+Gravidade: Alta
+
+Obrigatório:
+
+- DEVE manter `django.middleware.csrf.CsrfViewMiddleware` habilitado (está ativado por padrão). ([Projeto Django][4])
+- DEVE incluir `{% csrf_token %}` em formulários POST internos; NÃO DEVE incluí-lo em formulários que POST para URLs externos (Django avisa que isso vaza o token). ([Projeto Django][4])
+- DEVE proteger todos os endpoints que mudam de estado (POST/PUT/PATCH/DELETE) que dependem de cookies para autenticação.
+- Para chamadas AJAX/SPA, DEVE enviar o token CSRF via t
+
+o cabeçalho `X-CSRFToken` (ou nome do cabeçalho configurado) conforme documentado. ([Projeto Django][4])
+
+- DEVE ter muito cuidado com `@csrf_exempt` e usá-lo somente quando for absolutamente necessário; se usado, DEVE substituir o CSRF por um controle alternativo apropriado (por exemplo, solicitação de assinatura para webhooks). Django avisa explicitamente sobre `csrf_exempt`. ([Projeto Django][2])
+
+Padrões inseguros:
+
+- Falta `CsrfViewMiddleware` em `MIDDLEWARE`.
+- `@csrf_exempt` em visualizações autenticadas de uso geral.
+- Endpoints POST/PUT/PATCH/DELETE com autenticação de sessão e sem tokens CSRF.
+- Usar GET para ações de mudança de estado (amplifica o risco de CSRF).
+
+Dicas de detecção:
+
+- Inspecione `settings.py` `MIDDLEWARE` para `CsrfViewMiddleware` e sua ordem (Django observa que ele deve vir antes do middleware que assume que o CSRF é tratado). ([Projeto Django][4])
+- Procure por `csrf_exempt`, `csrf_protect`, `ensure_csrf_cookie`.
+- Enumerar padrões de URL para métodos não-GET; confirmar a cobertura CSRF.
+
+Consertar:
+
+- Reative o `CsrfViewMiddleware`, adicione tokens CSRF aos formulários e adicione manipulação de cabeçalho AJAX.
+- Para decoradores de cache: se você armazenar em cache uma visualização que precisa de tokens CSRF, aplique `@csrf_protect` como documentos Django para evitar armazenar em cache uma resposta sem cookies CSRF/cabeçalhos Vary. ([Projeto Django][4])
+
+Notas:
+
+- Quando implantado com HTTPS, o middleware CSRF do Django também verifica o cabeçalho Referer para a mesma origem (os documentos de segurança do Django mencionam isso). ([Projeto Django][2])
+
+---
+
+### DJANGO-XSS-001: Impedir XSS refletido/armazenado em modelos e geração de HTML
+
+Gravidade: Alta
+
+Obrigatório:
+
+- DEVE contar com o escape automático do modelo Django (seguro por padrão) para modelos HTML. Os documentos de segurança do Django destacam que os modelos do Django escapam de caracteres perigosos, mas têm limitações. ([Projeto Django][2])
+- NÃO DEVE desativar amplamente o escape automático (`{% autoescape off %}`), a menos que o conteúdo seja confiável ou higienizado com segurança. ([Projeto Django][5])
+- NÃO DEVE marcar conteúdo não confiável como seguro:
+  - Evite `mark_safe(...)` nos dados do usuário.
+  - Evite `|seguro` o
+
+n conteúdo controlado pelo usuário.
+
+- DEVE ter cuidado com as armadilhas do contexto HTML (por exemplo, atributos sem aspas); Django mostra explicitamente um exemplo onde o escape não protege um contexto de atributo sem aspas. ([Projeto Django][2])
+- DEVE preferir ajudantes de construção HTML seguros (por exemplo, `format_html`) em vez de concatenação manual que corre o risco de perder escapes. ([Projeto Django][6])
+
+Padrões inseguros:
 
 - `{% autoescape off %}{{ user_input }}{% endautoescape %}`
-- `{{ user_input|safe }}`
+- `{{ user_input|seguro }}`
 - `mark_safe(request.GET["q"])`
-- Unquoted attribute injections: `<style class={{ var }}>...` (Django’s own example). ([Django Project][2])
+- Injeções de atributos sem aspas: `<style class={{ var }}>...` (exemplo do próprio Django). ([Projeto Django][2])
 
-Detection hints:
+Dicas de detecção:
 
-- Search templates for `|safe`, `autoescape off`, `safeseq`.
-- Search Python for `mark_safe`, `SafeString`, or direct HTML concatenation with request/DB values.
-- Review any code returning `HttpResponse(user_value)` where `user_value` contains HTML.
+- Pesquise modelos para `|safe`, `autoescape off`, `safeseq`.
+- Pesquise em Python por `mark_safe`, `SafeString` ou concatenação HTML direta com valores de solicitação/banco de dados.
+- Revise qualquer código que retorne `HttpResponse(user_value)` onde `user_value` contém HTML.
 
-Fix:
+Consertar:
 
-- Remove unsafe marking; sanitize only when strictly necessary (use an allowlist-based HTML sanitizer).
-- Quote attributes and avoid placing untrusted values into dangerous contexts.
-- Add CSP as defense-in-depth (see DJANGO-CSP-001). ([Django Project][2])
+- Remover marcação insegura; higienize apenas quando estritamente necessário (use um sanitizador HTML baseado em lista de permissões).
+- Cite atributos e evite colocar valores não confiáveis ​​em contextos perigosos.
+- Adicionar CSP como defesa profunda (ver DJANGO-CSP-001). ([Projeto Django][2])
 
 ---
 
-### DJANGO-TEMPLATE-001: Never render untrusted template source strings
+### DJANGO-TEMPLATE-001: Nunca renderize strings de origem de modelos não confiáveis
 
-Severity: High to Critical (depends on context and exposure)
+Gravidade: Alta a Crítica (depende do contexto e da exposição)
 
-Required:
+Obrigatório:
 
-- MUST NOT render templates where the template source string is influenced by untrusted input (request, user content, DB rows editable by untrusted users).
-- MUST treat “template from string” patterns as dangerous, even if Django templates are more constrained than some other engines: they can still leak data from context, bypass escaping, and create XSS or content injection.
+- NÃO DEVE renderizar modelos onde a string de origem do modelo seja influenciada por entradas não confiáveis ​​(solicitação, conteúdo do usuário, linhas do banco de dados editáveis ​​por usuários não confiáveis).
+- DEVE tratar os padrões “template from string” como perigosos, mesmo que os templates do Django sejam mais restritos do que alguns outros mecanismos: eles ainda podem vazar dados do contexto, ignorar o escape e criar XSS ou injeção de conteúdo.
 
-Insecure patterns:
+Padrões inseguros:
 
 - `Template(request.GET["tmpl"]).render(Context(...))`
-- Saving user templates in the DB and rendering them with normal privileges/context.
+- Salvar modelos de usuário no banco de dados e renderizá-los com privilégios/contexto normais.
 
-Detection hints:
+Dicas de detecção:
 
-- Search for `django.template.Template(`, `Engine.from_string`, `.render(Context(` with non-constant strings.
-- Trace where the template string comes from (admin panels, DB, uploads, requests).
+- Procure por `django.template.Template(`, `Engine.from_string`, `.render(Context(` com strings não constantes.
+- Rastreie de onde vem a string do modelo (painéis de administração, banco de dados, uploads, solicitações).
 
-Fix:
+Correção:
 
-- Replace with non-executing formatting (e.g., `string.Template`, explicit placeholders) or a strict allowlisted rendering model.
-- If you _must_ support user-defined templates, isolate heavily (separate service/tenant context, strict allowlists, and assume bypasses are possible).
+- Substitua por formatação não executável (por exemplo, `string.Template`, espaços reservados explícitos) ou um modelo de renderização estritamente permitido.
+- Se você _deve_ oferecer suporte a modelos definidos pelo usuário, isole-o fortemente (contexto de serviço/locatário separado, listas de permissões estritas e presuma que desvios são possíveis).
 
 ---
 
-### DJANGO-SQL-001: Prevent SQL injection (use ORM or parameterized raw SQL)
+### DJANGO-SQL-001: Impedir injeção de SQL (use ORM ou SQL bruto parametrizado)
 
-Severity: High
+Gravidade: Alta
 
-Required:
+Obrigatório:
 
-- MUST use Django ORM/querysets for normal DB access; Django notes querysets are parameterized and protected from SQL injection under typical use. ([Django Project][2])
-- MUST be very careful with raw SQL; if using `raw()`, `cursor.execute()`, `extra()`, or `RawSQL`, MUST pass parameters separately (e.g., `params=`) and MUST NOT string-interpolate untrusted input into SQL. Django’s raw SQL docs warn to escape user-controlled parameters using `params`. ([Django Project][7])
-- MUST NOT quote placeholders in SQL templates (Django docs explicitly warn that quoting `%s` placeholders makes it unsafe). ([Django Project][8])
-- SHOULD avoid `extra()` and `RawSQL` unless necessary; Django security docs call for caution. ([Django Project][2])
+- DEVE usar Django ORM/querysets para acesso normal ao banco de dados; Os conjuntos de consultas de notas do Django são parametrizados e protegidos contra injeção de SQL sob uso típico. ([Projeto Django][2])
+- DEVE ter muito cuidado com SQL bruto; se estiver usando `raw()`, `cursor.execute()`, `extra()` ou `RawSQL`, DEVE passar parâmetros separadamente (por exemplo, `params=`) e NÃO DEVE interpolar strings de entrada não confiável no SQL. Os documentos SQL brutos do Django alertam para escapar de parâmetros controlados pelo usuário usando `par
 
-Insecure patterns:
+sou`. ([Projeto Django][7])
+
+- NÃO DEVE citar espaços reservados em modelos SQL (os documentos do Django alertam explicitamente que citar espaços reservados `%s` o torna inseguro). ([Projeto Django][8])
+- DEVE evitar `extra()` e `RawSQL` a menos que seja necessário; Os documentos de segurança do Django pedem cautela. ([Projeto Django][2])
+
+Padrões inseguros:
 
 - `cursor.execute(f"SELECT ... WHERE id={request.GET['id']}")`
-- `Model.objects.raw("... %s" % user_input)` (string formatting)
-- `extra(where=[f"headline='{q}'"])`
-- Quoted placeholders: `WHERE othercol = '%s'` (explicitly documented as unsafe). ([Django Project][8])
+- `Model.objects.raw("... %s" % user_input)` (formatação de string)
+- `extra(onde=[f"headline='{q}'"])`
+- Espaços reservados entre aspas: `WHERE othercol = '%s'` (explicitamente documentado como inseguro). ([Projeto Django][8])
 
-Detection hints:
+Dicas de detecção:
 
-- Grep for `.raw(`, `.extra(`, `RawSQL(`, `connection.cursor()`, `.execute(`.
-- Grep for SQL keywords (`SELECT`, `UPDATE`, `DELETE`, `INSERT`) in Python strings.
-- Track untrusted inputs into these call sites.
+- Grep para `.raw(`, `.extra(`, `RawSQL(`, `connection.cursor()`, `.execute(`.
+- Grep para palavras-chave SQL (`SELECT`, `UPDATE`, `DELETE`, `INSERT`) em strings Python.
+- Rastreie entradas não confiáveis nesses sites de chamadas.
 
-Fix:
+Correção:
 
-- Prefer ORM queries.
-- If raw SQL is unavoidable, use parameters (`params`, DB-API param binding) and do not quote placeholders. ([Django Project][7])
+- Prefira consultas ORM.
+- Se o SQL bruto for inevitável, use parâmetros (`params`, ligação de parâmetros DB-API) e não coloque espaços reservados entre aspas. ([Projeto Django][7])
 
 ---
 
-### DJANGO-CMD-001: Prevent OS command injection
+### DJANGO-CMD-001: Impedir injeção de comando do sistema operacional
 
-Severity: Critical to High (depends on exposure)
+Gravidade: Crítica a Alta (depende da exposição)
 
-Required:
+Obrigatório:
 
-- MUST avoid executing system commands with attacker-influenced input.
-- If subprocess is necessary:
-  - MUST pass args as a list (not a shell string).
-  - MUST NOT use `shell=True` with attacker-influenced content.
-  - SHOULD use strict allowlists for variable components.
+- DEVE evitar executar comandos do sistema com informações influenciadas pelo invasor.
+- Se o subprocesso for necessário:
+  - DEVE passar argumentos como uma lista (não uma string de shell).
+  - NÃO DEVE usar `shell=True` com conteúdo influenciado por invasores.
+  - DEVE usar listas de permissões estritas para componentes variáveis.
 
-- SHOULD prefer pure-Python libraries instead of shelling out.
+- DEVE preferir bibliotecas Python puras em vez de gastar muito.
 
-Insecure patterns:
+Padrões inseguros:
 
 - `os.system(request.GET["cmd"])`
-- `subprocess.run(f"convert {path}", shell=True)` where `path` is user-controlled.
+- `subprocess.run(f"convert {path}", shell=True)` onde `path` é controlado pelo usuário.
 
-Detection hints:
+Dicas de detecção:
 
-- Search `os.system`, `subprocess`, `Popen`, `shell=True`.
-- Trace request/DB inputs into those calls.
+- Pesquise `os.system`, `subprocess`, `Popen`, `shell=True`.
+- Rastreie entradas de solicitação/banco de dados nessas chamadas.
 
-Fix:
+Correção:
 
-- Replace with library APIs; if unavoidable, hard-code executable and allowlist validated parameters.
-
----
-
-### DJANGO-UPLOAD-001: File uploads must be validated, stored safely, and served safely
-
-Severity: High
-
-Required:
-
-- MUST treat all user uploads as untrusted. Django explicitly warns “Media files are uploaded by your users. They’re untrusted!” ([Django Project][1])
-- MUST ensure the web server never interprets user uploads as executable code (e.g., don’t allow uploaded `.php` or HTML to execute/inline as active content). ([Django Project][1])
-- MUST enforce size limits (at least at the web server; Django security docs recommend limiting upload size at the server to prevent DoS). ([Django Project][2])
-- SHOULD validate file types using allowlists and content checks (not only extensions).
-- SHOULD store uploads outside the application code directory and outside any static root.
-- SHOULD consider serving uploads from a separate top-level/second-level domain to reduce same-origin impact; Django security docs recommend a distinct domain and note that a subdomain may be insufficient for some protections. ([Django Project][2])
-- MUST be aware of polyglot upload risks: Django documents a case where HTML can be uploaded “as an image” by using a valid PNG header (and may be served as HTML depending on the web server). ([Django Project][2])
-
-Insecure patterns:
-
-- Serving uploads inline with `text/html` or without forcing download for potentially active formats.
-- Upload allowlist based only on extension.
-- Upload storage inside static roots or code roots.
-
-Detection hints:
-
-- Search for `request.FILES`, `FileField`, `ImageField`, upload forms/views.
-- Inspect upload serving paths and Nginx/Apache config (media handlers).
-- Check `MEDIA_URL`, `MEDIA_ROOT`, and static config.
-
-Fix:
-
-- Configure the web server to serve uploads as inert bytes (no execution), and consider forcing `Content-Disposition: attachment` for risky types.
-- Use a separate domain for user content when warranted. ([Django Project][2])
+- Substituir por APIs de biblioteca; se inevitável, parâmetros executáveis ​​em código e validados na lista de permissões.
 
 ---
 
-### DJANGO-PATH-001: Prevent path traversal and unsafe file serving (static/media separation)
+### DJANGO-UPLOAD-001: Os uploads de arquivos devem ser validados, armazenados com segurança e servidos com segurança
 
-Severity: High
+Gravidade: Alta
 
-Required:
+Obrigatório:
 
-- MUST NOT treat user input as a filesystem path for reads/writes/serving.
-- MUST keep `MEDIA_ROOT` and `STATIC_ROOT` distinct; Django settings docs explicitly warn they must have different values to avoid security implications. ([Django Project][3])
-- SHOULD prefer using Django storage APIs keyed by server-side identifiers rather than accepting arbitrary relative paths from users.
+- DEVE tratar todos os uploads de usuários como não confiáveis. Django avisa explicitamente "Arquivos de mídia são enviados por seus usuários. Eles não são confiáveis!" ([Projeto Django][1])
+- DEVE garantir que o servidor web nunca interprete os uploads do usuário como código executável (por exemplo, não permitir que `.php` ou HTML carregados sejam executados/inline como conteúdo ativo). ([Projeto Django][1])
+- DEVE impor limites de tamanho (pelo menos no servidor web; os documentos de segurança do Django recomendam limitar o tamanho do upload no servidor
 
-Insecure patterns:
+ver para evitar DoS). ([Projeto Django][2])
 
-- `open(os.path.join(MEDIA_ROOT, request.GET["path"]))`
-- Download endpoints that take `?file=../../...` style parameters.
-- Misconfigured `MEDIA_ROOT == STATIC_ROOT`.
+- DEVE validar os tipos de arquivo usando listas de permissões e verificações de conteúdo (não apenas extensões).
+- DEVE armazenar uploads fora do diretório de código do aplicativo e fora de qualquer raiz estática.
+- DEVE considerar veicular uploads de um domínio separado de nível superior/segundo nível para reduzir o impacto da mesma origem; Os documentos de segurança do Django recomendam um domínio distinto e observam que um subdomínio pode ser insuficiente para algumas proteções. (
 
-Detection hints:
+[Projeto Django][2])
 
-- Grep for `open(`, `Path(`, `os.path.join(` used with request values.
-- Check `MEDIA_ROOT`, `STATIC_ROOT` in settings. ([Django Project][3])
+- DEVE estar ciente dos riscos de upload poliglota: Django documenta um caso onde o HTML pode ser carregado “como uma imagem” usando um cabeçalho PNG válido (e pode ser servido como HTML dependendo do servidor web). ([Projeto Django][2])
 
-Fix:
+Padrões inseguros:
 
-- Use server-side IDs mapped to known files.
-- Keep static and media separated and ensure the web server treats media as untrusted. ([Django Project][3])
+- Servir uploads inline com `text/html` ou sem forçar o download para formatos potencialmente ativos.
+- Carregar lista de permissões com base apenas na extensão.
+- Carregue o armazenamento dentro de raízes estáticas ou raízes de código.
 
----
+Dicas de detecção:
 
-### DJANGO-REDIRECT-001: Prevent open redirects (`next`, `return_to`, `redirect`)
+- Pesquise `request.FILES`, `FileField`, `ImageField`, carregue formulários/visualizações.
+- Inspecione os caminhos de serviço de upload e a configuração do Nginx/Apache (manipuladores de mídia).
+- Verifique `MEDIA_URL`, `MEDIA_ROOT` e configuração estática.
 
-Severity: Medium (High when combined with auth flows)
+Consertar:
 
-Required:
-
-- MUST validate redirect targets derived from untrusted input (e.g., `next`, `return_to`).
-- SHOULD restrict to same-site relative paths or allowlisted hosts/schemes.
-- SHOULD use Django’s safe URL helpers (e.g., `django.utils.http.url_has_allowed_host_and_scheme`) rather than custom parsing.
-
-Insecure patterns:
-
-- `return redirect(request.GET.get("next"))` with no validation.
-- Redirect allowlist implemented with naive string checks.
-
-Detection hints:
-
-- Search for `redirect(` and track origin of the target.
-- Search for parameters named `next`, `return_to`, `redirect`, `url`.
-
-Fix:
-
-- Validate with allowlists and default to a safe internal path if validation fails.
-- Ensure host validation via `ALLOWED_HOSTS` remains strict (see DJANGO-HOST-001). ([Django Project][3])
+- Configure o servidor web para servir uploads como bytes inertes (sem execução) e considere forçar `Content-Disposition: attachment` para tipos de risco.
+- Use um domínio separado para conteúdo do usuário quando necessário. ([Projeto Django][2])
 
 ---
 
-### DJANGO-HEADERS-001: Enable essential security headers (SecurityMiddleware + clickjacking protection)
+### DJANGO-PATH-001: Evita a passagem de caminho e o fornecimento inseguro de arquivos (separação estática/de mídia)
 
-Severity: Medium to High
+Gravidade: Alta
 
-Required:
+Obrigatório:
 
-- SHOULD use `django.middleware.security.SecurityMiddleware` and configure it appropriately (production) for:
-  - `X-Content-Type-Options: nosniff` (Django setting `SECURE_CONTENT_TYPE_NOSNIFF`, default `True`). ([Django Project][3])
-  - `Referrer-Policy` (Django setting `SECURE_REFERRER_POLICY`, default `'same-origin'`). ([Django Project][3])
-  - COOP (Django setting `SECURE_CROSS_ORIGIN_OPENER_POLICY`, default `'same-origin'`). ([Django Project][3])
-  - HTTPS redirects and HSTS as appropriate (see DJANGO-HTTPS-001). ([Django Project][3])
+- NÃO DEVE tratar a entrada do usuário como um caminho do sistema de arquivos para leitura/gravação/servimento.
+- DEVE manter `MEDIA_ROOT` e `STATIC_ROOT` distintos; Os documentos de configurações do Django avisam explicitamente que eles devem ter valores diferentes para evitar implicações de segurança. ([Projeto Django][3])
+- DEVE preferir usar APIs de armazenamento Django codificadas por identificadores do lado do servidor em vez de aceitar caminhos relativos arbitrários dos usuários.
 
-- SHOULD enable clickjacking protection via X-Frame-Options middleware; Django security docs strongly recommend it for sites that don’t need third-party framing. ([Django Project][2])
+Padrões inseguros:
 
-Insecure patterns:
+- `open(os.path.join(MEDIA_ROOT, request.GET["caminho"]))`
+- Baixe endpoints que usam parâmetros de estilo `?file=../../...`.
+- `MEDIA_ROOT == STATIC_ROOT` configurado incorretamente.
 
-- Missing SecurityMiddleware.
-- Missing clickjacking protection (or disabling it globally) without a clear framing requirement.
-- Over-broad framing allowances for sensitive endpoints.
+Dicas de detecção:
 
-Detection hints:
+- Grep para `open(`, `Path(`, `os.path.join(` usado com valores de solicitação.
+- Verifique `MEDIA_ROOT`, `STATIC_ROOT` nas configurações. ([Projeto Django][3])
 
-- Inspect `MIDDLEWARE` for SecurityMiddleware and XFrameOptionsMiddleware.
-- Search for per-view disabling of framing/CSRF protections.
+Correção:
 
-Fix:
-
-- Add/enable middleware and configure the settings intentionally. ([Django Project][3])
-
-NOTE:
-
-- Some headers may be set at the edge (CDN/reverse proxy). If not visible in app code, flag as “verify at edge”.
+- Use IDs do lado do servidor mapeados para arquivos conhecidos.
+- Mantenha a estática e a mídia separadas e garanta que o servidor web trate a mídia como não confiável. ([Projeto Django][3])
 
 ---
 
-### DJANGO-CSP-001: Deploy a Content Security Policy (CSP) as defense-in-depth
+### DJANGO-REDIRECT-001: Impedir redirecionamentos abertos (`next`, `return_to`, `redirect`)
 
-Severity: Medium (High for apps rendering untrusted content)
+Gravidade: Média (alta quando combinada com fluxos de autenticação)
 
-NOTE: It is most important to set the CSP's script-src. All other directives are not as important and can generally be excluded for the ease of development.
+Obrigatório:
 
-Required:
+- DEVE validar alvos de redirecionamento derivados de entradas não confiáveis ​​(por exemplo, `next`, `return_to`).
+- DEVE restringir-se a caminhos relativos do mesmo site ou hosts/esquemas permitidos.
+- DEVE usar os auxiliares de URL seguros do Django (por exemplo, `django.utils.http.url_has_allowed_host_and_scheme`) em vez da análise personalizada.
 
-- SHOULD deploy a CSP to mitigate XSS and content injection classes; Django’s security docs recommend CSP and note it is new in Django 6.0. ([Django Project][2])
-- MUST understand CSP limitations:
-  - Avoid excluding routes from CSP coverage; Django warns that an unprotected page can undermine protected pages due to same-origin policy. ([Django Project][2])
+Padrões inseguros:
 
-- MAY start with `SECURE_CSP_REPORT_ONLY` to iterate safely (Django provides report-only support). ([Django Project][3])
+- `return redirect(request.GET.get("next"))` sem validação.
+- Lista de permissões de redirecionamento implementada com verificações de strings ingênuas.
 
-Insecure patterns:
+Dicas de detecção:
 
-- No CSP on apps that render user-controlled content.
-- CSP excludes “just a couple pages” (weakens overall protection), especially pages with any injection surface. ([Django Project][2])
-- CSP uses overly permissive directives (e.g., widespread `unsafe-inline`) without justification.
+- Procure por `redirect(` e rastreie a origem do alvo.
+- Procure por parâmetros chamados `next`, `return_to`, `redirect`, `url`.
 
-Detection hints:
+Correção:
 
-- Search `SECURE_CSP`, `SECURE_CSP_REPORT_ONLY`, and CSP middleware configuration.
-- Inspect reverse proxy/CDN config for CSP headers.
-
-Fix:
-
-- Implement a realistic CSP, ideally report-only first, then enforce. ([Django Project][3])
+- Valide com listas de permissões e use como padrão um caminho interno seguro se a validação falhar.
+- Certifique-se de que a validação do host via `ALLOWED_HOSTS` permaneça rigorosa (consulte DJANGO-HOST-001). ([Projeto Django][3])
 
 ---
 
-### DJANGO-AUTH-001: Password storage must use Django’s secure hashers; password policy must be configured
+### DJANGO-HEADERS-001: Habilite cabeçalhos de segurança essenciais (SecurityMiddleware + proteção contra clickjacking)
 
-Severity: High
+Gravidade: Média a Alta
 
-Required:
+Obrigatório:
 
-- MUST use Django’s built-in password hashing (never store plaintext or reversible encrypted passwords).
-- SHOULD prefer modern hashers and keep defaults updated; Django documents `PASSWORD_HASHERS` and includes modern options (Argon2, bcrypt, scrypt, PBKDF2 variants). ([Django Project][3])
-- SHOULD configure `AUTH_PASSWORD_VALIDATORS` (default is empty) for production password policy. ([Django Project][3])
+- DEVE usar `django.middleware.security.SecurityMiddleware` e configurá-lo adequadamente (produção) para:
+  - `X-Content-Type-Options: nosniff` (configuração do Django `SECURE_CONTENT_TYPE_NOSNIFF`, padrão `True`). ([Projeto Django][3])
+  - `Referrer-Policy` (configuração do Django `SECURE_REFERRER_POLICY`, padrão `'same-origin'`). ([Projeto Django][3])
+  - COOP (configuração Django `SECURE_CROSS_ORIGIN_OPENER_POLICY`, padrão `'same-origin'`). ([Projeto Django
 
-Insecure patterns:
+][3])
 
-- Custom password storage or hashing.
-- Plaintext passwords stored in DB fields.
-- No password validation on consumer-facing apps.
+- Redirecionamentos HTTPS e HSTS conforme apropriado (ver DJANGO-HTTPS-001). ([Projeto Django][3])
 
-Detection hints:
+- DEVE ativar a proteção contra clickjacking por meio do middleware X-Frame-Options; Os documentos de segurança do Django o recomendam fortemente para sites que não precisam de enquadramentos de terceiros. ([Projeto Django][2])
 
-- Search for `.set_password(` usage vs manual hashing.
-- Inspect settings for `PASSWORD_HASHERS` and `AUTH_PASSWORD_VALIDATORS`. ([Django Project][3])
+Padrões inseguros:
 
-Fix:
+- Faltando SecurityMiddleware.
+- Ausência de proteção contra clickjacking (ou desativação global) sem um requisito de enquadramento claro.
+- Permissões de enquadramento excessivamente amplas para terminais sensíveis.
 
-- Use Django auth user model APIs.
-- Enable password validators appropriate to the product’s risk profile. ([Django Project][3])
+Dicas de detecção:
 
----
+- Inspecione `MIDDLEWARE` para SecurityMiddleware e XFrameOptionsMiddleware.
+- Pesquisa por desativação por visualização de proteções de enquadramento/CSRF.
 
-### DJANGO-AUTHZ-001: Authorization must be explicit and consistent
+Correção:
 
-Severity: High
+- Adicione/habilite middleware e defina as configurações intencionalmente. ([Projeto Django][3])
 
-Required:
+NOTA:
 
-- MUST enforce authorization checks on every privileged action (view, modify, admin-like operations).
-- MUST NOT rely on UI-only restrictions (e.g., hiding buttons) without server-side permission checks.
-- SHOULD use Django’s permissions/groups and per-object authorization patterns where applicable.
-
-Insecure patterns:
-
-- Views that assume “user is logged in” implies “user may do action”.
-- Missing authorization checks on update/delete endpoints.
-
-Detection hints:
-
-- Enumerate views that modify state; ensure they validate ownership/permission.
-- Look for use of only `is_authenticated` or only `is_staff` without checking object-level access.
-
-Fix:
-
-- Add explicit permission checks and tests for unauthorized access.
+- Alguns cabeçalhos podem ser definidos na borda (CDN/proxy reverso). Se não estiver visível no código do aplicativo, sinalize como “verificar na borda”.
 
 ---
 
-### DJANGO-ADMIN-001: Django admin must be treated as a high-value target
+### DJANGO-CSP-001: Implante uma Política de Segurança de Conteúdo (CSP) como defesa profunda
 
-Severity: High
+Gravidade: Média (alta para aplicativos que renderizam conteúdo não confiável)
 
-Required:
+NOTA: É muito importante definir o script-src do CSP. Todas as outras directivas não são tão importantes e geralmente podem ser excluídas para facilitar o desenvolvimento.
 
-- MUST ensure admin is protected by strong authentication and HTTPS-only transport (see DJANGO-HTTPS-001). ([Django Project][1])
-- SHOULD restrict admin exposure (network allowlists, VPN, SSO, or additional authentication controls) when possible.
-- SHOULD audit installed admin extensions and third-party apps for XSS/CSRF exposure.
+Obrigatório:
 
-Insecure patterns:
+- DEVE implantar um CSP para mitigar XSS e classes de injeção de conteúdo; Os documentos de segurança do Django recomendam o CSP e observam que ele é novo no Django 6.0. ([Projeto Django][2])
+- DEVE compreender as limitações do CSP:
+  - Evitar excluir rotas da cobertura do CSP; Django avisa que uma página desprotegida pode prejudicar páginas protegidas devido à política de mesma origem. ([Projeto Django][2])
 
-- Admin exposed to the internet with weak authentication.
-- Admin served over HTTP.
+- PODE começar com `SECURE_CSP_REPORT_ONLY` para iterar com segurança (Django fornece suporte apenas para relatórios). ([Projeto Django][3])
 
-Detection hints:
+Padrões inseguros:
 
-- Search `urlpatterns` for `admin.site.urls`.
-- Check deployment config for IP allowlisting or auth gateways.
+- Nenhum CSP em aplicativos que renderizam conteúdo controlado pelo usuário.
+- CSP exclui “apenas algumas páginas” (enfraquece a proteção geral), especialmente páginas com qualquer superfície de injeção. ([Projeto Django][2])
+- O CSP utiliza diretivas excessivamente permissivas (por exemplo, o generalizado `unsafe-inline`) sem justificativa.
 
-Fix:
+Dicas de detecção:
 
-- Add network controls and enforce HTTPS.
+- Pesquise `SECURE_CSP`, `SECURE_CSP_REPORT_ONLY` e configuração de middleware CSP.
+- Inspecione a configuração do proxy reverso/CDN para cabeçalhos CSP.
 
----
+Correção:
 
-### DJANGO-LOG-001: Logging and error reporting must not leak secrets
-
-Severity: Medium to High
-
-Required:
-
-- MUST NOT log secrets (including `SECRET_KEY`, session cookies, auth headers, password reset tokens).
-- MUST configure production logging deliberately; Django’s deployment checklist explicitly calls out reviewing logging before production. ([Django Project][1])
-- MUST ensure `DEBUG=False` in production so exceptions aren’t rendered with sensitive context. ([Django Project][1])
-
-Insecure patterns:
-
-- Logging full request headers or cookies in production.
-- Printing settings dictionaries.
-- Debug error pages.
-
-Detection hints:
-
-- Inspect `LOGGING` config; search for middleware that logs request headers/cookies.
-- Grep for `print(settings` / `logging.info(request.META)` patterns.
-
-Fix:
-
-- Redact sensitive values; log IDs not secrets.
-- Use structured logging and a safe error monitoring tool. ([Django Project][1])
+- Implementar um CSP realista, idealmente apenas reportar primeiro e depois aplicar. ([Projeto Django][3])
 
 ---
 
-### DJANGO-SUPPLY-001: Dependency and patch hygiene (Django + security-critical deps)
+### DJANGO-AUTH-001: O armazenamento de senhas deve usar hashers seguros do Django; a política de senha deve ser configurada
 
-Severity: Medium (High if known vulnerable versions)
+Gravidade: Alta
 
-Required:
+Obrigatório:
 
-- SHOULD pin and regularly update Django and security-critical dependencies.
-- MUST respond to Django security releases promptly.
+- DEVE usar o hashing de senha integrado do Django (nunca armazene texto simples ou senhas criptografadas reversíveis).
+- DEVE preferir hashers modernos e manter os padrões atualizados; Django documenta `PASSWORD_HASHERS` e inclui opções modernas (variantes Argon2, bcrypt, scrypt, PBKDF2). ([Projeto Django][3])
+- DEVE configurar `AUTH_PASSWORD_VALIDATORS` (o padrão é vazio) para a política de senha de produção. ([Projeto Django][3])
 
-Detection hints:
+Padrões inseguros:
 
-- Check `requirements.txt`, lockfiles, build images.
-- Identify Django version; compare against latest supported release (Django’s download page publishes current stable and supported branches). ([Django Project][9])
+- Armazenamento de senha personalizado ou hash.
+- Senhas em texto simples armazenadas em campos do banco de dados.
+- Sem validação de senha em aplicativos voltados para o consumidor.
 
-Fix:
+Dicas de detecção:
 
-- Upgrade to patched versions; add regression tests for previously vulnerable classes.
+- Procure por `.set_password(` uso vs hashing manual.
+- Inspecione as configurações de `PASSWORD_HASHERS` e `AUTH_PASSWORD_VALIDATORS`. ([Projeto Django][3])
+
+Correção:
+
+- Use APIs de modelo de usuário de autenticação do Django.
+- Habilite validadores de senha adequados ao perfil de risco do produto. ([Projeto Django][3])
 
 ---
 
-## 5) Practical scanning heuristics (how to “hunt”)
+### DJANGO-AUTHZ-001: A autorização deve ser explícita e consistente
 
-When actively scanning, use these high-signal patterns:
+Gravidade: Alta
 
-- Deployment/dev server:
-  - `manage.py runserver`, `runserver 0.0.0.0`, `--insecure` ([Django Project][1])
+Obrigatório:
 
-- Debug / settings:
-  - `DEBUG = True` ([Django Project][1])
-  - `SECRET_KEY =`, `SECRET_KEY_FALLBACKS` ([Django Project][1])
+- DEVE impor verificações de autorização em todas as ações privilegiadas (visualizar, modificar, operações semelhantes às de administrador).
+- NÃO DEVE confiar apenas em restrições da UI (por exemplo, ocultar botões) sem verificações de permissão do lado do servidor.
+- DEVE usar as permissões/grupos do Django e os padrões de autorização por objeto quando aplicável.
 
-- Host validation:
-  - `ALLOWED_HOSTS = ['*']` ([Django Project][3])
+Padrões inseguros:
 
-- HTTPS and proxy:
-  - `SECURE_SSL_REDIRECT`, `SECURE_HSTS_SECONDS`, `SECURE_PROXY_SSL_HEADER` ([Django Project][3])
+- Visualizações que assumem que “o usuário está logado” implicam que “o usuário pode realizar uma ação”.
+- Faltam verificações de autorização em endpoints de atualização/exclusão.
 
-- Cookies / sessions:
-  - `SESSION_COOKIE_SECURE`, `SESSION_COOKIE_HTTPONLY`, `SESSION_COOKIE_SAMESITE` ([Django Project][3])
-  - `CSRF_COOKIE_SECURE`, `CSRF_COOKIE_HTTPONLY`, `CSRF_COOKIE_SAMESITE` ([Django Project][3])
+Dicas de detecção:
 
-- CSRF bypasses:
-  - `csrf_exempt`, missing `CsrfViewMiddleware`, POST forms without `{% csrf_token %}` ([Django Project][4])
+- Enumerar visualizações que modificam estado; garantir que eles validem a propriedade/permissão.
+- Procure usar apenas `is_authenticated` ou apenas `is_staff` sem verificar o acesso em nível de objeto.
+
+Correção:
+
+- Adicione verificações de permissão explícitas e testes para acesso não autorizado.
+
+---
+
+### DJANGO-ADMIN-001: Django admin deve ser tratado como um alvo de alto valor
+
+Gravidade: Alta
+
+Obrigatório:
+
+- DEVE garantir que o administrador esteja protegido por autenticação forte e transporte somente HTTPS (consulte DJANGO-HTTPS-001). ([Projeto Django][1])
+- DEVE restringir a exposição do administrador (listas de permissões de rede, VPN, SSO ou controles de autenticação adicionais) quando possível.
+- DEVE auditar extensões de administrador instaladas e aplicativos de terceiros para exposição a XSS/CSRF.
+
+Padrões inseguros:
+
+- Administrador exposto à Internet com autenticação fraca.
+- Admin servido por HTTP.
+
+Dicas de detecção:
+
+- Pesquise `urlpatterns` por `admin.site.urls`.
+- Verifique a configuração de implantação para lista de permissões de IP ou gateways de autenticação.
+
+Correção:
+
+- Adicione controles de rede e aplique HTTPS.
+
+---
+
+### DJANGO-LOG-001: O registro e o relatório de erros não devem vazar segredos
+
+Gravidade: Média a Alta
+
+Obrigatório:
+
+- NÃO DEVE registrar segredos (incluindo `SECRET_KEY`, cookies de sessão, cabeçalhos de autenticação, tokens de redefinição de senha).
+- DEVE configurar o registro de produção deliberadamente; A lista de verificação de implantação do Django exige explicitamente a revisão do log antes da produção. ([Projeto Django][1])
+- DEVE garantir `DEBUG=False` na produção para que as exceções não sejam renderizadas com contexto sensível. ([Projeto Django][1])
+
+Padrões inseguros:
+
+- Registrar cabeçalhos de solicitação completos ou cookies em produção.
+- Impressão de dicionários de configurações.
+- Depurar páginas de erro.
+
+Dicas de detecção:
+
+- Inspecione a configuração `LOGGING`; procure por middleware que registre cabeçalhos/cookies de solicitação.
+- Grep para padrões `print(settings` / `logging.info(request.META)`.
+
+Correção:
+
+- Redigir valores sensíveis; IDs de log, não segredos.
+- Use registro estruturado e uma ferramenta segura de monitoramento de erros. ([Projeto Django][1])
+
+---
+
+### DJANGO-SUPPLY-001: Dependência e higiene de patches (Django + dependências críticas de segurança)
+
+Gravidade: Média (alta se versões vulneráveis forem conhecidas)
+
+Obrigatório:
+
+- DEVE fixar e atualizar regularmente o Django e dependências críticas de segurança.
+- DEVE responder prontamente aos lançamentos de segurança do Django.
+
+Dicas de detecção:
+
+- Verifique `requirements.txt`, lockfiles, construa imagens.
+- Identificar a versão do Django; compare com a versão mais recente suportada (a página de download do Django publica as ramificações atuais estáveis ​​e suportadas). ([Projeto Django][9])
+
+Correção:
+
+- Atualização para versões corrigidas; adicione testes de regressão para classes anteriormente vulneráveis.
+
+---
+
+## 5) Heurísticas práticas de varredura (como “caçar”)
+
+Ao digitalizar ativamente, use estes padrões de sinal alto:
+
+- Servidor de implantação/desenvolvimento:
+  - `manage.py runserver`, `runserver 0.0.0.0`, `--insecure` ([Projeto Django][1])
+
+- Depuração/configurações:
+  - `DEBUG = True` ([Projeto Django][1])
+  - `SECRET_KEY =`, `SECRET_KEY_FALLBACKS` ([Projeto Django][1])
+
+- Validação de host:
+  - `ALLOWED_HOSTS = ['*']` ([Projeto Django][3])
+
+- HTTPS e proxy:
+  - `SECURE_SSL_REDIRECT`, `SECURE_HSTS_SECONDS`, `SECURE_PROXY_SSL_HEADER` ([Projeto Django][3])
+
+- Cookies/sessões:
+  - `SESSION_COOKIE_SECURE`, `SESSION_COOKIE_HTTPONLY`, `SESSION_COOKIE_SAMESITE` ([Projeto Django][3])
+  - `CSRF_COOKIE_SECURE`, `CSRF_COOKIE_HTTPONLY`, `CSRF_COOKIE_SAMESITE` ([Projeto Django][3])
+
+- Desvios de CSRF:
+  - `csrf_exempt`, falta `CsrfViewMiddleware`, formulários POST sem `{% csrf_token %}` ([Projeto Django][4])
 
 - XSS:
-  - `|safe`, `autoescape off`, `mark_safe(`, HTML string concatenation ([Django Project][5])
+  - `|safe`, `autoescape off`, `mark_safe(`, concatenação de strings HTML ([Projeto Django][5])
 
-- SQL injection:
-  - `.raw(`, `.extra(`, `RawSQL(`, `cursor.execute(` with formatted SQL strings ([Django Project][7])
+- Injeção SQL:
+  - `.raw(`, `.extra(`, `RawSQL(`, `cursor.execute(` com strings SQL formatadas ([Projeto Django][7])
 
-- User uploads / media:
-  - `request.FILES`, `MEDIA_ROOT`, `MEDIA_URL`, serving media inline; `MEDIA_ROOT == STATIC_ROOT` ([Django Project][1])
+- Uploads/mídia do usuário:
+  - `request.FILES`, `MEDIA_ROOT`, `MEDIA_URL`, servindo mídia inline; `MEDIA_ROOT == STATIC_ROOT` ([Projeto Django][1])
 
-- Redirects:
-  - `redirect(request.GET.get("next"))` patterns; missing allowlist validation
+- Redirecionamentos:
+  - padrões `redirect(request.GET.get("next"))`; falta de validação da lista de permissões
 
-- Security headers and CSP:
-  - Missing `SecurityMiddleware`, missing X-Frame-Options protection, missing `SECURE_CSP` adoption (where appropriate) ([Django Project][2])
+- Cabeçalhos de segurança e CSP:
+  - Falta `SecurityMiddleware`, falta de proteção X-Frame-Options, falta de adoção de `SECURE_CSP` (quando apropriado) ([Projeto Django][2])
 
-Always try to confirm:
+Sempre tente confirmar:
 
-- data origin (untrusted vs trusted)
-- sink type (template/SQL/subprocess/files/redirect/http)
-- protective controls present (middleware, validation, allowlists, authz checks)
-- whether security headers/controls are set in-app vs at the edge
+- origem dos dados (não confiável versus confiável)
+- tipo de coletor (template/SQL/subprocess/files/redirect/http)
+- controles de proteção presentes (middleware, validação, listas de permissões, verificações de autorização)
+- se os cabeçalhos/controles de segurança são definidos no aplicativo ou na borda
 
 ---
 
-## 6) Sources (accessed 2026-01-27)
+## 6) Fontes (acessado em 27/01/2026)
 
-Primary Django documentation:
+Documentação primária do Django:```text
 
-```text
 - Django Downloads (current stable & supported branches): https://www.djangoproject.com/download/
 - Django 6.0 Release Notes: https://docs.djangoproject.com/en/6.0/releases/6.0/
 - Django: Deployment checklist (incl. check --deploy, runserver warning, HTTPS/cookies guidance): https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
@@ -861,20 +894,23 @@ Primary Django documentation:
 - Django: Template built-ins (autoescape tag): https://docs.djangoproject.com/en/6.0/ref/templates/builtins/
 - Django: Template language reference (turning off autoescape & risks): https://docs.djangoproject.com/en/6.0/ref/templates/language/
 - Django: Utilities reference (e.g., format_html): https://docs.djangoproject.com/en/6.0/ref/utils/
-```
 
-OWASP:
-
-```text
+````
+OWASP:```text
 - OWASP Cheat Sheet Series: Django Security Cheat Sheet: https://cheatsheetseries.owasp.org/cheatsheets/Django_Security_Cheat_Sheet.html
-```
+````
 
 [1]: https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/ 'https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/'
-[2]: https://docs.djangoproject.com/en/6.0/topics/security/ 'Security in Django | Django documentation | Django'
-[3]: https://docs.djangoproject.com/en/6.0/ref/settings/ 'Settings | Django documentation | Django'
-[4]: https://docs.djangoproject.com/en/6.0/howto/csrf/ 'How to use Django’s CSRF protection | Django documentation | Django'
+[2]: https://docs.djangoproject.com/en/6.0/topics/security/ 'Segurança no Django | Documentação do Django | Django'
+[3]: https://docs.djangoproject.com/en/6.0/ref/settings/ 'Configurações | Documentação do Django | Django'
+
+[4]: https://docs.djangoproject.com/en/6.0/howto/csrf/ 'Como usar a proteção CSRF do Django | Dja
+
+documentação de ONG | Django'
 [5]: https://docs.djangoproject.com/en/6.0/ref/templates/builtins/ 'https://docs.djangoproject.com/en/6.0/ref/templates/builtins/'
 [6]: https://docs.djangoproject.com/en/6.0/ref/utils/ 'https://docs.djangoproject.com/en/6.0/ref/utils/'
 [7]: https://docs.djangoproject.com/en/6.0/topics/db/sql/ 'https://docs.djangoproject.com/en/6.0/topics/db/sql/'
-[8]: https://docs.djangoproject.com/en/6.0/ref/models/querysets/ 'https://docs.djangoproject.com/en/6.0/ref/models/querysets/'
-[9]: https://www.djangoproject.com/download/ 'Download Django | Django'
+[8]: https://docs.djangoproject.com/en/6.0/ref/models/querysets/ 'https:/
+
+/docs.djangoproject.com/en/6.0/ref/models/querysets/'
+[9]: https://www.djangoproject.com/download/ 'Baixar Django | Django'

@@ -1,6 +1,6 @@
-# AI Search Configuration
+# Configuração do AI Search
 
-## Worker Setup
+## Setup do Worker
 
 ```jsonc
 // wrangler.jsonc
@@ -20,53 +20,53 @@ const answer = await env.AI.autorag('my-instance').aiSearch({
 })
 ```
 
-## Data Sources
+## Fontes de dados
 
-### R2 Bucket
+### Bucket R2
 
-Dashboard: AI Search → Create Instance → Select R2 bucket
+Dashboard: AI Search → Create Instance → Selecionar bucket R2
 
-**Supported formats:** `.md`, `.txt`, `.html`, `.pdf`, `.doc`, `.docx`, `.csv`, `.json`
+**Formatos suportados:** `.md`, `.txt`, `.html`, `.pdf`, `.doc`, `.docx`, `.csv`, `.json`
 
-**Auto-indexed metadata:** `filename`, `folder`, `timestamp`
+**Metadados indexados automaticamente:** `filename`, `folder`, `timestamp`
 
-### Website Crawler
+### Rastreador de site
 
-Requirements:
+Requisitos:
 
-- Domain on Cloudflare
-- `sitemap.xml` at root
-- Bot protection must allow `CloudflareAISearch` user agent
+- Domínio na Cloudflare
+- `sitemap.xml` na raiz
+- Proteção contra bots deve permitir o user agent `CloudflareAISearch`
 
-## Path Filtering (R2)
+## Filtro de caminho (R2)
 
 ```
-docs/**/*.md          # All .md in docs/ recursively
-**/*.draft.md         # Exclude (use in exclude patterns)
+docs/**/*.md          # Todos .md em docs/ recursivo
+**/*.draft.md         # Excluir (em padrões de exclusão)
 ```
 
-## Indexing
+## Indexação
 
-- **Automatic:** Every 6 hours
-- **Force Sync:** Dashboard button (30s rate limit between syncs)
-- **Pause:** Settings → Pause Indexing (existing index remains searchable)
+- **Automática:** a cada 6 horas
+- **Force Sync:** botão no dashboard (limite de 30 s entre syncs)
+- **Pausar:** Settings → Pause Indexing (o índice existente continua pesquisável)
 
-## Service API Token
+## Token de API de serviço
 
 Dashboard: AI Search → Instance → Use AI Search → API → Create Token
 
-Permissions:
+Permissões:
 
-- **Read** - search operations
-- **Edit** - instance management
+- **Read** — operações de busca
+- **Edit** — gerenciamento da instância
 
-Store securely:
+Armazene com segurança:
 
 ```bash
 wrangler secret put AI_SEARCH_TOKEN
 ```
 
-## Multi-Environment
+## Multi-ambiente
 
 ```toml
 # wrangler.toml
@@ -81,11 +81,11 @@ AI_SEARCH_INSTANCE = "staging-docs"
 const answer = await env.AI.autorag(env.AI_SEARCH_INSTANCE).aiSearch({ query })
 ```
 
-## Monitoring
+## Monitoramento
 
 ```typescript
 const instances = await env.AI.autorag('_').listInstances()
 console.log(instances.find((i) => i.name === 'docs'))
 ```
 
-Dashboard shows: files indexed, status, last index time, storage usage.
+O dashboard mostra: arquivos indexados, status, horário da última indexação, uso de armazenamento.

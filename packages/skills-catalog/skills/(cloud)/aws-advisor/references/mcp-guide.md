@@ -1,142 +1,133 @@
-# MCP Usage Guide
+# Guia de uso do MCP
 
-Efficient patterns for AWS MCP tools to minimize tokens and maximize accuracy.
+Padrões eficientes para ferramentas AWS MCP para minimizar tokens e maximizar a precisão.
 
 ## aws\_\_\_search_documentation
 
-### Query Optimization
+### Otimização de consulta
 
-**Good queries** (specific, 2-5 words):
-
-```
+**Boas consultas** (específicas, 2 a 5 palavras):```
 "Lambda cold start optimization"
 "S3 bucket policy examples"
 "DynamoDB single table design"
 "ECS Fargate networking"
-```
 
-**Bad queries** (too vague or verbose):
+````
 
-```
+**Consultas incorretas** (muito vagas ou detalhadas):```
 "How do I make my Lambda faster" → Too conversational
 "AWS" → Too broad
 "I need to understand how to configure..." → Too verbose
-```
+````
 
-### Topic Selection Matrix
+### Matriz de seleção de tópicos
 
-| User Says             | Topic                     | Query Example                  |
-| --------------------- | ------------------------- | ------------------------------ |
-| "How do I use SDK..." | `reference_documentation` | "S3 PutObject SDK v3"          |
-| "What's new in..."    | `current_awareness`       | "Lambda 2024 features"         |
-| "Getting error..."    | `troubleshooting`         | "AccessDenied S3 GetObject"    |
-| "CDK how to..."       | `cdk_docs`                | "CDK Lambda Python"            |
-| "CDK example..."      | `cdk_constructs`          | "API Gateway Lambda CDK"       |
-| "CloudFormation..."   | `cloudformation`          | "DynamoDB table template"      |
-| "Best practice..."    | `general`                 | "serverless security patterns" |
+| O usuário diz                  | Tópico                    | Exemplo de consulta             |
+| ------------------------------ | ------------------------- | ------------------------------- |
+| "Como faço para usar o SDK..." | `referência_documentação` | "S3 PutObject SDK v3"           |
+| "Novidades em..."              | `consciência_atual`       | "Recursos do Lambda 2024"       |
+| "Obtendo erro..."              | `solução de problemas`    | "GetObject S3 de acesso negado" |
 
-### Multi-Topic Searches
+| "CDK como fazer..
 
-Use multiple topics (max 3) when query spans areas:
+." | `cdk_docs` | "CDK Lambda Python" |
+| "Exemplo de CDK..." | `cdk_constructs` | "API Gateway Lambda CDK" |
+| "CloudFormação..." | `formação de nuvem` | "Modelo de tabela do DynamoDB" |
+| "Melhores práticas..." | `geral` | "padrões de segurança sem servidor" |
 
-```python
+### Pesquisas multitópicos
+
+Use vários tópicos (máximo de 3) quando a consulta abrange áreas:```python
+
 # User: "How do I fix this Lambda timeout and what's the best practice?"
+
 topics=["troubleshooting", "general"]
 query="Lambda timeout"
 
 # User: "Show me CDK examples and explain the concepts"
+
 topics=["cdk_constructs", "cdk_docs"]
 query="Lambda function CDK"
-```
 
+````
 ## aws\_\_\_read_documentation
 
-### When to Use
+### Quando usar
 
-- Search returned snippet isn't enough
-- Need complete code examples
-- Need to understand full context
+- O snippet retornado pela pesquisa não é suficiente
+- Precisa de exemplos de código completos
+- Necessidade de entender o contexto completo
 
-### Pagination for Long Docs
-
-```python
+### Paginação para documentos longos```python
 # First call
 aws___read_documentation(url="...", max_length=5000)
 
 # If truncated, continue
 aws___read_documentation(url="...", start_index=5000, max_length=5000)
-```
+````
 
-**Stop early** if you found the answer - don't read entire doc.
+**Pare cedo** se você encontrou a resposta - não leia o documento inteiro.
 
 ## aws\_\_\_get_regional_availability
 
-### Query Patterns
+### Padrões de consulta
 
-**Check service availability**:
-
-```python
+**Consulte disponibilidade do serviço**:```python
 resource_type="product"
 filters=["Amazon Aurora Serverless v2", "AWS AppSync"]
 region="sa-east-1"
-```
 
-**Check API availability**:
+````
 
-```python
+**Verifique a disponibilidade da API**:```python
 resource_type="api"
 filters=["Lambda+CreateFunction", "S3+PutObject"]
 region="eu-west-1"
-```
+````
 
-**Check CloudFormation support**:
-
-```python
+**Verifique o suporte do CloudFormation**:```python
 resource_type="cfn"
 filters=["AWS::Lambda::Function", "AWS::DynamoDB::GlobalTable"]
 region="ap-southeast-1"
-```
 
-### Common Use Cases
+````
+### Casos de uso comuns
 
-1. **Before recommending a service**: Verify it's available in user's region
-2. **Multi-region architectures**: Check consistency across regions
-3. **New features**: Verify regional rollout status
+1. **Antes de recomendar um serviço**: verifique se ele está disponível na região do usuário
+2. **Arquiteturas multirregionais**: verifique a consistência entre regiões
+3. **Novos recursos**: verifique o status de implementação regional
 
-## aws\_\_\_recommend
+## aws\_\_\_recomendar
 
-### When to Use
+### Quando usar
 
-- After reading a doc, find related content
-- Discover "New" features for a service
-- Find commonly-viewed-next pages
-
-```python
+- Depois de ler um documento, encontre conteúdo relacionado
+- Descubra "Novos" recursos para um serviço
+- Encontre as próximas páginas comumente visualizadas```python
 # Find new Lambda features
 aws___recommend(url="https://docs.aws.amazon.com/lambda/latest/dg/welcome.html")
 # Check "New" category in results
-```
+````
 
-## AWS Marketplace MCPs
+## MCPs do AWS Marketplace
 
-### ask_aws_marketplace
+###ask_aws_marketplace
 
-Use for third-party solution discovery:
+Use para descoberta de soluções de terceiros:```python
 
-```python
 # Good queries
+
 "monitoring tools for Kubernetes"
 "log management SOC2 compliant"
 "compare Datadog vs New Relic"
 
 # Bad queries
+
 "AWS Lambda" → Use Knowledge MCP instead
 "How do I..." → Not for how-to questions
-```
 
-### Polling Pattern
-
-```python
+````
+### Padrão de pesquisa```python
 # Initial call
 response = ask_aws_marketplace(query="...")
 
@@ -150,12 +141,12 @@ while response.next_cursor:
 
 # Then get structured report
 report = get_aws_marketplace_recommendations_report(last_request_id=response.request_id)
-```
+````
 
-## Token Optimization Tips
+## Dicas de otimização de token
 
-1. **Search before read**: Search results often have enough context
-2. **Specific queries**: Fewer results = less to process
-3. **Right topic**: Avoid general when specific topic exists
-4. **Stop early**: Don't paginate if answer found
-5. **Cache mentally**: Don't re-search same thing in conversation
+1. **Pesquise antes de ler**: os resultados da pesquisa geralmente têm contexto suficiente
+2. **Consultas específicas**: menos resultados = menos para processar
+3. **Tópico certo**: Evite o geral quando existir um tópico específico
+4. **Pare mais cedo**: não pagina se a resposta for encontrada
+5. **Armazenar em cache mentalmente**: não pesquise a mesma coisa na conversa

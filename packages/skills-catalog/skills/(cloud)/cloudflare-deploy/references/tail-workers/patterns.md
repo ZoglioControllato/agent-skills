@@ -1,37 +1,36 @@
-# Tail Workers Common Patterns
+# Padrões comuns dos trabalhadores de cauda
 
-## Community Libraries
+## Bibliotecas Comunitárias
 
-While most tail Worker implementations are custom, these libraries may help:
+Embora a maioria das implementações do tail Worker sejam personalizadas, estas bibliotecas podem ajudar:
 
-**Logging/Observability:**
+**Registro/Observabilidade:**
 
-- **Axiom** - `axiom-cloudflare-workers` (npm) - Direct Axiom integration
-- **Baselime** - SDK for Baselime observability platform
-- **LogFlare** - Structured log aggregation
+- **Axiom** - `axiom-cloudflare-workers` (npm) - Integração direta do Axiom
+- **Baselime** - SDK para plataforma de observabilidade Baselime
+- **LogFlare** - Agregação de log estruturado
 
-**Type Definitions:**
+**Definições de tipo:**
 
-- **@cloudflare/workers-types** - Official TypeScript types (use `TraceItem`)
+- **@cloudflare/workers-types** - Tipos oficiais de TypeScript (use `TraceItem`)
 
-**Note:** Most integrations require custom tail handler implementation. See integration examples below.
+**Observação:** A maioria das integrações exige implementação de manipulador de cauda personalizado. Veja exemplos de integração abaixo.
 
-## Basic Patterns
+## Padrões Básicos
 
-### HTTP Endpoint Logging
+### Registro de endpoint HTTP```typescript
 
-```typescript
 export default {
-  async tail(events, env, ctx) {
-    const payload = events.map((event) => ({
-      script: event.scriptName,
-      timestamp: event.eventTimestamp,
-      outcome: event.outcome,
-      url: event.event?.request?.url,
-      status: event.event?.response?.status,
-      logs: event.logs,
-      exceptions: event.exceptions,
-    }))
+async tail(events, env, ctx) {
+const payload = events.map((event) => ({
+script: event.scriptName,
+timestamp: event.eventTimestamp,
+outcome: event.outcome,
+url: event.event?.request?.url,
+status: event.event?.response?.status,
+logs: event.logs,
+exceptions: event.exceptions,
+}))
 
     ctx.waitUntil(
       fetch(env.LOG_ENDPOINT, {
@@ -39,9 +38,11 @@ export default {
         body: JSON.stringify(payload),
       }),
     )
-  },
+
+},
 }
-```
+
+````
 
 ### Error Tracking Only
 
@@ -60,7 +61,7 @@ export default {
     )
   },
 }
-```
+````
 
 ## Storage Integration
 
@@ -179,12 +180,12 @@ export default {
 }
 ```
 
-See durable-objects skill for full implementation.
+Consulte a habilidade de objetos duráveis ​​para implementação completa.
 
-### Workers for Platforms
+### Trabalhadores para plataformas
 
-Dynamic dispatch sends TWO events per request. Filter by `scriptName` to distinguish dispatch vs user Worker events.
+O despacho dinâmico envia DOIS eventos por solicitação. Filtre por `scriptName` para distinguir eventos de envio e de trabalho do usuário.
 
-### Error Handling
+### Tratamento de erros
 
-Always wrap external calls. See gotchas.md for fallback storage pattern.
+Sempre finalize chamadas externas. Consulte gotchas.md para padrão de armazenamento substituto.

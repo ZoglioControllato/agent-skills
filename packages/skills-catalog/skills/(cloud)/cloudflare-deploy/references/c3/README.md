@@ -1,60 +1,62 @@
-# C3 (create-cloudflare)
+# C3 (criar cloudflare)
 
-Official CLI for scaffolding Cloudflare Workers and Pages projects with templates, TypeScript, and instant deployment.
+CLI oficial para estruturar projetos Cloudflare Workers e Pages com modelos, TypeScript e implantação instantânea.
 
-## Quick Start
+## Início rápido```bash
 
-```bash
 # Interactive (recommended for first-time)
+
 npm create cloudflare@latest my-app
 
 # Worker (API/WebSocket/Cron)
+
 npm create cloudflare@latest my-api -- --type=hello-world --ts
 
 # Pages (static/SSG/full-stack)
+
 npm create cloudflare@latest my-site -- --type=web-app --framework=astro --platform=pages
+
 ```
 
 ## Platform Decision Tree
 
 ```
-What are you building?
 
-├─ API / WebSocket / Cron / Email handler
-│   └─ Workers (default) - no --platform flag needed
-│       npm create cloudflare@latest my-api -- --type=hello-world
+O que você está construindo?
 
-├─ Static site / SSG / Documentation
-│   └─ Pages - requires --platform=pages
-│       npm create cloudflare@latest my-site -- --type=web-app --framework=astro --platform=pages
+├─ API / WebSocket / Cron / Manipulador de e-mail
+│ └─ Trabalhadores (padrão) - não é necessário sinalizador --platform
+│ npm create cloudflare@latest my-api -- --type=hello-world
 
-├─ Full-stack app (Next.js/Remix/SvelteKit)
-│   ├─ Need Durable Objects, Queues, or Workers-only features?
-│   │   └─ Workers (default)
-│   └─ Otherwise use Pages for git integration and branch previews
-│       └─ Add --platform=pages
+├─ Site estático/SSG/Documentação
+│ └─ Páginas - requer --platform=pages
+│ npm create cloudflare@mais recente meu site -- --type=web-app --framework=astro --platform=pages
 
-└─ Convert existing project
-    └─ npm create cloudflare@latest . -- --type=pre-existing --existing-script=./src/worker.ts
-```
+├─ Aplicativo full-stack (Next.js/Remix/SvelteKit)
+│ ├─ Precisa de objetos duráveis, filas ou recursos somente para trabalhadores?
+│ │ └─ Trabalhadores (padrão)
+│ └─ Caso contrário, use Pages para integração git e visualizações de ramificações
+│ └─ Adicionar --platform=páginas
 
-**Critical:** Pages projects require `--platform=pages` flag. Without it, C3 defaults to Workers.
+└─ Converter projeto existente
+└─ npm criar cloudflare@latest. -- --type=pré-existente --existente-script=./src/worker.ts
 
-## Interactive Flow
+````
+**Crítico:** Projetos de páginas exigem o sinalizador `--platform=pages`. Sem ele, o padrão C3 é Trabalhadores.
 
-When run without flags, C3 prompts in this order:
+## Fluxo interativo
 
-1. **Project name** - Directory to create (defaults to current dir with `.`)
-2. **Application type** - `hello-world`, `web-app`, `demo`, `pre-existing`, `remote-template`
-3. **Platform** - `workers` (default) or `pages` (for web apps only)
-4. **Framework** - If web-app: `next`, `remix`, `astro`, `react-router`, `solid`, `svelte`, etc.
-5. **TypeScript** - `yes` (recommended) or `no`
-6. **Git** - Initialize repository? `yes` or `no`
-7. **Deploy** - Deploy now? `yes` or `no` (requires `wrangler login`)
+Quando executado sem sinalizadores, C3 solicita nesta ordem:
 
-## Installation Methods
+1. **Nome do projeto** - Diretório a ser criado (o padrão é o diretório atual com `.`)
+2. **Tipo de aplicação** - `hello-world`, `web-app`, `demo`, `pré-existente`, `remote-template`
+3. **Plataforma** - `workers` (padrão) ou `pages` (somente para aplicativos da web)
+4. **Framework** - Se aplicativo web: `next`, `remix`, `astro`, `react-router`, `solid`, `svelte`, etc.
+5. **TypeScript** - `sim` (recomendado) ou `não`
+6. **Git** - Inicializar repositório? `sim` ou `não`
+7. **Implantar** - Implantar agora? `sim` ou `não` (requer `login do wrangler`)
 
-```bash
+## Métodos de instalação```bash
 # NPM
 npm create cloudflare@latest
 
@@ -63,42 +65,45 @@ yarn create cloudflare
 
 # PNPM
 pnpm create cloudflare@latest
-```
+````
 
-## In This Reference
+## Nesta referência
 
-| File                 | Purpose                          | Use When                            |
-| -------------------- | -------------------------------- | ----------------------------------- |
-| **api.md**           | Complete CLI flag reference      | Scripting, CI/CD, advanced usage    |
-| **configuration.md** | Generated files, bindings, types | Understanding output, customization |
-| **patterns.md**      | Workflows, CI/CD, monorepos      | Real-world integration              |
-| **gotchas.md**       | Troubleshooting failures         | Deployment blocked, errors          |
+| Arquivo             | Finalidade                             | Usar quando                                |
+| ------------------- | -------------------------------------- | ------------------------------------------ |
+| **api.md**          | Referência completa do sinalizador CLI | Scripting, CI/CD, uso avançado             |
+| **configuração.md** | Arquivos gerados, ligações, tipos      | Noções básicas sobre saída, personalização |
+| **padrões.md**      | Fluxos de trabalho, CI/CD, monorepos   | Integração no mundo real                   |
+| **pegadinhas.md**   | Solução de problemas de falhas         | Implantação bloqueada, erros               |
 
-## Reading Order
+## Ordem de leitura
 
-| Task                       | Read                     |
-| -------------------------- | ------------------------ |
-| Create first project       | README only              |
-| Set up CI/CD               | README → api → patterns  |
-| Debug failed deploy        | gotchas                  |
-| Understand generated files | configuration            |
-| Full CLI reference         | api                      |
-| Create custom template     | patterns → configuration |
-| Convert existing project   | README → patterns        |
+| Tarefa                            | Leia                   |
+| --------------------------------- | ---------------------- |
+| Crie o primeiro projeto           | Somente LEIA-ME        |
+| Configurar CI/CD                  | README → API → padrões |
+| Falha na depuração na implantação | pegadinhas             |
+| Entenda os arquivos gerados       | configuração           |
+| Referência CLI completa           | API                    |
+| Criar modelo personalizado        | padrões → configuração |
+| Converter projeto existente       | LEIA-ME → padrões      |
 
-## Post-Creation
+## Pós-Criação```bash
 
-```bash
 cd my-app
 
 # Local dev with hot reload
+
 npm run dev
 
 # Generate TypeScript types for bindings
+
 npm run cf-typegen
 
 # Deploy to Cloudflare
+
 npm run deploy
+
 ```
 
 ## See Also
@@ -109,3 +114,4 @@ npm run deploy
 - **wrangler/README.md** - Wrangler CLI beyond initial setup
 - **d1/README.md** - SQLite database
 - **r2/README.md** - Object storage
+```

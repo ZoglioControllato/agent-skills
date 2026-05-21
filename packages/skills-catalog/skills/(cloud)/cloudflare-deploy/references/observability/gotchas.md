@@ -36,40 +36,40 @@ Ensure `observability.enabled = true`, redeploy Worker, check `head_sampling_rat
 }
 ```
 
-Ensure `observability.traces.enabled = true`, set `head_sampling_rate` to 1.0 for testing, redeploy, check destination status
+Certifique-se de `observability.traces.enabled = true`, defina `head_sampling_rate` como 1.0 para teste, reimplante, verifique o status do destino
 
-## Limits
+## Limites
 
-| Resource/Limit              | Value             | Notes                             |
-| --------------------------- | ----------------- | --------------------------------- |
-| Max log size                | 256 KB            | Logs exceeding this are truncated |
-| Default sampling rate       | 1.0 (100%)        | Reduce for high-traffic Workers   |
-| Max destinations            | Varies by plan    | Check dashboard                   |
-| Trace context propagation   | 100 spans max     | Deep call chains may lose spans   |
-| Analytics Engine write rate | 25 writes/request | Excess writes dropped silently    |
+| Recurso/Limite                       | Valor                       | Notas                                                |
+| ------------------------------------ | --------------------------- | ---------------------------------------------------- |
+| Tamanho máximo do registro           | 256 KB                      | Os logs que excedem isso são truncados               |
+| Taxa de amostragem padrão            | 1,0 (100%)                  | Reduzir para trabalhadores de alto tráfego           |
+| Destinos máximos                     | Varia de acordo com o plano | Verifique o painel                                   |
+| Rastrear propagação de contexto      | 100 vãos no máximo          | Cadeias de chamadas profundas podem perder extensões |
+| Taxa de gravação do Analytics Engine | 25 escritas/solicitação     | O excesso de gravações caiu silenciosamente          |
 
-## Performance Gotchas
+## Dicas de desempenho
 
-### Spectre Mitigation Timing
+### Tempo de mitigação de espectro
 
-**Problem:** `Date.now()` and `performance.now()` have reduced precision (coarsened to 100μs)
-**Cause:** Spectre vulnerability mitigation in V8
-**Solution:** Accept reduced precision or use Workers Traces for accurate timing
-
-```typescript
+**Problema:** `Date.now()` e `performance.now()` reduziram a precisão (reduzida para 100μs)
+**Causa:** Mitigação da vulnerabilidade Spectre na V8
+**Solução:** Aceite a precisão reduzida ou use Workers Traces para obter um tempo preciso```typescript
 // Date.now() is coarsened - trace spans are accurate
 export default {
-  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
-    // For user-facing timing, Date.now() is fine
-    const start = Date.now()
-    const response = await processRequest(request)
-    const duration = Date.now() - start
+async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+// For user-facing timing, Date.now() is fine
+const start = Date.now()
+const response = await processRequest(request)
+const duration = Date.now() - start
 
     // For detailed performance analysis, use Workers Traces instead
     return response
-  },
+
+},
 }
-```
+
+````
 
 ### Analytics Engine \_sample_interval Aggregation
 
@@ -85,23 +85,22 @@ FROM api_usage GROUP BY customer_id;
 -- CORRECT: Accounts for sampling
 SELECT blob1 AS customer_id, SUM(_sample_interval) AS total_calls
 FROM api_usage GROUP BY customer_id;
-```
+````
 
-### Trace Context Propagation Limits
+### Limites de propagação de contexto de rastreamento
 
-**Problem:** Deep call chains lose trace context after 100 spans
-**Cause:** Cloudflare limits trace depth to prevent performance impact
-**Solution:** Design for flatter architectures or use custom correlation IDs for deep chains
-
-```typescript
+**Problema:** Cadeias de chamadas profundas perdem contexto de rastreamento após 100 intervalos
+**Causa:** a Cloudflare limita a profundidade do rastreamento para evitar impacto no desempenho
+**Solução:** Projete arquiteturas mais planas ou use IDs de correlação personalizados para cadeias profundas```typescript
 // For deep call chains, add custom correlation ID
 const correlationId = crypto.randomUUID()
 console.log({ correlationId, event: 'request_start' })
 
 // Pass correlationId through headers to downstream services
 await fetch('https://api.example.com', {
-  headers: { 'X-Correlation-ID': correlationId },
+headers: { 'X-Correlation-ID': correlationId },
 })
+
 ```
 
 ## Pricing (2026)
@@ -123,3 +122,4 @@ await fetch('https://api.example.com', {
 
 - **Included:** 10M writes/month on Paid Workers plan
 - **Additional:** $0.25 per 1M writes beyond included quota
+```

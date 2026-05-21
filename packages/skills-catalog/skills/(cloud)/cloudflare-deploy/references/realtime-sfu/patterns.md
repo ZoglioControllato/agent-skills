@@ -82,30 +82,30 @@ app.post('/api/new-session', async (req, res) => {
 })
 ```
 
-Workers: Same pattern, use `env.CALLS_APP_ID` and `env.CALLS_APP_SECRET`
+Trabalhadores: mesmo padrão, use `env.CALLS_APP_ID` e `env.CALLS_APP_SECRET`
 
-DO Presence: See configuration.md for boilerplate
+DO Presença: Consulte configuration.md para padrão
 
-## Audio Level Detection
+## Detecção de nível de áudio```typescript
 
-```typescript
 // Attach analyzer to audio track
 function attachAudioLevelDetector(track: MediaStreamTrack) {
-  const ctx = new AudioContext()
-  const analyzer = ctx.createAnalyser()
-  const src = ctx.createMediaStreamSource(new MediaStream([track]))
-  src.connect(analyzer)
+const ctx = new AudioContext()
+const analyzer = ctx.createAnalyser()
+const src = ctx.createMediaStreamSource(new MediaStream([track]))
+src.connect(analyzer)
 
-  const data = new Uint8Array(analyzer.frequencyBinCount)
-  const checkLevel = () => {
-    analyzer.getByteFrequencyData(data)
-    const level = data.reduce((a, b) => a + b) / data.length
-    if (level > 30) console.log('Speaking:', level) // Trigger UI update
-    requestAnimationFrame(checkLevel)
-  }
-  checkLevel()
+const data = new Uint8Array(analyzer.frequencyBinCount)
+const checkLevel = () => {
+analyzer.getByteFrequencyData(data)
+const level = data.reduce((a, b) => a + b) / data.length
+if (level > 30) console.log('Speaking:', level) // Trigger UI update
+requestAnimationFrame(checkLevel)
 }
-```
+checkLevel()
+}
+
+````
 
 ## Connection Quality Monitoring
 
@@ -120,7 +120,7 @@ pc.getStats().then((stats) => {
     }
   })
 })
-```
+````
 
 ## Stage Management (Limit Visible Participants)
 
@@ -180,8 +180,8 @@ dc.onopen = () => dc.send(JSON.stringify({ type: 'chat', text: 'Hi' }))
 dc.onmessage = (e) => console.log('RX:', JSON.parse(e.data))
 ```
 
-**WHIP/WHEP:** For streaming interop (OBS → SFU, SFU → video players), use WHIP (ingest) and WHEP (egress) protocols. See Cloudflare Stream integration docs.
+**WHIP/WHEP:** Para interoperabilidade de streaming (OBS → SFU, SFU → reprodutores de vídeo), use os protocolos WHIP (ingestão) e WHEP (saída). Consulte a documentação de integração do Cloudflare Stream.
 
-Integrations: R2 for recording `env.R2_BUCKET.put(...)`, Queues for analytics
+Integrações: R2 para gravação `env.R2_BUCKET.put(...)`, Filas para análise
 
-Perf: 100-250ms connect, ~50ms latency (95%), 200-400ms glass-to-glass, no participant limit (client: 10-50 tracks)
+Desempenho: conexão de 100 a 250 ms, latência de aproximadamente 50 ms (95%), 200 a 400 ms vidro a vidro, sem limite de participantes (cliente: 10 a 50 faixas)

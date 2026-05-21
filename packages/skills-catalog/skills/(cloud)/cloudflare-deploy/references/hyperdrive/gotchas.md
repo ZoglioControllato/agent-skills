@@ -1,73 +1,73 @@
-# Gotchas
+# Armadilhas
 
-See [README.md](./README.md), [configuration.md](./configuration.md), [api.md](./api.md), [patterns.md](./patterns.md).
+Veja [README.md](./README.md), [configuration.md](./configuration.md), [api.md](./api.md) e [patterns.md](./patterns.md).
 
-## Common Errors
+## Erros comuns
 
 ### "Too many open connections" / "Connection limit exceeded"
 
-**Cause:** Workers have a hard limit of **6 concurrent connections per invocation**  
-**Solution:** Set `max: 5` in driver config, reuse connections, ensure proper cleanup with `client.end()` or `ctx.waitUntil(conn.end())`
+**Causa:** Workers têm limite rígido de **6 conexões concorrentes por invocação**  
+**Solução:** defina `max: 5` na config do driver, reutilize conexões e finalize com `client.end()` ou `ctx.waitUntil(conn.end())`
 
 ### "Failed to acquire a connection (Pool exhausted)"
 
-**Cause:** All connections in pool are in use, often due to long-running transactions  
-**Solution:** Reduce transaction duration, avoid queries >60s, don't hold connections during external calls, or upgrade to paid plan for more connections
+**Causa:** todas as conexões do pool em uso, muitas vezes por transações longas  
+**Solução:** reduza a duração da transação, evite consultas acima de 60s, não segure conexão durante chamadas externas ou faça upgrade para plano pago com mais conexões
 
 ### "connection_refused"
 
-**Cause:** Database refusing connections due to firewall, connection limits, or service down  
-**Solution:** Check firewall allows Cloudflare IPs, verify DB listening on port, confirm service running, and validate credentials
+**Causa:** banco recusando conexões por firewall, limite de conexões ou serviço fora do ar  
+**Solução:** confira firewall permitindo IPs da Cloudflare, porta de escuta e credenciais
 
 ### "Query timeout (deadline exceeded)"
 
-**Cause:** Query execution exceeding 60s timeout limit  
-**Solution:** Optimize with indexes, reduce dataset with LIMIT, break into smaller queries, or use async processing
+**Causa:** consulta ultrapassando limite de 60s  
+**Solução:** otimize com índices, reduza dados com LIMIT, divida em consultas menores ou use processamento assíncrono
 
 ### "password authentication failed"
 
-**Cause:** Invalid credentials in Hyperdrive configuration  
-**Solution:** Check username and password in Hyperdrive config match database credentials
+**Causa:** credenciais inválidas na config do Hyperdrive  
+**Solução:** confira usuário e senha na config e no banco
 
 ### "SSL/TLS connection error"
 
-**Cause:** SSL/TLS configuration mismatch between Hyperdrive and database  
-**Solution:** Add `sslmode=require` (Postgres) or `sslMode=REQUIRED` (MySQL), upload CA cert if self-signed, verify DB has SSL enabled, and check cert expiry
+**Causa:** incompatibilidade de SSL/TLS entre Hyperdrive e banco  
+**Solução:** use `sslmode=require` (Postgres) ou `sslMode=REQUIRED` (MySQL), envie CA se for autoassinado, verifique SSL no DB e validade do certificado
 
 ### "Queries not being cached"
 
-**Cause:** Query is mutating (INSERT/UPDATE/DELETE), contains volatile functions (NOW(), RANDOM()), or caching disabled  
-**Solution:** Verify query is non-mutating SELECT, avoid volatile functions, confirm caching enabled, use `wrangler dev --remote` to test, and set `prepare=true` for postgres.js
+**Causa:** consulta mutável (INSERT/UPDATE/DELETE), funções voláteis (NOW(), RANDOM()) ou cache desativado  
+**Solução:** confirme SELECT não mutável, evite funções voláteis, cache habilitado, teste com `wrangler dev --remote` e `prepare=true` no postgres.js
 
 ### "Slow multi-query Workers despite Hyperdrive"
 
-**Cause:** Worker executing at edge, each query round-trips to DB region  
-**Solution:** Enable Smart Placement (`"placement": {"mode": "smart"}` in wrangler.jsonc) to execute Worker near DB. See [patterns.md](./patterns.md) Multi-Query pattern.
+**Causa:** Worker na edge e cada consulta ida e volta até a região do DB  
+**Solução:** habilite Smart Placement (`"placement": {"mode": "smart"}` no wrangler.jsonc). Veja o padrão “várias consultas” em [patterns.md](./patterns.md).
 
 ### "Local database connection failed"
 
-**Cause:** `localConnectionString` incorrect or database not running  
-**Solution:** Verify `localConnectionString` correct, check DB running, confirm env var name matches binding, and test with psql/mysql client
+**Causa:** `localConnectionString` incorreto ou banco não rodando  
+**Solução:** valide a string local, se o DB está no ar, nome da env combina com o binding e teste com cliente psql/mysql
 
 ### "Environment variable not working"
 
-**Cause:** Environment variable format incorrect or not exported  
-**Solution:** Use format `CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_<BINDING>`, ensure binding matches wrangler.jsonc, export variable in shell, and restart wrangler dev
+**Causa:** formato da variável de ambiente incorreto ou não exportada  
+**Solução:** use `CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_<BINDING>`, binding igual ao wrangler.jsonc, exporte no shell e reinicie o wrangler dev
 
-## Limits
+## Limites
 
-| Limit                  | Free     | Paid     | Notes                                            |
-| ---------------------- | -------- | -------- | ------------------------------------------------ |
-| Max configs            | 10       | 25       | Hyperdrive configurations per account            |
-| Worker connections     | 6        | 6        | Max concurrent connections per Worker invocation |
-| Username/DB name       | 63 bytes | 63 bytes | Maximum length                                   |
-| Connection timeout     | 15s      | 15s      | Time to establish connection                     |
-| Idle timeout           | 10 min   | 10 min   | Connection idle timeout                          |
-| Max origin connections | ~20      | ~100     | Connections to origin database                   |
-| Query duration max     | 60s      | 60s      | Queries >60s terminated                          |
-| Cached response max    | 50 MB    | 50 MB    | Responses >50MB returned but not cached          |
+| Limite                 | Free     | Pago     | Notas                                                    |
+| ---------------------- | -------- | -------- | -------------------------------------------------------- |
+| Configs máx.           | 10       | 25       | Configurações Hyperdrive por conta                       |
+| Conexões do Worker     | 6        | 6        | Máx. concorrentes por invocação                          |
+| Nome de usuário/DB     | 63 bytes | 63 bytes | Comprimento máximo                                       |
+| Timeout de conexão     | 15s      | 15s      | Tempo para estabelecer conexão                           |
+| Timeout ocioso         | 10 min   | 10 min   | Conexão ociosa                                           |
+| Conexões na origem     | ~20      | ~100     | Conexões com o banco de origem                           |
+| Duração máx. da query  | 60s      | 60s      | Consultas acima de 60s são encerradas                    |
+| Resposta em cache máx. | 50 MB    | 50 MB    | Respostas acima de 50MB retornam mas não entram em cache |
 
-## Resources
+## Recursos
 
 - [Docs](https://developers.cloudflare.com/hyperdrive/)
 - [Getting Started](https://developers.cloudflare.com/hyperdrive/get-started/)
@@ -75,3 +75,5 @@ See [README.md](./README.md), [configuration.md](./configuration.md), [api.md](.
 - [Supported DBs](https://developers.cloudflare.com/hyperdrive/reference/supported-databases-and-features/)
 - [Discord #hyperdrive](https://discord.cloudflare.com)
 - [Limit Increase Form](https://forms.gle/ukpeZVLWLnKeixDu7)
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

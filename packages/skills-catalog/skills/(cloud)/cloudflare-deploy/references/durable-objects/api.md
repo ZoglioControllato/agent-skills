@@ -90,24 +90,23 @@ await this.ctx.storage.getAlarm(): number | null           // Get next alarm tim
 await this.ctx.storage.deleteAlarm(): void                 // Cancel alarm
 ```
 
-**Limit:** 1 alarm per DO. Use queue pattern for multiple events (see [Patterns](./patterns.md)).
+**Limite:** 1 alarme por DO. Use o padrão de fila para vários eventos (consulte [Padrões](./patterns.md)).
 
-## Storage APIs
+##APIs de armazenamento
 
-For detailed storage documentation including SQLite queries, KV operations, transactions, and Point-in-Time Recovery, see **[DO Storage](../do-storage/README.md)**.
+Para documentação detalhada de armazenamento, incluindo consultas SQLite, operações KV, transações e recuperação pontual, consulte **[DO Storage](../do-storage/README.md)**.
 
-Quick reference:
-
-```typescript
+Referência rápida:```typescript
 // SQLite (recommended)
-this.ctx.storage.sql.exec('SELECT * FROM users WHERE id = ?', userId).one()
+this.ctx.storage.sql.exec('SELECT \* FROM users WHERE id = ?', userId).one()
 
 // Sync KV (SQLite DOs only)
 this.ctx.storage.kv.get('key')
 
 // Async KV (legacy)
 await this.ctx.storage.get('key')
-```
+
+````
 
 ## Alarms
 
@@ -130,65 +129,63 @@ async alarm() {
   // DO wakes from hibernation if needed
   // Use for cleanup, notifications, scheduled tasks
 }
-```
+````
 
-**Limitations:**
+**Limitações:**
 
-- 1 alarm per DO maximum
-- Overwrites previous alarm when set
-- Use queue pattern for multiple scheduled events (see [Patterns](./patterns.md))
+- 1 alarme por DO no máximo
+- Substitui o alarme anterior quando definido
+- Use o padrão de fila para vários eventos agendados (consulte [Padrões](./patterns.md))
 
-**Reliability:**
+**Confiabilidade:**
 
-- Alarms survive DO eviction/restart
-- Cloudflare retries failed alarms automatically
-- Not guaranteed exactly-once (handle idempotently)
+- Os alarmes sobrevivem ao despejo/reinicialização
+- Cloudflare tenta novamente alarmes com falha automaticamente
+- Não garantido exatamente uma vez (tratamento idempotente)
 
-## WebSocket Hibernation
+## Hibernação WebSocket
 
-Hibernation allows DOs with open WebSocket connections to consume zero compute/memory until message arrives.
-
-```typescript
+A hibernação permite que DOs com conexões WebSocket abertas consumam zero computação/memória até que a mensagem chegue.```typescript
 async fetch(req: Request): Promise<Response> {
-  const [client, server] = Object.values(new WebSocketPair());
-  this.ctx.acceptWebSocket(server, ["room:123"]);  // Tags for filtering
-  server.serializeAttachment({ userId: "abc" });    // Persisted metadata
-  return new Response(null, { status: 101, webSocket: client });
+const [client, server] = Object.values(new WebSocketPair());
+this.ctx.acceptWebSocket(server, ["room:123"]); // Tags for filtering
+server.serializeAttachment({ userId: "abc" }); // Persisted metadata
+return new Response(null, { status: 101, webSocket: client });
 }
 
 // Called when message arrives (DO wakes from hibernation)
 async webSocketMessage(ws: WebSocket, msg: string | ArrayBuffer) {
-  const data = ws.deserializeAttachment();          // Retrieve metadata
-  for (const c of this.ctx.getWebSockets("room:123")) c.send(msg);
+const data = ws.deserializeAttachment(); // Retrieve metadata
+for (const c of this.ctx.getWebSockets("room:123")) c.send(msg);
 }
 
 // Called on close (optional handler)
 async webSocketClose(ws: WebSocket, code: number, reason: string, wasClean: boolean) {
-  // Cleanup logic, remove from lists, etc.
+// Cleanup logic, remove from lists, etc.
 }
 
 // Called on error (optional handler)
 async webSocketError(ws: WebSocket, error: unknown) {
-  console.error("WebSocket error:", error);
-  // Handle error, close connection, etc.
+console.error("WebSocket error:", error);
+// Handle error, close connection, etc.
 }
-```
 
-**Key concepts:**
+````
+**Conceitos principais:**
 
-- **Auto-hibernation:** DO hibernates when no active requests/alarms
-- **Zero cost:** Hibernated DOs incur no charges while preserving connections
-- **Memory cleared:** All in-memory state lost on hibernation
-- **Attachment persistence:** Use `serializeAttachment()` for per-connection metadata that survives hibernation
-- **Tags for filtering:** Group connections by room/channel/user for targeted broadcasts
+- **Auto-hibernação:** Hiberna quando não há solicitações/alarmes ativos
+- **Custo zero:** DOs hibernados não geram cobranças enquanto preservam as conexões
+- **Memória limpa:** Todo o estado da memória perdido na hibernação
+- **Persistência de anexo:** Use `serializeAttachment()` para metadados por conexão que sobrevivem à hibernação
+- **Tags para filtragem:** Agrupe conexões por sala/canal/usuário para transmissões direcionadas
 
-**Handler lifecycle:**
+**Ciclo de vida do manipulador:**
 
-- `webSocketMessage`: DO wakes, processes message, may hibernate after
-- `webSocketClose`: Called when client closes (optional - implement for cleanup)
-- `webSocketError`: Called on connection error (optional - implement for error handling)
+- `webSocketMessage`: DO acorda, processa a mensagem, pode hibernar após
+- `webSocketClose`: Chamado quando o cliente fecha (opcional - implemente para limpeza)
+- `webSocketError`: Chamado em caso de erro de conexão (opcional - implemente para tratamento de erros)
 
-**Metadata persistence:**
+**Persistência de metadados:**
 
 ```typescript
 // Store connection metadata (survives hibernation)
@@ -196,7 +193,7 @@ ws.serializeAttachment({ userId: 'abc', room: 'lobby' })
 
 // Retrieve after hibernation
 const { userId, room } = ws.deserializeAttachment()
-```
+````
 
 ## See Also
 

@@ -1,45 +1,45 @@
-# Cloudflare D1 Database
+# Banco Cloudflare D1
 
-Expert guidance for Cloudflare D1, a serverless SQLite database designed for horizontal scale-out across multiple databases.
+Orientação especializada para o Cloudflare D1, banco SQLite serverless pensado para escala horizontal com vários bancos.
 
-## Overview
+## Visão geral
 
-D1 is Cloudflare's managed, serverless database with:
+O D1 é o banco gerenciado e serverless da Cloudflare com:
 
-- SQLite SQL semantics and compatibility
-- Built-in disaster recovery via Time Travel (30-day point-in-time recovery)
-- Horizontal scale-out architecture (10 GB per database)
-- Worker and HTTP API access
-- Pricing based on query and storage costs only
+- Semântica e compatibilidade SQL SQLite
+- Recuperação de desastres via Time Travel (PITR de 30 dias)
+- Arquitetura de scale-out horizontal (10 GB por banco)
+- Acesso via Worker e API HTTP
+- Precificação só por consultas e armazenamento
 
-**Architecture Philosophy**: D1 is optimized for per-user, per-tenant, or per-entity database patterns rather than single large databases.
+**Filosofia de arquitetura**: D1 é otimizado para padrões por usuário, por tenant ou por entidade — não para um único banco gigante.
 
-## Quick Start
+## Início rápido
 
 ```bash
-# Create database
+# Criar banco
 wrangler d1 create <database-name>
 
-# Execute migration
+# Executar migration
 wrangler d1 migrations apply <db-name> --remote
 
-# Local development
+# Desenvolvimento local
 wrangler dev
 ```
 
-## Core Query Methods
+## Métodos principais de consulta
 
 ```typescript
-// .all() - Returns all rows; .first() - First row or null; .first(col) - Single column value
-// .run() - INSERT/UPDATE/DELETE; .raw() - Array of arrays (efficient)
+// .all() — todas as linhas; .first() — primeira linha ou null; .first(col) — valor de uma coluna
+// .run() — INSERT/UPDATE/DELETE; .raw() — array de arrays (eficiente)
 const { results, success, meta } = await env.DB.prepare('SELECT * FROM users WHERE active = ?').bind(true).all()
 const user = await env.DB.prepare('SELECT * FROM users WHERE id = ?').bind(userId).first()
 ```
 
-## Batch Operations
+## Operações em lote
 
 ```typescript
-// Multiple queries in single round trip (atomic transaction)
+// Várias consultas em uma ida e volta (transação atômica)
 const results = await env.DB.batch([
   env.DB.prepare('SELECT * FROM users WHERE id = ?').bind(1),
   env.DB.prepare('SELECT * FROM posts WHERE author_id = ?').bind(1),
@@ -47,89 +47,89 @@ const results = await env.DB.batch([
 ])
 ```
 
-## Sessions API (Paid Plans)
+## API de Sessions (planos pagos)
 
 ```typescript
-// Create long-running session for analytics/migrations (up to 15 minutes)
+// Sessão longa para analytics/migrations (até 15 minutos)
 const session = env.DB.withSession()
 try {
   await session.prepare('CREATE INDEX idx_heavy ON large_table(column)').run()
   await session.prepare('ANALYZE').run()
 } finally {
-  session.close() // Always close to release resources
+  session.close() // Sempre feche para liberar recursos
 }
 ```
 
-## Read Replication (Paid Plans)
+## Read replication (planos pagos)
 
 ```typescript
-// Read from nearest replica for lower latency (automatic failover)
+// Leitura da réplica mais próxima para menor latência (failover automático)
 const user = await env.DB_REPLICA.prepare('SELECT * FROM users WHERE id = ?').bind(userId).first()
 
-// Writes always go to primary
+// Escritas sempre vão para o primário
 await env.DB.prepare('UPDATE users SET last_login = ? WHERE id = ?').bind(Date.now(), userId).run()
 ```
 
-## Platform Limits
+## Limites da plataforma
 
-| Limit                 | Free Tier        | Paid Plans         |
-| --------------------- | ---------------- | ------------------ |
-| Database size         | 500 MB           | 10 GB per database |
-| Row size              | 1 MB max         | 1 MB max           |
-| Query timeout         | 30 seconds       | 30 seconds         |
-| Batch size            | 1,000 statements | 10,000 statements  |
-| Time Travel retention | 7 days           | 30 days            |
-| Read replicas         | Not available    | Yes (paid add-on)  |
+| Limite               | Free             | Pagos             |
+| -------------------- | ---------------- | ----------------- |
+| Tamanho do banco     | 500 MB           | 10 GB por banco   |
+| Tamanho da linha     | 1 MB máx.        | 1 MB máx.         |
+| Timeout de query     | 30 segundos      | 30 segundos       |
+| Tamanho de batch     | 1.000 statements | 10.000 statements |
+| Retenção Time Travel | 7 dias           | 30 dias           |
+| Réplicas de leitura  | Indisponível     | Sim (add-on pago) |
 
-**Pricing**: $5/month per database beyond free tier + $0.001 per 1K reads + $1 per 1M writes + $0.75/GB storage/month
+**Preços**: US$ 5/mês por banco além do free tier + US$ 0,001 por 1K reads + US$ 1 por 1M writes + US$ 0,75/GB/mês de armazenamento
 
-## CLI Commands
+## Comandos CLI
 
 ```bash
-# Database management
+# Gerenciamento de banco
 wrangler d1 create <db-name>
 wrangler d1 list
 wrangler d1 delete <db-name>
 
 # Migrations
-wrangler d1 migrations create <db-name> <migration-name>    # Create new migration file
-wrangler d1 migrations apply <db-name> --remote             # Apply pending migrations
-wrangler d1 migrations apply <db-name> --local              # Apply locally
-wrangler d1 migrations list <db-name> --remote              # Show applied migrations
+wrangler d1 migrations create <db-name> <migration-name>    # Novo arquivo de migration
+wrangler d1 migrations apply <db-name> --remote             # Aplicar migrations pendentes
+wrangler d1 migrations apply <db-name> --local              # Aplicar localmente
+wrangler d1 migrations list <db-name> --remote              # Migrations aplicadas
 
-# Direct SQL execution
+# Execução SQL direta
 wrangler d1 execute <db-name> --remote --command="SELECT * FROM users"
 wrangler d1 execute <db-name> --local --file=./schema.sql
 
-# Backups & Import/Export
-wrangler d1 export <db-name> --remote --output=./backup.sql  # Full export with schema
-wrangler d1 export <db-name> --remote --no-schema --output=./data.sql  # Data only
-wrangler d1 time-travel restore <db-name> --timestamp="2024-01-15T14:30:00Z"  # Point-in-time recovery
+# Backups e import/export
+wrangler d1 export <db-name> --remote --output=./backup.sql  # Export completo com schema
+wrangler d1 export <db-name> --remote --no-schema --output=./data.sql  # Só dados
+wrangler d1 time-travel restore <db-name> --timestamp="2024-01-15T14:30:00Z"  # PITR
 
-# Development
+# Desenvolvimento
 wrangler dev --persist-to=./.wrangler/state
 ```
 
-## Reading Order
+## Ordem de leitura
 
-**Start here**: Quick Start above → configuration.md (setup) → api.md (queries)
+**Comece aqui**: Início rápido acima → configuration.md (setup) → api.md (consultas)
 
-**Common tasks**:
+**Tarefas comuns**:
 
-- First time setup: configuration.md → Run migrations
-- Adding queries: api.md → Prepared statements
-- Pagination/caching: patterns.md
-- Production optimization: Read Replication + Sessions API (this file)
-- Debugging: gotchas.md
+- Primeiro setup: configuration.md → rode migrations
+- Adicionar queries: api.md → prepared statements
+- Paginação/cache: patterns.md
+- Produção: read replication + Sessions API (este arquivo)
+- Debug: gotchas.md
 
-## In This Reference
+## Nesta referência
 
-- [configuration.md](./configuration.md) - wrangler.jsonc setup, migrations, TypeScript types, ORMs, local dev
-- [api.md](./api.md) - Query methods (.all/.first/.run/.raw), batch, sessions, read replicas, error handling
-- [patterns.md](./patterns.md) - Pagination, bulk operations, caching, multi-tenant, sessions, analytics
-- [gotchas.md](./gotchas.md) - SQL injection, limits by plan tier, performance, common errors
+- [configuration.md](./configuration.md) — wrangler.jsonc, migrations, tipos TypeScript, ORMs, dev local
+- [api.md](./api.md) — métodos (.all/.first/.run/.raw), batch, sessions, réplicas, erros
+- [patterns.md](./patterns.md) — paginação, bulk, cache, multi-tenant, sessions, analytics
+- [gotchas.md](./gotchas.md) — SQL injection, limites por plano, performance, erros comuns
 
-## See Also
+## Ver também
 
-- [workers](../workers/) - Worker runtime and fetch handler patterns
-- [hyperdrive](../hyperdrive/) - Connection pooling for external databases
+- [workers](../workers/) — runtime do Worker e padrões de fetch
+- [hyperdrive](../hyperdrive/) — pool de conexões para bancos externos

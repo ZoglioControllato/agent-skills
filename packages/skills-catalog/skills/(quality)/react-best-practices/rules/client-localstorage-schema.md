@@ -1,15 +1,15 @@
 ---
-title: Version and Minimize localStorage Data
+title: Versão e minimização de dados no localStorage
 impact: MEDIUM
-impactDescription: prevents schema conflicts, reduces storage size
+impactDescription: evita conflitos de esquema e redução de tamanho
 tags: client, localStorage, storage, versioning, data-minimization
 ---
 
-## Version and Minimize localStorage Data
+## Versão e minimização de dados no localStorage
 
-Add version prefix to keys and store only needed fields. Prevents schema conflicts and accidental storage of sensitive data.
+Adicione prefixo de versão às chaves e armazene apenas os campos necessários. Isso evita conflitos de esquema e armazenamento acidental de dados sensíveis.
 
-**Incorrect:**
+**Incorreto:**
 
 ```typescript
 // No version, stores everything, no error handling
@@ -17,7 +17,7 @@ localStorage.setItem('userConfig', JSON.stringify(fullUserObject))
 const data = localStorage.getItem('userConfig')
 ```
 
-**Correct:**
+**Correto:**
 
 ```typescript
 const VERSION = 'v2'
@@ -52,20 +52,23 @@ function migrate() {
 }
 ```
 
-**Store minimal fields from server responses:**
+**Armazene o mínimo de campos das respostas do servidor:**
 
 ```typescript
 // User object has 20+ fields, only store what UI needs
 function cachePrefs(user: FullUser) {
   try {
-    localStorage.setItem('prefs:v1', JSON.stringify({
-      theme: user.preferences.theme,
-      notifications: user.preferences.notifications
-    }))
+    localStorage.setItem(
+      'prefs:v1',
+      JSON.stringify({
+        theme: user.preferences.theme,
+        notifications: user.preferences.notifications,
+      }),
+    )
   } catch {}
 }
 ```
 
-**Always wrap in try-catch:** `getItem()` and `setItem()` throw in incognito/private browsing (Safari, Firefox), when quota exceeded, or when disabled.
+**Sempre use try/catch:** `getItem()` e `setItem()` podem lançar em janela anônima/privada (Safari, Firefox), quando a cota é excedida ou quando o armazenamento está desativado.
 
-**Benefits:** Schema evolution via versioning, reduced storage size, prevents storing tokens/PII/internal flags.
+**Benefícios:** evolução de esquema via versionamento, menor uso de armazenamento e menos risco de guardar tokens/PII/flags internacionais.

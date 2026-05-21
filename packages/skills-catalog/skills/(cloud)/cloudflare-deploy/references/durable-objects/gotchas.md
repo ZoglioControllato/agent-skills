@@ -1,31 +1,30 @@
-# Durable Objects Gotchas
+# Dicas de objetos duráveis
 
-## Common Errors
+## Erros Comuns
 
-### "Hibernation Cleared My In-Memory State"
+### "A hibernação limpou meu estado na memória"
 
-**Problem:** Variables lost after hibernation  
-**Cause:** DO auto-hibernates when idle; in-memory state not persisted  
-**Solution:** Use `ctx.storage` for critical data, `ws.serializeAttachment()` for per-connection metadata
-
-```typescript
+**Problema:** Variáveis perdidas após a hibernação
+**Causa:** DO hiberna automaticamente quando ocioso; estado na memória não persistiu
+**Solução:** Use `ctx.storage` para dados críticos, `ws.serializeAttachment()` para metadados por conexão```typescript
 // ❌ Wrong - lost on hibernation
 private userCount = 0;
 async webSocketMessage(ws: WebSocket, msg: string) {
-  this.userCount++;  // Lost!
+this.userCount++; // Lost!
 }
 
 // ✅ Right - persisted
 async webSocketMessage(ws: WebSocket, msg: string) {
-  const count = this.ctx.storage.kv.get("userCount") || 0;
-  this.ctx.storage.kv.put("userCount", count + 1);
+const count = this.ctx.storage.kv.get("userCount") || 0;
+this.ctx.storage.kv.put("userCount", count + 1);
 }
-```
+
+````
 
 ### "setTimeout Didn't Fire After Restart"
 
-**Problem:** Scheduled work lost on eviction  
-**Cause:** `setTimeout` in-memory only; eviction clears timers  
+**Problem:** Scheduled work lost on eviction
+**Cause:** `setTimeout` in-memory only; eviction clears timers
 **Solution:** Use `ctx.storage.setAlarm()` for reliable scheduling
 
 ```typescript
@@ -35,80 +34,76 @@ setTimeout(() => this.cleanup(), 3600000);
 // ✅ Right - survives eviction
 await this.ctx.storage.setAlarm(Date.now() + 3600000);
 async alarm() { await this.cleanup(); }
-```
+````
 
-### "Constructor Runs on Every Wake"
+### "Construtor é executado a cada vigília"
 
-**Problem:** Expensive init logic slows all requests  
-**Cause:** Constructor runs on every wake (first request after eviction OR after hibernation)  
-**Solution:** Lazy initialization or cache in storage
+**Problema:** Lógica de inicialização cara retarda todas as solicitações
+**Causa:** O construtor é executado a cada ativação (primeira solicitação após a remoção OU após a hibernação)
+**Solução:** inicialização lenta ou cache no armazenamento
 
-**Critical understanding:** Constructor runs in two scenarios:
+**Compreensão crítica:** O construtor é executado em dois cenários:
 
-1. **Cold start** - DO evicted from memory, first request creates new instance
-2. **Wake from hibernation** - DO with WebSockets hibernated, message/alarm wakes it
-
-```typescript
-// ❌ Wrong - expensive on every wake
-constructor(ctx: DurableObjectState, env: Env) {
-  super(ctx, env);
-  this.heavyData = this.loadExpensiveData();  // Slow!
-}
+1. **Início a frio** - DO removido da memória, a primeira solicitação cria uma nova instância
+2. **Despertar da hibernação** - FAÇA com WebSockets hibernados, mensagem/alarme o desperta```typescript
+   // ❌ Wrong - expensive on every wake
+   constructor(ctx: DurableObjectState, env: Env) {
+   super(ctx, env);
+   this.heavyData = this.loadExpensiveData(); // Slow!
+   }
 
 // ✅ Right - lazy load
 private heavyData?: HeavyData;
 private getHeavyData() {
-  if (!this.heavyData) this.heavyData = this.loadExpensiveData();
-  return this.heavyData;
+if (!this.heavyData) this.heavyData = this.loadExpensiveData();
+return this.heavyData;
 }
-```
 
-### "Durable Object Overloaded (503 errors)"
+````
+### "Objeto durável sobrecarregado (erros 503)"
 
-**Problem:** 503 errors under load  
-**Cause:** Single DO exceeding ~1K req/s throughput limit  
-**Solution:** Shard across multiple DOs (see [Patterns: Sharding](./patterns.md))
+**Problema:** erros 503 sob carga
+**Causa:** DO único excedendo o limite de taxa de transferência de aproximadamente 1K req/s
+**Solução:** Fragmentação em vários DOs (consulte [Padrões: Fragmentação](./patterns.md))
 
-### "Storage Quota Exceeded (Write failures)"
+### "Cota de armazenamento excedida (falhas de gravação)"
 
-**Problem:** Write operations failing  
-**Cause:** DO storage exceeding 10GB limit or account quota  
-**Solution:** Cleanup with alarms, use `deleteAll()` for old data, upgrade plan
+**Problema:** Falha nas operações de gravação
+**Causa:** O armazenamento excede o limite de 10 GB ou a cota da conta
+**Solução:** Limpeza com alarmes, use `deleteAll()` para dados antigos, atualize o plano
 
-### "CPU Time Exceeded (Terminated)"
+### "Tempo de CPU excedido (encerrado)"
 
-**Problem:** Request terminated mid-execution  
-**Cause:** Processing exceeding 30s CPU time default limit  
-**Solution:** Increase `limits.cpu_ms` in wrangler.jsonc (max 300s) or chunk work
+**Problema:** Solicitação encerrada no meio da execução
+**Causa:** Processamento excedendo o limite padrão de tempo de CPU de 30 segundos
+**Solução:** Aumente `limits.cpu_ms` em wrangler.jsonc (máximo de 300s) ou trabalho em pedaços
 
-### "WebSockets Disconnect on Eviction"
+### "WebSockets desconectados no despejo"
 
-**Problem:** Connections drop unexpectedly  
-**Cause:** DO evicted from memory without hibernation API  
-**Solution:** Use WebSocket hibernation handlers + client reconnection logic
+**Problema:** As conexões caem inesperadamente
+**Causa:** DO removido da memória sem API de hibernação
+**Solução:** use manipuladores de hibernação WebSocket + lógica de reconexão do cliente
 
-### "Migration Failed (Deploy error)"
+### "Falha na migração (erro de implantação)"
 
-**Cause:** Non-unique tags, non-sequential tags, or invalid class names in migration  
-**Solution:** Check tag uniqueness/sequential ordering and verify class names are correct
+**Causa:** Tags não exclusivas, tags não sequenciais ou nomes de classes inválidos na migração
+**Solução:** verifique a exclusividade/ordenação sequencial da tag e verifique se os nomes das classes estão corretos
 
-### "RPC Method Not Found"
+### "Método RPC não encontrado"
 
-**Cause:** compatibility_date < 2024-04-03 preventing RPC usage  
-**Solution:** Update compatibility_date to >= 2024-04-03 or use fetch() instead of RPC
+**Causa:** compatibilidade_data < 2024-04-03 impedindo o uso de RPC
+**Solução:** Atualize a compatibilidade_date para >= 2024-04-03 ou use fetch() em vez de RPC
 
-### "Only One Alarm Allowed"
+### "Apenas um alarme permitido"
 
-**Cause:** Need multiple scheduled tasks but only one alarm supported per DO  
-**Solution:** Use event queue pattern to schedule multiple tasks with single alarm
+**Causa:** São necessárias várias tarefas agendadas, mas apenas um alarme é suportado por DO
+**Solução:** use o padrão de fila de eventos para agendar diversas tarefas com um único alarme
 
-### "Race Condition Despite Single-Threading"
+### "Condição de corrida apesar de thread único"
 
-**Problem:** Concurrent requests see inconsistent state  
-**Cause:** Async operations allow request interleaving (await = yield point)  
-**Solution:** Use `blockConcurrencyWhile()` for critical sections or atomic storage ops
-
-```typescript
+**Problema:** Solicitações simultâneas apresentam estado inconsistente
+**Causa:** operações assíncronas permitem intercalação de solicitações (aguardar = ponto de rendimento)
+**Solução:** Use `blockConcurrencyWhile()` para seções críticas ou operações de armazenamento atômico```typescript
 // ❌ Wrong - race condition
 async incrementCounter() {
   const count = await this.ctx.storage.get("count") || 0;
@@ -130,71 +125,70 @@ async criticalOperation() {
     await this.ctx.storage.put("count", count + 1);
   });
 }
-```
+````
 
-### "Migration Rollback Not Supported"
+### "Reversão de migração não suportada"
 
-**Cause:** Attempting to rollback a migration after deployment  
-**Solution:** Test with `--dry-run` before deploying; migrations cannot be rolled back
+**Causa:** Tentativa de reverter uma migração após a implantação
+**Solução:** Teste com `--dry-run` antes de implantar; as migrações não podem ser revertidas
 
-### "deleted_classes Destroys Data"
+### "deleted_classes destrói dados"
 
-**Problem:** Migration deleted all data  
-**Cause:** `deleted_classes` migration immediately destroys all DO instances and data  
-**Solution:** Test with `--dry-run`; use `transferred_classes` to preserve data during moves
+**Problema:** a migração excluiu todos os dados
+**Causa:** a migração `deleted_classes` destrói imediatamente todas as instâncias e dados DO
+**Solução:** Teste com `--dry-run`; use `transferred_classes` para preservar os dados durante as movimentações
 
-### "Cold Starts Are Slow"
+### "As partidas a frio são lentas"
 
-**Problem:** First request after eviction takes longer  
-**Cause:** DO constructor + initial storage access on cold start  
-**Solution:** Expected behavior; optimize constructor, use connection pooling in clients, consider warming strategy for critical DOs
-
-```typescript
+**Problema:** A primeira solicitação após o despejo demora mais
+**Causa:** Construtor DO + acesso inicial ao armazenamento na inicialização a frio
+**Solução:** Comportamento esperado; otimizar construtor, usar pool de conexões em clientes, considerar estratégia de aquecimento para DOs críticos```typescript
 // Warming strategy (periodically ping critical DOs)
 export default {
-  async scheduled(event: ScheduledEvent, env: Env) {
-    const criticalIds = ['auth', 'sessions', 'locks']
-    await Promise.all(
-      criticalIds.map((name) => {
-        const id = env.MY_DO.idFromName(name)
-        const stub = env.MY_DO.get(id)
-        return stub.ping() // Keep warm
-      }),
-    )
-  },
+async scheduled(event: ScheduledEvent, env: Env) {
+const criticalIds = ['auth', 'sessions', 'locks']
+await Promise.all(
+criticalIds.map((name) => {
+const id = env.MY_DO.idFromName(name)
+const stub = env.MY_DO.get(id)
+return stub.ping() // Keep warm
+}),
+)
+},
 }
+
 ```
+## Limites
 
-## Limits
-
-| Limit                  | Free      | Paid      | Notes                                 |
+| Limite | Grátis | Pago | Notas |
 | ---------------------- | --------- | --------- | ------------------------------------- |
-| SQLite storage per DO  | 10 GB     | 10 GB     | Per Durable Object instance           |
-| SQLite total storage   | 5 GB      | Unlimited | Account-wide quota                    |
-| Key+value size         | 2 MB      | 2 MB      | Single KV pair (SQLite/async)         |
-| CPU time default       | 30s       | 30s       | Per request; configurable             |
-| CPU time max           | 300s      | 300s      | Set via `limits.cpu_ms`               |
-| DO classes             | 100       | 500       | Distinct DO class definitions         |
-| SQL columns            | 100       | 100       | Per table                             |
-| SQL statement size     | 100 KB    | 100 KB    | Max SQL query size                    |
-| WebSocket message size | 32 MiB    | 32 MiB    | Per message                           |
-| Request throughput     | ~1K req/s | ~1K req/s | Per DO (soft limit - shard for more)  |
-| Alarms per DO          | 1         | 1         | Use queue pattern for multiple events |
-| Total DOs              | Unlimited | Unlimited | Create as many instances as needed    |
-| WebSockets             | Unlimited | Unlimited | Within 128MB memory limit per DO      |
-| Memory per DO          | 128 MB    | 128 MB    | In-memory state + WebSocket buffers   |
+| Armazenamento SQLite por DO | 10 GB | 10 GB | Por instância de objeto durável |
+| Armazenamento total SQLite | 5 GB | Ilimitado | Cota para toda a conta |
+| Tamanho chave+valor | 2 MB | 2 MB | Par KV único (SQLite/assíncrono) |
+| Padrão de tempo de CPU | 30 anos | 30 anos | Por solicitação; configurável |
+| Tempo máximo de CPU | 300 | 300 | Definido via `limits.cpu_ms` |
+| Aulas DO | 100 | 500 | Definições distintas da classe DO |
+| Colunas SQL | 100 | 100 | Por mesa |
+| Tamanho da instrução SQL | 100 KB | 100 KB | Tamanho máximo da consulta SQL |
+| Tamanho da mensagem WebSocket | 32 MiB | 32 MiB | Por mensagem |
+| Taxa de transferência de solicitações | ~1 mil necessidades/s | ~1 mil necessidades/s | Por DO (limite flexível - fragmento para mais) |
+| Alarmes por DO | 1 | 1 | Use padrão de fila para vários eventos |
+| Total de DO | Ilimitado | Ilimitado | Crie quantas instâncias forem necessárias |
+| WebSockets | Ilimitado | Ilimitado | Dentro do limite de memória de 128 MB por DO |
+| Memória por DO | 128 MB | 128 MB | Estado na memória + buffers WebSocket |
 
-## Hibernation Caveats
+## Advertências sobre hibernação
 
-1. **Memory cleared** - All in-memory variables lost; reconstruct from storage or `deserializeAttachment()`
-2. **Constructor reruns** - Runs on wake; avoid expensive operations, use lazy initialization
-3. **No guarantees** - DO may evict instead of hibernate; design for both
-4. **Attachment limit** - `serializeAttachment()` data must be JSON-serializable, keep small
-5. **Alarm wakes DO** - Alarm prevents hibernation until handler completes
-6. **WebSocket state not automatic** - Must explicitly persist with `serializeAttachment()` or storage
+1. **Memória limpa** - Todas as variáveis na memória foram perdidas; reconstruir do armazenamento ou `deserializeAttachment()`
+2. **Reexecuções do construtor** - Executa na esteira; evite operações caras, use inicialização lenta
+3. **Sem garantias** - DO pode despejar em vez de hibernar; projeto para ambos
+4. **Limite de anexos** - os dados `serializeAttachment()` devem ser serializáveis em JSON, mantenha-os pequenos
+5. **Alarme desperta DO** - O alarme evita a hibernação até que o manipulador seja concluído
+6. **Estado WebSocket não automático** - Deve persistir explicitamente com `serializeAttachment()` ou armazenamento
 
-## See Also
+## Veja também
 
-- **[Patterns](./patterns.md)** - Workarounds for common limitations
-- **[API](./api.md)** - Storage limits and quotas
-- **[Configuration](./configuration.md)** - Setting CPU limits
+- **[Padrões](./patterns.md)** - Soluções alternativas para limitações comuns
+- **[API](./api.md)** - Limites e cotas de armazenamento
+- **[Configuração](./configuration.md)** - Configurando limites de CPU
+```

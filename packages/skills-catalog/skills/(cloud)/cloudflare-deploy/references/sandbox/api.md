@@ -1,6 +1,6 @@
-# API Reference
+# Referência de API
 
-## Command Execution
+## Execução de Comando
 
 ```typescript
 // Basic
@@ -16,7 +16,7 @@ await sandbox.exec('python3 test.py', {
 })
 ```
 
-## File Operations
+##Operações de arquivo
 
 ```typescript
 // Read/Write
@@ -33,7 +33,7 @@ await sandbox.mkdir('/workspace/dir', { recursive: true })
 await sandbox.pathExists('/workspace/file.txt')
 ```
 
-## Background Processes
+##Processos em segundo plano
 
 ```typescript
 // Start
@@ -56,7 +56,7 @@ await sandbox.stopProcess('web-server')
 const logs = await sandbox.getProcessLogs('web-server')
 ```
 
-## Port Exposure
+##Exposição Portuária
 
 ```typescript
 // Expose port
@@ -71,9 +71,9 @@ await sandbox.getExposedPorts(request.hostname)
 await sandbox.unexposePort(8080)
 ```
 
-## Sessions (Isolated Contexts)
+##Sessões (contextos isolados)
 
-Each session maintains own shell state, env vars, cwd, process namespace.
+Cada sessão mantém seu próprio estado de shell, env vars, cwd, namespace de processo.
 
 ```typescript
 // Create with context
@@ -92,7 +92,7 @@ await sandbox.getSession('user-123')
 await sandbox.deleteSession('user-123')
 ```
 
-## Code Interpreter
+##Intérprete de código
 
 ```typescript
 // Create context with variables
@@ -117,7 +117,7 @@ print(f"Processed {len(data)} points")
 const result2 = await ctx.runCode('print(data[0])') // Still has 'data'
 ```
 
-## WebSocket Connections
+##Conexões WebSocket
 
 ```typescript
 // Proxy WebSocket to sandbox service
@@ -136,7 +136,7 @@ export default {
 }
 ```
 
-## Bucket Mounting (S3 Storage)
+##Montagem em balde (armazenamento S3)
 
 ```typescript
 // Mount R2 bucket (production only, not wrangler dev)
@@ -152,11 +152,11 @@ await sandbox.writeFile('/data/output.txt', 'result')
 await sandbox.unmountBucket('/data')
 ```
 
-**Note**: Bucket mounting only works in production. Mounted buckets are sandbox-scoped (visible to all sessions in that sandbox).
+**Observação**: A montagem do balde funciona apenas na produção. Os buckets montados têm escopo de sandbox (visíveis para todas as sessões nesse sandbox).
 
-## Lifecycle Management
+## Gerenciamento do ciclo de vida
 
-```typescript
+````typescript
 // Terminate container immediately
 await sandbox.destroy()
 
@@ -169,12 +169,9 @@ try {
 } finally {
   await sandbox.destroy() // Free resources
 }
-```
+```Exclui: arquivos, processos, sessões, conexões de rede, portas expostas.
 
-Deletes: files, processes, sessions, network connections, exposed ports.
-
-## Error Handling
-
+## Tratamento de erros
 ```typescript
 // Command errors
 const result = await sandbox.exec('python3 invalid.py')
@@ -197,4 +194,4 @@ try {
 }
 
 // Retry pattern (see gotchas.md for full implementation)
-```
+````

@@ -1,134 +1,134 @@
-# Principles in depth
+# Princípios em profundidade
 
-One section per principle: **definition**, **rules for agents**, **abstract example**. No stack or folder assumptions.
-
----
-
-## 1 — Well-defined boundaries
-
-**Definition.** Consumers depend on a **small, intentional public surface** (operations, events, types that are part of the contract). Everything else is implementation detail.
-
-**Rules for agents.**
-
-- Prefer extending behavior by adding to the **documented** API rather than importing internals.
-- When suggesting refactors, preserve or shrink the public surface; do not widen it “for convenience.”
-- Name things so **contract vs internal** is obvious in reviews (e.g. “public operation” vs “internal helper” is a conceptual distinction even without tooling).
-
-**Abstract example.** A “Checkout” context exposes `placeOrder(command)` and `OrderPlaced` events. Other contexts must not reach into Checkout’s internal pricing tables; they subscribe to events or call `placeOrder`, not “update row X.”
+Uma seção por princípio: **definição**, **regras para agentes**, **exemplo abstrato**. Nenhuma suposição de pilha ou pasta.
 
 ---
 
-## 2 — Composability
+## 1 — Limites bem definidos
 
-**Definition.** Modules can be **assembled in different products or deployments** without rewriting their core logic for each combination.
+**Definição.** Os consumidores dependem de uma **superfície pública pequena e intencional** (operações, eventos, tipos que fazem parte do contrato). Todo o resto são detalhes de implementação.
 
-**Rules for agents.**
+**Regras para agentes.**
 
-- Avoid hidden assumptions like “this only runs when module B is present” unless expressed as an **optional integration** or **plugin** contract.
-- Configuration and feature flags should not become spaghetti that only one deployment understands.
+- Prefira estender o comportamento adicionando à API **documentada** em vez de importar componentes internos.
+- Ao sugerir refatoradores, preserve ou reduza a superfície pública; não o amplie “por conveniência”.
+- Nomeie as coisas de forma que **contrato versus interno** seja óbvio nas revisões (por exemplo, “operação pública” versus “ajudante interno” é uma distinção conceitual mesmo sem ferramentas).
 
-**Abstract example.** The same “Inventory” module works in a small CLI tool and a large web app because its contract does not assume a specific UI or host—only the composition root changes.
-
----
-
-## 3 — Independence
-
-**Definition.** Modules do not rely on **hidden shared mutable state** across boundaries. Tests can run a module with **fakes** at its edges.
-
-**Rules for agents.**
-
-- Flag “global singletons” that encode cross-module policy without an explicit contract.
-- Prefer **passing dependencies explicitly** or **declared injection** over ambient globals for cross-cutting concerns.
-
-**Abstract example.** Two services in different modules both mutate a process-wide cache keyed by “user id” without coordination → independence is violated; replace with an explicit cache interface owned by one module or a documented shared service.
+**Exemplo abstrato.** Um contexto “Checkout” expõe os eventos `placeOrder(command)` e `OrderPlaced`. Outros contextos não devem chegar às tabelas internas de preços do Checkout; eles assinam eventos ou chamam `placeOrder`, não “atualizam a linha X”.
 
 ---
 
-## 4 — Individual scale
+## 2 — Composição
 
-**Definition.** **Throughput, storage, batching, and limits** can be tuned per module where needed, without forcing one global setting on everyone.
+**Definição.** Os módulos podem ser **montados em diferentes produtos ou implantações** sem reescrever sua lógica principal para cada combinação.
 
-**Rules for agents.**
+**Regras para agentes.**
 
-- When performance tuning, ask **which bounded context** owns the bottleneck; avoid “fixing” by coupling unrelated code paths.
-- Suggest **per-module** quotas, pools, or batch sizes when load profiles differ.
+- Evite suposições ocultas como “isso só é executado quando o módulo B está presente”, a menos que expressado como um contrato de **integração opcional** ou de **plugin**.
+- Os sinalizadores de configuração e recursos não devem se tornar um espaguete que apenas uma implantação entende.
 
-**Abstract example.** “Search” needs a large read replica and aggressive caching; “Billing” needs strict serial writes. Scaling policies are not identical, and neither module forces the other’s settings.
+**Exemplo abstrato.** O mesmo módulo “Inventário” funciona em uma ferramenta CLI pequena e em um aplicativo web grande porque seu contrato não pressupõe uma UI ou host específico – apenas a raiz da composição muda.
+
+---
+
+## 3 - Independência
+
+**Definição.** Os módulos não dependem de **estado mutável compartilhado oculto** entre limites. Os testes podem executar um módulo com **falsificações** nas bordas.
+
+**Regras para agentes.**
+
+- Sinalize “singletons globais” que codificam políticas entre módulos sem um contrato explícito.
+- Prefira **passar dependências explicitamente** ou **injeção declarada** em vez de ambientes globais para questões transversais.
+
+**Exemplo abstrato.** Dois serviços em módulos diferentes alteram um cache de todo o processo codificado por “id do usuário” sem coordenação → a independência é violada; substitua por uma interface de cache explícita pertencente a um módulo ou a um serviço compartilhado documentado.
+
+---
+
+## 4 — Escala individual
+
+**Definição.** **A taxa de transferência, o armazenamento, os lotes e os limites** podem ser ajustados por módulo quando necessário, sem forçar uma configuração global para todos.
+
+**Regras para agentes.**
+
+- Ao ajustar o desempenho, pergunte **qual contexto limitado** possui o gargalo; evite “consertar” acoplando caminhos de código não relacionados.
+- Sugira cotas, pools ou tamanhos de lote **por módulo** quando os perfis de carga forem diferentes.
+
+**Exemplo abstrato.** “Pesquisa” precisa de uma grande réplica de leitura e cache agressivo; “Faturamento” precisa de gravações seriais estritas. As políticas de escalabilidade não são idênticas e nenhum dos módulos força as configurações do outro.
 
 ---
 
 ## 5 — Explicit communication
 
-**Definition.** All **cross-module** interaction goes through **known contracts**: APIs, messages, events, or versioned schemas—not incidental shared files or implicit side channels.
+**Definição.** Toda interação **entre módulos** passa por **contratos conhecidos**: APIs, mensagens, eventos ou esquemas versionados, e não por arquivos compartilhados incidentais ou canais secundários implícitos.
 
-**Rules for agents.**
+**Regras para agentes.**
 
-- Document **inputs, outputs, errors, and versioning** for anything that crosses a boundary.
-- Discourage “just import this DTO from their package” when that DTO is really an **internal** persistence shape.
+- Documente **entradas, saídas, erros e controle de versão** para qualquer coisa que ultrapasse um limite.
+- Desencoraje “basta importar este DTO do pacote” quando esse DTO for realmente uma forma de persistência **interna**.
 
-**Abstract example.** Module A notifies Module B via `OrderPlaced { orderId, placedAt }` on a bus, not by writing into B’s database “because it’s faster.”
-
----
-
-## 6 — Replaceability
-
-**Definition.** Dependencies on other modules are expressed in terms of **interfaces, protocols, or stable contracts** so implementations can be swapped or mocked.
-
-**Rules for agents.**
-
-- At boundaries, prefer **narrow interfaces** (“payment gateway”, “clock”, “id generator”) over concrete vendor types leaking inward.
-- Refactors that **pin** a module to one technology everywhere should be questioned unless that is a deliberate platform choice.
-
-**Abstract example.** “Notifications” depends on `Notifier` with `send(recipient, body)`; email vs SMS vs push is replaceable behind that port.
+**Exemplo abstrato.** O Módulo A notifica o Módulo B via `OrderPlaced { orderId, placeAt }` em um barramento, não escrevendo no banco de dados de B “porque é mais rápido”.
 
 ---
 
-## 7 — Deployment independence
+## 6 - Substituibilidade
 
-**Definition.** Module code does not **assume** co-location in the same process or release unless that is an **explicit** architectural decision.
+**Definição.** As dependências de outros módulos são expressas em termos de **interfaces, protocolos ou contratos estáveis** para que as implementações possam ser trocadas ou simuladas.
 
-**Rules for agents.**
+**Regras para agentes.**
 
-- Avoid “call this function directly in their package” as the only integration story when multiple deployments are possible.
-- Prefer contracts that work across **in-process, out-of-process, or async** delivery with minimal change.
+- Nos limites, prefira **interfaces estreitas** (“gateway de pagamento”, “relógio”, “gerador de id”) em vez de tipos concretos de fornecedores que vazam para dentro.
+- Refatoradores que **fixam** um módulo a uma tecnologia em todos os lugares devem ser questionados, a menos que seja uma escolha deliberada de plataforma.
 
-**Abstract example.** The same domain logic can run in a monolith today and behind a message queue tomorrow because interactions were modeled as operations/events, not as hardcoded in-process singletons.
-
----
-
-## 8 — State isolation
-
-**Definition.** Each module **owns** its authoritative store and naming for its facts. No silent sharing of the same logical data across boundaries without a **clear rule** (who writes, who reads, how consistency is achieved).
-
-**Rules for agents.**
-
-- Treat **reach-through persistence** (reading/writing another module’s store directly) as a **design smell** unless documented as an exceptional, reviewed pattern.
-- Require **unambiguous names** for persisted concepts when multiple modules have similar nouns.
-
-**Abstract example.** “Customer” in CRM and “Customer” in Billing are different aggregates with different IDs or explicit mapping—not two modules updating one ambiguous `customers` row.
+**Exemplo abstrato.** “Notificações” depende de `Notifier` com `send(recipient, body)`; email vs SMS vs push é substituível por trás dessa porta.
 
 ---
 
-## 9 — Observability
+## 7 — Independência de implantação
 
-**Definition.** Logs, metrics, traces, and health checks can be **attributed** to a module (and often a use case) so incidents are diagnosable without reading the whole system.
+**Definição.** O código do módulo não **assume** a co-localização no mesmo processo ou versão, a menos que seja uma decisão arquitetônica **explícita**.
 
-**Rules for agents.**
+**Regras para agentes.**
 
-- When adding diagnostics, include **context** (which operation, which correlation id), not only “error happened.”
-- Avoid log lines that **cannot** be filtered by owning team or subsystem.
+- Evite “chamar esta função diretamente no pacote” como a única história de integração quando múltiplas implantações são possíveis.
+- Prefira contratos que funcionem em entrega **em processo, fora de processo ou assíncrona** com alterações mínimas.
 
-**Abstract example.** A failed payment shows `billing.capture` span with `orderId` and clear error code; support does not grep unrelated modules’ noise to find root cause.
+**Exemplo abstrato.** A mesma lógica de domínio pode ser executada em um monólito hoje e atrás de uma fila de mensagens amanhã porque as interações foram modeladas como operações/eventos, e não como singletons codificados no processo.
 
 ---
 
-## 10 — Fail independence
+## 8 — Isolamento do Estado
 
-**Definition.** Failures are **bounded**: timeouts, retries with backoff, bulkheads, circuit breaking, idempotency—so one module’s outage does not **cascade blindly**.
+**Definição.** Cada módulo **possui** seu armazenamento oficial e nomenclatura para seus fatos. Não há compartilhamento silencioso dos mesmos dados lógicos entre fronteiras sem uma **regra clara** (quem escreve, quem lê, como a consistência é alcançada).
 
-**Rules for agents.**
+**Regras para agentes.**
 
-- Cross-module calls should have **explicit** timeout and failure semantics; “hang forever” is a design bug at the boundary.
-- Async handlers should be **idempotent** or deduplicated where duplicates are possible.
+- Trate a **persistência de alcance** (ler/escrever diretamente no armazenamento de outro módulo) como um **cheiro de design**, a menos que documentado como um padrão excepcional e revisado.
+- Exigir **nomes inequívocos** para conceitos persistentes quando vários módulos tiverem substantivos semelhantes.
 
-**Abstract example.** When Recommendations is down, Checkout still completes using defaults or a cached tier; the UI degrades instead of blocking purchase.
+**Exemplo abstrato.** “Cliente” no CRM e “Cliente” no Faturamento são agregados diferentes com IDs diferentes ou mapeamento explícito – e não dois módulos atualizando uma linha "clientes" ambígua.
+
+---
+
+## 9 - Observabilidade
+
+**Definição.** Logs, métricas, rastreamentos e verificações de integridade podem ser **atribuídos** a um módulo (e geralmente a um caso de uso) para que os incidentes sejam diagnosticáveis sem a leitura de todo o sistema.
+
+**Regras para agentes.**
+
+- Ao adicionar diagnósticos, inclua **contexto** (qual operação, qual ID de correlação), não apenas “erro ocorrido”.
+- Evite linhas de log que **não** possam ser filtradas pela equipe ou subsistema proprietário.
+
+**Exemplo abstrato.** Um pagamento com falha mostra o intervalo `billing.capture` com `orderId` e código de erro limpo; o suporte não faz grep no ruído de módulos não relacionados para encontrar a causa raiz.
+
+---
+
+## 10 - Falha na independência
+
+**Definição.** As falhas são **limitadas**: tempos limite, novas tentativas com espera, anteparos, interrupção de circuito, idempotência — para que a interrupção de um módulo não **cautele cegamente**.
+
+**Regras para agentes.**
+
+- Chamadas entre módulos devem ter tempo limite **explícito** e semântica de falha; “pendurar para sempre” é um bug de design no limite.
+- Os manipuladores assíncronos devem ser **idempotentes** ou desduplicados onde duplicatas são possíveis.
+
+**Exemplo abstrato.** Quando o Recommendations está inativo, o Checkout ainda é concluído usando padrões ou uma camada em cache; a IU degrada em vez de bloquear a compra.

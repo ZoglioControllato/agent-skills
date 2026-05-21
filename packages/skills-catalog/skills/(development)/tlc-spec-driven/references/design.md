@@ -1,52 +1,49 @@
-# Design
+# Projeto
 
-**Goal**: Define HOW to build it. Architecture, components, what to reuse.
+**Objetivo**: Definir COMO construí-lo. Arquitetura, componentes, o que reutilizar.
 
-**Skip this phase when:** The change is straightforward — no architectural decisions, no new patterns, no component interactions to plan. For simple features, design happens inline during Execute.
+**Pule esta fase quando:** A mudança for direta — sem decisões arquitetônicas, sem novos padrões, sem interações de componentes a serem planejadas. Para recursos simples, o design acontece em linha durante a execução.
 
-## Process
+## Processo
 
-### 1. Load Context
+### 1. Carregar contexto
 
-Read `.specs/features/[feature]/spec.md` before designing. If `.specs/features/[feature]/context.md` exists, load it too — it contains implementation decisions that constrain the design (layout choices, behavior preferences, interaction patterns). Decisions marked as "Agent's Discretion" are yours to decide.
+Leia `.specs/features/[feature]/spec.md` antes de projetar. Se `.specs/features/[feature]/context.md existir, carregue-o também - ele contém decisões de implementação que restringem o design (opções de layout, preferências de comportamento, padrões de interação). As decisões marcadas como "A critério do agente" são suas.
 
-### 1.5. Research (Optional but Recommended)
+### 1.5. Pesquisa (opcional, mas recomendada)
 
-If the feature involves unfamiliar technology, patterns, or integrations, research before designing. Document findings briefly in the design doc or as inline notes. This prevents incorrect assumptions from propagating into tasks.
+Se o recurso envolver tecnologia, padrões ou integrações desconhecidas, pesquise antes de projetar. Documente as descobertas brevemente no documento de design ou como notas embutidas. Isso evita que suposições incorretas se propaguem nas tarefas.
 
-Follow the **Knowledge Verification Chain** (see SKILL.md) in strict order:
-
-```
+Siga a **Cadeia de verificação de conhecimento** (consulte SKILL.md) em ordem estrita:```
 Codebase → Project docs → Context7 MCP → Web search → Flag as uncertain
-```
 
-**CRITICAL: NEVER assume or fabricate information.** If you cannot find an answer through the chain, explicitly say "I don't know" or "I couldn't find documentation for this". Inventing an API, a pattern, or a behavior that doesn't exist is far worse than admitting uncertainty. Wrong assumptions propagate through design → tasks → implementation and cause cascading failures.
+``````
 
-Good triggers for research: new libraries, unfamiliar APIs, performance-sensitive features, security-sensitive features, patterns you haven't used in this codebase before.
+**CRÍTICO: NUNCA presuma ou fabrique informações.** Se você não conseguir encontrar uma resposta na cadeia, diga explicitamente "Não sei" ou "Não consegui encontrar documentação para isso". Inventar uma API, um padrão ou um comportamento que não existe é muito pior do que admitir a incerteza. Suposições erradas se propagam através do design → tarefas → implementação e causam falhas em cascata.
 
-### 2. Define Architecture
+Bons gatilhos para pesquisa: novas bibliotecas, APIs desconhecidas, recursos sensíveis ao desempenho, recursos sensíveis à segurança, padrões que você nunca usou nesta base de código antes.
 
-Overview of how components interact. Use mermaid diagrams when helpful. Before creating any diagrams, check if the `mermaid-studio` skill is available (see Skill Integrations in SKILL.md).
+### 2. Definir Arquitetura
 
-### 3. Identify Code Reuse
+Visão geral de como os componentes interagem. Use diagramas de sereia quando for útil. Antes de criar qualquer diagrama, verifique se a habilidade `mermaid-studio` está disponível (consulte Integrações de habilidades em SKILL.md).
 
-**CRITICAL**: What existing code can we leverage? This saves tokens and reduces errors.
+### 3. Identifique a reutilização de código
 
-If `.specs/codebase/CONCERNS.md` exists, check it before designing. Any component flagged as fragile, carrying tech debt, or having test coverage gaps requires extra care in the design — document how the design mitigates those concerns.
+**CRÍTICO**: Que código existente podemos aproveitar? Isso economiza tokens e reduz erros.
 
-### 4. Define Components and Interfaces
+Se `.specs/codebase/CONCERNS.md` existir, verifique-o antes de projetar. Qualquer componente sinalizado como frágil, com dívidas tecnológicas ou com lacunas na cobertura de testes requer cuidado extra no design – documente como o design mitiga essas preocupações.
 
-Each component: Purpose, Location, Interfaces, Dependencies, What it reuses.
+### 4. Definir componentes e interfaces
 
-### 5. Define Data Models
+Cada componente: Finalidade, Localização, Interfaces, Dependências, O que reutiliza.
 
-If the feature involves data, define models before implementation.
+### 5. Definir modelos de dados
+
+Se o recurso envolver dados, defina modelos antes da implementação.
 
 ---
 
-## Template: `.specs/[feature]/design.md`
-
-````markdown
+## Modelo: `.specs/[recurso]/design.md`````markdown
 # [Feature] Design
 
 **Spec**: `.specs/[feature]/spec.md`
@@ -64,58 +61,56 @@ graph TD
     B --> C[Service Layer]
     C --> D[Data Store]
     B --> E[Component B]
-```
+``````
+
 ````
-
 ---
 
-## Code Reuse Analysis
+## Análise de reutilização de código
 
-### Existing Components to Leverage
+### Componentes existentes para aproveitar
 
-| Component            | Location            | How to Use                |
+| Componente | Localização | Como usar |
 | -------------------- | ------------------- | ------------------------- |
-| [Existing Component] | `src/path/to/file`  | [Extend/Import/Reference] |
-| [Existing Utility]   | `src/utils/file`    | [How it helps]            |
-| [Existing Pattern]   | `src/patterns/file` | [Apply same pattern]      |
+| [Componente Existente] | `src/caminho/para/arquivo` | [Estender/Importar/Referência] |
+| [Utilitário Existente] | `src/utils/arquivo` | [Como isso ajuda] |
+| [Padrão Existente] | `src/padrões/arquivo` | [Aplicar o mesmo padrão] |
 
-### Integration Points
+### Pontos de Integração
 
-| System         | Integration Method                      |
+| Sistema | Método de Integração |
 | -------------- | --------------------------------------- |
-| [Existing API] | [How new feature connects]              |
-| [Database]     | [How data connects to existing schemas] |
+| [API existente] | [Como o novo recurso se conecta] |
+| [Banco de dados] | [Como os dados se conectam aos esquemas existentes] |
 
 ---
 
-## Components
+## Componentes
 
-### [Component Name]
+### [Nome do componente]
 
-- **Purpose**: [What this component does - one sentence]
-- **Location**: `src/path/to/component/`
+- **Objetivo**: [O que este componente faz - uma frase]
+- **Localização**: `src/caminho/para/componente/`
 - **Interfaces**:
-  - `methodName(param: Type): ReturnType` - [description]
-  - `methodName(param: Type): ReturnType` - [description]
-- **Dependencies**: [What it needs to function]
-- **Reuses**: [Existing code this builds upon]
+  - `methodName(param: Type): ReturnType` - [descrição]
+  - `methodName(param: Type): ReturnType` - [descrição]
+- **Dependências**: [O que é necessário para funcionar]
+- **Reutilizações**: [Código existente que se baseia]
 
-### [Component Name]
+### [Nome do componente]
 
-- **Purpose**: [What this component does]
-- **Location**: `src/path/to/component/`
+- **Objetivo**: [O que este componente faz]
+- **Localização**: `src/caminho/para/componente/`
 - **Interfaces**:
-  - `methodName(param: Type): ReturnType`
-- **Dependencies**: [Dependencies]
-- **Reuses**: [Existing code]
+  - `nomedometodo(param: Tipo): ReturnType`
+- **Dependências**: [Dependências]
+- **Reutilizações**: [Código existente]
 
 ---
 
-## Data Models (if applicable)
+## Modelos de dados (se aplicável)
 
-### [Model Name]
-
-```typescript
+### [Nome do modelo]```typescript
 interface ModelName {
   id: string
   field1: string
@@ -124,43 +119,43 @@ interface ModelName {
 }
 ```
 
-**Relationships**: [How this relates to other models]
+**Relacionamentos**: [Como isso se relaciona com outros modelos]
 
-### [Model Name]
-
-```typescript
+### [Nome do modelo]```typescript
 interface AnotherModel {
   id: string
   // ...
 }
 ```
-
 ---
 
-## Error Handling Strategy
+## Estratégia de tratamento de erros
 
-| Error Scenario | Handling      | User Impact      |
+| Cenário de erro | Manuseio | Impacto do usuário |
 | -------------- | ------------- | ---------------- |
-| [Scenario 1]   | [How handled] | [What user sees] |
-| [Scenario 2]   | [How handled] | [What user sees] |
+| [Cenário 1] | [Como é tratado] | [O que o usuário vê] |
+| [Cenário 2] | [Como é tratado] | [O que o usuário vê] |
 
 ---
 
-## Tech Decisions (only non-obvious ones)
+## Decisões técnicas (apenas as não óbvias)
 
-| Decision          | Choice          | Rationale     |
+| Decisão | Escolha | Justificativa |
 | ----------------- | --------------- | ------------- |
-| [What we decided] | [What we chose] | [Why - brief] |
+| [O que decidimos] | [O que escolhemos] | [Por que - breve] |
 
 ---
 
-## Tips
+## Pontas
 
-- **Load context first** — If context.md exists, decisions there are locked
-- **Research when uncertain** — 5 minutes of research prevents hours of rework
-- **Reuse is king** — Every component should reference existing patterns
-- **Interfaces first** — Define contracts before implementation
-- **Keep it visual** — Diagrams save 1000 words (check mermaid-studio skill in Skill Integrations)
-- **Small components** — If component does 3+ things, split it
-- **Check CONCERNS.md** — If it exists, flag fragile areas the design must address
-- **Confirm before Tasks** — User approves design before breaking into tasks
+- **Carregue o contexto primeiro** — Se context.md existir, as decisões serão bloqueadas
+- **Pesquise quando tiver dúvidas** — 5 minutos de pesquisa evitam horas de retrabalho
+- **Reutilizar é rei** — Cada componente deve fazer referência aos padrões existentes
+- **Interfaces primeiro** — Defina contratos antes da implementação
+- **Mantenha-o visual** — Os diagramas economizam 1.000 palavras (verifique a habilidade do sereia-studio em Integrações de habilidades)
+- **Componentes pequenos** — Se o componente fizer mais de 3 coisas, divida
+
+isso
+- **Verifique CONCERNS.md** — Se existir, sinalize as áreas frágeis que o projeto deve abordar
+- **Confirmar antes das tarefas** — O usuário aprova o design antes de iniciar as tarefas
+````

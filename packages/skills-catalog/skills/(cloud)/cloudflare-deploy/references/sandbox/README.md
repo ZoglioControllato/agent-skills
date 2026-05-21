@@ -1,36 +1,37 @@
 # Cloudflare Sandbox SDK
 
-Secure isolated code execution in containers on Cloudflare's edge. Run untrusted code, manage files, expose services, integrate with AI agents.
+Execução segura de código isolado em contêineres na borda da Cloudflare. Execute códigos não confiáveis, gerencie arquivos, exponha serviços e integre-se a agentes de IA.
 
-**Use cases**: AI code execution, interactive dev environments, data analysis, CI/CD, code interpreters, multi-tenant execution.
+**Casos de uso**: execução de código de IA, ambientes de desenvolvimento interativos, análise de dados, CI/CD, interpretadores de código, execução multilocatário.
 
-## Architecture
+## Arquitetura
 
-- Each sandbox = Durable Object + Container
-- Persistent across requests (same ID = same sandbox)
-- Isolated filesystem/processes/network
-- Configurable sleep/wake for cost optimization
+- Cada sandbox = Objeto Durável + Recipiente
+- Persistente entre solicitações (mesmo ID = mesmo sandbox)
+- Sistema de arquivos/processos/rede isolados
+- Sleep/wake configurável para otimização de custos
 
-## Quick Start
+## Início rápido```typescript
 
-```typescript
 import { getSandbox, proxyToSandbox, type Sandbox } from '@cloudflare/sandbox'
 export { Sandbox } from '@cloudflare/sandbox'
 
 type Env = { Sandbox: DurableObjectNamespace<Sandbox> }
 
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
-    // CRITICAL: proxyToSandbox MUST be called first for preview URLs
-    const proxyResponse = await proxyToSandbox(request, env)
-    if (proxyResponse) return proxyResponse
+async fetch(request: Request, env: Env): Promise<Response> {
+// CRITICAL: proxyToSandbox MUST be called first for preview URLs
+const proxyResponse = await proxyToSandbox(request, env)
+if (proxyResponse) return proxyResponse
 
     const sandbox = getSandbox(env.Sandbox, 'my-sandbox')
     const result = await sandbox.exec('python3 -c "print(2 + 2)"')
     return Response.json({ output: result.stdout })
-  },
+
+},
 }
-```
+
+````
 
 **wrangler.jsonc**:
 
@@ -60,7 +61,7 @@ export default {
     },
   ],
 }
-```
+````
 
 **Dockerfile**:
 
@@ -70,35 +71,35 @@ RUN pip3 install --no-cache-dir pandas numpy matplotlib
 EXPOSE 8080 3000  # Required for wrangler dev
 ```
 
-## Core APIs
+## APIs principais
 
-- `getSandbox(namespace, id, options?)` → Get/create sandbox
-- `sandbox.exec(command, options?)` → Execute command
-- `sandbox.readFile(path)` / `writeFile(path, content)` → File ops
-- `sandbox.startProcess(command, options)` → Background process
-- `sandbox.exposePort(port, options)` → Get preview URL
-- `sandbox.createSession(options)` → Isolated session
-- `sandbox.wsConnect(request, port)` → WebSocket proxy
-- `sandbox.destroy()` → Terminate container
-- `sandbox.mountBucket(bucket, path, options)` → Mount S3 storage
+- `getSandbox(namespace, id, opções?)` → Obter/criar sandbox
+- `sandbox.exec(comando, opções?)` → Executar comando
+- `sandbox.readFile(path)` / `writeFile(path, content)` → Operações de arquivo
+- `sandbox.startProcess(comando, opções)` → Processo em segundo plano
+- `sandbox.exposePort(port, options)` → Obter URL de visualização
+- `sandbox.createSession(options)` → Sessão isolada
+- `sandbox.wsConnect(solicitação, porta)` → proxy WebSocket
+- `sandbox.destroy()` → Encerrar contêiner
+- `sandbox.mountBucket(bucket, path, options)` → Montar armazenamento S3
 
-## Critical Rules
+## Regras Críticas
 
-- ALWAYS call `proxyToSandbox()` first
-- Same ID = reuse sandbox
-- Use `/workspace` for persistent files
-- `normalizeId: true` for preview URLs
-- Retry on `CONTAINER_NOT_READY`
+- SEMPRE chame `proxyToSandbox()` primeiro
+- Mesmo ID = reutilizar sandbox
+- Use `/workspace` para arquivos persistentes
+- `normalizeId: true` para URLs de visualização
+- Tente novamente em `CONTAINER_NOT_READY`
 
-## In This Reference
+## Nesta referência
 
-- [configuration.md](./configuration.md) - Config, CLI, environment setup
-- [api.md](./api.md) - Programmatic API, testing patterns
-- [patterns.md](./patterns.md) - Common workflows, CI/CD integration
-- [gotchas.md](./gotchas.md) - Issues, limits, best practices
+- [configuration.md](./configuration.md) - Configuração, CLI, configuração do ambiente
+- [api.md](./api.md) - API programática, padrões de teste
+- [patterns.md](./patterns.md) - Fluxos de trabalho comuns, integração CI/CD
+- [gotchas.md](./gotchas.md) - Problemas, limites, práticas recomendadas
 
-## See Also
+## Veja também
 
-- [durable-objects](../durable-objects/) - Sandbox runs on DO infrastructure
-- [containers](../containers/) - Container runtime fundamentals
-- [workers](../workers/) - Entry point for sandbox requests
+- [durable-objects](../durable-objects/) - Sandbox é executado na infraestrutura DO
+- [containers](../containers/) - Fundamentos do tempo de execução do contêiner
+- [workers](../workers/) – Ponto de entrada para solicitações de sandbox

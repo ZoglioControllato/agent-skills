@@ -1,21 +1,21 @@
-# R2 SQL Configuration
+#Configuração SQL R2
 
-Setup and configuration for R2 SQL queries.
+Instalação e configuração para consultas SQL R2.
 
-## Prerequisites
+## Pré-requisitos
 
-- R2 bucket with Data Catalog enabled
-- API token with R2 permissions
-- Wrangler CLI installed (for CLI queries)
+- Bucket R2 com Catálogo de Dados ativado
+- Token API com permissões R2
+- Wrangler CLI instalado (para consultas CLI)
 
-## Enable R2 Data Catalog
+## Habilitar catálogo de dados R2
 
-R2 SQL queries Apache Iceberg tables in R2 Data Catalog. Must enable catalog on bucket first.
+R2 SQL consulta tabelas Apache Iceberg no Catálogo de Dados R2. É necessário ativar o catálogo no bucket primeiro.
 
-### Via Wrangler CLI
+### Através da CLI do Wrangler```bash
 
-```bash
 npx wrangler r2 bucket catalog enable <bucket-name>
+
 ```
 
 Output includes:
@@ -26,56 +26,55 @@ Output includes:
 Example output:
 
 ```
+
 Catalog enabled successfully
 Warehouse: my-bucket
 Catalog URI: https://abc123.r2.cloudflarestorage.com/iceberg/my-bucket
-```
 
-### Via Dashboard
+````
+### Através do painel
 
-1. Navigate to **R2 Object Storage** → Select your bucket
-2. Click **Settings** tab
-3. Scroll to **R2 Data Catalog** section
-4. Click **Enable**
-5. Note the **Catalog URI** and **Warehouse** name
+1. Navegue até **R2 Object Storage** → Selecione seu bucket
+2. Clique na guia **Configurações**
+3. Role até a seção **Catálogo de dados R2**
+4. Clique em **Ativar**
+5. Observe o **URI do catálogo** e o nome do **Armazém**
 
-**Important:** Enabling catalog creates metadata directories in bucket but does not modify existing objects.
+**Importante:** ativar o catálogo cria diretórios de metadados no bucket, mas não modifica os objetos existentes.
 
-## Create API Token
+## Criar token de API
 
-R2 SQL requires API token with R2 permissions.
+R2 SQL requer token de API com permissões R2.
 
-### Required Permission
+### Permissão necessária
 
-**R2 Admin Read & Write** (includes R2 SQL Read permission)
+**Leitura e gravação de administrador R2** (inclui permissão de leitura SQL R2)
 
-### Via Dashboard
+### Através do painel
 
-1. Navigate to **R2 Object Storage**
-2. Click **Manage API tokens** (top right)
-3. Click **Create API token**
-4. Select **Admin Read & Write** permission
-5. Click **Create API Token**
-6. **Copy token value** - shown only once
+1. Navegue até **Armazenamento de objetos R2**
+2. Clique em **Gerenciar tokens de API** (canto superior direito)
+3. Clique em **Criar token de API**
+4. Selecione a permissão **Administrador de leitura e gravação**
+5. Clique em **Criar token de API**
+6. **Copiar valor do token** - mostrado apenas uma vez
 
-### Permission Scope
+### Escopo de permissão
 
-| Permission            | Grants Access To                                                 |
+| Permissão | Concede acesso a |
 | --------------------- | ---------------------------------------------------------------- |
-| R2 Admin Read & Write | R2 storage operations + R2 SQL queries + Data Catalog operations |
-| R2 SQL Read           | SQL queries only (no storage writes)                             |
+| Leitura e gravação do administrador R2 | Operações de armazenamento R2 + consultas SQL R2 + operações do Data Catalog |
+| Leitura SQL R2 | Somente consultas SQL (sem gravações de armazenamento) |
 
-**Note:** R2 SQL Read permission not yet available via Dashboard - use Admin Read & Write.
+**Observação:** A permissão de leitura SQL R2 ainda não está disponível via Dashboard - use Admin Read & Write.
 
-## Configure Environment
+## Configurar ambiente
 
-### Wrangler CLI
+### CLI do Wrangler
 
-Set environment variable for Wrangler to use:
-
-```bash
+Defina a variável de ambiente para o Wrangler usar:```bash
 export WRANGLER_R2_SQL_AUTH_TOKEN=<your-token>
-```
+````
 
 Or create `.env` file in project directory:
 

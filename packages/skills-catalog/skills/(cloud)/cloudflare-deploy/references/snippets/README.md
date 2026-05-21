@@ -1,70 +1,70 @@
-# Cloudflare Snippets Skill Reference
+# Referência de habilidades de snippets da Cloudflare
 
-## Description
+## Descrição
 
-Expert guidance for **Cloudflare Snippets ONLY** - a lightweight JavaScript-based edge logic platform for modifying HTTP requests and responses. Snippets run as part of the Ruleset Engine and are included at no additional cost on paid plans (Pro, Business, Enterprise).
+Orientação especializada para **SOMENTE Snippets da Cloudflare**: uma plataforma lógica de borda leve baseada em JavaScript para modificar solicitações e respostas HTTP. Os snippets são executados como parte do mecanismo de conjunto de regras e são incluídos sem custo adicional em planos pagos (Pro, Business, Enterprise).
 
-## What Are Snippets?
+## O que são trechos?
 
-Snippets are JavaScript functions executed at the edge as part of Cloudflare's Ruleset Engine. Key characteristics:
+Snippets são funções JavaScript executadas na borda como parte do Ruleset Engine da Cloudflare. Características principais:
 
-- **Execution time**: 5ms CPU limit per request
-- **Size limit**: 32KB per snippet
-- **Runtime**: V8 isolate (subset of Workers APIs)
-- **Subrequests**: 2-5 fetch calls depending on plan
-- **Cost**: Included with Pro/Business/Enterprise plans
+- **Tempo de execução**: limite de CPU de 5 ms por solicitação
+- **Limite de tamanho**: 32 KB por snippet
+- **Tempo de execução**: isolamento V8 (subconjunto de APIs de trabalhadores)
+- **Subsolicitações**: 2 a 5 chamadas de busca, dependendo do plano
+- **Custo**: Incluído nos planos Pro/Business/Enterprise
 
-## Snippets vs Workers Decision Matrix
+## Snippets vs Matriz de Decisão de Trabalhadores
 
-| Factor             | Choose Snippets If...                 | Choose Workers If...                            |
-| ------------------ | ------------------------------------- | ----------------------------------------------- |
-| **Complexity**     | Simple request/response modifications | Complex business logic, routing, middleware     |
-| **Execution time** | <5ms sufficient                       | Need >5ms or variable time                      |
-| **Subrequests**    | 2-5 fetch calls sufficient            | Need >5 subrequests or complex orchestration    |
-| **Code size**      | <32KB sufficient                      | Need >32KB or npm dependencies                  |
-| **Cost**           | Want zero additional cost             | Can afford $5/mo + usage                        |
-| **APIs**           | Need basic fetch, headers, URL        | Need KV, D1, R2, Durable Objects, cron triggers |
-| **Deployment**     | Need rule-based triggers              | Want custom routing logic                       |
+| Fator                 | Escolha trechos se...                        | Escolha trabalhadores se...                            |
+| --------------------- | -------------------------------------------- | ------------------------------------------------------ |
+| **Complexidade**      | Modificações simples de solicitação/resposta | Lógica de negócios complexa, roteamento, middleware    |
+| **Tempo de execução** | <5ms suficientes                             | Precisa de >5ms ou tempo variável                      |
+| **Subsolicitações**   | 2-5 chamadas de busca são suficientes        | Precisa de >5 subsolicitações ou orquestração complexa |
+| **Tamanho do código** | <32 KB suficientes                           | Precisa de dependências> 32 KB ou npm                  |
+| **Custo**             | Quer custo adicional zero                    | Pode pagar US$ 5/mês + uso                             |
+| **APIs**              | Precisa de busca básica, cabeçalhos, URL     | Precisa de KV, D1, R2, objetos duráveis, gatilhos cron |
+| **Implantação**       | Precisa de gatilhos baseados em regras       | Quer lógica de roteamento personalizada                |
 
-**Rule of thumb**: Use Snippets for modifications, Workers for applications.
+**Regra geral**: Use Snippets para modificações, Workers para aplicativos.
 
-## Execution Model
+## Modelo de Execução
 
-1. Request arrives at Cloudflare edge
-2. Ruleset Engine evaluates snippet rules (filter expressions)
-3. If rule matches, snippet executes within 5ms limit
-4. Modified request/response continues through pipeline
-5. Response returned to client
+1. A solicitação chega na borda da Cloudflare
+2. O mecanismo de conjunto de regras avalia regras de snippet (expressões de filtro)
+3. Se a regra corresponder, o snippet será executado dentro do limite de 5 ms
+4. A solicitação/resposta modificada continua através do pipeline
+5. Resposta devolvida ao cliente
 
-Snippets execute synchronously in the request path - performance is critical.
+Os snippets são executados de forma síncrona no caminho da solicitação – o desempenho é crítico.
 
-## Reading Order
+## Ordem de leitura
 
-1. **[configuration.md](configuration.md)** - Start here: setup, deployment methods (Dashboard/API/Terraform)
-2. **[api.md](api.md)** - Core APIs: Request, Response, headers, `request.cf` properties
-3. **[patterns.md](patterns.md)** - Real-world examples: geo-routing, A/B tests, security headers
-4. **[gotchas.md](gotchas.md)** - Troubleshooting: common errors, performance tips, API limitations
+1. **[configuration.md](configuration.md)** - Comece aqui: configuração, métodos de implantação (Dashboard/API/Terraform)
+2. **[api.md](api.md)** - APIs principais: solicitação, resposta, cabeçalhos, propriedades `request.cf`
+3. **[patterns.md](patterns.md)** - Exemplos do mundo real: roteamento geográfico, testes A/B, cabeçalhos de segurança
+4. **[gotchas.md](gotchas.md)** - Solução de problemas: erros comuns, dicas de desempenho, limitações de API
 
-## In This Reference
+## Nesta referência
 
-- **[configuration.md](configuration.md)** - Setup, deployment, configuration
-- **[api.md](api.md)** - API endpoints, methods, interfaces
-- **[patterns.md](patterns.md)** - Common patterns, use cases, examples
-- **[gotchas.md](gotchas.md)** - Troubleshooting, best practices, limitations
+- **[configuration.md](configuration.md)** - Instalação, implantação, configuração
+- **[api.md](api.md)** - endpoints de API, métodos, interfaces
+- **[patterns.md](patterns.md)** - Padrões comuns, casos de uso, exemplos
+- **[gotchas.md](gotchas.md)** - Solução de problemas, práticas recomendadas, limitações
 
-## Quick Start
+## Início rápido```javascript
 
-```javascript
 // Snippet: Add security headers
 export default {
-  async fetch(request) {
-    const response = await fetch(request)
-    const newResponse = new Response(response.body, response)
-    newResponse.headers.set('X-Frame-Options', 'DENY')
-    newResponse.headers.set('X-Content-Type-Options', 'nosniff')
-    return newResponse
-  },
+async fetch(request) {
+const response = await fetch(request)
+const newResponse = new Response(response.body, response)
+newResponse.headers.set('X-Frame-Options', 'DENY')
+newResponse.headers.set('X-Content-Type-Options', 'nosniff')
+return newResponse
+},
 }
+
 ```
 
 Deploy via Dashboard (Rules → Snippets) or API/Terraform. See configuration.md for details.
@@ -72,3 +72,4 @@ Deploy via Dashboard (Rules → Snippets) or API/Terraform. See configuration.md
 ## See Also
 
 - [Cloudflare Docs](https://developers.cloudflare.com/rules/snippets/)
+```

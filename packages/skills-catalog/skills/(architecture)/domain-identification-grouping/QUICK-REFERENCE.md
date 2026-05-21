@@ -1,94 +1,85 @@
-# Domain Identification & Grouping - Quick Reference
+# Identificação e agrupamento de domínios - Referência rápida
 
-## Domain Definition
+## Definição de Domínio
 
-**Domain** = Logical grouping of components representing a distinct business capability
+**Domínio** = Agrupamento lógico de componentes que representam uma capacidade de negócios distinta
 
-**Key Characteristics**:
+**Características principais**:
 
-- Represents business area, not technical layer
-- Contains related components
-- Has clear boundaries
-- Can become domain service
+- Representa a área de negócios, não a camada técnica
+- Contém componentes relacionados
+- Tem limites claros
+- Pode se tornar serviço de domínio
 
-## Domain Identification Strategies
+## Estratégias de identificação de domínio
 
-### 1. Business Capability Analysis
+### 1. Análise de capacidade de negócios```
 
-```
 What business capabilities does the system provide?
 → Each capability = Potential domain
-```
 
-### 2. Vocabulary Analysis
-
-```
+````
+### 2. Análise de vocabulário```
 What business language do components use?
 → Components sharing vocabulary = Same domain
-```
+````
 
-### 3. Relationship Analysis
+### 3. Análise de Relacionamento```
 
-```
 Which components are frequently used together?
 → Related components = Same domain
-```
 
-### 4. Stakeholder Collaboration
-
-```
+````
+### 4. Colaboração das partes interessadas```
 What do business experts say?
 → Their understanding = Domain boundaries
-```
+````
 
-## Component-to-Domain Assignment
+## Atribuição de componente a domínio
 
-### Decision Process
+### Processo de decisão```
 
-```
 Analyze component:
 ├─ What business capability does it support?
 ├─ What domain vocabulary does it use?
 ├─ What other components does it relate to?
 └─ Assign to domain that best fits
-```
 
-### Edge Cases
+````
+### Casos extremos
 
-- **Unclear assignment**: Analyze more deeply, check relationships
-- **Multiple domains**: Choose primary domain, document secondary
-- **Shared functionality**: May belong to Shared domain
+- **Tarefa pouco clara**: Analise mais profundamente, verifique as relações
+- **Múltiplos domínios**: escolha o domínio principal, documente o secundário
+- **Funcionalidade compartilhada**: pode pertencer ao domínio compartilhado
 
-## Namespace Refactoring
+## Refatoração de namespace
 
-### Pattern
+### Padrão
 
-**Before**: `services/billing/payment`  
-**After**: `services/customer/billing/payment`
+**Antes**: `serviços/faturamento/pagamento`
+**Depois**: `serviços/cliente/faturamento/pagamento`
 
-**Rule**: Add domain node to namespace
+**Regra**: adicionar nó de domínio ao namespace
 
-### Refactoring Steps
+### Etapas de refatoração
 
-1. Update namespace declarations
-2. Update import statements
-3. Update directory structure
-4. Run tests
-5. Update documentation
+1. Atualizar declarações de namespace
+2. Atualizar instruções de importação
+3. Atualizar estrutura de diretórios
+4. Execute testes
+5. Atualizar documentação
 
-## Domain Validation
+## Validação de Domínio
 
-### Checklist
+### Lista de verificação
 
-- [ ] All components assigned to a domain
-- [ ] Domains have clear boundaries
-- [ ] Components fit domain vocabulary
-- [ ] Domains represent distinct capabilities
-- [ ] Stakeholders validate groupings
+- [] Todos os componentes atribuídos a um domínio
+- [] Os domínios têm limites claros
+- [] Componentes se ajustam ao vocabulário do domínio
+- [] Domínios representam capacidades distintas
+- [ ] Stakeholders validam agrupamentos
 
-### Cohesion Check
-
-```
+### Verificação de coesão```
 High Cohesion ✅:
 - Components share business language
 - Components used together
@@ -98,38 +89,37 @@ Low Cohesion ❌:
 - Different vocabularies
 - Rarely used together
 - No relationships
-```
+````
 
-## Domain Size Guidelines
+## Diretrizes de tamanho de domínio
 
-| Size      | Component Count | Notes                  |
-| --------- | --------------- | ---------------------- |
-| Small     | 2-4             | May need consolidation |
-| Medium    | 5-8             | Ideal size             |
-| Large     | 9-15            | Monitor for splitting  |
-| Too Large | >15             | Consider splitting     |
+| Tamanho      | Contagem de componentes | Notas                           |
+| ------------ | ----------------------- | ------------------------------- |
+| Pequeno      | 2-4                     | Pode necessitar de consolidação |
+| Médio        | 5-8                     | Tamanho ideal                   |
+| Grande       | 9-15                    | Monitore para divisão           |
+| Muito grande | >15                     | Considere dividir               |
 
-## Common Domain Patterns
+## Padrões de domínio comuns
 
-### Typical Domains
+### Domínios Típicos
 
-- **Customer**: Customer management, profiles, billing
-- **Product**: Catalog, inventory, pricing
-- **Order**: Processing, fulfillment
-- **Billing**: Invoicing, payments
-- **Reporting**: Reports, analytics
-- **Admin**: User management, config
-- **Shared**: Common functionality
+- **Cliente**: gerenciamento de clientes, perfis, faturamento
+- **Produto**: Catálogo, estoque, preços
+- **Pedido**: Processamento, atendimento
+- **Faturamento**: Faturamento, pagamentos
+- **Relatórios**: relatórios, análises
+- **Admin**: gerenciamento de usuários, configuração
+- **Compartilhado**: funcionalidade comum
 
-### Domain Count
+### Contagem de domínios
 
-**Ideal**: 3-7 domains  
-**Too Many**: >10 domains (consider merging)  
-**Too Few**: <3 domains (consider splitting)
+**Ideal**: 3 a 7 domínios  
+**Muitos**: >10 domínios (considere mesclar)  
+**Poucos**: <3 domínios (considere dividir)
 
-## Output Template
+## Modelo de saída```markdown
 
-```markdown
 ## Domain: [Name] ([namespace])
 
 **Business Capability**: [what it does]
@@ -148,19 +138,17 @@ Low Cohesion ❌:
 
 - Clear separation from [Domain A]
 - Clear separation from [Domain B]
-```
 
-## Quick Analysis Steps
+````
+## Etapas de análise rápida
 
-1. **Identify** → Analyze components, find business capabilities
-2. **Group** → Assign components to domains
-3. **Validate** → Check cohesion, boundaries, completeness
-4. **Refactor** → Align namespaces with domains
-5. **Map** → Create domain visualization
+1. **Identificar** → Analisar componentes, encontrar capacidades de negócios
+2. **Grupo** → Atribuir componentes aos domínios
+3. **Validar** → Verifique coesão, limites, integridade
+4. **Refatorar** → Alinhar namespaces com domínios
+5. **Mapa** → Criar visualização de domínio
 
-## Decision Tree
-
-```
+## Árvore de Decisão```
 Identify domains
 ├─ Analyze component responsibilities
 ├─ Identify business capabilities
@@ -178,4 +166,4 @@ Refactor namespaces
 ├─ Identify changes needed
 ├─ Create refactoring plan
 └─ Execute refactoring
-```
+````

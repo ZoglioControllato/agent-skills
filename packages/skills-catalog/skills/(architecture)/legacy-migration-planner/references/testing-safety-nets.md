@@ -1,34 +1,39 @@
-# Testing Safety Nets
+# Testando Redes de Segurança
 
-No migration step should execute without a safety net. This reference defines the testing strategies to apply before, during, and after each migration phase. The goal is to detect behavioral regressions BEFORE they reach production.
+Nenhuma etapa de migração deve ser executada sem uma rede de segurança. Esta referência define as estratégias de teste a serem aplicadas antes, durante e depois de cada fase de migração. O objetivo é detectar regressões comportamentais ANTES que cheguem à produção.
 
-## Strategy Selection Matrix
+## Matriz de Seleção de Estratégia
 
-Choose testing strategies based on the migration context:
+Escolha estratégias de teste com base no contexto de migração:
 
-| Situation | Primary Strategy | Supporting Strategies |
-|-----------|-----------------|---------------------|
-| Legacy code with no tests | Characterization Tests | Golden Master |
-| API migration | Contract Tests | Parallel Run, Snapshot Tests |
-| Database migration | Data Consistency Validation | Parallel Run |
-| Frontend migration | Visual Regression | Snapshot Tests, E2E |
-| Algorithm replacement | Property-Based Tests | Parallel Run |
-| Full system migration | Parallel Run | All of the above |
+| Situação                   | Estratégia Primária                | Estratégias de Apoio                   |
+| -------------------------- | ---------------------------------- | -------------------------------------- |
+| Código legado sem testes   | Testes de Caracterização           | Mestre Dourado                         |
+| Migração de API            | Testes de Contrato                 | Execução Paralela, Testes Instantâneos |
+| Migração de banco de dados | Validação de consistência de dados | Corrida Paralela                       |
+| Migração de front-end      | Regressão Visual                   | Testes instantâneos, E2E               |
+| Substituição de algoritmo  | Testes baseados em propriedades    | Corrida Paralela                       |
 
-## Characterization Tests
+| Completo
 
-**Purpose:** Capture the current behavior of legacy code BEFORE any changes. These tests document what the code does today — even if that behavior is buggy. Bugs are documented, not fixed, during this phase.
+l migração de sistema | Corrida Paralela | Todos os itens acima |
 
-**When to use:** Legacy code with no tests, or insufficient test coverage (below 60% for the module being migrated).
+## Testes de Caracterização
 
-**Method:**
+**Objetivo:** Capturar o comportamento atual do código legado ANTES de qualquer alteração. Esses testes documentam o que o código faz hoje – mesmo que esse comportamento seja problemático. Os bugs são documentados, e não corrigidos, durante esta fase.
 
-1. Identify the public interface of the module (functions, methods, API endpoints).
-2. For each public function, write tests that call it with representative inputs and assert the ACTUAL output.
-3. Include edge cases: null/undefined inputs, empty collections, boundary values, error conditions.
-4. If the function has side effects (database writes, API calls, file I/O), mock the external dependency and assert the mock was called with expected arguments.
+**Quando usar:** Código legado sem testes ou cobertura de testes insuficiente (abaixo de 60% para o módulo que está sendo migrado).
 
-**Documentation format in domain plan:**
+**Método:**
+
+1. Identifique a interface pública do módulo (funções, métodos, endpoints de API).
+2. Para cada função pública, escreva testes que a chamem com entradas representativas e afirmem a saída REAL.
+3. Incluir casos extremos: entradas nulas/indefinidas, coleções vazias, valores limite, condições de erro.
+4. Se a função tiver efeitos colaterais (gravações de banco de dados, chamadas de API, E/S de arquivo), simule a dependência externa e afirme que a simulação foi chamada com o argumento esperado
+
+entes.
+
+**Formato de documentação no plano de domínio:**
 
 ```markdown
 ### Testing: Characterization Tests
@@ -36,34 +41,35 @@ Choose testing strategies based on the migration context:
 **Target**: `src/orders/service.ts` (functions: createOrder, updateOrder, cancelOrder)
 **Coverage goal**: 80% line coverage before any migration begins
 **Edge cases to cover**:
+
 - Empty order items (`file:line` — current behavior: throws generic Error)
 - Negative quantities (`file:line` — current behavior: accepts silently, BUG)
 - Concurrent modifications (`file:line` — no locking, potential race condition)
-**Known bugs captured** (do not fix during characterization):
+  **Known bugs captured** (do not fix during characterization):
 - {Bug description} at `file:line`
 ```
 
-## Golden Master / Snapshot Testing
+## Golden Master / Teste de instantâneo
 
-**Purpose:** Capture the complete output of complex functions or API endpoints as a reference snapshot. Any deviation from the snapshot indicates a behavioral change.
+**Objetivo:** capturar a saída completa de funções complexas ou endpoints de API como um instantâneo de referência. Qualquer desvio do instantâneo indica uma mudança comportamental.
 
-**When to use:** Functions with complex output (reports, formatted responses, HTML rendering) where writing individual assertions is impractical.
+**Quando usar:** Funções com saída complexa (relatórios, respostas formatadas, renderização HTML) onde escrever asserções individuais é impraticável.
 
-**Method:**
+**Método:**
 
-1. Run the function with fixed inputs.
-2. Save the complete output as a "golden master" file.
-3. On every subsequent run, compare the current output against the golden master.
-4. Any difference requires human review: was this an intentional change?
+1. Execute a função com entradas fixas.
+2. Salve a saída completa como um arquivo "golden master".
+3. Em cada execução subsequente, compare a saída atual com o golden master.
+4. Qualquer diferença requer revisão humana: foi uma mudança intencional?
 
-**Tools to recommend** (verify via web search before recommending):
+**Ferramentas para recomendar** (verifique através de pesquisa na web antes de recomendar):
 
 - Python: `approvaltests`, `syrupy`
-- JavaScript/TypeScript: Jest snapshots (`toMatchSnapshot`), `storybook` for UI
-- Go: `go-snaps`
-- General: `insta` (Rust), custom file comparison
+- JavaScript/TypeScript: instantâneos Jest (`toMatchSnapshot`), `storybook` para UI
+- Vai: `go-snaps`
+- Geral: `insta` (Rust), comparação de arquivos personalizados
 
-**Documentation format in domain plan:**
+**Formato de documentação no plano de domínio:**
 
 ```markdown
 ### Testing: Golden Master
@@ -74,120 +80,123 @@ Choose testing strategies based on the migration context:
 **Non-deterministic elements to normalize**: timestamps, UUIDs, random IDs
 ```
 
-## Contract Tests
+## Testes de contrato
 
-**Purpose:** Verify that the interface contract between two systems (or between old and new implementations) is maintained. If the new implementation satisfies the same contract, it is a safe replacement.
+**Objetivo:** verificar se o contrato de interface entre dois sistemas (ou entre implementações antigas e novas) é mantido. Se a nova implementação satisfizer o mesmo contrato, é uma substituição segura.
 
-**When to use:** API migration, service extraction, any scenario where the consumer of an interface must not notice the change.
+**Quando usar:** Migração de API, extração de serviço, qualquer cenário onde o consumidor de uma interface não perceba a mudança.
 
-**Method:**
+**Método:**
 
-1. Define the contract: request format, response format, status codes, error responses, headers.
-2. Write tests that validate BOTH the legacy and new implementations against the same contract.
-3. Run contract tests in CI — both implementations must pass before traffic routing changes.
+1. Defina o contrato: formato de solicitação, formato de resposta, códigos de status, respostas de erro, cabeçalhos.
+2. Escreva testes que validem AMBAS as implementações legadas e novas em relação ao mesmo contrato.
+3. Execute testes de contrato em CI – ambas as implementações devem passar antes das alterações no roteamento do tráfego.
 
-**Types of contracts:**
+**Tipos de contratos:**
 
-- **API contracts** — HTTP method, path, request body schema, response body schema, status codes.
-- **Event contracts** — Event name, payload schema, ordering guarantees.
-- **Database contracts** — Table schema, required columns, data types, constraints.
+- **Contratos de API** — Método HTTP, caminho, esquema do corpo da solicitação, esquema do corpo da resposta, códigos de status.
+- **Contratos de eventos** — Nome do evento, esquema de carga útil, garantias de pedido.
+- **Contratos de banco de dados** — Esquema de tabela, colunas obrigatórias, tipos de dados, restrições.
 
-**Documentation format in domain plan:**
+**Formato de documentação no plano de domínio:**
 
 ```markdown
 ### Testing: Contract Tests
 
 **Contract**: Order API
 **Endpoints covered**:
+
 - `POST /api/orders` — request: OrderCreate schema, response: Order schema, status: 201
 - `GET /api/orders/:id` — response: Order schema, status: 200 | 404
-**Schema location**: `file:line` (OpenAPI spec) or defined inline
-**Both implementations must pass**: Legacy (`src/legacy/orders.ts`) and New (`src/new/orders.ts`)
+  **Schema location**: `file:line` (OpenAPI spec) or defined inline
+  **Both implementations must pass**: Legacy (`src/legacy/orders.ts`) and New (`src/new/orders.ts`)
 ```
 
-## Parallel Run Testing
+## Teste de execução paralela
 
-**Purpose:** Run both old and new implementations simultaneously with the same inputs and compare outputs. The legacy result is used in production; the new result is logged for comparison.
+**Objetivo:** Executar implementações antigas e novas simultaneamente com as mesmas entradas e comparar resultados. O resultado legado é usado na produção; o novo resultado é registrado para comparação.
 
-**When to use:** High-risk migrations where you need confidence that the new implementation produces identical results before switching traffic.
+**Quando usar:** Migrações de alto risco em que você precisa ter certeza de que a nova implementação produzirá resultados idênticos antes de alternar o tráfego.
 
-**Method:**
+**Método:**
 
-1. Wrap the call site to invoke BOTH implementations.
-2. Return the LEGACY result to the caller (production safety).
-3. Run the new implementation in the background.
-4. Compare results and log discrepancies.
-5. Once discrepancy rate drops below threshold (e.g., < 0.1%), begin traffic migration.
+1. Envolva o site de chamada para invocar AMBAS as implementações.
+2. Devolva o resultado LEGACY ao chamador (segurança de produção).
+3. Execute a nova implementação em segundo plano.
+4. Compare os resultados e registre as discrepâncias.
+5. Quando a taxa de discrepância cair abaixo do limite (por exemplo, <0,1%), inicie a migração do tráfego.
 
-**Critical safeguards:**
+**Proteções críticas:**
 
-- New implementation failures must NEVER affect the production response.
-- Comparison must account for acceptable differences (different IDs, timestamps, field ordering).
-- Log enough context to reproduce discrepancies (input args, both outputs).
-- Run for a statistically significant sample before drawing conclusions.
+- Novas falhas de implementação NUNCA devem afetar a resposta da produção.
+- A comparação deve levar em conta diferenças aceitáveis ​​(IDs diferentes, carimbos de data e hora, ordenação de campos).
+- Registrar contexto suficiente para reproduzir discrepâncias (argumentos de entrada, ambas as saídas).
+- Execute uma amostra estatisticamente significativa antes de tirar conclusões.
 
-**Documentation format in domain plan:**
+**Formato de documentação no plano de domínio:**
 
 ```markdown
 ### Testing: Parallel Run
 
 **Target function**: `calculateShipping()` at `file:line`
 **Comparison criteria**:
+
 - Result amount must match within $0.01
 - Delivery date must match exactly
 - Carrier selection must match
-**Acceptable discrepancy rate**: < 0.1% over 10,000 invocations
-**Duration**: 2 weeks minimum
-**Monitoring**: Log to `{observability tool}` — ASK USER what they use
+  **Acceptable discrepancy rate**: < 0.1% over 10,000 invocations
+  **Duration**: 2 weeks minimum
+  **Monitoring**: Log to `{observability tool}` — ASK USER what they use
 ```
 
-## Property-Based Testing
+## Teste Baseado em Propriedades
 
-**Purpose:** Discover edge cases by testing properties (invariants) that must hold for ALL inputs, not just hand-picked test cases. A test framework generates hundreds of random inputs and verifies the properties.
+**Objetivo:** descobrir casos extremos testando propriedades (invariantes) que devem ser válidas para TODAS as entradas, não apenas para casos de teste escolhidos a dedo. Uma estrutura de teste gera centenas de entradas aleatórias e verifica as propriedades.
 
-**When to use:** Algorithm replacement, business logic migration, any function where the space of valid inputs is large and edge cases are hard to enumerate.
+**Quando usar:** Substituição de algoritmo, migração de lógica de negócios, qualquer função em que o espaço de entradas válidas seja grande e os casos extremos sejam difíceis de enumerar.
 
-**Method:**
+**Método:**
 
-1. Identify properties that must ALWAYS hold (e.g., "result is never negative", "output is sorted", "discount never exceeds 50%").
-2. Define input generators (random valid inputs).
-3. Run the property test with 100+ iterations.
-4. Any failing input is a potential regression.
+1. Identifique as propriedades que SEMPRE devem ser mantidas (por exemplo, “o resultado nunca é negativo”, “a saída é classificada”, “o desconto nunca excede 50%”).
+2. Defina geradores de entrada (entradas válidas aleatórias).
+3. Execute o teste de propriedade com mais de 100 iterações.
+4. Qualquer entrada com falha é uma regressão potencial.
 
-**Tools to recommend** (verify via web search):
+**Ferramentas recomendadas** (verifique por meio de pesquisa na web):
 
-- Python: `hypothesis`
-- JavaScript/TypeScript: `fast-check`
-- Go: `gopter`
-- Rust: `proptest`
+- Python: `hipótese`
+- JavaScript/TypeScript: `verificação rápida`
+- Vá: `gopter`
+- Ferrugem: `proptest`
 
-**Documentation format in domain plan:**
+**Formato de documentação no plano de domínio:**
 
 ```markdown
 ### Testing: Property-Based
 
 **Target**: `calculateDiscount()` at `file:line`
 **Properties**:
+
 - Result >= 0 (never negative)
 - Result <= originalPrice (never exceeds price)
-- Result >= originalPrice * 0.5 (max 50% discount, per business rule at `file:line`)
-**Input space**: price [0.01, 100000], quantity [1, 1000], customerType [regular, premium]
+- Result >= originalPrice \* 0.5 (max 50% discount, per business rule at `file:line`)
+  **Input space**: price [0.01, 100000], quantity [1, 1000], customerType [regular, premium]
 ```
 
-## Data Consistency Validation
+## Validação de consistência de dados
 
-**Purpose:** During database migration (dual-write phase), continuously verify that both databases contain the same data.
+**Objetivo:** Durante a migração do banco de dados (fase de gravação dupla), verifique continuamente se ambos os bancos de dados contêm os mesmos dados.
 
-**When to use:** Any migration involving database changes — schema migration, database technology change, database split/merge.
+**Quando usar:** Qualquer migração que envolva alterações de banco de dados — migração de esquema, mudança de tecnologia de banco de dados, divisão/mesclagem de banco de dados.
 
-**Method:**
+**Método:**
 
-1. **Row count comparison** — Both databases should have the same number of records (with a small lag tolerance for async sync).
-2. **Sample comparison** — Randomly sample N records and compare field-by-field.
-3. **Checksum comparison** — Compute checksums over key fields for large tables.
-4. **Reconciliation job** — Scheduled job that finds and reports discrepancies.
+1. **Comparação de contagem de linhas** — Ambos os bancos de dados devem ter o mesmo número de registros (com uma pequena tolerância de atraso para sincronização assíncrona).
+2. **Comparação de amostras** — Amostra aleatória de N registros e comparação campo por campo.
+3. **Comparação de somas de verificação** — Calcula somas de verificação em campos-chave para tabelas grandes.
+4. **Trabalho de reconciliação** — Trabalho agendado que encontra e relata discrepâncias.
 
-**Documentation format in domain plan:**
+**Formato de documentação no plano de domínio:**
 
 ```markdown
 ### Testing: Data Consistency
@@ -199,26 +208,26 @@ Choose testing strategies based on the migration context:
 **Discrepancy handling**: Log to monitoring, alert if > 0.1% mismatch
 ```
 
-## Visual Regression Testing
+## Teste de regressão visual
 
-**Purpose:** Detect unintended visual changes when migrating frontend components.
+**Objetivo:** detectar alterações visuais não intencionais ao migrar componentes de front-end.
 
-**When to use:** Frontend framework migration, CSS refactoring, component library replacement.
+**Quando usar:** Migração de framework de front-end, refatoração de CSS, substituição de biblioteca de componentes.
 
-**Method:**
+**Método:**
 
-1. Capture screenshots of every page/component BEFORE migration.
-2. After migrating a component, capture screenshots again.
-3. Pixel-diff comparison identifies visual regressions.
+1. Capture capturas de tela de cada página/componente ANTES da migração.
+2. Após migrar um componente, faça capturas de tela novamente.
+3. A comparação pixel-diff identifica regressões visuais.
 
-**Tools to recommend** (verify via web search):
+**Ferramentas recomendadas** (verifique por meio de pesquisa na web):
 
-- Playwright visual comparisons
-- Chromatic (Storybook)
-- Percy
-- BackstopJS
+- Comparações visuais de dramaturgos
+- Cromático (livro de histórias)
+  -Percy
+- Backstop JS
 
-**Documentation format in domain plan:**
+**Formato de documentação no plano de domínio:**
 
 ```markdown
 ### Testing: Visual Regression
@@ -229,16 +238,18 @@ Choose testing strategies based on the migration context:
 **Threshold**: < 0.1% pixel difference per component
 ```
 
-## Testing Phase Timeline
+## Cronograma da fase de teste
 
-Map testing strategies to migration phases:
+Mapeie estratégias de teste para fases de migração:
 
-| Migration Phase | Required Tests | Purpose |
-|----------------|---------------|---------|
-| **Phase 0 (Safety Net)** | Characterization, Golden Master | Capture current behavior |
-| **Phase 0 (Safety Net)** | Contract Tests | Define the interface contract |
-| **Shadow phase** | Parallel Run | Compare old vs new without risk |
-| **Canary phase** | All above + monitoring | Validate with real traffic |
-| **Ramp phase** | Continuous contract + consistency | Ensure no drift at scale |
-| **Full migration** | Full regression suite | Confirm no regressions |
-| **Post-migration** | Remove parallel run, keep contracts | Ongoing validation |
+| Fase de migração               | Testes Necessários            | Finalidade                            |
+| ------------------------------ | ----------------------------- | ------------------------------------- |
+| **Fase 0 (Rede de Segurança)** | Caracterização, Golden Master | Capturar o comportamento atual        |
+| **Fase 0 (Rede de Segurança)** | Testes de Contrato            | Definir o contrato de interface       |
+| **Fase sombra**                | Corrida Paralela              | Compare o antigo com o novo sem risco |
+| **Fase Canário**               | Tudo acima + monitoramento    | Valide com tráfego real               |
+| **Fase de rampa**              | Contrato contínuo + contras   |
+
+consistência | Garantir que não haja desvios em escala |
+| **Migração completa** | Conjunto completo de regressão | Confirme que não há regressões |
+| **Pós-migração** | Remova a execução paralela, mantenha os contratos | Validação contínua |

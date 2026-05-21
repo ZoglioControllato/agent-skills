@@ -1,6 +1,6 @@
-# Programmatic API
+# API programática
 
-## Miniflare Class
+## Classe Miniflare
 
 ```typescript
 class Miniflare {
@@ -31,9 +31,9 @@ class Miniflare {
 }
 ```
 
-## Event Dispatching
+##Envio de eventos
 
-**Fetch (no HTTP server):**
+**Buscar (sem servidor HTTP):**
 
 ```js
 const res = await mf.dispatchFetch('http://localhost:8787/path', {
@@ -43,7 +43,7 @@ const res = await mf.dispatchFetch('http://localhost:8787/path', {
 })
 ```
 
-**Custom Host routing:**
+**Roteamento de host personalizado:**
 
 ```js
 const res = await mf.dispatchFetch('http://localhost:8787/', {
@@ -51,7 +51,7 @@ const res = await mf.dispatchFetch('http://localhost:8787/', {
 })
 ```
 
-**Scheduled:**
+**Agendado:**
 
 ```js
 const worker = await mf.getWorker()
@@ -59,7 +59,7 @@ const result = await worker.scheduled({ cron: '30 * * * *' })
 // result: { outcome: "ok", noRetry: false }
 ```
 
-**Queue:**
+**Fila:**
 
 ```js
 const worker = await mf.getWorker()
@@ -67,9 +67,9 @@ const result = await worker.queue('queue-name', [{ id: 'msg1', timestamp: new Da
 // result: { outcome: "ok", retryAll: false, ackAll: false, ... }
 ```
 
-## Bindings Access
+##Acesso às ligações
 
-**Environment variables:**
+**Variáveis de ambiente:**
 
 ```js
 // Basic usage
@@ -87,7 +87,7 @@ env.SECRET_KEY; // string (typed!)
 env.KV.get("key"); // KVNamespace methods available
 ```
 
-**Request.cf object:**
+**Objeto Request.cf:**
 
 ```js
 const cf = await mf.getCf()
@@ -111,7 +111,7 @@ await bucket.put('file.txt', 'content')
 const object = await bucket.get('file.txt')
 ```
 
-**Durable Objects:**
+**Objetos duráveis:**
 
 ```js
 const ns = await mf.getDurableObjectNamespace('COUNTER')
@@ -140,16 +140,16 @@ const defaultCache = caches.default
 await defaultCache.put('http://example.com', new Response('cached'))
 ```
 
-**Queue producer:**
+**Produtor de fila:**
 
 ```js
 const producer = await mf.getQueueProducer('QUEUE')
 await producer.send({ body: 'message data' })
 ```
 
-## Lifecycle
+##Ciclo de vida
 
-**Reload:**
+**Recarregar:**
 
 ```js
 await mf.setOptions({
@@ -158,7 +158,7 @@ await mf.setOptions({
 })
 ```
 
-**Watch (manual):**
+**Assista (manual):**
 
 ```js
 import { watch } from 'fs'
@@ -172,15 +172,15 @@ watch('worker.js', async () => {
 })
 ```
 
-**Cleanup:**
+**Limpar:**
 
 ```js
 await mf.dispose()
 ```
 
-## Debugging
+##Depuração
 
-**Inspector URL for DevTools:**
+**URL do inspetor para DevTools:**
 
 ```js
 const url = await mf.getInspectorURL()
@@ -188,15 +188,14 @@ console.log(`DevTools: ${url}`)
 // Open in Chrome DevTools for breakpoints, profiling
 ```
 
-**Wait for server ready:**
+**Aguarde o servidor pronto:**
 
-```js
+````js
 const mf = new Miniflare({ scriptPath: 'worker.js' })
 const url = await mf.ready // Promise<URL>
 console.log(`Server running at ${url}`) // http://127.0.0.1:8787
 
 // Note: dispatchFetch() waits automatically, no need to await ready
 const res = await mf.dispatchFetch('http://localhost/') // Works immediately
-```
-
-See [configuration.md](./configuration.md) for all constructor options.
+```Consulte [configuration.md](./configuration.md) para todas as opções do construtor.
+````

@@ -1,145 +1,156 @@
-# Evidence Audit
+# Auditoria de evidências
 
-Falsificationism and evidence quality assessment for auditing whether claims are actually supported by evidence. Adapted from Karl Popper's falsificationism, the GRADE Evidence-to-Decision framework, and Annie Duke's probabilistic reasoning.
+Falsificacionismo e avaliação da qualidade das evidências para auditar se as alegações são realmente apoiadas por evidências. Adaptado do falseacionismo de Karl Popper, da estrutura GRADE Evidence-to-Decision e do raciocínio probabilístico de Annie Duke.
 
-## Core Principle
+## Princípio Fundamental
 
-Karl Popper's key insight: a claim is only meaningful if you can specify what would disprove it. The Evidence Audit mode extracts claims from proposals, designs falsification criteria, assesses evidence quality, identifies cognitive biases, and surfaces competing explanations. The goal is not to disprove — it is to determine whether the evidence actually supports the conclusion.
+O principal insight de Karl Popper: uma afirmação só tem sentido se você puder especificar o que a refutaria. O modo Auditoria de Evidências extrai afirmações de propostas, projeta critérios de falsificação, avalia a qualidade das evidências, identifica preconceitos cognitivos e apresenta explicações concorrentes. O objetivo não é refutar – é determinar se a evidência realmente apoia a conclusão.
 
-## Process
+## Processo
 
-1. **Extract claims** — Identify the specific claims being made (explicit and implicit)
-2. **Design falsification criteria** — For each claim, specify what would disprove it
-3. **Assess evidence quality** — Evaluate the evidence using the GRADE-adapted framework
-4. **Identify cognitive biases** — Check for systematic errors in reasoning (defer to `cognitive-bias-inventory.md` for the full inventory)
-5. **Surface competing explanations** — Find alternative explanations for the same evidence
-6. **Render verdict** — Overall evidence strength with specific recommendations
+1. **Extrair afirmações** — Identifique as afirmações específicas que estão sendo feitas (explícitas e implícitas)
+2. **Critérios de falsificação de projeto** — Para cada afirmação, especifique o que a refutaria
+3. **Avaliar a qualidade das evidências** — Avalie as evidências usando a estrutura adaptada ao GRADE
+4. **Identifique vieses cognitivos** — Verifique se há erros sistemáticos de raciocínio (consulte `cognitive-bias-inventory.md` para obter o inventário completo)
+5. **Explicações concorrentes superficiais** - Encontre todas
 
-## Claim Extraction
+explicações alternativas para a mesma evidência 6. **Veredicto** — Força geral da evidência com recomendações específicas
 
-Proposals contain claims — often implicit. Extract them before evaluating.
+## Extração de reivindicação
 
-### Types of Claims
+As propostas contêm reivindicações – muitas vezes implícitas. Extraia-os antes de avaliar.
 
-| Type | Example | Hidden In |
-|------|---------|-----------|
-| **Causal** | "X causes Y" | "Our refactor improved performance" |
-| **Predictive** | "X will happen" | "Users will adopt this feature" |
-| **Comparative** | "X is better than Y" | "React is the better choice for us" |
-| **Existential** | "X exists/doesn't exist" | "There's no alternative that meets our needs" |
-| **Universal** | "X is always true" | "Microservices always improve team velocity" |
-| **Quantitative** | "X is N" | "This will save 200 hours per quarter" |
+### Tipos de reivindicações
 
-### Extraction Method
+| Tipo            | Exemplo                 | Escondido em                                           |
+| --------------- | ----------------------- | ------------------------------------------------------ |
+| **Causal**      | “X causa Y”             | "Nosso refatorador melhorou o desempenho"              |
+| **Preditivo**   | "X vai acontecer"       | “Os usuários adotarão esse recurso”                    |
+| **Comparativo** | “X é melhor que Y”      | “React é a melhor escolha para nós”                    |
+| **Existencial** | "X existe/não existe"   | “Não há alternativa que atenda às nossas necessidades” |
+| **Universal**   | "X é sempre verdadeiro" | “Microsserviços sempre melhoram a equipe               |
 
-For each statement in the proposal:
+velocidade" |
+| **Quantitativo** | "X é N" | “Isso economizará 200 horas por trimestre” |
 
-1. Is this a claim or a definition?
-2. If a claim, what type?
-3. What evidence is cited (or implied)?
-4. What would make this claim false?
+### Método de Extração
 
-### Example Extraction
+Para cada afirmação da proposta:
 
-```
+1. Isto é uma afirmação ou uma definição?
+2. Se for uma reclamação, de que tipo?
+3. Que provas são citadas (ou implícitas)?
+4. O que tornaria esta afirmação falsa?
+
+### Extração de exemplo```
+
 Statement: "Based on our pilot, migrating to Kubernetes will reduce deployment time by 60%."
 
 Claims extracted:
+
 1. The pilot results are representative of production (Predictive)
 2. Kubernetes is the cause of the deployment time reduction (Causal)
 3. The 60% reduction will persist at scale (Quantitative)
 4. Deployment time is the right metric to optimize (Implicit — Comparative)
-```
 
-## Falsification Criteria
+````
+## Critérios de falsificação
 
-For each claim, design a test that would disprove it.
+Para cada afirmação, crie um teste que a refute.
 
-| Claim | Falsification Criterion | Test |
-|-------|------------------------|------|
-| "Users want feature X" | Fewer than 10% of users engage with X within 30 days | Feature flag, measure adoption |
-| "This will scale to 100K users" | Response time exceeds 500ms at 50K users | Load test at target scale |
-| "Migration will take 3 months" | More than 2 unknown-unknowns discovered in month 1 | Track surprise count during initial phase |
-| "Framework X is faster" | Benchmark shows less than 5% difference | Controlled benchmark on representative workload |
-| "This will reduce costs" | Total cost of ownership exceeds current cost within 12 months | TCO analysis including migration, training, operations |
+| Reivindicação | Critério de Falsificação | Teste |
+|-------|-------------|------|
+| “Os usuários querem o recurso X” | Menos de 10% dos usuários interagem com X em 30 dias | Sinalizador de recurso, adoção de medida |
+| “Isso será dimensionado para 100 mil usuários” | O tempo de resposta excede 500 ms em 50 mil usuários | Teste de carga na escala alvo |
+| “Migração vai demorar 3 meses” | Mais de 2 desconhecidos descobertos no mês 1 | Acompanhe a contagem de surpresas durante a fase inicial |
+| "Estrutura
 
-### Unfalsifiable Claims (Red Flag)
+k X é mais rápido" | Benchmark mostra menos de 5% de diferença | Benchmark controlado em carga de trabalho representativa |
+| “Isso reduzirá custos” | O custo total de propriedade excede o custo atual em 12 meses | Análise de TCO incluindo migração, treinamento, operações |
 
-Some claims cannot be falsified. These are red flags that require immediate attention.
+### Alegações infalsificáveis (bandeira vermelha)
 
-| Pattern | Example | Problem |
-|---------|---------|---------|
-| Vague outcome | "This will improve things" | No measurable criterion |
-| Moving goalposts | "It'll work eventually" | No time boundary |
-| Circular reasoning | "This is the best because it's what experts recommend" | Evidence is the claim restated |
-| Unfalsifiable hedge | "This might help in some cases" | True by definition |
+Algumas afirmações não podem ser falsificadas. Estas são bandeiras vermelhas que requerem atenção imediata.
 
-When you encounter unfalsifiable claims, ask: "What specific, measurable outcome would tell us this worked or didn't work, and by when?"
+| Padrão | Exemplo | Problema |
+|--------|---------|---------|
+| Resultado vago | “Isso vai melhorar as coisas” | Nenhum critério mensurável |
+| Movendo postes | "Vai funcionar eventualmente" | Sem limite de tempo |
+| Raciocínio circular | “Isso é o melhor porque é o que os especialistas recomendam” | A prova é a afirmação reafirmada |
+| Cobertura infalsificável | “Isso pode ajudar em alguns casos” | Verdadeiro por definição |
 
-## Evidence Quality Assessment (GRADE-Adapted)
+Ao encontrar afirmações infalsificáveis, pergunte: "Que resultado específico e mensurável nos diria que isso funcionou ou não, e até quando?"
 
-The GRADE Evidence-to-Decision framework, adapted from medical research to tech/business decisions, provides structured evidence evaluation.
+## Avaliação da qualidade das evidências (adaptado para GRADE)
 
-### GRADE Decision Questions
+A estrutura GRADE Evidence-to-Decision, adaptada da pesquisa médica para decisões tecnológicas/comerciais, fornece avaliação estruturada de evidências.
 
-Apply these 9 questions to any proposal:
+### Perguntas de decisão GRADE
 
-1. **Is the problem a priority?** Is it worth solving at all?
-2. **How substantial are the desirable anticipated effects?** What's the upside?
-3. **How substantial are the undesirable anticipated effects?** What's the downside?
-4. **What is the certainty of the evidence?** How strong is our basis for believing this?
-5. **Is there important uncertainty about how stakeholders value outcomes?** Do different people want different things?
-6. **Does the balance of effects favor this option or the alternative?** Net positive or net negative?
-7. **How large are the resource requirements?** Total cost of ownership?
-8. **Is the option acceptable to key stakeholders?** Will people actually support this?
-9. **Is the option feasible to implement?** Can we actually do this?
+Aplique estas 9 perguntas a qualquer proposta:
 
-### Evidence Quality Matrix
+1. **O problema é uma prioridade?** Vale a pena resolvê-lo?
+2. **Quão substanciais são os efeitos esperados desejáveis?** Qual é a vantagem?
+3. **Quão substanciais são os efeitos indesejáveis ​​previstos?** Qual é a desvantagem?
+4. **Qual é a certeza da evidência?** Quão forte é a nossa base para acreditar nisso?
+5. **Existe uma incerteza importante sobre como as partes interessadas valorizam os resultados?** Pessoas diferentes querem coisas diferentes?
+6. **Isso
 
-| Dimension | Strong | Weak |
+O balanço de efeitos favorece esta opção ou a alternativa?** Líquido positivo ou líquido negativo?
+7. **Qual é o tamanho dos requisitos de recursos?** Custo total de propriedade?
+8. **A opção é aceitável para as principais partes interessadas?** As pessoas irão realmente apoiar esta opção?
+9. **A implementação da opção é viável?** Podemos realmente fazer isso?
+
+### Matriz de Qualidade de Evidências
+
+| Dimensão | Forte | Fraco |
 |-----------|--------|------|
-| **Sample size** | Large, representative sample | Single case, anecdote |
-| **Recency** | Current data (within 12 months) | Outdated (2+ years) |
-| **Relevance** | Same domain, same scale | Different domain or scale |
-| **Independence** | Multiple independent sources | Single source or vendor-provided |
-| **Methodology** | Controlled, reproducible | Ad hoc, unreproducible |
-| **Specificity** | Precise metrics and conditions | Vague or qualitative |
+| **Tamanho da amostra** | Amostra grande e representativa | Caso único, anedota |
+| **Recência** | Dados actuais (dentro de 12 meses) | Desatualizado (2+ anos) |
+| **Relevância** | Mesmo domínio, mesma escala | Domínio ou escala diferente |
+| **Independência** | Múltiplas fontes independentes | Fonte única ou fornecida pelo fornecedor |
+| **Metodologia** | Controlado, reproduzível | Ad hoc, não reproduzível |
+| **Específico
 
-### Evidence Grading Scale
+cidade** | Métricas e condições precisas | Vago ou qualitativo |
 
-| Grade | Description | Reliability |
-|-------|-------------|------------|
-| **A** | Controlled experiment, large sample, reproducible | High confidence — proceed |
-| **B** | Observational data, reasonable sample, consistent with other evidence | Moderate confidence — proceed with monitoring |
-| **C** | Case study, small sample, or single source | Low confidence — needs corroboration before deciding |
-| **D** | Anecdote, opinion, or vendor marketing material | Insufficient — do not base decisions on this alone |
-| **F** | No evidence cited | Claim is unsupported — flag immediately |
+### Escala de classificação de evidências
 
-### Common Weak Evidence Patterns
+| Nota | Descrição | Confiabilidade |
+|-------|------------|------------|
+| **A** | Experimento controlado, amostra grande, reprodutível | Alta confiança — prossiga |
+| **B** | Dados observacionais, amostra razoável, consistentes com outras provas | Confiança moderada — prosseguir com a monitorização |
+| **C** | Estudo de caso, amostra pequena ou fonte única | Baixa confiança — necessita de corroboração antes de decidir |
+| **D** | Anedota, opinião ou mercado de fornecedores
 
-| Pattern | Example | Why It's Weak |
-|---------|---------|---------------|
-| Survivorship bias | "Companies using X are successful" | Ignores companies using X that failed |
-| Cherry-picked metrics | "Response time improved 40%" | Other metrics (error rate, throughput) may have worsened |
-| Vendor benchmarks | "Our tool is 3x faster" | Benchmarks optimized for vendor's strengths |
-| Appeal to authority | "Google does it this way" | Google's constraints are not your constraints |
-| Anchoring | "Industry average is X, we're at Y" | The average may not be the right benchmark |
-| N=1 generalization | "It worked at my last company" | Different context, team, scale, constraints |
+material de construção | Insuficiente — não basear as decisões apenas nisso |
+| **Foda-se** | Nenhuma evidência citada | A reivindicação não é suportada – sinalizar imediatamente |
 
-## Competing Explanations (Abductive Reasoning)
+### Padrões Comuns de Evidências Fracas
 
-For every conclusion, ask: "What else could explain this evidence?"
+| Padrão | Exemplo | Por que é fraco |
+|--------|---------|---------------|
+| Viés de sobrevivência | “Empresas que usam X têm sucesso” | Ignora empresas que usam X que falharam |
+| Métricas escolhidas a dedo | “Tempo de resposta melhorou 40%” | Outras métricas (taxa de erro, rendimento) podem ter piorado |
+| Referências de fornecedores | “Nossa ferramenta é 3x mais rápida” | Benchmarks otimizados para os pontos fortes do fornecedor |
+| Apelo à autoridade | “Google faz assim” | Os contras do Google
 
-### Method
+traints não são suas restrições |
+| Ancoragem | “Média da indústria é X, estamos em Y” | A média pode não ser a referência correta |
+| Generalização N=1 | “Funcionou na minha última empresa” | Contexto diferente, equipe, escala, restrições |
 
-1. State the evidence
-2. State the proposed explanation
-3. Generate 2-3 alternative explanations
-4. Compare explanatory power — which explanation accounts for the most evidence with the fewest assumptions?
+## Explicações concorrentes (raciocínio abdutivo)
 
-### Example
+Para cada conclusão, pergunte: “O que mais poderia explicar esta evidência?”
 
-```
+### Método
+
+1. Apresente as evidências
+2. Indique a explicação proposta
+3. Gere 2 a 3 explicações alternativas
+4. Compare o poder explicativo – qual explicação é responsável por mais evidências com menos suposições?
+
+### Exemplo```
 Evidence: "Deployment failures dropped 50% after adopting tool X."
 
 Proposed explanation: Tool X is better than the old tool.
@@ -149,45 +160,44 @@ Alternative explanations:
 2. A particularly error-prone service was retired last month
 3. The team gained experience that would have improved results with any tool
 4. Deployment frequency dropped (fewer deploys = fewer failures, not better deploys)
-```
+````
 
-## Output Template
+## Modelo de saída```markdown
 
-```markdown
 ## Evidence Audit: [Proposal/Decision]
 
 ### Claims Extracted
 
-| # | Claim | Type | Evidence Cited | Falsifiable? |
-|---|-------|------|---------------|-------------|
-| 1 | [Specific claim] | Causal/Predictive/etc. | [What evidence supports it] | Yes/No |
-| 2 | [Specific claim] | Causal/Predictive/etc. | [What evidence supports it] | Yes/No |
+| #   | Claim            | Type                   | Evidence Cited              | Falsifiable? |
+| --- | ---------------- | ---------------------- | --------------------------- | ------------ |
+| 1   | [Specific claim] | Causal/Predictive/etc. | [What evidence supports it] | Yes/No       |
+| 2   | [Specific claim] | Causal/Predictive/etc. | [What evidence supports it] | Yes/No       |
 
 ### Falsification Criteria
 
-| Claim | What Would Disprove It | How to Test | Effort |
-|-------|----------------------|-------------|--------|
-| #1 | [Specific criterion] | [Concrete test] | Low/Med/High |
-| #2 | [Specific criterion] | [Concrete test] | Low/Med/High |
+| Claim | What Would Disprove It | How to Test     | Effort       |
+| ----- | ---------------------- | --------------- | ------------ |
+| #1    | [Specific criterion]   | [Concrete test] | Low/Med/High |
+| #2    | [Specific criterion]   | [Concrete test] | Low/Med/High |
 
 ### Evidence Quality
 
-| Claim | Evidence Grade | Key Weakness | GRADE Assessment |
-|-------|--------------|--------------|-----------------|
-| #1 | A/B/C/D/F | [Primary concern] | [Which of the 9 questions is most concerning] |
-| #2 | A/B/C/D/F | [Primary concern] | [Which of the 9 questions is most concerning] |
+| Claim | Evidence Grade | Key Weakness      | GRADE Assessment                              |
+| ----- | -------------- | ----------------- | --------------------------------------------- |
+| #1    | A/B/C/D/F      | [Primary concern] | [Which of the 9 questions is most concerning] |
+| #2    | A/B/C/D/F      | [Primary concern] | [Which of the 9 questions is most concerning] |
 
 ### Bias Check
 
-| Bias Detected | Where | Impact |
-|--------------|-------|--------|
-| [Bias name] | Claim #X | [How it affects the conclusion] |
+| Bias Detected | Where    | Impact                          |
+| ------------- | -------- | ------------------------------- |
+| [Bias name]   | Claim #X | [How it affects the conclusion] |
 
 ### Competing Explanations
 
-| Evidence | Proposed Explanation | Alternative Explanations |
-|----------|---------------------|------------------------|
-| [Data point] | [Original claim] | 1. [Alternative] 2. [Alternative] |
+| Evidence     | Proposed Explanation | Alternative Explanations          |
+| ------------ | -------------------- | --------------------------------- |
+| [Data point] | [Original claim]     | 1. [Alternative] 2. [Alternative] |
 
 ### Verdict
 
@@ -196,7 +206,11 @@ Alternative explanations:
 **Confidence level:** [X%] — this forces probabilistic rather than binary thinking
 
 **Recommendations:**
+
 1. [Specific action to strengthen the weakest claim]
 2. [Specific action to test the riskiest assumption]
 3. [What would change this verdict — the Magic Question]
+
+```
+
 ```

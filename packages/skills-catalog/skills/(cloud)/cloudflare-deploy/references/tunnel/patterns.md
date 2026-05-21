@@ -1,8 +1,8 @@
-# Tunnel Patterns
+# Padrões Tunnel
 
-## Docker Deployment
+## Deploy com Docker
 
-### Token-Based (Recommended)
+### Baseado em token (recomendado)
 
 ```yaml
 services:
@@ -12,7 +12,7 @@ services:
     restart: unless-stopped
 ```
 
-### Local Config
+### Config local
 
 ```yaml
 services:
@@ -24,7 +24,7 @@ services:
     command: tunnel run
 ```
 
-## Kubernetes Deployment
+## Deploy Kubernetes
 
 ```yaml
 apiVersion: apps/v1
@@ -58,7 +58,7 @@ spec:
                   key: token
 ```
 
-## High Availability
+## Alta disponibilidade
 
 ```yaml
 # Same config on multiple servers
@@ -71,11 +71,11 @@ ingress:
   - service: http_status:404
 ```
 
-Run same config on multiple machines. Cloudflare automatically load balances. Long-lived connections (WebSocket, SSH) may drop during updates.
+Execute a mesma config em várias máquinas. A Cloudflare faz balanceamento. Conexões longas (WebSocket, SSH) podem cair durante atualizações.
 
-## Use Cases
+## Casos de uso
 
-### Web Application
+### Aplicação web
 
 ```yaml
 ingress:
@@ -84,7 +84,7 @@ ingress:
   - service: http_status:404
 ```
 
-### SSH Access
+### Acesso SSH
 
 ```yaml
 ingress:
@@ -93,9 +93,9 @@ ingress:
   - service: http_status:404
 ```
 
-Client: `cloudflared access ssh --hostname ssh.example.com`
+Cliente: `cloudflared access ssh --hostname ssh.example.com`
 
-### gRPC Service
+### Serviço gRPC
 
 ```yaml
 ingress:
@@ -106,7 +106,7 @@ ingress:
   - service: http_status:404
 ```
 
-## Infrastructure as Code
+## Infraestrutura como código
 
 ### Terraform
 
@@ -178,7 +178,7 @@ new cloudflare.Record('dns', {
 })
 ```
 
-## Service Installation
+## Instalação como serviço
 
 ### Linux systemd
 
@@ -194,3 +194,5 @@ journalctl -u cloudflared -f  # Logs
 sudo cloudflared service install
 sudo launchctl start com.cloudflare.cloudflared
 ```
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

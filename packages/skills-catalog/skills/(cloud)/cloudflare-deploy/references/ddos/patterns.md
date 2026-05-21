@@ -1,6 +1,6 @@
-# DDoS Protection Patterns
+# Padrões de proteção DDoS
 
-## Allowlist Trusted IPs
+## Lista de permissões de IPs confiáveis
 
 ```typescript
 const config = {
@@ -23,7 +23,7 @@ await client.accounts.rulesets.phases.entrypoint.update('ddos_l7', {
 })
 ```
 
-## Route-specific Sensitivity
+##Sensibilidade específica da rota
 
 ```typescript
 const config = {
@@ -49,7 +49,7 @@ const config = {
 }
 ```
 
-## Progressive Enhancement
+##Aprimoramento Progressivo
 
 ```typescript
 enum ProtectionLevel {
@@ -84,7 +84,7 @@ async function setProtectionLevel(zoneId: string, level: ProtectionLevel, rulese
 }
 ```
 
-## Dynamic Response to Attacks
+##Resposta Dinâmica a Ataques
 
 ```typescript
 interface Env {
@@ -114,7 +114,7 @@ export default {
 }
 ```
 
-## Multi-rule Tiered Protection (Enterprise Advanced)
+##Proteção em camadas com múltiplas regras (Enterprise Advanced)
 
 ```typescript
 const config = {
@@ -142,9 +142,9 @@ const config = {
 }
 ```
 
-## Defense in Depth
+##Defesa em profundidade
 
-Layered security stack: DDoS + WAF + Rate Limiting + Bot Management.
+Pilha de segurança em camadas: DDoS + WAF + Limitação de taxa + Gerenciamento de bot.
 
 ```typescript
 // Layer 1: DDoS (volumetric attacks)
@@ -184,9 +184,9 @@ await client.zones.rulesets.phases.entrypoint.update('http_request_sbfm', {
 })
 ```
 
-## Cache Strategy for DDoS Mitigation
+##Estratégia de cache para mitigação de DDoS
 
-Exclude query strings from cache key to counter randomized query parameter attacks.
+Exclua strings de consulta da chave de cache para combater ataques aleatórios de parâmetros de consulta.
 
 ```typescript
 const cacheRule = {
@@ -204,6 +204,6 @@ await client.zones.rulesets.phases.entrypoint.update('http_request_cache_setting
 })
 ```
 
-**Rationale**: Attackers randomize query strings (`?random=123456`) to bypass cache. Excluding query params ensures cache hits absorb attack traffic.
+**Lógica**: Os invasores randomizam strings de consulta (`?random=123456`) para ignorar o cache. A exclusão de parâmetros de consulta garante que os acessos ao cache absorvam o tráfego de ataque.
 
-See [configuration.md](./configuration.md) for rule structure details.
+Consulte [configuration.md](./configuration.md) para obter detalhes sobre a estrutura das regras.

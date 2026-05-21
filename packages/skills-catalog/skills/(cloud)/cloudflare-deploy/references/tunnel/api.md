@@ -1,18 +1,18 @@
-# Tunnel API
+# API Tunnel
 
-## Cloudflare API Access
+## Acesso à API Cloudflare
 
-**Base URL**: `https://api.cloudflare.com/client/v4`
+**Base URL:** `https://api.cloudflare.com/client/v4`
 
-**Authentication**:
+**Autenticação:**
 
 ```bash
 Authorization: Bearer ${CF_API_TOKEN}
 ```
 
-## TypeScript SDK
+## SDK TypeScript
 
-Install: `npm install cloudflare`
+Instalação: `npm install cloudflare`
 
 ```typescript
 import Cloudflare from 'cloudflare'
@@ -24,7 +24,7 @@ const cf = new Cloudflare({
 const accountId = process.env.CF_ACCOUNT_ID
 ```
 
-## Create Tunnel
+## Criar tunnel
 
 ### cURL
 
@@ -50,7 +50,7 @@ const tunnel = await cf.zeroTrust.tunnels.create({
 console.log(`Tunnel ID: ${tunnel.id}`)
 ```
 
-## List Tunnels
+## Listar tunnels
 
 ### cURL
 
@@ -71,7 +71,7 @@ for (const tunnel of tunnels.result) {
 }
 ```
 
-## Get Tunnel Info
+## Informações do tunnel
 
 ### cURL
 
@@ -91,7 +91,7 @@ console.log(`Status: ${tunnel.status}`)
 console.log(`Connections: ${tunnel.connections?.length || 0}`)
 ```
 
-## Update Tunnel Config
+## Atualizar config do tunnel
 
 ### cURL
 
@@ -120,7 +120,7 @@ const config = await cf.zeroTrust.tunnels.configurations.update(tunnelId, {
 })
 ```
 
-## Delete Tunnel
+## Excluir tunnel
 
 ### cURL
 
@@ -137,23 +137,23 @@ await cf.zeroTrust.tunnels.delete(tunnelId, {
 })
 ```
 
-## Token-Based Tunnels (Config Source: Cloudflare)
+## Tunnels baseados em token (fonte: Cloudflare)
 
-Token-based tunnels store config in Cloudflare dashboard instead of local files.
+Nesse modo a config fica no painel Cloudflare, não em arquivos locais.
 
-### Via Dashboard
+### Via painel
 
-1. **Zero Trust** > **Networks** > **Tunnels**
-2. **Create a tunnel** > **Cloudflared**
-3. Configure routes in dashboard
-4. Copy token
-5. Run on origin:
+1. **Zero Trust** → **Networks** → **Tunnels**
+2. **Create a tunnel** → **Cloudflared**
+3. Configure rotas no painel
+4. Copie o token
+5. Na origem:
 
 ```bash
 cloudflared service install <TOKEN>
 ```
 
-### Via Token
+### Via token
 
 ```bash
 # Run with token (no config file needed)
@@ -163,7 +163,7 @@ cloudflared tunnel --no-autoupdate run --token ${TUNNEL_TOKEN}
 docker run cloudflare/cloudflared:latest tunnel --no-autoupdate run --token ${TUNNEL_TOKEN}
 ```
 
-### Get Tunnel Token (TypeScript)
+### Obter token do tunnel (TypeScript)
 
 ```typescript
 // Get tunnel to retrieve token
@@ -175,7 +175,7 @@ const tunnel = await cf.zeroTrust.tunnels.get(tunnelId, {
 const token = tunnel.token
 ```
 
-## DNS Routes API
+## API de rotas DNS
 
 ```bash
 # Create DNS route
@@ -188,7 +188,7 @@ curl -X DELETE "https://api.cloudflare.com/client/v4/accounts/{account_id}/tunne
   -H "Authorization: Bearer ${CF_API_TOKEN}"
 ```
 
-## Private Network Routes API
+## API de rotas de rede privada
 
 ```bash
 # Add IP route
@@ -200,3 +200,5 @@ curl -X POST "https://api.cloudflare.com/client/v4/accounts/{account_id}/tunnels
 curl -X GET "https://api.cloudflare.com/client/v4/accounts/{account_id}/tunnels/{tunnel_id}/routes" \
   -H "Authorization: Bearer ${CF_API_TOKEN}"
 ```
+
+Documentação localizada no ecossistema mantido pelo Controllato Club.

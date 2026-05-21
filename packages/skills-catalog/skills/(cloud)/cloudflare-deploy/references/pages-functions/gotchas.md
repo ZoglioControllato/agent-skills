@@ -1,44 +1,43 @@
-# Gotchas & Debugging
+# Dicas e depuração
 
-## Error Diagnosis
+## Diagnóstico de erro
 
-| Symptom                            | Likely Cause                                                                  | Solution                                                                                  |
-| ---------------------------------- | ----------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| **Function not invoking**          | Wrong `/functions` location, wrong extension, or `_routes.json` excludes path | Check `pages_build_output_dir`, use `.js`/`.ts`, verify `_routes.json`                    |
-| **`ctx.env.BINDING` undefined**    | Binding not configured or name mismatch                                       | Add to `wrangler.jsonc`, verify exact name (case-sensitive), redeploy                     |
-| **TypeScript errors on `ctx.env`** | Missing type definition                                                       | Run `wrangler types` or define `interface Env {}`                                         |
-| **Middleware not running**         | Wrong filename/location or missing `ctx.next()`                               | Name exactly `_middleware.js`, export `onRequest`, call `ctx.next()`                      |
-| **Secrets missing in production**  | `.dev.vars` not deployed                                                      | `.dev.vars` is local only - set production secrets via dashboard or `wrangler secret put` |
-| **Type mismatch on binding**       | Wrong interface type                                                          | See [api.md](./api.md) bindings table for correct types                                   |
-| **"KV key not found" but exists**  | Key in wrong namespace or env                                                 | Verify namespace binding, check preview vs production env                                 |
-| **Function times out**             | Synchronous wait or missing `await`                                           | All I/O must be async/await, use `ctx.waitUntil()` for background tasks                   |
+| Sintoma                                     | Causa provável                                                                      | Solução                                                                                                |
+| ------------------------------------------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| **Função não invocada**                     | Localização `/functions` errada, extensão errada ou `_routes.json` exclui o caminho | Verifique `pages_build_output_dir`, use `.js`/`.ts`, verifique `_routes.json`                          |
+| **`ctx.env.BINDING` indefinido**            | Vinculação não configurada ou incompatibilidade de nome                             | Adicione ao `wrangler.jsonc`, verifique o nome exato (diferencia maiúsculas de minúsculas), reimplante |
+| **Erros de TypeScript em `ctx.env`**        | Definição de tipo ausente                                                           | Execute `wrangler types` ou defina `interface Env {}`                                                  |
+| **Middleware não está em execução**         | Nome/local de arquivo incorreto ou `ctx.next()` ausente                             | Nomeie exatamente `_middleware.js`, exporte `onRequest`, chame `ctx.next()`                            |
+| **Segredos faltando na produção**           | `.dev.vars` não implantado                                                          | `.dev.vars` é apenas local - defina segredos de produção via painel ou `wrangler secret put`           |
+| **Incompatibilidade de tipo na vinculação** | Tipo de interface errado                                                            | Consulte a tabela de ligações [api.md](./api.md) para obter os tipos corretos                          |
+| **"Chave KV não encontrada" mas existe**    | Digite o namespace ou ambiente errado                                               | Verifique a ligação do namespace, verifique o ambiente de visualização versus produção                 |
+| **Tempo limite da função**                  | Espera síncrona ou `await` ausente                                                  | Todas as E/S devem ser assíncronas/esperadas, use `ctx.waitUntil()` para tarefas em segundo plano      |
 
-## Common Errors
+## Erros Comuns
 
-### TypeScript type errors
+### Erros de tipo TypeScript
 
-**Problem:** `ctx.env.MY_BINDING` shows type error  
-**Cause:** No type definition for `Env`  
-**Solution:** Run `npx wrangler types` or manually define:
-
-```typescript
+**Problema:** `ctx.env.MY_BINDING` mostra erro de tipo
+**Causa:** Nenhuma definição de tipo para `Env`
+**Solução:** Execute `npx wrangler types` ou defina manualmente:```typescript
 interface Env {
-  MY_BINDING: KVNamespace
+MY_BINDING: KVNamespace
 }
 export const onRequest: PagesFunction<Env> = async (ctx) => {
-  /* ... */
+/_ ... _/
 }
-```
+
+````
 
 ### Secrets not available in production
 
-**Problem:** `ctx.env.SECRET_KEY` is undefined in production  
-**Cause:** `.dev.vars` is local-only, not deployed  
+**Problem:** `ctx.env.SECRET_KEY` is undefined in production
+**Cause:** `.dev.vars` is local-only, not deployed
 **Solution:** Set production secrets:
 
 ```bash
 echo "value" | npx wrangler pages secret put SECRET_KEY --project-name=my-app
-```
+````
 
 ## Debugging
 
@@ -63,40 +62,40 @@ npx wrangler pages deployment tail --status error
 { "upload_source_maps": true }
 ```
 
-## Limits
+## Limites
 
-| Resource    | Free                 | Paid                      |
-| ----------- | -------------------- | ------------------------- |
-| CPU time    | 10ms                 | 50ms                      |
-| Memory      | 128 MB               | 128 MB                    |
-| Script size | 10 MB compressed     | 10 MB compressed          |
-| Env vars    | 5 KB per var, 64 max | 5 KB per var, 64 max      |
-| Requests    | 100k/day             | Unlimited ($0.50/million) |
+| Recurso                | Grátis                     | Pago                        |
+| ---------------------- | -------------------------- | --------------------------- |
+| Tempo de CPU           | 10ms                       | 50ms                        |
+| Memória                | 128 MB                     | 128 MB                      |
+| Tamanho do roteiro     | 10 MB compactados          | 10 MB compactados           |
+| Variáveis ​​ambientais | 5 KB por var, 64 no máximo | 5 KB por var, 64 no máximo  |
+| Solicitações           | 100k/dia                   | Ilimitado (US$ 0,50/milhão) |
 
-## Best Practices
+## Melhores práticas
 
-**Performance:** Minimize deps (cold start), use KV for cache/D1 for relational/R2 for large files, set `Cache-Control` headers, batch DB ops, handle errors gracefully
+**Desempenho:** Minimize dependências (inicialização a frio), use KV para cache/D1 para relacional/R2 para arquivos grandes, defina cabeçalhos `Cache-Control`, operações de banco de dados em lote, lide com erros normalmente
 
-**Security:** Never commit secrets (use `.dev.vars` + gitignore), validate input, sanitize before DB, implement auth middleware, set CORS headers, rate limit per-IP
+**Segurança:** Nunca comprometa segredos (use `.dev.vars` + gitignore), valide a entrada, higienize antes do banco de dados, implemente middleware de autenticação, defina cabeçalhos CORS, limite de taxa por IP
 
-## Migration
+## Migração
 
-**Workers → Pages Functions:**
+**Trabalhadores → Funções de páginas:**
 
-- `export default { fetch(req, env) {} }` → `export function onRequest(ctx) { const { request, env } = ctx; }`
-- Use `_worker.js` for complex routing: `env.ASSETS.fetch(request)` for static files
+- `exportar padrão { fetch(req, env) {} }` → `função de exportação onRequest(ctx) { const { request, env } = ctx; }`
+- Use `_worker.js` para roteamento complexo: `env.ASSETS.fetch(request)` para arquivos estáticos
 
-**Other platforms → Pages:**
+**Outras plataformas → Páginas:**
 
-- File-based routing: `/functions/api/users.js` → `/api/users`
-- Dynamic routes: `[param]` not `:param`
-- Replace Node.js deps with Workers APIs or add `nodejs_compat` flag
+- Roteamento baseado em arquivo: `/functions/api/users.js` → `/api/users`
+- Rotas dinâmicas: `[param]` e não `:param`
+- Substitua as dependências do Node.js por APIs de trabalho ou adicione o sinalizador `nodejs_compat`
 
-## Resources
+## Recursos
 
-- [Official Docs](https://developers.cloudflare.com/pages/functions/)
-- [Workers APIs](https://developers.cloudflare.com/workers/runtime-apis/)
-- [Examples](https://github.com/cloudflare/pages-example-projects)
+- [Documentos oficiais](https://developers.cloudflare.com/pages/functions/)
+- [APIs de trabalho](https://developers.cloudflare.com/workers/runtime-apis/)
+- [Exemplos](https://github.com/cloudflare/pages-example-projects)
 - [Discord](https://discord.gg/cloudflaredev)
 
-**See also:** [configuration.md](./configuration.md) for TypeScript setup | [patterns.md](./patterns.md) for middleware/auth | [api.md](./api.md) for bindings
+**Veja também:** [configuration.md](./configuration.md) para configuração do TypeScript | [patterns.md](./patterns.md) para middleware/auth | [api.md](./api.md) para ligações

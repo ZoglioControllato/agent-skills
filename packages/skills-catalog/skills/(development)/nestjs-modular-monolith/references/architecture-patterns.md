@@ -1,27 +1,24 @@
-# Architecture Patterns
+# Padrões de Arquitetura
 
-## Table of Contents
+## Índice
 
-1. Clean Architecture Layers (line ~15)
-2. DDD Building Blocks (line ~80)
-3. CQRS Pattern — Optional (line ~140)
-4. Simple Service Pattern — Default (line ~200)
-5. NX Workspace Configuration (line ~240)
-6. TypeScript Strict Configuration (line ~310)
+1. Camadas de arquitetura limpa (linha ~15)
+2. Blocos de construção DDD (linha ~80)
+3. Padrão CQRS — Opcional (linha ~140)
+4. Padrão de serviço simples — Padrão (linha ~200)
+5. Configuração do NX Workspace (linha ~240)
+6. Configuração estrita do TypeScript (linha ~ 310)
 
 ---
 
-## 1. Clean Architecture Layers
+## 1. Camadas de arquitetura limpa
 
-Each module follows four layers, with dependencies pointing inward:
-
-```
+Cada módulo segue quatro camadas, com dependências apontando para dentro:```
 Presentation → Application → Domain ← Infrastructure
-```
 
-**Domain Layer** (innermost — no external dependencies):
+````
 
-```typescript
+**Camada de Domínio** (mais interna — sem dependências externas):```typescript
 // libs/[module]/domain/entities/billing-plan.entity.ts
 export class BillingPlan {
   constructor(
@@ -45,9 +42,9 @@ export enum BillingInterval {
   MONTHLY = 'MONTHLY',
   YEARLY = 'YEARLY',
 }
-```
+````
 
-**Domain Layer — Repository Interface:**
+**Camada de Domínio — Interface de Repositório:**
 
 ```typescript
 // libs/[module]/domain/repositories/billing-plan.repository.ts
@@ -61,36 +58,33 @@ export interface BillingPlanRepository {
 export const BILLING_PLAN_REPOSITORY = Symbol('BillingPlanRepository')
 ```
 
-**Application Layer** (orchestrates domain, defines use cases):
-
-```typescript
+**Camada de Aplicação** (orquestra domínio, define casos de uso):```typescript
 // libs/[module]/application/services/billing-plan.service.ts
 @Injectable()
 export class BillingPlanService {
-  constructor(
-    @Inject(BILLING_PLAN_REPOSITORY)
-    private readonly repository: BillingPlanRepository,
-    private readonly eventPublisher: EventPublisher,
-  ) {}
+constructor(
+@Inject(BILLING_PLAN_REPOSITORY)
+private readonly repository: BillingPlanRepository,
+private readonly eventPublisher: EventPublisher,
+) {}
 
-  async create(name: string, priceInCents: number, interval: BillingInterval): Promise<BillingPlan> {
-    const plan = new BillingPlan(generateId(), name, priceInCents, interval, new Date())
-    const saved = await this.repository.save(plan)
-    await this.eventPublisher.publish('billing.plan.created', { planId: saved.id, name: saved.name })
-    return saved
-  }
-
-  async findById(id: string): Promise<BillingPlan> {
-    const plan = await this.repository.findById(id)
-    if (!plan) throw new BillingPlanNotFoundError(id)
-    return plan
-  }
+async create(name: string, priceInCents: number, interval: BillingInterval): Promise<BillingPlan> {
+const plan = new BillingPlan(generateId(), name, priceInCents, interval, new Date())
+const saved = await this.repository.save(plan)
+await this.eventPublisher.publish('billing.plan.created', { planId: saved.id, name: saved.name })
+return saved
 }
-```
 
-**Infrastructure Layer** (implements domain interfaces):
+async findById(id: string): Promise<BillingPlan> {
+const plan = await this.repository.findById(id)
+if (!plan) throw new BillingPlanNotFoundError(id)
+return plan
+}
+}
 
-```typescript
+````
+
+**Camada de infraestrutura** (implementa interfaces de domínio):```typescript
 // libs/[module]/infrastructure/repositories/prisma-billing-plan.repository.ts
 @Injectable()
 export class PrismaBillingPlanRepository implements BillingPlanRepository {
@@ -123,36 +117,32 @@ export class PrismaBillingPlanRepository implements BillingPlanRepository {
     return new BillingPlan(data.id, data.name, data.priceInCents, data.interval as BillingInterval, data.createdAt)
   }
 }
-```
+````
 
-**Presentation Layer** (HTTP interface):
-
-```typescript
+**Camada de apresentação** (interface HTTP):```typescript
 // libs/[module]/presentation/billing-plan.controller.ts
 @Controller('billing/plans')
 @ApiTags('billing-plans')
 export class BillingPlanController {
-  constructor(private readonly billingPlanService: BillingPlanService) {}
+constructor(private readonly billingPlanService: BillingPlanService) {}
 
-  @Post()
-  @ApiOperation({ summary: 'Create billing plan' })
-  @ApiResponse({ status: 201, type: BillingPlanResponseDto })
-  async create(@Body() dto: CreateBillingPlanDto): Promise<BillingPlanResponseDto> {
-    const plan = await this.billingPlanService.create(dto.name, dto.priceInCents, dto.interval)
-    return BillingPlanResponseDto.from(plan)
-  }
+@Post()
+@ApiOperation({ summary: 'Create billing plan' })
+@ApiResponse({ status: 201, type: BillingPlanResponseDto })
+async create(@Body() dto: CreateBillingPlanDto): Promise<BillingPlanResponseDto> {
+const plan = await this.billingPlanService.create(dto.name, dto.priceInCents, dto.interval)
+return BillingPlanResponseDto.from(plan)
 }
-```
+}
 
+````
 ---
 
-## 2. DDD Building Blocks
+## 2. Blocos de construção DDD
 
-### Entities
+### Entidades
 
-Objects with identity and lifecycle. Use module-prefixed names.
-
-```typescript
+Objetos com identidade e ciclo de vida. Use nomes com prefixo de módulo.```typescript
 // ✅ Correct: Module-prefixed entity
 export class IdentityUser {
   constructor(
@@ -178,38 +168,34 @@ export class IdentityUser {
 export class User {
   /* ... */
 }
-```
+````
 
-### Value Objects
+### Objetos de valor
 
-Immutable objects defined by their attributes, not identity.
-
-```typescript
+Objetos imutáveis definidos por seus atributos, não por identidade.```typescript
 export class Money {
-  constructor(
-    public readonly amount: number,
-    public readonly currency: string,
-  ) {
-    if (amount < 0) throw new Error('Amount cannot be negative')
-    if (!currency || currency.length !== 3) throw new Error('Invalid currency code')
-  }
-
-  add(other: Money): Money {
-    if (this.currency !== other.currency) throw new Error('Currency mismatch')
-    return new Money(this.amount + other.amount, this.currency)
-  }
-
-  equals(other: Money): boolean {
-    return this.amount === other.amount && this.currency === other.currency
-  }
+constructor(
+public readonly amount: number,
+public readonly currency: string,
+) {
+if (amount < 0) throw new Error('Amount cannot be negative')
+if (!currency || currency.length !== 3) throw new Error('Invalid currency code')
 }
-```
 
-### Aggregates
+add(other: Money): Money {
+if (this.currency !== other.currency) throw new Error('Currency mismatch')
+return new Money(this.amount + other.amount, this.currency)
+}
 
-Cluster of entities and value objects with a root entity. External access only through the root.
+equals(other: Money): boolean {
+return this.amount === other.amount && this.currency === other.currency
+}
+}
 
-```typescript
+````
+### Agregados
+
+Cluster de entidades e objetos de valor com uma entidade raiz. Acesso externo somente através do root.```typescript
 export class OrderAggregate {
   private items: OrderItem[] = []
 
@@ -240,63 +226,59 @@ export class OrderAggregate {
     return this.items.reduce((sum, item) => sum.add(item.subtotal), new Money(0, 'USD'))
   }
 }
-```
+````
 
-### Domain Exceptions
+### Exceções de domínio
 
-Domain-specific errors that map to HTTP status codes via exception filters.
-
-```typescript
+Erros específicos de domínio que são mapeados para códigos de status HTTP por meio de filtros de exceção.```typescript
 // libs/[module]/domain/exceptions/
 export class DomainException extends Error {
-  constructor(message: string) {
-    super(message)
-    this.name = this.constructor.name
-  }
+constructor(message: string) {
+super(message)
+this.name = this.constructor.name
+}
 }
 
 export class OrderNotFoundError extends DomainException {
-  constructor(id: string) {
-    super(`Order ${id} not found`)
-  }
+constructor(id: string) {
+super(`Order ${id} not found`)
+}
 }
 
 export class OrderNotModifiableError extends DomainException {
-  constructor(id: string) {
-    super(`Order ${id} cannot be modified`)
-  }
+constructor(id: string) {
+super(`Order ${id} cannot be modified`)
+}
 }
 
 export class EmptyOrderError extends DomainException {
-  constructor(id: string) {
-    super(`Order ${id} has no items`)
-  }
+constructor(id: string) {
+super(`Order ${id} has no items`)
 }
-```
+}
 
+````
 ---
 
-## 3. CQRS Pattern — Optional
+## 3. Padrão CQRS - Opcional
 
-> ⚠️ **CQRS is NOT the default.** Use it only when the domain genuinely benefits from separating read and write models. For most modules, the simple service pattern (section 4) is sufficient.
+> ⚠️ **CQRS NÃO é o padrão.** Use-o somente quando o domínio realmente se beneficiar da separação dos modelos de leitura e gravação. Para a maioria dos módulos, o padrão de serviço simples (seção 4) é suficiente.
 
-**When to use CQRS:**
+**Quando usar CQRS:**
 
-- Read and write patterns differ significantly
-- Read-heavy workloads need optimized queries
-- Complex domain logic in writes, simple data retrieval in reads
-- Different scaling needs for reads vs writes
+- Os padrões de leitura e gravação diferem significativamente
+- Cargas de trabalho com muita leitura precisam de consultas otimizadas
+- Lógica de domínio complexa em gravações, recuperação simples de dados em leituras
+- Diferentes necessidades de escalonamento para leituras e gravações
 
-**When NOT to use CQRS:**
+**Quando NÃO usar CQRS:**
 
-- Simple CRUD operations
-- Read and write models are identical
-- Small dataset with uniform access patterns
-- The team is not familiar with the pattern
+- Operações CRUD simples
+- Os modelos de leitura e gravação são idênticos
+- Pequeno conjunto de dados com padrões de acesso uniformes
+- A equipe não está familiarizada com o padrão
 
-### Command Side
-
-```typescript
+### Lado do comando```typescript
 // Command
 export class PlaceOrderCommand {
   constructor(
@@ -325,37 +307,34 @@ export class PlaceOrderHandler implements ICommandHandler<PlaceOrderCommand> {
     return order.id
   }
 }
-```
+````
 
-### Query Side
+### Lado da consulta```typescript
 
-```typescript
 // Query
 export class GetOrderSummaryQuery {
-  constructor(public readonly orderId: string) {}
+constructor(public readonly orderId: string) {}
 }
 
 // Handler — can bypass domain model for read performance
 @QueryHandler(GetOrderSummaryQuery)
 export class GetOrderSummaryHandler implements IQueryHandler<GetOrderSummaryQuery> {
-  constructor(private readonly prisma: PrismaService) {}
+constructor(private readonly prisma: PrismaService) {}
 
-  async execute(query: GetOrderSummaryQuery) {
-    return this.prisma.order.findUnique({
-      where: { id: query.orderId },
-      include: { items: true },
-    })
-  }
+async execute(query: GetOrderSummaryQuery) {
+return this.prisma.order.findUnique({
+where: { id: query.orderId },
+include: { items: true },
+})
 }
-```
+}
 
+````
 ---
 
-## 4. Simple Service Pattern — Default
+## 4. Padrão de serviço simples - padrão
 
-This is the recommended default approach. Use `@Injectable()` services that encapsulate business logic and interact with repositories via DI.
-
-```typescript
+Esta é a abordagem padrão recomendada. Use serviços `@Injectable()` que encapsulam a lógica de negócios e interagem com repositórios via DI.```typescript
 // libs/orders/application/services/order.service.ts
 @Injectable()
 export class OrderService {
@@ -382,38 +361,35 @@ export class OrderService {
     return order
   }
 }
-```
+````
 
-The controller injects the service directly:
-
-```typescript
+O controlador injeta o serviço diretamente:```typescript
 @Controller('orders')
 @ApiTags('orders')
 export class OrderController {
-  constructor(private readonly orderService: OrderService) {}
+constructor(private readonly orderService: OrderService) {}
 
-  @Post()
-  async create(@Body() dto: CreateOrderDto) {
-    const orderId = await this.orderService.placeOrder(dto.customerId, dto.items)
-    return { id: orderId }
-  }
-
-  @Get(':id')
-  async findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return this.orderService.getById(id)
-  }
+@Post()
+async create(@Body() dto: CreateOrderDto) {
+const orderId = await this.orderService.placeOrder(dto.customerId, dto.items)
+return { id: orderId }
 }
-```
 
-**When to upgrade to CQRS:** If you notice that your service is growing large with very different read and write logic, or you need to optimize reads independently (e.g., denormalized views, caching layers), consider extracting the service into separate command handlers and query handlers.
+@Get(':id')
+async findOne(@Param('id', ParseUUIDPipe) id: string) {
+return this.orderService.getById(id)
+}
+}
+
+````
+
+**Quando atualizar para CQRS:** Se você perceber que seu serviço está crescendo com lógica de leitura e gravação muito diferente, ou se precisar otimizar leituras de forma independente (por exemplo, visualizações desnormalizadas, camadas de cache), considere extrair o serviço em manipuladores de comando e manipuladores de consulta separados.
 
 ---
 
-## 5. NX Workspace Configuration
+## 5. Configuração do espaço de trabalho NX
 
-### nx.json
-
-```json
+###nx.json```json
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "defaultBase": "main",
@@ -428,13 +404,11 @@ export class OrderController {
     "lint": { "inputs": ["default"] }
   }
 }
-```
+````
 
-### Module Boundaries (eslint or project.json tags)
+### Limites do módulo (tags eslint ou project.json)
 
-Use NX tags to enforce module boundaries:
-
-```json
+Use tags NX para impor limites de módulo:```json
 // project.json for libs/billing
 { "tags": ["scope:billing", "type:domain-lib"] }
 
@@ -443,21 +417,19 @@ Use NX tags to enforce module boundaries:
 
 // project.json for libs/shared
 { "tags": ["scope:shared", "type:shared-lib"] }
-```
 
-Boundary rules:
+````
+Regras de limite:
 
-- `scope:billing` can only import from `scope:shared`
-- `scope:identity` can only import from `scope:shared`
-- No direct imports between domain scopes
+- `scope:billing` só pode importar de `scope:shared`
+- `scope:identity` só pode importar de `scope:shared`
+- Sem importações diretas entre escopos de domínio
 
 ---
 
-## 6. TypeScript Strict Configuration
+## 6. Configuração estrita do TypeScript
 
-### tsconfig.base.json
-
-```json
+###tsconfig.base.json```json
 {
   "compileOnSave": false,
   "compilerOptions": {
@@ -493,6 +465,6 @@ Boundary rules:
   },
   "exclude": ["node_modules", "tmp", "dist"]
 }
-```
+````
 
-**Non-negotiable flags:** `strict`, `strictNullChecks`, `noImplicitAny`, `noUncheckedIndexedAccess`. These catch real bugs and enforce domain correctness.
+**Sinalizações não negociáveis:** `strict`, `strictNullChecks`, `noImplicitAny`, `noUncheckedIndexedAccess`. Eles detectam bugs reais e impõem a correção do domínio.

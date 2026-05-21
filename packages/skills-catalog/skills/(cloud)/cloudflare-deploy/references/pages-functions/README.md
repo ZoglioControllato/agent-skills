@@ -1,48 +1,50 @@
-# Cloudflare Pages Functions
+# Funções de páginas Cloudflare
 
-Serverless functions on Cloudflare Pages using Workers runtime. Full-stack dev with file-based routing.
+Funções sem servidor em Cloudflare Pages usando Workers runtime. Desenvolvimento full-stack com roteamento baseado em arquivo.
 
-## Quick Navigation
+## Navegação Rápida
 
-**Need to...**
-| Task | Go to |
+**Preciso...**
+| Tarefa | Vá para |
 |------|-------|
-| Set up TypeScript types | [configuration.md](./configuration.md) - TypeScript Setup |
-| Configure bindings (KV, D1, R2) | [configuration.md](./configuration.md) - wrangler.jsonc |
-| Access request/env/params | [api.md](./api.md) - EventContext |
-| Add middleware or auth | [patterns.md](./patterns.md) - Middleware, Auth |
-| Background tasks (waitUntil) | [patterns.md](./patterns.md) - Background Tasks |
-| Debug errors or check limits | [gotchas.md](./gotchas.md) - Common Errors, Limits |
+| Configurar tipos TypeScript | [configuration.md](./configuration.md) - Configuração TypeScript |
+| Configurar ligações (KV, D1, R2) | [configuration.md](./configuration.md) - wrangler.jsonc |
+| Solicitação de acesso/env/params | [api.md](./api.md) - EventContext |
+| Adicionar middleware ou autenticação | [patterns.md](./patterns.md) - Middleware, autenticação |
+| Tarefas em segundo plano (waitUntil) | [patterns.md](./patterns.md) - Tarefas em segundo plano |
+| Depurar erros ou verificar limites | [gotchas.md](./gotchas.md) - Erros comuns, limites |
 
-## Decision Tree: Is This Pages Functions?
+## Árvore de decisão: esta página é função?```
 
-```
-Need serverless backend?
-├─ Yes, for a static site → Pages Functions
-├─ Yes, standalone API → Workers
-└─ Just static hosting → Pages (no functions)
+Precisa de back-end sem servidor?
+├─ Sim, para um site estático → Funções de páginas
+├─ Sim, API independente → Trabalhadores
+└─ Apenas hospedagem estática → Páginas (sem funções)
 
-Have existing Worker?
-├─ Complex routing logic → Use _worker.js (Advanced Mode)
-└─ Simple routes → Migrate to /functions (File-Based)
+Tem trabalhador existente?
+├─ Lógica de roteamento complexa → Use \_worker.js (modo avançado)
+└─ Rotas simples → Migrar para /functions (baseado em arquivo)
 
-Framework-based?
-├─ Next.js/SvelteKit/Remix → Uses _worker.js automatically
-└─ Vanilla/HTML/React SPA → Use /functions
+Baseado em estrutura?
+├─ Next.js/SvelteKit/Remix → Usa \_worker.js automaticamente
+└─ Vanilla/HTML/React SPA → Usar /funções
+
 ```
 
 ## File-Based Routing
 
 ```
+
 /functions
-  ├── index.js              → /
-  ├── api.js                → /api
-  ├── users/
-  │   ├── index.js          → /users/
-  │   ├── [user].js         → /users/:user
-  │   └── [[catchall]].js   → /users/*
-  └── _middleware.js        → runs on all routes
-```
+├── index.js → /
+├── api.js → /api
+├── users/
+│ ├── index.js → /users/
+│ ├── [user].js → /users/:user
+│ └── [[catchall]].js → /users/\*
+└── \_middleware.js → runs on all routes
+
+````
 
 **Rules:**
 
@@ -61,7 +63,7 @@ export function onRequest(context) {
   return new Response(`Hello ${context.params.user}`)
 }
 // Matches: /users/nevi
-```
+````
 
 **Multi-segment** `[[param]]` → array:
 
@@ -73,32 +75,32 @@ export function onRequest(context) {
 // Matches: /users/nevi/foobar → ["nevi", "foobar"]
 ```
 
-## Key Features
+## Principais recursos
 
-- **Method handlers:** `onRequestGet`, `onRequestPost`, etc.
-- **Middleware:** `_middleware.js` for cross-cutting concerns
-- **Bindings:** KV, D1, R2, Durable Objects, Workers AI, Service bindings
-- **TypeScript:** Full type support via `wrangler types` command
-- **Advanced mode:** Use `_worker.js` for custom routing logic
+- **Manipuladores de métodos:** `onRequestGet`, `onRequestPost`, etc.
+- **Middleware:** `_middleware.js` para questões transversais
+- **Ligações:** KV, D1, R2, Objetos Duráveis, IA de Trabalhadores, Ligações de Serviço
+- **TypeScript:** Suporte completo a tipos por meio do comando `wrangler types`
+- **Modo avançado:** Use `_worker.js` para lógica de roteamento personalizada
 
-## Reading Order
+## Ordem de leitura
 
-**New to Pages Functions?** Start here:
+**Novo nas funções do Pages?** Comece aqui:
 
-1. [README.md](./README.md) - Overview, routing, decision tree (you are here)
-2. [configuration.md](./configuration.md) - TypeScript setup, wrangler.jsonc, bindings
-3. [api.md](./api.md) - EventContext, handlers, bindings reference
-4. [patterns.md](./patterns.md) - Middleware, auth, CORS, rate limiting, caching
-5. [gotchas.md](./gotchas.md) - Common errors, debugging, limits
+1. [README.md](./README.md) - Visão geral, roteamento, árvore de decisão (você está aqui)
+2. [configuration.md](./configuration.md) - Configuração TypeScript, wrangler.jsonc, ligações
+3. [api.md](./api.md) - EventContext, manipuladores, referência de ligações
+4. [patterns.md](./patterns.md) - Middleware, autenticação, CORS, limitação de taxa, cache
+5. [gotchas.md](./gotchas.md) - Erros comuns, depuração, limites
 
-**Quick reference lookup:**
+**Pesquisa rápida de referência:**
 
-- Bindings table → [api.md](./api.md)
-- Error diagnosis → [gotchas.md](./gotchas.md)
-- TypeScript setup → [configuration.md](./configuration.md)
+- Tabela de ligações → [api.md](./api.md)
+- Diagnóstico de erros → [gotchas.md](./gotchas.md)
+- Configuração do TypeScript → [configuration.md](./configuration.md)
 
-## See Also
+## Veja também
 
-- [pages](../pages/) - Pages platform overview and static site deployment
-- [workers](../workers/) - Workers runtime API reference
-- [d1](../d1/) - D1 database integration with Pages Functions
+- [páginas](../pages/) - Visão geral da plataforma de páginas e implantação de site estático
+- [workers](../workers/) - Referência da API de tempo de execução de trabalhadores
+- [d1](../d1/) - Integração de banco de dados D1 com Pages Functions

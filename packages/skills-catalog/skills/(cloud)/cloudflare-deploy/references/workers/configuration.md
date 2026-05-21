@@ -1,21 +1,21 @@
-# Workers Configuration
+# Configuração do Workers
 
-## wrangler.jsonc (Recommended)
+## wrangler.jsonc (recomendado)
 
 ```jsonc
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "my-worker",
   "main": "src/index.ts",
-  "compatibility_date": "2025-01-01", // Use current date for new projects
+  "compatibility_date": "2025-01-01", // Use a data atual em projetos novos
 
-  // Bindings (non-inheritable)
+  // Bindings (não herdáveis)
   "vars": { "ENVIRONMENT": "production" },
   "kv_namespaces": [{ "binding": "MY_KV", "id": "abc123" }],
   "r2_buckets": [{ "binding": "MY_BUCKET", "bucket_name": "my-bucket" }],
   "d1_databases": [{ "binding": "DB", "database_name": "my-db", "database_id": "xyz789" }],
 
-  // Environments
+  // Ambientes
   "env": {
     "staging": {
       "vars": { "ENVIRONMENT": "staging" },
@@ -25,42 +25,42 @@
 }
 ```
 
-## Configuration Rules
+## Regras de configuração
 
-**Inheritable**: `name`, `main`, `compatibility_date`, `routes`, `workers_dev`  
-**Non-inheritable**: All bindings (`vars`, `kv_namespaces`, `r2_buckets`, etc.)  
-**Top-level only**: `migrations`, `keep_vars`, `send_metrics`
+**Herdáveis**: `name`, `main`, `compatibility_date`, `routes`, `workers_dev`  
+**Não herdáveis**: todos os bindings (`vars`, `kv_namespaces`, `r2_buckets`, etc.)  
+**Somente top-level**: `migrations`, `keep_vars`, `send_metrics`
 
-**ALWAYS set `compatibility_date` to current date for new projects**
+**SEMPRE** defina `compatibility_date` com a data atual em projetos novos
 
 ## Bindings
 
 ```jsonc
 {
-  // Environment variables - access via env.VAR_NAME
+  // Variáveis de ambiente — acesse via env.VAR_NAME
   "vars": { "ENVIRONMENT": "production" },
 
-  // KV (key-value storage)
+  // KV (armazenamento chave-valor)
   "kv_namespaces": [{ "binding": "MY_KV", "id": "abc123" }],
 
-  // R2 (object storage)
+  // R2 (armazenamento de objetos)
   "r2_buckets": [{ "binding": "MY_BUCKET", "bucket_name": "my-bucket" }],
 
-  // D1 (SQL database)
+  // D1 (banco SQL)
   "d1_databases": [{ "binding": "DB", "database_name": "my-db", "database_id": "xyz789" }],
 
-  // Durable Objects (stateful coordination)
+  // Durable Objects (coordenação com estado)
   "durable_objects": {
     "bindings": [{ "name": "COUNTER", "class_name": "Counter" }],
   },
 
-  // Queues (message queues)
+  // Queues (filas de mensagens)
   "queues": {
     "producers": [{ "binding": "MY_QUEUE", "queue": "my-queue" }],
     "consumers": [{ "queue": "my-queue", "max_batch_size": 10 }],
   },
 
-  // Service bindings (worker-to-worker RPC)
+  // Service bindings (RPC entre workers)
   "services": [{ "binding": "SERVICE_B", "service": "service-b" }],
 
   // Analytics Engine
@@ -70,40 +70,40 @@
 
 ### Secrets
 
-Set via CLI (never in config):
+Defina via CLI (nunca no config):
 
 ```bash
 npx wrangler secret put API_KEY
 ```
 
-Access: `env.API_KEY`
+Acesso: `env.API_KEY`
 
-### Automatic Provisioning (Beta)
+### Provisionamento automático (beta)
 
-Bindings without IDs are auto-created:
+Bindings sem IDs são criados automaticamente:
 
 ```jsonc
-{ "kv_namespaces": [{ "binding": "MY_KV" }] } // ID added on deploy
+{ "kv_namespaces": [{ "binding": "MY_KV" }] } // ID adicionado no deploy
 ```
 
-## Routes & Triggers
+## Rotas e triggers
 
 ```jsonc
 {
   "routes": [{ "pattern": "example.com/*", "zone_name": "example.com" }],
   "triggers": {
-    "crons": ["0 */6 * * *"], // Every 6 hours
+    "crons": ["0 */6 * * *"], // A cada 6 horas
   },
 }
 ```
 
-## TypeScript Setup
+## Configuração TypeScript
 
-### Automatic Type Generation (Recommended)
+### Geração automática de tipos (recomendado)
 
 ```bash
 npm install -D @cloudflare/workers-types
-npx wrangler types  # Generates .wrangler/types/runtime.d.ts from wrangler.jsonc
+npx wrangler types  # Gera .wrangler/types/runtime.d.ts a partir do wrangler.jsonc
 ```
 
 `tsconfig.json`:
@@ -119,22 +119,22 @@ npx wrangler types  # Generates .wrangler/types/runtime.d.ts from wrangler.jsonc
 }
 ```
 
-Import generated types:
+Importe os tipos gerados:
 
 ```typescript
 import type { Env } from './.wrangler/types/runtime'
 
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
-    await env.MY_KV.get('key') // Fully typed, autocomplete works
+    await env.MY_KV.get('key') // Totalmente tipado, autocomplete funciona
     return new Response('OK')
   },
 }
 ```
 
-Re-run `npx wrangler types` after changing bindings in wrangler.jsonc
+Execute de novo `npx wrangler types` após alterar bindings no wrangler.jsonc
 
-### Manual Type Definition (Legacy)
+### Definição manual de tipos (legado)
 
 ```typescript
 interface Env {
@@ -144,41 +144,41 @@ interface Env {
 }
 ```
 
-## Advanced Options
+## Opções avançadas
 
 ```jsonc
 {
-  // Auto-locate compute near data sources
+  // Localizar compute perto das fontes de dados
   "placement": { "mode": "smart" },
 
-  // Enable Node.js built-ins (Buffer, process, path, etc.)
+  // Habilitar built-ins do Node.js (Buffer, process, path, etc.)
   "compatibility_flags": ["nodejs_compat_v2"],
 
-  // Observability (10% sampling)
+  // Observabilidade (amostragem 10%)
   "observability": { "enabled": true, "head_sampling_rate": 0.1 },
 }
 ```
 
-### Node.js Compatibility
+### Compatibilidade com Node.js
 
-`nodejs_compat_v2` enables:
+`nodejs_compat_v2` habilita:
 
 - `Buffer`, `process.env`, `path`, `stream`
-- CommonJS `require()` for Node modules
-- `node:` imports (e.g., `import { Buffer } from 'node:buffer'`)
+- `require()` CommonJS para módulos Node
+- imports `node:` (ex.: `import { Buffer } from 'node:buffer'`)
 
-**Note:** Adds ~1-2ms cold start overhead. Use Workers APIs (R2, KV) when possible
+**Nota:** adiciona ~1–2 ms de overhead no cold start. Use APIs dos Workers (R2, KV) quando possível
 
-## Deployment Commands
+## Comandos de deploy
 
 ```bash
-npx wrangler deploy              # Production
+npx wrangler deploy              # Produção
 npx wrangler deploy --env staging
-npx wrangler deploy --dry-run    # Validate only
+npx wrangler deploy --dry-run    # Só validar
 ```
 
-## See Also
+## Ver também
 
-- [API](./api.md) - Runtime APIs and bindings usage
-- [Patterns](./patterns.md) - Deployment strategies
-- [Wrangler](../wrangler/README.md) - CLI reference
+- [API](./api.md) — APIs de runtime e uso de bindings
+- [Patterns](./patterns.md) — estratégias de deploy
+- [Wrangler](../wrangler/README.md) — referência da CLI

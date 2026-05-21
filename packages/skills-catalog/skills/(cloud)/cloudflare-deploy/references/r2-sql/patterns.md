@@ -1,27 +1,30 @@
-# R2 SQL Patterns
+# Padrões SQL R2
 
-Common patterns, use cases, and integration examples for R2 SQL.
+Padrões comuns, casos de uso e exemplos de integração para SQL R2.
 
-## Wrangler CLI Query
+## Consulta CLI do Wrangler```bash
 
-```bash
 # Basic query
-npx wrangler r2 sql query "my-bucket" "SELECT * FROM default.logs LIMIT 10"
+
+npx wrangler r2 sql query "my-bucket" "SELECT \* FROM default.logs LIMIT 10"
 
 # Multi-line query
+
 npx wrangler r2 sql query "my-bucket" "
-  SELECT status, COUNT(*), AVG(response_time)
-  FROM logs.http_requests
-  WHERE timestamp >= '2025-01-01T00:00:00Z'
-  GROUP BY status
-  ORDER BY COUNT(*) DESC
-  LIMIT 100
+SELECT status, COUNT(_), AVG(response_time)
+FROM logs.http_requests
+WHERE timestamp >= '2025-01-01T00:00:00Z'
+GROUP BY status
+ORDER BY COUNT(_) DESC
+LIMIT 100
 "
 
 # Use environment variable
+
 export R2_SQL_WAREHOUSE="my-bucket"
-npx wrangler r2 sql query "$R2_SQL_WAREHOUSE" "SELECT * FROM default.logs"
-```
+npx wrangler r2 sql query "$R2_SQL_WAREHOUSE" "SELECT \* FROM default.logs"
+
+````
 
 ## HTTP API Query
 
@@ -35,7 +38,7 @@ curl -X POST https://api.cloudflare.com/client/v4/accounts/{account_id}/r2/sql/q
     "warehouse": "my-bucket",
     "query": "SELECT * FROM default.my_table WHERE status = 200 LIMIT 100"
   }'
-```
+````
 
 Response:
 
@@ -74,42 +77,44 @@ npx wrangler r2 sql query "my-bucket" "
 "
 ```
 
-See [pipelines/patterns.md](../pipelines/patterns.md) for detailed setup.
+Consulte [pipelines/patterns.md](../pipelines/patterns.md) para configuração detalhada.
 
-## PyIceberg Integration
+## Integração PyIceberg
 
-Create and populate Iceberg tables with PyIceberg, then query with R2 SQL.
-
-```python
+Crie e preencha tabelas Iceberg com PyIceberg e, em seguida, consulte com R2 SQL.```python
 from pyiceberg.catalog.rest import RestCatalog
 import pyarrow as pa
 import pandas as pd
 
 # Setup catalog
+
 catalog = RestCatalog(
-    name="my_catalog",
-    warehouse="my-bucket",
-    uri="https://<account-id>.r2.cloudflarestorage.com/iceberg/my-bucket",
-    token="<your-token>",
+name="my_catalog",
+warehouse="my-bucket",
+uri="https://<account-id>.r2.cloudflarestorage.com/iceberg/my-bucket",
+token="<your-token>",
 )
 catalog.create_namespace_if_not_exists("analytics")
 
 # Create table
+
 schema = pa.schema([
-    pa.field("user_id", pa.string(), nullable=False),
-    pa.field("event_time", pa.timestamp("us", tz="UTC"), nullable=False),
-    pa.field("page_views", pa.int64(), nullable=False),
+pa.field("user_id", pa.string(), nullable=False),
+pa.field("event_time", pa.timestamp("us", tz="UTC"), nullable=False),
+pa.field("page_views", pa.int64(), nullable=False),
 ])
 table = catalog.create_table(("analytics", "user_metrics"), schema=schema)
 
 # Append data
+
 df = pd.DataFrame({
-    "user_id": ["user_1", "user_2"],
-    "event_time": pd.to_datetime(["2025-01-15 10:00:00", "2025-01-15 11:00:00"], utc=True),
-    "page_views": [10, 25],
+"user_id": ["user_1", "user_2"],
+"event_time": pd.to_datetime(["2025-01-15 10:00:00", "2025-01-15 11:00:00"], utc=True),
+"page_views": [10, 25],
 })
 table.append(pa.Table.from_pandas(df, schema=schema))
-```
+
+````
 
 Query with R2 SQL:
 
@@ -120,7 +125,7 @@ npx wrangler r2 sql query "my-bucket" "
   WHERE event_time >= '2025-01-15T00:00:00Z'
   GROUP BY user_id
 "
-```
+````
 
 See [r2-data-catalog/patterns.md](../r2-data-catalog/patterns.md) for advanced PyIceberg patterns.
 
@@ -205,16 +210,15 @@ from pyiceberg.transforms import DayTransform
 PartitionSpec(PartitionField(source_id=1, field_id=1000, transform=DayTransform(), name="day"))
 ```
 
-### Query Optimization
+### Otimização de consulta
 
-- **Always use LIMIT** for early termination
-- **Filter on partition keys first**
-- **Multiple filters** for better pruning
+- **Sempre use LIMIT** para rescisão antecipada
+- **Filtre primeiro as chaves de partição**
+- **Vários filtros** para melhor poda```sql
+  -- Better: Multiple filters on partition key
+  SELECT \* FROM logs.requests
+  WHERE timestamp >= '2025-01-15T00:00:00Z' AND status = 404 AND method = 'GET' LIMIT 100;
 
-```sql
--- Better: Multiple filters on partition key
-SELECT * FROM logs.requests
-WHERE timestamp >= '2025-01-15T00:00:00Z' AND status = 404 AND method = 'GET' LIMIT 100;
 ```
 
 ### File Organization
@@ -228,3 +232,4 @@ WHERE timestamp >= '2025-01-15T00:00:00Z' AND status = 404 AND method = 'GET' LI
 - [gotchas.md](gotchas.md) - Limitations and troubleshooting
 - [r2-data-catalog/patterns.md](../r2-data-catalog/patterns.md) - PyIceberg advanced patterns
 - [pipelines/patterns.md](../pipelines/patterns.md) - Streaming ingestion patterns
+```

@@ -1,20 +1,21 @@
-# Bundle Size Optimization
+# Otimização do tamanho do pacote
 
-## Table of Contents
-- [Analysis Tools](#analysis-tools)
-- [Heavy Dependencies](#heavy-dependencies)
-- [Code Splitting](#code-splitting)
-- [Tree Shaking](#tree-shaking)
+## Índice
+
+- [Ferramentas de análise](#ferramentas-de-análise)
+- [Dependências pesadas](#dependências-pesadas)
+- [Divisão de código](#divisão-de-código)
+- [Tree-shaking](#tree-shaking)
 
 ---
 
-## Analysis Tools
+## Ferramentas de análise
 
 ```bash
-# Webpack - generates interactive treemap
+# Webpack — gera treemap interativo
 npx webpack-bundle-analyzer dist/stats.json
 
-# Generate stats file first
+# Gere o stats primeiro
 webpack --profile --json > dist/stats.json
 
 # Vite
@@ -23,66 +24,66 @@ npx vite-bundle-visualizer
 # Source map explorer
 npx source-map-explorer dist/**/*.js
 
-# Check package size before adding
+# Confira o tamanho do pacote antes de adicionar
 npx bundlephobia lodash
 ```
 
 ---
 
-## Heavy Dependencies
+## Dependências pesadas
 
-### moment → date-fns/dayjs
-
-```javascript
-// Before: moment (67KB)
-import moment from 'moment';
-moment(date).format('YYYY-MM-DD');
-
-// After: date-fns (tree-shakeable, ~2KB per function)
-import { format } from 'date-fns';
-format(date, 'yyyy-MM-dd');
-
-// After: dayjs (2KB total, moment-compatible API)
-import dayjs from 'dayjs';
-dayjs(date).format('YYYY-MM-DD');
-```
-
-### lodash → cherry-pick or native
+### moment → date-fns / dayjs
 
 ```javascript
-// Before: entire lodash (72KB)
-import _ from 'lodash';
-_.uniq(array);
-_.debounce(fn, 300);
+// Antes: moment (67 KB)
+import moment from 'moment'
+moment(date).format('YYYY-MM-DD')
 
-// After: cherry-pick (2KB each)
-import uniq from 'lodash/uniq';
-import debounce from 'lodash/debounce';
+// Depois: date-fns (tree-shakeable, ~2 KB por função)
+import { format } from 'date-fns'
+format(date, 'yyyy-MM-dd')
 
-// After: native alternatives
-[...new Set(array)]; // uniq
-// debounce - use custom or lodash-es/debounce
+// Depois: dayjs (~2 KB total, API parecida com moment)
+import dayjs from 'dayjs'
+dayjs(date).format('YYYY-MM-DD')
 ```
 
-### Other common swaps
+### lodash → cherry-pick ou nativo
 
-| Heavy | Light Alternative |
-|-------|-------------------|
-| `axios` (13KB) | `fetch` (native) or `ky` (3KB) |
-| `uuid` (4KB) | `crypto.randomUUID()` (native) |
-| `classnames` (1KB) | template literals |
+```javascript
+// Antes: lodash inteiro (72 KB)
+import _ from 'lodash'
+_.uniq(array)
+_.debounce(fn, 300)
+
+// Depois: cherry-pick (~2 KB cada)
+import uniq from 'lodash/uniq'
+import debounce from 'lodash/debounce'
+
+// Depois: nativo
+;[...new Set(array)] // único
+// debounce: custom ou lodash-es/debounce
+```
+
+### Outras trocas comuns
+
+| Pesado              | Alternativa leve                |
+| ------------------- | ------------------------------- |
+| `axios` (13 KB)     | `fetch` (nativo) ou `ky` (3 KB) |
+| `uuid` (4 KB)       | `crypto.randomUUID()` (nativo)  |
+| `classnames` (1 KB) | template literals               |
 
 ---
 
-## Code Splitting
+## Divisão de código
 
 ### React.lazy
 
 ```javascript
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense } from 'react'
 
-const Chart = lazy(() => import('./Chart'));
-const AdminPanel = lazy(() => import('./AdminPanel'));
+const Chart = lazy(() => import('./Chart'))
+const AdminPanel = lazy(() => import('./AdminPanel'))
 
 function App() {
   return (
@@ -90,37 +91,37 @@ function App() {
       {showChart && <Chart />}
       {isAdmin && <AdminPanel />}
     </Suspense>
-  );
+  )
 }
 ```
 
 ### Next.js dynamic
 
 ```javascript
-import dynamic from 'next/dynamic';
+import dynamic from 'next/dynamic'
 
-// Client-only component
-const Map = dynamic(() => import('./Map'), { ssr: false });
+// Componente só no cliente
+const Map = dynamic(() => import('./Map'), { ssr: false })
 
-// With loading state
+// Com estado de carregamento
 const Chart = dynamic(() => import('./Chart'), {
-  loading: () => <Skeleton height={300} />
-});
+  loading: () => <Skeleton height={300} />,
+})
 ```
 
-### Route-based splitting (automatic in most frameworks)
+### Divisão por rota (automática na maioria dos frameworks)
 
 ```javascript
-// Next.js - each page is a separate chunk
+// Next.js — cada página vira um chunk
 // pages/dashboard.js → chunks/pages/dashboard.js
 // pages/admin.js → chunks/pages/admin.js
 
-// React Router with lazy
-const Dashboard = lazy(() => import('./pages/Dashboard'));
-const Admin = lazy(() => import('./pages/Admin'));
+// React Router com lazy
+const Dashboard = lazy(() => import('./pages/Dashboard'))
+const Admin = lazy(() => import('./pages/Admin'))
 ```
 
-### Manual chunks (Vite/Rollup)
+### Chunks manuais (Vite / Rollup)
 
 ```javascript
 // vite.config.js
@@ -131,50 +132,53 @@ export default {
         manualChunks: {
           vendor: ['react', 'react-dom'],
           charts: ['recharts', 'd3'],
-        }
-      }
-    }
-  }
-};
+        },
+      },
+    },
+  },
+}
 ```
 
 ---
 
-## Tree Shaking
+## Tree-shaking
 
-### Enable in webpack
+### Habilitar no webpack
 
 ```javascript
 // webpack.config.js
 module.exports = {
-  mode: 'production', // enables tree shaking
+  mode: 'production', // habilita tree-shaking
   optimization: {
     usedExports: true,
     sideEffects: true,
-  }
-};
+  },
+}
 ```
 
-### Mark package as side-effect free
+### Marcar pacote como sem efeitos colaterais
 
 ```json
 // package.json
 {
   "sideEffects": false
 }
+```
 
-// Or specify files with side effects
+Ou liste arquivos com efeitos:
+
+```json
 {
   "sideEffects": ["*.css", "*.scss"]
 }
 ```
 
-### Write tree-shakeable exports
+### Escreva módulos que possam ser “tree-shaken”
 
 ```javascript
-// Bad: default export of object
-export default { foo, bar, baz };
+// Ruim: export default de objeto
+export default { foo, bar, baz }
 
-// Good: named exports
-export { foo, bar, baz };
+// Bom: named exports
+export { foo, bar, baz }
 ```

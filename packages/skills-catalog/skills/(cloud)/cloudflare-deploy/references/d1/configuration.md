@@ -1,26 +1,26 @@
-# D1 Configuration
+# Configuração D1
 
-## wrangler.jsonc Setup
+## Setup wrangler.jsonc
 
 ```jsonc
 {
   "name": "your-worker-name",
   "main": "src/index.ts",
-  "compatibility_date": "2025-01-01", // Use current date for new projects
+  "compatibility_date": "2025-01-01", // Data atual em projetos novos
   "d1_databases": [
     {
-      "binding": "DB", // Env variable name
-      "database_name": "your-db-name", // Human-readable name
-      "database_id": "your-database-id", // UUID from dashboard/CLI
-      "migrations_dir": "migrations", // Optional: default is "migrations"
+      "binding": "DB", // Nome da variável de ambiente
+      "database_name": "your-db-name", // Nome legível
+      "database_id": "your-database-id", // UUID do dashboard/CLI
+      "migrations_dir": "migrations", // Opcional: padrão "migrations"
     },
-    // Read replica (paid plans only)
+    // Réplica de leitura (só planos pagos)
     {
       "binding": "DB_REPLICA",
       "database_name": "your-db-name",
-      "database_id": "your-database-id", // Same ID, different binding
+      "database_id": "your-database-id", // Mesmo ID, binding diferente
     },
-    // Multiple databases
+    // Múltiplos bancos
     {
       "binding": "ANALYTICS_DB",
       "database_name": "analytics-db",
@@ -30,7 +30,7 @@
 }
 ```
 
-## TypeScript Types
+## Tipos TypeScript
 
 ```typescript
 interface Env {
@@ -48,9 +48,9 @@ export default {
 
 ## Migrations
 
-File structure: `migrations/0001_initial_schema.sql`, `0002_add_posts.sql`, etc.
+Estrutura: `migrations/0001_initial_schema.sql`, `0002_add_posts.sql`, etc.
 
-### Example Migration
+### Exemplo de migration
 
 ```sql
 -- migrations/0001_initial_schema.sql
@@ -78,43 +78,43 @@ CREATE INDEX idx_posts_user_id ON posts(user_id);
 CREATE INDEX idx_posts_published ON posts(published);
 ```
 
-### Running Migrations
+### Executar migrations
 
 ```bash
-# Create new migration file
+# Criar novo arquivo de migration
 wrangler d1 migrations create <db-name> add_users_table
-# Creates: migrations/0001_add_users_table.sql
+# Cria: migrations/0001_add_users_table.sql
 
-# Apply migrations
-wrangler d1 migrations apply <db-name> --local     # Apply to local DB
-wrangler d1 migrations apply <db-name> --remote    # Apply to production DB
+# Aplicar migrations
+wrangler d1 migrations apply <db-name> --local     # Banco local
+wrangler d1 migrations apply <db-name> --remote    # Produção
 
-# List applied migrations
+# Listar aplicadas
 wrangler d1 migrations list <db-name> --remote
 
-# Direct SQL execution (bypasses migration tracking)
+# SQL direto (sem rastreamento de migration)
 wrangler d1 execute <db-name> --remote --command="SELECT * FROM users"
 wrangler d1 execute <db-name> --local --file=./schema.sql
 ```
 
-**Migration tracking**: Wrangler creates `d1_migrations` table automatically to track applied migrations
+**Rastreamento**: o Wrangler cria a tabela `d1_migrations` automaticamente
 
-## Indexing Strategy
+## Estratégia de índices
 
 ```sql
--- Index frequently queried columns
+-- Colunas frequentemente consultadas
 CREATE INDEX idx_users_email ON users(email);
 
--- Composite indexes for multi-column queries
+-- Índices compostos
 CREATE INDEX idx_posts_user_published ON posts(user_id, published);
 
--- Covering indexes (include queried columns)
+-- Covering indexes
 CREATE INDEX idx_users_email_name ON users(email, name);
 
--- Partial indexes for filtered queries
+-- Índices parciais
 CREATE INDEX idx_active_users ON users(email) WHERE active = 1;
 
--- Check if query uses index
+-- Ver se a query usa índice
 EXPLAIN QUERY PLAN SELECT * FROM users WHERE email = ?;
 ```
 
@@ -153,46 +153,46 @@ export default {
 }
 ```
 
-## Import & Export
+## Import e export
 
 ```bash
-# Export full database (schema + data)
+# Export completo (schema + dados)
 wrangler d1 export <db-name> --remote --output=./backup.sql
 
-# Export data only (no schema)
+# Só dados (sem schema)
 wrangler d1 export <db-name> --remote --no-schema --output=./data-only.sql
 
-# Export with foreign key constraints preserved
-# (Default: foreign keys are disabled during export for import compatibility)
+# Export com FK preservadas
+# (Padrão: FK desabilitadas no export para compatibilidade de import)
 
-# Import SQL file
+# Importar SQL
 wrangler d1 execute <db-name> --remote --file=./backup.sql
 
-# Limitations
-# - BLOB data may not export correctly (use R2 for binary files)
-# - Very large exports (>1GB) may timeout (split into chunks)
-# - Import is NOT atomic (use batch() for transactional imports in Workers)
+# Limitações
+# - BLOB pode não exportar bem (use R2 para binários)
+# - Exports muito grandes (>1GB) podem dar timeout (divida em partes)
+# - Import NÃO é atômico (use batch() no Worker para imports transacionais)
 ```
 
-## Plan Tiers
+## Níveis de plano
 
-| Feature       | Free             | Paid              |
-| ------------- | ---------------- | ----------------- |
-| Database size | 500 MB           | 10 GB             |
-| Batch size    | 1,000 statements | 10,000 statements |
-| Time Travel   | 7 days           | 30 days           |
-| Read replicas | ❌               | ✅                |
-| Sessions API  | ❌               | ✅ (up to 15 min) |
-| Pricing       | Free             | $5/mo + usage     |
+| Recurso      | Free             | Pago              |
+| ------------ | ---------------- | ----------------- |
+| Tamanho DB   | 500 MB           | 10 GB             |
+| Batch        | 1.000 statements | 10.000 statements |
+| Time Travel  | 7 dias           | 30 dias           |
+| Réplicas     | ❌               | ✅                |
+| Sessions API | ❌               | ✅ (até 15 min)   |
+| Precificação | Grátis           | US$ 5/mês + uso   |
 
-**Usage pricing** (paid plans): $0.001 per 1K reads + $1 per 1M writes + $0.75/GB storage/month
+**Uso** (pagos): US$ 0,001 por 1K reads + US$ 1 por 1M writes + US$ 0,75/GB/mês
 
-## Local Development
+## Desenvolvimento local
 
 ```bash
-wrangler dev --persist-to=./.wrangler/state  # Persist across restarts
-# Local DB: .wrangler/state/v3/d1/<database-id>.sqlite
-sqlite3 .wrangler/state/v3/d1/<database-id>.sqlite  # Inspect
+wrangler dev --persist-to=./.wrangler/state  # Persiste entre reinícios
+# DB local: .wrangler/state/v3/d1/<database-id>.sqlite
+sqlite3 .wrangler/state/v3/d1/<database-id>.sqlite  # Inspecionar
 
-# Local dev uses free tier limits by default
+# Dev local usa limites do free por padrão
 ```
