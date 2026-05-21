@@ -369,8 +369,33 @@ describe('removeSkill', () => {
     ])
   })
 
-  it('returns a not-found result when the skill is absent from the lockfile', async () => {
-    const { ports, rmMock } = createPorts()
+  it('removes a skill from disk when it is absent from the lockfile', async () => {
+    const { ports, lstatMock, rmMock } = createPorts()
+
+    lstatMock.mockResolvedValue({
+      isDirectory: () => true,
+      isSymbolicLink: () => false,
+    })
+
+    const results = await removeSkill(ports, 'orphan-skill', ['cursor'])
+
+    expect(rmMock).toHaveBeenCalledWith('/workspace/project/.cursor/skills/orphan-skill', {
+      recursive: true,
+      force: true,
+    })
+    expect(results).toEqual([
+      {
+        skill: 'orphan-skill',
+        agent: 'Cursor',
+        success: true,
+      },
+    ])
+  })
+
+  it('returns not-found when the skill is absent from disk and lockfile', async () => {
+    const { ports, lstatMock, rmMock } = createPorts()
+
+    lstatMock.mockRejectedValue(Object.assign(new Error('ENOENT'), { code: 'ENOENT' }))
 
     const results = await removeSkill(ports, 'missing-skill', ['cursor'])
 
@@ -379,7 +404,7 @@ describe('removeSkill', () => {
         skill: 'missing-skill',
         agent: 'Cursor',
         success: false,
-        error: 'Skill not found in lockfile',
+        error: 'Skill not found',
       },
     ])
     expect(rmMock).not.toHaveBeenCalled()

@@ -46,4 +46,8 @@ export const MESSAGES = {
   UPDATE_COMMAND: `npm update -g ${PACKAGE_NAME}`,
   INSTALL_COMMAND: `npm install -g ${PACKAGE_NAME}`,
   DESCRIPTION: 'Curated skills to power up your coding agents',
+  OUTSIDE_LOCKFILE: 'fora do lockfile',
+  PARTIAL_LOCKFILE: 'agente(s) fora do lockfile',
+  REMOVE_ORPHAN_BANNER:
+    'Algumas skills foram instaladas fora do lockfile (manual ou plugin). A remoção apaga os arquivos no disco.',
 } as const

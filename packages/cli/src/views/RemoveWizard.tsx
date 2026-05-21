@@ -13,6 +13,9 @@ import { AgentSelector } from './AgentSelector'
 
 import { deprecatedSkillsAtom } from '../atoms/deprecatedSkills'
 import { installedSkillsAtom } from '../atoms/installedSkills'
+import { skillLockAtom } from '../atoms/skillLock'
+import { MESSAGES } from '../utils/constants'
+import { getSkillLockfileStatus } from '../utils/skill-lock-status'
 
 export function RemoveWizard({ selectedAgents, onExit }: { selectedAgents?: AgentType[]; onExit: () => void }) {
   const [internalAgents, setInternalAgents] = useState<AgentType[]>(selectedAgents || [])
@@ -20,6 +23,7 @@ export function RemoveWizard({ selectedAgents, onExit }: { selectedAgents?: Agen
 
   const installedSkills = useAtomValue(installedSkillsAtom)
   const deprecatedMap = useAtomValue(deprecatedSkillsAtom)
+  const { globalLock, projectLock } = useAtomValue(skillLockAtom)
 
   const [step, setStep] = useState<'agent-select' | 'select' | 'confirm' | 'removing' | 'done'>(
     selectedAgents ? 'select' : 'agent-select',
@@ -39,14 +43,32 @@ export function RemoveWizard({ selectedAgents, onExit }: { selectedAgents?: Agen
 
   const skillNames = useMemo(() => Object.keys(filteredSkills), [filteredSkills])
 
+  const lockStatusBySkill = useMemo(() => {
+    const status: Record<string, ReturnType<typeof getSkillLockfileStatus>> = {}
+    for (const name of skillNames) {
+      status[name] = getSkillLockfileStatus(name, filteredSkills[name] ?? [], globalLock, projectLock)
+    }
+    return status
+  }, [skillNames, filteredSkills, globalLock, projectLock])
+
+  const hasOrphanSkills = useMemo(
+    () => skillNames.some((name) => lockStatusBySkill[name] !== 'tracked'),
+    [skillNames, lockStatusBySkill],
+  )
+
   const selectItems = useMemo(() => {
     return skillNames.map((name) => {
       const isDeprecated = deprecatedMap instanceof Map && deprecatedMap.has(name)
+      const lockStatus = lockStatusBySkill[name]
       const agentHint = `${filteredSkills[name].length} agents: ${filteredSkills[name].join(', ')}`
-      const hint = isDeprecated ? `${agentHint} ⚠ deprecated` : agentHint
+      const tags: string[] = []
+      if (isDeprecated) tags.push('deprecated')
+      if (lockStatus === 'orphan') tags.push(MESSAGES.OUTSIDE_LOCKFILE)
+      if (lockStatus === 'partial') tags.push(MESSAGES.PARTIAL_LOCKFILE)
+      const hint = tags.length > 0 ? `${agentHint} ⚠ ${tags.join(' · ')}` : agentHint
       return { label: name, value: name, hint }
     })
-  }, [skillNames, filteredSkills, deprecatedMap])
+  }, [skillNames, filteredSkills, deprecatedMap, lockStatusBySkill])
 
   useInput((_, key) => {
     if (step === 'done' && (key.return || key.escape)) onExit()
@@ -106,6 +128,11 @@ export function RemoveWizard({ selectedAgents, onExit }: { selectedAgents?: Agen
             {symbols.diamond} Select skills to remove:
           </Text>
         </Box>
+        {hasOrphanSkills && (
+          <Box marginBottom={1} borderStyle="round" borderColor={colors.warning} paddingX={1}>
+            <Text color={colors.warning}>{symbols.warning} {MESSAGES.REMOVE_ORPHAN_BANNER}</Text>
+          </Box>
+        )}
         <MultiSelectPrompt items={selectItems} onSubmit={handleSelect} onCancel={onExit} />
       </Box>
     )
@@ -123,14 +150,25 @@ export function RemoveWizard({ selectedAgents, onExit }: { selectedAgents?: Agen
             </Text>
           </Box>
 
-          {selectedToRemove.map((s) => (
-            <Box key={s} paddingX={1}>
-              <Box width={2}>
-                <Text color={colors.error}>{symbols.dot}</Text>
+          {selectedToRemove.map((s) => {
+            const lockStatus = lockStatusBySkill[s]
+            const outsideLock = lockStatus === 'orphan' || lockStatus === 'partial'
+            return (
+              <Box key={s} paddingX={1}>
+                <Box width={2}>
+                  <Text color={colors.error}>{symbols.dot}</Text>
+                </Box>
+                <Text color={colors.textDim}>{s}</Text>
+                {outsideLock && (
+                  <Text color={colors.warning}>
+                    {' '}
+                    {symbols.warning}{' '}
+                    {lockStatus === 'orphan' ? MESSAGES.OUTSIDE_LOCKFILE : MESSAGES.PARTIAL_LOCKFILE}
+                  </Text>
+                )}
               </Box>
-              <Text color={colors.textDim}>{s}</Text>
-            </Box>
-          ))}
+            )
+          })}
         </Box>
 
         <Box marginTop={1}>

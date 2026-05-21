@@ -362,14 +362,8 @@ export const removeSkill = async (
   let lockEntry = await getSkillFromLock(ports, skillName, true)
   if (!lockEntry) lockEntry = await getSkillFromLock(ports, skillName, false)
 
-  if (!lockEntry && !options.force) {
-    return agents.map((agent) => ({
-      skill: skillName,
-      agent: getAgentConfig(ports, agent).displayName,
-      success: false,
-      error: 'Skill not found in lockfile',
-    }))
-  }
+  // Skills installed manually or by other tools may exist on disk without a lockfile entry.
+  const forcedRemoval = options.force || !lockEntry
 
   const internalResults = await Promise.all(
     agents.map(async (agent) => {
@@ -456,7 +450,7 @@ export const removeSkill = async (
     agents: agents.map((a) => getAgentConfig(ports, a).displayName),
     success: results.filter((r) => r.success).length,
     failed: results.filter((r) => !r.success).length,
-    forced: options.force,
+    forced: forcedRemoval,
     details: results.map((r) => ({
       skill: r.skill,
       agent: r.agent,
